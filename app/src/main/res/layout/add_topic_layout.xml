@@ -38,33 +38,17 @@
         android:paddingBottom="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_topic_name"
+            android:id="@+id/add_topic_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:hint="@string/topic_description_edit_text"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_topic_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <Button
-        android:id="@+id/done_button"
+        android:id="@+id/subscribe_button"
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/done_button_text" />
+        android:text="@string/subscribe_button_text" />
 </LinearLayout>

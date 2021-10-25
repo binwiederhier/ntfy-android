@@ -18,19 +18,9 @@
     <string name="app_name">Ntfy</string>
     <string name="add_topic">Add Topic</string>
 
-    <string name="topic1_name">Rose</string>
-    <string name="topic2_name">Freesia</string>
-
-    <string name="topic1_description">Rose comes from the Latin word Rosa. There are over 100
-        species of the rose. </string>
-    <string name="topic2_description">Freesias bloom during spring and are native to
-        Africa.</string>
-
     <string name="topic_string">Topics</string>
-    <string name="topic_finder">Topic finder</string>
-    <string name="topic_description_edit_text">Topic Description</string>
-    <string name="topic_name_edit_text">Topic Name</string>
-    <string name="done_button_text">Done</string>
+    <string name="topic_name_edit_text">Topic URL</string>
+    <string name="subscribe_button_text">Subscribe</string>
     <string name="fab_content_description">fab</string>
     <string name="remove_topic">Unsubscribe</string>
 

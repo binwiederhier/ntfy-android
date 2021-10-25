@@ -18,7 +18,6 @@ package io.heckel.ntfy.detail
 
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,8 +37,7 @@ class TopicDetailActivity : AppCompatActivity() {
         var currentTopicId: Long? = null
 
         /* Connect variables to UI elements. */
-        val topicName: TextView = findViewById(R.id.topic_detail_name)
-        val topicDescription: TextView = findViewById(R.id.topic_detail_url)
+        val topicUrl: TextView = findViewById(R.id.topic_detail_url)
         val removeTopicButton: Button = findViewById(R.id.remove_button)
 
         val bundle: Bundle? = intent.extras
@@ -51,8 +49,7 @@ class TopicDetailActivity : AppCompatActivity() {
         description */
         currentTopicId?.let {
             val currentTopic = topicDetailViewModel.getTopicForId(it)
-            topicName.text = currentTopic?.url
-            topicDescription.text = currentTopic?.description
+            topicUrl.text = currentTopic?.url
 
             removeTopicButton.setOnClickListener {
                 if (currentTopic != null) {

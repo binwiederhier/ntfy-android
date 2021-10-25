@@ -24,22 +24,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.heckel.ntfy.R
 import com.google.android.material.textfield.TextInputEditText
 
-const val TOPIC_NAME = "name"
-const val TOPIC_DESCRIPTION = "description"
+const val TOPIC_URL = "url"
 
 class AddTopicActivity : AppCompatActivity() {
-    private lateinit var addTopicName: TextInputEditText
-    private lateinit var addTopicDescription: TextInputEditText
+    private lateinit var addTopicUrl: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_topic_layout)
 
-        findViewById<Button>(R.id.done_button).setOnClickListener {
+        findViewById<Button>(R.id.subscribe_button).setOnClickListener {
             addTopic()
         }
-        addTopicName = findViewById(R.id.add_topic_name)
-        addTopicDescription = findViewById(R.id.add_topic_description)
+        addTopicUrl = findViewById(R.id.add_topic_url)
+        addTopicUrl.setText("https://ntfy.sh/")
     }
 
     /* The onClick action for the done button. Closes the activity and returns the new topic name
@@ -49,13 +47,11 @@ class AddTopicActivity : AppCompatActivity() {
     private fun addTopic() {
         val resultIntent = Intent()
 
-        if (addTopicName.text.isNullOrEmpty() || addTopicDescription.text.isNullOrEmpty()) {
+        if (addTopicUrl.text.isNullOrEmpty()) {
             setResult(Activity.RESULT_CANCELED, resultIntent)
         } else {
-            val name = addTopicName.text.toString()
-            val description = addTopicDescription.text.toString()
-            resultIntent.putExtra(TOPIC_NAME, name)
-            resultIntent.putExtra(TOPIC_DESCRIPTION, description)
+            val url = addTopicUrl.text.toString()
+            resultIntent.putExtra(TOPIC_URL, url)
             setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()

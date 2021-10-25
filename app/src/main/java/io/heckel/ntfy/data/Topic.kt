@@ -16,10 +16,7 @@
 
 package io.heckel.ntfy.data
 
-import androidx.annotation.DrawableRes
-
 data class Topic(
     val id: Long,
     val url: String,
-    val description: String
 )

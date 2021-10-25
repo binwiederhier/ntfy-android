@@ -28,15 +28,14 @@ class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
     val topicsLiveData = dataSource.getTopicList()
 
     /* If the name and description are present, create new Topic and add it to the datasource */
-    fun insertTopic(topicName: String?, topicDescription: String?) {
-        if (topicName == null || topicDescription == null) {
+    fun insertTopic(topicUrl: String?) {
+        if (topicUrl == null) {
             return
         }
 
         val newTopic = Topic(
             Random.nextLong(),
-            topicName,
-            topicDescription
+            topicUrl
         )
 
         dataSource.addTopic(newTopic)

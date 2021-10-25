@@ -18,18 +18,16 @@ package io.heckel.ntfy.list
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.ConcatAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import io.heckel.ntfy.add.AddTopicActivity
-import io.heckel.ntfy.detail.TopicDetailActivity
 import com.heckel.ntfy.R
-import io.heckel.ntfy.add.TOPIC_DESCRIPTION
-import io.heckel.ntfy.add.TOPIC_NAME
+import io.heckel.ntfy.add.AddTopicActivity
+import io.heckel.ntfy.add.TOPIC_URL
 import io.heckel.ntfy.data.Topic
+import io.heckel.ntfy.detail.TopicDetailActivity
 
 const val TOPIC_ID = "topic id"
 
@@ -78,10 +76,8 @@ class TopicsListActivity : AppCompatActivity() {
         /* Inserts topic into viewModel. */
         if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
-                val topicName = data.getStringExtra(TOPIC_NAME)
-                val topicDescription = data.getStringExtra(TOPIC_DESCRIPTION)
-
-                topicsListViewModel.insertTopic(topicName, topicDescription)
+                val topicName = data.getStringExtra(TOPIC_URL)
+                topicsListViewModel.insertTopic(topicName)
             }
         }
     }

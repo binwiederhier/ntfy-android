@@ -19,21 +19,20 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/topic_detail_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
-        android:text="@string/topic1_name"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceHeadline3" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:text="Delete topic"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
     <TextView
-        android:id="@+id/topic_detail_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="@string/topic1_description" />
+            android:id="@+id/topic_detail_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="https://ntfy.sh/..."/>
 
     <Button
         android:id="@+id/remove_button"
