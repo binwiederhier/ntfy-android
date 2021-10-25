@@ -22,25 +22,25 @@ import androidx.lifecycle.ViewModelProvider
 import io.heckel.ntfy.data.DataSource
 import io.heckel.ntfy.data.Topic
 
-class FlowerDetailViewModel(private val datasource: DataSource) : ViewModel() {
+class TopicDetailViewModel(private val datasource: DataSource) : ViewModel() {
 
-    /* Queries datasource to returns a flower that corresponds to an id. */
-    fun getFlowerForId(id: Long) : Topic? {
-        return datasource.getFlowerForId(id)
+    /* Queries datasource to returns a topic that corresponds to an id. */
+    fun getTopicForId(id: Long) : Topic? {
+        return datasource.getTopicForId(id)
     }
 
-    /* Queries datasource to remove a flower. */
-    fun removeFlower(flower: Topic) {
-        datasource.removeFlower(flower)
+    /* Queries datasource to remove a topic. */
+    fun removeTopic(topic: Topic) {
+        datasource.removeTopic(topic)
     }
 }
 
-class FlowerDetailViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class TopicDetailViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FlowerDetailViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(TopicDetailViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return FlowerDetailViewModel(
+            return TopicDetailViewModel(
                 datasource = DataSource.getDataSource(context.resources)
             ) as T
         }

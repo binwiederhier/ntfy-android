@@ -16,10 +16,13 @@
 
 <resources>
     <!-- Base application theme. -->
+    <!-- No action bar, https://stackoverflow.com/a/36236700 -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--<item name="android:windowFullscreen">true</item>-->
     </style>
-
 </resources>

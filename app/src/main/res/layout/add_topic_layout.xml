@@ -33,12 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="@string/flower_name_edit_text"
+        android:hint="@string/topic_name_edit_text"
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_flower_name"
+            android:id="@+id/add_topic_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -48,12 +48,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="@string/flower_description_edit_text"
+        android:hint="@string/topic_description_edit_text"
         android:paddingTop="16dp"
         android:paddingBottom="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_flower_description"
+            android:id="@+id/add_topic_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine" />

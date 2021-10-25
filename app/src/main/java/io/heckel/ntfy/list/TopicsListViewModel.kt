@@ -25,27 +25,25 @@ import kotlin.random.Random
 
 class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
 
-    val topicsLiveData = dataSource.getFlowerList()
+    val topicsLiveData = dataSource.getTopicList()
 
-    /* If the name and description are present, create new Flower and add it to the datasource */
-    fun insertFlower(flowerName: String?, flowerDescription: String?) {
-        if (flowerName == null || flowerDescription == null) {
+    /* If the name and description are present, create new Topic and add it to the datasource */
+    fun insertTopic(topicName: String?, topicDescription: String?) {
+        if (topicName == null || topicDescription == null) {
             return
         }
 
-        val image = dataSource.getRandomFlowerImageAsset()
-        val newFlower = Topic(
+        val newTopic = Topic(
             Random.nextLong(),
-            flowerName,
-            image,
-            flowerDescription
+            topicName,
+            topicDescription
         )
 
-        dataSource.addFlower(newFlower)
+        dataSource.addTopic(newTopic)
     }
 }
 
-class FlowersListViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class TopicsListViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TopicsListViewModel::class.java)) {

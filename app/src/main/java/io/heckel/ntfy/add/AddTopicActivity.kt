@@ -24,38 +24,38 @@ import androidx.appcompat.app.AppCompatActivity
 import com.heckel.ntfy.R
 import com.google.android.material.textfield.TextInputEditText
 
-const val FLOWER_NAME = "name"
-const val FLOWER_DESCRIPTION = "description"
+const val TOPIC_NAME = "name"
+const val TOPIC_DESCRIPTION = "description"
 
 class AddTopicActivity : AppCompatActivity() {
-    private lateinit var addFlowerName: TextInputEditText
-    private lateinit var addFlowerDescription: TextInputEditText
+    private lateinit var addTopicName: TextInputEditText
+    private lateinit var addTopicDescription: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_flower_layout)
+        setContentView(R.layout.add_topic_layout)
 
         findViewById<Button>(R.id.done_button).setOnClickListener {
-            addFlower()
+            addTopic()
         }
-        addFlowerName = findViewById(R.id.add_flower_name)
-        addFlowerDescription = findViewById(R.id.add_flower_description)
+        addTopicName = findViewById(R.id.add_topic_name)
+        addTopicDescription = findViewById(R.id.add_topic_description)
     }
 
-    /* The onClick action for the done button. Closes the activity and returns the new flower name
+    /* The onClick action for the done button. Closes the activity and returns the new topic name
     and description as part of the intent. If the name or description are missing, the result is set
     to cancelled. */
 
-    private fun addFlower() {
+    private fun addTopic() {
         val resultIntent = Intent()
 
-        if (addFlowerName.text.isNullOrEmpty() || addFlowerDescription.text.isNullOrEmpty()) {
+        if (addTopicName.text.isNullOrEmpty() || addTopicDescription.text.isNullOrEmpty()) {
             setResult(Activity.RESULT_CANCELED, resultIntent)
         } else {
-            val name = addFlowerName.text.toString()
-            val description = addFlowerDescription.text.toString()
-            resultIntent.putExtra(FLOWER_NAME, name)
-            resultIntent.putExtra(FLOWER_DESCRIPTION, description)
+            val name = addTopicName.text.toString()
+            val description = addTopicDescription.text.toString()
+            resultIntent.putExtra(TOPIC_NAME, name)
+            resultIntent.putExtra(TOPIC_DESCRIPTION, description)
             setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()

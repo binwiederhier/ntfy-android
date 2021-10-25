@@ -23,46 +23,40 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.heckel.ntfy.R
-import io.heckel.ntfy.list.FLOWER_ID
+import io.heckel.ntfy.list.TOPIC_ID
 
 class TopicDetailActivity : AppCompatActivity() {
 
-    private val flowerDetailViewModel by viewModels<FlowerDetailViewModel> {
-        FlowerDetailViewModelFactory(this)
+    private val topicDetailViewModel by viewModels<TopicDetailViewModel> {
+        TopicDetailViewModelFactory(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.flower_detail_activity)
+        setContentView(R.layout.topic_detail_activity)
 
-        var currentFlowerId: Long? = null
+        var currentTopicId: Long? = null
 
         /* Connect variables to UI elements. */
-        val flowerName: TextView = findViewById(R.id.flower_detail_name)
-        val flowerImage: ImageView = findViewById(R.id.flower_detail_image)
-        val flowerDescription: TextView = findViewById(R.id.flower_detail_description)
-        val removeFlowerButton: Button = findViewById(R.id.remove_button)
+        val topicName: TextView = findViewById(R.id.topic_detail_name)
+        val topicDescription: TextView = findViewById(R.id.topic_detail_url)
+        val removeTopicButton: Button = findViewById(R.id.remove_button)
 
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
-            currentFlowerId = bundle.getLong(FLOWER_ID)
+            currentTopicId = bundle.getLong(TOPIC_ID)
         }
 
-        /* If currentFlowerId is not null, get corresponding flower and set name, image and
+        /* If currentTopicId is not null, get corresponding topic and set name, image and
         description */
-        currentFlowerId?.let {
-            val currentFlower = flowerDetailViewModel.getFlowerForId(it)
-            flowerName.text = currentFlower?.name
-            if (currentFlower?.image == null) {
-                flowerImage.setImageResource(R.drawable.rose)
-            } else {
-                flowerImage.setImageResource(currentFlower.image)
-            }
-            flowerDescription.text = currentFlower?.description
+        currentTopicId?.let {
+            val currentTopic = topicDetailViewModel.getTopicForId(it)
+            topicName.text = currentTopic?.url
+            topicDescription.text = currentTopic?.description
 
-            removeFlowerButton.setOnClickListener {
-                if (currentFlower != null) {
-                    flowerDetailViewModel.removeFlower(currentFlower)
+            removeTopicButton.setOnClickListener {
+                if (currentTopic != null) {
+                    topicDetailViewModel.removeTopic(currentTopic)
                 }
                 finish()
             }

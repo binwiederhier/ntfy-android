@@ -27,53 +27,46 @@ import androidx.recyclerview.widget.RecyclerView
 import com.heckel.ntfy.R
 import io.heckel.ntfy.data.Topic
 
-class FlowersAdapter(private val onClick: (Topic) -> Unit) :
-    ListAdapter<Topic, FlowersAdapter.FlowerViewHolder>(FlowerDiffCallback) {
+class TopicsAdapter(private val onClick: (Topic) -> Unit) :
+    ListAdapter<Topic, TopicsAdapter.TopicViewHolder>(TopicDiffCallback) {
 
-    /* ViewHolder for Flower, takes in the inflated view and the onClick behavior. */
-    class FlowerViewHolder(itemView: View, val onClick: (Topic) -> Unit) :
+    /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
+    class TopicViewHolder(itemView: View, val onClick: (Topic) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
-        private val flowerTextView: TextView = itemView.findViewById(R.id.flower_text)
-        private val flowerImageView: ImageView = itemView.findViewById(R.id.flower_image)
-        private var currentFlower: Topic? = null
+        private val topicTextView: TextView = itemView.findViewById(R.id.topic_text)
+        private var currentTopic: Topic? = null
 
         init {
             itemView.setOnClickListener {
-                currentFlower?.let {
+                currentTopic?.let {
                     onClick(it)
                 }
             }
         }
 
-        /* Bind flower name and image. */
-        fun bind(flower: Topic) {
-            currentFlower = flower
-
-            flowerTextView.text = flower.name
-            if (flower.image != null) {
-                flowerImageView.setImageResource(flower.image)
-            } else {
-                flowerImageView.setImageResource(R.drawable.rose)
-            }
+        /* Bind topic name and image. */
+        fun bind(topic: Topic) {
+            currentTopic = topic
+            topicTextView.text = topic.url
         }
     }
 
-    /* Creates and inflates view and return FlowerViewHolder. */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlowerViewHolder {
+    /* Creates and inflates view and return TopicViewHolder. */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.flower_item, parent, false)
-        return FlowerViewHolder(view, onClick)
+            .inflate(R.layout.topic_item, parent, false)
+        return TopicViewHolder(view, onClick)
     }
 
-    /* Gets current flower and uses it to bind view. */
-    override fun onBindViewHolder(holder: FlowerViewHolder, position: Int) {
-        val flower = getItem(position)
-        holder.bind(flower)
+    /* Gets current topic and uses it to bind view. */
+    override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
+        val topic = getItem(position)
+        holder.bind(topic)
 
     }
 }
 
-object FlowerDiffCallback : DiffUtil.ItemCallback<Topic>() {
+object TopicDiffCallback : DiffUtil.ItemCallback<Topic>() {
     override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean {
         return oldItem == newItem
     }

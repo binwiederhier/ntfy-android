@@ -20,49 +20,43 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-/* Handles operations on flowersLiveData and holds details about it. */
+/* Handles operations on topicsLiveData and holds details about it. */
 class DataSource(resources: Resources) {
-    private val initialFlowerList = flowerList(resources)
-    private val flowersLiveData = MutableLiveData(initialFlowerList)
+    private val initialTopicList = topicList(resources)
+    private val topicsLiveData = MutableLiveData(initialTopicList)
 
-    /* Adds flower to liveData and posts value. */
-    fun addFlower(flower: Topic) {
-        val currentList = flowersLiveData.value
+    /* Adds topic to liveData and posts value. */
+    fun addTopic(topic: Topic) {
+        val currentList = topicsLiveData.value
         if (currentList == null) {
-            flowersLiveData.postValue(listOf(flower))
+            topicsLiveData.postValue(listOf(topic))
         } else {
             val updatedList = currentList.toMutableList()
-            updatedList.add(0, flower)
-            flowersLiveData.postValue(updatedList)
+            updatedList.add(0, topic)
+            topicsLiveData.postValue(updatedList)
         }
     }
 
-    /* Removes flower from liveData and posts value. */
-    fun removeFlower(flower: Topic) {
-        val currentList = flowersLiveData.value
+    /* Removes topic from liveData and posts value. */
+    fun removeTopic(topic: Topic) {
+        val currentList = topicsLiveData.value
         if (currentList != null) {
             val updatedList = currentList.toMutableList()
-            updatedList.remove(flower)
-            flowersLiveData.postValue(updatedList)
+            updatedList.remove(topic)
+            topicsLiveData.postValue(updatedList)
         }
     }
 
-    /* Returns flower given an ID. */
-    fun getFlowerForId(id: Long): Topic? {
-        flowersLiveData.value?.let { flowers ->
-            return flowers.firstOrNull{ it.id == id}
+    /* Returns topic given an ID. */
+    fun getTopicForId(id: Long): Topic? {
+        topicsLiveData.value?.let { topics ->
+            return topics.firstOrNull{ it.id == id}
         }
         return null
     }
 
-    fun getFlowerList(): LiveData<List<Topic>> {
-        return flowersLiveData
-    }
-
-    /* Returns a random flower asset for flowers that are added. */
-    fun getRandomFlowerImageAsset(): Int? {
-        val randomNumber = (initialFlowerList.indices).random()
-        return initialFlowerList[randomNumber].image
+    fun getTopicList(): LiveData<List<Topic>> {
+        return topicsLiveData
     }
 
     companion object {

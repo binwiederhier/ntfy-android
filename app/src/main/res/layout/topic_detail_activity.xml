@@ -19,29 +19,21 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/flower_detail_name"
+        android:id="@+id/topic_detail_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:paddingBottom="24dp"
-        android:text="@string/flower1_name"
+        android:text="@string/topic1_name"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceHeadline3" />
 
-    <ImageView
-        android:id="@+id/flower_detail_image"
-        android:layout_width="320dp"
-        android:layout_height="320dp"
-        android:layout_gravity="center"
-        android:contentDescription="@string/flower_image_content_description"
-        app:srcCompat="@drawable/rose" />
-
     <TextView
-        android:id="@+id/flower_detail_description"
+        android:id="@+id/topic_detail_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="@string/flower1_description" />
+        android:text="@string/topic1_description" />
 
     <Button
         android:id="@+id/remove_button"

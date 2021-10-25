@@ -16,29 +16,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/header_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/flower_finder"
-        android:textAppearance="?attr/textAppearanceHeadline3" />
-
-    <TextView
-        android:id="@+id/flower_number_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textAppearance="?attr/textAppearanceHeadline6" />
-
-    <TextView
-        android:id="@+id/flower_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/flower_string"
-        android:textAppearance="?attr/textAppearanceHeadline6" />
-
-</LinearLayout>
+    android:layout_height="wrap_content"/>

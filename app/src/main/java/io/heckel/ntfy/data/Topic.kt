@@ -20,8 +20,6 @@ import androidx.annotation.DrawableRes
 
 data class Topic(
     val id: Long,
-    val name: String,
-    @DrawableRes
-    val image: Int?,
+    val url: String,
     val description: String
 )
