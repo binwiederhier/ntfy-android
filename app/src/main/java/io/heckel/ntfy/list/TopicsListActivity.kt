@@ -22,16 +22,24 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.heckel.ntfy.R
+import io.heckel.ntfy.R
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.add.TOPIC_URL
+import io.heckel.ntfy.data.NtfyApi
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.TopicDetailActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val TOPIC_ID = "topic id"
 
 class TopicsListActivity : AppCompatActivity() {
+    private val api = NtfyApi(this)
     private val newTopicActivityRequestCode = 1
     private val topicsListViewModel by viewModels<TopicsListViewModel> {
         TopicsListViewModelFactory(this)
@@ -55,6 +63,19 @@ class TopicsListActivity : AppCompatActivity() {
         fab.setOnClickListener {
             fabOnClick()
         }
+
+        val self = this
+        api.getEventsFlow().asLiveData(Dispatchers.IO).observe(this, Observer { event ->
+            // Get the Activity's lifecycleScope and launch
+            this.lifecycleScope.launch(Dispatchers.Main) {
+                // run the code again in IO context
+                withContext(Dispatchers.IO) {
+                    println(event.data)
+                    //Toast.makeText(self, event.data, Toast.LENGTH_SHORT)
+                }
+            }
+        }
+        )
     }
 
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */

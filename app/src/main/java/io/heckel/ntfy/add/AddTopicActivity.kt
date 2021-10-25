@@ -21,7 +21,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.heckel.ntfy.R
+import io.heckel.ntfy.R
 import com.google.android.material.textfield.TextInputEditText
 
 const val TOPIC_URL = "url"

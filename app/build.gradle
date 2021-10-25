@@ -22,7 +22,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.example.recyclersample"
+        applicationId "io.heckel.ntfy"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -45,7 +45,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
 }
 
 dependencies {
@@ -54,6 +53,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
+    implementation 'com.google.code.gson:gson:2.8.8'
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"

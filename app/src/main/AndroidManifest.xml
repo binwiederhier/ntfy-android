@@ -16,7 +16,7 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.heckel.ntfy">
+    package="io.heckel.ntfy">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 

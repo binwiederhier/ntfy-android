@@ -21,7 +21,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.heckel.ntfy.R
+import io.heckel.ntfy.R
 import io.heckel.ntfy.list.TOPIC_ID
 
 class TopicDetailActivity : AppCompatActivity() {
