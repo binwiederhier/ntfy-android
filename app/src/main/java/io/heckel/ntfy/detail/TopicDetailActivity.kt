@@ -22,11 +22,13 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import io.heckel.ntfy.R
-import io.heckel.ntfy.list.TOPIC_ID
+import io.heckel.ntfy.TOPIC_ID
+import io.heckel.ntfy.list.TopicsViewModel
+import io.heckel.ntfy.list.TopicsViewModelFactory
 
 class TopicDetailActivity : AppCompatActivity() {
-    private val topicDetailViewModel by viewModels<TopicDetailViewModel> {
-        TopicDetailViewModelFactory(this)
+    private val topicDetailViewModel by viewModels<TopicsViewModel> {
+        TopicsViewModelFactory(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +49,12 @@ class TopicDetailActivity : AppCompatActivity() {
         /* If currentTopicId is not null, get corresponding topic and set name, image and
         description */
         currentTopicId?.let {
-            val currentTopic = topicDetailViewModel.getTopicForId(it)
+            val currentTopic = topicDetailViewModel.get(it)
             topicUrl.text = currentTopic?.url
 
             removeTopicButton.setOnClickListener {
                 if (currentTopic != null) {
-                    topicDetailViewModel.removeTopic(currentTopic)
+                    topicDetailViewModel.remove(currentTopic)
                 }
                 finish()
             }

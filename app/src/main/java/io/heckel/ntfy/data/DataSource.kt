@@ -25,7 +25,7 @@ class DataSource(resources: Resources) {
     private val topicsLiveData: MutableLiveData<List<Topic>> = MutableLiveData(mutableListOf())
 
     /* Adds topic to liveData and posts value. */
-    fun addTopic(topic: Topic) {
+    fun add(topic: Topic) {
         val currentList = topicsLiveData.value
         if (currentList == null) {
             topicsLiveData.postValue(listOf(topic))
@@ -37,7 +37,7 @@ class DataSource(resources: Resources) {
     }
 
     /* Removes topic from liveData and posts value. */
-    fun removeTopic(topic: Topic) {
+    fun remove(topic: Topic) {
         val currentList = topicsLiveData.value
         if (currentList != null) {
             val updatedList = currentList.toMutableList()
@@ -47,7 +47,7 @@ class DataSource(resources: Resources) {
     }
 
     /* Returns topic given an ID. */
-    fun getTopicForId(id: Long): Topic? {
+    fun get(id: Long): Topic? {
         topicsLiveData.value?.let { topics ->
             return topics.firstOrNull{ it.id == id}
         }
@@ -59,12 +59,12 @@ class DataSource(resources: Resources) {
     }
 
     companion object {
-        private var INSTANCE: DataSource? = null
+        private var instance: DataSource? = null
 
         fun getDataSource(resources: Resources): DataSource {
             return synchronized(DataSource::class) {
-                val newInstance = INSTANCE ?: DataSource(resources)
-                INSTANCE = newInstance
+                val newInstance = instance ?: DataSource(resources)
+                instance = newInstance
                 newInstance
             }
         }

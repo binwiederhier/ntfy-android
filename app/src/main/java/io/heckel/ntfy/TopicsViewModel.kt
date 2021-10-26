@@ -23,19 +23,27 @@ import androidx.lifecycle.ViewModelProvider
 import io.heckel.ntfy.data.DataSource
 import io.heckel.ntfy.data.Topic
 
-class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
+class TopicsViewModel(val dataSource: DataSource) : ViewModel() {
     val topics: LiveData<List<Topic>> = dataSource.getTopicList()
 
     fun add(topic: Topic) {
-        dataSource.addTopic(topic)
+        dataSource.add(topic)
+    }
+
+    fun get(id: Long) : Topic? {
+        return dataSource.get(id)
+    }
+
+    fun remove(topic: Topic) {
+        dataSource.remove(topic)
     }
 }
 
-class TopicsListViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class TopicsViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TopicsListViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(TopicsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TopicsListViewModel(
+            return TopicsViewModel(
                 dataSource = DataSource.getDataSource(context.resources)
             ) as T
         }

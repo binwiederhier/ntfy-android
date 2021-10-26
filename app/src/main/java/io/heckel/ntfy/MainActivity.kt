@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.heckel.ntfy.list
+package io.heckel.ntfy
 
 import android.app.Activity
 import android.app.NotificationChannel
@@ -33,13 +33,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
-import io.heckel.ntfy.R
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.add.TOPIC_URL
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.TopicDetailActivity
+import io.heckel.ntfy.list.TopicsAdapter
+import io.heckel.ntfy.list.TopicsViewModelFactory
+import io.heckel.ntfy.list.TopicsViewModel
 import kotlinx.coroutines.*
-import java.io.BufferedReader
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -47,12 +48,12 @@ import kotlin.random.Random
 
 const val TOPIC_ID = "topic id"
 
-class TopicsListActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     private val gson = GsonBuilder().create()
     private val jobs = mutableMapOf<Long, Job>()
     private val newTopicActivityRequestCode = 1
-    private val topicsListViewModel by viewModels<TopicsListViewModel> {
-        TopicsListViewModelFactory(this)
+    private val topicsListViewModel by viewModels<TopicsViewModel> {
+        TopicsViewModelFactory(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
