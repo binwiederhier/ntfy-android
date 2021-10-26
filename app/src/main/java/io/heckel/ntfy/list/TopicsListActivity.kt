@@ -28,9 +28,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import io.heckel.ntfy.R
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.add.TOPIC_URL
@@ -38,15 +40,17 @@ import io.heckel.ntfy.data.Event
 import io.heckel.ntfy.data.NtfyApi
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.TopicDetailActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.random.Random
 
 const val TOPIC_ID = "topic id"
 
 class TopicsListActivity : AppCompatActivity() {
     private val api = NtfyApi(this)
+    private val jobs = mutableMapOf<Long, Job>()
     private val newTopicActivityRequestCode = 1
     private val topicsListViewModel by viewModels<TopicsListViewModel> {
         TopicsListViewModelFactory(this)
@@ -74,32 +78,6 @@ class TopicsListActivity : AppCompatActivity() {
         createNotificationChannel()
     }
 
-    private fun startFlow(url: String) {
-        api.createEventsFlow(url).asLiveData(Dispatchers.IO).observe(this) { event ->
-            this.lifecycleScope.launch(Dispatchers.Main) {
-                withContext(Dispatchers.IO) {
-                    handleEvent(event)
-                }
-            }
-        }
-    }
-    private fun handleEvent(event: Event) {
-        if (event.data.isJsonNull || !event.data.has("message")) {
-            return
-        }
-        println("PHIL EVENT: " + event.data)
-        val channelId = getString(R.string.notification_channel_id)
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle("ntfy")
-            .setContentText(event.data.get("message").asString)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        with(NotificationManagerCompat.from(this)) {
-            notify(Random.nextInt(), notification)
-        }
-    }
-
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */
     private fun adapterOnClick(topic: Topic) {
         val intent = Intent(this, TopicDetailActivity()::class.java)
@@ -119,9 +97,12 @@ class TopicsListActivity : AppCompatActivity() {
         /* Inserts topic into viewModel. */
         if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
+                val topicId = Random.nextLong()
                 val topicUrl = data.getStringExtra(TOPIC_URL) ?: return
-                startFlow(topicUrl)
-                topicsListViewModel.insertTopic(topicUrl)
+                val topic = Topic(topicId, topicUrl)
+
+                jobs[topicId] = startListening(topicUrl)
+                topicsListViewModel.add(topic)
             }
         }
     }
@@ -144,4 +125,70 @@ class TopicsListActivity : AppCompatActivity() {
         }
     }
 
+    private val gson = GsonBuilder().create()
+
+    fun startListening(url: String): Job {
+        return this.lifecycleScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                println("connecting ...")
+                val conn = (URL(url).openConnection() as HttpURLConnection).also {
+                    it.doInput = true
+                }
+                val input = conn.inputStream.bufferedReader()
+                try {
+                    conn.connect()
+                    var event = Event()
+                    while (isActive) {
+                        val line = input.readLine()
+                        println("PHIL: " + line)
+                        when {
+                            line == null -> {
+                                println("line is null")
+                                break
+                            }
+                            line.startsWith("event:") -> {
+                                event = event.copy(name = line.substring(6).trim())
+                            }
+                            line.startsWith("data:") -> {
+                                val data = line.substring(5).trim()
+                                try {
+                                    event = event.copy(data = gson.fromJson(data, JsonObject::class.java))
+                                } catch (e: JsonSyntaxException) {
+                                    // Nothing
+                                }
+                            }
+                            line.isEmpty() -> {
+                                handleEvent(event)
+                                event = Event()
+                            }
+                        }
+                    }
+                } catch (e: IOException) {
+                    println("PHIL: " + e.message)
+                } finally {
+                    conn.disconnect()
+                    input.close()
+                }
+                println("connection died")
+                delay(5000)
+            }
+        }
+    }
+
+    private fun handleEvent(event: Event) {
+        if (event.data.isJsonNull || !event.data.has("message")) {
+            return
+        }
+        println("PHIL EVENT: " + event.data)
+        val channelId = getString(R.string.notification_channel_id)
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ntfy)
+            .setContentTitle("ntfy")
+            .setContentText(event.data.get("message").asString)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        with(NotificationManagerCompat.from(this)) {
+            notify(Random.nextInt(), notification)
+        }
+    }
 }

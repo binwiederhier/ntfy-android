@@ -27,12 +27,8 @@ import kotlin.random.Random
 class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
     val topics: LiveData<List<Topic>> = dataSource.getTopicList()
 
-    fun insertTopic(topicUrl: String) {
-        val newTopic = Topic(
-            Random.nextLong(),
-            topicUrl
-        )
-        dataSource.addTopic(newTopic)
+    fun add(topic: Topic) {
+        dataSource.addTopic(topic)
     }
 }
 
