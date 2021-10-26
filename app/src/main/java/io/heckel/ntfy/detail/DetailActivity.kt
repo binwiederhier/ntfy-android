@@ -27,7 +27,7 @@ import io.heckel.ntfy.list.TopicsViewModel
 import io.heckel.ntfy.list.TopicsViewModelFactory
 
 class DetailActivity : AppCompatActivity() {
-    private val topicDetailViewModel by viewModels<TopicsViewModel> {
+    private val topicsViewModel by viewModels<TopicsViewModel> {
         TopicsViewModelFactory(this)
     }
 
@@ -49,12 +49,12 @@ class DetailActivity : AppCompatActivity() {
         /* If currentTopicId is not null, get corresponding topic and set name, image and
         description */
         currentTopicId?.let {
-            val currentTopic = topicDetailViewModel.get(it)
+            val currentTopic = topicsViewModel.get(it)
             topicUrl.text = currentTopic?.url
 
             removeTopicButton.setOnClickListener {
                 if (currentTopic != null) {
-                    topicDetailViewModel.remove(currentTopic)
+                    topicsViewModel.remove(currentTopic)
                 }
                 finish()
             }

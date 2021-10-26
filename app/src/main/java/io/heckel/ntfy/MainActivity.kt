@@ -28,31 +28,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.google.gson.JsonSyntaxException
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.DetailActivity
-import io.heckel.ntfy.list.TopicsAdapter
-import io.heckel.ntfy.list.TopicsViewModel
-import io.heckel.ntfy.list.TopicsViewModelFactory
-import kotlinx.coroutines.*
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
+import io.heckel.ntfy.list.*
 import kotlin.random.Random
 
 const val TOPIC_ID = "topic id"
 const val TOPIC_URL = "url"
 
 class MainActivity : AppCompatActivity() {
-    private val gson = GsonBuilder().create()
-    private val jobs = mutableMapOf<Long, Job>()
     private val newTopicActivityRequestCode = 1
-    private val topicsListViewModel by viewModels<TopicsViewModel> {
+    private val topicsViewModel by viewModels<TopicsViewModel> {
         TopicsViewModelFactory(this)
     }
 
@@ -60,26 +48,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = TopicsAdapter { topic -> adapterOnClick(topic) }
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        recyclerView.adapter = adapter
-
-        topicsListViewModel.topics.observe(this) {
-            it?.let {
-                adapter.submitList(it as MutableList<Topic>)
-            }
-        }
-
+        // Floating action button ("+")
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener {
             fabOnClick()
         }
 
+        // Update main list based on topicsViewModel (& its datasource/livedata)
+        val adapter = TopicsAdapter { topic -> topicOnClick(topic) }
+        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
+        recyclerView.adapter = adapter
+
+        topicsViewModel.list().observe(this) {
+            it?.let {
+                adapter.submitList(it as MutableList<Topic>)
+            }
+        }
+
+        // Set up notification channel
         createNotificationChannel()
+        topicsViewModel.setNotificationListener { n -> displayNotification(n) }
     }
 
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */
-    private fun adapterOnClick(topic: Topic) {
+    private fun topicOnClick(topic: Topic) {
         val intent = Intent(this, DetailActivity()::class.java)
         intent.putExtra(TOPIC_ID, topic.id)
         startActivity(intent)
@@ -94,61 +86,23 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
 
-        /* Inserts topic into viewModel. */
         if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
                 val topicId = Random.nextLong()
                 val topicUrl = data.getStringExtra(TOPIC_URL) ?: return
                 val topic = Topic(topicId, topicUrl)
 
-                jobs[topicId] = subscribeTopic(topicUrl)
-                topicsListViewModel.add(topic)
+                topicsViewModel.add(topic)
             }
         }
     }
 
-    private fun subscribeTopic(url: String): Job {
-        return this.lifecycleScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                openURL(this, url)
-                delay(5000) // TODO exponential back-off
-            }
-        }
-    }
-
-    private fun openURL(scope: CoroutineScope, url: String) {
-        println("Connecting to $url ...")
-        val conn = (URL(url).openConnection() as HttpURLConnection).also {
-            it.doInput = true
-        }
-        try {
-            val input = conn.inputStream.bufferedReader()
-            while (scope.isActive) {
-                val line = input.readLine() ?: break // Exit if null
-                try {
-                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Exit if null
-                    displayNotification(json)
-                } catch (e: JsonSyntaxException) {
-                    // Ignore invalid JSON
-                }
-            }
-        } catch (e: IOException) {
-            println("PHIL: " + e.message)
-        } finally {
-            conn.disconnect()
-        }
-        println("Connection terminated: $url")
-    }
-
-    private fun displayNotification(json: JsonObject) {
-        if (json.isJsonNull || !json.has("message")) {
-            return
-        }
+    private fun displayNotification(n: Notification) {
         val channelId = getString(R.string.notification_channel_id)
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle("ntfy")
-            .setContentText(json.get("message").asString)
+            .setContentTitle(n.topic)
+            .setContentText(n.message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
         with(NotificationManagerCompat.from(this)) {

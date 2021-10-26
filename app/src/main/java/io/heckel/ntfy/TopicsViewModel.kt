@@ -17,25 +17,89 @@
 package io.heckel.ntfy.list
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import io.heckel.ntfy.data.DataSource
 import io.heckel.ntfy.data.Topic
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
-class TopicsViewModel(val dataSource: DataSource) : ViewModel() {
-    val topics: LiveData<List<Topic>> = dataSource.getTopicList()
+data class Notification(val topic: String, val message: String)
+typealias NotificationListener = (notification: Notification) -> Unit
+
+class TopicsViewModel(val datasource: DataSource) : ViewModel() {
+    private val gson = GsonBuilder().create()
+    private val jobs = mutableMapOf<Long, Job>()
+    private var notificationListener: NotificationListener? = null;
 
     fun add(topic: Topic) {
-        dataSource.add(topic)
+        println("Adding topic $topic $this")
+        datasource.add(topic)
+        jobs[topic.id] = subscribeTopic(topic.url)
     }
 
     fun get(id: Long) : Topic? {
-        return dataSource.get(id)
+        return datasource.get(id)
+    }
+
+    fun list(): LiveData<List<Topic>> {
+        return datasource.list()
     }
 
     fun remove(topic: Topic) {
-        dataSource.remove(topic)
+        println("Removing topic $topic $this")
+        jobs[topic.id]?.cancel()
+        println("${jobs[topic.id]}")
+
+        jobs.remove(topic.id)?.cancel() // Cancel and remove
+        println("${jobs[topic.id]}")
+        datasource.remove(topic)
+    }
+
+    fun setNotificationListener(listener: NotificationListener) {
+        notificationListener = listener
+    }
+
+    private fun subscribeTopic(url: String): Job {
+        return viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                openURL(this, url)
+                delay(5000) // TODO exponential back-off
+            }
+        }
+    }
+
+    private fun openURL(scope: CoroutineScope, url: String) {
+        println("Connecting to $url ...")
+        val conn = (URL(url).openConnection() as HttpURLConnection).also {
+            it.doInput = true
+        }
+        try {
+            val input = conn.inputStream.bufferedReader()
+            while (scope.isActive) {
+                val line = input.readLine() ?: break // Exit if null
+                try {
+                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Exit if null
+                    if (!json.isJsonNull && json.has("message")) {
+                        val message = json.get("message").asString
+                        notificationListener?.let { it(Notification(url, message)) }
+                    }
+                } catch (e: JsonSyntaxException) {
+                    // Ignore invalid JSON
+                }
+            }
+        } catch (e: IOException) {
+            println("PHIL: " + e.message)
+        } finally {
+            conn.disconnect()
+        }
+        println("Connection terminated: $url")
     }
 }
 
@@ -44,7 +108,7 @@ class TopicsViewModelFactory(private val context: Context) : ViewModelProvider.F
         if (modelClass.isAssignableFrom(TopicsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return TopicsViewModel(
-                dataSource = DataSource.getDataSource(context.resources)
+                datasource = DataSource.getDataSource(context.resources)
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

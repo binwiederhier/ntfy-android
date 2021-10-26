@@ -54,7 +54,7 @@ class DataSource(resources: Resources) {
         return null
     }
 
-    fun getTopicList(): LiveData<List<Topic>> {
+    fun list(): LiveData<List<Topic>> {
         return topicsLiveData
     }
 
