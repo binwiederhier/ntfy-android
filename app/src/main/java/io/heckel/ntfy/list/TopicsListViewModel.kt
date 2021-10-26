@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.heckel.ntfy.data.DataSource
 import io.heckel.ntfy.data.Topic
-import kotlin.random.Random
 
 class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
     val topics: LiveData<List<Topic>> = dataSource.getTopicList()

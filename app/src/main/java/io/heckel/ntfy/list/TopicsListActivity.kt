@@ -36,11 +36,10 @@ import com.google.gson.JsonSyntaxException
 import io.heckel.ntfy.R
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.add.TOPIC_URL
-import io.heckel.ntfy.data.Event
-import io.heckel.ntfy.data.NtfyApi
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.TopicDetailActivity
 import kotlinx.coroutines.*
+import java.io.BufferedReader
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -49,7 +48,7 @@ import kotlin.random.Random
 const val TOPIC_ID = "topic id"
 
 class TopicsListActivity : AppCompatActivity() {
-    private val api = NtfyApi(this)
+    private val gson = GsonBuilder().create()
     private val jobs = mutableMapOf<Long, Job>()
     private val newTopicActivityRequestCode = 1
     private val topicsListViewModel by viewModels<TopicsListViewModel> {
@@ -101,9 +100,57 @@ class TopicsListActivity : AppCompatActivity() {
                 val topicUrl = data.getStringExtra(TOPIC_URL) ?: return
                 val topic = Topic(topicId, topicUrl)
 
-                jobs[topicId] = startListening(topicUrl)
+                jobs[topicId] = subscribeTopic(topicUrl)
                 topicsListViewModel.add(topic)
             }
+        }
+    }
+
+    private fun subscribeTopic(url: String): Job {
+        return this.lifecycleScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                openURL(this, url)
+                delay(5000) // TODO exponential back-off
+            }
+        }
+    }
+
+    private fun openURL(scope: CoroutineScope, url: String) {
+        println("Connecting to $url ...")
+        val conn = (URL(url).openConnection() as HttpURLConnection).also {
+            it.doInput = true
+        }
+        try {
+            val input = conn.inputStream.bufferedReader()
+            while (scope.isActive) {
+                val line = input.readLine() ?: break // Break if null!
+                try {
+                    displayNotification(gson.fromJson(line, JsonObject::class.java))
+                } catch (e: JsonSyntaxException) {
+                    // Ignore invalid JSON
+                }
+            }
+        } catch (e: IOException) {
+            println("PHIL: " + e.message)
+        } finally {
+            conn.disconnect()
+        }
+        println("Connection terminated: $url")
+    }
+
+    private fun displayNotification(json: JsonObject) {
+        if (json.isJsonNull || !json.has("message")) {
+            return
+        }
+        val channelId = getString(R.string.notification_channel_id)
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ntfy)
+            .setContentTitle("ntfy")
+            .setContentText(json.get("message").asString)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        with(NotificationManagerCompat.from(this)) {
+            notify(Random.nextInt(), notification)
         }
     }
 
@@ -122,73 +169,6 @@ class TopicsListActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private val gson = GsonBuilder().create()
-
-    fun startListening(url: String): Job {
-        return this.lifecycleScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                println("connecting ...")
-                val conn = (URL(url).openConnection() as HttpURLConnection).also {
-                    it.doInput = true
-                }
-                val input = conn.inputStream.bufferedReader()
-                try {
-                    conn.connect()
-                    var event = Event()
-                    while (isActive) {
-                        val line = input.readLine()
-                        println("PHIL: " + line)
-                        when {
-                            line == null -> {
-                                println("line is null")
-                                break
-                            }
-                            line.startsWith("event:") -> {
-                                event = event.copy(name = line.substring(6).trim())
-                            }
-                            line.startsWith("data:") -> {
-                                val data = line.substring(5).trim()
-                                try {
-                                    event = event.copy(data = gson.fromJson(data, JsonObject::class.java))
-                                } catch (e: JsonSyntaxException) {
-                                    // Nothing
-                                }
-                            }
-                            line.isEmpty() -> {
-                                handleEvent(event)
-                                event = Event()
-                            }
-                        }
-                    }
-                } catch (e: IOException) {
-                    println("PHIL: " + e.message)
-                } finally {
-                    conn.disconnect()
-                    input.close()
-                }
-                println("connection died")
-                delay(5000)
-            }
-        }
-    }
-
-    private fun handleEvent(event: Event) {
-        if (event.data.isJsonNull || !event.data.has("message")) {
-            return
-        }
-        println("PHIL EVENT: " + event.data)
-        val channelId = getString(R.string.notification_channel_id)
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle("ntfy")
-            .setContentText(event.data.get("message").asString)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        with(NotificationManagerCompat.from(this)) {
-            notify(Random.nextInt(), notification)
         }
     }
 }
