@@ -26,11 +26,15 @@ class NtfyApi(context: Context) {
 
     fun getEventsFlow(): Flow<Event> = flow {
         coroutineScope {
-            val conn = getStreamConnection("https://ntfy.sh/_phil")
+            println("111111111111")
+
+            val conn = getStreamConnection("https://ntfy.sh/_phil/sse")
+            println("2222222222222")
             val input = conn.inputStream.bufferedReader()
             try {
                 conn.connect()
                 var event = Event()
+                println("CCCCCCCCCCCCCCc")
                 while (isActive) {
                     val line = input.readLine()
                     println("PHIL: " + line)

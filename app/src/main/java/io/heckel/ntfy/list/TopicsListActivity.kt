@@ -17,12 +17,17 @@
 package io.heckel.ntfy.list
 
 import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +40,7 @@ import io.heckel.ntfy.detail.TopicDetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 const val TOPIC_ID = "topic id"
 
@@ -64,18 +70,32 @@ class TopicsListActivity : AppCompatActivity() {
             fabOnClick()
         }
 
-        val self = this
-        api.getEventsFlow().asLiveData(Dispatchers.IO).observe(this, Observer { event ->
-            // Get the Activity's lifecycleScope and launch
+        createNotificationChannel()
+
+        api.getEventsFlow().asLiveData(Dispatchers.IO).observe(this) { event ->
             this.lifecycleScope.launch(Dispatchers.Main) {
-                // run the code again in IO context
                 withContext(Dispatchers.IO) {
-                    println(event.data)
-                    //Toast.makeText(self, event.data, Toast.LENGTH_SHORT)
+                    handleEvent(event)
                 }
             }
         }
-        )
+    }
+
+    private fun handleEvent(event: NtfyApi.Event) {
+        if (event.data.isJsonNull || !event.data.has("message")) {
+            return
+        }
+        println("PHIL EVENT: " + event.data)
+        val channelId = getString(R.string.notification_channel_id)
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ntfy)
+            .setContentTitle("ntfy")
+            .setContentText(event.data.get("message").asString)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+        with(NotificationManagerCompat.from(this)) {
+            notify(Random.nextInt(), notification)
+        }
     }
 
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */
@@ -102,4 +122,23 @@ class TopicsListActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = getString(R.string.notification_channel_id)
+            val name = getString(R.string.notification_channel_name)
+            val descriptionText = getString(R.string.notification_channel_name)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
 }

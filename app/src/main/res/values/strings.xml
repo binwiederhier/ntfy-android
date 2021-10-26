@@ -24,4 +24,6 @@
     <string name="fab_content_description">fab</string>
     <string name="remove_topic">Unsubscribe</string>
 
+    <string name="notification_channel_name">Ntfy</string>
+    <string name="notification_channel_id">ntfy</string>
 </resources>
