@@ -17,6 +17,7 @@
 package io.heckel.ntfy.list
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.heckel.ntfy.data.DataSource
@@ -24,26 +25,18 @@ import io.heckel.ntfy.data.Topic
 import kotlin.random.Random
 
 class TopicsListViewModel(val dataSource: DataSource) : ViewModel() {
+    val topics: LiveData<List<Topic>> = dataSource.getTopicList()
 
-    val topicsLiveData = dataSource.getTopicList()
-
-    /* If the name and description are present, create new Topic and add it to the datasource */
-    fun insertTopic(topicUrl: String?) {
-        if (topicUrl == null) {
-            return
-        }
-
+    fun insertTopic(topicUrl: String) {
         val newTopic = Topic(
             Random.nextLong(),
             topicUrl
         )
-
         dataSource.addTopic(newTopic)
     }
 }
 
 class TopicsListViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
-
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TopicsListViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.add.TOPIC_URL
+import io.heckel.ntfy.data.Event
 import io.heckel.ntfy.data.NtfyApi
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.TopicDetailActivity
@@ -59,7 +60,7 @@ class TopicsListActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = adapter
 
-        topicsListViewModel.topicsLiveData.observe(this) {
+        topicsListViewModel.topics.observe(this) {
             it?.let {
                 adapter.submitList(it as MutableList<Topic>)
             }
@@ -71,8 +72,10 @@ class TopicsListActivity : AppCompatActivity() {
         }
 
         createNotificationChannel()
+    }
 
-        api.getEventsFlow().asLiveData(Dispatchers.IO).observe(this) { event ->
+    private fun startFlow(url: String) {
+        api.createEventsFlow(url).asLiveData(Dispatchers.IO).observe(this) { event ->
             this.lifecycleScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.IO) {
                     handleEvent(event)
@@ -80,8 +83,7 @@ class TopicsListActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun handleEvent(event: NtfyApi.Event) {
+    private fun handleEvent(event: Event) {
         if (event.data.isJsonNull || !event.data.has("message")) {
             return
         }
@@ -117,8 +119,9 @@ class TopicsListActivity : AppCompatActivity() {
         /* Inserts topic into viewModel. */
         if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
-                val topicName = data.getStringExtra(TOPIC_URL)
-                topicsListViewModel.insertTopic(topicName)
+                val topicUrl = data.getStringExtra(TOPIC_URL) ?: return
+                startFlow(topicUrl)
+                topicsListViewModel.insertTopic(topicUrl)
             }
         }
     }

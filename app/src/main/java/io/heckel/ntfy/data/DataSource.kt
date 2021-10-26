@@ -22,8 +22,7 @@ import androidx.lifecycle.MutableLiveData
 
 /* Handles operations on topicsLiveData and holds details about it. */
 class DataSource(resources: Resources) {
-    private val initialTopicList: List<Topic> = mutableListOf()
-    private val topicsLiveData = MutableLiveData(initialTopicList)
+    private val topicsLiveData: MutableLiveData<List<Topic>> = MutableLiveData(mutableListOf())
 
     /* Adds topic to liveData and posts value. */
     fun addTopic(topic: Topic) {
