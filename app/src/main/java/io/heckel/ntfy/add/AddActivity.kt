@@ -23,8 +23,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
-
-const val TOPIC_URL = "url"
+import io.heckel.ntfy.TOPIC_URL
 
 class AddTopicActivity : AppCompatActivity() {
     private lateinit var addTopicUrl: TextInputEditText

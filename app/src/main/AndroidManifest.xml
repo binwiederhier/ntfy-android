@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name="io.heckel.ntfy.add.AddTopicActivity" />
-        <activity android:name="io.heckel.ntfy.detail.TopicDetailActivity" />
+        <activity android:name="io.heckel.ntfy.detail.DetailActivity" />
     </application>
 
 </manifest>

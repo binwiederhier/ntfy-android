@@ -34,12 +34,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import io.heckel.ntfy.add.AddTopicActivity
-import io.heckel.ntfy.add.TOPIC_URL
 import io.heckel.ntfy.data.Topic
-import io.heckel.ntfy.detail.TopicDetailActivity
+import io.heckel.ntfy.detail.DetailActivity
 import io.heckel.ntfy.list.TopicsAdapter
-import io.heckel.ntfy.list.TopicsViewModelFactory
 import io.heckel.ntfy.list.TopicsViewModel
+import io.heckel.ntfy.list.TopicsViewModelFactory
 import kotlinx.coroutines.*
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -47,6 +46,7 @@ import java.net.URL
 import kotlin.random.Random
 
 const val TOPIC_ID = "topic id"
+const val TOPIC_URL = "url"
 
 class MainActivity : AppCompatActivity() {
     private val gson = GsonBuilder().create()
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */
     private fun adapterOnClick(topic: Topic) {
-        val intent = Intent(this, TopicDetailActivity()::class.java)
+        val intent = Intent(this, DetailActivity()::class.java)
         intent.putExtra(TOPIC_ID, topic.id)
         startActivity(intent)
     }
@@ -124,9 +124,10 @@ class MainActivity : AppCompatActivity() {
         try {
             val input = conn.inputStream.bufferedReader()
             while (scope.isActive) {
-                val line = input.readLine() ?: break // Break if null!
+                val line = input.readLine() ?: break // Exit if null
                 try {
-                    displayNotification(gson.fromJson(line, JsonObject::class.java))
+                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Exit if null
+                    displayNotification(json)
                 } catch (e: JsonSyntaxException) {
                     // Ignore invalid JSON
                 }

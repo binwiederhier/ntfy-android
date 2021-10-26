@@ -26,7 +26,7 @@ import io.heckel.ntfy.TOPIC_ID
 import io.heckel.ntfy.list.TopicsViewModel
 import io.heckel.ntfy.list.TopicsViewModelFactory
 
-class TopicDetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
     private val topicDetailViewModel by viewModels<TopicsViewModel> {
         TopicsViewModelFactory(this)
     }
