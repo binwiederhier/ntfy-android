@@ -14,7 +14,10 @@ class Repository {
         }
     }
 
-    fun update(subscription: Subscription) {
+    fun update(subscription: Subscription?) {
+        if (subscription == null) {
+            return
+        }
         synchronized(subscriptions) {
             val index = subscriptions.indexOfFirst { it.id == subscription.id } // Find index by Topic ID
             if (index == -1) return

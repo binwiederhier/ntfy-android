@@ -17,13 +17,8 @@ data class Notification(
     val message: String
 )
 
-interface NotificationListener {
-    fun onNotification(subscriptionId: Long, notification: Notification)
-}
-
-interface ConnectionListener : NotificationListener {
-    fun onStatusChanged(subcriptionId: Long, status: Status)
-}
+typealias NotificationListener = (notification: Notification) -> Unit
 
 fun topicUrl(s: Subscription) = "${s.baseUrl}/${s.topic}"
+fun topicJsonUrl(s: Subscription) = "${s.baseUrl}/${s.topic}/json"
 fun topicShortUrl(s: Subscription) = topicUrl(s).replace("http://", "").replace("https://", "")

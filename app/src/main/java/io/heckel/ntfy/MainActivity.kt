@@ -18,13 +18,13 @@ import io.heckel.ntfy.data.*
 import io.heckel.ntfy.detail.DetailActivity
 import kotlin.random.Random
 
-const val TOPIC_ID = "topic_id"
+const val SUBSCRIPTION_ID = "topic_id"
 const val TOPIC_NAME = "topic_name"
-const val TOPIC_BASE_URL = "base_url"
+const val SERVICE_BASE_URL = "base_url"
 
 class MainActivity : AppCompatActivity() {
-    private val newTopicActivityRequestCode = 1
-    private val topicsViewModel by viewModels<SubscriptionViewModel> {
+    private val newSubscriptionActivityRequestCode = 1
+    private val subscriptionViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory()
     }
 
@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Update main list based on topicsViewModel (& its datasource/livedata)
-        val adapter = TopicsAdapter { topic -> topicOnClick(topic) }
+        val adapter = TopicsAdapter { topic -> subscriptionOnClick(topic) }
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.adapter = adapter
 
-        topicsViewModel.list().observe(this) {
+        subscriptionViewModel.list().observe(this) {
             it?.let {
                 println("new data arrived: $it")
                 adapter.submitList(it as MutableList<Subscription>)
@@ -52,36 +52,31 @@ class MainActivity : AppCompatActivity() {
 
         // Set up notification channel
         createNotificationChannel()
-        topicsViewModel.setListener(object : NotificationListener {
-            override fun onNotification(subscriptionId: Long, notification: Notification) {
-                displayNotification(notification)
-            }
-        })
+        subscriptionViewModel.setListener { n -> displayNotification(n) }
     }
 
-    /* Opens TopicDetailActivity when RecyclerView item is clicked. */
-    private fun topicOnClick(topic: Subscription) {
+    /* Opens detail view when list item is clicked. */
+    private fun subscriptionOnClick(subscription: Subscription) {
         val intent = Intent(this, DetailActivity()::class.java)
-        intent.putExtra(TOPIC_ID, topic.id)
+        intent.putExtra(SUBSCRIPTION_ID, subscription.id)
         startActivity(intent)
     }
 
     /* Adds topic to topicList when FAB is clicked. */
     private fun fabOnClick() {
         val intent = Intent(this, AddTopicActivity::class.java)
-        startActivityForResult(intent, newTopicActivityRequestCode)
+        startActivityForResult(intent, newSubscriptionActivityRequestCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
 
-        if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
+        if (requestCode == newSubscriptionActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
                 val name = data.getStringExtra(TOPIC_NAME) ?: return
-                val baseUrl = data.getStringExtra(TOPIC_BASE_URL) ?: return
-                val topic = Subscription(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
-
-                topicsViewModel.add(topic)
+                val baseUrl = data.getStringExtra(SERVICE_BASE_URL) ?: return
+                val subscription = Subscription(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
+                subscriptionViewModel.add(subscription)
             }
         }
     }

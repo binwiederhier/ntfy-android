@@ -7,7 +7,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
-import io.heckel.ntfy.TOPIC_BASE_URL
+import io.heckel.ntfy.SERVICE_BASE_URL
 import io.heckel.ntfy.TOPIC_NAME
 
 class AddTopicActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class AddTopicActivity : AppCompatActivity() {
             setResult(Activity.RESULT_CANCELED, resultIntent)
         } else {
             resultIntent.putExtra(TOPIC_NAME, topicName.text.toString())
-            resultIntent.putExtra(TOPIC_BASE_URL, baseUrl.text.toString())
+            resultIntent.putExtra(SERVICE_BASE_URL, baseUrl.text.toString())
             setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()

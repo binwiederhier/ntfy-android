@@ -2,80 +2,88 @@ package io.heckel.ntfy.data
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.*
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 const val READ_TIMEOUT = 60_000 // Keep alive every 30s assumed
 
-class ConnectionManager {
+class ConnectionManager(private val repository: Repository) {
     private val jobs = mutableMapOf<Long, Job>()
     private val gson = GsonBuilder().create()
-    private var listener: ConnectionListener? = null;
+    private var listener: NotificationListener? = null;
 
-    fun start(subscription: Subscription, scope: CoroutineScope) {
-        jobs[subscription.id] = launchConnection(subscription, scope)
+    fun start(s: Subscription) {
+        jobs[s.id] = launchConnection(s.id, topicJsonUrl(s))
     }
 
-    fun stop(subscription: Subscription) {
-        jobs.remove(subscription.id)?.cancel() // Cancel coroutine and remove
+    fun stop(s: Subscription) {
+        jobs.remove(s.id)?.cancel() // Cancel coroutine and remove
     }
 
-    fun setListener(listener: ConnectionListener) {
-        this.listener = listener
+    fun setListener(l: NotificationListener) {
+        this.listener = l
     }
 
-    private fun launchConnection(subscription: Subscription, scope: CoroutineScope): Job {
-        return scope.launch(Dispatchers.IO) {
+    private fun launchConnection(subscriptionId: Long, topicUrl: String): Job {
+        return GlobalScope.launch(Dispatchers.IO) {
             while (isActive) {
-                openConnection(this, subscription)
+                openConnection(subscriptionId, topicUrl)
                 delay(5000) // TODO exponential back-off
             }
         }
     }
 
-    private fun openConnection(scope: CoroutineScope, subscription: Subscription) {
-        val url = "${subscription.baseUrl}/${subscription.topic}/json"
-        println("Connecting to $url ...")
-        val conn = (URL(url).openConnection() as HttpURLConnection).also {
+    private fun openConnection(subscriptionId: Long, topicUrl: String) {
+        println("Connecting to $topicUrl ...")
+        val conn = (URL(topicUrl).openConnection() as HttpURLConnection).also {
             it.doInput = true
             it.readTimeout = READ_TIMEOUT
         }
         try {
-            listener?.onStatusChanged(subscription.id, Status.CONNECTED)
+            updateStatus(subscriptionId, Status.CONNECTED)
             val input = conn.inputStream.bufferedReader()
-            while (scope.isActive) {
+            while (GlobalScope.isActive) {
                 val line = input.readLine() ?: break // Break if EOF is reached, i.e. readLine is null
-                if (!scope.isActive) {
+                if (!GlobalScope.isActive) {
                     break // Break if scope is not active anymore; readLine blocks for a while, so we want to be sure
                 }
-                try {
-                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Break on unexpected line
-                    if (!json.isJsonNull && !json.has("event") && json.has("message")) {
-                        val message = json.get("message").asString
-                        listener?.onNotification(subscription.id, Notification(subscription, message))
-                    }
-                } catch (e: JsonSyntaxException) {
-                    break // Break on unexpected line
+                val json = gson.fromJson(line, JsonObject::class.java) ?: break // Break on unexpected line
+                val validNotification = !json.isJsonNull
+                        && !json.has("event") // No keepalive or open messages
+                        && json.has("message")
+                if (validNotification) {
+                    notify(subscriptionId, json.get("message").asString)
                 }
             }
-        } catch (e: IOException) {
-            println("Connection error: " + e.message)
+        } catch (e: Exception) {
+            println("Connection error: " + e)
         } finally {
             conn.disconnect()
         }
-        listener?.onStatusChanged(subscription.id, Status.CONNECTING)
-        println("Connection terminated: $url")
+        updateStatus(subscriptionId, Status.CONNECTING)
+        println("Connection terminated: $topicUrl")
+    }
+
+    private fun updateStatus(subscriptionId: Long, status: Status) {
+        val subscription = repository.get(subscriptionId)
+        repository.update(subscription?.copy(status = status))
+    }
+
+    private fun notify(subscriptionId: Long, message: String) {
+        val subscription = repository.get(subscriptionId)
+        if (subscription != null) {
+            listener?.let { it(Notification(subscription, message)) }
+            repository.update(subscription.copy(messages = subscription.messages + 1))
+        }
     }
 
     companion object {
         private var instance: ConnectionManager? = null
 
-        fun getInstance(): ConnectionManager {
+        fun getInstance(repository: Repository): ConnectionManager {
             return synchronized(ConnectionManager::class) {
-                val newInstance = instance ?: ConnectionManager()
+                val newInstance = instance ?: ConnectionManager(repository)
                 instance = newInstance
                 newInstance
             }

@@ -22,13 +22,13 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import io.heckel.ntfy.R
-import io.heckel.ntfy.TOPIC_ID
-import io.heckel.ntfy.SubscriptionViewModel
+import io.heckel.ntfy.SUBSCRIPTION_ID
+import io.heckel.ntfy.SubscriptionsViewModel
 import io.heckel.ntfy.SubscriptionsViewModelFactory
 import io.heckel.ntfy.data.topicShortUrl
 
 class DetailActivity : AppCompatActivity() {
-    private val subscriptionsViewModel by viewModels<SubscriptionViewModel> {
+    private val subscriptionsViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory()
     }
 
@@ -44,7 +44,7 @@ class DetailActivity : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
-            subscriptionId = bundle.getLong(TOPIC_ID)
+            subscriptionId = bundle.getLong(SUBSCRIPTION_ID)
         }
 
         // TODO This should probably fail hard if topicId is null
