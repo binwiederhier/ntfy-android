@@ -14,10 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.add.AddTopicActivity
-import io.heckel.ntfy.data.Status
-import io.heckel.ntfy.data.Topic
-import io.heckel.ntfy.data.topicShortUrl
-import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.data.*
 import io.heckel.ntfy.detail.DetailActivity
 import kotlin.random.Random
 
@@ -27,8 +24,8 @@ const val TOPIC_BASE_URL = "base_url"
 
 class MainActivity : AppCompatActivity() {
     private val newTopicActivityRequestCode = 1
-    private val topicsViewModel by viewModels<TopicsViewModel> {
-        TopicsViewModelFactory()
+    private val topicsViewModel by viewModels<SubscriptionViewModel> {
+        SubscriptionsViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,17 +45,22 @@ class MainActivity : AppCompatActivity() {
 
         topicsViewModel.list().observe(this) {
             it?.let {
-                adapter.submitList(it as MutableList<Topic>)
+                println("new data arrived: $it")
+                adapter.submitList(it as MutableList<Subscription>)
             }
         }
 
         // Set up notification channel
         createNotificationChannel()
-        topicsViewModel.setNotificationListener { n -> displayNotification(n) }
+        topicsViewModel.setListener(object : NotificationListener {
+            override fun onNotification(subscriptionId: Long, notification: Notification) {
+                displayNotification(notification)
+            }
+        })
     }
 
     /* Opens TopicDetailActivity when RecyclerView item is clicked. */
-    private fun topicOnClick(topic: Topic) {
+    private fun topicOnClick(topic: Subscription) {
         val intent = Intent(this, DetailActivity()::class.java)
         intent.putExtra(TOPIC_ID, topic.id)
         startActivity(intent)
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             intentData?.let { data ->
                 val name = data.getStringExtra(TOPIC_NAME) ?: return
                 val baseUrl = data.getStringExtra(TOPIC_BASE_URL) ?: return
-                val topic = Topic(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
+                val topic = Subscription(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
 
                 topicsViewModel.add(topic)
             }
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         val channelId = getString(R.string.notification_channel_id)
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle(topicShortUrl(n.topic))
+            .setContentTitle(topicShortUrl(n.subscription))
             .setContentText(n.message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()

@@ -23,19 +23,20 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import io.heckel.ntfy.R
 import io.heckel.ntfy.TOPIC_ID
-import io.heckel.ntfy.TopicsViewModel
-import io.heckel.ntfy.TopicsViewModelFactory
+import io.heckel.ntfy.SubscriptionViewModel
+import io.heckel.ntfy.SubscriptionsViewModelFactory
+import io.heckel.ntfy.data.topicShortUrl
 
 class DetailActivity : AppCompatActivity() {
-    private val topicsViewModel by viewModels<TopicsViewModel> {
-        TopicsViewModelFactory()
+    private val subscriptionsViewModel by viewModels<SubscriptionViewModel> {
+        SubscriptionsViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topic_detail_activity)
 
-        var topicId: Long? = null
+        var subscriptionId: Long? = null
 
         /* Connect variables to UI elements. */
         val topicText: TextView = findViewById(R.id.topic_detail_url)
@@ -43,20 +44,20 @@ class DetailActivity : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
-            topicId = bundle.getLong(TOPIC_ID)
+            subscriptionId = bundle.getLong(TOPIC_ID)
         }
 
         // TODO This should probably fail hard if topicId is null
 
         /* If currentTopicId is not null, get corresponding topic and set name, image and
         description */
-        topicId?.let {
-            val topic = topicsViewModel.get(it)
-            topicText.text = "${topic?.baseUrl}/${topic?.name}"
+        subscriptionId?.let {
+            val subscription = subscriptionsViewModel.get(it)
+            topicText.text = subscription?.let { s -> topicShortUrl(s) }
 
             removeButton.setOnClickListener {
-                if (topic != null) {
-                    topicsViewModel.remove(topic)
+                if (subscription != null) {
+                    subscriptionsViewModel.remove(subscription)
                 }
                 finish()
             }

@@ -9,16 +9,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.data.Status
-import io.heckel.ntfy.data.Topic
+import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicUrl
 
-class TopicsAdapter(private val onClick: (Topic) -> Unit) :
-    ListAdapter<Topic, TopicsAdapter.TopicViewHolder>(TopicDiffCallback) {
+class TopicsAdapter(private val onClick: (Subscription) -> Unit) :
+    ListAdapter<Subscription, TopicsAdapter.TopicViewHolder>(TopicDiffCallback) {
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class TopicViewHolder(itemView: View, val onClick: (Topic) -> Unit) :
+    class TopicViewHolder(itemView: View, val onClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
-        private var topic: Topic? = null
+        private var topic: Subscription? = null
         private val context: Context = itemView.context
         private val nameView: TextView = itemView.findViewById(R.id.topic_text)
         private val statusView: TextView = itemView.findViewById(R.id.topic_status)
@@ -31,18 +31,19 @@ class TopicsAdapter(private val onClick: (Topic) -> Unit) :
             }
         }
 
-        fun bind(topic: Topic) {
-            this.topic = topic
-            val statusText = when (topic.status) {
+        fun bind(subscription: Subscription) {
+            println("bind sub: $subscription")
+            this.topic = subscription
+            val statusText = when (subscription.status) {
                 Status.CONNECTING -> context.getString(R.string.status_connecting)
-                else -> context.getString(R.string.status_subscribed)
+                else -> context.getString(R.string.status_connected)
             }
-            val statusMessage = if (topic.messages == 1) {
-                context.getString(R.string.status_text_one, statusText, topic.messages)
+            val statusMessage = if (subscription.messages == 1) {
+                context.getString(R.string.status_text_one, statusText, subscription.messages)
             } else {
-                context.getString(R.string.status_text_not_one, statusText, topic.messages)
+                context.getString(R.string.status_text_not_one, statusText, subscription.messages)
             }
-            nameView.text = topicUrl(topic)
+            nameView.text = topicUrl(subscription)
             statusView.text = statusMessage
         }
     }
@@ -61,12 +62,14 @@ class TopicsAdapter(private val onClick: (Topic) -> Unit) :
     }
 }
 
-object TopicDiffCallback : DiffUtil.ItemCallback<Topic>() {
-    override fun areItemsTheSame(oldItem: Topic, newItem: Topic): Boolean {
+object TopicDiffCallback : DiffUtil.ItemCallback<Subscription>() {
+    override fun areItemsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+        println("areItemsTheSame: $oldItem.id ==? $newItem.id")
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean {
+    override fun areContentsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+        println("areContentsTheSame: $oldItem ==? $newItem")
         return oldItem == newItem
     }
 }
