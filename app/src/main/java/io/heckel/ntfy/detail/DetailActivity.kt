@@ -23,12 +23,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import io.heckel.ntfy.R
 import io.heckel.ntfy.TOPIC_ID
-import io.heckel.ntfy.list.TopicsViewModel
-import io.heckel.ntfy.list.TopicsViewModelFactory
+import io.heckel.ntfy.TopicsViewModel
+import io.heckel.ntfy.TopicsViewModelFactory
 
 class DetailActivity : AppCompatActivity() {
     private val topicsViewModel by viewModels<TopicsViewModel> {
-        TopicsViewModelFactory(this)
+        TopicsViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -41,7 +41,7 @@ const val TOPIC_URL = "url"
 class MainActivity : AppCompatActivity() {
     private val newTopicActivityRequestCode = 1
     private val topicsViewModel by viewModels<TopicsViewModel> {
-        TopicsViewModelFactory(this)
+        TopicsViewModelFactory()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
