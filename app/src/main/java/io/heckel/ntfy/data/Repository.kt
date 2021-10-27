@@ -91,7 +91,11 @@ class Repository {
             it.doInput = true
             it.readTimeout = READ_TIMEOUT
         }
-        update(topic.copy(status = Status.SUBSCRIBED))
+        // TODO ugly
+        val currentTopic = get(topic.id)
+        if (currentTopic != null) {
+            update(currentTopic.copy(status = Status.SUBSCRIBED))
+        }
         try {
             val input = conn.inputStream.bufferedReader()
             while (scope.isActive) {
@@ -120,7 +124,10 @@ class Repository {
         } finally {
             conn.disconnect()
         }
-        update(topic.copy(status = Status.CONNECTING))
+        val currentTopic2 = get(topic.id)
+        if (currentTopic2 != null) {
+            update(currentTopic2.copy(status = Status.CONNECTING))
+        }
         println("Connection terminated: $url")
     }
 
