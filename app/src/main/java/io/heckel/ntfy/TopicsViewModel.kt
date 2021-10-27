@@ -4,15 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import io.heckel.ntfy.data.TopicsRepository
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Topic
-import kotlinx.coroutines.*
 import kotlin.collections.List
 
 data class Notification(val topic: String, val message: String)
 typealias NotificationListener = (notification: Notification) -> Unit
 
-class TopicsViewModel(private val repository: TopicsRepository) : ViewModel() {
+class TopicsViewModel(private val repository: Repository) : ViewModel() {
     fun add(topic: Topic) {
         repository.add(topic, viewModelScope)
     }
@@ -39,7 +38,7 @@ class TopicsViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>) =
         with(modelClass){
             when {
-                isAssignableFrom(TopicsViewModel::class.java) -> TopicsViewModel(TopicsRepository.getInstance()) as T
+                isAssignableFrom(TopicsViewModel::class.java) -> TopicsViewModel(Repository.getInstance()) as T
                 else -> throw IllegalArgumentException("Unknown viewModel class $modelClass")
             }
         }

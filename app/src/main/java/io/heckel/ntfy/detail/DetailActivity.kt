@@ -35,30 +35,31 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topic_detail_activity)
 
-        var currentTopicId: Long? = null
+        var topicId: Long? = null
 
         /* Connect variables to UI elements. */
-        val topicUrl: TextView = findViewById(R.id.topic_detail_url)
-        val removeTopicButton: Button = findViewById(R.id.remove_button)
+        val topicText: TextView = findViewById(R.id.topic_detail_url)
+        val removeButton: Button = findViewById(R.id.remove_button)
 
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
-            currentTopicId = bundle.getLong(TOPIC_ID)
+            topicId = bundle.getLong(TOPIC_ID)
         }
+
+        // TODO This should probably fail hard if topicId is null
 
         /* If currentTopicId is not null, get corresponding topic and set name, image and
         description */
-        currentTopicId?.let {
-            val currentTopic = topicsViewModel.get(it)
-            topicUrl.text = currentTopic?.url
+        topicId?.let {
+            val topic = topicsViewModel.get(it)
+            topicText.text = "${topic?.baseUrl}/${topic?.name}"
 
-            removeTopicButton.setOnClickListener {
-                if (currentTopic != null) {
-                    topicsViewModel.remove(currentTopic)
+            removeButton.setOnClickListener {
+                if (topic != null) {
+                    topicsViewModel.remove(topic)
                 }
                 finish()
             }
         }
-
     }
 }

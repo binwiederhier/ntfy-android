@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package io.heckel.ntfy.add
 
 import android.app.Activity
@@ -23,10 +7,12 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
-import io.heckel.ntfy.TOPIC_URL
+import io.heckel.ntfy.TOPIC_BASE_URL
+import io.heckel.ntfy.TOPIC_NAME
 
 class AddTopicActivity : AppCompatActivity() {
-    private lateinit var addTopicUrl: TextInputEditText
+    private lateinit var topicName: TextInputEditText
+    private lateinit var baseUrl: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +21,9 @@ class AddTopicActivity : AppCompatActivity() {
         findViewById<Button>(R.id.subscribe_button).setOnClickListener {
             addTopic()
         }
-        addTopicUrl = findViewById(R.id.add_topic_url)
-        addTopicUrl.setText("https://ntfy.sh/")
+        topicName = findViewById(R.id.add_topic_name)
+        baseUrl = findViewById(R.id.add_topic_base_url)
+        baseUrl.setText(R.string.topic_base_url_default_value)
     }
 
     /* The onClick action for the done button. Closes the activity and returns the new topic name
@@ -46,11 +33,13 @@ class AddTopicActivity : AppCompatActivity() {
     private fun addTopic() {
         val resultIntent = Intent()
 
-        if (addTopicUrl.text.isNullOrEmpty()) {
+        // TODO don't allow this
+
+        if (baseUrl.text.isNullOrEmpty()) {
             setResult(Activity.RESULT_CANCELED, resultIntent)
         } else {
-            val url = addTopicUrl.text.toString()
-            resultIntent.putExtra(TOPIC_URL, url)
+            resultIntent.putExtra(TOPIC_NAME, topicName.text.toString())
+            resultIntent.putExtra(TOPIC_BASE_URL, baseUrl.text.toString())
             setResult(Activity.RESULT_OK, resultIntent)
         }
         finish()

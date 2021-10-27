@@ -1,20 +1,4 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package io.heckel.ntfy.list
+package io.heckel.ntfy
 
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Topic
 
 class TopicsAdapter(private val onClick: (Topic) -> Unit) :
@@ -43,10 +26,11 @@ class TopicsAdapter(private val onClick: (Topic) -> Unit) :
             }
         }
 
-        /* Bind topic name and image. */
         fun bind(topic: Topic) {
             currentTopic = topic
-            topicTextView.text = topic.url
+            val shortBaseUrl = topic.baseUrl.replace("https://", "") // Leave http:// untouched
+            val shortName = itemView.context.getString(R.string.topic_short_name_format, shortBaseUrl, topic.name)
+            topicTextView.text = shortName
         }
     }
 
@@ -71,6 +55,6 @@ object TopicDiffCallback : DiffUtil.ItemCallback<Topic>() {
     }
 
     override fun areContentsTheSame(oldItem: Topic, newItem: Topic): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.name == newItem.name
     }
 }

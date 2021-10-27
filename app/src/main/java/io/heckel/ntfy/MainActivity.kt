@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package io.heckel.ntfy
 
 import android.app.Activity
@@ -32,11 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.add.AddTopicActivity
 import io.heckel.ntfy.data.Topic
 import io.heckel.ntfy.detail.DetailActivity
-import io.heckel.ntfy.list.*
 import kotlin.random.Random
 
-const val TOPIC_ID = "topic id"
-const val TOPIC_URL = "url"
+const val TOPIC_ID = "topic_id"
+const val TOPIC_NAME = "topic_name"
+const val TOPIC_BASE_URL = "base_url"
 
 class MainActivity : AppCompatActivity() {
     private val newTopicActivityRequestCode = 1
@@ -88,9 +72,9 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == newTopicActivityRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
-                val topicId = Random.nextLong()
-                val topicUrl = data.getStringExtra(TOPIC_URL) ?: return
-                val topic = Topic(topicId, topicUrl)
+                val name = data.getStringExtra(TOPIC_NAME) ?: return
+                val baseUrl = data.getStringExtra(TOPIC_BASE_URL) ?: return
+                val topic = Topic(Random.nextLong(), name, baseUrl)
 
                 topicsViewModel.add(topic)
             }

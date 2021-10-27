@@ -16,13 +16,13 @@
               android:layout_height="80dp"
               android:orientation="vertical">
     <TextView
-            android:text="https://ntfy.sh/example"
+            android:text="ntfy.sh/example"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/topic_text"
             android:layout_marginTop="16dp" android:layout_marginLeft="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
     <TextView
-            android:text="Subscribed, 0 messages"
+            android:text="Subscribed, 0 notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/topic_status"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" android:layout_marginLeft="16dp"/>

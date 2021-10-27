@@ -12,8 +12,8 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
-/* Handles operations on topicsLiveData and holds details about it. */
-class TopicsRepository {
+class Repository {
+    private val READ_TIMEOUT = 60_000 // Keep alive every 30s assumed
     private val topics: MutableLiveData<List<Topic>> = MutableLiveData(mutableListOf())
     private val jobs = mutableMapOf<Long, Job>()
     private val gson = GsonBuilder().create()
@@ -62,33 +62,38 @@ class TopicsRepository {
     private fun subscribeTopic(topic: Topic, scope: CoroutineScope): Job {
         return scope.launch(Dispatchers.IO) {
             while (isActive) {
-                openURL(this, topic.url, topic.url) // TODO
+                openConnection(this, topic)
                 delay(5000) // TODO exponential back-off
             }
         }
     }
 
-    private fun openURL(scope: CoroutineScope, topic: String, url: String) {
+    private fun openConnection(scope: CoroutineScope, topic: Topic) {
+        val url = "${topic.baseUrl}/${topic.name}/json"
         println("Connecting to $url ...")
         val conn = (URL(url).openConnection() as HttpURLConnection).also {
             it.doInput = true
+            it.readTimeout = READ_TIMEOUT
         }
         try {
             val input = conn.inputStream.bufferedReader()
             while (scope.isActive) {
-                val line = input.readLine() ?: break // Exit if null
+                val line = input.readLine() ?: break // Break if EOF is reached, i.e. readLine is null
+                if (!scope.isActive) {
+                    break // Break if scope is not active anymore; readLine blocks for a while, so we want to be sure
+                }
                 try {
-                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Exit if null
+                    val json = gson.fromJson(line, JsonObject::class.java) ?: break // Break on unexpected line
                     if (!json.isJsonNull && json.has("message")) {
                         val message = json.get("message").asString
-                        notificationListener?.let { it(Notification(url, message)) }
+                        notificationListener?.let { it(Notification(topic.name, message)) }
                     }
                 } catch (e: JsonSyntaxException) {
-                    // Ignore invalid JSON
+                    break // Break on unexpected line
                 }
             }
         } catch (e: IOException) {
-            println("PHIL: " + e.message)
+            println("Connection error: " + e.message)
         } finally {
             conn.disconnect()
         }
@@ -96,11 +101,11 @@ class TopicsRepository {
     }
 
     companion object {
-        private var instance: TopicsRepository? = null
+        private var instance: Repository? = null
 
-        fun getInstance(): TopicsRepository {
-            return synchronized(TopicsRepository::class) {
-                val newInstance = instance ?: TopicsRepository()
+        fun getInstance(): Repository {
+            return synchronized(Repository::class) {
+                val newInstance = instance ?: Repository()
                 instance = newInstance
                 newInstance
             }
