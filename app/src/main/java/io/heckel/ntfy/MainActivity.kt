@@ -14,7 +14,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.add.AddTopicActivity
+import io.heckel.ntfy.data.Status
 import io.heckel.ntfy.data.Topic
+import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.detail.DetailActivity
 import kotlin.random.Random
 
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             intentData?.let { data ->
                 val name = data.getStringExtra(TOPIC_NAME) ?: return
                 val baseUrl = data.getStringExtra(TOPIC_BASE_URL) ?: return
-                val topic = Topic(Random.nextLong(), name, baseUrl)
+                val topic = Topic(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
 
                 topicsViewModel.add(topic)
             }
@@ -85,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         val channelId = getString(R.string.notification_channel_id)
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle(n.topic)
+            .setContentTitle(topicShortUrl(n.topic))
             .setContentText(n.message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()

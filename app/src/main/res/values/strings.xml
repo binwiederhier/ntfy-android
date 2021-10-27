@@ -6,8 +6,11 @@
     <string name="topic_name_edit_text">Topic Name</string>
     <string name="topic_base_url_edit_text">Service URL</string>
     <string name="topic_base_url_default_value">https://ntfy.sh</string>
-    <string name="topic_short_name_format">%1$s/%2$s</string>
     <string name="subscribe_button_text">Subscribe</string>
+    <string name="status_subscribed">Subscribed</string>
+    <string name="status_connecting">Connecting</string>
+    <string name="status_text_one">%1$s, %2$d notification</string>
+    <string name="status_text_not_one">%1$s, %2$d notifications</string>
     <string name="fab_content_description">fab</string>
     <string name="remove_topic">Unsubscribe</string>
 

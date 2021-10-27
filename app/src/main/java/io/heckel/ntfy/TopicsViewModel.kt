@@ -8,7 +8,7 @@ import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Topic
 import kotlin.collections.List
 
-data class Notification(val topic: String, val message: String)
+data class Notification(val topic: Topic, val message: String)
 typealias NotificationListener = (notification: Notification) -> Unit
 
 class TopicsViewModel(private val repository: Repository) : ViewModel() {
