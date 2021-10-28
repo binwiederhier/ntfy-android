@@ -1,7 +1,7 @@
 package io.heckel.ntfy.data
 
 enum class Status {
-    CONNECTED, CONNECTING
+    CONNECTED, CONNECTING, RECONNECTING
 }
 
 data class Subscription(

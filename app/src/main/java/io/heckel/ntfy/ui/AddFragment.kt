@@ -11,9 +11,9 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 
-class AddFragment(private val listener: Listener) : DialogFragment() {
-    interface Listener {
-        fun onAddClicked(topic: String, baseUrl: String)
+class AddFragment(private val listener: AddSubscriptionListener) : DialogFragment() {
+    interface AddSubscriptionListener {
+        fun onAddSubscription(topic: String, baseUrl: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -34,7 +34,7 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
                     } else {
                         getString(R.string.add_dialog_base_url_default)
                     }
-                    listener.onAddClicked(topic, baseUrl)
+                    listener.onAddSubscription(topic, baseUrl)
                 }
                 .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
                     dialog?.cancel()

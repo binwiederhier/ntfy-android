@@ -61,7 +61,7 @@ class ConnectionManager(private val repository: Repository) {
         } finally {
             conn.disconnect()
         }
-        updateStatus(subscriptionId, Status.CONNECTING)
+        updateStatus(subscriptionId, Status.RECONNECTING)
         println("Connection terminated: $topicUrl")
     }
 

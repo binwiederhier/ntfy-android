@@ -22,10 +22,11 @@ import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import kotlin.random.Random
 
+
 const val SUBSCRIPTION_ID = "topic_id"
 
-class MainActivity : AppCompatActivity(), AddFragment.Listener {
-    private val subscriptionViewModel by viewModels<SubscriptionsViewModel> {
+class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
+    private val subscriptionsViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory()
     }
 
@@ -33,30 +34,42 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        // Action bar
+        title = getString(R.string.main_action_bar_title)
+        supportActionBar?.setIcon(R.drawable.ntfy) // FIXME this doesn't work
+
         // Floating action button ("+")
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener {
-            fabOnClick()
+            onAddButtonClick()
         }
 
         // Update main list based on topicsViewModel (& its datasource/livedata)
-        val adapter = TopicsAdapter { topic -> subscriptionOnClick(topic) }
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
-        recyclerView.adapter = adapter
+        val noSubscriptionsText: View = findViewById(R.id.main_no_subscriptions_text)
+        val adapter = SubscriptionsAdapter(this) { subscription -> onUnsubscribe(subscription) }
+        val mainList: RecyclerView = findViewById(R.id.main_subscriptions_list)
+        mainList.adapter = adapter
 
-        subscriptionViewModel.list().observe(this) {
+        subscriptionsViewModel.list().observe(this) {
             it?.let {
                 adapter.submitList(it as MutableList<Subscription>)
+                if (it.isEmpty()) {
+                    mainList.visibility = View.GONE
+                    noSubscriptionsText.visibility = View.VISIBLE
+                } else {
+                    mainList.visibility = View.VISIBLE
+                    noSubscriptionsText.visibility = View.GONE
+                }
             }
         }
 
         // Set up notification channel
         createNotificationChannel()
-        subscriptionViewModel.setListener { n -> displayNotification(n) }
+        subscriptionsViewModel.setListener { n -> displayNotification(n) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
+        menuInflater.inflate(R.menu.main_action_bar_menu, menu)
         return true
     }
 
@@ -74,22 +87,18 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
         }
     }
 
-    /* Opens detail view when list item is clicked. */
-    private fun subscriptionOnClick(subscription: Subscription) {
-        val intent = Intent(this, DetailActivity()::class.java)
-        intent.putExtra(SUBSCRIPTION_ID, subscription.id)
-        startActivity(intent)
+    private fun onUnsubscribe(subscription: Subscription) {
+        subscriptionsViewModel.remove(subscription)
     }
 
-    /* Adds topic to topicList when FAB is clicked. */
-    private fun fabOnClick() {
+    private fun onAddButtonClick() {
         val newFragment = AddFragment(this)
         newFragment.show(supportFragmentManager, "AddFragment")
     }
 
-    override fun onAddClicked(topic: String, baseUrl: String) {
+    override fun onAddSubscription(topic: String, baseUrl: String) {
         val subscription = Subscription(Random.nextLong(), topic, baseUrl, Status.CONNECTING, 0)
-        subscriptionViewModel.add(subscription)
+        subscriptionsViewModel.add(subscription)
     }
 
     private fun displayNotification(n: Notification) {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -11,54 +12,65 @@ import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Status
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.data.topicShortUrl
 
-class TopicsAdapter(private val onClick: (Subscription) -> Unit) :
-    ListAdapter<Subscription, TopicsAdapter.TopicViewHolder>(TopicDiffCallback) {
+class SubscriptionsAdapter(private val context: Context, private val onClick: (Subscription) -> Unit) :
+    ListAdapter<Subscription, SubscriptionsAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class TopicViewHolder(itemView: View, val onClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, val onUnsubscribe: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
-        private var topic: Subscription? = null
+        private var subscription: Subscription? = null
         private val context: Context = itemView.context
         private val nameView: TextView = itemView.findViewById(R.id.topic_text)
         private val statusView: TextView = itemView.findViewById(R.id.topic_status)
 
         init {
-            itemView.setOnClickListener {
-                topic?.let {
-                    onClick(it)
-                }
+            val popup = PopupMenu(context, itemView)
+            popup.inflate(R.menu.main_item_popup_menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                     R.id.main_item_popup_unsubscribe -> {
+                         subscription?.let { s -> onUnsubscribe(s) }
+                         true
+                     }
+                     else -> false
+                 }
+            }
+            itemView.setOnLongClickListener {
+                subscription?.let { popup.show() }
+                true
             }
         }
 
         fun bind(subscription: Subscription) {
-            this.topic = subscription
-            val statusText = when (subscription.status) {
-                Status.CONNECTING -> context.getString(R.string.status_connecting)
-                else -> context.getString(R.string.status_connected)
-            }
-            val statusMessage = if (subscription.messages == 1) {
-                context.getString(R.string.status_text_one, statusText, subscription.messages)
+            this.subscription = subscription
+            val notificationsCountMessage = if (subscription.messages == 1) {
+                context.getString(R.string.main_item_status_text_one, subscription.messages)
             } else {
-                context.getString(R.string.status_text_not_one, statusText, subscription.messages)
+                context.getString(R.string.main_item_status_text_not_one, subscription.messages)
             }
-            nameView.text = topicUrl(subscription)
-            statusView.text = statusMessage
+            val statusText = when (subscription.status) {
+                Status.CONNECTING -> notificationsCountMessage + ", " + context.getString(R.string.main_item_status_connecting)
+                Status.RECONNECTING -> notificationsCountMessage + ", " + context.getString(R.string.main_item_status_reconnecting)
+                else -> notificationsCountMessage
+            }
+            nameView.text = topicShortUrl(subscription)
+            statusView.text = statusText
         }
     }
 
     /* Creates and inflates view and return TopicViewHolder. */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.main_fragment_item, parent, false)
-        return TopicViewHolder(view, onClick)
+        return SubscriptionViewHolder(view, onClick)
     }
 
     /* Gets current topic and uses it to bind view. */
-    override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
-        val topic = getItem(position)
-        holder.bind(topic)
+    override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
+        val subscription = getItem(position)
+        holder.bind(subscription)
     }
 }
 

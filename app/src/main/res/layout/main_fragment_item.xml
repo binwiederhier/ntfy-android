@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="80dp"
-              android:orientation="vertical">
+              android:background="?android:attr/selectableItemBackground"
+              android:orientation="vertical" android:clickable="true" android:focusable="true">
     <TextView
             android:text="ntfy.sh/example"
             android:layout_width="match_parent"
@@ -13,6 +14,6 @@
             android:text="Subscribed, 0 notifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/topic_status"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" android:layout_marginLeft="16dp"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" android:layout_marginStart="16dp"/>
 </LinearLayout>
 

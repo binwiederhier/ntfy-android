@@ -1,4 +1,5 @@
 <resources>
+    <!-- Main app -->
     <string name="app_name">Ntfy</string>
 
     <!-- Notifications -->
@@ -6,21 +7,20 @@
     <string name="notification_channel_id">ntfy</string>
 
     <!-- Main activity: Action bar -->
-    <string name="main_action_bar_label">Subscribed topics</string>
+    <string name="main_action_bar_title">Subscribed topics</string>
     <string name="main_menu_source_title">Show source &amp; license</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
     <string name="main_menu_website_url">https://ntfy.sh</string>
 
     <!-- Main activity: List and such -->
-    <string name="status_connected">Connected</string>
-    <string name="status_connecting">Connecting</string>
-    <string name="status_text_one">%1$s, %2$d notification</string>
-    <string name="status_text_not_one">%1$s, %2$d notifications</string>
-    <string name="fab_content_description">fab</string>
-
-    <!-- Detail activity -->
-    <string name="remove_topic">Unsubscribe</string>
+    <string name="main_item_status_connecting">connecting …</string>
+    <string name="main_item_status_reconnecting">reconnecting …</string>
+    <string name="main_item_status_text_one">%1$d notification received</string>
+    <string name="main_item_status_text_not_one">%1$d notifications received</string>
+    <string name="main_item_popup_unsubscribe">Unsubscribe</string>
+    <string name="main_add_button_description">Add subscription</string>
+    <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>

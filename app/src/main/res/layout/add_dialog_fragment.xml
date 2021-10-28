@@ -19,7 +19,8 @@
     <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_dialog_topic_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"/>
+            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
+            android:maxLines="1" android:inputType="text"/>
     <CheckBox
             android:text="@string/add_dialog_use_another_server"
             android:layout_width="match_parent"
@@ -28,5 +29,5 @@
             android:id="@+id/add_dialog_base_url_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:visibility="gone"
-            android:hint="@string/add_dialog_base_url_hint"/>
+            android:hint="@string/add_dialog_base_url_hint" android:inputType="textUri" android:maxLines="1"/>
 </LinearLayout>
