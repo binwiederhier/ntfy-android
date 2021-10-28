@@ -1,28 +1,26 @@
 <resources>
     <string name="app_name">Ntfy</string>
-    <string name="add_topic">Add Topic</string>
 
+    <!-- Notifications -->
+    <string name="notification_channel_name">Ntfy</string>
+    <string name="notification_channel_id">ntfy</string>
 
-    <string name="topic_name_edit_text">Topic Name</string>
-    <string name="add_dialog_base_url_layout">Service URL</string>
-    <string name="topic_base_url_default_value">https://ntfy.sh</string>
-    <string name="subscribe_button_text">Subscribe</string>
+    <!-- Main activity: Action bar -->
+    <string name="main_action_bar_label">Subscribed topics</string>
+    <string name="main_menu_source_title">Show source &amp; license</string>
+    <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
+    <string name="main_menu_website_title">Visit ntfy.sh</string>
+    <string name="main_menu_website_url">https://ntfy.sh</string>
+
+    <!-- Main activity: List and such -->
     <string name="status_connected">Connected</string>
     <string name="status_connecting">Connecting</string>
     <string name="status_text_one">%1$s, %2$d notification</string>
     <string name="status_text_not_one">%1$s, %2$d notifications</string>
     <string name="fab_content_description">fab</string>
+
+    <!-- Detail activity -->
     <string name="remove_topic">Unsubscribe</string>
-
-    <!-- Menu -->
-    <string name="menu_source_title">Show source &amp; license</string>
-    <string name="menu_source_url">https://heckel.io/ntfy-android</string>
-    <string name="menu_website_title">Visit ntfy.sh</string>
-    <string name="menu_website_url">https://ntfy.sh</string>
-
-    <!-- Notifications -->
-    <string name="notification_channel_name">Ntfy</string>
-    <string name="notification_channel_id">ntfy</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>

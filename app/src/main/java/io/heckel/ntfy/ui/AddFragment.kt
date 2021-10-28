@@ -19,7 +19,7 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             // Build root view
-            val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add, null)
+            val view = requireActivity().layoutInflater.inflate(R.layout.add_dialog_fragment, null)
             val topicNameText = view.findViewById(R.id.add_dialog_topic_text) as TextInputEditText
             val baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
             val useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
@@ -72,7 +72,7 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
                 }
                 topicNameText.addTextChangedListener(textWatcher)
                 baseUrlText.addTextChangedListener(textWatcher)
-                useAnotherServerCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+                useAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) baseUrlText.visibility = View.VISIBLE
                     else baseUrlText.visibility = View.GONE
                     validateInput()

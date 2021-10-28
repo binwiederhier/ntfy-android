@@ -31,7 +31,7 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.topic_detail_activity)
+        setContentView(R.layout.detail_activity)
 
         var subscriptionId: Long? = null
 

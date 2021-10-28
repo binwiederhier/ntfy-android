@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_activity)
 
         // Floating action button ("+")
         val fab: View = findViewById(R.id.fab)
@@ -63,11 +63,11 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_action_source -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.menu_source_url))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
             }
             R.id.menu_action_website -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.menu_website_url))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_website_url))))
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -51,7 +51,7 @@ class TopicsAdapter(private val onClick: (Subscription) -> Unit) :
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.topic_item, parent, false)
+            .inflate(R.layout.main_fragment_item, parent, false)
         return TopicViewHolder(view, onClick)
     }
 
