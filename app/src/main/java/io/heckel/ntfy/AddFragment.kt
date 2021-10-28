@@ -22,10 +22,6 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
             val topicNameText = view.findViewById(R.id.add_dialog_topic_text) as TextInputEditText
             val baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
             val useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
-            useAnotherServerCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) baseUrlText.visibility = View.VISIBLE
-                else baseUrlText.visibility = View.GONE
-            }
 
             // Build dialog
             val alert = AlertDialog.Builder(it)
@@ -51,17 +47,20 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
                 val subscribeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 subscribeButton.isEnabled = false
 
+                val validateInput: () -> Unit = {
+                    if (useAnotherServerCheckbox.isChecked) {
+                        subscribeButton.isEnabled = topicNameText.text.toString().isNotBlank()
+                                && "[-_A-Za-z0-9]+".toRegex().matches(topicNameText.text.toString())
+                                && baseUrlText.text.toString().isNotBlank()
+                                && "^https?://.+".toRegex().matches(baseUrlText.text.toString())
+                    } else {
+                        subscribeButton.isEnabled = topicNameText.text.toString().isNotBlank()
+                                && "[-_A-Za-z0-9]+".toRegex().matches(topicNameText.text.toString())
+                    }
+                }
                 val textWatcher = object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
-                        if (useAnotherServerCheckbox.isChecked) {
-                            subscribeButton.isEnabled = topicNameText.text.toString().isNotBlank()
-                                    && "[-_A-Za-z0-9]+".toRegex().matches(topicNameText.text.toString())
-                                    && baseUrlText.text.toString().isNotBlank()
-                                    && "^https?://.+".toRegex().matches(baseUrlText.text.toString())
-                        } else {
-                            subscribeButton.isEnabled = topicNameText.text.toString().isNotBlank()
-                                    && "[-_A-Za-z0-9]+".toRegex().matches(topicNameText.text.toString())
-                        }
+                        validateInput()
                     }
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                         // Nothing
@@ -72,6 +71,11 @@ class AddFragment(private val listener: Listener) : DialogFragment() {
                 }
                 topicNameText.addTextChangedListener(textWatcher)
                 baseUrlText.addTextChangedListener(textWatcher)
+                useAnotherServerCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) baseUrlText.visibility = View.VISIBLE
+                    else baseUrlText.visibility = View.GONE
+                    validateInput()
+                }
             }
 
             alert
