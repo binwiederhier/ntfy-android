@@ -1,6 +1,5 @@
 package io.heckel.ntfy
 
-import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -13,17 +12,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
-import io.heckel.ntfy.add.AddTopicActivity
-import io.heckel.ntfy.data.*
+import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.Status
+import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.detail.DetailActivity
 import kotlin.random.Random
 
 const val SUBSCRIPTION_ID = "topic_id"
-const val TOPIC_NAME = "topic_name"
-const val SERVICE_BASE_URL = "base_url"
 
-class MainActivity : AppCompatActivity() {
-    private val newSubscriptionActivityRequestCode = 1
+class MainActivity : AppCompatActivity(), AddFragment.Listener {
     private val subscriptionViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory()
     }
@@ -64,21 +62,13 @@ class MainActivity : AppCompatActivity() {
 
     /* Adds topic to topicList when FAB is clicked. */
     private fun fabOnClick() {
-        val intent = Intent(this, AddTopicActivity::class.java)
-        startActivityForResult(intent, newSubscriptionActivityRequestCode)
+        val newFragment = AddFragment(this)
+        newFragment.show(supportFragmentManager, "AddFragment")
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, intentData)
-
-        if (requestCode == newSubscriptionActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            intentData?.let { data ->
-                val name = data.getStringExtra(TOPIC_NAME) ?: return
-                val baseUrl = data.getStringExtra(SERVICE_BASE_URL) ?: return
-                val subscription = Subscription(Random.nextLong(), name, baseUrl, Status.CONNECTING, 0)
-                subscriptionViewModel.add(subscription)
-            }
-        }
+    override fun onAddClicked(topic: String, baseUrl: String) {
+        val subscription = Subscription(Random.nextLong(), topic, baseUrl, Status.CONNECTING, 0)
+        subscriptionViewModel.add(subscription)
     }
 
     private fun displayNotification(n: Notification) {

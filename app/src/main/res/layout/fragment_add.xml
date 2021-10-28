@@ -1,0 +1,32 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp">
+
+    <TextView
+            android:id="@+id/add_dialog_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="@string/add_dialog_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_dialog_topic_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"/>
+    <CheckBox
+            android:text="@string/add_dialog_use_another_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_use_another_server_checkbox"/>
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_dialog_base_url_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:visibility="gone"
+            android:hint="@string/add_dialog_base_url_hint"/>
+</LinearLayout>

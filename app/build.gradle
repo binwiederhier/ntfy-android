@@ -63,4 +63,5 @@ dependencies {
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.liveDataVersion"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
