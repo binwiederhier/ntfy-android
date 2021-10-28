@@ -1,22 +1,25 @@
-package io.heckel.ntfy
+package io.heckel.ntfy.ui
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
+import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Status
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
-import io.heckel.ntfy.detail.DetailActivity
 import kotlin.random.Random
 
 const val SUBSCRIPTION_ID = "topic_id"
@@ -43,7 +46,6 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
 
         subscriptionViewModel.list().observe(this) {
             it?.let {
-                println("new data arrived: $it")
                 adapter.submitList(it as MutableList<Subscription>)
             }
         }
@@ -51,6 +53,25 @@ class MainActivity : AppCompatActivity(), AddFragment.Listener {
         // Set up notification channel
         createNotificationChannel()
         subscriptionViewModel.setListener { n -> displayNotification(n) }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_action_source -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.menu_source_url))))
+                true
+            }
+            R.id.menu_action_website -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.menu_website_url))))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     /* Opens detail view when list item is clicked. */

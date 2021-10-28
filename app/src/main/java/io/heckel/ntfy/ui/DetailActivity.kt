@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.heckel.ntfy.detail
+package io.heckel.ntfy.ui
 
 import android.os.Bundle
 import android.widget.Button
@@ -22,9 +22,6 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import io.heckel.ntfy.R
-import io.heckel.ntfy.SUBSCRIPTION_ID
-import io.heckel.ntfy.SubscriptionsViewModel
-import io.heckel.ntfy.SubscriptionsViewModelFactory
 import io.heckel.ntfy.data.topicShortUrl
 
 class DetailActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package io.heckel.ntfy
+package io.heckel.ntfy.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

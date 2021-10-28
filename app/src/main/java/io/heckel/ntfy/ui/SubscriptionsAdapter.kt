@@ -1,4 +1,4 @@
-package io.heckel.ntfy
+package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Status
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicUrl
@@ -32,7 +33,6 @@ class TopicsAdapter(private val onClick: (Subscription) -> Unit) :
         }
 
         fun bind(subscription: Subscription) {
-            println("bind sub: $subscription")
             this.topic = subscription
             val statusText = when (subscription.status) {
                 Status.CONNECTING -> context.getString(R.string.status_connecting)
@@ -64,12 +64,10 @@ class TopicsAdapter(private val onClick: (Subscription) -> Unit) :
 
 object TopicDiffCallback : DiffUtil.ItemCallback<Subscription>() {
     override fun areItemsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
-        println("areItemsTheSame: $oldItem.id ==? $newItem.id")
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
-        println("areContentsTheSame: $oldItem ==? $newItem")
         return oldItem == newItem
     }
 }

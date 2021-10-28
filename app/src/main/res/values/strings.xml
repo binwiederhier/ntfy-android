@@ -14,6 +14,12 @@
     <string name="fab_content_description">fab</string>
     <string name="remove_topic">Unsubscribe</string>
 
+    <!-- Menu -->
+    <string name="menu_source_title">Show source &amp; license</string>
+    <string name="menu_source_url">https://heckel.io/ntfy-android</string>
+    <string name="menu_website_title">Visit ntfy.sh</string>
+    <string name="menu_website_url">https://ntfy.sh</string>
+
     <!-- Notifications -->
     <string name="notification_channel_name">Ntfy</string>
     <string name="notification_channel_id">ntfy</string>

@@ -1,4 +1,4 @@
-package io.heckel.ntfy
+package io.heckel.ntfy.ui
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import io.heckel.ntfy.R
 
 class AddFragment(private val listener: Listener) : DialogFragment() {
     interface Listener {
