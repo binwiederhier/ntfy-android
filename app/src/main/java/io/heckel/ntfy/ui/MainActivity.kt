@@ -15,17 +15,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Status
-import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.data.*
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-
-const val SUBSCRIPTION_ID = "topic_id"
-
 class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
+    private val uniqueWorkName = "connectionWorker"
     private val subscriptionsViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory()
     }
@@ -76,7 +77,8 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_action_source -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
+                // startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
+                enqueueConnectionWorker()
                 true
             }
             R.id.menu_action_website -> {
@@ -99,6 +101,15 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     override fun onAddSubscription(topic: String, baseUrl: String) {
         val subscription = Subscription(Random.nextLong(), topic, baseUrl, Status.CONNECTING, 0)
         subscriptionsViewModel.add(subscription)
+    }
+
+    private fun enqueueConnectionWorker() {
+        val workRequest =
+            PeriodicWorkRequestBuilder<ConnectionWorker>(1, TimeUnit.MINUTES)
+                .build()
+        WorkManager
+            .getInstance(this)
+            .enqueueUniquePeriodicWork(uniqueWorkName, ExistingPeriodicWorkPolicy.KEEP, workRequest)
     }
 
     private fun displayNotification(n: Notification) {
@@ -132,3 +143,4 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
         }
     }
 }
+

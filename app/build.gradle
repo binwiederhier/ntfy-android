@@ -48,12 +48,18 @@ android {
 }
 
 dependencies {
+    def workManagerVersion = "2.5.0"
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
     implementation 'com.google.code.gson:gson:2.8.8'
+
+    // WorkManager
+    implementation("androidx.work:work-runtime:$workManagerVersion")
+    implementation("androidx.work:work-runtime-ktx:$workManagerVersion")
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"
