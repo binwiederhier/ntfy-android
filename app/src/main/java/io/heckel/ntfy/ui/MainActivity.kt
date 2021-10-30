@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,19 +16,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.OnCompleteListener
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Status
-import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
 import kotlin.random.Random
-
-
-const val SUBSCRIPTION_ID = "topic_id"
+import com.google.firebase.messaging.FirebaseMessaging
+import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.*
 
 class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     private val subscriptionsViewModel by viewModels<SubscriptionsViewModel> {
-        SubscriptionsViewModelFactory()
+        SubscriptionsViewModelFactory((application as Application).repository)
+    }
+
+    fun doStuff() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            Log.d(TAG, "message token: $token")
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +54,12 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
         // Floating action button ("+")
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener {
-            onAddButtonClick()
+            onSubscribeButtonClick()
         }
 
         // Update main list based on topicsViewModel (& its datasource/livedata)
         val noSubscriptionsText: View = findViewById(R.id.main_no_subscriptions_text)
-        val adapter = SubscriptionsAdapter(this) { subscription -> onUnsubscribe(subscription) }
+        val adapter = SubscriptionsAdapter { subscription -> onUnsubscribe(subscription) }
         val mainList: RecyclerView = findViewById(R.id.main_subscriptions_list)
         mainList.adapter = adapter
 
@@ -62,10 +75,6 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
                 }
             }
         }
-
-        // Set up notification channel
-        createNotificationChannel()
-        subscriptionsViewModel.setListener { n -> displayNotification(n) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,55 +89,30 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
                 true
             }
             R.id.menu_action_website -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_website_url))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_base_url))))
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun onUnsubscribe(subscription: Subscription) {
-        subscriptionsViewModel.remove(subscription)
-    }
-
-    private fun onAddButtonClick() {
+    private fun onSubscribeButtonClick() {
         val newFragment = AddFragment(this)
         newFragment.show(supportFragmentManager, "AddFragment")
     }
 
-    override fun onAddSubscription(topic: String, baseUrl: String) {
-        val subscription = Subscription(Random.nextLong(), topic, baseUrl, Status.CONNECTING, 0)
+    override fun onSubscribe(topic: String, baseUrl: String) {
+        val subscription = Subscription(Random.nextLong(), topic, baseUrl, messages = 0)
         subscriptionsViewModel.add(subscription)
+        FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
     }
 
-    private fun displayNotification(n: Notification) {
-        val channelId = getString(R.string.notification_channel_id)
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ntfy)
-            .setContentTitle(topicShortUrl(n.subscription))
-            .setContentText(n.message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-        with(NotificationManagerCompat.from(this)) {
-            notify(Random.nextInt(), notification)
-        }
+    private fun onUnsubscribe(subscription: Subscription) {
+        subscriptionsViewModel.remove(subscription)
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(subscription.topic)
     }
 
-    private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = getString(R.string.notification_channel_id)
-            val name = getString(R.string.notification_channel_name)
-            val descriptionText = getString(R.string.notification_channel_name)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channelId, name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+    companion object {
+        const val TAG = "NtfyMainActivity"
     }
 }

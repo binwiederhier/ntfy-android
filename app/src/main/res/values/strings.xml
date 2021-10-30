@@ -1,6 +1,7 @@
 <resources>
-    <!-- Main app -->
+    <!-- Main app-->
     <string name="app_name">Ntfy</string>
+    <string name="app_base_url">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
     <!-- Notifications -->
     <string name="notification_channel_name">Ntfy</string>
@@ -11,7 +12,6 @@
     <string name="main_menu_source_title">Show source &amp; license</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
-    <string name="main_menu_website_url">https://ntfy.sh</string>
 
     <!-- Main activity: List and such -->
     <string name="main_item_status_connecting">connecting …</string>
@@ -26,8 +26,6 @@
     <string name="add_dialog_title">Subscribe to topic</string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
-    <string name="add_dialog_base_url_hint">https://ntfy.sh</string>
-    <string name="add_dialog_base_url_default">https://ntfy.sh</string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
 </resources>

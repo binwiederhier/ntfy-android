@@ -1,55 +1,44 @@
 package io.heckel.ntfy.data
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 
-class Repository {
-    private val subscriptions = mutableListOf<Subscription>()
-    private val subscriptionsLiveData: MutableLiveData<List<Subscription>> = MutableLiveData(subscriptions)
-
-    fun add(subscription: Subscription) {
-        synchronized(subscriptions) {
-            subscriptions.add(subscription)
-            subscriptionsLiveData.postValue(ArrayList(subscriptions)) // Copy!
-        }
-    }
-
-    fun update(subscription: Subscription?) {
-        if (subscription == null) {
-            return
-        }
-        synchronized(subscriptions) {
-            val index = subscriptions.indexOfFirst { it.id == subscription.id } // Find index by Topic ID
-            if (index == -1) return
-            subscriptions[index] = subscription
-            subscriptionsLiveData.postValue(ArrayList(subscriptions)) // Copy!
-        }
-    }
-
-    fun remove(subscription: Subscription) {
-        synchronized(subscriptions) {
-            if (subscriptions.remove(subscription)) {
-                subscriptionsLiveData.postValue(ArrayList(subscriptions)) // Copy!
-            }
-        }
-    }
-
-    fun get(id: Long): Subscription? {
-        synchronized(subscriptions) {
-            return subscriptions.firstOrNull { it.id == id } // Find index by Topic ID
-        }
-    }
-
+class Repository(private val subscriptionDao: SubscriptionDao) {
     fun list(): LiveData<List<Subscription>> {
-        return subscriptionsLiveData
+        return subscriptionDao.list().asLiveData()
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun get(baseUrl: String, topic: String): Subscription? {
+        return subscriptionDao.get(baseUrl, topic)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun add(subscription: Subscription) {
+        subscriptionDao.add(subscription)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun update(subscription: Subscription) {
+        subscriptionDao.update(subscription)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun remove(subscription: Subscription) {
+        subscriptionDao.remove(subscription)
     }
 
     companion object {
         private var instance: Repository? = null
 
-        fun getInstance(): Repository {
+        fun getInstance(subscriptionDao: SubscriptionDao): Repository {
             return synchronized(Repository::class) {
-                val newInstance = instance ?: Repository()
+                val newInstance = instance ?: Repository(subscriptionDao)
                 instance = newInstance
                 newInstance
             }

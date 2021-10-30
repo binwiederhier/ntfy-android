@@ -2,15 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.heckel.ntfy">
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Main app -->
     <application
+        android:name = ".app.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- Main activity -->
         <activity android:name="io.heckel.ntfy.ui.MainActivity"
                   android:icon="@drawable/ntfy"
                   android:label="@string/app_name">
@@ -19,5 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Firebase messaging -->
+        <service android:name="io.heckel.ntfy.msg.MessagingService"
+                 android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data android:name="firebase_analytics_collection_enabled"
+                   android:value="false" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ntfy" /> <!-- FIXME Proper icon -->
     </application>
 </manifest>

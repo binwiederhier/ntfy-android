@@ -1,3 +1,6 @@
+# Google services (Firebase/FCM) config and keys
+google-services.json
+
 # built application files
 *.apk
 *.ap_

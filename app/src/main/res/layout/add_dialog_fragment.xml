@@ -29,5 +29,5 @@
             android:id="@+id/add_dialog_base_url_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:visibility="gone"
-            android:hint="@string/add_dialog_base_url_hint" android:inputType="textUri" android:maxLines="1"/>
+            android:hint="@string/app_base_url" android:inputType="textUri" android:maxLines="1"/>
 </LinearLayout>

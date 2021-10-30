@@ -13,7 +13,7 @@ import io.heckel.ntfy.R
 
 class AddFragment(private val listener: AddSubscriptionListener) : DialogFragment() {
     interface AddSubscriptionListener {
-        fun onAddSubscription(topic: String, baseUrl: String)
+        fun onSubscribe(topic: String, baseUrl: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -24,6 +24,9 @@ class AddFragment(private val listener: AddSubscriptionListener) : DialogFragmen
             val baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
             val useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
 
+            // FIXME For now, other servers are disabled
+            useAnotherServerCheckbox.visibility = View.GONE
+
             // Build dialog
             val alert = AlertDialog.Builder(it)
                 .setView(view)
@@ -32,9 +35,9 @@ class AddFragment(private val listener: AddSubscriptionListener) : DialogFragmen
                     val baseUrl = if (useAnotherServerCheckbox.isChecked) {
                         baseUrlText.text.toString()
                     } else {
-                        getString(R.string.add_dialog_base_url_default)
+                        getString(R.string.app_base_url)
                     }
-                    listener.onAddSubscription(topic, baseUrl)
+                    listener.onSubscribe(topic, baseUrl)
                 }
                 .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
                     dialog?.cancel()
