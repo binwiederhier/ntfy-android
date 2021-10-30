@@ -1,12 +1,16 @@
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme"  parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/primaryColor</item>
-        <!--
-            <item name="windowActionBar">false</item>
-            <item name="windowNoTitle">true</item>
-            <item name="android:windowFullscreen">true</item>
-        -->
+        <item name="colorAccent">@color/primaryLightColor</item>
+
+        <!--<item name="actionBarStyle">@style/AppTheme.ActionBarStyle</item>-->
     </style>
+<!--
+    <style name="AppTheme.AxctionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="titleTextColor">@color/red</item>
+        <item name="backgroundColor">@color/red</item>
+        <item name="background">@color/red</item>
+    </style>
+    -->
 </resources>
