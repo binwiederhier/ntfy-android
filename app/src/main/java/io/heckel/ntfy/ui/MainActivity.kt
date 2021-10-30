@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
-        supportActionBar?.setIcon(R.drawable.ntfy) // FIXME this doesn't work
 
         // Floating action button ("+")
         val fab: View = findViewById(R.id.fab)

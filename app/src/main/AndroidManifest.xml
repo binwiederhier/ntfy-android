@@ -17,7 +17,6 @@
 
         <!-- Main activity -->
         <activity android:name="io.heckel.ntfy.ui.MainActivity"
-                  android:icon="@drawable/ntfy"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,6 +35,6 @@
                    android:value="false" />
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/ntfy" /> <!-- FIXME Proper icon -->
+                android:resource="@drawable/ic_launcher_background" /> <!-- FIXME Proper icon -->
     </application>
 </manifest>

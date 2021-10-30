@@ -68,7 +68,7 @@ class MessagingService : FirebaseMessagingService() {
         val channelId = getString(R.string.notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ntfy) // FIXME
+            .setSmallIcon(R.mipmap.ic_launcher) // FIXME
             .setContentTitle(title)
             .setContentText(message)
             .setSound(defaultSoundUri)

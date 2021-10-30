@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="34.961891mm"
+   height="28.85766mm"
+   viewBox="0 0 34.961891 28.85766"
+   version="1.1"
+   id="svg957"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="launcher_try1.svg">
+  <defs
+     id="defs951" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-79.427022"
+     inkscape:cy="-31.222794"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1863"
+     inkscape:window-height="1025"
+     inkscape:window-x="57"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata954">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-25.419351,-22.145575)">
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.52499998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 25.419351,30.399323 v 20.603912 h 27.55284 V 38.010745 H 51.559875 V 49.617789 H 26.771205 V 31.754281 h 13.120648 v -1.354958 z"
+       id="rect283-1-6-2" />
+    <g
+       aria-label="&gt;_"
+       transform="matrix(1.0013141,0,0,0.99868762,28.567935,-18.906852)"
+       style="font-style:normal;font-weight:normal;font-size:10.13521481px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.2533803"
+       id="text320-7-9">
+      <path
+         inkscape:connector-curvature="0"
+         d="m 0.74124969,63.1616 v -1.567592 l 3.91897891,-1.74327 q 0.1891921,-0.08108 0.3648705,-0.121623 0.1891921,-0.05405 0.337843,-0.08108 0.1621647,-0.01351 0.3243293,-0.02703 v -0.10811 Q 5.5251068,59.499382 5.3629421,59.458841 5.2142912,59.431813 5.0250991,59.391272 4.8494207,59.337217 4.6602286,59.256135 L 0.74124969,57.512865 V 55.93176 l 6.05414681,2.770312 v 1.689215 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.51372051px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-width:0.2533803"
+         id="path933" />
+      <path
+         inkscape:connector-curvature="0"
+         d="M 8.6279841,64.337294 H 15.11457 v 1.52705 H 8.6279841 Z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.51372051px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke-width:0.2533803"
+         id="path935" />
+    </g>
+    <path
+       style="fill:#000000;fill-opacity:1;stroke-width:0.92330438"
+       inkscape:connector-curvature="0"
+       d="M 58.480401,22.145575 H 43.273723 c -1.04547,0 -1.90085,0.80727 -1.90085,1.79392 v 16.145364 l 3.801681,-3.58785 h 13.305847 c 1.045472,0 1.900843,-0.80727 1.900843,-1.79395 V 23.939495 c 0,-0.98665 -0.855371,-1.79392 -1.900843,-1.79392 z m -10.454588,8.072674 h -1.900838 v -1.79392 h 1.900838 z m 3.801671,0 h -1.900841 v -1.79392 h 1.900841 z m 3.801669,0 h -1.90083 v -1.79392 h 1.90083 z"
+       id="path403-5-2" />
+  </g>
+</svg>
