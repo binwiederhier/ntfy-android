@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     }
 
     override fun onSubscribe(topic: String, baseUrl: String) {
-        val subscription = Subscription(Random.nextLong(), topic, baseUrl, messages = 0)
+        val subscription = Subscription(id = Random.nextLong(), baseUrl = baseUrl, topic = topic, messages = 0)
         subscriptionsViewModel.add(subscription)
         FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
     }
