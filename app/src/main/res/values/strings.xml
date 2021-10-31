@@ -28,4 +28,13 @@
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
+
+    <!-- Detail activity -->
+    <string name="detail_no_subscriptions_text">You haven\'t received any notifications for this topic yet.</string>
+    <string name="detail_delete_dialog_message">Do you really want to permanently delete this subscription and all its messages?</string>
+    <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
+    <string name="detail_delete_dialog_cancel">Cancel</string>
+
+    <!-- Detail activity: Action bar -->
+    <string name="detail_menu_delete">Delete topic</string>
 </resources>

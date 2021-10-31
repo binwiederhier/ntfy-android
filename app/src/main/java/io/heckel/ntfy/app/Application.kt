@@ -6,5 +6,5 @@ import io.heckel.ntfy.data.Repository
 
 class Application : Application() {
     private val database by lazy { Database.getInstance(this) }
-    val repository by lazy { Repository.getInstance(database.subscriptionDao()) }
+    val repository by lazy { Repository.getInstance(database.subscriptionDao(), database.notificationDao()) }
 }

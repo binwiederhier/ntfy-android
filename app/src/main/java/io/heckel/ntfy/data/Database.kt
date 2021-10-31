@@ -1,6 +1,7 @@
 package io.heckel.ntfy.data
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
@@ -9,12 +10,22 @@ data class Subscription(
     @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
-    @ColumnInfo(name = "messages")  val messages: Int
+    @ColumnInfo(name = "notifications")  val notifications: Int,
+    @ColumnInfo(name = "lastActive")  val lastActive: Long // Unix timestamp
 )
 
-@androidx.room.Database(entities = [Subscription::class], version = 1)
+@Entity
+data class Notification(
+    @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
+    @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
+    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "message")  val message: String
+)
+
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 1)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
+    abstract fun notificationDao(): NotificationDao
 
     companion object {
         @Volatile
@@ -35,7 +46,7 @@ abstract class Database : RoomDatabase() {
 
 @Dao
 interface SubscriptionDao {
-    @Query("SELECT * FROM subscription")
+    @Query("SELECT * FROM subscription ORDER BY lastActive DESC")
     fun list(): Flow<List<Subscription>>
 
     @Query("SELECT * FROM subscription WHERE baseUrl = :baseUrl AND topic = :topic")
@@ -47,6 +58,21 @@ interface SubscriptionDao {
     @Update
     fun update(subscription: Subscription)
 
+    @Query("DELETE FROM subscription WHERE id = :subscriptionId")
+    fun remove(subscriptionId: Long)
+}
+
+@Dao
+interface NotificationDao {
+    @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId ORDER BY timestamp DESC")
+    fun list(subscriptionId: Long): Flow<List<Notification>>
+
+    @Insert
+    fun add(notification: Notification)
+
     @Delete
-    fun remove(subscription: Subscription)
+    fun remove(notification: Notification)
+
+    @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
+    fun removeAll(subscriptionId: Long)
 }

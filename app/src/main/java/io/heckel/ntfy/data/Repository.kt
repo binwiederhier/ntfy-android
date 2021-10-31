@@ -4,41 +4,64 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 
-class Repository(private val subscriptionDao: SubscriptionDao) {
-    fun list(): LiveData<List<Subscription>> {
+class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
+    fun getAllSubscriptions(): LiveData<List<Subscription>> {
         return subscriptionDao.list().asLiveData()
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun get(baseUrl: String, topic: String): Subscription? {
+    suspend fun getSubscription(baseUrl: String, topic: String): Subscription? {
         return subscriptionDao.get(baseUrl, topic)
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun add(subscription: Subscription) {
+    suspend fun addSubscription(subscription: Subscription) {
         subscriptionDao.add(subscription)
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun update(subscription: Subscription) {
+    suspend fun updateSubscription(subscription: Subscription) {
         subscriptionDao.update(subscription)
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun remove(subscription: Subscription) {
-        subscriptionDao.remove(subscription)
+    suspend fun removeSubscription(subscriptionId: Long) {
+        subscriptionDao.remove(subscriptionId)
+    }
+
+    fun getAllNotifications(subscriptionId: Long): LiveData<List<Notification>> {
+        return notificationDao.list(subscriptionId).asLiveData()
+    }
+
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun addNotification(notification: Notification) {
+        notificationDao.add(notification)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun removeNotification(notification: Notification) {
+        notificationDao.remove(notification)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    fun removeAllNotifications(subscriptionId: Long) {
+        notificationDao.removeAll(subscriptionId)
     }
 
     companion object {
         private var instance: Repository? = null
 
-        fun getInstance(subscriptionDao: SubscriptionDao): Repository {
+        fun getInstance(subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
             return synchronized(Repository::class) {
-                val newInstance = instance ?: Repository(subscriptionDao)
+                val newInstance = instance ?: Repository(subscriptionDao, notificationDao)
                 instance = newInstance
                 newInstance
             }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -30,40 +29,23 @@ class SubscriptionsAdapter(private val onClick: (Subscription) -> Unit) :
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, val onUnsubscribe: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, val onClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
-        private val nameView: TextView = itemView.findViewById(R.id.topic_text)
-        private val statusView: TextView = itemView.findViewById(R.id.topic_status)
-
-        init {
-            val popup = PopupMenu(context, itemView)
-            popup.inflate(R.menu.main_item_popup_menu)
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.main_item_popup_unsubscribe -> {
-                        subscription?.let { s -> onUnsubscribe(s) }
-                        true
-                    }
-                    else -> false
-                }
-            }
-            itemView.setOnLongClickListener {
-                subscription?.let { popup.show() }
-                true
-            }
-        }
+        private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
+        private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            val statusMessage = if (subscription.messages == 1) {
-                context.getString(R.string.main_item_status_text_one, subscription.messages)
+            val statusMessage = if (subscription.notifications == 1) {
+                context.getString(R.string.main_item_status_text_one, subscription.notifications)
             } else {
-                context.getString(R.string.main_item_status_text_not_one, subscription.messages)
+                context.getString(R.string.main_item_status_text_not_one, subscription.notifications)
             }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
+            itemView.setOnClickListener { onClick(subscription) }
         }
     }
 

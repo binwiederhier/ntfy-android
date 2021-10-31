@@ -1,40 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.heckel.ntfy">
-
+          package="io.heckel.ntfy">
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- Main app -->
     <application
-        android:name = ".app.Application"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+            android:name=".app.Application"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
 
         <!-- Main activity -->
-        <activity android:name="io.heckel.ntfy.ui.MainActivity"
-                  android:label="@string/app_name">
+        <activity
+                android:name=".ui.MainActivity"
+                android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
+        <!-- Detail activity -->
+        <activity android:name=".ui.DetailActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MainActivity" />
+        </activity>
+
         <!-- Firebase messaging -->
-        <service android:name="io.heckel.ntfy.msg.MessagingService"
-                 android:exported="false">
+        <service
+                android:name=".msg.MessagingService"
+                android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <meta-data android:name="firebase_analytics_collection_enabled"
-                   android:value="false" />
+
+        <meta-data
+                android:name="firebase_analytics_collection_enabled"
+                android:value="false"/>
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/ic_notification_icon" />
+                android:resource="@drawable/ic_notification_icon"/>
     </application>
+
 </manifest>
