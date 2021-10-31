@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
               android:layout_height="80dp"
               android:background="?android:attr/selectableItemBackground"
-              android:orientation="vertical" android:clickable="true" android:focusable="true">
-    <TextView
-            android:text="ntfy.sh/example"
+              android:orientation="horizontal" android:clickable="true" android:focusable="true">
+    <ImageView
+            android:layout_width="35dp"
+            android:layout_height="match_parent" app:srcCompat="@drawable/outline_sms_24"
+            android:id="@+id/topic_image" android:layout_marginStart="20dp"/>
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/topic_text"
-            android:layout_marginTop="16dp" android:layout_marginStart="16dp"
-            android:textColor="@color/primaryTextColor"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-    <TextView
-            android:text="Subscribed, 0 notifications"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/topic_status"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" android:layout_marginStart="16dp"/>
+            android:layout_height="match_parent">
+        <TextView
+                android:text="ntfy.sh/example"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/topic_text"
+                android:layout_marginTop="16dp" android:layout_marginStart="12dp"
+                android:textColor="@color/primaryTextColor"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+        <TextView
+                android:text="Subscribed, 0 notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/topic_status"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" android:layout_marginStart="12dp"/>
+    </LinearLayout>
+
 </LinearLayout>
 
