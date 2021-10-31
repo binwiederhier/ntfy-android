@@ -29,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:contentDescription="@string/main_add_button_description"
-            android:src="@drawable/ic_add_white_24dp"
+            android:src="@drawable/ic_add_black_24dp"
+            app:tint="@color/primaryLightTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:backgroundTint="@color/primaryColor"/>
 

@@ -1,11 +1,7 @@
 package io.heckel.ntfy.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,34 +9,17 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
-import io.heckel.ntfy.R
-import kotlin.random.Random
 import com.google.firebase.messaging.FirebaseMessaging
+import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.*
+import io.heckel.ntfy.data.Subscription
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     private val subscriptionsViewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
-    }
-
-    fun doStuff() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-            val token = task.result
-
-            // Log and toast
-            Log.d(TAG, "message token: $token")
-        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
