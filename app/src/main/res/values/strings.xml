@@ -18,7 +18,6 @@
     <string name="main_item_status_reconnecting">reconnecting …</string>
     <string name="main_item_status_text_one">%1$d notification received</string>
     <string name="main_item_status_text_not_one">%1$d notifications received</string>
-    <string name="main_item_popup_unsubscribe">Unsubscribe</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
 
@@ -34,7 +33,10 @@
     <string name="detail_delete_dialog_message">Do you really want to permanently delete this subscription and all its messages?</string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
+    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
+    <string name="detail_test_message_error">Could not send test message: %1$s</string>
 
     <!-- Detail activity: Action bar -->
+    <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_delete">Delete topic</string>
 </resources>

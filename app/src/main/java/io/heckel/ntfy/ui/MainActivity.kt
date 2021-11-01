@@ -3,20 +3,18 @@ package io.heckel.ntfy.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
@@ -28,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        // TODO implement multi-select delete - https://enoent.fr/posts/recyclerview-basics/
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
@@ -65,11 +65,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_action_source -> {
+            R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
             }
-            R.id.detail_menu_delete -> {
+            R.id.main_menu_website -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_base_url))))
                 true
             }
@@ -83,12 +83,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSubscribe(topic: String, baseUrl: String) {
+        Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
+
         val subscription = Subscription(id = Random.nextLong(), baseUrl = baseUrl, topic = topic, notifications = 0, lastActive = Date().time/1000)
         viewModel.add(subscription)
         FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
     }
 
     private fun onSubscriptionItemClick(subscription: Subscription) {
+        Log.d(TAG, "Entering detail view for subscription $subscription")
+
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscription.id)
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
@@ -100,6 +104,8 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_DELETE_SUBSCRIPTION && resultCode == RESULT_OK) {
             val subscriptionId = data?.getLongExtra(EXTRA_SUBSCRIPTION_ID, 0)
             val subscriptionTopic = data?.getStringExtra(EXTRA_SUBSCRIPTION_TOPIC)
+            Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
+
             subscriptionId?.let { id -> viewModel.remove(id) }
             subscriptionTopic?.let { topic -> FirebaseMessaging.getInstance().unsubscribeFromTopic(topic) } // FIXME This only works for ntfy.sh
         } else {
