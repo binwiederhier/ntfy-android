@@ -36,10 +36,11 @@ class MessagingService : FirebaseMessagingService() {
 
         // Check if valid data, and send notification
         val data = remoteMessage.data
+        val id = data["id"]
         val timestamp = data["time"]?.toLongOrNull()
         val topic = data["topic"]
         val message = data["message"]
-        if (topic == null || message == null || timestamp == null) {
+        if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
             return
         }
@@ -53,7 +54,7 @@ class MessagingService : FirebaseMessagingService() {
             repository.updateSubscription(newSubscription)
 
             // Add notification
-            val notification = Notification(id = Random.nextLong(), subscriptionId = subscription.id, timestamp = timestamp, message = message)
+            val notification = Notification(id = id, subscriptionId = subscription.id, timestamp = timestamp, message = message)
             repository.addNotification(notification)
 
             // Send notification

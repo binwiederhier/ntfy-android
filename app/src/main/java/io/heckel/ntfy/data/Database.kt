@@ -16,7 +16,7 @@ data class Subscription(
 
 @Entity
 data class Notification(
-    @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
+    @PrimaryKey val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "message")  val message: String

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Update main list based on viewModel (& its datasource/livedata)
-        val noEntriesText: View = findViewById(R.id.main_no_subscriptions_text)
+        val noEntries: View = findViewById(R.id.main_no_subscriptions)
         val adapter = SubscriptionsAdapter { subscription -> onSubscriptionItemClick(subscription) }
         val mainList: RecyclerView = findViewById(R.id.main_subscriptions_list)
         mainList.adapter = adapter
@@ -49,10 +49,10 @@ class MainActivity : AppCompatActivity() {
                 adapter.submitList(it as MutableList<Subscription>)
                 if (it.isEmpty()) {
                     mainList.visibility = View.GONE
-                    noEntriesText.visibility = View.VISIBLE
+                    noEntries.visibility = View.VISIBLE
                 } else {
                     mainList.visibility = View.VISIBLE
-                    noEntriesText.visibility = View.GONE
+                    noEntries.visibility = View.GONE
                 }
             }
         }
@@ -118,6 +118,6 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         const val EXTRA_SUBSCRIPTION_BASE_URL = "subscriptionBaseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
-        const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1;
+        const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
     }
 }
