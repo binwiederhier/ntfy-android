@@ -13,6 +13,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="10dp"
             android:background="?android:attr/selectableItemBackground"
             app:layoutManager="LinearLayoutManager" android:visibility="gone"/>
 

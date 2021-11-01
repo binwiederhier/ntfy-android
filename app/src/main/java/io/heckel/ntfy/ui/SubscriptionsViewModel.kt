@@ -21,6 +21,10 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
     fun remove(subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {
         repository.removeSubscription(subscriptionId)
     }
+
+    suspend fun get(baseUrl: String, topic: String): Subscription? {
+        return repository.getSubscription(baseUrl, topic)
+    }
 }
 
 class SubscriptionsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {

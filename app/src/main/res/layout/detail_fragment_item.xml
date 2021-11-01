@@ -11,8 +11,8 @@
             android:id="@+id/detail_item_date_text"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            android:layout_marginTop="10dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
     <TextView
             android:text="This is a very very very long message. It could be as long as 1024 charaters, which is a lot more than you'd think. No, really so far this message is barely 180 characters long. I can't believe how long 1024 bytes are. This is outrageous. Oh you know what, I think I won't type the whole thing. This seems a little too long for a sample text. Well, anyway, it was nice chatting. So far this message is about 400 bytes long. So maybe just double what you see and that's that."
             android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:id="@+id/detail_item_message_text"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/primaryTextColor"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 

@@ -8,16 +8,19 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
+class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
@@ -75,11 +78,11 @@ class MainActivity : AppCompatActivity(), AddFragment.AddSubscriptionListener {
     }
 
     private fun onSubscribeButtonClick() {
-        val newFragment = AddFragment(this)
+        val newFragment = AddFragment(viewModel) { topic, baseUrl -> onSubscribe(topic, baseUrl) }
         newFragment.show(supportFragmentManager, "AddFragment")
     }
 
-    override fun onSubscribe(topic: String, baseUrl: String) {
+    private fun onSubscribe(topic: String, baseUrl: String) {
         val subscription = Subscription(id = Random.nextLong(), baseUrl = baseUrl, topic = topic, notifications = 0, lastActive = Date().time/1000)
         viewModel.add(subscription)
         FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
