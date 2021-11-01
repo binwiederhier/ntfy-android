@@ -9,7 +9,7 @@
    id="svg8"
    inkscape:version="1.1.1 (3bf5ae0, 2021-09-20)"
    sodipodi:docname="launcher_full.svg"
-   inkscape:export-filename="/home/pheckel/Code/ntfy-android/assets/launcher_fg.png"
+   inkscape:export-filename="/home/pheckel/Code/ntfy-android/assets/launcher_full_fg.png"
    inkscape:export-xdpi="258.69"
    inkscape:export-ydpi="258.69"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -178,7 +178,7 @@
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="drop shadow"
-     style="display:inline" />
+     style="display:none" />
   <g
      inkscape:label="foreground"
      inkscape:groupmode="layer"
@@ -211,7 +211,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="round icon preview"
-     style="display:inline">
+     style="display:none">
     <path
        id="path18850-8"
        style="display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
