@@ -36,6 +36,32 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:padding="10dp" android:gravity="center_horizontal"
                 android:paddingStart="50dp" android:paddingEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_intro"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_example"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_example"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_link"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:linksClickable="true"
+                android:autoLink="web"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

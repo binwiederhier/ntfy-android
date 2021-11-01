@@ -3,10 +3,12 @@ package io.heckel.ntfy.ui
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +43,19 @@ class DetailActivity : AppCompatActivity() {
 
         // Set title
         val subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
-        title = topicShortUrl(subscriptionBaseUrl, subscriptionTopic)
+        val topicUrl = topicShortUrl(subscriptionBaseUrl, subscriptionTopic)
+        title = topicUrl
+
+        // Set "how to instructions"
+        val howToExample: TextView = findViewById(R.id.detail_how_to_example)
+        howToExample.linksClickable = true
+
+        val howToText = getString(R.string.detail_how_to_example, topicUrl)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            howToExample.text = Html.fromHtml(howToText)
+        }
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
