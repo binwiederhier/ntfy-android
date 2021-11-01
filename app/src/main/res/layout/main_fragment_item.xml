@@ -6,7 +6,7 @@
               android:orientation="horizontal" android:clickable="true" android:focusable="true">
     <ImageView
             android:layout_width="35dp"
-            android:layout_height="match_parent" app:srcCompat="@drawable/outline_sms_24"
+            android:layout_height="match_parent" app:srcCompat="@drawable/ic_sms_gray_24dp"
             android:id="@+id/topic_image" android:layout_marginStart="20dp"/>
     <LinearLayout
             android:orientation="vertical"

@@ -21,7 +21,7 @@
             android:id="@+id/main_no_subscriptions">
         <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_black_48dp"
+                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"
                 android:id="@+id/main_no_subscriptions_image"/>
         <TextView
                 android:id="@+id/main_no_subscriptions_text"
