@@ -10,9 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import io.heckel.ntfy.R
@@ -20,10 +18,6 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
 import java.util.*
 
 
@@ -50,7 +44,7 @@ class DetailActivity : AppCompatActivity() {
         title = topicShortUrl(subscriptionBaseUrl, subscriptionTopic)
 
         // Update main list based on viewModel (& its datasource/livedata)
-        val noEntriesText: View = findViewById(R.id.detail_no_notifications_text)
+        val noEntriesText: View = findViewById(R.id.detail_no_notifications)
         val adapter = DetailAdapter { notification -> onNotificationClick(notification) }
         val mainList: RecyclerView = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
