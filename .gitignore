@@ -1,6 +1,13 @@
 # Google services (Firebase/FCM) config and keys
 google-services.json
 
+# Signing keystore
+.keystores/
+.signing/
+
+# Release
+app/release/
+
 # built application files
 *.apk
 *.ap_
