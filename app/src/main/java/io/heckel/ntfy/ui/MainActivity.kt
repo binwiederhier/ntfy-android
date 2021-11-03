@@ -1,14 +1,18 @@
 package io.heckel.ntfy.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
@@ -18,30 +22,35 @@ import io.heckel.ntfy.data.topicShortUrl
 import java.util.*
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
+    private lateinit var mainList: RecyclerView
+    private lateinit var adapter: MainAdapter
+    private lateinit var fab: View
+    private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        // TODO implement multi-select delete - https://enoent.fr/posts/recyclerview-basics/
-
         // Action bar
         title = getString(R.string.main_action_bar_title)
 
         // Floating action button ("+")
-        val fab: View = findViewById(R.id.fab)
+        fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             onSubscribeButtonClick()
         }
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntries: View = findViewById(R.id.main_no_subscriptions)
-        val adapter = SubscriptionsAdapter { subscription -> onSubscriptionItemClick(subscription) }
-        val mainList: RecyclerView = findViewById(R.id.main_subscriptions_list)
+        val onSubscriptionClick = { s: Subscription -> onSubscriptionItemClick(s) }
+        val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
+
+        mainList = findViewById(R.id.main_subscriptions_list)
+        adapter = MainAdapter(onSubscriptionClick, onSubscriptionLongClick)
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {
@@ -85,7 +94,13 @@ class MainActivity : AppCompatActivity() {
     private fun onSubscribe(topic: String, baseUrl: String) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
 
-        val subscription = Subscription(id = Random.nextLong(), baseUrl = baseUrl, topic = topic, notifications = 0, lastActive = Date().time/1000)
+        val subscription = Subscription(
+            id = Random.nextLong(),
+            baseUrl = baseUrl,
+            topic = topic,
+            notifications = 0,
+            lastActive = Date().time/1000
+        )
         viewModel.add(subscription)
         FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
 
@@ -93,6 +108,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSubscriptionItemClick(subscription: Subscription) {
+        if (actionMode != null) {
+            handleActionModeClick(subscription)
+        } else {
+            startDetailView(subscription)
+        }
+    }
+
+    private fun onSubscriptionItemLongClick(subscription: Subscription) {
+        if (actionMode == null) {
+            beginActionMode(subscription)
+        }
+    }
+
+    private fun startDetailView(subscription: Subscription) {
         Log.d(TAG, "Entering detail view for subscription $subscription")
 
         val intent = Intent(this, DetailActivity::class.java)
@@ -115,11 +144,133 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleActionModeClick(subscription: Subscription) {
+        adapter.toggleSelection(subscription.id)
+        if (adapter.selected.size == 0) {
+            finishActionMode()
+        } else {
+            actionMode!!.title = adapter.selected.size.toString()
+            redrawList()
+        }
+    }
+
+    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        this.actionMode = mode
+        if (mode != null) {
+            mode.menuInflater.inflate(R.menu.main_action_mode_menu, menu)
+            mode.title = "1" // One item selected
+        }
+        return true
+    }
+
+    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        return false
+    }
+
+    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.main_action_mode_unsubscribe -> {
+                onMultiDeleteClick()
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun onMultiDeleteClick() {
+        Log.d(DetailActivity.TAG, "Showing multi-delete dialog for selected items")
+
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setMessage(R.string.main_action_mode_delete_dialog_message)
+            .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
+                adapter.selected.map { viewModel.remove(it) }
+                finishActionMode()
+            }
+            .setNegativeButton(R.string.main_action_mode_delete_dialog_cancel) { _, _ ->
+                finishActionMode()
+            }
+            .create()
+            .show()
+    }
+
+    override fun onDestroyActionMode(mode: ActionMode?) {
+        endActionModeAndRedraw()
+    }
+
+    private fun beginActionMode(subscription: Subscription) {
+        actionMode = startActionMode(this)
+        adapter.selected.add(subscription.id)
+        redrawList()
+
+        // Fade out FAB
+        fab.alpha = 1f
+        fab
+            .animate()
+            .alpha(0f)
+            .setDuration(ANIMATION_DURATION)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    fab.visibility = View.GONE
+                }
+            })
+
+        // Fade status bar color
+        val fromColor = ContextCompat.getColor(this, R.color.primaryColor)
+        val toColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
+        fadeStatusBarColor(fromColor, toColor)
+    }
+
+    private fun finishActionMode() {
+        actionMode!!.finish()
+        endActionModeAndRedraw()
+    }
+
+    private fun endActionModeAndRedraw() {
+        actionMode = null
+        adapter.selected.clear()
+        redrawList()
+
+        // Fade in FAB
+        fab.alpha = 0f
+        fab.visibility = View.VISIBLE
+        fab
+            .animate()
+            .alpha(1f)
+            .setDuration(ANIMATION_DURATION)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    fab.visibility = View.VISIBLE // Required to replace the old listener
+                }
+            })
+
+        // Fade status bar color
+        val fromColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
+        val toColor = ContextCompat.getColor(this, R.color.primaryColor)
+        fadeStatusBarColor(fromColor, toColor)
+
+    }
+
+    private fun redrawList() {
+        mainList.adapter = adapter // Oh, what a hack ...
+    }
+
+    private fun fadeStatusBarColor(fromColor: Int, toColor: Int) {
+        // Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
+        val statusBarColorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
+        statusBarColorAnimation.addUpdateListener { animator ->
+            val color = animator.animatedValue as Int
+            window.statusBarColor = color
+        }
+        statusBarColorAnimation.start()
+    }
+
     companion object {
         const val TAG = "NtfyMainActivity"
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         const val EXTRA_SUBSCRIPTION_BASE_URL = "subscriptionBaseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
         const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
+        const val ANIMATION_DURATION = 80L
     }
 }

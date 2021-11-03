@@ -13,6 +13,11 @@
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 
+    <!-- Main activity: Action mode -->
+    <string name="main_action_mode_delete_dialog_message">Do you really want to unsubscribe from selected topic(s) and permanently delete all the messages you received?</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
+    <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
+
     <!-- Main activity: List and such -->
     <string name="main_item_status_connecting">connecting …</string>
     <string name="main_item_status_reconnecting">reconnecting …</string>
@@ -35,7 +40,7 @@
     <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
-    <string name="detail_delete_dialog_message">Do you really want to permanently delete this subscription and all its messages?</string>
+    <string name="detail_delete_dialog_message">Do you really want to unsubscribe from this topic and delete all of the messages you received?</string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
     <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>

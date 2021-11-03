@@ -86,7 +86,6 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
         val topic = topicNameText.text.toString()
         val subscription = viewModel.get(baseUrl, topic)
 
-        println("sub $subscription")
         activity?.let {
             it.runOnUiThread {
                 if (subscription != null) {

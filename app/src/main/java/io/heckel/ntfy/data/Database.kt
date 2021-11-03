@@ -10,8 +10,8 @@ data class Subscription(
     @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
-    @ColumnInfo(name = "notifications")  val notifications: Int,
-    @ColumnInfo(name = "lastActive")  val lastActive: Long // Unix timestamp
+    @ColumnInfo(name = "notifications") val notifications: Int,
+    @ColumnInfo(name = "lastActive") val lastActive: Long, // Unix timestamp
 )
 
 @Entity

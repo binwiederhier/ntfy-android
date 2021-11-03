@@ -88,7 +88,7 @@ class DetailActivity : AppCompatActivity() {
                 onTestClick()
                 true
             }
-            R.id.detail_menu_delete -> {
+            R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
             }

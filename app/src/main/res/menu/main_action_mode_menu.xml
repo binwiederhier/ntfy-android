@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/main_action_mode_unsubscribe" android:title="@string/detail_menu_unsubscribe"
+          android:icon="@drawable/baseline_delete_20"/>
+</menu>

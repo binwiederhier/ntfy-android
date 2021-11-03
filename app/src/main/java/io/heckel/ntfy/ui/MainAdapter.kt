@@ -12,14 +12,16 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 
-class SubscriptionsAdapter(private val onClick: (Subscription) -> Unit) :
-    ListAdapter<Subscription, SubscriptionsAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
+
+class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
+    ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
+    val selected = mutableSetOf<Long>()
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.main_fragment_item, parent, false)
-        return SubscriptionViewHolder(view, onClick)
+        return SubscriptionViewHolder(view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -28,8 +30,16 @@ class SubscriptionsAdapter(private val onClick: (Subscription) -> Unit) :
         holder.bind(subscription)
     }
 
+    fun toggleSelection(subscriptionId: Long) {
+        if (selected.contains(subscriptionId)) {
+            selected.remove(subscriptionId)
+        } else {
+            selected.add(subscriptionId)
+        }
+    }
+
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, val onClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
@@ -46,6 +56,10 @@ class SubscriptionsAdapter(private val onClick: (Subscription) -> Unit) :
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             itemView.setOnClickListener { onClick(subscription) }
+            itemView.setOnLongClickListener { onLongClick(subscription); true }
+            if (selected.contains(subscription.id)) {
+                itemView.setBackgroundResource(R.color.primarySelectedRowColor);
+            }
         }
     }
 
