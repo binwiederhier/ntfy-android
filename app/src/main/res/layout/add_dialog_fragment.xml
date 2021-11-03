@@ -11,16 +11,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:paddingBottom="3dp"
             android:text="@string/add_dialog_title"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"/>
 
     <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_dialog_topic_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
             android:maxLines="1" android:inputType="text"/>
+    <TextView
+            android:text="@string/add_dialog_description_below"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_description_below"
+            android:paddingStart="4dp" android:paddingTop="3dp"/>
     <CheckBox
             android:text="@string/add_dialog_use_another_server"
             android:layout_width="match_parent"

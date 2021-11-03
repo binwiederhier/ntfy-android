@@ -31,6 +31,7 @@
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
+    <string name="add_dialog_description_below">Topics are not password-protected, so choose a name that\'s not easy to guess. Once subscribed, you can PUT/POST to receive notifications on your phone.</string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_button_cancel">Cancel</string>
