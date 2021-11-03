@@ -70,8 +70,8 @@ interface NotificationDao {
     @Insert
     fun add(notification: Notification)
 
-    @Delete
-    fun remove(notification: Notification)
+    @Query("DELETE FROM notification WHERE id = :notificationId")
+    fun remove(notificationId: String)
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)

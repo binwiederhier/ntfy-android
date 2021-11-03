@@ -1,6 +1,5 @@
 package io.heckel.ntfy.ui
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,19 +9,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
-import java.time.Instant
 import java.util.*
 
-class DetailAdapter(private val onClick: (Notification) -> Unit) :
+class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
+    val selected = mutableSetOf<String>() // Notification IDs
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.detail_fragment_item, parent, false)
-        return DetailViewHolder(view, onClick)
+        return DetailViewHolder(view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -30,8 +27,16 @@ class DetailAdapter(private val onClick: (Notification) -> Unit) :
         holder.bind(getItem(position))
     }
 
+    fun toggleSelection(notificationId: String) {
+        if (selected.contains(notificationId)) {
+            selected.remove(notificationId)
+        } else {
+            selected.add(notificationId)
+        }
+    }
+
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(itemView: View, val onClick: (Notification) -> Unit) :
+    class DetailViewHolder(itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
@@ -42,6 +47,10 @@ class DetailAdapter(private val onClick: (Notification) -> Unit) :
             dateView.text = Date(notification.timestamp * 1000).toString()
             messageView.text = notification.message
             itemView.setOnClickListener { onClick(notification) }
+            itemView.setOnLongClickListener { onLongClick(notification); true }
+            if (selected.contains(notification.id)) {
+                itemView.setBackgroundResource(R.color.primarySelectedRowColor);
+            }
         }
     }
 

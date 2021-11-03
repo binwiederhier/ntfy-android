@@ -15,7 +15,7 @@ import io.heckel.ntfy.data.topicShortUrl
 
 class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
     ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
-    val selected = mutableSetOf<Long>()
+    val selected = mutableSetOf<Long>() // Subscription IDs
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
@@ -39,7 +39,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context

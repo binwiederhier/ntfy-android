@@ -19,8 +19,8 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
         repository.addNotification(notification)
     }
 
-    fun remove(notification: Notification) = viewModelScope.launch(Dispatchers.IO) {
-        repository.removeNotification(notification)
+    fun remove(notificationId: String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.removeNotification(notificationId)
     }
 
     fun removeAll(subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {

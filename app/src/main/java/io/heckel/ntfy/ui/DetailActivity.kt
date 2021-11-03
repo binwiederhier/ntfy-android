@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
+import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -23,13 +25,20 @@ import io.heckel.ntfy.data.topicUrl
 import java.util.*
 
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
+
+    // Which subscription are we looking at
     private var subscriptionId: Long = 0L // Set in onCreate()
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
+
+    // Action mode stuff
+    private lateinit var mainList: RecyclerView
+    private lateinit var adapter: DetailAdapter
+    private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +68,11 @@ class DetailActivity : AppCompatActivity() {
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
-        val adapter = DetailAdapter { notification -> onNotificationClick(notification) }
-        val mainList: RecyclerView = findViewById(R.id.detail_notification_list)
+        val onNotificationClick = { n: Notification -> onNotificationClick(n) }
+        val onNotificationLongClick = { n: Notification -> onNotificationLongClick(n) }
+
+        adapter = DetailAdapter(onNotificationClick, onNotificationLongClick)
+        mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
 
         viewModel.list(subscriptionId).observe(this) {
@@ -141,7 +153,100 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun onNotificationClick(notification: Notification) {
-        // TODO Do something
+        if (actionMode != null) {
+            handleActionModeClick(notification)
+        }
+    }
+
+    private fun onNotificationLongClick(notification: Notification) {
+        if (actionMode == null) {
+            beginActionMode(notification)
+        }
+    }
+
+    private fun handleActionModeClick(notification: Notification) {
+        adapter.toggleSelection(notification.id)
+        if (adapter.selected.size == 0) {
+            finishActionMode()
+        } else {
+            actionMode!!.title = adapter.selected.size.toString()
+            redrawList()
+        }
+    }
+
+    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        this.actionMode = mode
+        if (mode != null) {
+            mode.menuInflater.inflate(R.menu.detail_action_mode_menu, menu)
+            mode.title = "1" // One item selected
+        }
+        return true
+    }
+
+    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+        return false
+    }
+
+    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.detail_action_mode_delete -> {
+                onMultiDeleteClick()
+                true
+            }
+            else -> false
+        }
+    }
+
+    private fun onMultiDeleteClick() {
+        Log.d(TAG, "Showing multi-delete dialog for selected items")
+
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setMessage(R.string.detail_action_mode_delete_dialog_message)
+            .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
+                adapter.selected.map { viewModel.remove(it) }
+                finishActionMode()
+            }
+            .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->
+                finishActionMode()
+            }
+            .create()
+            .show()
+    }
+
+    override fun onDestroyActionMode(mode: ActionMode?) {
+        endActionModeAndRedraw()
+    }
+
+    private fun beginActionMode(notification: Notification) {
+        actionMode = startActionMode(this)
+        adapter.selected.add(notification.id)
+        redrawList()
+
+        // Fade status bar color
+        val fromColor = ContextCompat.getColor(this, R.color.primaryColor)
+        val toColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
+        fadeStatusBarColor(window, fromColor, toColor)
+    }
+
+    private fun finishActionMode() {
+        actionMode!!.finish()
+        endActionModeAndRedraw()
+    }
+
+    private fun endActionModeAndRedraw() {
+        actionMode = null
+        adapter.selected.clear()
+        redrawList()
+
+        // Fade status bar color
+        val fromColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
+        val toColor = ContextCompat.getColor(this, R.color.primaryColor)
+        fadeStatusBarColor(window, fromColor, toColor)
+    }
+
+    private fun redrawList() {
+        mainList.adapter = adapter // Oh, what a hack ...
     }
 
     companion object {

@@ -14,6 +14,7 @@
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 
     <!-- Main activity: Action mode -->
+    <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
     <string name="main_action_mode_delete_dialog_message">Do you really want to unsubscribe from selected topic(s) and permanently delete all the messages you received?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
@@ -49,4 +50,10 @@
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
+
+    <!-- Detail activity: Action mode -->
+    <string name="detail_action_mode_menu_delete">Delete</string>
+    <string name="detail_action_mode_delete_dialog_message">Do you really want to permanently delete the selected message(s)?</string>
+    <string name="detail_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
+    <string name="detail_action_mode_delete_dialog_cancel">Cancel</string>
 </resources>

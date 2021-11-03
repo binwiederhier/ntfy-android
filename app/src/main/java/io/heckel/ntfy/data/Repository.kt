@@ -46,8 +46,8 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun removeNotification(notification: Notification) {
-        notificationDao.remove(notification)
+    suspend fun removeNotification(notificationId: String) {
+        notificationDao.remove(notificationId)
     }
 
     @Suppress("RedundantSuspendModifier")

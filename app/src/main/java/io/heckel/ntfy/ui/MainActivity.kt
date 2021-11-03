@@ -2,8 +2,6 @@ package io.heckel.ntfy.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
@@ -169,7 +167,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
-            R.id.main_action_mode_unsubscribe -> {
+            R.id.main_action_mode_delete -> {
                 onMultiDeleteClick()
                 true
             }
@@ -218,7 +216,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, R.color.primaryColor)
         val toColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
-        fadeStatusBarColor(fromColor, toColor)
+        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun finishActionMode() {
@@ -247,22 +245,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
         val toColor = ContextCompat.getColor(this, R.color.primaryColor)
-        fadeStatusBarColor(fromColor, toColor)
-
+        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun redrawList() {
         mainList.adapter = adapter // Oh, what a hack ...
-    }
-
-    private fun fadeStatusBarColor(fromColor: Int, toColor: Int) {
-        // Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
-        val statusBarColorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
-        statusBarColorAnimation.addUpdateListener { animator ->
-            val color = animator.animatedValue as Int
-            window.statusBarColor = color
-        }
-        statusBarColorAnimation.start()
     }
 
     companion object {
