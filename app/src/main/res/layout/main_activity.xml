@@ -10,6 +10,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="10dp"
             android:background="?android:attr/selectableItemBackground"
             app:layoutManager="LinearLayoutManager" android:visibility="gone"/>
     <LinearLayout
@@ -31,6 +32,24 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:padding="10dp" android:gravity="center_horizontal"
                 android:paddingStart="50dp" android:paddingEnd="50dp"/>
+        <TextView
+                android:text="@string/main_how_to_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_how_to_intro"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"/>
+        <TextView
+                android:text="@string/main_how_to_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_how_to_link"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:linksClickable="true"
+                android:autoLink="web"/>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

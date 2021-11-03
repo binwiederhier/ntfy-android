@@ -1,4 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/detail_menu_test" android:title="@string/detail_menu_test"/>
-    <item android:id="@+id/detail_menu_delete" android:title="@string/detail_menu_delete"/>
+    <item android:id="@+id/detail_menu_delete" android:title="@string/detail_menu_unsubscribe"/>
 </menu>

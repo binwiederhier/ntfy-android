@@ -88,6 +88,8 @@ class MainActivity : AppCompatActivity() {
         val subscription = Subscription(id = Random.nextLong(), baseUrl = baseUrl, topic = topic, notifications = 0, lastActive = Date().time/1000)
         viewModel.add(subscription)
         FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
+
+        onSubscriptionItemClick(subscription) // Add to detail view after adding it
     }
 
     private fun onSubscriptionItemClick(subscription: Subscription) {
