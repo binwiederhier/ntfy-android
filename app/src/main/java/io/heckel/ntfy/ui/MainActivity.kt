@@ -100,7 +100,17 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             lastActive = Date().time/1000
         )
         viewModel.add(subscription)
-        FirebaseMessaging.getInstance().subscribeToTopic(topic) // FIXME ignores baseUrl
+        FirebaseMessaging
+            .getInstance()
+            .subscribeToTopic(topic)
+            .addOnCompleteListener {
+                Log.d(TAG, "Subscribing to topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Subscribing to topic failed: $it")
+            }
+
+        // FIXME ignores baseUrl
 
         onSubscriptionItemClick(subscription) // Add to detail view after adding it
     }

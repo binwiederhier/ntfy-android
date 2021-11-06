@@ -66,6 +66,7 @@ class MessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         // Called if the FCM registration token is updated
         // We don't actually use or care about the token, since we're using topics
+        Log.d(TAG, "Registration token was updated: $token")
     }
 
     override fun onDestroy() {
