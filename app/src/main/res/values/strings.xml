@@ -42,6 +42,9 @@
     <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
+    <string name="detail_clear_dialog_message">Do you really want to delete all of the messages you received?</string>
+    <string name="detail_clear_dialog_permanently_delete">Permanently delete</string>
+    <string name="detail_clear_dialog_cancel">Cancel</string>
     <string name="detail_delete_dialog_message">Do you really want to unsubscribe from this topic and delete all of the messages you received?</string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
@@ -52,8 +55,9 @@
     <string name="detail_refresh_message_error">Could not refresh topic: %1$s</string>
 
     <!-- Detail activity: Action bar -->
-    <string name="detail_menu_refresh">Force refresh</string>
     <string name="detail_menu_test">Send test notification</string>
+    <string name="detail_menu_refresh">Fetch cached notifications</string>
+    <string name="detail_menu_clear">Clear notifications</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->

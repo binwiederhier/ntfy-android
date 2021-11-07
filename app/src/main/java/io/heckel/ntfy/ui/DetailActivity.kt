@@ -115,6 +115,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onRefreshClick()
                 true
             }
+            R.id.detail_menu_clear -> {
+                onClearClick()
+                true
+            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -123,7 +127,22 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
+    private fun onTestClick() {
+        Log.d(TAG, "Sending test notification to ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+
+        val message = getString(R.string.detail_test_message, Date().toString())
+        val successFn = { _: String -> }
+        val failureFn = { error: VolleyError ->
+            Toast
+                .makeText(this, getString(R.string.detail_test_message_error, error.message), Toast.LENGTH_LONG)
+                .show()
+        }
+        api.publish(subscriptionBaseUrl, subscriptionTopic, message, successFn, failureFn)
+    }
+
     private fun onRefreshClick() {
+        Log.d(TAG, "Fetching cached notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+
         val activity = this
         val successFn = { notifications: List<Notification> ->
             lifecycleScope.launch(Dispatchers.IO) {
@@ -147,15 +166,16 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, successFn, failureFn)
     }
 
-    private fun onTestClick() {
-        val message = getString(R.string.detail_test_message, Date().toString())
-        val successFn = { _: String -> }
-        val failureFn = { error: VolleyError ->
-            Toast
-                .makeText(this, getString(R.string.detail_test_message_error, error.message), Toast.LENGTH_LONG)
-                .show()
-        }
-        api.publish(subscriptionBaseUrl, subscriptionTopic, message, successFn, failureFn)
+    private fun onClearClick() {
+        val builder = AlertDialog.Builder(this)
+        builder
+            .setMessage(R.string.detail_clear_dialog_message)
+            .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
+                viewModel.removeAll(subscriptionId)
+            }
+            .setNegativeButton(R.string.detail_clear_dialog_cancel) { _, _ -> /* Do nothing */ }
+            .create()
+            .show()
     }
 
     private fun onDeleteClick() {

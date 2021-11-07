@@ -8,15 +8,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.msg.ApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
@@ -24,14 +30,19 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
+    private val repository by lazy { (application as Application).repository }
     private lateinit var mainList: RecyclerView
     private lateinit var adapter: MainAdapter
     private lateinit var fab: View
     private var actionMode: ActionMode? = null
+    private lateinit var api: ApiService // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        // Dependencies that depend on Context
+        api = ApiService(this)
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
@@ -90,8 +101,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     }
 
     private fun onSubscribe(topic: String, baseUrl: String) {
+        // FIXME ignores baseUrl
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
 
+        // Add subscription to database
         val subscription = Subscription(
             id = Random.nextLong(),
             baseUrl = baseUrl,
@@ -100,6 +113,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             lastActive = Date().time/1000
         )
         viewModel.add(subscription)
+
+        // Subscribe to Firebase topic
         FirebaseMessaging
             .getInstance()
             .subscribeToTopic(topic)
@@ -110,9 +125,17 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                 Log.e(TAG, "Subscribing to topic failed: $it")
             }
 
-        // FIXME ignores baseUrl
+        // Fetch cached messages
+        val successFn = { notifications: List<Notification> ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                notifications.forEach { repository.addNotification(it) }
+            }
+            Unit
+        }
+        api.poll(subscription.id, subscription.baseUrl, subscription.topic, successFn, { _ -> })
 
-        onSubscriptionItemClick(subscription) // Add to detail view after adding it
+        // Switch to detail view after adding it
+        onSubscriptionItemClick(subscription)
     }
 
     private fun onSubscriptionItemClick(subscription: Subscription) {
