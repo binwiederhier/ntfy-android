@@ -14,7 +14,9 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import io.heckel.ntfy.R
@@ -22,6 +24,10 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.msg.ApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -29,6 +35,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
+    private val repository by lazy { (application as Application).repository }
+    private lateinit var api: ApiService // Context-dependent
 
     // Which subscription are we looking at
     private var subscriptionId: Long = 0L // Set in onCreate()
@@ -44,6 +52,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
         supportActionBar?.setDisplayHomeAsUpEnabled(true) // Show 'Back' button
+
+        // Dependencies that depend on Context
+        api = ApiService(this)
 
         // Get extras required for the return to the main activity
         subscriptionId = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, 0)
@@ -100,6 +111,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onTestClick()
                 true
             }
+            R.id.detail_menu_refresh -> {
+                onRefreshClick()
+                true
+            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -108,26 +123,39 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
-    private fun onTestClick() {
-        val url = topicUrl(subscriptionBaseUrl, subscriptionTopic)
-        Log.d(TAG, "Sending test notification to $url")
-
-        val queue = Volley.newRequestQueue(this) // This should be a Singleton :-O
-        val stringRequest = object : StringRequest(
-            Method.PUT,
-            url,
-            { _ -> /* Do nothing */ },
-            { error ->
-                Toast
-                    .makeText(this, getString(R.string.detail_test_message_error, error.message), Toast.LENGTH_LONG)
-                    .show()
+    private fun onRefreshClick() {
+        val activity = this
+        val successFn = { notifications: List<Notification> ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                val localNotificationIds = repository.getAllNotificationIds(subscriptionId)
+                val newNotifications = notifications.filterNot { localNotificationIds.contains(it.id) }
+                val toastMessage = if (newNotifications.isEmpty()) {
+                    getString(R.string.detail_refresh_message_no_results)
+                } else {
+                    getString(R.string.detail_refresh_message_result, newNotifications.size)
+                }
+                newNotifications.forEach { repository.addNotification(it) } // The meat!
+                runOnUiThread { Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show() }
             }
-        ) {
-            override fun getBody(): ByteArray {
-                return getString(R.string.detail_test_message, Date().toString()).toByteArray()
-            }
+            Unit
         }
-        queue.add(stringRequest)
+        val failureFn = { error: Exception ->
+            Toast
+                .makeText(this, getString(R.string.detail_refresh_message_error, error.message), Toast.LENGTH_LONG)
+                .show()
+        }
+        api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, successFn, failureFn)
+    }
+
+    private fun onTestClick() {
+        val message = getString(R.string.detail_test_message, Date().toString())
+        val successFn = { _: String -> }
+        val failureFn = { error: VolleyError ->
+            Toast
+                .makeText(this, getString(R.string.detail_test_message_error, error.message), Toast.LENGTH_LONG)
+                .show()
+        }
+        api.publish(subscriptionBaseUrl, subscriptionTopic, message, successFn, failureFn)
     }
 
     private fun onDeleteClick() {

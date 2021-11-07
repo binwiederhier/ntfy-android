@@ -67,6 +67,9 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId ORDER BY timestamp DESC")
     fun list(subscriptionId: Long): Flow<List<Notification>>
 
+    @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId")
+    fun listIds(subscriptionId: Long): List<String>
+
     @Insert
     fun add(notification: Notification)
 

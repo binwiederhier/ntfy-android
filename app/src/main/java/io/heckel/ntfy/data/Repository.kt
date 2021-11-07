@@ -3,6 +3,7 @@ package io.heckel.ntfy.data
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import kotlinx.coroutines.flow.Flow
 
 class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
     fun getAllSubscriptions(): LiveData<List<Subscription>> {
@@ -37,6 +38,9 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         return notificationDao.list(subscriptionId).asLiveData()
     }
 
+    fun getAllNotificationIds(subscriptionId: Long): List<String> {
+        return notificationDao.listIds(subscriptionId)
+    }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread

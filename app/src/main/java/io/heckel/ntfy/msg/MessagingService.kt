@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
+import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
@@ -23,8 +24,7 @@ import java.util.*
 import kotlin.random.Random
 
 class MessagingService : FirebaseMessagingService() {
-    private val database by lazy { Database.getInstance(this) }
-    private val repository by lazy { Repository.getInstance(database.subscriptionDao(), database.notificationDao()) }
+    private val repository by lazy { (application as Application).repository }
     private val job = SupervisorJob()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

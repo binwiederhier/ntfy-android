@@ -47,8 +47,12 @@
     <string name="detail_delete_dialog_cancel">Cancel</string>
     <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
+    <string name="detail_refresh_message_result">%1$d notification(s) added</string>
+    <string name="detail_refresh_message_no_results">No new notifications found</string>
+    <string name="detail_refresh_message_error">Could not refresh topic: %1$s</string>
 
     <!-- Detail activity: Action bar -->
+    <string name="detail_menu_refresh">Force refresh</string>
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
