@@ -1,6 +1,10 @@
 package io.heckel.ntfy.ui
 
+import android.R.attr.label
 import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
@@ -17,16 +21,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.VolleyError
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
-import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -203,7 +203,19 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private fun onNotificationClick(notification: Notification) {
         if (actionMode != null) {
             handleActionModeClick(notification)
+        } else {
+            copyToClipboard(notification)
         }
+    }
+
+    private fun copyToClipboard(notification: Notification) {
+        val message = notification.message + "\n\n" + Date(notification.timestamp * 1000).toString()
+        val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("notification message", message)
+        clipboard.setPrimaryClip(clip)
+        Toast
+            .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun onNotificationLongClick(notification: Notification) {

@@ -92,12 +92,12 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
                     subscribeButton.isEnabled = false
                 } else if (useAnotherServerCheckbox.isChecked) {
                     subscribeButton.isEnabled = topic.isNotBlank()
-                            && "[-_A-Za-z0-9]+".toRegex().matches(topic)
+                            && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
                             && baseUrl.isNotBlank()
                             && "^https?://.+".toRegex().matches(baseUrl)
                 } else {
                     subscribeButton.isEnabled = topic.isNotBlank()
-                            && "[-_A-Za-z0-9]+".toRegex().matches(topic)
+                            && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
                 }
             }
         }

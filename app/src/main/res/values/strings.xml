@@ -53,6 +53,7 @@
     <string name="detail_refresh_message_result">%1$d notification(s) added</string>
     <string name="detail_refresh_message_no_results">No new notifications found</string>
     <string name="detail_refresh_message_error">Could not refresh topic: %1$s</string>
+    <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
