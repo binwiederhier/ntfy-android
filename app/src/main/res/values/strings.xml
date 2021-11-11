@@ -9,6 +9,7 @@
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
+    <string name="main_menu_refresh">Force refresh</string>
     <string name="main_menu_source_title">Show source &amp; license</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
@@ -20,8 +21,6 @@
     <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
 
     <!-- Main activity: List and such -->
-    <string name="main_item_status_connecting">connecting …</string>
-    <string name="main_item_status_reconnecting">reconnecting …</string>
     <string name="main_item_status_text_one">%1$d notification received</string>
     <string name="main_item_status_text_not_one">%1$d notifications received</string>
     <string name="main_add_button_description">Add subscription</string>
@@ -42,9 +41,6 @@
     <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
-    <string name="detail_clear_dialog_message">Do you really want to delete all of the messages you received?</string>
-    <string name="detail_clear_dialog_permanently_delete">Permanently delete</string>
-    <string name="detail_clear_dialog_cancel">Cancel</string>
     <string name="detail_delete_dialog_message">Do you really want to unsubscribe from this topic and delete all of the messages you received?</string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
@@ -57,8 +53,7 @@
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
-    <string name="detail_menu_refresh">Fetch cached notifications</string>
-    <string name="detail_menu_clear">Clear notifications</string>
+    <string name="detail_menu_refresh">Force refresh</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->

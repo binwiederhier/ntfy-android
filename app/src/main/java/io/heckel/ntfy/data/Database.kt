@@ -70,7 +70,7 @@ interface NotificationDao {
     @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId")
     fun listIds(subscriptionId: Long): List<String>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)
 
     @Query("DELETE FROM notification WHERE id = :notificationId")

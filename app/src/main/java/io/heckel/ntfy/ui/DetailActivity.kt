@@ -1,6 +1,5 @@
 package io.heckel.ntfy.ui
 
-import android.R.attr.label
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -29,7 +28,6 @@ import io.heckel.ntfy.msg.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-
 
 class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<DetailViewModel> {
@@ -115,10 +113,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onRefreshClick()
                 true
             }
-            R.id.detail_menu_clear -> {
-                onClearClick()
-                true
-            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -164,18 +158,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 .show()
         }
         api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, successFn, failureFn)
-    }
-
-    private fun onClearClick() {
-        val builder = AlertDialog.Builder(this)
-        builder
-            .setMessage(R.string.detail_clear_dialog_message)
-            .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
-                viewModel.removeAll(subscriptionId)
-            }
-            .setNegativeButton(R.string.detail_clear_dialog_cancel) { _, _ -> /* Do nothing */ }
-            .create()
-            .show()
     }
 
     private fun onDeleteClick() {

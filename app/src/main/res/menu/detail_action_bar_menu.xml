@@ -1,6 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/detail_menu_test" android:title="@string/detail_menu_test"/>
     <item android:id="@+id/detail_menu_refresh" android:title="@string/detail_menu_refresh"/>
-    <item android:id="@+id/detail_menu_clear" android:title="@string/detail_menu_clear"/>
     <item android:id="@+id/detail_menu_unsubscribe" android:title="@string/detail_menu_unsubscribe"/>
 </menu>

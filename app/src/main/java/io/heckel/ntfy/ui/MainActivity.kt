@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.messaging.FirebaseMessaging
@@ -22,6 +23,7 @@ import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
@@ -83,6 +85,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.main_menu_refresh -> {
+                refreshAllSubscriptions()
+                true
+            }
             R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
@@ -149,6 +155,24 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private fun onSubscriptionItemLongClick(subscription: Subscription) {
         if (actionMode == null) {
             beginActionMode(subscription)
+        }
+    }
+
+    private fun refreshAllSubscriptions()  {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val successFn = { notifications: List<Notification> ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    notifications.forEach {
+                        repository.addNotification(it)
+                    }
+                }
+                Unit
+            }
+            repository.getAllSubscriptions().asFlow().collect { subscriptions ->
+                subscriptions.forEach { subscription ->
+                    api.poll(subscription.id, subscription.baseUrl, subscription.topic, successFn, { _ -> })
+                }
+            }
         }
     }
 
