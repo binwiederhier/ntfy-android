@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
@@ -45,6 +47,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
         private val context: Context = itemView.context
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
+        private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
@@ -53,8 +56,14 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.notifications)
             }
+            val dateText = if (System.currentTimeMillis()/1000 - subscription.lastActive < 24 * 60 * 60) {
+                SimpleDateFormat("HH:mm").format(Date(subscription.lastActive*1000))
+            } else {
+                SimpleDateFormat("MM/dd").format(Date(subscription.lastActive*1000))
+            }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
+            dateView.text = dateText
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {

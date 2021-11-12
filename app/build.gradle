@@ -48,13 +48,16 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
     implementation 'com.google.code.gson:gson:2.8.8'
 
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.6.0"
+
     // Room (SQLite)
     def roomVersion = "2.3.0"
     implementation "androidx.room:room-ktx:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
 
-    // Volley (HTTP library)
-    implementation 'com.android.volley:volley:1.2.1'
+    // OkHttp (HTTP library)
+    implementation "com.squareup.okhttp3:okhttp:4.9.2"
 
     // Firebase, sigh ...
     implementation 'com.google.firebase:firebase-messaging:22.0.0'

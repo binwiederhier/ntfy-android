@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.VolleyError
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
@@ -34,7 +33,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         DetailViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
-    private lateinit var api: ApiService // Context-dependent
+    private val api = ApiService()
 
     // Which subscription are we looking at
     private var subscriptionId: Long = 0L // Set in onCreate()
@@ -49,10 +48,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.detail_activity)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Show 'Back' button
 
-        // Dependencies that depend on Context
-        api = ApiService(this)
+        Log.d(MainActivity.TAG, "Create $this")
+
+        // Show 'Back' button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Get extras required for the return to the main activity
         subscriptionId = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, 0)
@@ -124,40 +124,38 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private fun onTestClick() {
         Log.d(TAG, "Sending test notification to ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val message = getString(R.string.detail_test_message, Date().toString())
-        val successFn = { _: String -> }
-        val failureFn = { error: VolleyError ->
-            Toast
-                .makeText(this, getString(R.string.detail_test_message_error, error.message), Toast.LENGTH_LONG)
-                .show()
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val message = getString(R.string.detail_test_message, Date().toString())
+                api.publish(subscriptionBaseUrl, subscriptionTopic, message)
+            } catch (e: Exception) {
+                Toast
+                    .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
+                    .show()
+            }
         }
-        api.publish(subscriptionBaseUrl, subscriptionTopic, message, successFn, failureFn)
     }
 
     private fun onRefreshClick() {
         Log.d(TAG, "Fetching cached notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val activity = this
-        val successFn = { notifications: List<Notification> ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                val localNotificationIds = repository.getAllNotificationIds(subscriptionId)
-                val newNotifications = notifications.filterNot { localNotificationIds.contains(it.id) }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val notifications = api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic)
+                val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
                 val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.detail_refresh_message_no_results)
                 } else {
                     getString(R.string.detail_refresh_message_result, newNotifications.size)
                 }
-                newNotifications.forEach { repository.addNotification(it) } // The meat!
-                runOnUiThread { Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show() }
+                newNotifications.forEach { notification -> repository.addNotification(subscriptionId, notification) }
+                runOnUiThread { Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show() }
+            } catch (e: Exception) {
+                Toast
+                    .makeText(this@DetailActivity, getString(R.string.detail_refresh_message_error, e.message), Toast.LENGTH_LONG)
+                    .show()
             }
-            Unit
         }
-        val failureFn = { error: Exception ->
-            Toast
-                .makeText(this, getString(R.string.detail_refresh_message_error, error.message), Toast.LENGTH_LONG)
-                .show()
-        }
-        api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, successFn, failureFn)
     }
 
     private fun onDeleteClick() {
@@ -174,8 +172,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 setResult(RESULT_OK, result)
                 finish()
 
-                // Delete notifications
-                viewModel.removeAll(subscriptionId)
+                // The deletion will be done in MainActivity.onResult
             }
             .setNegativeButton(R.string.detail_delete_dialog_cancel) { _, _ -> /* Do nothing */ }
             .create()
@@ -246,7 +243,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         builder
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { viewModel.remove(it) }
+                adapter.selected.map { notificationId -> viewModel.remove(subscriptionId, notificationId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->

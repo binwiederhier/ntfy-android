@@ -21,8 +21,8 @@
     <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
 
     <!-- Main activity: List and such -->
-    <string name="main_item_status_text_one">%1$d notification received</string>
-    <string name="main_item_status_text_not_one">%1$d notifications received</string>
+    <string name="main_item_status_text_one">%1$d notification</string>
+    <string name="main_item_status_text_not_one">%1$d notifications</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
     <string name="main_how_to_intro">Click the button below to create or subscribe to a topic. After that, you can send messages via PUT or POST and you\'ll receive notifications on your phone.</string>

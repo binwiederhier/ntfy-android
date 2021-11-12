@@ -47,10 +47,16 @@ abstract class Database : RoomDatabase() {
 @Dao
 interface SubscriptionDao {
     @Query("SELECT * FROM subscription ORDER BY lastActive DESC")
-    fun list(): Flow<List<Subscription>>
+    fun listFlow(): Flow<List<Subscription>>
+
+    @Query("SELECT * FROM subscription ORDER BY lastActive DESC")
+    fun list(): List<Subscription>
 
     @Query("SELECT * FROM subscription WHERE baseUrl = :baseUrl AND topic = :topic")
     fun get(baseUrl: String, topic: String): Subscription?
+
+    @Query("SELECT * FROM subscription WHERE id = :subscriptionId")
+    fun get(subscriptionId: Long): Subscription?
 
     @Insert
     fun add(subscription: Subscription)
@@ -72,6 +78,9 @@ interface NotificationDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)
+
+    @Query("SELECT * FROM notification WHERE id = :notificationId")
+    fun get(notificationId: String): Notification?
 
     @Query("DELETE FROM notification WHERE id = :notificationId")
     fun remove(notificationId: String)

@@ -3,29 +3,34 @@ package io.heckel.ntfy.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.ActionMode
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), ActionMode.Callback {
@@ -33,18 +38,24 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
+    private val api = ApiService()
+
     private lateinit var mainList: RecyclerView
     private lateinit var adapter: MainAdapter
     private lateinit var fab: View
     private var actionMode: ActionMode? = null
-    private lateinit var api: ApiService // Context-dependent
+    private var workManager: WorkManager? = null // Context-dependent
+    private var notifier: NotificationService? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
+        Log.d(TAG, "Create $this")
+
         // Dependencies that depend on Context
-        api = ApiService(this)
+        workManager = WorkManager.getInstance(this)
+        notifier = NotificationService(this)
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
@@ -76,6 +87,28 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                 }
             }
         }
+
+        // Kick off periodic polling
+        val sharedPref = getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
+        val workPolicy = if (sharedPref.getInt(SHARED_PREFS_POLL_WORKER_VERSION, 0) == PollWorker.VERSION) {
+            Log.d(TAG, "Poll worker version matches: choosing KEEP as existing work policy")
+            ExistingPeriodicWorkPolicy.KEEP
+        } else {
+            Log.d(TAG, "Poll worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
+            sharedPref.edit()
+                .putInt(SHARED_PREFS_POLL_WORKER_VERSION, PollWorker.VERSION)
+                .apply()
+            ExistingPeriodicWorkPolicy.REPLACE
+        }
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val work = PeriodicWorkRequestBuilder<PollWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .addTag(PollWorker.TAG)
+            .addTag(PollWorker.WORK_NAME_PERIODIC)
+            .build()
+        workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -132,13 +165,14 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             }
 
         // Fetch cached messages
-        val successFn = { notifications: List<Notification> ->
-            lifecycleScope.launch(Dispatchers.IO) {
-                notifications.forEach { repository.addNotification(it) }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
+                notifications.forEach { notification -> repository.addNotification(subscription.id, notification) }
+            } catch (e: Exception) {
+                Log.e(TAG, "Unable to fetch notifications: ${e.stackTrace}")
             }
-            Unit
         }
-        api.poll(subscription.id, subscription.baseUrl, subscription.topic, successFn, { _ -> })
 
         // Switch to detail view after adding it
         onSubscriptionItemClick(subscription)
@@ -158,19 +192,23 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
-    private fun refreshAllSubscriptions()  {
+    private fun refreshAllSubscriptions() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val successFn = { notifications: List<Notification> ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    notifications.forEach {
-                        repository.addNotification(it)
+            try {
+                Log.d(TAG, "Polling for new notifications")
+                repository.getSubscriptions().forEach { subscription ->
+                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
+                    val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
+                    newNotifications.forEach { notification ->
+                        repository.addNotification(subscription.id, notification)
+                        notifier?.send(subscription, notification.message)
                     }
                 }
-                Unit
-            }
-            repository.getAllSubscriptions().asFlow().collect { subscriptions ->
-                subscriptions.forEach { subscription ->
-                    api.poll(subscription.id, subscription.baseUrl, subscription.topic, successFn, { _ -> })
+                Log.d(TAG, "Finished polling for new notifications")
+            } catch (e: Exception) {
+                Log.e(TAG, "Polling failed: ${e.message}", e)
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, getString(R.string.poll_worker_exception, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -316,5 +354,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
         const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
         const val ANIMATION_DURATION = 80L
+        const val SHARED_PREFS_ID = "MainPreferences"
+        const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
     }
 }

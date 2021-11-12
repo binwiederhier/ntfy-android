@@ -11,7 +11,7 @@ import kotlin.collections.List
 
 class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
     fun list(): LiveData<List<Subscription>> {
-        return repository.getAllSubscriptions()
+        return repository.getSubscriptionsLiveData()
     }
 
     fun add(subscription: Subscription) = viewModelScope.launch(Dispatchers.IO) {
@@ -19,6 +19,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun remove(subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        repository.removeAllNotifications(subscriptionId)
         repository.removeSubscription(subscriptionId)
     }
 
