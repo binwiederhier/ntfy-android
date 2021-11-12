@@ -53,7 +53,7 @@ class ApiService {
 
     private fun fromString(subscriptionId: Long, s: String): Notification {
         val n = gson.fromJson(s, NotificationData::class.java) // Indirection to prevent accidental field renames, etc.
-        return Notification(n.id, subscriptionId, n.time, n.message)
+        return Notification(n.id, subscriptionId, n.time, n.message, false)
     }
 
     private data class NotificationData(

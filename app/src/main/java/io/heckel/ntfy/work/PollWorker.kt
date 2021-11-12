@@ -31,7 +31,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
-                        repository.addNotification(subscription.id, notification)
+                        repository.addNotification(notification)
                         notifier.send(subscription, notification.message)
                     }
                 }

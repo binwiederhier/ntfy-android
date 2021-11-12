@@ -39,8 +39,8 @@ class FirebaseService : FirebaseMessagingService() {
 
             // Add notification
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
-            val notification = Notification(id = id, subscriptionId = subscription.id, timestamp = timestamp, message = message)
-            repository.addNotification(subscription.id, notification)
+            val notification = Notification(id = id, subscriptionId = subscription.id, timestamp = timestamp, message = message, deleted = false)
+            repository.addNotification(notification)
 
             // Send notification
             Log.d(TAG, "Sending notification for message: from=${remoteMessage.from}, data=${data}")

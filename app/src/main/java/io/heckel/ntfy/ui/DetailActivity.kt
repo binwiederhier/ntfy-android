@@ -23,6 +23,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -113,6 +114,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onRefreshClick()
                 true
             }
+            R.id.detail_menu_copy_url -> {
+                onCopyUrlClick()
+                true
+            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -136,6 +141,18 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
+    private fun onCopyUrlClick() {
+        val url = topicUrl(subscriptionBaseUrl, subscriptionTopic)
+        Log.d(TAG, "Copying topic URL $url to clipboard ")
+
+        val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("topic address", url)
+        clipboard.setPrimaryClip(clip)
+        Toast
+            .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+            .show()
+    }
+
     private fun onRefreshClick() {
         Log.d(TAG, "Fetching cached notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
@@ -144,15 +161,15 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 val notifications = api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic)
                 val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
                 val toastMessage = if (newNotifications.isEmpty()) {
-                    getString(R.string.detail_refresh_message_no_results)
+                    getString(R.string.refresh_message_no_results)
                 } else {
-                    getString(R.string.detail_refresh_message_result, newNotifications.size)
+                    getString(R.string.refresh_message_result, newNotifications.size)
                 }
-                newNotifications.forEach { notification -> repository.addNotification(subscriptionId, notification) }
+                newNotifications.forEach { notification -> repository.addNotification(notification) }
                 runOnUiThread { Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show() }
             } catch (e: Exception) {
                 Toast
-                    .makeText(this@DetailActivity, getString(R.string.detail_refresh_message_error, e.message), Toast.LENGTH_LONG)
+                    .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -243,7 +260,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         builder
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { notificationId -> viewModel.remove(subscriptionId, notificationId) }
+                adapter.selected.map { notificationId -> viewModel.remove(notificationId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->

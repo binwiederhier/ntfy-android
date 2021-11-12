@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import java.util.*
+import androidx.lifecycle.map
+import kotlinx.coroutines.flow.map
 
 class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
     init {
@@ -12,29 +13,26 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     }
 
     fun getSubscriptionsLiveData(): LiveData<List<Subscription>> {
-        return subscriptionDao.listFlow().asLiveData()
+        return subscriptionDao
+            .listFlow()
+            .asLiveData()
+            .map { list -> toSubscriptionList(list) }
     }
 
     fun getSubscriptions(): List<Subscription> {
-        return subscriptionDao.list()
+        return toSubscriptionList(subscriptionDao.list())
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun getSubscription(baseUrl: String, topic: String): Subscription? {
-        return subscriptionDao.get(baseUrl, topic)
+        return toSubscription(subscriptionDao.get(baseUrl, topic))
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun addSubscription(subscription: Subscription) {
         subscriptionDao.add(subscription)
-    }
-
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun updateSubscription(subscription: Subscription) {
-        subscriptionDao.update(subscription)
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -54,24 +52,16 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(subscriptionId: Long, notification: Notification) {
+    suspend fun addNotification(notification: Notification) {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification != null) {
-            return
+        if (maybeExistingNotification == null) {
+            notificationDao.add(notification)
         }
-
-        val subscription = subscriptionDao.get(subscriptionId) ?: return
-        val newSubscription = subscription.copy(notifications = subscription.notifications + 1, lastActive = Date().time/1000)
-        subscriptionDao.update(newSubscription)
-        notificationDao.add(notification)
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun removeNotification(subscriptionId: Long, notificationId: String) {
-        val subscription = subscriptionDao.get(subscriptionId) ?: return
-        val newSubscription = subscription.copy(notifications = subscription.notifications - 1, lastActive = Date().time/1000)
-        subscriptionDao.update(newSubscription)
+    suspend fun removeNotification(notificationId: String) {
         notificationDao.remove(notificationId)
     }
 
@@ -79,6 +69,31 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     @WorkerThread
     fun removeAllNotifications(subscriptionId: Long) {
         notificationDao.removeAll(subscriptionId)
+    }
+
+    private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
+        return list.map { s ->
+            Subscription(
+                id = s.id,
+                baseUrl = s.baseUrl,
+                topic = s.topic,
+                lastActive = s.lastActive,
+                notifications = s.notifications
+            )
+        }
+    }
+
+    private fun toSubscription(s: SubscriptionWithMetadata?): Subscription? {
+        if (s == null) {
+            return null
+        }
+        return Subscription(
+            id = s.id,
+            baseUrl = s.baseUrl,
+            topic = s.topic,
+            lastActive = s.lastActive,
+            notifications = s.notifications
+        )
     }
 
     companion object {

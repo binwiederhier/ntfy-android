@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {
-            it?.let {
-                adapter.submitList(it as MutableList<Subscription>)
+            it?.let { subscriptions ->
+                adapter.submitList(subscriptions as MutableList<Subscription>)
                 if (it.isEmpty()) {
                     mainList.visibility = View.GONE
                     noEntries.visibility = View.VISIBLE
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
-                notifications.forEach { notification -> repository.addNotification(subscription.id, notification) }
+                notifications.forEach { notification -> repository.addNotification(notification) }
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to fetch notifications: ${e.stackTrace}")
             }
@@ -196,19 +196,27 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 Log.d(TAG, "Polling for new notifications")
+                var newNotificationsCount = 0
                 repository.getSubscriptions().forEach { subscription ->
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
-                        repository.addNotification(subscription.id, notification)
+                        repository.addNotification(notification)
                         notifier?.send(subscription, notification.message)
+                        newNotificationsCount++
                     }
                 }
+                val toastMessage = if (newNotificationsCount == 0) {
+                    getString(R.string.refresh_message_no_results)
+                } else {
+                    getString(R.string.refresh_message_result, newNotificationsCount)
+                }
+                runOnUiThread { Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show() }
                 Log.d(TAG, "Finished polling for new notifications")
             } catch (e: Exception) {
                 Log.e(TAG, "Polling failed: ${e.message}", e)
                 runOnUiThread {
-                    Toast.makeText(this@MainActivity, getString(R.string.poll_worker_exception, e.message), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }

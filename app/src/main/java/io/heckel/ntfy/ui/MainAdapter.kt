@@ -56,10 +56,12 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.notifications)
             }
-            val dateText = if (System.currentTimeMillis()/1000 - subscription.lastActive < 24 * 60 * 60) {
+            val dateText = if (subscription.lastActive == 0L) {
+                ""
+            } else if (System.currentTimeMillis()/1000 - subscription.lastActive < 24 * 60 * 60) {
                 SimpleDateFormat("HH:mm").format(Date(subscription.lastActive*1000))
             } else {
-                SimpleDateFormat("MM/dd").format(Date(subscription.lastActive*1000))
+                SimpleDateFormat("M/d/yy").format(Date(subscription.lastActive*1000))
             }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
