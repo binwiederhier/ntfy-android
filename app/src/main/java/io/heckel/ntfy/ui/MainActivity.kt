@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private var workManager: WorkManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
     private var subscriberManager: SubscriberManager? = null // Context-dependent
+    private var appBaseUrl: String? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         workManager = WorkManager.getInstance(this)
         notifier = NotificationService(this)
         subscriberManager = SubscriberManager(this)
+        appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
@@ -142,7 +144,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                 true
             }
             R.id.main_menu_website -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_base_url))))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appBaseUrl)))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -168,8 +170,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         )
         viewModel.add(subscription)
 
-        // Subscribe to Firebase topic (instant subscriptions are triggered in observe())
-        if (!instant) {
+        // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
+        if (baseUrl == appBaseUrl) {
             Log.d(TAG, "Subscribing to Firebase")
             FirebaseMessaging
                 .getInstance()
@@ -258,13 +260,14 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_DELETE_SUBSCRIPTION && resultCode == RESULT_OK) {
             val subscriptionId = data?.getLongExtra(EXTRA_SUBSCRIPTION_ID, 0)
+            val subscriptionBaseUrl = data?.getStringExtra(EXTRA_SUBSCRIPTION_BASE_URL)
             val subscriptionTopic = data?.getStringExtra(EXTRA_SUBSCRIPTION_TOPIC)
             val subscriptionInstant = data?.getBooleanExtra(EXTRA_SUBSCRIPTION_INSTANT, false)
             Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
 
             subscriptionId?.let { id -> viewModel.remove(id) }
-            subscriptionInstant?.let { instant ->
-                if (!instant) {
+            subscriptionBaseUrl?.let { baseUrl ->
+                if (baseUrl == appBaseUrl) {
                     Log.d(TAG, "Unsubscribing from Firebase")
                     subscriptionTopic?.let { topic -> FirebaseMessaging.getInstance().unsubscribeFromTopic(topic) }
                 }
