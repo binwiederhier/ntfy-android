@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
@@ -48,6 +49,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     // UI elements
     private lateinit var adapter: DetailAdapter
     private lateinit var mainList: RecyclerView
+    private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var menu: Menu
 
     // Action mode stuff
@@ -87,6 +89,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
             howToExample.text = Html.fromHtml(howToText)
         }
 
+        // Swipe to refresh
+        mainListContainer = findViewById(R.id.detail_notification_list_container)
+        mainListContainer.setOnRefreshListener { refresh() }
+        mainListContainer.setColorSchemeResources(R.color.primaryColor)
+
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
         val onNotificationClick = { n: Notification -> onNotificationClick(n) }
@@ -100,10 +107,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
             it?.let {
                 adapter.submitList(it as MutableList<Notification>)
                 if (it.isEmpty()) {
-                    mainList.visibility = View.GONE
+                    mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
                 } else {
-                    mainList.visibility = View.VISIBLE
+                    mainListContainer.visibility = View.VISIBLE
                     noEntriesText.visibility = View.GONE
                 }
             }
@@ -126,10 +133,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         return when (item.itemId) {
             R.id.detail_menu_test -> {
                 onTestClick()
-                true
-            }
-            R.id.detail_menu_refresh -> {
-                onRefreshClick()
                 true
             }
             R.id.detail_menu_enable_instant -> {
@@ -181,7 +184,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
             .show()
     }
 
-    private fun onRefreshClick() {
+    private fun refresh() {
         Log.d(TAG, "Fetching cached notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -194,12 +197,16 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     getString(R.string.refresh_message_result, newNotifications.size)
                 }
                 newNotifications.forEach { notification -> repository.addNotification(notification) }
-                runOnUiThread { Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show() }
+                runOnUiThread {
+                    Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show()
+                    mainListContainer.isRefreshing = false
+                }
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast
                         .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
                         .show()
+                    mainListContainer.isRefreshing = false
                 }
             }
         }

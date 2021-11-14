@@ -71,8 +71,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             onSubscribeButtonClick()
         }
 
-        // Swipewn to refresh
-        mainListContainer = findViewById(R.id.main_subscriptions_list_swipe_container)
+        // Swipe to refresh
+        mainListContainer = findViewById(R.id.main_subscriptions_list_container)
         mainListContainer.setOnRefreshListener { refreshAllSubscriptions() }
         mainListContainer.setColorSchemeResources(R.color.primaryColor)
 

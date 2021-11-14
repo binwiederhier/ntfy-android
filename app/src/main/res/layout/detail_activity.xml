@@ -7,15 +7,22 @@
         android:layout_height="match_parent"
         tools:context=".ui.DetailActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detail_notification_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_marginTop="10dp"
-            android:background="?android:attr/selectableItemBackground"
-            app:layoutManager="LinearLayoutManager" android:visibility="gone"/>
+            android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detail_notification_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                app:layoutManager="LinearLayoutManager"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
             android:orientation="vertical"

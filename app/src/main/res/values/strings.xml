@@ -68,7 +68,6 @@
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
-    <string name="detail_menu_refresh">Force refresh</string>
     <string name="detail_menu_enable_instant">Enable fast delivery</string>
     <string name="detail_menu_disable_instant">Disable fast delivery</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
