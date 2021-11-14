@@ -73,6 +73,9 @@ dependencies {
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"
 
+    // Swipe down to refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
     // Material design
     implementation "com.google.android.material:material:$rootProject.materialVersion"
 

@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
@@ -27,16 +27,13 @@ import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.msg.SubscriberService
-import io.heckel.ntfy.msg.SubscriberService.ServiceState
-import io.heckel.ntfy.msg.SubscriberService.Actions
-import io.heckel.ntfy.msg.SubscriberService.Companion.readServiceState
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+
 
 class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<SubscriptionsViewModel> {
@@ -46,6 +43,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private val api = ApiService()
 
     private lateinit var mainList: RecyclerView
+    private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var adapter: MainAdapter
     private lateinit var fab: View
     private var actionMode: ActionMode? = null
@@ -73,6 +71,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             onSubscribeButtonClick()
         }
 
+        // Swipewn to refresh
+        mainListContainer = findViewById(R.id.main_subscriptions_list_swipe_container)
+        mainListContainer.setOnRefreshListener { refreshAllSubscriptions() }
+        mainListContainer.setColorSchemeResources(R.color.primaryColor)
+
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntries: View = findViewById(R.id.main_no_subscriptions)
         val onSubscriptionClick = { s: Subscription -> onSubscriptionItemClick(s) }
@@ -86,10 +89,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             it?.let { subscriptions ->
                 adapter.submitList(subscriptions as MutableList<Subscription>)
                 if (it.isEmpty()) {
-                    mainList.visibility = View.GONE
+                    mainListContainer.visibility = View.GONE
                     noEntries.visibility = View.VISIBLE
                 } else {
-                    mainList.visibility = View.VISIBLE
+                    mainListContainer.visibility = View.VISIBLE
                     noEntries.visibility = View.GONE
                 }
             }
@@ -134,10 +137,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.main_menu_refresh -> {
-                refreshAllSubscriptions()
-                true
-            }
             R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
@@ -230,12 +229,16 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                 } else {
                     getString(R.string.refresh_message_result, newNotificationsCount)
                 }
-                runOnUiThread { Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show() }
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
+                    mainListContainer.isRefreshing = false
+                }
                 Log.d(TAG, "Finished polling for new notifications")
             } catch (e: Exception) {
                 Log.e(TAG, "Polling failed: ${e.message}", e)
                 runOnUiThread {
                     Toast.makeText(this@MainActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG).show()
+                    mainListContainer.isRefreshing = false
                 }
             }
         }

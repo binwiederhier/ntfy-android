@@ -19,14 +19,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.WorkManager
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*

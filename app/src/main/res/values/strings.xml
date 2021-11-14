@@ -16,8 +16,7 @@
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
-    <string name="main_menu_refresh">Force refresh</string>
-    <string name="main_menu_source_title">Show source &amp; license</string>
+    <string name="main_menu_source_title">Report bugs</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 

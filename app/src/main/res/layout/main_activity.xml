@@ -4,15 +4,21 @@
                                                    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/main_subscriptions_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/main_subscriptions_list_swipe_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_marginTop="10dp"
-            android:background="?android:attr/selectableItemBackground"
-            app:layoutManager="LinearLayoutManager" android:visibility="gone"/>
+            android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_subscriptions_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                app:layoutManager="LinearLayoutManager"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
