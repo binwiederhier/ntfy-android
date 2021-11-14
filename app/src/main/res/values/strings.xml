@@ -3,9 +3,11 @@
     <string name="app_name">Ntfy</string>
     <string name="app_base_url">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
-    <!-- Notifications -->
-    <string name="notification_channel_name">Ntfy</string>
-    <string name="notification_channel_id">ntfy</string>
+    <!-- Notification channels -->
+    <string name="channel_notifications_name">Notifications</string>
+    <string name="channel_subscriber_service_name">Subscription Service</string>
+    <string name="channel_subscriber_notification_title">Subscribed topics</string>
+    <string name="channel_subscriber_notification_text">Listening patiently for incoming notifications</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
@@ -38,6 +40,14 @@
     <string name="add_dialog_description_below">Topics are not password-protected, so choose a name that\'s not easy to guess. Once subscribed, you can PUT/POST to receive notifications on your phone.</string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
+    <string name="add_dialog_use_another_server_description">
+        You can subscribe to topics from your own server. Due to platform limitations, this option requires a foreground
+        service and consumes more battery, but delivers notifications faster.
+    </string>
+    <string name="add_dialog_instant_delivery">Instant delivery (even in doze mode)</string>
+    <string name="add_dialog_instant_delivery_description">
+        Requires foreground service and consumes more battery, but delivers notifications faster.
+    </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
 

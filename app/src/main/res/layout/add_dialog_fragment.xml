@@ -16,23 +16,42 @@
             android:textAlignment="viewStart"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"/>
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_dialog_topic_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
-            android:maxLines="1" android:inputType="text"/>
     <TextView
             android:text="@string/add_dialog_description_below"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/add_dialog_description_below"
             android:paddingStart="4dp" android:paddingTop="3dp"/>
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_dialog_topic_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
+            android:maxLines="1" android:inputType="text" android:maxLength="64"/>
     <CheckBox
             android:text="@string/add_dialog_use_another_server"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/add_dialog_use_another_server_checkbox"/>
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_use_another_server_checkbox"
+            android:layout_marginTop="-5dp" android:layout_marginBottom="-5dp" android:layout_marginStart="-3dp"/>
+    <TextView
+            android:text="@string/add_dialog_use_another_server_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_use_another_server_description"
+            android:paddingStart="4dp" android:paddingTop="0dp" android:layout_marginTop="-5dp"
+            android:visibility="gone"/>
     <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_dialog_base_url_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:visibility="gone"
-            android:hint="@string/app_base_url" android:inputType="textUri" android:maxLines="1"/>
+            android:hint="@string/app_base_url" android:inputType="textUri" android:maxLines="1"
+            android:layout_marginTop="-2dp" android:layout_marginBottom="5dp"/>
+    <CheckBox
+            android:text="@string/add_dialog_instant_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_instant_delivery_checkbox"
+            android:layout_marginTop="-8dp" android:layout_marginBottom="-5dp" android:layout_marginStart="-3dp"/>
+    <TextView
+            android:text="@string/add_dialog_instant_delivery_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/add_dialog_instant_delivery_description"
+            android:paddingStart="4dp" android:paddingTop="0dp" android:layout_marginTop="-5dp"
+            android:visibility="gone"/>
 </LinearLayout>

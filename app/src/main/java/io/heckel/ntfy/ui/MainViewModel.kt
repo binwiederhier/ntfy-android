@@ -14,6 +14,10 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         return repository.getSubscriptionsLiveData()
     }
 
+    fun listIds(): LiveData<Set<Long>> {
+        return repository.getSubscriptionIdsLiveData()
+    }
+
     fun add(subscription: Subscription) = viewModelScope.launch(Dispatchers.IO) {
         repository.addSubscription(subscription)
     }

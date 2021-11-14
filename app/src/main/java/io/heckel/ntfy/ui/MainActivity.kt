@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
@@ -26,6 +27,10 @@ import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.SubscriberService
+import io.heckel.ntfy.msg.SubscriberService.ServiceState
+import io.heckel.ntfy.msg.SubscriberService.Actions
+import io.heckel.ntfy.msg.SubscriberService.Companion.readServiceState
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -88,14 +93,23 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             }
         }
 
-        // Kick off periodic polling
-        val sharedPref = getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
-        val workPolicy = if (sharedPref.getInt(SHARED_PREFS_POLL_WORKER_VERSION, 0) == PollWorker.VERSION) {
+        viewModel.listIds().observe(this) {
+            maybeStartOrStopSubscriberService()
+        }
+
+        // Background things
+        startPeriodicWorker()
+        maybeStartOrStopSubscriberService()
+    }
+
+    private fun startPeriodicWorker() {
+        val sharedPrefs = getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
+        val workPolicy = if (sharedPrefs.getInt(SHARED_PREFS_POLL_WORKER_VERSION, 0) == PollWorker.VERSION) {
             Log.d(TAG, "Poll worker version matches: choosing KEEP as existing work policy")
             ExistingPeriodicWorkPolicy.KEEP
         } else {
             Log.d(TAG, "Poll worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
-            sharedPref.edit()
+            sharedPrefs.edit()
                 .putInt(SHARED_PREFS_POLL_WORKER_VERSION, PollWorker.VERSION)
                 .apply()
             ExistingPeriodicWorkPolicy.REPLACE
@@ -135,12 +149,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     }
 
     private fun onSubscribeButtonClick() {
-        val newFragment = AddFragment(viewModel) { topic, baseUrl -> onSubscribe(topic, baseUrl) }
+        val newFragment = AddFragment(viewModel) { topic, baseUrl, instant -> onSubscribe(topic, baseUrl, instant) }
         newFragment.show(supportFragmentManager, "AddFragment")
     }
 
-    private fun onSubscribe(topic: String, baseUrl: String) {
-        // FIXME ignores baseUrl
+    private fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
 
         // Add subscription to database
@@ -148,21 +161,25 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             id = Random.nextLong(),
             baseUrl = baseUrl,
             topic = topic,
+            instant = instant,
             notifications = 0,
             lastActive = Date().time/1000
         )
         viewModel.add(subscription)
 
-        // Subscribe to Firebase topic
-        FirebaseMessaging
-            .getInstance()
-            .subscribeToTopic(topic)
-            .addOnCompleteListener {
-                Log.d(TAG, "Subscribing to topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
-            }
-            .addOnFailureListener {
-                Log.e(TAG, "Subscribing to topic failed: $it")
-            }
+        // Subscribe to Firebase topic (instant subscriptions are triggered in observe())
+        if (!instant) {
+            Log.d(TAG, "Subscribing to Firebase")
+            FirebaseMessaging
+                .getInstance()
+                .subscribeToTopic(topic)
+                .addOnCompleteListener {
+                    Log.d(TAG, "Subscribing to topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
+                }
+                .addOnFailureListener {
+                    Log.e(TAG, "Subscribing to topic failed: $it")
+                }
+        }
 
         // Fetch cached messages
         lifecycleScope.launch(Dispatchers.IO) {
@@ -222,6 +239,35 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
+    private fun maybeStartOrStopSubscriberService() {
+        Log.d(TAG, "Triggering subscriber service refresh")
+        lifecycleScope.launch(Dispatchers.IO) {
+            val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
+            if (instantSubscriptions.isEmpty()) {
+                performActionOnSubscriberService(Actions.STOP)
+            } else {
+                performActionOnSubscriberService(Actions.START)
+            }
+        }
+    }
+
+    private fun performActionOnSubscriberService(action: Actions) {
+        val serviceState = readServiceState(this)
+        if (serviceState == ServiceState.STOPPED && action == Actions.STOP) {
+            return
+        }
+        val intent = Intent(this, SubscriberService::class.java)
+        intent.action = action.name
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d(TAG, "Performing SubscriberService action: ${action.name} (as foreground service, API >= 26)")
+            startForegroundService(intent)
+            return
+        } else {
+            Log.d(TAG, "Performing SubscriberService action: ${action.name} (as background service, API >= 26)")
+            startService(intent)
+        }
+    }
+
     private fun startDetailView(subscription: Subscription) {
         Log.d(TAG, "Entering detail view for subscription $subscription")
 
@@ -229,6 +275,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscription.id)
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+        intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
         startActivityForResult(intent, REQUEST_CODE_DELETE_SUBSCRIPTION)
     }
 
@@ -236,10 +283,17 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         if (requestCode == REQUEST_CODE_DELETE_SUBSCRIPTION && resultCode == RESULT_OK) {
             val subscriptionId = data?.getLongExtra(EXTRA_SUBSCRIPTION_ID, 0)
             val subscriptionTopic = data?.getStringExtra(EXTRA_SUBSCRIPTION_TOPIC)
+            val subscriptionInstant = data?.getBooleanExtra(EXTRA_SUBSCRIPTION_INSTANT, false)
             Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
 
             subscriptionId?.let { id -> viewModel.remove(id) }
-            subscriptionTopic?.let { topic -> FirebaseMessaging.getInstance().unsubscribeFromTopic(topic) } // FIXME This only works for ntfy.sh
+            subscriptionInstant?.let { instant ->
+                if (!instant) {
+                    Log.d(TAG, "Unsubscribing from Firebase")
+                    subscriptionTopic?.let { topic -> FirebaseMessaging.getInstance().unsubscribeFromTopic(topic) }
+                }
+                // Subscriber service changes are triggered in the observe() call above
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -360,6 +414,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         const val EXTRA_SUBSCRIPTION_BASE_URL = "subscriptionBaseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
+        const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
         const val ANIMATION_DURATION = 80L
         const val SHARED_PREFS_ID = "MainPreferences"

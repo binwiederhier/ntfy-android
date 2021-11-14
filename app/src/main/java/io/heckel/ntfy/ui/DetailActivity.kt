@@ -29,6 +29,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
+// TODO dismiss notifications when navigating to detail page
+
 class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
@@ -40,6 +42,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private var subscriptionId: Long = 0L // Set in onCreate()
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
+    private var subscriptionInstant: Boolean = false // Set in onCreate()
 
     // Action mode stuff
     private lateinit var mainList: RecyclerView
@@ -59,6 +62,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         subscriptionId = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, 0)
         subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         subscriptionTopic = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
+        subscriptionInstant = intent.getBooleanExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, false)
 
         // Set title
         val subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
@@ -134,9 +138,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 val message = getString(R.string.detail_test_message, Date().toString())
                 api.publish(subscriptionBaseUrl, subscriptionTopic, message)
             } catch (e: Exception) {
-                Toast
-                    .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
-                    .show()
+                runOnUiThread {
+                    Toast
+                        .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
     }
@@ -168,9 +174,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 newNotifications.forEach { notification -> repository.addNotification(notification) }
                 runOnUiThread { Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show() }
             } catch (e: Exception) {
-                Toast
-                    .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
-                    .show()
+                runOnUiThread {
+                    Toast
+                        .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
     }
@@ -185,7 +193,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 // Return to main activity
                 val result = Intent()
                     .putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscriptionId)
+                    .putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscriptionBaseUrl)
                     .putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscriptionTopic)
+                    .putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscriptionInstant)
                 setResult(RESULT_OK, result)
                 finish()
 

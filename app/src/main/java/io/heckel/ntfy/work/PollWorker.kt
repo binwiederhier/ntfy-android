@@ -2,11 +2,9 @@ package io.heckel.ntfy.work
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.msg.ApiService

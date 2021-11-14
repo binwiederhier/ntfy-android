@@ -19,6 +19,13 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             .map { list -> toSubscriptionList(list) }
     }
 
+    fun getSubscriptionIdsLiveData(): LiveData<Set<Long>> {
+        return subscriptionDao
+            .listFlow()
+            .asLiveData()
+            .map { list -> list.map { it.id }.toSet() }
+    }
+
     fun getSubscriptions(): List<Subscription> {
         return toSubscriptionList(subscriptionDao.list())
     }
@@ -52,11 +59,13 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(notification: Notification) {
+    suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
         if (maybeExistingNotification == null) {
             notificationDao.add(notification)
+            return true
         }
+        return false
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -77,6 +86,7 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
                 id = s.id,
                 baseUrl = s.baseUrl,
                 topic = s.topic,
+                instant = s.instant,
                 lastActive = s.lastActive,
                 notifications = s.notifications
             )
@@ -91,6 +101,7 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             id = s.id,
             baseUrl = s.baseUrl,
             topic = s.topic,
+            instant = s.instant,
             lastActive = s.lastActive,
             notifications = s.notifications
         )

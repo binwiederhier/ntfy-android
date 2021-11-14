@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="io.heckel.ntfy">
-    <!-- Permissions -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--
+         Permissions
+         - FOREGROUND_SERVICE is needed to support "use another server" feature
+         - WAKE_LOCK & RECEIVE_BOOT_COMPLETED are required to restart the foreground service
+           if it is stopped; see https://robertohuertas.com/2019/06/29/android_foreground_services/
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <!--
+         Application
+         - usesCleartextTraffic is required to support "use another server" feature
+    -->
     <application
             android:name=".app.Application"
             android:allowBackup="true"
@@ -11,7 +23,8 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true">
 
         <!-- Main activity -->
         <activity
@@ -32,6 +45,9 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MainActivity" />
         </activity>
+
+        <!-- Subscriber foreground service for hosts other than ntfy.sh -->
+        <service android:name=".msg.SubscriberService" />
 
         <!-- Firebase messaging -->
         <service

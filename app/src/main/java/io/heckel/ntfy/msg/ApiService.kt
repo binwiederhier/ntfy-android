@@ -4,19 +4,24 @@ import android.util.Log
 import com.google.gson.Gson
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.data.topicUrlJson
 import io.heckel.ntfy.data.topicUrlJsonPoll
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class ApiService {
     private val gson = Gson()
     private val client = OkHttpClient.Builder()
-        .callTimeout(10, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
+
+    private val subscriberClient = OkHttpClient.Builder()
+        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
 
     fun publish(baseUrl: String, topic: String, message: String) {
@@ -51,18 +56,53 @@ class ApiService {
         }
     }
 
+    fun subscribe(subscriptionId: Long, baseUrl: String, topic: String, since: Long, notify: (Notification) -> Unit, fail: (Exception) -> Unit): Call {
+        val sinceVal = if (since == 0L) "all" else since.toString()
+        val url = topicUrlJson(baseUrl, topic, sinceVal)
+        Log.d(TAG, "Opening subscription connection to $url")
+
+        val request = Request.Builder().url(url).build()
+        val call = subscriberClient.newCall(request)
+        call.enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                try {
+                    if (!response.isSuccessful) {
+                        throw Exception("Unexpected response ${response.code} when subscribing to topic $url")
+                    }
+                    val source = response.body?.source() ?: throw Exception("Unexpected response for $url: body is empty")
+                    while (!source.exhausted()) {
+                        val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
+                        val message = gson.fromJson(line, Message::class.java)
+                        if (message.event == EVENT_MESSAGE) {
+                            val notification = Notification(message.id, subscriptionId, message.time, message.message, false)
+                            notify(notification)
+                        }
+                    }
+                } catch (e: Exception) {
+                    fail(e)
+                }
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                fail(e)
+            }
+        })
+        return call
+    }
+
     private fun fromString(subscriptionId: Long, s: String): Notification {
-        val n = gson.fromJson(s, NotificationData::class.java) // Indirection to prevent accidental field renames, etc.
+        val n = gson.fromJson(s, Message::class.java)
         return Notification(n.id, subscriptionId, n.time, n.message, false)
     }
 
-    private data class NotificationData(
+    private data class Message(
         val id: String,
         val time: Long,
+        val event: String,
         val message: String
     )
 
     companion object {
         private const val TAG = "NtfyApiService"
+        private const val EVENT_MESSAGE = "message"
     }
 }

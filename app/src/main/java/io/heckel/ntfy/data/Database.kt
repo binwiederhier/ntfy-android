@@ -13,16 +13,18 @@ data class Subscription(
     @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
+    @ColumnInfo(name = "instant") val instant: Boolean,
     @Ignore val notifications: Int,
     @Ignore val lastActive: Long = 0 // Unix timestamp
 ) {
-    constructor(id: Long, baseUrl: String, topic: String) : this(id, baseUrl, topic, 0, 0)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0)
 }
 
 data class SubscriptionWithMetadata(
     val id: Long,
     val baseUrl: String,
     val topic: String,
+    val instant: Boolean,
     val notifications: Int,
     val lastActive: Long
 )
@@ -60,7 +62,7 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // Drop "notifications" & "lastActive" columns (SQLite does not support dropping columns, ...)
-                db.execSQL("CREATE TABLE Subscription_New (id INTEGER NOT NULL, baseUrl TEXT NOT NULL, topic TEXT NOT NULL, PRIMARY KEY(id))")
+                db.execSQL("CREATE TABLE Subscription_New (id INTEGER NOT NULL, baseUrl TEXT NOT NULL, topic TEXT NOT NULL, instant INTEGER NOT NULL DEFAULT('0'), PRIMARY KEY(id))")
                 db.execSQL("INSERT INTO Subscription_New SELECT id, baseUrl, topic FROM Subscription")
                 db.execSQL("DROP TABLE Subscription")
                 db.execSQL("ALTER TABLE Subscription_New RENAME TO Subscription")
@@ -76,7 +78,7 @@ abstract class Database : RoomDatabase() {
 @Dao
 interface SubscriptionDao {
     @Query(
-        "SELECT s.id, s.baseUrl, s.topic, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
+        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
         "FROM subscription AS s " +
         "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
         "GROUP BY s.id " +
@@ -85,7 +87,7 @@ interface SubscriptionDao {
     fun listFlow(): Flow<List<SubscriptionWithMetadata>>
 
     @Query(
-        "SELECT s.id, s.baseUrl, s.topic, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
+        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
         "FROM subscription AS s " +
         "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
         "GROUP BY s.id " +
@@ -94,7 +96,7 @@ interface SubscriptionDao {
     fun list(): List<SubscriptionWithMetadata>
 
     @Query(
-        "SELECT s.id, s.baseUrl, s.topic, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
+        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
         "FROM subscription AS s " +
         "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
         "WHERE s.baseUrl = :baseUrl AND s.topic = :topic " +
@@ -103,7 +105,7 @@ interface SubscriptionDao {
     fun get(baseUrl: String, topic: String): SubscriptionWithMetadata?
 
     @Query(
-        "SELECT s.id, s.baseUrl, s.topic, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
+        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
         "FROM subscription AS s " +
         "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
         "WHERE s.id = :subscriptionId " +

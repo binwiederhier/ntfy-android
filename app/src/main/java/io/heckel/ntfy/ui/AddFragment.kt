@@ -20,10 +20,13 @@ import io.heckel.ntfy.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AddFragment(private val viewModel: SubscriptionsViewModel, private val onSubscribe: (topic: String, baseUrl: String) -> Unit) : DialogFragment() {
+class AddFragment(private val viewModel: SubscriptionsViewModel, private val onSubscribe: (topic: String, baseUrl: String, instant: Boolean) -> Unit) : DialogFragment() {
     private lateinit var topicNameText: TextInputEditText
     private lateinit var baseUrlText: TextInputEditText
     private lateinit var useAnotherServerCheckbox: CheckBox
+    private lateinit var useAnotherServerDescription: View
+    private lateinit var instantDeliveryCheckbox: CheckBox
+    private lateinit var instantDeliveryDescription: View
     private lateinit var subscribeButton: Button
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -32,10 +35,10 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
             val view = requireActivity().layoutInflater.inflate(R.layout.add_dialog_fragment, null)
             topicNameText = view.findViewById(R.id.add_dialog_topic_text) as TextInputEditText
             baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
+            instantDeliveryCheckbox = view.findViewById(R.id.add_dialog_instant_delivery_checkbox) as CheckBox
+            instantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
             useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
-
-            // FIXME For now, other servers are disabled
-            useAnotherServerCheckbox.visibility = View.GONE
+            useAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
 
             // Build dialog
             val alert = AlertDialog.Builder(it)
@@ -43,7 +46,8 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
                 .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
                     val topic = topicNameText.text.toString()
                     val baseUrl = getBaseUrl()
-                    onSubscribe(topic, baseUrl)
+                    val instant = if (useAnotherServerCheckbox.isChecked) true else instantDeliveryCheckbox.isChecked
+                    onSubscribe(topic, baseUrl, instant)
                 }
                 .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
                     dialog?.cancel()
@@ -70,9 +74,23 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
                 }
                 topicNameText.addTextChangedListener(textWatcher)
                 baseUrlText.addTextChangedListener(textWatcher)
+                instantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) instantDeliveryDescription.visibility = View.VISIBLE
+                    else instantDeliveryDescription.visibility = View.GONE
+                }
                 useAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) baseUrlText.visibility = View.VISIBLE
-                    else baseUrlText.visibility = View.GONE
+                    if (isChecked) {
+                        useAnotherServerDescription.visibility = View.VISIBLE
+                        baseUrlText.visibility = View.VISIBLE
+                        instantDeliveryCheckbox.visibility = View.GONE
+                        instantDeliveryDescription.visibility = View.GONE
+                    } else {
+                        useAnotherServerDescription.visibility = View.GONE
+                        baseUrlText.visibility = View.GONE
+                        instantDeliveryCheckbox.visibility = View.VISIBLE
+                        if (instantDeliveryCheckbox.isChecked) instantDeliveryDescription.visibility = View.VISIBLE
+                        else instantDeliveryDescription.visibility = View.GONE
+                    }
                     validateInput()
                 }
             }

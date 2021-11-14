@@ -10,23 +10,17 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
-import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.*
+import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.random.Random
 
 class NotificationService(val context: Context) {
     fun send(subscription: Subscription, message: String) {
         val title = topicShortUrl(subscription.baseUrl, subscription.topic)
-        Log.d(TAG, "Sending notification $title: $message")
+        Log.d(TAG, "Displaying notification $title: $message")
 
         // Create an Intent for the activity you want to start
         val intent = Intent(context, DetailActivity::class.java)
@@ -38,9 +32,8 @@ class NotificationService(val context: Context) {
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
         }
 
-        val channelId = context.getString(R.string.notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_icon)
             .setContentTitle(title)
             .setContentText(message)
@@ -50,8 +43,8 @@ class NotificationService(val context: Context) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelName = context.getString(R.string.notification_channel_name)
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            val channelName = context.getString(R.string.channel_notifications_name) // Show's up in UI
+            val channel = NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
         notificationManager.notify(Random.nextInt(), notificationBuilder.build())
@@ -59,5 +52,6 @@ class NotificationService(val context: Context) {
 
     companion object {
         private const val TAG = "NtfyNotificationService"
+        private const val CHANNEL_ID = "ntfy"
     }
 }
