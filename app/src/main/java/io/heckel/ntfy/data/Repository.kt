@@ -19,15 +19,21 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             .map { list -> toSubscriptionList(list) }
     }
 
-    fun getSubscriptionIdsLiveData(): LiveData<Set<Long>> {
+    fun getSubscriptionIdsWithInstantStatusLiveData(): LiveData<Set<Pair<Long, Boolean>>> {
         return subscriptionDao
             .listFlow()
             .asLiveData()
-            .map { list -> list.map { it.id }.toSet() }
+            .map { list -> list.map { Pair(it.id, it.instant) }.toSet() }
     }
 
     fun getSubscriptions(): List<Subscription> {
         return toSubscriptionList(subscriptionDao.list())
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun getSubscription(subscriptionId: Long): Subscription? {
+        return toSubscription(subscriptionDao.get(subscriptionId))
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -40,6 +46,12 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     @WorkerThread
     suspend fun addSubscription(subscription: Subscription) {
         subscriptionDao.add(subscription)
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun updateSubscription(subscription: Subscription) {
+        subscriptionDao.update(subscription)
     }
 
     @Suppress("RedundantSuspendModifier")

@@ -19,12 +19,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.WorkManager
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -37,16 +39,20 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     }
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
+    private var subscriberManager: SubscriberManager? = null // Context-dependent
 
     // Which subscription are we looking at
     private var subscriptionId: Long = 0L // Set in onCreate()
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
-    private var subscriptionInstant: Boolean = false // Set in onCreate()
+    private var subscriptionInstant: Boolean = false // Set in onCreate() & updated by options menu!
+
+    // UI elements
+    private lateinit var adapter: DetailAdapter
+    private lateinit var mainList: RecyclerView
+    private lateinit var menu: Menu
 
     // Action mode stuff
-    private lateinit var mainList: RecyclerView
-    private lateinit var adapter: DetailAdapter
     private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +60,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         setContentView(R.layout.detail_activity)
 
         Log.d(MainActivity.TAG, "Create $this")
+
+        // Dependencies that depend on Context
+        subscriberManager = SubscriberManager(this)
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -101,10 +110,17 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 }
             }
         }
+
+        // React to changes in fast delivery setting
+        repository.getSubscriptionIdsWithInstantStatusLiveData().observe(this) {
+            subscriberManager?.refreshService(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.detail_action_bar_menu, menu)
+        this.menu = menu
+        showHideInstantMenuItems(subscriptionInstant)
         return true
     }
 
@@ -116,6 +132,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
             }
             R.id.detail_menu_refresh -> {
                 onRefreshClick()
+                true
+            }
+            R.id.detail_menu_enable_instant -> {
+                onInstantEnableClick(enable = true)
+                true
+            }
+            R.id.detail_menu_disable_instant -> {
+                onInstantEnableClick(enable = false)
                 true
             }
             R.id.detail_menu_copy_url -> {
@@ -179,6 +203,42 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                         .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
                         .show()
                 }
+            }
+        }
+    }
+
+    private fun onInstantEnableClick(enable: Boolean) {
+        Log.d(TAG, "Toggling instant delivery setting for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val subscription = repository.getSubscription(subscriptionId)
+            val newSubscription = subscription?.copy(instant = enable)
+            newSubscription?.let { repository.updateSubscription(newSubscription) }
+            showHideInstantMenuItems(enable)
+            runOnUiThread {
+                if (enable) {
+                    Toast.makeText(this@DetailActivity, getString(R.string.detail_instant_delivery_enabled), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(this@DetailActivity, getString(R.string.detail_instant_delivery_disabled), Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private fun showHideInstantMenuItems(enable: Boolean) {
+        subscriptionInstant = enable
+        runOnUiThread {
+            val appBaseUrl = getString(R.string.app_base_url)
+            val enableInstantItem = menu.findItem(R.id.detail_menu_enable_instant)
+            val disableInstantItem = menu.findItem(R.id.detail_menu_disable_instant)
+            if (subscriptionBaseUrl == appBaseUrl) {
+                enableInstantItem?.isVisible = !subscriptionInstant
+                disableInstantItem?.isVisible = subscriptionInstant
+            } else {
+                enableInstantItem?.isVisible = false
+                disableInstantItem?.isVisible = false
             }
         }
     }

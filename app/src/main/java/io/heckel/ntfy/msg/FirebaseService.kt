@@ -32,6 +32,7 @@ class FirebaseService : FirebaseMessagingService() {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
             return
         }
+        Log.d(TAG, "Received notification: from=${remoteMessage.from}, data=${data}")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!

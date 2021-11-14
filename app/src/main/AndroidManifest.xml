@@ -49,6 +49,13 @@
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
         <service android:name=".msg.SubscriberService" />
 
+        <!-- Subscriber service restart on reboot -->
+        <receiver android:enabled="true" android:name=".msg.SubscriberService$StartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
         <!-- Firebase messaging -->
         <service
                 android:name=".msg.FirebaseService"

@@ -14,8 +14,8 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         return repository.getSubscriptionsLiveData()
     }
 
-    fun listIds(): LiveData<Set<Long>> {
-        return repository.getSubscriptionIdsLiveData()
+    fun listIdsWithInstantStatus(): LiveData<Set<Pair<Long, Boolean>>> {
+        return repository.getSubscriptionIdsWithInstantStatusLiveData()
     }
 
     fun add(subscription: Subscription) = viewModelScope.launch(Dispatchers.IO) {

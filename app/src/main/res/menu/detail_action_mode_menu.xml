@@ -1,4 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/detail_action_mode_delete" android:title="@string/detail_action_mode_menu_delete"
-          android:icon="@drawable/baseline_delete_20"/>
+          android:icon="@drawable/ic_delete_gray_20dp"/>
 </menu>

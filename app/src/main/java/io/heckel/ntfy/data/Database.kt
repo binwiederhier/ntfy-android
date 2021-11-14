@@ -116,6 +116,9 @@ interface SubscriptionDao {
     @Insert
     fun add(subscription: Subscription)
 
+    @Update
+    fun update(subscription: Subscription)
+
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
 }

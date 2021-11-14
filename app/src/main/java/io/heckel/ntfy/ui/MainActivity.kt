@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
+    private var subscriberManager: SubscriberManager? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
         notifier = NotificationService(this)
+        subscriberManager = SubscriberManager(this)
 
         // Action bar
         title = getString(R.string.main_action_bar_title)
@@ -93,13 +95,13 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             }
         }
 
-        viewModel.listIds().observe(this) {
-            maybeStartOrStopSubscriberService()
+        // React to changes in fast delivery setting
+        viewModel.listIdsWithInstantStatus().observe(this) {
+            subscriberManager?.refreshService(it)
         }
 
         // Background things
         startPeriodicWorker()
-        maybeStartOrStopSubscriberService()
     }
 
     private fun startPeriodicWorker() {
@@ -236,35 +238,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                     Toast.makeText(this@MainActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG).show()
                 }
             }
-        }
-    }
-
-    private fun maybeStartOrStopSubscriberService() {
-        Log.d(TAG, "Triggering subscriber service refresh")
-        lifecycleScope.launch(Dispatchers.IO) {
-            val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
-            if (instantSubscriptions.isEmpty()) {
-                performActionOnSubscriberService(Actions.STOP)
-            } else {
-                performActionOnSubscriberService(Actions.START)
-            }
-        }
-    }
-
-    private fun performActionOnSubscriberService(action: Actions) {
-        val serviceState = readServiceState(this)
-        if (serviceState == ServiceState.STOPPED && action == Actions.STOP) {
-            return
-        }
-        val intent = Intent(this, SubscriberService::class.java)
-        intent.action = action.name
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.d(TAG, "Performing SubscriberService action: ${action.name} (as foreground service, API >= 26)")
-            startForegroundService(intent)
-            return
-        } else {
-            Log.d(TAG, "Performing SubscriberService action: ${action.name} (as background service, API >= 26)")
-            startService(intent)
         }
     }
 

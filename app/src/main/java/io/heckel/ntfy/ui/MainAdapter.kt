@@ -48,6 +48,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
+        private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
@@ -66,6 +67,11 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
+            if (subscription.instant) {
+                instantImageView.visibility = View.VISIBLE
+            } else {
+                instantImageView.visibility = View.GONE
+            }
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {

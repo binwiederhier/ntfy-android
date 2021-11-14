@@ -79,10 +79,12 @@ class ApiService {
                         }
                     }
                 } catch (e: Exception) {
+                    Log.e(TAG, "Connection to $url failed (1): ${e.message}", e)
                     fail(e)
                 }
             }
             override fun onFailure(call: Call, e: IOException) {
+                Log.e(TAG, "Connection to $url failed (2): ${e.message}", e)
                 fail(e)
             }
         })

@@ -1,5 +1,8 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/detail_menu_test" android:title="@string/detail_menu_test"/>
+    <item android:id="@+id/detail_menu_enable_instant" android:title="@string/detail_menu_enable_instant"
+    />
+    <item android:id="@+id/detail_menu_disable_instant" android:title="@string/detail_menu_disable_instant"/>
     <item android:id="@+id/detail_menu_refresh" android:title="@string/detail_menu_refresh"/>
     <item android:id="@+id/detail_menu_copy_url" android:title="@string/detail_menu_copy_url"/>
     <item android:id="@+id/detail_menu_unsubscribe" android:title="@string/detail_menu_unsubscribe"/>

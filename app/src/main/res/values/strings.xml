@@ -7,7 +7,7 @@
     <string name="channel_notifications_name">Notifications</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Subscribed topics</string>
-    <string name="channel_subscriber_notification_text">Listening patiently for incoming notifications</string>
+    <string name="channel_subscriber_notification_text">Listening for incoming notifications</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
@@ -44,9 +44,10 @@
         You can subscribe to topics from your own server. Due to platform limitations, this option requires a foreground
         service and consumes more battery, but delivers notifications faster.
     </string>
-    <string name="add_dialog_instant_delivery">Instant delivery (even in doze mode)</string>
+    <string name="add_dialog_instant_delivery">Fast delivery</string>
     <string name="add_dialog_instant_delivery_description">
-        Requires foreground service and consumes more battery, but delivers notifications faster.
+        Enables instant notification delivery even in doze mode. Requires foreground service and consumes more
+        battery.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
@@ -62,11 +63,15 @@
     <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
+    <string name="detail_instant_delivery_enabled">Fast delivery enabled</string>
+    <string name="detail_instant_delivery_disabled">Fast delivery disabled</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
     <string name="detail_menu_refresh">Force refresh</string>
+    <string name="detail_menu_enable_instant">Enable fast delivery</string>
+    <string name="detail_menu_disable_instant">Disable fast delivery</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
