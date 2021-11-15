@@ -1,8 +1,6 @@
 package io.heckel.ntfy.data
 
 import android.content.Context
-import androidx.annotation.NonNull
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -15,9 +13,14 @@ data class Subscription(
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @Ignore val notifications: Int,
-    @Ignore val lastActive: Long = 0 // Unix timestamp
+    @Ignore val lastActive: Long = 0, // Unix timestamp
+    @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0, ConnectionState.NOT_APPLICABLE)
+}
+
+enum class ConnectionState {
+    NOT_APPLICABLE, RECONNECTING, CONNECTED
 }
 
 data class SubscriptionWithMetadata(

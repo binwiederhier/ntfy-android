@@ -2,12 +2,13 @@ package io.heckel.ntfy.data
 
 import android.util.Log
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.map
-import kotlinx.coroutines.flow.map
+import androidx.lifecycle.*
+import java.util.concurrent.ConcurrentHashMap
 
 class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
+    private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
+    private val connectionStatesLiveData = MutableLiveData(connectionStates)
+
     init {
         Log.d(TAG, "Created $this")
     }
@@ -16,7 +17,9 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         return subscriptionDao
             .listFlow()
             .asLiveData()
-            .map { list -> toSubscriptionList(list) }
+            .combineWith(connectionStatesLiveData) { subscriptionsWithMetadata, _ ->
+                toSubscriptionList(subscriptionsWithMetadata.orEmpty())
+            }
     }
 
     fun getSubscriptionIdsWithInstantStatusLiveData(): LiveData<Set<Pair<Long, Boolean>>> {
@@ -98,13 +101,15 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
 
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
         return list.map { s ->
+            val connectionState = connectionStates.getOrElse(s.id) { ConnectionState.NOT_APPLICABLE }
             Subscription(
                 id = s.id,
                 baseUrl = s.baseUrl,
                 topic = s.topic,
                 instant = s.instant,
                 lastActive = s.lastActive,
-                notifications = s.notifications
+                notifications = s.notifications,
+                state = connectionState
             )
         }
     }
@@ -119,12 +124,29 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             topic = s.topic,
             instant = s.instant,
             lastActive = s.lastActive,
-            notifications = s.notifications
+            notifications = s.notifications,
+            state = getState(s.id)
         )
     }
 
+    fun updateStateIfChanged(subscriptionId: Long, newState: ConnectionState) {
+        val state = connectionStates.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+        if (state !== newState) {
+            if (newState == ConnectionState.NOT_APPLICABLE) {
+                connectionStates.remove(subscriptionId)
+            } else {
+                connectionStates[subscriptionId] = newState
+            }
+            connectionStatesLiveData.postValue(connectionStates)
+        }
+    }
+
+    private fun getState(subscriptionId: Long): ConnectionState {
+        return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+    }
+
     companion object {
-        private val TAG = "NtfyRepository"
+        private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
 
         fun getInstance(subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
@@ -135,4 +157,19 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             }
         }
     }
+}
+
+/* https://stackoverflow.com/a/57079290/1440785 */
+fun <T, K, R> LiveData<T>.combineWith(
+    liveData: LiveData<K>,
+    block: (T?, K?) -> R
+): LiveData<R> {
+    val result = MediatorLiveData<R>()
+    result.addSource(this) {
+        result.value = block(this.value, liveData.value)
+    }
+    result.addSource(liveData) {
+        result.value = block(this.value, liveData.value)
+    }
+    return result
 }

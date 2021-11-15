@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
+import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
 import java.text.SimpleDateFormat
@@ -52,10 +53,13 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            val statusMessage = if (subscription.notifications == 1) {
+            var statusMessage = if (subscription.notifications == 1) {
                 context.getString(R.string.main_item_status_text_one, subscription.notifications)
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.notifications)
+            }
+            if (subscription.instant && subscription.state == ConnectionState.RECONNECTING) {
+                statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
             val dateText = if (subscription.lastActive == 0L) {
                 ""

@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.ui.MainActivity
@@ -156,7 +157,10 @@ class SubscriberService : Service() {
                     onNotificationReceived(scope, subscription, n)
                 }
                 val failed = AtomicBoolean(false)
-                val fail = { e: Exception -> failed.set(true) }
+                val fail = { e: Exception ->
+                    failed.set(true)
+                    repository.updateStateIfChanged(subscription.id, ConnectionState.RECONNECTING)
+                }
 
                 // Call /json subscribe endpoint and loop until the call fails, is canceled,
                 // or the job or service are cancelled/stopped
@@ -164,11 +168,13 @@ class SubscriberService : Service() {
                     val call = api.subscribe(subscription.id, subscription.baseUrl, subscription.topic, since, notify, fail)
                     calls[subscription.id] = call
                     while (!failed.get() && !call.isCanceled() && isActive && isServiceStarted) {
+                        repository.updateStateIfChanged(subscription.id, ConnectionState.CONNECTED)
                         Log.d(TAG, "[$url] Connection is active (failed=$failed, callCanceled=${call.isCanceled()}, jobActive=$isActive, serviceStarted=$isServiceStarted")
                         delay(CONNECTION_LOOP_DELAY_MILLIS) // Resumes immediately if job is cancelled
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
+                    repository.updateStateIfChanged(subscription.id, ConnectionState.RECONNECTING)
                 }
 
                 // If we're not cancelled yet, wait little before retrying (incremental back-off)
@@ -179,6 +185,7 @@ class SubscriberService : Service() {
                 }
             }
             Log.d(TAG, "[$url] Connection job SHUT DOWN")
+            repository.updateStateIfChanged(subscription.id, ConnectionState.NOT_APPLICABLE)
         }
 
     private fun onNotificationReceived(scope: CoroutineScope, subscription: Subscription, n: io.heckel.ntfy.data.Notification) {

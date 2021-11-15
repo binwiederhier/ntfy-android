@@ -16,7 +16,7 @@
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
-    <string name="main_menu_source_title">Report bugs</string>
+    <string name="main_menu_source_title">View source &amp; report bugs</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 
@@ -29,6 +29,7 @@
     <!-- Main activity: List and such -->
     <string name="main_item_status_text_one">%1$d notification</string>
     <string name="main_item_status_text_not_one">%1$d notifications</string>
+    <string name="main_item_status_reconnecting">reconnecting …</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
     <string name="main_how_to_intro">Click the button below to create or subscribe to a topic. After that, you can send messages via PUT or POST and you\'ll receive notifications on your phone.</string>
