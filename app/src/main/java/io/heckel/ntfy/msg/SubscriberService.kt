@@ -241,7 +241,7 @@ class SubscriberService : Service() {
             PendingIntent.getActivity(this, 0, notificationIntent, 0)
         }
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification_icon)
+            .setSmallIcon(R.drawable.ic_notification_instant)
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
