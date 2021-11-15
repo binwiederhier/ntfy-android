@@ -26,11 +26,12 @@ import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
-
-// TODO dismiss notifications when navigating to detail page
+import java.util.concurrent.atomic.AtomicLong
 
 class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val viewModel by viewModels<DetailViewModel> {
@@ -39,6 +40,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
     private var subscriberManager: SubscriberManager? = null // Context-dependent
+    private var notifier: NotificationService? = null // Context-dependent
 
     // Which subscription are we looking at
     private var subscriptionId: Long = 0L // Set in onCreate()
@@ -63,6 +65,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
         // Dependencies that depend on Context
         subscriberManager = SubscriberManager(this)
+        notifier = NotificationService(this)
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -105,6 +108,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
+                // Show list view
                 adapter.submitList(it as MutableList<Notification>)
                 if (it.isEmpty()) {
                     mainListContainer.visibility = View.GONE
@@ -113,12 +117,60 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     mainListContainer.visibility = View.VISIBLE
                     noEntriesText.visibility = View.GONE
                 }
+
+                // Cancel notifications that still have popups
+                maybeCancelNotificationPopups(it)
             }
         }
+
+        // Scroll up when new notification is added
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    Log.d(TAG, "$itemCount item(s) inserted at $positionStart, scrolling to the top")
+                    mainList.scrollToPosition(positionStart)
+                }
+            }
+        })
 
         // React to changes in fast delivery setting
         repository.getSubscriptionIdsWithInstantStatusLiveData().observe(this) {
             subscriberManager?.refreshService(it)
+        }
+
+        // Mark this subscription as "open" so we don't receive notifications for it
+        Log.d(TAG, "onCreate hook: Marking subscription $subscriptionId as 'open'")
+        repository.detailViewSubscriptionId.set(subscriptionId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.d(TAG, "onResume hook: Marking subscription $subscriptionId as 'open'")
+        repository.detailViewSubscriptionId.set(subscriptionId) // Mark as "open" so we don't send notifications while this is open
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onResume hook: Marking subscription $subscriptionId as 'not open'")
+        repository.detailViewSubscriptionId.set(0) // Mark as closed
+    }
+
+    override fun onDestroy() {
+        repository.detailViewSubscriptionId.set(0) // Mark as closed
+        Log.d(TAG, "onDestroy hook: Marking subscription $subscriptionId as 'not open'")
+        super.onDestroy()
+    }
+
+    private fun maybeCancelNotificationPopups(notifications: List<Notification>) {
+        val notificationsWithPopups = notifications.filter { notification -> notification.notificationId != 0 }
+        if (notificationsWithPopups.isNotEmpty()) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                notificationsWithPopups.forEach { notification ->
+                    notifier?.cancel(notification)
+                    repository.updateNotification(notification.copy(notificationId = 0))
+                }
+            }
         }
     }
 
@@ -421,5 +473,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     companion object {
         const val TAG = "NtfyDetailActivity"
+        const val CANCEL_NOTIFICATION_DELAY_MILLIS = 20_000L
     }
 }

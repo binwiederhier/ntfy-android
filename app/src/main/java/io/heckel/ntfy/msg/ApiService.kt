@@ -10,6 +10,7 @@ import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class ApiService {
     private val gson = Gson()
@@ -74,7 +75,14 @@ class ApiService {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
                         val message = gson.fromJson(line, Message::class.java)
                         if (message.event == EVENT_MESSAGE) {
-                            val notification = Notification(message.id, subscriptionId, message.time, message.message, false)
+                            val notification = Notification(
+                                id = message.id,
+                                subscriptionId = subscriptionId,
+                                timestamp = message.time,
+                                message = message.message,
+                                notificationId = Random.nextInt(),
+                                deleted = false
+                            )
                             notify(notification)
                         }
                     }
@@ -93,7 +101,7 @@ class ApiService {
 
     private fun fromString(subscriptionId: Long, s: String): Notification {
         val n = gson.fromJson(s, Message::class.java)
-        return Notification(n.id, subscriptionId, n.time, n.message, false)
+        return Notification(n.id, subscriptionId, n.time, n.message, notificationId = 0, deleted = false)
     }
 
     private data class Message(

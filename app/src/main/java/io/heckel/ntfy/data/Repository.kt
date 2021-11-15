@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 
 class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
+    val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
 
     init {
         Log.d(TAG, "Created $this")
@@ -87,6 +89,10 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         return false
     }
 
+    fun updateNotification(notification: Notification) {
+        notificationDao.update(notification)
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun removeNotification(notificationId: String) {
@@ -107,8 +113,9 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
                 baseUrl = s.baseUrl,
                 topic = s.topic,
                 instant = s.instant,
+                totalCount = s.totalCount,
+                newCount = s.newCount,
                 lastActive = s.lastActive,
-                notifications = s.notifications,
                 state = connectionState
             )
         }
@@ -123,8 +130,9 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
             baseUrl = s.baseUrl,
             topic = s.topic,
             instant = s.instant,
+            totalCount = s.totalCount,
+            newCount = s.newCount,
             lastActive = s.lastActive,
-            notifications = s.notifications,
             state = getState(s.id)
         )
     }

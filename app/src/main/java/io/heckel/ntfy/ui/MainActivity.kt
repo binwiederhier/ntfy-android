@@ -165,7 +165,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             baseUrl = baseUrl,
             topic = topic,
             instant = instant,
-            notifications = 0,
+            totalCount = 0,
+            newCount = 0,
             lastActive = Date().time/1000
         )
         viewModel.add(subscription)
@@ -221,8 +222,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
-                        repository.addNotification(notification)
-                        notifier?.send(subscription, notification.message)
+                        val notificationWithId = notification.copy(notificationId = Random.nextInt())
+                        repository.addNotification(notificationWithId)
+                        notifier?.send(subscription, notificationWithId)
                         newNotificationsCount++
                     }
                 }
@@ -262,7 +264,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
             val subscriptionId = data?.getLongExtra(EXTRA_SUBSCRIPTION_ID, 0)
             val subscriptionBaseUrl = data?.getStringExtra(EXTRA_SUBSCRIPTION_BASE_URL)
             val subscriptionTopic = data?.getStringExtra(EXTRA_SUBSCRIPTION_TOPIC)
-            val subscriptionInstant = data?.getBooleanExtra(EXTRA_SUBSCRIPTION_INSTANT, false)
             Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
 
             subscriptionId?.let { id -> viewModel.remove(id) }

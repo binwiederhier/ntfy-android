@@ -9,6 +9,7 @@ import io.heckel.ntfy.data.Notification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class FirebaseService : FirebaseMessagingService() {
     private val repository by lazy { (application as Application).repository }
@@ -39,13 +40,21 @@ class FirebaseService : FirebaseMessagingService() {
 
             // Add notification
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
-            val notification = Notification(id = id, subscriptionId = subscription.id, timestamp = timestamp, message = message, deleted = false)
+            val notification = Notification(
+                id = id,
+                subscriptionId = subscription.id,
+                timestamp = timestamp,
+                message = message,
+                notificationId = Random.nextInt(),
+                deleted = false
+            )
             val added = repository.addNotification(notification)
+            val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
 
             // Send notification (only if it's not already known)
-            if (added) {
+            if (added && !detailViewOpen) {
                 Log.d(TAG, "Sending notification for message: from=${remoteMessage.from}, data=${data}")
-                notifier.send(subscription, message)
+                notifier.send(subscription, notification)
             }
         }
     }

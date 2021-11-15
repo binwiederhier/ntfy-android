@@ -11,6 +11,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
     // Every time the worker is changed, the periodic work has to be REPLACEd.
@@ -27,10 +28,16 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             try {
                 repository.getSubscriptions().forEach{ subscription ->
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
-                    val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
+                    val newNotifications = repository
+                        .onlyNewNotifications(subscription.id, notifications)
+                        .map { it.copy(notificationId = Random.nextInt()) }
                     newNotifications.forEach { notification ->
-                        repository.addNotification(notification)
-                        notifier.send(subscription, notification.message)
+                        val added = repository.addNotification(notification)
+                        val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
+
+                        if (added && !detailViewOpen) {
+                            notifier.send(subscription, notification)
+                        }
                     }
                 }
                 Log.d(TAG, "Finished polling for new notifications")

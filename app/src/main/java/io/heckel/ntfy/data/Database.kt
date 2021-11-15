@@ -12,11 +12,12 @@ data class Subscription(
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
-    @Ignore val notifications: Int,
+    @Ignore val totalCount: Int = 0, // Total notifications
+    @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -28,7 +29,8 @@ data class SubscriptionWithMetadata(
     val baseUrl: String,
     val topic: String,
     val instant: Boolean,
-    val notifications: Int,
+    val totalCount: Int,
+    val newCount: Int,
     val lastActive: Long
 )
 
@@ -38,7 +40,8 @@ data class Notification(
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "message") val message: String,
-    @ColumnInfo(name = "deleted") val deleted: Boolean
+    @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
+    @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class], version = 2)
@@ -71,7 +74,8 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Subscription_New RENAME TO Subscription")
                 db.execSQL("CREATE UNIQUE INDEX index_Subscription_baseUrl_topic ON Subscription (baseUrl, topic)")
 
-                // Add "deleted" column
+                // Add "notificationId" & "deleted" columns
+                db.execSQL("ALTER TABLE Notification ADD COLUMN notificationId INTEGER NOT NULL DEFAULT('0')")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN deleted INTEGER NOT NULL DEFAULT('0')")
             }
         }
@@ -80,40 +84,56 @@ abstract class Database : RoomDatabase() {
 
 @Dao
 interface SubscriptionDao {
-    @Query(
-        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
-        "FROM subscription AS s " +
-        "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
-        "GROUP BY s.id " +
-        "ORDER BY MAX(n.timestamp) DESC"
-    )
+    @Query("""
+        SELECT 
+          s.id, s.baseUrl, s.topic, s.instant, 
+          COUNT(n.id) totalCount, 
+          COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
+          IFNULL(MAX(n.timestamp),0) AS lastActive
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
+        GROUP BY s.id
+        ORDER BY MAX(n.timestamp) DESC
+    """)
     fun listFlow(): Flow<List<SubscriptionWithMetadata>>
 
-    @Query(
-        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
-        "FROM subscription AS s " +
-        "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
-        "GROUP BY s.id " +
-        "ORDER BY MAX(n.timestamp) DESC"
-    )
+    @Query("""
+        SELECT 
+          s.id, s.baseUrl, s.topic, s.instant, 
+          COUNT(n.id) totalCount, 
+          COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
+          IFNULL(MAX(n.timestamp),0) AS lastActive
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
+        GROUP BY s.id
+        ORDER BY MAX(n.timestamp) DESC
+    """)
     fun list(): List<SubscriptionWithMetadata>
 
-    @Query(
-        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
-        "FROM subscription AS s " +
-        "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
-        "WHERE s.baseUrl = :baseUrl AND s.topic = :topic " +
-        "GROUP BY s.id "
-    )
+    @Query("""
+        SELECT 
+          s.id, s.baseUrl, s.topic, s.instant, 
+          COUNT(n.id) totalCount, 
+          COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
+          IFNULL(MAX(n.timestamp),0) AS lastActive
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
+        WHERE s.baseUrl = :baseUrl AND s.topic = :topic
+        GROUP BY s.id
+    """)
     fun get(baseUrl: String, topic: String): SubscriptionWithMetadata?
 
-    @Query(
-        "SELECT s.id, s.baseUrl, s.topic, s.instant, COUNT(n.id) notifications, IFNULL(MAX(n.timestamp),0) AS lastActive " +
-        "FROM subscription AS s " +
-        "LEFT JOIN notification AS n ON s.id=n.subscriptionId AND n.deleted != 1 " +
-        "WHERE s.id = :subscriptionId " +
-        "GROUP BY s.id "
-    )
+    @Query("""
+        SELECT 
+          s.id, s.baseUrl, s.topic, s.instant, 
+          COUNT(n.id) totalCount, 
+          COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
+          IFNULL(MAX(n.timestamp),0) AS lastActive
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
+        WHERE  s.id = :subscriptionId
+        GROUP BY s.id
+    """)
     fun get(subscriptionId: Long): SubscriptionWithMetadata?
 
     @Insert
@@ -139,6 +159,9 @@ interface NotificationDao {
 
     @Query("SELECT * FROM notification WHERE id = :notificationId")
     fun get(notificationId: String): Notification?
+
+    @Update
+    fun update(notification: Notification)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun remove(notificationId: String)

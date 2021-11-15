@@ -50,13 +50,14 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
         private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
+        private val newItemsView: TextView = itemView.findViewById(R.id.main_item_new)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            var statusMessage = if (subscription.notifications == 1) {
-                context.getString(R.string.main_item_status_text_one, subscription.notifications)
+            var statusMessage = if (subscription.totalCount == 1) {
+                context.getString(R.string.main_item_status_text_one, subscription.totalCount)
             } else {
-                context.getString(R.string.main_item_status_text_not_one, subscription.notifications)
+                context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
             }
             if (subscription.instant && subscription.state == ConnectionState.RECONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
@@ -75,6 +76,12 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
                 instantImageView.visibility = View.VISIBLE
             } else {
                 instantImageView.visibility = View.GONE
+            }
+            if (subscription.newCount > 0) {
+                newItemsView.visibility = View.VISIBLE
+                newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
+            } else {
+                newItemsView.visibility = View.GONE
             }
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }

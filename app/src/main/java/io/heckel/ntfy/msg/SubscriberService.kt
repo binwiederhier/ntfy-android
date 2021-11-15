@@ -205,9 +205,11 @@ class SubscriberService : Service() {
         Log.d(TAG, "[$url] Received notification: $n")
         scope.launch(Dispatchers.IO) {
             val added = repository.addNotification(n)
-            if (added) {
+            val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
+
+            if (added && !detailViewOpen) {
                 Log.d(TAG, "[$url] Showing notification: $n")
-                notifier.send(subscription, n.message)
+                notifier.send(subscription, n)
             }
         }
     }
