@@ -64,6 +64,10 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         return notificationDao.list(subscriptionId).asLiveData()
     }
 
+    fun getNotification(notificationId: String): Notification? {
+        return notificationDao.get(notificationId)
+    }
+
     fun onlyNewNotifications(subscriptionId: Long, notifications: List<Notification>): List<Notification> {
         val existingIds = notificationDao.listIds(subscriptionId)
         return notifications.filterNot { existingIds.contains(it.id) }

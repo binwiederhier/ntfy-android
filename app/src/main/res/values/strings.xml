@@ -43,10 +43,10 @@
         You can subscribe to topics from your own server. Due to platform limitations, this option requires a foreground
         service and consumes more battery, but delivers notifications faster.
     </string>
-    <string name="add_dialog_instant_delivery">Fast delivery</string>
+    <string name="add_dialog_instant_delivery">Instant delivery even in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
-        Enables instant notification delivery even in doze mode. Requires foreground service and consumes more
-        battery.
+        Android doze mode may delay message delivery. With this open, notifications are immediately delivered even in doze mode.
+        Requires foreground service and consumes more battery.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
@@ -62,17 +62,18 @@
     <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
-    <string name="detail_instant_delivery_enabled">Fast delivery enabled</string>
-    <string name="detail_instant_delivery_disabled">Fast delivery disabled</string>
+    <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
+    <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
-    <string name="detail_menu_enable_instant">Enable fast delivery</string>
-    <string name="detail_menu_disable_instant">Disable fast delivery</string>
+    <string name="detail_menu_enable_instant">Enable instant delivery</string>
+    <string name="detail_menu_disable_instant">Disable instant delivery</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
+    <string name="detail_action_mode_menu_copy">Copy</string>
     <string name="detail_action_mode_menu_delete">Delete</string>
     <string name="detail_action_mode_delete_dialog_message">Do you really want to permanently delete the selected message(s)?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Permanently delete</string>

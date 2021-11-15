@@ -320,11 +320,36 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         return when (item?.itemId) {
+            R.id.detail_action_mode_copy -> {
+                onMultiCopyClick()
+                true
+            }
             R.id.detail_action_mode_delete -> {
                 onMultiDeleteClick()
                 true
             }
             else -> false
+        }
+    }
+
+    private fun onMultiCopyClick() {
+        Log.d(TAG, "Copying multiple notifications to clipboard")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val content = adapter.selected.joinToString("\n\n") { notificationId ->
+                val notification = repository.getNotification(notificationId)
+                notification?.let {
+                    it.message + "\n" + Date(it.timestamp * 1000).toString()
+                }.orEmpty()
+            }
+            val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("notifications", content)
+            clipboard.setPrimaryClip(clip)
+            runOnUiThread {
+                Toast
+                    .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                    .show()
+            }
         }
     }
 
