@@ -143,6 +143,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onInstantEnableClick(enable = false)
                 true
             }
+            R.id.detail_menu_instant_info -> {
+                onInstantInfoClick()
+                true
+            }
             R.id.detail_menu_copy_url -> {
                 onCopyUrlClick()
                 true
@@ -232,18 +236,27 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
+    private fun onInstantInfoClick() {
+        Log.d(TAG, "Showing instant info toast")
+        Toast.makeText(this@DetailActivity, getString(R.string.detail_instant_info), Toast.LENGTH_LONG)
+            .show()
+    }
+
     private fun showHideInstantMenuItems(enable: Boolean) {
         subscriptionInstant = enable
         runOnUiThread {
             val appBaseUrl = getString(R.string.app_base_url)
             val enableInstantItem = menu.findItem(R.id.detail_menu_enable_instant)
             val disableInstantItem = menu.findItem(R.id.detail_menu_disable_instant)
+            val instantInfoItem = menu.findItem(R.id.detail_menu_instant_info)
             if (subscriptionBaseUrl == appBaseUrl) {
                 enableInstantItem?.isVisible = !subscriptionInstant
                 disableInstantItem?.isVisible = subscriptionInstant
+                instantInfoItem?.isVisible = false
             } else {
                 enableInstantItem?.isVisible = false
                 disableInstantItem?.isVisible = false
+                instantInfoItem?.isVisible = true
             }
         }
     }
@@ -349,6 +362,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 Toast
                     .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
                     .show()
+                finishActionMode()
             }
         }
     }

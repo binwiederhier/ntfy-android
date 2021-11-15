@@ -1,6 +1,5 @@
 package io.heckel.ntfy.ui
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -9,14 +8,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
-import androidx.activity.viewModels
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
-import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -25,6 +20,7 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
     private lateinit var baseUrlText: TextInputEditText
     private lateinit var useAnotherServerCheckbox: CheckBox
     private lateinit var useAnotherServerDescription: View
+    private lateinit var instantDeliveryBox: View
     private lateinit var instantDeliveryCheckbox: CheckBox
     private lateinit var instantDeliveryDescription: View
     private lateinit var subscribeButton: Button
@@ -35,6 +31,7 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
             val view = requireActivity().layoutInflater.inflate(R.layout.add_dialog_fragment, null)
             topicNameText = view.findViewById(R.id.add_dialog_topic_text) as TextInputEditText
             baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
+            instantDeliveryBox = view.findViewById(R.id.add_dialog_instant_delivery_box)
             instantDeliveryCheckbox = view.findViewById(R.id.add_dialog_instant_delivery_checkbox) as CheckBox
             instantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
             useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
@@ -82,12 +79,12 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
                     if (isChecked) {
                         useAnotherServerDescription.visibility = View.VISIBLE
                         baseUrlText.visibility = View.VISIBLE
-                        instantDeliveryCheckbox.visibility = View.GONE
+                        instantDeliveryBox.visibility = View.GONE
                         instantDeliveryDescription.visibility = View.GONE
                     } else {
                         useAnotherServerDescription.visibility = View.GONE
                         baseUrlText.visibility = View.GONE
-                        instantDeliveryCheckbox.visibility = View.VISIBLE
+                        instantDeliveryBox.visibility = View.VISIBLE
                         if (instantDeliveryCheckbox.isChecked) instantDeliveryDescription.visibility = View.VISIBLE
                         else instantDeliveryDescription.visibility = View.GONE
                     }

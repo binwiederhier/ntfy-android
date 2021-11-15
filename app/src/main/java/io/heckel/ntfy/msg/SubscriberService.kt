@@ -131,6 +131,18 @@ class SubscriberService : Service() {
                     cancelJob(subscriptionId)
                 }
             }
+            if (jobs.size > 0) {
+                synchronized(this) {
+                    val title = getString(R.string.channel_subscriber_notification_title)
+                    val text = if (jobs.size == 1) {
+                        getString(R.string.channel_subscriber_notification_text_one)
+                    } else {
+                        getString(R.string.channel_subscriber_notification_text_more, jobs.size)
+                    }
+                    notification = createNotification(title, text)
+                    notificationManager?.notify(NOTIFICATION_SERVICE_ID, notification)
+                }
+            }
         }
 
     private fun cancelJob(subscriptionId: Long?) {

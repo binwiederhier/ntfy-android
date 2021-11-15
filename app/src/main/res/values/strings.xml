@@ -6,8 +6,10 @@
     <!-- Notification channels -->
     <string name="channel_notifications_name">Notifications</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
-    <string name="channel_subscriber_notification_title">Subscribed topics</string>
-    <string name="channel_subscriber_notification_text">Listening for incoming notifications</string>
+    <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
+    <string name="channel_subscriber_notification_text">You are subscribed to instant delivery topics</string>
+    <string name="channel_subscriber_notification_text_one">You are subscribed to one instant delivery topic</string>
+    <string name="channel_subscriber_notification_text_more">You are subscribed to %1$d instant delivery topics</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
@@ -16,7 +18,7 @@
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
-    <string name="main_menu_source_title">View source &amp; report bugs</string>
+    <string name="main_menu_source_title">Report a bug</string>
     <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 
@@ -42,12 +44,12 @@
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
         You can subscribe to topics from your own server. Due to platform limitations, this option requires a foreground
-        service and consumes more battery, but delivers notifications faster.
+        service and consumes more power, but also delivers notifications faster (even in doze mode).
     </string>
-    <string name="add_dialog_instant_delivery">Instant delivery even in doze mode</string>
+    <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
-        Android doze mode may delay message delivery. With this open, notifications are immediately delivered even in doze mode.
-        Requires foreground service and consumes more battery.
+        Doze mode sometimes causes delayed message delivery to conserve power. With instant delivery, notifications are
+        always immediately delivered. This requires a foreground service and consumes a little more power.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
@@ -65,12 +67,14 @@
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
+    <string name="detail_instant_info">Instant delivery is always enabled for subscriptions with other servers</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
     <string name="detail_menu_enable_instant">Enable instant delivery</string>
     <string name="detail_menu_disable_instant">Disable instant delivery</string>
+    <string name="detail_menu_instant_info">Instant delivery enabled</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
