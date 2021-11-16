@@ -21,7 +21,7 @@ data class Subscription(
 }
 
 enum class ConnectionState {
-    NOT_APPLICABLE, RECONNECTING, CONNECTED
+    NOT_APPLICABLE, CONNECTING, CONNECTED
 }
 
 data class SubscriptionWithMetadata(

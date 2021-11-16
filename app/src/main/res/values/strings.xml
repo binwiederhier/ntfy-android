@@ -9,6 +9,9 @@
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
     <string name="channel_subscriber_notification_text">You are subscribed to instant delivery topics</string>
     <string name="channel_subscriber_notification_text_one">You are subscribed to one instant delivery topic</string>
+    <string name="channel_subscriber_notification_text_two">You are subscribed to two instant delivery topics</string>
+    <string name="channel_subscriber_notification_text_three">You are subscribed to three instant delivery topics</string>
+    <string name="channel_subscriber_notification_text_four">You are subscribed to four instant delivery topics</string>
     <string name="channel_subscriber_notification_text_more">You are subscribed to %1$d instant delivery topics</string>
 
     <!-- Common refresh toasts -->
@@ -48,7 +51,7 @@
     </string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
-        Doze mode sometimes causes delayed message delivery to conserve power. With instant delivery, notifications are
+        Android\'s doze mode sometimes causes delayed message delivery to conserve power. Using this option, notifications are
         always immediately delivered. This requires a foreground service and consumes a little more power.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>

@@ -59,7 +59,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
             }
-            if (subscription.instant && subscription.state == ConnectionState.RECONNECTING) {
+            if (subscription.instant && subscription.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
             val dateText = if (subscription.lastActive == 0L) {

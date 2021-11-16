@@ -137,14 +137,20 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         )
     }
 
-    fun updateStateIfChanged(subscriptionId: Long, newState: ConnectionState) {
-        val state = connectionStates.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
-        if (state !== newState) {
-            if (newState == ConnectionState.NOT_APPLICABLE) {
-                connectionStates.remove(subscriptionId)
-            } else {
-                connectionStates[subscriptionId] = newState
+    fun updateState(subscriptionIds: Collection<Long>, newState: ConnectionState) {
+        var changed = false
+        subscriptionIds.forEach { subscriptionId ->
+            val state = connectionStates.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+            if (state !== newState) {
+                changed = true
+                if (newState == ConnectionState.NOT_APPLICABLE) {
+                    connectionStates.remove(subscriptionId)
+                } else {
+                    connectionStates[subscriptionId] = newState
+                }
             }
+        }
+        if (changed) {
             connectionStatesLiveData.postValue(connectionStates)
         }
     }

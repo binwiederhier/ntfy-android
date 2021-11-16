@@ -57,9 +57,15 @@ class ApiService {
         }
     }
 
-    fun subscribe(subscriptionId: Long, baseUrl: String, topic: String, since: Long, notify: (Notification) -> Unit, fail: (Exception) -> Unit): Call {
+    fun subscribe(
+        baseUrl: String,
+        topics: String,
+        since: Long,
+        notify: (topic: String, Notification) -> Unit,
+        fail: (Exception) -> Unit
+    ): Call {
         val sinceVal = if (since == 0L) "all" else since.toString()
-        val url = topicUrlJson(baseUrl, topic, sinceVal)
+        val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
 
         val request = Request.Builder().url(url).build()
@@ -75,15 +81,16 @@ class ApiService {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
                         val message = gson.fromJson(line, Message::class.java)
                         if (message.event == EVENT_MESSAGE) {
+                            val topic = message.topic
                             val notification = Notification(
                                 id = message.id,
-                                subscriptionId = subscriptionId,
+                                subscriptionId = 0, // TO BE SET downstream
                                 timestamp = message.time,
                                 message = message.message,
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
-                            notify(notification)
+                            notify(topic, notification)
                         }
                     }
                 } catch (e: Exception) {
@@ -108,6 +115,7 @@ class ApiService {
         val id: String,
         val time: Long,
         val event: String,
+        val topic: String,
         val message: String
     )
 
