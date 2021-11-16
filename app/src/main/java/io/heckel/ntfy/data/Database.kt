@@ -69,7 +69,7 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 // Drop "notifications" & "lastActive" columns (SQLite does not support dropping columns, ...)
                 db.execSQL("CREATE TABLE Subscription_New (id INTEGER NOT NULL, baseUrl TEXT NOT NULL, topic TEXT NOT NULL, instant INTEGER NOT NULL DEFAULT('0'), PRIMARY KEY(id))")
-                db.execSQL("INSERT INTO Subscription_New SELECT id, baseUrl, topic FROM Subscription")
+                db.execSQL("INSERT INTO Subscription_New SELECT id, baseUrl, topic, 0 FROM Subscription")
                 db.execSQL("DROP TABLE Subscription")
                 db.execSQL("ALTER TABLE Subscription_New RENAME TO Subscription")
                 db.execSQL("CREATE UNIQUE INDEX index_Subscription_baseUrl_topic ON Subscription (baseUrl, topic)")
