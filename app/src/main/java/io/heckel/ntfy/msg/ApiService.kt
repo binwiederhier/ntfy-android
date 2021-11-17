@@ -1,6 +1,7 @@
 package io.heckel.ntfy.msg
 
 import android.util.Log
+import androidx.annotation.Keep
 import com.google.gson.Gson
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.topicUrl
@@ -107,10 +108,13 @@ class ApiService {
     }
 
     private fun fromString(subscriptionId: Long, s: String): Notification {
-        val n = gson.fromJson(s, Message::class.java)
-        return Notification(n.id, subscriptionId, n.time, n.message, notificationId = 0, deleted = false)
+        val message = gson.fromJson(s, Message::class.java)
+        return Notification(message.id, subscriptionId, message.time, message.message, notificationId = 0, deleted = false)
     }
 
+    /* This annotation ensures that proguard still works in production builds,
+     * see https://stackoverflow.com/a/62753300/1440785 */
+    @Keep
     private data class Message(
         val id: String,
         val time: Long,

@@ -5,6 +5,9 @@ google-services.json
 .keystores/
 .signing/
 
+# Playground
+playground/
+
 # Release
 app/release/
 

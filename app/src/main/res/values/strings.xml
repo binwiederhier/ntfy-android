@@ -51,8 +51,8 @@
     </string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
-        Android\'s doze mode sometimes causes delayed message delivery to conserve power. Using this option, notifications are
-        always immediately delivered. This requires a foreground service and consumes a little more power.
+        Ensures that messages are immediately delivered, even if the device is inactive or in doze mode.
+        This requires a foreground service and consumes a little more power.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
