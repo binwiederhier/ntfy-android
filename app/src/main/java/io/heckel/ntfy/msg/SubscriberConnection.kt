@@ -43,7 +43,9 @@ class SubscriberConnection(
                 val failed = AtomicBoolean(false)
                 val fail = { e: Exception ->
                     failed.set(true)
-                    stateChangeListener(subscriptions.values, ConnectionState.CONNECTING)
+                    if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
+                        stateChangeListener(subscriptions.values, ConnectionState.CONNECTING)
+                    }
                 }
 
                 // Call /json subscribe endpoint and loop until the call fails, is canceled,
@@ -57,8 +59,7 @@ class SubscriberConnection(
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
-                    if (isActive && serviceActive()) {
-                        // Only update if we're not canceled, otherwise this may lead to races
+                    if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptions.values, ConnectionState.CONNECTING)
                     }
                 }

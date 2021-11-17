@@ -152,8 +152,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     }
 
     private fun onSubscribeButtonClick() {
-        val newFragment = AddFragment(viewModel) { topic, baseUrl, instant -> onSubscribe(topic, baseUrl, instant) }
-        newFragment.show(supportFragmentManager, "AddFragment")
+        val newFragment = AddFragment(viewModel, ::onSubscribe)
+        newFragment
+            .show(supportFragmentManager, "AddFragment")
     }
 
     private fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {

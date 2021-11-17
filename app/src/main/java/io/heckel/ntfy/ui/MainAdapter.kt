@@ -12,7 +12,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.data.topicShortUrl
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 import java.util.*
 
 
@@ -62,12 +62,18 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             if (subscription.instant && subscription.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
+            val date = Date(subscription.lastActive * 1000)
+            val dateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+            val moreThanOneDay = System.currentTimeMillis()/1000 - subscription.lastActive > 24 * 60 * 60
+            val sameDay = dateStr == DateFormat.getDateInstance(DateFormat.SHORT).format(Date()) // Omg this is horrible
             val dateText = if (subscription.lastActive == 0L) {
                 ""
-            } else if (System.currentTimeMillis()/1000 - subscription.lastActive < 24 * 60 * 60) {
-                SimpleDateFormat("HH:mm").format(Date(subscription.lastActive*1000))
+            } else if (sameDay) {
+                DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+            } else if (!moreThanOneDay) {
+                context.getString(R.string.main_item_date_yesterday)
             } else {
-                SimpleDateFormat("M/d/yy").format(Date(subscription.lastActive*1000))
+                dateStr
             }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage

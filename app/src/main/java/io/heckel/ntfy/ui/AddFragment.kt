@@ -125,4 +125,10 @@ class AddFragment(private val viewModel: SubscriptionsViewModel, private val onS
             getString(R.string.app_base_url)
         }
     }
+
+    companion object {
+        fun newInstance() {
+            // ... make it not crash
+        }
+    }
 }

@@ -35,6 +35,7 @@
     <string name="main_item_status_text_one">%1$d notification</string>
     <string name="main_item_status_text_not_one">%1$d notifications</string>
     <string name="main_item_status_reconnecting">reconnecting …</string>
+    <string name="main_item_date_yesterday">Yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
     <string name="main_how_to_intro">Click the button below to create or subscribe to a topic. After that, you can send messages via PUT or POST and you\'ll receive notifications on your phone.</string>

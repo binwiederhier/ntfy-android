@@ -232,12 +232,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         val url = topicUrl(subscriptionBaseUrl, subscriptionTopic)
         Log.d(TAG, "Copying topic URL $url to clipboard ")
 
-        val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("topic address", url)
-        clipboard.setPrimaryClip(clip)
-        Toast
-            .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-            .show()
+        runOnUiThread {
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("topic address", url)
+            clipboard.setPrimaryClip(clip)
+            Toast
+                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
     private fun refresh() {
@@ -345,13 +347,15 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     }
 
     private fun copyToClipboard(notification: Notification) {
-        val message = notification.message + "\n\n" + Date(notification.timestamp * 1000).toString()
-        val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("notification message", message)
-        clipboard.setPrimaryClip(clip)
-        Toast
-            .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-            .show()
+        runOnUiThread {
+            val message = notification.message + "\n\n" + Date(notification.timestamp * 1000).toString()
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("notification message", message)
+            clipboard.setPrimaryClip(clip)
+            Toast
+                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                .show()
+        }
     }
 
     private fun onNotificationLongClick(notification: Notification) {
@@ -407,10 +411,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     it.message + "\n" + Date(it.timestamp * 1000).toString()
                 }.orEmpty()
             }
-            val clipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("notifications", content)
-            clipboard.setPrimaryClip(clip)
             runOnUiThread {
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("notifications", content)
+                clipboard.setPrimaryClip(clip)
                 Toast
                     .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
                     .show()
