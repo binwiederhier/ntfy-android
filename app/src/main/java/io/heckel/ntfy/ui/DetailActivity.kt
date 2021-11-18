@@ -260,6 +260,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     mainListContainer.isRefreshing = false
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "Error fetching notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}: ${e.stackTrace}", e)
                 runOnUiThread {
                     Toast
                         .makeText(this@DetailActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG)
