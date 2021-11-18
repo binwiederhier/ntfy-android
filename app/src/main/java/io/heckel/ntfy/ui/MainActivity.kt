@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 
-class MainActivity : AppCompatActivity(), ActionMode.Callback {
+class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.SubscribeListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
@@ -152,12 +152,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback {
     }
 
     private fun onSubscribeButtonClick() {
-        val newFragment = AddFragment(viewModel, ::onSubscribe)
-        newFragment
-            .show(supportFragmentManager, "AddFragment")
+        val newFragment = AddFragment()
+        newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 
-    private fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
+    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
 
         // Add subscription to database
