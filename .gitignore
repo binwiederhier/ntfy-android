@@ -9,6 +9,7 @@ google-services.json
 playground/
 
 # Release
+releases/
 app/release/
 
 # built application files
