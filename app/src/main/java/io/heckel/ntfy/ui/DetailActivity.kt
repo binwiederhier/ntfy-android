@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 
-class DetailActivity : AppCompatActivity(), ActionMode.Callback {
+class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
@@ -187,6 +187,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 onTestClick()
                 true
             }
+            R.id.detail_menu_notification -> {
+                onNotificationSettingsClick()
+                true
+            }
             R.id.detail_menu_enable_instant -> {
                 onInstantEnableClick(enable = true)
                 true
@@ -226,6 +230,38 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                 }
             }
         }
+    }
+
+    private fun onNotificationSettingsClick() {
+        Log.d(TAG, "Showing notification settings dialog for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+        val intent = Intent(this, SubscriptionSettingsActivity::class.java)
+        startActivityForResult(intent, /*XXXXXX*/MainActivity.REQUEST_CODE_DELETE_SUBSCRIPTION)
+/*
+        val notificationFragment = NotificationFragment()
+        notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)*/
+    }
+
+    override fun onNotificationSettingsChanged(mutedUntil: Long) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val subscription = repository.getSubscription(subscriptionId)
+            val newSubscription = subscription?.copy(mutedUntil = mutedUntil)
+            newSubscription?.let { repository.updateSubscription(newSubscription) }
+            runOnUiThread {
+                when (mutedUntil) {
+                    0L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_SHORT).show()
+                    1L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_SHORT).show()
+                    else -> {
+                        val mutedUntilDate = Date(mutedUntil).toString()
+                        Toast.makeText(
+                            this@DetailActivity,
+                            getString(R.string.notification_dialog_muted_until_toast_message, mutedUntilDate),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun onCopyUrlClick() {
@@ -478,6 +514,5 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     companion object {
         const val TAG = "NtfyDetailActivity"
-        const val CANCEL_NOTIFICATION_DELAY_MILLIS = 20_000L
     }
 }

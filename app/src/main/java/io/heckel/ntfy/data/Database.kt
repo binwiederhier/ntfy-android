@@ -5,6 +5,7 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true)])
 data class Subscription(
@@ -12,12 +13,16 @@ data class Subscription(
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
+    @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
+    //val notificationSchedule: String,
+    //val notificationSound: String,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean) : this(id, baseUrl, topic, instant, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long) :
+            this(id, baseUrl, topic, instant, mutedUntil, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -29,6 +34,7 @@ data class SubscriptionWithMetadata(
     val baseUrl: String,
     val topic: String,
     val instant: Boolean,
+    val mutedUntil: Long,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
@@ -44,7 +50,7 @@ data class Notification(
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 2)
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 3)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -79,6 +85,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN deleted INTEGER NOT NULL DEFAULT('0')")
             }
         }
+
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN mutedUntil INTEGER NOT NULL DEFAULT('0')")
+            }
+        }
     }
 }
 
@@ -86,7 +98,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, 
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -99,7 +111,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, 
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -112,7 +124,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, 
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -125,7 +137,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, 
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

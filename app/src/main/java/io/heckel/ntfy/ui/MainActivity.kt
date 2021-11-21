@@ -165,6 +165,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             baseUrl = baseUrl,
             topic = topic,
             instant = instant,
+            mutedUntil = 0,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000

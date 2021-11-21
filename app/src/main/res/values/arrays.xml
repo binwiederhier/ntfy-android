@@ -1,0 +1,16 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Forever</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>forever</item>
+        <item>30min</item>
+        <item>1hr</item>
+        <item>2h</item>
+    </string-array>
+</resources>

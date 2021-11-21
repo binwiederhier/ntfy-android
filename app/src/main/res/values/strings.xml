@@ -10,7 +10,8 @@
     <string name="channel_subscriber_notification_text">You are subscribed to instant delivery topics</string>
     <string name="channel_subscriber_notification_text_one">You are subscribed to one instant delivery topic</string>
     <string name="channel_subscriber_notification_text_two">You are subscribed to two instant delivery topics</string>
-    <string name="channel_subscriber_notification_text_three">You are subscribed to three instant delivery topics</string>
+    <string name="channel_subscriber_notification_text_three">You are subscribed to three instant delivery topics
+    </string>
     <string name="channel_subscriber_notification_text_four">You are subscribed to four instant delivery topics</string>
     <string name="channel_subscriber_notification_text_more">You are subscribed to %1$d instant delivery topics</string>
 
@@ -27,7 +28,9 @@
 
     <!-- Main activity: Action mode -->
     <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
-    <string name="main_action_mode_delete_dialog_message">Do you really want to unsubscribe from selected topic(s) and permanently delete all the messages you received?</string>
+    <string name="main_action_mode_delete_dialog_message">Do you really want to unsubscribe from selected topic(s) and
+        permanently delete all the messages you received?
+    </string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
 
@@ -38,12 +41,17 @@
     <string name="main_item_date_yesterday">Yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
-    <string name="main_how_to_intro">Click the button below to create or subscribe to a topic. After that, you can send messages via PUT or POST and you\'ll receive notifications on your phone.</string>
-    <string name="main_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
+    <string name="main_how_to_intro">Click the button below to create or subscribe to a topic. After that, you can send
+        messages via PUT or POST and you\'ll receive notifications on your phone.
+    </string>
+    <string name="main_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.
+    </string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
-    <string name="add_dialog_description_below">Topics are not password-protected, so choose a name that\'s not easy to guess. Once subscribed, you can PUT/POST to receive notifications on your phone.</string>
+    <string name="add_dialog_description_below">Topics are not password-protected, so choose a name that\'s not easy to
+        guess. Once subscribed, you can PUT/POST to receive notifications on your phone.
+    </string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
@@ -60,13 +68,18 @@
 
     <!-- Detail activity -->
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
-    <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
+    <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.
+    </string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
-    <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
-    <string name="detail_delete_dialog_message">Do you really want to unsubscribe from this topic and delete all of the messages you received?</string>
+    <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.
+    </string>
+    <string name="detail_delete_dialog_message">Do you really want to unsubscribe from this topic and delete all of the
+        messages you received?
+    </string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
-    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
+    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.
+    </string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
@@ -74,17 +87,44 @@
     <string name="detail_instant_info">Instant delivery cannot be disabled for subscriptions from other servers</string>
 
     <!-- Detail activity: Action bar -->
-    <string name="detail_menu_test">Send test notification</string>
-    <string name="detail_menu_copy_url">Copy topic address</string>
+    <string name="detail_menu_notification">Notification</string>
     <string name="detail_menu_enable_instant">Enable instant delivery</string>
     <string name="detail_menu_disable_instant">Disable instant delivery</string>
+    <string name="detail_menu_test">Send test notification</string>
+    <string name="detail_menu_copy_url">Copy topic address</string>
     <string name="detail_menu_instant_info">Instant delivery enabled</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
     <string name="detail_action_mode_menu_copy">Copy</string>
     <string name="detail_action_mode_menu_delete">Delete</string>
-    <string name="detail_action_mode_delete_dialog_message">Do you really want to permanently delete the selected message(s)?</string>
+    <string name="detail_action_mode_delete_dialog_message">Do you really want to permanently delete the selected
+        message(s)?
+    </string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_action_mode_delete_dialog_cancel">Cancel</string>
+
+    <!-- Notification dialog -->
+    <string name="notification_dialog_title">Notification settings</string>
+    <string name="notification_dialog_cancel">Cancel</string>
+    <string name="notification_dialog_save">Save</string>
+    <string name="notification_dialog_enabled_toast_message">Notifications re-enabled</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifications are now paused</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications are now paused until %s</string>
+
+
+    <!-- Preference Titles -->
+    <string name="subscription_settings_notifications_header">Notifications</string>
+    <string name="subscription_settings_pause_title">Pause notifications</string>
+    <string name="subscription_settings_pause_for_title">Until …</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+
+    <!-- Sync Preferences -->
+
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
