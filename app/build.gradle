@@ -30,11 +30,25 @@ android {
         release {
             minifyEnabled true
             debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
         debug {
             minifyEnabled false
             debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+    }
+
+    flavorDimensions "store"
+    productFlavors {
+        forPlay {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"play"'
+        }
+        forFDroid {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"fdroid"'
         }
     }
 
@@ -67,8 +81,8 @@ dependencies {
     // OkHttp (HTTP library)
     implementation "com.squareup.okhttp3:okhttp:4.9.2"
 
-    // Firebase, sigh ...
-    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    // Firebase, sigh ... (only Google Play)
+    forPlayImplementation 'com.google.firebase:firebase-messaging:22.0.0'
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"
