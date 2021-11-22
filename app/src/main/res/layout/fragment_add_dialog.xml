@@ -54,7 +54,7 @@
                 android:layout_marginTop="-8dp" android:layout_marginBottom="-5dp" android:layout_marginStart="-3dp"/>
         <ImageView
                 android:layout_width="24dp"
-                android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_black_24dp"
+                android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_gray_24dp"
                 android:id="@+id/add_dialog_instant_image"
                 app:layout_constraintTop_toTopOf="@+id/main_item_text"
                 app:layout_constraintEnd_toStartOf="@+id/main_item_date" android:paddingTop="3dp"

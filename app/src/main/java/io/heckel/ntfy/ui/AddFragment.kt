@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -47,11 +46,12 @@ class AddFragment : DialogFragment() {
         }
 
         // Dependencies
-        val database = Database.getInstance(activity!!.applicationContext)
-        repository = Repository.getInstance(database.subscriptionDao(), database.notificationDao())
+        val database = Database.getInstance(requireActivity().applicationContext)
+        val sharedPrefs = requireActivity().getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
+        repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
 
         // Build root view
-        val view = requireActivity().layoutInflater.inflate(R.layout.add_dialog_fragment, null)
+        val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)
         topicNameText = view.findViewById(R.id.add_dialog_topic_text) as TextInputEditText
         baseUrlText = view.findViewById(R.id.add_dialog_base_url_text) as TextInputEditText
         instantDeliveryBox = view.findViewById(R.id.add_dialog_instant_delivery_box)

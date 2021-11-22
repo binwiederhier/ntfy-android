@@ -3,7 +3,6 @@ package io.heckel.ntfy.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -29,23 +28,28 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-
-class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.SubscribeListener {
+class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
 
+    // UI elements
+    private lateinit var menu: Menu
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var adapter: MainAdapter
     private lateinit var fab: View
+
+    // Other stuff
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
@@ -54,7 +58,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+        setContentView(R.layout.activity_main)
 
         Log.d(TAG, "Create $this")
 
@@ -110,15 +114,13 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
 
     private fun startPeriodicWorker() {
-        val sharedPrefs = getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
-        val workPolicy = if (sharedPrefs.getInt(SHARED_PREFS_POLL_WORKER_VERSION, 0) == PollWorker.VERSION) {
+        val pollWorkerVersion = repository.getPollWorkerVersion()
+        val workPolicy = if (pollWorkerVersion == PollWorker.VERSION) {
             Log.d(TAG, "Poll worker version matches: choosing KEEP as existing work policy")
             ExistingPeriodicWorkPolicy.KEEP
         } else {
             Log.d(TAG, "Poll worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
-            sharedPrefs.edit()
-                .putInt(SHARED_PREFS_POLL_WORKER_VERSION, PollWorker.VERSION)
-                .apply()
+            repository.setPollWorkerVersion(PollWorker.VERSION)
             ExistingPeriodicWorkPolicy.REPLACE
         }
         val constraints = Constraints.Builder()
@@ -133,12 +135,76 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_action_bar_menu, menu)
+        menuInflater.inflate(R.menu.menu_main_action_bar, menu)
+        this.menu = menu
+        showHideNotificationMenuItems()
+        startNotificationMutedChecker() // This is done here, because then we know that we've initialized the menu
         return true
+    }
+
+    private fun startNotificationMutedChecker() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(1000) // Just to be sure we've initialized all the things, we wait a bit ...
+            while (isActive) {
+                Log.d(DetailActivity.TAG, "Checking global and subscription-specific 'muted until' timestamp")
+
+                // Check global
+                val changed = repository.checkGlobalMutedUntil()
+                if (changed) {
+                    Log.d(TAG, "Global muted until timestamp expired; updating prefs")
+                    showHideNotificationMenuItems()
+                }
+
+                // Check subscriptions
+                var rerenderList = false
+                repository.getSubscriptions().forEach { subscription ->
+                    val mutedUntilExpired = subscription.mutedUntil > 1L && System.currentTimeMillis()/1000 > subscription.mutedUntil
+                    if (mutedUntilExpired) {
+                        Log.d(TAG, "Subscription ${subscription.id}: Muted until timestamp expired, updating subscription")
+                        val newSubscription = subscription.copy(mutedUntil = 0L)
+                        repository.updateSubscription(newSubscription)
+                        rerenderList = true
+                    }
+                }
+                if (rerenderList) {
+                    redrawList()
+                }
+
+                delay(60_000)
+            }
+        }
+    }
+
+    private fun showHideNotificationMenuItems() {
+        val mutedUntilSeconds = repository.getGlobalMutedUntil()
+        runOnUiThread {
+            val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
+            val notificationsDisabledUntilItem = menu.findItem(R.id.main_menu_notifications_disabled_until)
+            val notificationsDisabledForeverItem = menu.findItem(R.id.main_menu_notifications_disabled_forever)
+            notificationsEnabledItem?.isVisible = mutedUntilSeconds == 0L
+            notificationsDisabledForeverItem?.isVisible = mutedUntilSeconds == 1L
+            notificationsDisabledUntilItem?.isVisible = mutedUntilSeconds > 1L
+            if (mutedUntilSeconds > 1L) {
+                val formattedDate = formatDateShort(mutedUntilSeconds)
+                notificationsDisabledUntilItem?.title = getString(R.string.main_menu_notifications_disabled_until, formattedDate)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.main_menu_notifications_enabled -> {
+                onNotificationSettingsClick(enable = false)
+                true
+            }
+            R.id.main_menu_notifications_disabled_forever -> {
+                onNotificationSettingsClick(enable = true)
+                true
+            }
+            R.id.main_menu_notifications_disabled_until -> {
+                onNotificationSettingsClick(enable = true)
+                true
+            }
             R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
@@ -148,6 +214,32 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun onNotificationSettingsClick(enable: Boolean) {
+        if (!enable) {
+            Log.d(TAG, "Showing global notification settings dialog")
+            val notificationFragment = NotificationFragment()
+            notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
+        } else {
+            Log.d(TAG, "Re-enabling global notifications")
+            onNotificationMutedUntilChanged(0L)
+        }
+    }
+
+    override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
+        repository.setGlobalMutedUntil(mutedUntilTimestamp)
+        showHideNotificationMenuItems()
+        runOnUiThread {
+            when (mutedUntilTimestamp) {
+                0L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
+                1L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()
+                else -> {
+                    val formattedDate = formatDateShort(mutedUntilTimestamp)
+                    Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_until_toast_message, formattedDate), Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -223,10 +315,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
-                        val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        repository.addNotification(notificationWithId)
-                        notifier?.send(subscription, notificationWithId)
                         newNotificationsCount++
+                        val notificationWithId = notification.copy(notificationId = Random.nextInt())
+                        val shouldNotify = repository.addNotification(notificationWithId)
+                        if (shouldNotify) {
+                            notifier?.send(subscription, notificationWithId)
+                        }
                     }
                 }
                 val toastMessage = if (newNotificationsCount == 0) {
@@ -257,6 +351,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
         intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+        intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         startActivityForResult(intent, REQUEST_CODE_DELETE_SUBSCRIPTION)
     }
 
@@ -293,7 +388,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         this.actionMode = mode
         if (mode != null) {
-            mode.menuInflater.inflate(R.menu.main_action_mode_menu, menu)
+            mode.menuInflater.inflate(R.menu.menu_main_action_mode, menu)
             mode.title = "1" // One item selected
         }
         return true
@@ -387,7 +482,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
 
     private fun redrawList() {
-        mainList.adapter = adapter // Oh, what a hack ...
+        runOnUiThread {
+            mainList.adapter = adapter // Oh, what a hack ...
+        }
     }
 
     companion object {
@@ -396,9 +493,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_BASE_URL = "subscriptionBaseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
+        const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
         const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
         const val ANIMATION_DURATION = 80L
-        const val SHARED_PREFS_ID = "MainPreferences"
-        const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
     }
 }

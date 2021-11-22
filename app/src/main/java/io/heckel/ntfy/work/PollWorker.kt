@@ -14,14 +14,16 @@ import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
-    // Every time the worker is changed, the periodic work has to be REPLACEd.
-    // This is facilitated in the MainActivity using the VERSION below.
+    // IMPORTANT WARNING:
+    //   Every time the worker is changed, the periodic work has to be REPLACEd.
+    //   This is facilitated in the MainActivity using the VERSION below.
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Polling for new notifications")
             val database = Database.getInstance(applicationContext)
-            val repository = Repository.getInstance(database.subscriptionDao(), database.notificationDao())
+            val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
+            val repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
             val notifier = NotificationService(applicationContext)
             val api = ApiService()
 
@@ -32,10 +34,8 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
                     newNotifications.forEach { notification ->
-                        val added = repository.addNotification(notification)
-                        val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
-
-                        if (added && !detailViewOpen) {
+                        val shouldNotify = repository.addNotification(notification)
+                        if (shouldNotify) {
                             notifier.send(subscription, notification)
                         }
                     }

@@ -1,12 +1,13 @@
 package io.heckel.ntfy.data
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
-class Repository(private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
+class Repository(private val sharedPrefs: SharedPreferences, private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -66,7 +67,11 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
-        return notificationDao.list(subscriptionId).asLiveData()
+        return notificationDao.listFlow(subscriptionId).asLiveData()
+    }
+
+    fun clearAllNotificationIds(subscriptionId: Long) {
+        return notificationDao.clearAllNotificationIds(subscriptionId)
     }
 
     fun getNotification(notificationId: String): Notification? {
@@ -84,9 +89,15 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
         val maybeExistingNotification = notificationDao.get(notification.id)
         if (maybeExistingNotification == null) {
             notificationDao.add(notification)
-            return true
+            return shouldNotify(notification)
         }
         return false
+    }
+
+    private suspend fun shouldNotify(notification: Notification): Boolean {
+        val detailViewOpen = detailViewSubscriptionId.get() == notification.subscriptionId
+        val muted = isMuted(notification.subscriptionId)
+        return !detailViewOpen && !muted
     }
 
     fun updateNotification(notification: Notification) {
@@ -103,6 +114,51 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     @WorkerThread
     fun removeAllNotifications(subscriptionId: Long) {
         notificationDao.removeAll(subscriptionId)
+    }
+
+    fun getPollWorkerVersion(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_POLL_WORKER_VERSION, 0)
+    }
+
+    fun setPollWorkerVersion(version: Int) {
+        sharedPrefs.edit()
+            .putInt(SHARED_PREFS_POLL_WORKER_VERSION, version)
+            .apply()
+    }
+
+    private suspend fun isMuted(subscriptionId: Long): Boolean {
+        if (isGlobalMuted()) {
+            return true
+        }
+        val s = getSubscription(subscriptionId) ?: return true
+        return s.mutedUntil == 1L || (s.mutedUntil > 1L && s.mutedUntil > System.currentTimeMillis()/1000)
+    }
+
+    private fun isGlobalMuted(): Boolean {
+        val mutedUntil = getGlobalMutedUntil()
+        return mutedUntil == 1L || (mutedUntil > 1L && mutedUntil > System.currentTimeMillis()/1000)
+    }
+
+    fun getGlobalMutedUntil(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
+    }
+
+    fun setGlobalMutedUntil(mutedUntilTimestamp: Long) {
+        sharedPrefs.edit()
+            .putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, mutedUntilTimestamp)
+            .apply()
+    }
+
+    fun checkGlobalMutedUntil(): Boolean {
+        val mutedUntil = sharedPrefs.getLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
+        val expired = mutedUntil > 1L && System.currentTimeMillis()/1000 > mutedUntil
+        if (expired) {
+            sharedPrefs.edit()
+                .putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
+                .apply()
+            return true
+        }
+        return false
     }
 
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
@@ -162,12 +218,16 @@ class Repository(private val subscriptionDao: SubscriptionDao, private val notif
     }
 
     companion object {
+        const val SHARED_PREFS_ID = "MainPreferences"
+        const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
+        const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
+
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
 
-        fun getInstance(subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
+        fun getInstance(sharedPrefs: SharedPreferences, subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
             return synchronized(Repository::class) {
-                val newInstance = instance ?: Repository(subscriptionDao, notificationDao)
+                val newInstance = instance ?: Repository(sharedPrefs, subscriptionDao, notificationDao)
                 instance = newInstance
                 newInstance
             }

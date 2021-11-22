@@ -21,8 +21,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".ui.SubscriptionSettingsActivity">
-        </activity>
         <!-- Main activity -->
         <activity
                 android:name=".ui.MainActivity"
@@ -32,22 +30,30 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity> <!-- Detail activity -->
+        </activity>
+
+        <!-- Detail activity -->
         <activity
                 android:name=".ui.DetailActivity"
                 android:parentActivityName=".ui.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MainActivity"/>
-        </activity> <!-- Subscriber foreground service for hosts other than ntfy.sh -->
-        <service android:name=".msg.SubscriberService"/> <!-- Subscriber service restart on reboot -->
+        </activity>
+
+        <!-- Subscriber foreground service for hosts other than ntfy.sh -->
+        <service android:name=".msg.SubscriberService"/>
+
+        <!-- Subscriber service restart on reboot -->
         <receiver
                 android:name=".msg.SubscriberService$StartReceiver"
                 android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
-        </receiver> <!-- Firebase messaging -->
+        </receiver>
+
+        <!-- Firebase messaging -->
         <service
                 android:name=".msg.FirebaseService"
                 android:exported="false">

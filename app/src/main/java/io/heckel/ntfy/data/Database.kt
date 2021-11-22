@@ -13,9 +13,7 @@ data class Subscription(
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
-    @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
-    //val notificationSchedule: String,
-    //val notificationSound: String,
+    @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
@@ -161,7 +159,7 @@ interface SubscriptionDao {
 @Dao
 interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
-    fun list(subscriptionId: Long): Flow<List<Notification>>
+    fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
     @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId") // Includes deleted
     fun listIds(subscriptionId: Long): List<String>
@@ -171,6 +169,9 @@ interface NotificationDao {
 
     @Query("SELECT * FROM notification WHERE id = :notificationId")
     fun get(notificationId: String): Notification?
+
+    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
+    fun clearAllNotificationIds(subscriptionId: Long)
 
     @Update
     fun update(notification: Notification)
