@@ -174,10 +174,8 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $n")
         GlobalScope.launch(Dispatchers.IO) {
-            val added = repository.addNotification(n)
-            val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
-
-            if (added && !detailViewOpen) {
+            val shouldNotify = repository.addNotification(n)
+            if (shouldNotify) {
                 Log.d(TAG, "[$url] Showing notification: $n")
                 notifier.send(subscription, n)
             }

@@ -7,15 +7,11 @@
          - WAKE_LOCK & RECEIVE_BOOT_COMPLETED are required to restart the foreground service
            if it is stopped; see https://robertohuertas.com/2019/06/29/android_foreground_services/
     -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <!--
-         Application
-         - usesCleartextTraffic is required to support "use another server" feature
-    -->
     <application
             android:name=".app.Application"
             android:allowBackup="true"
@@ -25,7 +21,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-
         <!-- Main activity -->
         <activity
                 android:name=".ui.MainActivity"
@@ -43,14 +38,16 @@
                 android:parentActivityName=".ui.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.MainActivity" />
+                    android:value=".ui.MainActivity"/>
         </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
-        <service android:name=".msg.SubscriberService" />
+        <service android:name=".msg.SubscriberService"/>
 
         <!-- Subscriber service restart on reboot -->
-        <receiver android:enabled="true" android:name=".msg.SubscriberService$StartReceiver">
+        <receiver
+                android:name=".msg.SubscriberService$StartReceiver"
+                android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

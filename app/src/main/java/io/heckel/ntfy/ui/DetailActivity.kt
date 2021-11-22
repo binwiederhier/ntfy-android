@@ -27,13 +27,11 @@ import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.text.DateFormat
 import java.util.*
-import java.util.concurrent.atomic.AtomicLong
 
-class DetailActivity : AppCompatActivity(), ActionMode.Callback {
+class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
@@ -47,6 +45,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
     private var subscriptionInstant: Boolean = false // Set in onCreate() & updated by options menu!
+    private var subscriptionMutedUntil: Long = 0L // Set in onCreate() & updated by options menu!
 
     // UI elements
     private lateinit var adapter: DetailAdapter
@@ -59,7 +58,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.detail_activity)
+        setContentView(R.layout.activity_detail)
 
         Log.d(MainActivity.TAG, "Create $this")
 
@@ -75,6 +74,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         subscriptionTopic = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
         subscriptionInstant = intent.getBooleanExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, false)
+        subscriptionMutedUntil = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, 0L)
 
         // Set title
         val subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
@@ -152,14 +152,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onResume hook: Marking subscription $subscriptionId as 'not open'")
+        Log.d(TAG, "onPause hook: Removing 'notificationId' from all notifications for $subscriptionId")
+        GlobalScope.launch(Dispatchers.IO) {
+            // Note: This is here and not in onDestroy/onStop, because we want to clear notifications as early
+            // as possible, so that we don't see the "new" bubble in the main list anymore.
+            repository.clearAllNotificationIds(subscriptionId)
+        }
+        Log.d(TAG, "onPause hook: Marking subscription $subscriptionId as 'not open'")
         repository.detailViewSubscriptionId.set(0) // Mark as closed
-    }
-
-    override fun onDestroy() {
-        repository.detailViewSubscriptionId.set(0) // Mark as closed
-        Log.d(TAG, "onDestroy hook: Marking subscription $subscriptionId as 'not open'")
-        super.onDestroy()
     }
 
     private fun maybeCancelNotificationPopups(notifications: List<Notification>) {
@@ -168,23 +168,60 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
             lifecycleScope.launch(Dispatchers.IO) {
                 notificationsWithPopups.forEach { notification ->
                     notifier?.cancel(notification)
-                    repository.updateNotification(notification.copy(notificationId = 0))
+                    // Do NOT remove the notificationId here, we need that for the UI indicators; we'll remove it in onPause()
                 }
             }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.detail_action_bar_menu, menu)
+        menuInflater.inflate(R.menu.menu_detail_action_bar, menu)
         this.menu = menu
+
+        // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
+        showHideNotificationMenuItems(subscriptionMutedUntil)
+
+        // Regularly check if "notification muted" time has passed
+        // NOTE: This is done here, because then we know that we've initialized the menu items.
+        startNotificationMutedChecker()
+
         return true
+    }
+
+    private fun startNotificationMutedChecker() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(1000) // Just to be sure we've initialized all the things, we wait a bit ...
+            while (isActive) {
+                Log.d(TAG, "Checking 'muted until' timestamp for subscription $subscriptionId")
+                val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+                val mutedUntilExpired = subscription.mutedUntil > 1L && System.currentTimeMillis()/1000 > subscription.mutedUntil
+                if (mutedUntilExpired) {
+                    val newSubscription = subscription.copy(mutedUntil = 0L)
+                    repository.updateSubscription(newSubscription)
+                    showHideNotificationMenuItems(0L)
+                }
+                delay(60_000)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.detail_menu_test -> {
                 onTestClick()
+                true
+            }
+            R.id.detail_menu_notifications_enabled -> {
+                onNotificationSettingsClick(enable = false)
+                true
+            }
+            R.id.detail_menu_notifications_disabled_until -> {
+                onNotificationSettingsClick(enable = true)
+                true
+            }
+            R.id.detail_menu_notifications_disabled_forever -> {
+                onNotificationSettingsClick(enable = true)
                 true
             }
             R.id.detail_menu_enable_instant -> {
@@ -223,6 +260,37 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     Toast
                         .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
                         .show()
+                }
+            }
+        }
+    }
+
+    private fun onNotificationSettingsClick(enable: Boolean) {
+        if (!enable) {
+            Log.d(TAG, "Showing notification settings dialog for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+            val notificationFragment = NotificationFragment()
+            notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
+        } else {
+            Log.d(TAG, "Re-enabling notifications ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+            onNotificationMutedUntilChanged(0L)
+        }
+    }
+
+    override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val subscription = repository.getSubscription(subscriptionId)
+            val newSubscription = subscription?.copy(mutedUntil = mutedUntilTimestamp)
+            newSubscription?.let { repository.updateSubscription(newSubscription) }
+            subscriptionMutedUntil = mutedUntilTimestamp
+            showHideNotificationMenuItems(mutedUntilTimestamp)
+            runOnUiThread {
+                when (mutedUntilTimestamp) {
+                    0L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
+                    1L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()
+                    else -> {
+                        val formattedDate = formatDateShort(mutedUntilTimestamp)
+                        Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_muted_until_toast_message, formattedDate), Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -316,6 +384,23 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
         }
     }
 
+    private fun showHideNotificationMenuItems(mutedUntilTimestamp: Long) {
+        subscriptionMutedUntil = mutedUntilTimestamp
+        runOnUiThread {
+            val notificationsEnabledItem = menu.findItem(R.id.detail_menu_notifications_enabled)
+            val notificationsDisabledUntilItem = menu.findItem(R.id.detail_menu_notifications_disabled_until)
+            val notificationsDisabledForeverItem = menu.findItem(R.id.detail_menu_notifications_disabled_forever)
+            notificationsEnabledItem?.isVisible = subscriptionMutedUntil == 0L
+            notificationsDisabledForeverItem?.isVisible = subscriptionMutedUntil == 1L
+            notificationsDisabledUntilItem?.isVisible = subscriptionMutedUntil > 1L
+            if (subscriptionMutedUntil > 1L) {
+                val formattedDate = formatDateShort(subscriptionMutedUntil)
+                notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
+            }
+
+        }
+    }
+
     private fun onDeleteClick() {
         Log.d(TAG, "Deleting subscription ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
@@ -329,6 +414,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
                     .putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscriptionBaseUrl)
                     .putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscriptionTopic)
                     .putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscriptionInstant)
+                    .putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscriptionMutedUntil)
                 setResult(RESULT_OK, result)
                 finish()
 
@@ -378,7 +464,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         this.actionMode = mode
         if (mode != null) {
-            mode.menuInflater.inflate(R.menu.detail_action_mode_menu, menu)
+            mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
             mode.title = "1" // One item selected
         }
         return true
@@ -478,6 +564,5 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback {
 
     companion object {
         const val TAG = "NtfyDetailActivity"
-        const val CANCEL_NOTIFICATION_DELAY_MILLIS = 20_000L
     }
 }

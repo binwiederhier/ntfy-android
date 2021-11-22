@@ -23,7 +23,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.main_fragment_item, parent, false)
+            .inflate(R.layout.fragment_main_item, parent, false)
         return SubscriptionViewHolder(view, selected, onClick, onLongClick)
     }
 
@@ -49,6 +49,8 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
+        private val notificationDisabledUntilImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_until_image)
+        private val notificationDisabledForeverImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_forever_image)
         private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
         private val newItemsView: TextView = itemView.findViewById(R.id.main_item_new)
 
@@ -78,11 +80,9 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
-            if (subscription.instant) {
-                instantImageView.visibility = View.VISIBLE
-            } else {
-                instantImageView.visibility = View.GONE
-            }
+            notificationDisabledUntilImageView.visibility = if (subscription.mutedUntil > 1L) View.VISIBLE else View.GONE
+            notificationDisabledForeverImageView.visibility = if (subscription.mutedUntil == 1L) View.VISIBLE else View.GONE
+            instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
             if (subscription.newCount > 0) {
                 newItemsView.visibility = View.VISIBLE
                 newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
