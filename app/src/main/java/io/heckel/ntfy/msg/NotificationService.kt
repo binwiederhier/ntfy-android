@@ -10,6 +10,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
@@ -37,9 +38,11 @@ class NotificationService(val context: Context) {
 
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification_icon)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(notification.message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(notification.message))
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked

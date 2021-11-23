@@ -10,6 +10,7 @@ import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
@@ -202,6 +203,7 @@ class SubscriberService : Service() {
         }
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
+            .setColor(ContextCompat.getColor(this, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
