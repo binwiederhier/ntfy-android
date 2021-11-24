@@ -7,3 +7,4 @@ fun topicShortUrl(baseUrl: String, topic: String) =
     topicUrl(baseUrl, topic)
         .replace("http://", "")
         .replace("https://", "")
+

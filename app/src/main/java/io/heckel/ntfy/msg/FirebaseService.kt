@@ -48,11 +48,10 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationId = Random.nextInt(),
                 deleted = false
             )
-            val added = repository.addNotification(notification)
-            val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
+            val shouldNotify = repository.addNotification(notification)
 
             // Send notification (only if it's not already known)
-            if (added && !detailViewOpen) {
+            if (shouldNotify) {
                 Log.d(TAG, "Sending notification for message: from=${remoteMessage.from}, data=${data}")
                 notifier.send(subscription, notification)
             }

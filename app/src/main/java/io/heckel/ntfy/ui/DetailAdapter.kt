@@ -18,7 +18,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.detail_fragment_item, parent, false)
+            .inflate(R.layout.fragment_detail_item, parent, false)
         return DetailViewHolder(view, selected, onClick, onLongClick)
     }
 
@@ -41,11 +41,13 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         private var notification: Notification? = null
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
+        private val newImageView: View = itemView.findViewById(R.id.detail_item_new)
 
         fun bind(notification: Notification) {
             this.notification = notification
             dateView.text = Date(notification.timestamp * 1000).toString()
             messageView.text = notification.message
+            newImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             itemView.setOnClickListener { onClick(notification) }
             itemView.setOnLongClickListener { onLongClick(notification); true }
             if (selected.contains(notification.id)) {

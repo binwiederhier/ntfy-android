@@ -8,11 +8,11 @@
                                                    android:orientation="horizontal" android:clickable="true"
                                                    android:focusable="true">
     <ImageView
-            android:layout_width="37dp"
-            android:layout_height="37dp" app:srcCompat="@drawable/ic_sms_gray_24dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp" app:srcCompat="@drawable/ic_sms_gray_24dp"
             android:id="@+id/main_item_image" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="15dp" android:layout_marginTop="14dp"/>
+            android:layout_marginStart="15dp" android:layout_marginTop="13dp"/>
     <TextView
             android:text="ntfy.sh/example"
             android:layout_width="0dp"
@@ -32,9 +32,23 @@
             android:layout_marginBottom="10dp"/>
     <ImageView
             android:layout_width="20dp"
-            android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_black_24dp"
-            android:id="@+id/main_item_instant_image"
+            android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_time_gray_outline_24dp"
+            android:id="@+id/main_item_notification_disabled_until_image"
             app:layout_constraintTop_toTopOf="@+id/main_item_text"
+            app:layout_constraintEnd_toStartOf="@+id/main_item_notification_disabled_forever_image"
+            android:paddingTop="3dp" android:layout_marginEnd="3dp"/>
+    <ImageView
+            android:layout_width="20dp"
+            android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_gray_outline_24dp"
+            android:id="@+id/main_item_notification_disabled_forever_image"
+            app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_until_image"
+            app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image" android:paddingTop="3dp"
+            android:layout_marginEnd="3dp"/>
+    <ImageView
+            android:layout_width="20dp"
+            android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_gray_24dp"
+            android:id="@+id/main_item_instant_image"
+            app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_forever_image"
             app:layout_constraintEnd_toStartOf="@+id/main_item_date" android:paddingTop="3dp"/>
     <TextView
             android:text="10:13"

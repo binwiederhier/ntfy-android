@@ -10,6 +10,7 @@ import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
@@ -174,10 +175,8 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $n")
         GlobalScope.launch(Dispatchers.IO) {
-            val added = repository.addNotification(n)
-            val detailViewOpen = repository.detailViewSubscriptionId.get() == subscription.id
-
-            if (added && !detailViewOpen) {
+            val shouldNotify = repository.addNotification(n)
+            if (shouldNotify) {
                 Log.d(TAG, "[$url] Showing notification: $n")
                 notifier.send(subscription, n)
             }
@@ -204,6 +203,7 @@ class SubscriberService : Service() {
         }
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
+            .setColor(ContextCompat.getColor(this, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
