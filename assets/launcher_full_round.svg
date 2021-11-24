@@ -8,8 +8,8 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.1.1 (3bf5ae0, 2021-09-20)"
-   sodipodi:docname="playstore.svg"
-   inkscape:export-filename="/home/pheckel/Code/ntfy-android/assets/playstore.png"
+   sodipodi:docname="launcher_full_round.svg"
+   inkscape:export-filename="/home/pheckel/Code/ntfy-android/assets/launcher_full_bg.png"
    inkscape:export-xdpi="260.10001"
    inkscape:export-ydpi="260.10001"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -65,7 +65,7 @@
        x2="50.319355"
        y2="50.284546"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.99433502,0,0,0.99433502,-0.03429756,-1.7848888e-6)" />
+       gradientTransform="matrix(3.7581166,0,0,3.7581166,-0.12962857,-6.7460364e-6)" />
     <filter
        style="color-interpolation-filters:sRGB;"
        inkscape:label="Drop Shadow"
@@ -110,18 +110,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.8244841"
-     inkscape:cx="4.6588512"
-     inkscape:cy="174.84395"
+     inkscape:zoom="2.5802102"
+     inkscape:cx="46.701622"
+     inkscape:cy="144.56187"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:measure-start="0,0"
      inkscape:measure-end="0,0"
      inkscape:snap-text-baseline="true"
      inkscape:window-width="1863"
      inkscape:window-height="1025"
-     inkscape:window-x="57"
+     inkscape:window-x="1977"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
      fit-margin-top="0"
@@ -180,13 +180,11 @@
      id="layer2"
      inkscape:label="background"
      style="display:inline">
-    <rect
-       style="fill:url(#linearGradient4633);fill-opacity:1;stroke:none;stroke-width:0.286502;stroke-linejoin:bevel"
+    <path
        id="rect4545"
-       width="50"
-       height="50"
-       x="0"
-       y="-0.0003150744" />
+       style="fill:url(#linearGradient4633);fill-opacity:1;stroke:none;stroke-width:1.08284;stroke-linejoin:bevel"
+       d="M 94.488281 0 A 94.488189 94.488189 0 0 0 0 94.488281 A 94.488189 94.488189 0 0 0 94.435547 188.97461 L 94.541016 188.97461 A 94.488189 94.488189 0 0 0 188.97656 94.488281 A 94.488189 94.488189 0 0 0 94.488281 0 z "
+       transform="scale(0.26458333)" />
   </g>
   <g
      inkscape:groupmode="layer"
