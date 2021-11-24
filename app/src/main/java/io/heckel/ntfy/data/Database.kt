@@ -62,6 +62,7 @@ abstract class Database : RoomDatabase() {
                 val instance = Room
                     .databaseBuilder(context.applicationContext, Database::class.java,"AppDatabase")
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
