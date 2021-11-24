@@ -34,20 +34,16 @@ android {
         debug {
             minifyEnabled false
             debuggable true
-            applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
         }
     }
 
     flavorDimensions "store"
     productFlavors {
-        forPlay {
-            dimension "store"
-            buildConfigField 'String', 'STORE', '"play"'
+        play {
+            buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
         }
-        forFDroid {
-            dimension "store"
-            buildConfigField 'String', 'STORE', '"fdroid"'
+        fdroid {
+            buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
         }
     }
 
@@ -81,7 +77,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.9.2"
 
     // Firebase, sigh ... (only Google Play)
-    forPlayImplementation 'com.google.firebase:firebase-messaging:22.0.0'
+    playImplementation 'com.google.firebase:firebase-messaging:22.0.0'
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"

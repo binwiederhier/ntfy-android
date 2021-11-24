@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -60,13 +61,20 @@ class AddFragment : DialogFragment() {
         useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox) as CheckBox
         useAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
 
+        // Show/hide based on flavor
+        instantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
+
         // Build dialog
         val alert = AlertDialog.Builder(activity)
             .setView(view)
             .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
                 val topic = topicNameText.text.toString()
                 val baseUrl = getBaseUrl()
-                val instant = if (useAnotherServerCheckbox.isChecked) true else instantDeliveryCheckbox.isChecked
+                val instant = if (!BuildConfig.FIREBASE_AVAILABLE || useAnotherServerCheckbox.isChecked) {
+                    true
+                } else {
+                    instantDeliveryCheckbox.isChecked
+                }
                 subscribeListener.onSubscribe(topic, baseUrl, instant)
             }
             .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
@@ -107,7 +115,7 @@ class AddFragment : DialogFragment() {
                 } else {
                     useAnotherServerDescription.visibility = View.GONE
                     baseUrlText.visibility = View.GONE
-                    instantDeliveryBox.visibility = View.VISIBLE
+                    instantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
                     if (instantDeliveryCheckbox.isChecked) instantDeliveryDescription.visibility = View.VISIBLE
                     else instantDeliveryDescription.visibility = View.GONE
                 }
@@ -149,6 +157,6 @@ class AddFragment : DialogFragment() {
     }
 
     companion object {
-        const val TAG = "NtfyAffFragment"
+        const val TAG = "NtfyAddFragment"
     }
 }

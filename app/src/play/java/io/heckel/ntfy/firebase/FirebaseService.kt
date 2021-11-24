@@ -1,4 +1,4 @@
-package io.heckel.ntfy.msg
+package io.heckel.ntfy.firebase
 
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -6,6 +6,7 @@ import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch

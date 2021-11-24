@@ -86,7 +86,7 @@
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
-    <string name="detail_instant_info">Instant delivery cannot be disabled for subscriptions from other servers</string>
+    <string name="detail_instant_info">Instant delivery is enabled</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications enabled</string>

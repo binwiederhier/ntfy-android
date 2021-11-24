@@ -19,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.*
-import com.google.firebase.messaging.FirebaseMessaging
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
@@ -27,6 +26,7 @@ import io.heckel.ntfy.data.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
+import io.heckel.ntfy.firebase.FirebaseMessenger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
+    private val messenger = FirebaseMessenger()
 
     // UI elements
     private lateinit var menu: Menu
@@ -267,15 +268,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
         if (baseUrl == appBaseUrl) {
             Log.d(TAG, "Subscribing to Firebase")
-            FirebaseMessaging
-                .getInstance()
-                .subscribeToTopic(topic)
-                .addOnCompleteListener {
-                    Log.d(TAG, "Subscribing to topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, "Subscribing to topic failed: $it")
-                }
+            messenger.subscribe(topic)
         }
 
         // Fetch cached messages
@@ -366,7 +359,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             subscriptionBaseUrl?.let { baseUrl ->
                 if (baseUrl == appBaseUrl) {
                     Log.d(TAG, "Unsubscribing from Firebase")
-                    subscriptionTopic?.let { topic -> FirebaseMessaging.getInstance().unsubscribeFromTopic(topic) }
+                    subscriptionTopic?.let { topic -> messenger.unsubscribe(topic) }
                 }
                 // Subscriber service changes are triggered in the observe() call above
             }

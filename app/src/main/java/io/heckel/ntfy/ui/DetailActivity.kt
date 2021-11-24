@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
@@ -372,7 +373,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val enableInstantItem = menu.findItem(R.id.detail_menu_enable_instant)
             val disableInstantItem = menu.findItem(R.id.detail_menu_disable_instant)
             val instantInfoItem = menu.findItem(R.id.detail_menu_instant_info)
-            if (subscriptionBaseUrl == appBaseUrl) {
+            val allowToggleInstant = BuildConfig.FIREBASE_AVAILABLE && subscriptionBaseUrl == appBaseUrl
+            if (allowToggleInstant) {
                 enableInstantItem?.isVisible = !subscriptionInstant
                 disableInstantItem?.isVisible = subscriptionInstant
                 instantInfoItem?.isVisible = false
