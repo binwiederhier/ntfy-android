@@ -1,0 +1,1 @@
+Send notifications to your phone from any script using PUT/POST requests
