@@ -3,17 +3,30 @@ This is the Android app for [ntfy](https://github.com/binwiederhier/ntfy) ([ntfy
 in the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy).
 
 # Releases
-You can find the app in the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
+You can find the app in the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
+or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
 
-There is a ticket to create an [F-Droid version](https://github.com/binwiederhier/ntfy/issues/7), but I haven't had the time yet.
+There is a ticket to create an [F-Droid version](https://github.com/binwiederhier/ntfy/issues/7), 
+but I haven't had the time yet.
 
-# Build instructions
-(Todo)
+# Build
 
-## Building with your own Firebase Cloud Messaging (FCM) account
+## Building without Firebase (F-Droid flavor)
+Without Firebase, you may want to still change the default `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
+if you're self-hosting the server. Then run:
+```
+./gradlew assembleFdroidRelease
+```
+
+## Building with Firebase (FCM, Google Play flavor)
 To build your own version with Firebase, you must:
-* Put your own `google-services.json` file in the [app/ folder](https://github.com/binwiederhier/ntfy-android/tree/main/app)
+* Create a Firebase/FCM account
+* Place your account file at `app/google-services.json` 
 * And change `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
+* Then run:
+```
+./gradlew assemblePlayRelease
+```
 
 ## License
 Made with ❤️ by [Philipp C. Heckel](https://heckel.io), distributed under the [Apache License 2.0](LICENSE).
