@@ -14,8 +14,8 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
         return repository.getNotificationsLiveData(subscriptionId)
     }
 
-    fun remove(notificationId: String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.removeNotification(notificationId)
+    fun markAsDeleted(notificationId: String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.markAsDeleted(notificationId)
     }
 }
 

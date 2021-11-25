@@ -405,7 +405,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         Log.d(DetailActivity.TAG, "Showing multi-delete dialog for selected items")
 
         val builder = AlertDialog.Builder(this)
-        builder
+        val dialog = builder
             .setMessage(R.string.main_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
                 adapter.selected.map { viewModel.remove(it) }
@@ -415,7 +415,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 finishActionMode()
             }
             .create()
-            .show()
+        dialog.setOnShowListener {
+            dialog
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+        }
+        dialog.show()
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {

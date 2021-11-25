@@ -29,7 +29,6 @@ import io.heckel.ntfy.data.topicUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.*
-import java.text.DateFormat
 import java.util.*
 
 class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
@@ -241,6 +240,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 onCopyUrlClick()
                 true
             }
+            R.id.detail_menu_clear -> {
+                onClearClick()
+                true
+            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -403,11 +406,32 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
+    private fun onClearClick() {
+        Log.d(TAG, "Clearing all notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+
+        val builder = AlertDialog.Builder(this)
+        val dialog = builder
+            .setMessage(R.string.detail_clear_dialog_message)
+            .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    repository.markAllAsDeleted(subscriptionId)
+                }
+            }
+            .setNegativeButton(R.string.detail_clear_dialog_cancel) { _, _ -> /* Do nothing */ }
+            .create()
+        dialog.setOnShowListener {
+            dialog
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+        }
+        dialog.show()
+    }
+
     private fun onDeleteClick() {
         Log.d(TAG, "Deleting subscription ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
         val builder = AlertDialog.Builder(this)
-        builder
+        val dialog = builder
             .setMessage(R.string.detail_delete_dialog_message)
             .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
                 // Return to main activity
@@ -424,7 +448,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             }
             .setNegativeButton(R.string.detail_delete_dialog_cancel) { _, _ -> /* Do nothing */ }
             .create()
-            .show()
+        dialog.setOnShowListener {
+            dialog
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+        }
+        dialog.show()
     }
 
     private fun onNotificationClick(notification: Notification) {
@@ -516,17 +545,22 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         Log.d(TAG, "Showing multi-delete dialog for selected items")
 
         val builder = AlertDialog.Builder(this)
-        builder
+        val dialog = builder
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { notificationId -> viewModel.remove(notificationId) }
+                adapter.selected.map { notificationId -> viewModel.markAsDeleted(notificationId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->
                 finishActionMode()
             }
             .create()
-            .show()
+        dialog.setOnShowListener {
+            dialog
+                .getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+        }
+        dialog.show()
     }
 
     override fun onDestroyActionMode(mode: ActionMode?) {

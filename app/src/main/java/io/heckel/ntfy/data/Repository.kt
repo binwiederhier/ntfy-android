@@ -100,14 +100,14 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return !detailViewOpen && !muted
     }
 
-    fun updateNotification(notification: Notification) {
-        notificationDao.update(notification)
-    }
-
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun removeNotification(notificationId: String) {
-        notificationDao.remove(notificationId)
+    suspend fun markAsDeleted(notificationId: String) {
+        notificationDao.markAsDeleted(notificationId)
+    }
+
+    fun markAllAsDeleted(subscriptionId: Long) {
+        notificationDao.markAllAsDeleted(subscriptionId)
     }
 
     @Suppress("RedundantSuspendModifier")

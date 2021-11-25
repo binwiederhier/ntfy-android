@@ -8,5 +8,6 @@
     <color name="primaryLightTextColor">#FFFFFF</color>
 
     <color name="primarySelectedRowColor">#EEEEEE</color>
+    <color name="primaryDangerButtonColor">#C30000</color>
 </resources>
 

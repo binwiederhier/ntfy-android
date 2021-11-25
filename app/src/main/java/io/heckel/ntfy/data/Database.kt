@@ -174,11 +174,11 @@ interface NotificationDao {
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
     fun clearAllNotificationIds(subscriptionId: Long)
 
-    @Update
-    fun update(notification: Notification)
-
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
-    fun remove(notificationId: String)
+    fun markAsDeleted(notificationId: String)
+
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
+    fun markAllAsDeleted(subscriptionId: Long)
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)
