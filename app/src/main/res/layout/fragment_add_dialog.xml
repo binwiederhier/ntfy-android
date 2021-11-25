@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:paddingLeft="16dp"
@@ -37,12 +38,37 @@
             android:layout_height="wrap_content" android:id="@+id/add_dialog_use_another_server_description"
             android:paddingStart="4dp" android:paddingTop="0dp" android:layout_marginTop="-5dp"
             android:visibility="gone"/>
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_dialog_base_url_text"
+    <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+            android:id="@+id/add_dialog_base_url_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:visibility="gone"
-            android:hint="@string/app_base_url" android:inputType="textUri" android:maxLines="1"
-            android:layout_marginTop="-2dp" android:layout_marginBottom="5dp"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:background="@android:color/transparent"
+            android:padding="0dp"
+            android:visibility="gone"
+            app:endIconMode="custom"
+            app:hintEnabled="false"
+            app:boxBackgroundColor="@android:color/transparent">
+        <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_dialog_base_url_text"
+                android:hint="@string/app_base_url"
+                android:maxLines="1"
+                android:layout_marginTop="-2dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="visible"
+                android:inputType="textNoSuggestions"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="0dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

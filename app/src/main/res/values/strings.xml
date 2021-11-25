@@ -60,8 +60,8 @@
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
-        You can subscribe to topics from your own server. Due to platform limitations, this option requires a foreground
-        service and consumes more power, but also delivers notifications faster (even in doze mode).
+        You can subscribe to topics from your own server. This option requires a foreground service and
+        consumes more power, but also delivers notifications faster (even in doze mode).
     </string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
