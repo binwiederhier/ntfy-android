@@ -2,6 +2,8 @@
     <!-- Main app-->
     <string name="app_name">Ntfy</string>
     <string name="app_base_url">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
+    <string name="app_base_scheme">https</string> <!-- If changed, you must also change google-services.json! -->
+    <string name="app_base_host">ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
     <!-- Notification channels -->
     <string name="channel_notifications_name">Notifications</string>
@@ -72,6 +74,7 @@
     <string name="add_dialog_button_subscribe">Subscribe</string>
 
     <!-- Detail activity -->
+    <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
     <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>

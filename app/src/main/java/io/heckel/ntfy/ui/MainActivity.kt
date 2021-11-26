@@ -345,27 +345,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
         intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
         intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
-        startActivityForResult(intent, REQUEST_CODE_DELETE_SUBSCRIPTION)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_DELETE_SUBSCRIPTION && resultCode == RESULT_OK) {
-            val subscriptionId = data?.getLongExtra(EXTRA_SUBSCRIPTION_ID, 0)
-            val subscriptionBaseUrl = data?.getStringExtra(EXTRA_SUBSCRIPTION_BASE_URL)
-            val subscriptionTopic = data?.getStringExtra(EXTRA_SUBSCRIPTION_TOPIC)
-            Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
-
-            subscriptionId?.let { id -> viewModel.remove(id) }
-            subscriptionBaseUrl?.let { baseUrl ->
-                if (baseUrl == appBaseUrl) {
-                    Log.d(TAG, "Unsubscribing from Firebase")
-                    subscriptionTopic?.let { topic -> messenger.unsubscribe(topic) }
-                }
-                // Subscriber service changes are triggered in the observe() call above
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
+        startActivity(intent)
     }
 
     private fun handleActionModeClick(subscription: Subscription) {
@@ -492,7 +472,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
-        const val REQUEST_CODE_DELETE_SUBSCRIPTION = 1
         const val ANIMATION_DURATION = 80L
     }
 }

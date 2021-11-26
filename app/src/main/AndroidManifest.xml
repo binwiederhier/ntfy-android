@@ -39,6 +39,16 @@
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MainActivity"/>
+
+            <!-- Open https://ntfy.sh links with the app -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/app_base_scheme"
+                      android:host="@string/app_base_host"
+                      android:pathPattern="/..*" /> <!-- This is awful, but it's the only way in Android -->
+            </intent-filter>
         </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->

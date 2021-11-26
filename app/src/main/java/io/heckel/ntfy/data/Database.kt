@@ -40,7 +40,7 @@ data class SubscriptionWithMetadata(
 
 @Entity
 data class Notification(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: String, // TODO make [id, subscriptionId] the primary key
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "message") val message: String,
