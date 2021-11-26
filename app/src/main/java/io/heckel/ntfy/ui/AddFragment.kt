@@ -108,22 +108,21 @@ class AddFragment : DialogFragment() {
 
         // Fill autocomplete for base URL
         lifecycleScope.launch(Dispatchers.IO) {
-            // Sort existing base URLs by most frequently used
             val appBaseUrl = getString(R.string.app_base_url)
             baseUrls = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
-                .mapValues { it.value.size }
-                .toList()
-                .sortedBy { (_, size) -> size }
-                .reversed()
-                .map { (baseUrl, _) -> baseUrl }
+                .map { it.key }
                 .filterNot { it == appBaseUrl }
+                .sorted()
             val adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, baseUrls)
             requireActivity().runOnUiThread {
                 baseUrlText.threshold = 1
                 baseUrlText.setAdapter(adapter)
-                if (baseUrls.isNotEmpty()) {
+                if (baseUrls.count() == 1) {
+                    baseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
                     baseUrlText.setText(baseUrls.first())
+                } else {
+                    baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
                 }
             }
         }
