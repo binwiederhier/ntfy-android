@@ -3,12 +3,16 @@ package io.heckel.ntfy.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.util.formatMessage
+import io.heckel.ntfy.util.formatTitle
 import java.util.*
 
 class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -39,19 +43,50 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
     class DetailViewHolder(itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
+        private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
+        private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
-        private val newImageView: View = itemView.findViewById(R.id.detail_item_new)
+        private val newImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
 
         fun bind(notification: Notification) {
             this.notification = notification
+
             dateView.text = Date(notification.timestamp * 1000).toString()
-            messageView.text = notification.message
+            messageView.text = formatMessage(notification)
             newImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             itemView.setOnClickListener { onClick(notification) }
             itemView.setOnLongClickListener { onLongClick(notification); true }
+            if (notification.title != "") {
+                titleView.visibility = View.VISIBLE
+                titleView.text = formatTitle(notification)
+            } else {
+                titleView.visibility = View.GONE
+            }
             if (selected.contains(notification.id)) {
                 itemView.setBackgroundResource(R.color.primarySelectedRowColor);
+            }
+            val ctx = itemView.context
+            when (notification.priority) {
+                1 -> {
+                    priorityImageView.visibility = View.VISIBLE
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_1_24dp))
+                }
+                2 -> {
+                    priorityImageView.visibility = View.VISIBLE
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_2_24dp))
+                }
+                3 -> {
+                    priorityImageView.visibility = View.GONE
+                }
+                4 -> {
+                    priorityImageView.visibility = View.VISIBLE
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_4_24dp))
+                }
+                5 -> {
+                    priorityImageView.visibility = View.VISIBLE
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_5_24dp))
+                }
             }
         }
     }

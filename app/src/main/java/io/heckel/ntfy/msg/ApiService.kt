@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.topicUrl
-import io.heckel.ntfy.data.topicUrlJson
-import io.heckel.ntfy.data.topicUrlJsonPoll
+import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.util.topicUrlJson
+import io.heckel.ntfy.util.topicUrlJsonPoll
+import io.heckel.ntfy.util.toPriority
+import io.heckel.ntfy.util.joinTags
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -26,12 +28,21 @@ class ApiService {
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
 
-    fun publish(baseUrl: String, topic: String, message: String) {
+    fun publish(baseUrl: String, topic: String, message: String, title: String, priority: Int, tags: List<String>) {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
-        val request = Request.Builder().url(url).put(message.toRequestBody()).build();
-        client.newCall(request).execute().use { response ->
+        var builder = Request.Builder()
+            .url(url)
+            .addHeader("X-Priority", priority.toString())
+            .put(message.toRequestBody())
+        if (tags.isNotEmpty()) {
+            builder = builder.addHeader("X-Tags", tags.joinToString(","))
+        }
+        if (title.isNotEmpty()) {
+            builder = builder.addHeader("X-Title", title)
+        }
+        client.newCall(builder.build()).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when publishing to $url")
             }
@@ -87,7 +98,10 @@ class ApiService {
                                 id = message.id,
                                 subscriptionId = 0, // TO BE SET downstream
                                 timestamp = message.time,
+                                title = message.title ?: "",
                                 message = message.message,
+                                priority = toPriority(message.priority),
+                                tags = joinTags(message.tags),
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
@@ -109,7 +123,17 @@ class ApiService {
 
     private fun fromString(subscriptionId: Long, s: String): Notification {
         val message = gson.fromJson(s, Message::class.java)
-        return Notification(message.id, subscriptionId, message.time, message.message, notificationId = 0, deleted = false)
+        return Notification(
+            id = message.id,
+            subscriptionId = subscriptionId,
+            timestamp = message.time,
+            title = message.title ?: "",
+            message = message.message,
+            priority = toPriority(message.priority),
+            tags = joinTags(message.tags),
+            notificationId = 0,
+            deleted = false
+        )
     }
 
     /* This annotation ensures that proguard still works in production builds,
@@ -120,6 +144,9 @@ class ApiService {
         val time: Long,
         val event: String,
         val topic: String,
+        val priority: Int?,
+        val tags: List<String>?,
+        val title: String?,
         val message: String
     )
 

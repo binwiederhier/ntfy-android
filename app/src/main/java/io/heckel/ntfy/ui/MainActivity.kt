@@ -22,11 +22,13 @@ import androidx.work.*
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
+import io.heckel.ntfy.util.fadeStatusBarColor
+import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

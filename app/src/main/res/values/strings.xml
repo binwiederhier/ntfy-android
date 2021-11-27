@@ -6,7 +6,11 @@
     <string name="app_base_host">ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
     <!-- Notification channels -->
-    <string name="channel_notifications_name">Notifications</string>
+    <string name="channel_notifications_min_name">Notifications (Min Priority)</string>
+    <string name="channel_notifications_low_name">Notifications (Low Priority)</string>
+    <string name="channel_notifications_default_name">Notifications (Default Priority)</string>
+    <string name="channel_notifications_high_name">Notifications (High Priority)</string>
+    <string name="channel_notifications_max_name">Notifications (Max Priority)</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
     <string name="channel_subscriber_notification_text">You are subscribed to instant delivery topics</string>
@@ -88,7 +92,8 @@
     </string>
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
-    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It was sent at %1$s.</string>
+    <string name="detail_test_title">Test: You can set a title if you like</string>
+    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It has a priority of %1$d. If you send another one, it may look different.</string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>

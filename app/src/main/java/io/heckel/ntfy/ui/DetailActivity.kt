@@ -27,11 +27,13 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
-import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.util.fadeStatusBarColor
+import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.random.Random
@@ -324,8 +326,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val message = getString(R.string.detail_test_message, Date().toString())
-                api.publish(subscriptionBaseUrl, subscriptionTopic, message)
+                val possibleTags = listOf("warning", "skull", "success", "triangular_flag_on_post", "de",  "dog", "rotating_light", "cat", "bike")
+                val priority = Random.nextInt(1, 6)
+                val tags = possibleTags.shuffled().take(Random.nextInt(0, 3))
+                val title = if (Random.nextBoolean()) getString(R.string.detail_test_title) else ""
+                val message = getString(R.string.detail_test_message, priority)
+                api.publish(subscriptionBaseUrl, subscriptionTopic, message, title, priority, tags)
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast

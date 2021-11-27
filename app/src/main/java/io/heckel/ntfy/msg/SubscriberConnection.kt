@@ -4,7 +4,7 @@ import android.util.Log
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean

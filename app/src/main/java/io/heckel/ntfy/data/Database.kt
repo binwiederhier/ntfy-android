@@ -5,7 +5,6 @@ import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true)])
 data class Subscription(
@@ -38,17 +37,20 @@ data class SubscriptionWithMetadata(
     val lastActive: Long
 )
 
-@Entity
+@Entity(primaryKeys = ["id", "subscriptionId"])
 data class Notification(
-    @PrimaryKey val id: String, // TODO make [id, subscriptionId] the primary key
+    @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
+    @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
+    @ColumnInfo(name = "tags") val tags: String,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 3)
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 4)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -63,6 +65,7 @@ abstract class Database : RoomDatabase() {
                     .databaseBuilder(context.applicationContext, Database::class.java,"AppDatabase")
                     .addMigrations(MIGRATION_1_2)
                     .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_3_4)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -88,6 +91,15 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN mutedUntil INTEGER NOT NULL DEFAULT('0')")
+            }
+        }
+
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE Notification_New (id TEXT NOT NULL, subscriptionId INTEGER NOT NULL, timestamp INTEGER NOT NULL, title TEXT NOT NULL, message TEXT NOT NULL, notificationId INTEGER NOT NULL, priority INTEGER NOT NULL, tags TEXT NOT NULL, deleted INTEGER NOT NULL, PRIMARY KEY(id, subscriptionId))")
+                db.execSQL("INSERT INTO Notification_New SELECT id, subscriptionId, timestamp, '', message, notificationId, 3, '', deleted FROM Notification")
+                db.execSQL("DROP TABLE Notification")
+                db.execSQL("ALTER TABLE Notification_New RENAME TO Notification")
             }
         }
     }

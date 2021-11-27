@@ -7,6 +7,9 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.util.joinTags
+import io.heckel.ntfy.util.toPriority
+import io.heckel.ntfy.util.toTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -29,7 +32,10 @@ class FirebaseService : FirebaseMessagingService() {
         val id = data["id"]
         val timestamp = data["time"]?.toLongOrNull()
         val topic = data["topic"]
+        val title = data["title"]
         val message = data["message"]
+        val priority = data["priority"]?.toIntOrNull()
+        val tags = data["tags"]
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
             return
@@ -45,8 +51,11 @@ class FirebaseService : FirebaseMessagingService() {
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
+                title = title ?: "",
                 message = message,
                 notificationId = Random.nextInt(),
+                priority = toPriority(priority),
+                tags = toTags(tags),
                 deleted = false
             )
             val shouldNotify = repository.addNotification(notification)

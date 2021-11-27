@@ -121,8 +121,10 @@ class AddFragment : DialogFragment() {
                 if (baseUrls.count() == 1) {
                     baseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
                     baseUrlText.setText(baseUrls.first())
-                } else {
+                } else if (baseUrls.count() > 1) {
                     baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+                } else {
+                    baseUrlLayout.setEndIconDrawable(0)
                 }
             }
         }

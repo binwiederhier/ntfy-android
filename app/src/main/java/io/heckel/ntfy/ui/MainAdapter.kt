@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicShortUrl
+import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
-
 
 class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
     ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {

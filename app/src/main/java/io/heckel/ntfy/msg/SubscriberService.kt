@@ -15,7 +15,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.data.topicUrl
+import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.ui.MainActivity
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap

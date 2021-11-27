@@ -9,5 +9,8 @@
 
     <color name="primarySelectedRowColor">#EEEEEE</color>
     <color name="primaryDangerButtonColor">#C30000</color>
+
+    <color name="primaryPriorityUrgentColor">#C30000</color>
+    <color name="primaryPriorityHighColor">#E10000</color>
 </resources>
 
