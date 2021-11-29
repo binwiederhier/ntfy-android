@@ -15,7 +15,11 @@ but I haven't had the time yet.
 Without Firebase, you may want to still change the default `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
 if you're self-hosting the server. Then run:
 ```
+# To build an unsigned .apk (app/build/outputs/apk/fdroid/*.apk)
 ./gradlew assembleFdroidRelease
+
+# To build a bundle .aab (app/fdroid/release/*.aab)
+./gradlew bundleFdroidRelease
 ```
 
 ## Building with Firebase (FCM, Google Play flavor)
@@ -25,7 +29,11 @@ To build your own version with Firebase, you must:
 * And change `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
 * Then run:
 ```
+# To build an unsigned .apk (app/build/outputs/apk/play/*.apk)
 ./gradlew assemblePlayRelease
+
+# To build a bundle .aab (app/play/release/*.aab)
+./gradlew bundlePlayRelease
 ```
 
 ## License

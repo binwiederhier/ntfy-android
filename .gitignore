@@ -31,7 +31,13 @@ gen/
 
 # Ignore gradle files
 .gradle/
+
+# Build outputs
 build/
+app/fdroid/release/
+app/fdroid/debug/
+app/play/release/
+app/play/debug/
 
 # Local configuration file (sdk path, etc)
 local.properties
