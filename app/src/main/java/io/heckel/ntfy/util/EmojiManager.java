@@ -1,6 +1,5 @@
-package io.heckel.ntfy.emoji;
+package io.heckel.ntfy.util;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +8,12 @@ import java.util.Map;
 /**
  * Holds the loaded emojis and provides search functions.
  *
- * @author Vincent DURMONT [vdurmont@gmail.com]
+ * This class was originally written by Vincent DURMONT (vdurmont@gmail.com) as part of
+ * https://github.com/vdurmont/emoji-java, but has since been heavily stripped and modified.
  */
 public class EmojiManager {
-  private static final String PATH = "/emojis.json";
-  private static final Map<String, Emoji> EMOJIS_BY_ALIAS =
-    new HashMap<String, Emoji>();
+  private static final String PATH = "/emoji.json"; // https://github.com/github/gemoji/blob/master/db/emoji.json
+  private static final Map<String, Emoji> EMOJIS_BY_ALIAS = new HashMap<String, Emoji>();
 
   static {
     try {
@@ -31,19 +30,6 @@ public class EmojiManager {
     }
   }
 
-  /**
-   * No need for a constructor, all the methods are static.
-   */
-  private EmojiManager() {}
-
-  /**
-   * Returns the {@link Emoji} for a given alias.
-   *
-   * @param alias the alias
-   *
-   * @return the associated {@link Emoji}, null if the alias
-   * is unknown
-   */
   public static Emoji getForAlias(String alias) {
     if (alias == null || alias.isEmpty()) {
       return null;
@@ -57,5 +43,4 @@ public class EmojiManager {
             alias.charAt(0) == ':' ? 1 : 0,
             alias.charAt(len - 1) == ':' ? len - 1 : len);
   }
-
 }

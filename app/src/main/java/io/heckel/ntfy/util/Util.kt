@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.view.Window
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.emoji.EmojiManager
 import java.text.DateFormat
 import java.util.*
 
@@ -44,12 +43,7 @@ fun toEmojis(tags: List<String>): List<String> {
 }
 
 fun toEmoji(tag: String): String? {
-    return when (tag.toLowerCase()) {
-        "warn", "warning" -> "\u26A0\uFE0F"
-        "success" -> "\u2714\uFE0F"
-        "failure" -> "\u274C"
-        else -> EmojiManager.getForAlias(tag)?.unicode
-    }
+    return EmojiManager.getForAlias(tag)?.unicode
 }
 
 fun unmatchedTags(tags: List<String>): List<String> {

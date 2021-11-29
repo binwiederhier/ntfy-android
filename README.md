@@ -38,3 +38,5 @@ Thank you to these fantastic resources:
 * [Firebase Messaging Example](https://github.com/firebase/quickstart-android/blob/7147f60451b3eeaaa05fc31208ffb67e2df73c3c/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/kotlin/MyFirebaseMessagingService.kt) (Apache 2.0)
 * [Designing a logo with Inkscape](https://www.youtube.com/watch?v=r2Kv61cd2P4)
 * [Foreground service](https://robertohuertas.com/2019/06/29/android_foreground_services/)
+* [github/gemoji](https://github.com/github/gemoji) (MIT) for as data source for an up-to-date [emoji.json](https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json) file
+* [emoji-java](https://github.com/vdurmont/emoji-java) (MIT) has been stripped and inlined to use the emoji.json file
