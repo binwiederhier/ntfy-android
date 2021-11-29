@@ -1,5 +1,6 @@
 package io.heckel.ntfy.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.util.formatMessage
-import io.heckel.ntfy.util.formatTitle
+import io.heckel.ntfy.util.*
 import java.util.*
 
 class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -48,9 +48,13 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
         private val newImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
+        private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags)
 
         fun bind(notification: Notification) {
             this.notification = notification
+
+            val ctx = itemView.context
+            val unmatchedTags = unmatchedTags(splitTags(notification.tags))
 
             dateView.text = Date(notification.timestamp * 1000).toString()
             messageView.text = formatMessage(notification)
@@ -63,10 +67,15 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             } else {
                 titleView.visibility = View.GONE
             }
+            if (unmatchedTags.isNotEmpty()) {
+                tagsView.visibility = View.VISIBLE
+                tagsView.text = ctx.getString(R.string.detail_item_tags, unmatchedTags.joinToString(", "))
+            } else {
+                tagsView.visibility = View.GONE
+            }
             if (selected.contains(notification.id)) {
                 itemView.setBackgroundResource(R.color.primarySelectedRowColor);
             }
-            val ctx = itemView.context
             when (notification.priority) {
                 1 -> {
                     priorityImageView.visibility = View.VISIBLE

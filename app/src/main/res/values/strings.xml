@@ -99,6 +99,7 @@
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
     <string name="detail_instant_info">Instant delivery is enabled</string>
+    <string name="detail_item_tags">Tags: %1$s</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications enabled</string>

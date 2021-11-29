@@ -7,9 +7,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.util.joinTags
 import io.heckel.ntfy.util.toPriority
-import io.heckel.ntfy.util.toTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -55,7 +53,7 @@ class FirebaseService : FirebaseMessagingService() {
                 message = message,
                 notificationId = Random.nextInt(),
                 priority = toPriority(priority),
-                tags = toTags(tags),
+                tags = tags ?: "",
                 deleted = false
             )
             val shouldNotify = repository.addNotification(notification)

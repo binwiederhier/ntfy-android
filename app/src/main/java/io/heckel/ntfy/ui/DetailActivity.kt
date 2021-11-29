@@ -326,9 +326,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val possibleTags = listOf("warning", "skull", "success", "triangular_flag_on_post", "de",  "dog", "rotating_light", "cat", "bike")
+                val possibleTags = listOf(
+                    "warning", "skull", "success", "triangular_flag_on_post", "de",  "dog", "rotating_light", "cat", "bike", // Emojis
+                    "backup", "rsync", "de-server1", "this-is-a-tag"
+                )
                 val priority = Random.nextInt(1, 6)
-                val tags = possibleTags.shuffled().take(Random.nextInt(0, 3))
+                val tags = possibleTags.shuffled().take(Random.nextInt(0, 4))
                 val title = if (Random.nextBoolean()) getString(R.string.detail_test_title) else ""
                 val message = getString(R.string.detail_test_message, priority)
                 api.publish(subscriptionBaseUrl, subscriptionTopic, message, title, priority, tags)

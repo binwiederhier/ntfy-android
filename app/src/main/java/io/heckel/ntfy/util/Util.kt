@@ -31,19 +31,29 @@ fun joinTags(tags: List<String>?): String {
     return tags?.joinToString(",") ?: ""
 }
 
-fun toTags(tags: String?): String {
-    return tags ?: ""
+fun splitTags(tags: String?): List<String> {
+    return if (tags == null || tags == "") {
+        emptyList()
+    } else {
+        tags.split(",")
+    }
 }
 
-fun emojify(tags: List<String>): List<String> {
-    return tags.mapNotNull {
-        when (it.toLowerCase()) {
-            "warn", "warning" -> "\u26A0\uFE0F"
-            "success" -> "\u2714\uFE0F"
-            "failure" -> "\u274C"
-            else -> EmojiManager.getForAlias(it)?.unicode
-        }
+fun toEmojis(tags: List<String>): List<String> {
+    return tags.mapNotNull { tag -> toEmoji(tag) }
+}
+
+fun toEmoji(tag: String): String? {
+    return when (tag.toLowerCase()) {
+        "warn", "warning" -> "\u26A0\uFE0F"
+        "success" -> "\u2714\uFE0F"
+        "failure" -> "\u274C"
+        else -> EmojiManager.getForAlias(tag)?.unicode
     }
+}
+
+fun unmatchedTags(tags: List<String>): List<String> {
+    return tags.filter { tag -> toEmoji(tag) == null }
 }
 
 /**
@@ -54,7 +64,7 @@ fun formatMessage(notification: Notification): String {
     return if (notification.title != "") {
         notification.message
     } else {
-        val emojis = emojify(notification.tags.split(","))
+        val emojis = toEmojis(splitTags(notification.tags))
         if (emojis.isEmpty()) {
             notification.message
         } else {
@@ -76,7 +86,7 @@ fun formatTitle(subscription: Subscription, notification: Notification): String 
 }
 
 fun formatTitle(notification: Notification): String {
-    val emojis = emojify(notification.tags.split(","))
+    val emojis = toEmojis(splitTags(notification.tags))
     return if (emojis.isEmpty()) {
         notification.title
     } else {
