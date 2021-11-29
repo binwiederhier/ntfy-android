@@ -12,6 +12,6 @@ Example:
 $ curl -d "Your backup is done" ntfy.sh/mytopic
 
 Find more examples and usage instructions here:
-⭐ Website: https://ntfy.sh
-⭐ GitHub (server): https://github.com/binwiederhier/ntfy
-⭐ GitHub (Android app): https://github.com/binwiederhier/ntfy-android
+* Website: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (Android app): https://github.com/binwiederhier/ntfy-android

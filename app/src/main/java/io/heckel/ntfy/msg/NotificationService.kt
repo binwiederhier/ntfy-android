@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -16,7 +15,6 @@ import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.formatMessage
@@ -42,7 +40,7 @@ class NotificationService(val context: Context) {
         val message = formatMessage(notification)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val channelId = toChannelId(notification.priority)
-        var notificationBuilder = NotificationCompat.Builder(context, channelId)
+        val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
@@ -52,20 +50,8 @@ class NotificationService(val context: Context) {
             .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked
 
-        if (notification.priority == 4) {
-            notificationBuilder = notificationBuilder
-                .setVibrate(longArrayOf(500, 500, 500, 500, 500, 500))
-                .setLights(Color.YELLOW, 3000, 3000)
-        } else if (notification.priority == 5) {
-            notificationBuilder = notificationBuilder
-                .setVibrate(longArrayOf(1000, 500, 1000, 500, 1000, 500))
-                .setLights(Color.RED, 3000, 3000)
-        }
-
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(notificationManager, notification)
-        }
+        maybeCreateNotificationChannel(notificationManager, notification.priority)
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
     }
 
@@ -77,16 +63,46 @@ class NotificationService(val context: Context) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(notificationManager: NotificationManager, notification: Notification) {
-        val channel = when (notification.priority) {
-            1 -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-            2 -> NotificationChannel(CHANNEL_ID_LOW, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
-            4 -> NotificationChannel(CHANNEL_ID_HIGH, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
-            5 -> NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_MAX)
-            else -> NotificationChannel(CHANNEL_ID_DEFAULT, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
+    fun createNotificationChannels() {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationManager, priority) }
+    }
+
+    private fun maybeCreateNotificationChannel(notificationManager: NotificationManager, priority: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Note: To change a notification channel, you must delete the old one and create a new one!
+
+            val pause = 300L
+            val channel = when (priority) {
+                1 -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
+                2 -> NotificationChannel(CHANNEL_ID_LOW, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+                4 -> {
+                    val channel = NotificationChannel(CHANNEL_ID_HIGH, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
+                    channel.enableVibration(true)
+                    channel.vibrationPattern = longArrayOf(
+                        pause, 100, pause, 100, pause, 100,
+                        pause, 2000
+                    )
+                    channel
+                }
+                5 -> {
+                    val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_MAX)
+                    channel.enableLights(true)
+                    channel.enableVibration(true)
+                    channel.vibrationPattern = longArrayOf(
+                        pause, 100, pause, 100, pause, 100,
+                        pause, 2000,
+                        pause, 100, pause, 100, pause, 100,
+                        pause, 2000,
+                        pause, 100, pause, 100, pause, 100,
+                        pause, 2000
+                    )
+                    channel
+                }
+                else -> NotificationChannel(CHANNEL_ID_DEFAULT, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
+            }
+            notificationManager.createNotificationChannel(channel)
         }
-        notificationManager.createNotificationChannel(channel)
     }
 
     private fun toChannelId(priority: Int): String {

@@ -112,6 +112,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             subscriberManager?.refreshService(it)
         }
 
+        // Create notification channels right away, so we can configure them immediately after installing the app
+        notifier!!.createNotificationChannels()
+
         // Background things
         startPeriodicWorker()
     }

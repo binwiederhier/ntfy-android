@@ -1,0 +1,12 @@
+New features:
+* Support for five priorities (via X-Priority, #24) mapped to Android priorities
+* Support for notification title (via X-Title, #24)
+* Support for tags and emojis (via X-Tags, #24)
+
+Usability improvements:
+* Support deep links for https://ntfy.sh/.. topics (#20)
+* Add "clear all notifications" menu item (#21)
+* Auto-complete for "use another server" feature (#13)
+* Expanding notifications to read entire text (no ticket)
+* Color "Permanently delete" buttons red (no ticket)
+
