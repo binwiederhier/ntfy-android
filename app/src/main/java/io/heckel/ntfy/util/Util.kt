@@ -3,9 +3,9 @@ package io.heckel.ntfy.util
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.view.Window
-import com.vdurmont.emoji.EmojiManager
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.emoji.EmojiManager
 import java.text.DateFormat
 import java.util.*
 
