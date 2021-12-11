@@ -27,6 +27,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
+import io.heckel.ntfy.msg.BroadcastService
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
+    private var broadcaster: BroadcastService? = null // Context-dependent
     private var subscriberManager: SubscriberManager? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
         notifier = NotificationService(this)
+        broadcaster = BroadcastService(this)
         subscriberManager = SubscriberManager(this)
         appBaseUrl = getString(R.string.app_base_url)
 
@@ -315,9 +318,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     newNotifications.forEach { notification ->
                         newNotificationsCount++
                         val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        val shouldNotify = repository.addNotification(notificationWithId)
-                        if (shouldNotify) {
+                        val result = repository.addNotification(notificationWithId)
+                        if (result.notify) {
                             notifier?.send(subscription, notificationWithId)
+                        }
+                        if (result.broadcast) {
+                            broadcaster?.send(subscription, notification, result.muted)
                         }
                     }
                 }

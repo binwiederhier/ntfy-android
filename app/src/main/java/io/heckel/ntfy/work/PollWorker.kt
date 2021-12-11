@@ -8,6 +8,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.BroadcastService
 import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,6 +26,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
             val repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
             val notifier = NotificationService(applicationContext)
+            val broadcaster = BroadcastService(applicationContext)
             val api = ApiService()
 
             try {
@@ -34,9 +36,12 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
                     newNotifications.forEach { notification ->
-                        val shouldNotify = repository.addNotification(notification)
-                        if (shouldNotify) {
+                        val result = repository.addNotification(notification)
+                        if (result.notify) {
                             notifier.send(subscription, notification)
+                        }
+                        if (result.broadcast) {
+                            broadcaster.send(subscription, notification, result.muted)
                         }
                     }
                 }

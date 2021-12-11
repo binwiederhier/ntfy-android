@@ -28,19 +28,24 @@ class ApiService {
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
 
-    fun publish(baseUrl: String, topic: String, message: String, title: String, priority: Int, tags: List<String>) {
+    fun publish(baseUrl: String, topic: String, message: String, title: String, priority: Int, tags: List<String>, delay: String) {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
         var builder = Request.Builder()
             .url(url)
-            .addHeader("X-Priority", priority.toString())
             .put(message.toRequestBody())
+        if (priority in 1..5) {
+            builder = builder.addHeader("X-Priority", priority.toString())
+        }
         if (tags.isNotEmpty()) {
             builder = builder.addHeader("X-Tags", tags.joinToString(","))
         }
         if (title.isNotEmpty()) {
             builder = builder.addHeader("X-Title", title)
+        }
+        if (delay.isNotEmpty()) {
+            builder = builder.addHeader("X-Delay", delay)
         }
         client.newCall(builder.build()).execute().use { response ->
             if (!response.isSuccessful) {

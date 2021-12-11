@@ -85,19 +85,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(notification: Notification): Boolean {
+    suspend fun addNotification(notification: Notification): NotificationAddResult {
         val maybeExistingNotification = notificationDao.get(notification.id)
         if (maybeExistingNotification == null) {
             notificationDao.add(notification)
-            return shouldNotify(notification)
+            val detailsVisible = detailViewSubscriptionId.get() == notification.subscriptionId
+            val muted = isMuted(notification.subscriptionId)
+            val notify = !detailsVisible && !muted
+            return NotificationAddResult(notify = notify, broadcast = true, muted = muted)
         }
-        return false
-    }
-
-    private suspend fun shouldNotify(notification: Notification): Boolean {
-        val detailViewOpen = detailViewSubscriptionId.get() == notification.subscriptionId
-        val muted = isMuted(notification.subscriptionId)
-        return !detailViewOpen && !muted
+        return NotificationAddResult(notify = false, broadcast = false, muted = false)
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -216,6 +213,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     private fun getState(subscriptionId: Long): ConnectionState {
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
+
+    data class NotificationAddResult(
+        val notify: Boolean,
+        val broadcast: Boolean,
+        val muted: Boolean,
+    )
 
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"

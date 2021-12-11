@@ -3,6 +3,7 @@
           package="io.heckel.ntfy">
     <!--
          Permissions
+         - INTERNET is needed because we need to talk to the ntfy server(s)
          - FOREGROUND_SERVICE is needed to support "use another server" feature
          - WAKE_LOCK & RECEIVE_BOOT_COMPLETED are required to restart the foreground service
            if it is stopped; see https://robertohuertas.com/2019/06/29/android_foreground_services/
@@ -56,13 +57,19 @@
         <service android:name=".msg.SubscriberService"/>
 
         <!-- Subscriber service restart on reboot -->
-        <receiver
-                android:name=".msg.SubscriberService$StartReceiver"
-                android:enabled="true">
+        <receiver android:name=".msg.SubscriberService$StartReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <!-- Broadcast receiver to send messages via intents -->
+        <receiver android:name=".msg.BroadcastService$BroadcastReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="io.heckel.ntfy.SEND_MESSAGE"/>
+            </intent-filter>
+        </receiver>
+
 
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service

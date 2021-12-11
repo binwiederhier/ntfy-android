@@ -30,6 +30,10 @@ fun joinTags(tags: List<String>?): String {
     return tags?.joinToString(",") ?: ""
 }
 
+fun joinTagsMap(tags: List<String>?): String {
+    return tags?.mapIndexed { i, tag -> { "${i+1}=${tag}" }}?.joinToString(",") ?: ""
+}
+
 fun splitTags(tags: String?): List<String> {
     return if (tags == null || tags == "") {
         emptyList()

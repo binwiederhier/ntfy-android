@@ -33,6 +33,7 @@ class SubscriberService : Service() {
     private val connections = ConcurrentHashMap<String, SubscriberConnection>() // Base URL -> Connection
     private val api = ApiService()
     private val notifier = NotificationService(this)
+    private val broadcaster = BroadcastService(this)
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
 
@@ -175,10 +176,14 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $n")
         GlobalScope.launch(Dispatchers.IO) {
-            val shouldNotify = repository.addNotification(n)
-            if (shouldNotify) {
+            val result = repository.addNotification(n)
+            if (result.notify) {
                 Log.d(TAG, "[$url] Showing notification: $n")
                 notifier.send(subscription, n)
+            }
+            if (result.broadcast) {
+                Log.d(TAG, "[$url] Broadcasting notification: $n")
+                broadcaster.send(subscription, n, result.muted)
             }
         }
     }

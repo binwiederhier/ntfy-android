@@ -334,7 +334,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 val tags = possibleTags.shuffled().take(Random.nextInt(0, 4))
                 val title = if (Random.nextBoolean()) getString(R.string.detail_test_title) else ""
                 val message = getString(R.string.detail_test_message, priority)
-                api.publish(subscriptionBaseUrl, subscriptionTopic, message, title, priority, tags)
+                api.publish(subscriptionBaseUrl, subscriptionTopic, message, title, priority, tags, delay = "")
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast

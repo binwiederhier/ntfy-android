@@ -6,6 +6,7 @@ import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.msg.BroadcastService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.util.toPriority
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,7 @@ class FirebaseService : FirebaseMessagingService() {
     private val repository by lazy { (application as Application).repository }
     private val job = SupervisorJob()
     private val notifier = NotificationService(this)
+    private val broadcaster = BroadcastService(this)
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // We only process data messages
@@ -56,12 +58,16 @@ class FirebaseService : FirebaseMessagingService() {
                 tags = tags ?: "",
                 deleted = false
             )
-            val shouldNotify = repository.addNotification(notification)
+            val result = repository.addNotification(notification)
 
             // Send notification (only if it's not already known)
-            if (shouldNotify) {
+            if (result.notify) {
                 Log.d(TAG, "Sending notification for message: from=${remoteMessage.from}, data=${data}")
                 notifier.send(subscription, notification)
+            }
+            if (result.broadcast) {
+                Log.d(TAG, "Sending broadcast for message: from=${remoteMessage.from}, data=${data}")
+                broadcaster.send(subscription, notification, result.muted)
             }
         }
     }
