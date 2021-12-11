@@ -3,11 +3,8 @@ This is the Android app for [ntfy](https://github.com/binwiederhier/ntfy) ([ntfy
 in the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy).
 
 # Releases
-You can find the app in the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
+You can find the app in [F-Droid](https://f-droid.org/packages/io.heckel.ntfy/) or the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
 or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
-
-There is a ticket to create an [F-Droid version](https://github.com/binwiederhier/ntfy/issues/7), 
-but I haven't had the time yet.
 
 # Build
 
