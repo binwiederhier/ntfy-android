@@ -23,7 +23,7 @@
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
     <string name="refresh_message_no_results">Everything is up-to-date</string>
-    <string name="refresh_message_error">Could not refresh topic: %1$s</string>
+    <string name="refresh_message_error">%1$d subscription(s) could not be refreshed\n\n%2$s</string>
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>

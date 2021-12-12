@@ -7,10 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -309,10 +306,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun refreshAllSubscriptions() {
         lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                Log.d(TAG, "Polling for new notifications")
-                var newNotificationsCount = 0
-                repository.getSubscriptions().forEach { subscription ->
+            Log.d(TAG, "Polling for new notifications")
+            var errors = 0
+            var errorMessage = "" // First error
+            var newNotificationsCount = 0
+            repository.getSubscriptions().forEach { subscription ->
+                try {
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
@@ -326,24 +325,24 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                             broadcaster?.send(subscription, notification, result.muted)
                         }
                     }
-                }
-                val toastMessage = if (newNotificationsCount == 0) {
-                    getString(R.string.refresh_message_no_results)
-                } else {
-                    getString(R.string.refresh_message_result, newNotificationsCount)
-                }
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
-                    mainListContainer.isRefreshing = false
-                }
-                Log.d(TAG, "Finished polling for new notifications")
-            } catch (e: Exception) {
-                Log.e(TAG, "Polling failed: ${e.message}", e)
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, getString(R.string.refresh_message_error, e.message), Toast.LENGTH_LONG).show()
-                    mainListContainer.isRefreshing = false
+                } catch (e: Exception) {
+                    val topic = topicShortUrl(subscription.baseUrl, subscription.topic)
+                    if (errorMessage == "") errorMessage = "$topic: ${e.message}"
+                    errors++
                 }
             }
+            val toastMessage = if (errors > 0) {
+                getString(R.string.refresh_message_error, errors, errorMessage)
+            } else if (newNotificationsCount == 0) {
+                getString(R.string.refresh_message_no_results)
+            } else {
+                getString(R.string.refresh_message_result, newNotificationsCount)
+            }
+            runOnUiThread {
+                Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
+                mainListContainer.isRefreshing = false
+            }
+            Log.d(TAG, "Finished polling for new notifications")
         }
     }
 

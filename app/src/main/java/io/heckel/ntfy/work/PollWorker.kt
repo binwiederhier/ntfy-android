@@ -29,8 +29,8 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             val broadcaster = BroadcastService(applicationContext)
             val api = ApiService()
 
-            try {
-                repository.getSubscriptions().forEach{ subscription ->
+            repository.getSubscriptions().forEach{ subscription ->
+                try {
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)
@@ -44,18 +44,17 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                             broadcaster.send(subscription, notification, result.muted)
                         }
                     }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed checking messages: ${e.message}", e)
                 }
-                Log.d(TAG, "Finished polling for new notifications")
-                return@withContext Result.success()
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed checking messages: ${e.message}", e)
-                return@withContext Result.failure()
             }
+            Log.d(TAG, "Finished polling for new notifications")
+            return@withContext Result.success()
         }
     }
 
     companion object {
-        const val VERSION = BuildConfig.VERSION_CODE
+        const val VERSION =  BuildConfig.VERSION_CODE
         const val TAG = "NtfyPollWorker"
         const val WORK_NAME_PERIODIC = "NtfyPollWorkerPeriodic"
     }
