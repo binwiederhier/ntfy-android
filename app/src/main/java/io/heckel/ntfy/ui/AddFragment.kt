@@ -201,7 +201,7 @@ class AddFragment : DialogFragment() {
 
         activity?.let {
             it.runOnUiThread {
-                if (subscription != null) {
+                if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
                     subscribeButton.isEnabled = false
                 } else if (useAnotherServerCheckbox.isChecked) {
                     subscribeButton.isEnabled = topic.isNotBlank()
@@ -226,5 +226,6 @@ class AddFragment : DialogFragment() {
 
     companion object {
         const val TAG = "NtfyAddFragment"
+        private val DISALLOWED_TOPICS = listOf("docs", "static")
     }
 }

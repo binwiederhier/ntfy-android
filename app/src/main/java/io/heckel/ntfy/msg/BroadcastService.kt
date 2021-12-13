@@ -12,6 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+/**
+ * The broadcast service is responsible for sending and receiving broadcasted intents
+ * in order to facilitate taks app integrations.
+ */
 class BroadcastService(private val ctx: Context) {
     fun send(subscription: Subscription, notification: Notification, muted: Boolean) {
         val intent = Intent()
@@ -19,12 +23,14 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("id", notification.id)
         intent.putExtra("base_url", subscription.baseUrl)
         intent.putExtra("topic", subscription.topic)
+        intent.putExtra("time", notification.timestamp.toInt())
         intent.putExtra("title", notification.title)
         intent.putExtra("message", notification.message)
         intent.putExtra("tags", notification.tags)
         intent.putExtra("tags_map", joinTagsMap(splitTags(notification.tags)))
         intent.putExtra("priority", notification.priority)
         intent.putExtra("muted", muted)
+        intent.putExtra("muted_str", muted.toString())
 
         Log.d(TAG, "Sending intent broadcast: $intent")
         ctx.sendBroadcast(intent)
@@ -40,9 +46,9 @@ class BroadcastService(private val ctx: Context) {
 
         private fun send(ctx: Context, intent: Intent) {
             val api = ApiService()
+            val baseUrl = intent.getStringExtra("base_url") ?: ctx.getString(R.string.app_base_url)
             val topic = intent.getStringExtra("topic") ?: return
             val message = intent.getStringExtra("message") ?: return
-            val baseUrl = intent.getStringExtra("base_url") ?: ctx.getString(R.string.app_base_url)
             val title = intent.getStringExtra("title") ?: ""
             val tags = intent.getStringExtra("tags") ?: ""
             val priority = if (intent.getStringExtra("priority") != null) {
