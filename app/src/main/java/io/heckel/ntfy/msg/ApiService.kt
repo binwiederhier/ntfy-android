@@ -157,6 +157,7 @@ class ApiService {
 
     companion object {
         private const val TAG = "NtfyApiService"
-        private const val EVENT_MESSAGE = "message"
+        const val EVENT_MESSAGE = "message"
+        const val EVENT_KEEPALIVE = "keepalive"
     }
 }

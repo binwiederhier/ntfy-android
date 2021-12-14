@@ -1,13 +1,16 @@
 package io.heckel.ntfy.firebase
 
+import android.content.Intent
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.BroadcastService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.SubscriberService
 import io.heckel.ntfy.util.toPriority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -23,11 +26,25 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // We only process data messages
         if (remoteMessage.data.isEmpty()) {
-            Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}")
+            Log.d(TAG, "Discarding unexpected message (1): from=${remoteMessage.from}")
             return
         }
 
-        // Check if valid data, and send notification
+        // Dispatch event
+        val data = remoteMessage.data
+        when (data["event"]) {
+            ApiService.EVENT_KEEPALIVE -> handleKeepalive()
+            ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)
+            else -> Log.d(TAG, "Discarding unexpected message (2): from=${remoteMessage.from}, data=${data}")
+        }
+    }
+
+    private fun handleKeepalive() {
+        Log.d(TAG, "Keepalive received, sending auto restart broadcast for foregrounds service")
+        sendBroadcast(Intent(this, SubscriberService.AutoRestartReceiver::class.java)) // Restart it if necessary!
+    }
+
+    private fun handleMessage(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
         val id = data["id"]
         val timestamp = data["time"]?.toLongOrNull()

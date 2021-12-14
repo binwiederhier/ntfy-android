@@ -11,20 +11,48 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 
+
 /**
+ * The subscriber service manages the foreground service for instant delivery.
+ *
+ * This should be so easy but it's a hot mess due to all the Android restrictions, and all the hoops you have to jump
+ * through to make your service not die or restart.
+ *
+ * Cliff notes:
+ * - If the service is running, we keep one connection per base URL open (we group all topics together)
+ * - Incoming notifications are immediately forwarded and broadcasted
+ *
+ * "Trying to keep the service running" cliff notes:
+ * - Manages the service SHOULD-BE state in a SharedPref, so that we know whether or not to restart the service
+ * - The foreground service is STICKY, so it is restarted by Android if it's killed
+ * - On destroy (onDestroy), we send a broadcast to AutoRestartReceiver (see AndroidManifest.xml) which will schedule
+ *   a one-off AutoRestartWorker to restart the service (this is weird, but necessary because services started from
+ *   receivers are apparently low priority, see the gist below for details)
+ * - The MainActivity schedules a periodic worker (AutoRestartWorker) which restarts the service
+ * - FCM receives keepalive message from the main ntfy.sh server, which broadcasts an intent to AutoRestartReceiver,
+ *   which will schedule a one-off AutoRestartWorker to restart the service (see above)
+ * - On boot, the BootStartReceiver is triggered to restart the service (see AndroidManifest.xml)
+ *
+ * This is all a hot mess, but you do what you gotta do.
  *
  * Largely modeled after this fantastic resource:
  * - https://robertohuertas.com/2019/06/29/android_foreground_services/
  * - https://github.com/robertohuertasm/endless-service/blob/master/app/src/main/java/com/robertohuertas/endless/EndlessService.kt
+ * - https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd
  */
 class SubscriberService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
@@ -66,8 +94,9 @@ class SubscriberService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         Log.d(TAG, "Subscriber service has been destroyed")
+        sendBroadcast(Intent(this, AutoRestartReceiver::class.java)) // Restart it if necessary!
+        super.onDestroy()
     }
 
     private fun startService() {
@@ -233,20 +262,43 @@ class SubscriberService : Service() {
     }
 
     /* This re-starts the service on reboot; see manifest */
-    class StartReceiver : BroadcastReceiver() {
+    class BootStartReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "BootStartReceiver: onReceive called")
             if (intent.action == Intent.ACTION_BOOT_COMPLETED && readServiceState(context) == ServiceState.STARTED) {
                 Intent(context, SubscriberService::class.java).also {
                     it.action = Actions.START.name
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        Log.d(TAG, "Starting subscriber service in >=26 Mode from a BroadcastReceiver")
-                        context.startForegroundService(it)
-                        return
-                    }
-                    Log.d(TAG, "Starting subscriber service in < 26 Mode from a BroadcastReceiver")
-                    context.startService(it)
+                    Log.d(TAG, "BootStartReceiver: Starting subscriber service")
+                    ContextCompat.startForegroundService(context, it)
                 }
             }
+        }
+    }
+
+    // We are starting MyService via a worker and not directly because since Android 7
+    // (but officially since Lollipop!), any process called by a BroadcastReceiver
+    // (only manifest-declared receiver) is run at low priority and hence eventually
+    // killed by Android.
+    class AutoRestartReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "AutoRestartReceiver: onReceive called")
+            val workManager = WorkManager.getInstance(context)
+            val startServiceRequest = OneTimeWorkRequest.Builder(AutoRestartWorker::class.java).build()
+            workManager.enqueue(startServiceRequest)
+        }
+    }
+
+    class AutoRestartWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+        override fun doWork(): Result {
+            Log.d(TAG, "AutoRestartReceiver: doWork called for: " + this.getId())
+            if (readServiceState(context) == ServiceState.STARTED) {
+                Intent(context, SubscriberService::class.java).also {
+                    it.action = Actions.START.name
+                    Log.d(TAG, "AutoRestartReceiver: Starting subscriber service")
+                    ContextCompat.startForegroundService(context, it)
+                }
+            }
+            return Result.success()
         }
     }
 
@@ -261,7 +313,10 @@ class SubscriberService : Service() {
     }
 
     companion object {
-        private const val TAG = "NtfySubscriberService"
+        const val TAG = "NtfySubscriberService"
+        const val AUTO_RESTART_WORKER_VERSION =  BuildConfig.VERSION_CODE
+        const val AUTO_RESTART_WORKER_WORK_NAME_PERIODIC = "NtfyAutoRestartWorkerPeriodic"
+
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_SERVICE_ID = 2586

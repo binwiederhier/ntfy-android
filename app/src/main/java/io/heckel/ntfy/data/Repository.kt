@@ -123,6 +123,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun getAutoRestartWorkerVersion(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_AUTO_RESTART_WORKER_VERSION, 0)
+    }
+
+    fun setAutoRestartWorkerVersion(version: Int) {
+        sharedPrefs.edit()
+            .putInt(SHARED_PREFS_AUTO_RESTART_WORKER_VERSION, version)
+            .apply()
+    }
+
     private suspend fun isMuted(subscriptionId: Long): Boolean {
         if (isGlobalMuted()) {
             return true
@@ -223,6 +233,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
+        const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
 
         private const val TAG = "NtfyRepository"

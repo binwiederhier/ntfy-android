@@ -25,6 +25,7 @@ import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.BroadcastService
+import io.heckel.ntfy.msg.SubscriberService
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
@@ -115,13 +116,17 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Create notification channels right away, so we can configure them immediately after installing the app
         notifier!!.createNotificationChannels()
 
+        // Subscribe to control Firebase channel (so we can re-start the foreground service if it dies)
+        messenger.subscribe("~keepalive")
+
         // Background things
-        startPeriodicWorker()
+        startPeriodicPollWorker()
+        startPeriodicAutoRestartWorker()
     }
 
-    private fun startPeriodicWorker() {
-        val pollWorkerVersion = repository.getPollWorkerVersion()
-        val workPolicy = if (pollWorkerVersion == PollWorker.VERSION) {
+    private fun startPeriodicPollWorker() {
+        val workerVersion = repository.getPollWorkerVersion()
+        val workPolicy = if (workerVersion == PollWorker.VERSION) {
             Log.d(TAG, "Poll worker version matches: choosing KEEP as existing work policy")
             ExistingPeriodicWorkPolicy.KEEP
         } else {
@@ -132,12 +137,31 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val work = PeriodicWorkRequestBuilder<PollWorker>(15, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<PollWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .addTag(PollWorker.TAG)
             .addTag(PollWorker.WORK_NAME_PERIODIC)
             .build()
+        Log.d(TAG, "Poll worker: Scheduling period work every ${MINIMUM_PERIODIC_WORKER_INTERVAL} minutes")
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
+    }
+
+    private fun startPeriodicAutoRestartWorker() {
+        val workerVersion = repository.getAutoRestartWorkerVersion()
+        val workPolicy = if (workerVersion == SubscriberService.AUTO_RESTART_WORKER_VERSION) {
+            Log.d(TAG, "Auto restart worker version matches: choosing KEEP as existing work policy")
+            ExistingPeriodicWorkPolicy.KEEP
+        } else {
+            Log.d(TAG, "Auto restart worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
+            repository.setAutoRestartWorkerVersion(SubscriberService.AUTO_RESTART_WORKER_VERSION)
+            ExistingPeriodicWorkPolicy.REPLACE
+        }
+        val work = PeriodicWorkRequestBuilder<SubscriberService.AutoRestartWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
+            .addTag(SubscriberService.TAG)
+            .addTag(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC)
+            .build()
+        Log.d(TAG, "Auto restart worker: Scheduling period work every ${MINIMUM_PERIODIC_WORKER_INTERVAL} minutes")
+        workManager!!.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -483,5 +507,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
         const val ANIMATION_DURATION = 80L
+
+        // As per Documentation: The minimum repeat interval that can be defined is 15 minutes
+        // (same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here.
+        // Thanks to varunon9 (https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd) for this!
+        const val MINIMUM_PERIODIC_WORKER_INTERVAL = 16L
     }
 }

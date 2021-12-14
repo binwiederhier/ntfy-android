@@ -9,10 +9,10 @@ class FirebaseMessenger {
             .getInstance()
             .subscribeToTopic(topic)
             .addOnCompleteListener {
-                Log.d(TAG, "Subscribing to topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
+                Log.d(TAG, "Subscribing to topic $topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
             }
             .addOnFailureListener {
-                Log.e(TAG, "Subscribing to topic failed: $it")
+                Log.e(TAG, "Subscribing to topic $topic failed: $it")
             }
     }
 

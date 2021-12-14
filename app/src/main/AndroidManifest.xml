@@ -47,11 +47,15 @@
         <service android:name=".msg.SubscriberService"/>
 
         <!-- Subscriber service restart on reboot -->
-        <receiver android:name=".msg.SubscriberService$StartReceiver" android:enabled="true">
+        <receiver android:name=".msg.SubscriberService$BootStartReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <!-- Subscriber service restart on destruction -->
+        <receiver android:name=".msg.SubscriberService$AutoRestartReceiver" android:enabled="true"
+                  android:exported="false"/>
 
         <!-- Broadcast receiver to send messages via intents -->
         <receiver android:name=".msg.BroadcastService$BroadcastReceiver" android:enabled="true" android:exported="true">
@@ -59,7 +63,6 @@
                 <action android:name="io.heckel.ntfy.SEND_MESSAGE"/>
             </intent-filter>
         </receiver>
-
 
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service
