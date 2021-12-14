@@ -1,0 +1,7 @@
+New features:
+* MacroDroid/Tasker: send/receive ntfy messages via other apps (#31)
+
+Bug fixes:
+* Manually refreshing fails if one subscription URL is not reachable (#27)
+* Opening ntfy.sh/docs on a phone opens the app man_facepalming (#34)
+* Restart foreground service on upgrade and if otherwise killed (#56)
