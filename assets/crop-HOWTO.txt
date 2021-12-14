@@ -1,0 +1,5 @@
+ffplay -i overview-video-3-a.mp4 -vf "cropdetect=24:16:0"
+ffmpeg -i overview-video-3-a.mp4 -vf "crop=1552:1072:184:4" overview-video-3-a-cropped.mp4
+
+
+
