@@ -22,6 +22,7 @@ class FirebaseService : FirebaseMessagingService() {
     private val job = SupervisorJob()
     private val notifier = NotificationService(this)
     private val broadcaster = BroadcastService(this)
+    private val messenger = FirebaseMessenger()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // We only process data messages
@@ -33,15 +34,20 @@ class FirebaseService : FirebaseMessagingService() {
         // Dispatch event
         val data = remoteMessage.data
         when (data["event"]) {
-            ApiService.EVENT_KEEPALIVE -> handleKeepalive()
+            ApiService.EVENT_KEEPALIVE -> handleKeepalive(remoteMessage)
             ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)
             else -> Log.d(TAG, "Discarding unexpected message (2): from=${remoteMessage.from}, data=${data}")
         }
     }
 
-    private fun handleKeepalive() {
+    private fun handleKeepalive(remoteMessage: RemoteMessage) {
         Log.d(TAG, "Keepalive received, sending auto restart broadcast for foregrounds service")
         sendBroadcast(Intent(this, SubscriberService.AutoRestartReceiver::class.java)) // Restart it if necessary!
+        val topic = remoteMessage.data["topic"]
+        if (topic != ApiService.CONTROL_TOPIC) {
+            Log.d(TAG, "Keepalive on non-control topic $topic received, subscribing to control topic ${ApiService.CONTROL_TOPIC}")
+            messenger.subscribe(ApiService.CONTROL_TOPIC)
+        }
     }
 
     private fun handleMessage(remoteMessage: RemoteMessage) {
