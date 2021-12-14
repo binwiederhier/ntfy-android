@@ -1,8 +1,10 @@
 package io.heckel.ntfy.msg
 
+import android.os.Build
 import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.util.topicUrlJson
@@ -23,7 +25,6 @@ class ApiService {
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
-
     private val subscriberClient = OkHttpClient.Builder()
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
@@ -35,6 +36,7 @@ class ApiService {
         var builder = Request.Builder()
             .url(url)
             .put(message.toRequestBody())
+            .addHeader("User-Agent", USER_AGENT)
         if (priority in 1..5) {
             builder = builder.addHeader("X-Priority", priority.toString())
         }
@@ -59,7 +61,10 @@ class ApiService {
         val url = topicUrlJsonPoll(baseUrl, topic)
         Log.d(TAG, "Polling topic $url")
 
-        val request = Request.Builder().url(url).build();
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", USER_AGENT)
+            .build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
@@ -85,7 +90,10 @@ class ApiService {
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
 
-        val request = Request.Builder().url(url).build()
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", USER_AGENT)
+            .build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -157,6 +165,7 @@ class ApiService {
 
     companion object {
         private const val TAG = "NtfyApiService"
+        private val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
 
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"
