@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         notifier!!.createNotificationChannels()
 
         // Subscribe to control Firebase channel (so we can re-start the foreground service if it dies)
-        messenger.subscribe("~keepalive")
+        messenger.subscribe(ApiService.CONTROL_TOPIC)
 
         // Background things
         startPeriodicPollWorker()

@@ -157,6 +157,9 @@ class ApiService {
 
     companion object {
         private const val TAG = "NtfyApiService"
+
+        // These constants have corresponding values in the server codebase!
+        const val CONTROL_TOPIC = "~control"
         const val EVENT_MESSAGE = "message"
         const val EVENT_KEEPALIVE = "keepalive"
     }
