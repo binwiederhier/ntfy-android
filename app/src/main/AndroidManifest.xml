@@ -64,6 +64,14 @@
             </intent-filter>
         </receiver>
 
+        <!-- Broadcast receiver for UnifiedPush; must match https://github.com/UnifiedPush/UP-spec/blob/main/specifications.md  -->
+        <receiver android:name=".up.BroadcastReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.distributor.REGISTER" />
+                <action android:name="org.unifiedpush.android.distributor.UNREGISTER" />
+            </intent-filter>
+        </receiver>
+
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service
                 android:name=".firebase.FirebaseService"

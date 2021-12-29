@@ -13,13 +13,15 @@ data class Subscription(
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
+    @ColumnInfo(name = "upAppId") val upAppId: String,
+    @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long) :
-            this(id, baseUrl, topic, instant, mutedUntil, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -32,6 +34,8 @@ data class SubscriptionWithMetadata(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
+    val upAppId: String,
+    val upConnectorToken: String,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
@@ -50,7 +54,7 @@ data class Notification(
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 4)
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 5)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -66,6 +70,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_1_2)
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
+                    .addMigrations(MIGRATION_4_5)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -102,6 +107,13 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification_New RENAME TO Notification")
             }
         }
+
+        private val MIGRATION_4_5 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT NOT NULL DEFAULT('')")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT NOT NULL DEFAULT('')")
+            }
+        }
     }
 }
 
@@ -109,7 +121,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -122,7 +134,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -135,7 +147,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -148,7 +160,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

@@ -20,12 +20,9 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.util.topicShortUrl
-import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.msg.BroadcastService
-import io.heckel.ntfy.msg.SubscriberService
+import io.heckel.ntfy.msg.*
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +51,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     // Other stuff
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
+    private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
     private var broadcaster: BroadcastService? = null // Context-dependent
     private var subscriberManager: SubscriberManager? = null // Context-dependent
@@ -67,6 +65,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
+        dispatcher = NotificationDispatcher(this)
         notifier = NotificationService(this)
         broadcaster = BroadcastService(this)
         subscriberManager = SubscriberManager(this)
@@ -288,6 +287,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             topic = topic,
             instant = instant,
             mutedUntil = 0,
+            upAppId = "",
+            upConnectorToken = "",
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -342,6 +343,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                         newNotificationsCount++
                         val notificationWithId = notification.copy(notificationId = Random.nextInt())
                         val result = repository.addNotification(notificationWithId)
+                        dispatcher?.dispatch()
                         if (result.notify) {
                             notifier?.send(subscription, notificationWithId)
                         }

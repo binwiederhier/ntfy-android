@@ -9,6 +9,7 @@ import java.text.DateFormat
 import java.util.*
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
+fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
 fun topicUrlJsonPoll(baseUrl: String, topic: String) = "${topicUrl(baseUrl, topic)}/json?poll=1"
 fun topicShortUrl(baseUrl: String, topic: String) =

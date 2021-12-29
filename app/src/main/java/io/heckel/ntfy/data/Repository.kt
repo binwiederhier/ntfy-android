@@ -92,9 +92,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             val detailsVisible = detailViewSubscriptionId.get() == notification.subscriptionId
             val muted = isMuted(notification.subscriptionId)
             val notify = !detailsVisible && !muted
-            return NotificationAddResult(notify = notify, broadcast = true, muted = muted)
+            return NotificationAddResult(notification = notification, notify = notify, broadcast = true, muted = muted)
         }
-        return NotificationAddResult(notify = false, broadcast = false, muted = false)
+        return NotificationAddResult(notification = notification, notify = false, broadcast = false, forward = false, muted = false)
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -177,6 +177,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
+                upAppId = s.upAppId,
+                upConnectorToken = s.upConnectorToken,
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
@@ -195,6 +197,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             topic = s.topic,
             instant = s.instant,
             mutedUntil = s.mutedUntil,
+            upAppId = s.upAppId,
+            upConnectorToken = s.upConnectorToken,
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
@@ -225,8 +229,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     }
 
     data class NotificationAddResult(
+        val notification: Notification,
         val notify: Boolean,
         val broadcast: Boolean,
+        val forward: Boolean, // Forward to UnifiedPush connector
         val muted: Boolean,
     )
 
