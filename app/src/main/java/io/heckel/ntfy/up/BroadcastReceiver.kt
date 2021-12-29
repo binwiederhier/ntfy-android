@@ -6,6 +6,7 @@ import android.util.Log
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.ui.SubscriberManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -43,8 +44,10 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 )
                 GlobalScope.launch(Dispatchers.IO) {
                     repository.addSubscription(subscription)
+                    val subscriptionIdsWithInstantStatus = repository.getSubscriptionIdsWithInstantStatus()
+                    val subscriberManager = SubscriberManager(context!!)
+                    subscriberManager.refreshService(subscriptionIdsWithInstantStatus)
                 }
-
                 distributor.sendEndpoint(appId, connectorToken)
                 // XXXXXXXXX
             }

@@ -36,6 +36,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return toSubscriptionList(subscriptionDao.list())
     }
 
+    fun getSubscriptionIdsWithInstantStatus(): Set<Pair<Long, Boolean>> {
+        return subscriptionDao
+            .list()
+            .map { Pair(it.id, it.instant) }.toSet()
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun getSubscription(subscriptionId: Long): Subscription? {

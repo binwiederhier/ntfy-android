@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             }
         }
 
-        // React to changes in fast delivery setting
+        // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
             subscriberManager?.refreshService(it)
         }
