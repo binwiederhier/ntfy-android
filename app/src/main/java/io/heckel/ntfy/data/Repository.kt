@@ -85,16 +85,13 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(notification: Notification): NotificationAddResult {
+    suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification == null) {
-            notificationDao.add(notification)
-            val detailsVisible = detailViewSubscriptionId.get() == notification.subscriptionId
-            val muted = isMuted(notification.subscriptionId)
-            val notify = !detailsVisible && !muted
-            return NotificationAddResult(notification = notification, notify = notify, broadcast = true, muted = muted)
+        if (maybeExistingNotification != null) {
+            return false
         }
-        return NotificationAddResult(notification = notification, notify = false, broadcast = false, forward = false, muted = false)
+        notificationDao.add(notification)
+        return true
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -141,7 +138,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return s.mutedUntil == 1L || (s.mutedUntil > 1L && s.mutedUntil > System.currentTimeMillis()/1000)
     }
 
-    private fun isGlobalMuted(): Boolean {
+    fun isGlobalMuted(): Boolean {
         val mutedUntil = getGlobalMutedUntil()
         return mutedUntil == 1L || (mutedUntil > 1L && mutedUntil > System.currentTimeMillis()/1000)
     }
@@ -227,14 +224,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     private fun getState(subscriptionId: Long): ConnectionState {
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
-
-    data class NotificationAddResult(
-        val notification: Notification,
-        val notify: Boolean,
-        val broadcast: Boolean,
-        val forward: Boolean, // Forward to UnifiedPush connector
-        val muted: Boolean,
-    )
 
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"

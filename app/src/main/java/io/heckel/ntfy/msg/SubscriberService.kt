@@ -58,10 +58,9 @@ class SubscriberService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
     private val repository by lazy { (application as Application).repository }
+    private val dispatcher by lazy { NotificationDispatcher(this, repository) }
     private val connections = ConcurrentHashMap<String, SubscriberConnection>() // Base URL -> Connection
     private val api = ApiService()
-    private val notifier = NotificationService(this)
-    private val broadcaster = BroadcastService(this)
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
 
@@ -201,18 +200,13 @@ class SubscriberService : Service() {
         repository.updateState(subscriptionIds, state)
     }
 
-    private fun onNotificationReceived(subscription: Subscription, n: io.heckel.ntfy.data.Notification) {
+    private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.data.Notification) {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
-        Log.d(TAG, "[$url] Received notification: $n")
+        Log.d(TAG, "[$url] Received notification: $notification")
         GlobalScope.launch(Dispatchers.IO) {
-            val result = repository.addNotification(n)
-            if (result.notify) {
-                Log.d(TAG, "[$url] Showing notification: $n")
-                notifier.send(subscription, n)
-            }
-            if (result.broadcast) {
-                Log.d(TAG, "[$url] Broadcasting notification: $n")
-                broadcaster.send(subscription, n, result.muted)
+            if (repository.addNotification(notification)) {
+                Log.d(TAG, "[$url] Dispatching notification $notification")
+                dispatcher.dispatch(subscription, notification)
             }
         }
     }

@@ -28,6 +28,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 val topic = connectorToken // FIXME
                 val app = context!!.applicationContext as Application
                 val repository = app.repository
+                val distributor = Distributor(app)
                 val subscription = Subscription(
                     id = Random.nextLong(),
                     baseUrl = baseUrl,
@@ -44,14 +45,15 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     repository.addSubscription(subscription)
                 }
 
-                sendEndpoint(context!!, appId, connectorToken)
+                distributor.sendEndpoint(appId, connectorToken)
                 // XXXXXXXXX
             }
             ACTION_UNREGISTER -> {
                 val connectorToken = intent.getStringExtra(EXTRA_TOKEN) ?: ""
                 Log.d(TAG, "Unregister: connectorToken=$connectorToken")
                 // XXXXXXX
-                sendUnregistered(context!!, "org.unifiedpush.example", connectorToken)
+                val distributor = Distributor(context!!)
+                distributor.sendUnregistered("org.unifiedpush.example", connectorToken)
             }
         }
     }

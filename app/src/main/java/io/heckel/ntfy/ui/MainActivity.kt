@@ -52,8 +52,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
-    private var notifier: NotificationService? = null // Context-dependent
-    private var broadcaster: BroadcastService? = null // Context-dependent
     private var subscriberManager: SubscriberManager? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
@@ -65,9 +63,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
-        dispatcher = NotificationDispatcher(this)
-        notifier = NotificationService(this)
-        broadcaster = BroadcastService(this)
+        dispatcher = NotificationDispatcher(this, repository)
         subscriberManager = SubscriberManager(this)
         appBaseUrl = getString(R.string.app_base_url)
 
@@ -113,7 +109,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
-        notifier!!.createNotificationChannels()
+        dispatcher?.init()
 
         // Subscribe to control Firebase channel (so we can re-start the foreground service if it dies)
         messenger.subscribe(ApiService.CONTROL_TOPIC)
@@ -342,13 +338,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     newNotifications.forEach { notification ->
                         newNotificationsCount++
                         val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        val result = repository.addNotification(notificationWithId)
-                        dispatcher?.dispatch()
-                        if (result.notify) {
-                            notifier?.send(subscription, notificationWithId)
-                        }
-                        if (result.broadcast) {
-                            broadcaster?.send(subscription, notification, result.muted)
+                        if (repository.addNotification(notificationWithId)) {
+                            dispatcher?.dispatch(subscription, notificationWithId)
                         }
                     }
                 } catch (e: Exception) {
