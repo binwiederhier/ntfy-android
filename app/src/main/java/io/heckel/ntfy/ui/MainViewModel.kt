@@ -1,10 +1,12 @@
 package io.heckel.ntfy.ui
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.heckel.ntfy.data.*
+import io.heckel.ntfy.up.Distributor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.List
@@ -22,7 +24,12 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         repository.addSubscription(subscription)
     }
 
-    fun remove(subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    fun remove(context: Context, subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {
+        val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+        if (subscription.upAppId != null && subscription.upConnectorToken != null) {
+            val distributor = Distributor(context)
+            distributor.sendUnregistered(subscription.upAppId, subscription.upConnectorToken)
+        }
         repository.removeAllNotifications(subscriptionId)
         repository.removeSubscription(subscriptionId)
     }

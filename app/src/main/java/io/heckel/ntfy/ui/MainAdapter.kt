@@ -55,7 +55,9 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            var statusMessage = if (subscription.totalCount == 1) {
+            var statusMessage = if (subscription.upAppId != null) {
+                context.getString(R.string.main_item_status_unified_push, subscription.upAppId)
+            } else if (subscription.totalCount == 1) {
                 context.getString(R.string.main_item_status_text_one, subscription.totalCount)
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
@@ -82,11 +84,11 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             notificationDisabledUntilImageView.visibility = if (subscription.mutedUntil > 1L) View.VISIBLE else View.GONE
             notificationDisabledForeverImageView.visibility = if (subscription.mutedUntil == 1L) View.VISIBLE else View.GONE
             instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
-            if (subscription.newCount > 0) {
+            if (subscription.upAppId != null || subscription.newCount == 0) {
+                newItemsView.visibility = View.GONE
+            } else {
                 newItemsView.visibility = View.VISIBLE
                 newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
-            } else {
-                newItemsView.visibility = View.GONE
             }
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }

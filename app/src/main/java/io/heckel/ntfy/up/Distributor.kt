@@ -2,9 +2,11 @@ package io.heckel.ntfy.up
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 
 class Distributor(val context: Context) {
     fun sendMessage(app: String, connectorToken: String, message: String) {
+        Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): $message")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_MESSAGE
@@ -14,6 +16,7 @@ class Distributor(val context: Context) {
     }
 
     fun sendEndpoint(app: String, connectorToken: String, endpoint: String) {
+        Log.d(TAG, "Sending NEW_ENDPOINT to $app (token=$connectorToken): $endpoint")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_NEW_ENDPOINT
@@ -23,6 +26,7 @@ class Distributor(val context: Context) {
     }
 
     fun sendUnregistered(app: String, connectorToken: String) {
+        Log.d(TAG, "Sending UNREGISTERED to $app (token=$connectorToken)")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_UNREGISTERED
@@ -31,10 +35,15 @@ class Distributor(val context: Context) {
     }
 
     fun sendRegistrationRefused(app: String, connectorToken: String) {
+        Log.d(TAG, "Sending REGISTRATION_REFUSED to $app (token=$connectorToken)")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_REGISTRATION_REFUSED
         broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
         context.sendBroadcast(broadcastIntent)
+    }
+
+    companion object {
+        private const val TAG = "NtfyUpDistributor"
     }
 }

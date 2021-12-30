@@ -283,8 +283,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             topic = topic,
             instant = instant,
             mutedUntil = 0,
-            upAppId = "",
-            upConnectorToken = "",
+            upAppId = null,
+            upConnectorToken = null,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -314,8 +314,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private fun onSubscriptionItemClick(subscription: Subscription) {
         if (actionMode != null) {
             handleActionModeClick(subscription)
+        } else if (subscription.upAppId != null) { // Not UnifiedPush
+            displayUnifiedPushToast(subscription)
         } else {
             startDetailView(subscription)
+        }
+    }
+
+    private fun displayUnifiedPushToast(subscription: Subscription) {
+        runOnUiThread {
+            val appId = subscription.upAppId ?: ""
+            val toastMessage = getString(R.string.main_unified_push_toast, appId)
+            Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -415,7 +425,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val dialog = builder
             .setMessage(R.string.main_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { viewModel.remove(it) }
+                adapter.selected.map { subscriptionId -> viewModel.remove(this, subscriptionId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.main_action_mode_delete_dialog_cancel) { _, _ ->

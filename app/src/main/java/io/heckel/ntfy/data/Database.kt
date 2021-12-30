@@ -34,8 +34,8 @@ data class SubscriptionWithMetadata(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
-    val upAppId: String,
-    val upConnectorToken: String,
+    val upAppId: String?,
+    val upConnectorToken: String?,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
