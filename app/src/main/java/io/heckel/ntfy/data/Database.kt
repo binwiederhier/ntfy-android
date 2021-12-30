@@ -6,15 +6,15 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
-@Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true)])
+@Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
     @PrimaryKey val id: Long, // Internal ID, only used in Repository and activities
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
-    @ColumnInfo(name = "upAppId") val upAppId: String,
-    @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String,
+    @ColumnInfo(name = "upAppId") val upAppId: String?,
+    @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
@@ -110,8 +110,8 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_4_5 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT NOT NULL DEFAULT('')")
-                db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT NOT NULL DEFAULT('')")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT")
             }
         }
     }
@@ -166,10 +166,23 @@ interface SubscriptionDao {
           IFNULL(MAX(n.timestamp),0) AS lastActive
         FROM Subscription AS s
         LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
-        WHERE  s.id = :subscriptionId
+        WHERE s.id = :subscriptionId
         GROUP BY s.id
     """)
     fun get(subscriptionId: Long): SubscriptionWithMetadata?
+
+    @Query("""
+        SELECT 
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          COUNT(n.id) totalCount, 
+          COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
+          IFNULL(MAX(n.timestamp),0) AS lastActive
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
+        WHERE s.upConnectorToken = :connectorToken
+        GROUP BY s.id
+    """)
+    fun getByConnectorToken(connectorToken: String): SubscriptionWithMetadata?
 
     @Insert
     fun add(subscription: Subscription)

@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.view.Window
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
+import java.security.SecureRandom
 import java.text.DateFormat
 import java.util.*
 
@@ -101,4 +102,15 @@ fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
         window.statusBarColor = color
     }
     statusBarColorAnimation.start()
+}
+
+fun randomString(len: Int): String {
+    val random = SecureRandom()
+    val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray()
+    return (1..len).map { chars[random.nextInt(chars.size)] }.joinToString("")
+}
+
+// Allows letting multiple variables at once, see https://stackoverflow.com/a/35522422/1440785
+inline fun <T1: Any, T2: Any, R: Any> safeLet(p1: T1?, p2: T2?, block: (T1, T2)->R?): R? {
+    return if (p1 != null && p2 != null) block(p1, p2) else null
 }

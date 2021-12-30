@@ -2,35 +2,39 @@ package io.heckel.ntfy.up
 
 import android.content.Context
 import android.content.Intent
-import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Repository
-import io.heckel.ntfy.util.topicUrlUp
 
 class Distributor(val context: Context) {
-    fun sendMessage(app: String, token: String, message: String) {
+    fun sendMessage(app: String, connectorToken: String, message: String) {
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_MESSAGE
-        broadcastIntent.putExtra(EXTRA_TOKEN, token)
+        broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
         broadcastIntent.putExtra(EXTRA_MESSAGE, message)
         context.sendBroadcast(broadcastIntent)
     }
 
-    fun sendEndpoint(app: String, token: String) {
-        val appBaseUrl = context.getString(R.string.app_base_url) // FIXME
+    fun sendEndpoint(app: String, connectorToken: String, endpoint: String) {
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_NEW_ENDPOINT
-        broadcastIntent.putExtra(EXTRA_TOKEN, token)
-        broadcastIntent.putExtra(EXTRA_ENDPOINT, topicUrlUp(appBaseUrl, token))
+        broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
+        broadcastIntent.putExtra(EXTRA_ENDPOINT, endpoint)
         context.sendBroadcast(broadcastIntent)
     }
 
-    fun sendUnregistered(app: String, token: String) {
+    fun sendUnregistered(app: String, connectorToken: String) {
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_UNREGISTERED
-        broadcastIntent.putExtra(EXTRA_TOKEN, token)
+        broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
+        context.sendBroadcast(broadcastIntent)
+    }
+
+    fun sendRegistrationRefused(app: String, connectorToken: String) {
+        val broadcastIntent = Intent()
+        broadcastIntent.`package` = app
+        broadcastIntent.action = ACTION_REGISTRATION_REFUSED
+        broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
         context.sendBroadcast(broadcastIntent)
     }
 }

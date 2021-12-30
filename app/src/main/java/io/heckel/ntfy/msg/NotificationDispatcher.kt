@@ -5,6 +5,7 @@ import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.up.Distributor
+import io.heckel.ntfy.util.safeLet
 
 class NotificationDispatcher(val context: Context, val repository: Repository) {
     private val notifier = NotificationService(context)
@@ -18,8 +19,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     fun dispatch(subscription: Subscription, notification: Notification) {
         val muted = checkMuted(subscription)
         val notify = checkNotify(subscription, notification, muted)
-        val broadcast = subscription.upAppId == ""
-        val distribute = subscription.upAppId != ""
+        val broadcast = subscription.upAppId == null
+        val distribute = subscription.upAppId != null
         if (notify) {
             notifier.send(subscription, notification)
         }
@@ -27,7 +28,9 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             broadcaster.send(subscription, notification, muted)
         }
         if (distribute) {
-            distributor.sendMessage(subscription.upAppId, subscription.upConnectorToken, notification.message)
+            safeLet(subscription.upAppId, subscription.upConnectorToken) { appId, connectorToken ->
+                distributor.sendMessage(appId, connectorToken, notification.message)
+            }
         }
     }
 

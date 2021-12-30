@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "d72d045ad4ad20db887b4c6aed3da27b",
+    "identityHash": "306578182c2ad0f9803956beda094d28",
     "entities": [
       {
         "tableName": "Subscription",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `upAppId` TEXT NOT NULL, `upConnectorToken` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `upAppId` TEXT, `upConnectorToken` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -42,13 +42,13 @@
             "fieldPath": "upAppId",
             "columnName": "upAppId",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "upConnectorToken",
             "columnName": "upConnectorToken",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -66,6 +66,14 @@
               "topic"
             ],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Subscription_baseUrl_topic` ON `${TABLE_NAME}` (`baseUrl`, `topic`)"
+          },
+          {
+            "name": "index_Subscription_upConnectorToken",
+            "unique": true,
+            "columnNames": [
+              "upConnectorToken"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Subscription_upConnectorToken` ON `${TABLE_NAME}` (`upConnectorToken`)"
           }
         ],
         "foreignKeys": []
@@ -144,7 +152,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd72d045ad4ad20db887b4c6aed3da27b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '306578182c2ad0f9803956beda094d28')"
     ]
   }
 }

@@ -56,6 +56,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
+    suspend fun getSubscriptionByConnectorToken(connectorToken: String): Subscription? {
+        return toSubscription(subscriptionDao.getByConnectorToken(connectorToken))
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
     suspend fun addSubscription(subscription: Subscription) {
         subscriptionDao.add(subscription)
     }
