@@ -56,7 +56,7 @@
         messages via PUT or POST and you\'ll receive notifications on your phone.
     </string>
     <string name="main_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
-    <string name="main_unified_push_toast">Subscription is managed by %1$s via UnifiedPush</string>
+    <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
