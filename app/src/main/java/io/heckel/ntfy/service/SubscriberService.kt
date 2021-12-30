@@ -1,4 +1,4 @@
-package io.heckel.ntfy.msg
+package io.heckel.ntfy.service
 
 import android.app.*
 import android.content.BroadcastReceiver
@@ -11,8 +11,6 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
@@ -20,6 +18,8 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
@@ -70,8 +70,8 @@ class SubscriberService : Service() {
             val action = intent.action
             Log.d(TAG, "using an intent with action $action")
             when (action) {
-                Actions.START.name -> startService()
-                Actions.STOP.name -> stopService()
+                Action.START.name -> startService()
+                Action.STOP.name -> stopService()
                 else -> Log.e(TAG, "This should never happen. No action in the received intent")
             }
         } else {
@@ -259,13 +259,7 @@ class SubscriberService : Service() {
     class BootStartReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "BootStartReceiver: onReceive called")
-            if (intent.action == Intent.ACTION_BOOT_COMPLETED && readServiceState(context) == ServiceState.STARTED) {
-                Intent(context, SubscriberService::class.java).also {
-                    it.action = Actions.START.name
-                    Log.d(TAG, "BootStartReceiver: Starting subscriber service")
-                    ContextCompat.startForegroundService(context, it)
-                }
-            }
+            SubscriberServiceManager.refresh(context)
         }
     }
 
@@ -276,27 +270,11 @@ class SubscriberService : Service() {
     class AutoRestartReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "AutoRestartReceiver: onReceive called")
-            val workManager = WorkManager.getInstance(context)
-            val startServiceRequest = OneTimeWorkRequest.Builder(AutoRestartWorker::class.java).build()
-            workManager.enqueue(startServiceRequest)
+            SubscriberServiceManager.refresh(context)
         }
     }
 
-    class AutoRestartWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-        override fun doWork(): Result {
-            Log.d(TAG, "AutoRestartReceiver: doWork called for: " + this.getId())
-            if (readServiceState(context) == ServiceState.STARTED) {
-                Intent(context, SubscriberService::class.java).also {
-                    it.action = Actions.START.name
-                    Log.d(TAG, "AutoRestartReceiver: Starting subscriber service")
-                    ContextCompat.startForegroundService(context, it)
-                }
-            }
-            return Result.success()
-        }
-    }
-
-    enum class Actions {
+    enum class Action {
         START,
         STOP
     }

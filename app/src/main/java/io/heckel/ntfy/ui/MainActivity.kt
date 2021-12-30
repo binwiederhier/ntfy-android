@@ -23,6 +23,8 @@ import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.*
+import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
-    private var subscriberManager: SubscriberManager? = null // Context-dependent
+    private var serviceManager: SubscriberServiceManager? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +66,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
         dispatcher = NotificationDispatcher(this, repository)
-        subscriberManager = SubscriberManager(this)
+        serviceManager = SubscriberServiceManager(this)
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
@@ -105,7 +107,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
-            subscriberManager?.refreshService(it)
+            serviceManager?.refresh()
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Background things
         startPeriodicPollWorker()
-        startPeriodicAutoRestartWorker()
+        startPeriodicServiceRefreshWorker()
     }
 
     private fun startPeriodicPollWorker() {
@@ -141,7 +143,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
     }
 
-    private fun startPeriodicAutoRestartWorker() {
+    private fun startPeriodicServiceRefreshWorker() {
         val workerVersion = repository.getAutoRestartWorkerVersion()
         val workPolicy = if (workerVersion == SubscriberService.AUTO_RESTART_WORKER_VERSION) {
             Log.d(TAG, "Auto restart worker version matches: choosing KEEP as existing work policy")
@@ -151,12 +153,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             repository.setAutoRestartWorkerVersion(SubscriberService.AUTO_RESTART_WORKER_VERSION)
             ExistingPeriodicWorkPolicy.REPLACE
         }
-        val work = PeriodicWorkRequestBuilder<SubscriberService.AutoRestartWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<SubscriberServiceManager.RefreshWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
             .addTag(SubscriberService.TAG)
             .addTag(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC)
             .build()
-        Log.d(TAG, "Auto restart worker: Scheduling period work every ${MINIMUM_PERIODIC_WORKER_INTERVAL} minutes")
-        workManager!!.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
+        Log.d(TAG, "Auto restart worker: Scheduling period work every $MINIMUM_PERIODIC_WORKER_INTERVAL minutes")
+        workManager?.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -323,7 +325,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun displayUnifiedPushToast(subscription: Subscription) {
         runOnUiThread {
-            val appId = subscription.upAppId ?: ""
+            val appId = subscription.upAppId ?: return@runOnUiThread
             val toastMessage = getString(R.string.main_unified_push_toast, appId)
             Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
         }

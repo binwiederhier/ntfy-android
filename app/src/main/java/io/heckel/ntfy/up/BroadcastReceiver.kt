@@ -7,7 +7,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.ui.SubscriberManager
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.randomString
 import io.heckel.ntfy.util.topicUrlUp
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +52,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 }
                 return@launch
             }
+
+            // Add subscription
             val baseUrl = context.getString(R.string.app_base_url) // FIXME
             val topic = UP_PREFIX + randomString(TOPIC_LENGTH)
             val endpoint = topicUrlUp(baseUrl, topic)
@@ -68,13 +70,12 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 lastActive = Date().time/1000
             )
 
-            // Add subscription
             Log.d(TAG, "Adding subscription with for app $appId (connectorToken $connectorToken): $subscription")
             repository.addSubscription(subscription)
             distributor.sendEndpoint(appId, connectorToken, endpoint)
 
             // Refresh (and maybe start) foreground service
-            refreshSubscriberService(app, repository)
+            SubscriberServiceManager.refresh(app)
         }
     }
 
@@ -97,15 +98,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
             existingSubscription.upAppId?.let { appId -> distributor.sendUnregistered(appId, connectorToken) }
 
             // Refresh (and maybe stop) foreground service
-            refreshSubscriberService(app, repository)
+            SubscriberServiceManager.refresh(context)
         }
-    }
-
-    private fun refreshSubscriberService(context: Context, repository: Repository) {
-        Log.d(TAG, "Refreshing subscriber service")
-        val subscriptionIdsWithInstantStatus = repository.getSubscriptionIdsWithInstantStatus()
-        val subscriberManager = SubscriberManager(context)
-        subscriberManager.refreshService(subscriptionIdsWithInstantStatus)
     }
 
     companion object {

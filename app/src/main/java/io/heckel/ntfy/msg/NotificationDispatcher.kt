@@ -35,7 +35,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun checkNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
-        if (subscription.upAppId != "") {
+        if (subscription.upAppId != null) {
             return false
         }
         val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId
