@@ -108,7 +108,7 @@ abstract class Database : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_4_5 = object : Migration(3, 4) {
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT")
