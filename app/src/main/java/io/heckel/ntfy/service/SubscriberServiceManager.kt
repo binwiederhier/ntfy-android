@@ -11,6 +11,11 @@ import io.heckel.ntfy.up.BroadcastReceiver
 /**
  * This class only manages the SubscriberService, i.e. it starts or stops it.
  * It's used in multiple activities.
+ *
+ * We are starting the service via a worker and not directly because since Android 7
+ * (but officially since Lollipop!), any process called by a BroadcastReceiver
+ * (only manifest-declared receiver) is run at low priority and hence eventually
+ * killed by Android.
  */
 class SubscriberServiceManager(private val context: Context) {
     fun refresh() {
@@ -20,6 +25,10 @@ class SubscriberServiceManager(private val context: Context) {
         workManager.enqueue(startServiceRequest)
     }
 
+    /**
+     * Starts or stops the foreground service by figuring out how many instant delivery subscriptions
+     * exist. If there's > 0, then we need a foreground service.
+     */
     class RefreshWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
         override fun doWork(): Result {
             if (context.applicationContext !is Application) {

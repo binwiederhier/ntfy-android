@@ -16,6 +16,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
 
+/**
+ * This is the UnifiedPush broadcast receiver to handle the distributor actions REGISTER and UNREGISTER.
+ * See https://unifiedpush.org/spec/android/ for details.
+ */
 class BroadcastReceiver : android.content.BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null || intent == null) {
@@ -69,7 +73,6 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 newCount = 0,
                 lastActive = Date().time/1000
             )
-
             Log.d(TAG, "Adding subscription with for app $appId (connectorToken $connectorToken): $subscription")
             repository.addSubscription(subscription)
             distributor.sendEndpoint(appId, connectorToken, endpoint)

@@ -23,8 +23,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     fun dispatch(subscription: Subscription, notification: Notification) {
         val muted = checkMuted(subscription)
         val notify = checkNotify(subscription, notification, muted)
-        val broadcast = subscription.upAppId == null
-        val distribute = subscription.upAppId != null
+        val broadcast = subscription.upAppId == null // Never broadcast for UnifiedPush
+        val distribute = subscription.upAppId != null // Only distribute for UnifiedPush subscriptions
         if (notify) {
             notifier.send(subscription, notification)
         }

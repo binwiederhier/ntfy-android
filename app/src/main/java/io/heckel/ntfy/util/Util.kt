@@ -104,6 +104,7 @@ fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
     statusBarColorAnimation.start()
 }
 
+// Generates a (cryptographically secure) random string of a certain length
 fun randomString(len: Int): String {
     val random = SecureRandom()
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray()

@@ -157,6 +157,7 @@
     <string name="settings_about_header">About</string>
     <string name="settings_about_version">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
+    <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- Preferences IDs -->
     <string name="pref_unified_push_enabled">UnifiedPushEnabled</string>

@@ -1,10 +1,15 @@
 package io.heckel.ntfy.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
+import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -36,6 +41,10 @@ class SettingsActivity : AppCompatActivity() {
     class SettingsFragment(val repository: Repository) : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.main_preferences, rootKey)
+
+            // Important note: We do not use the default shared prefs to store settings. Every
+            // preferenceDataStore is overridden to use the repository. This is convenient, because
+            // everybody has access to the repository.
 
             // UnifiedPush Enabled
             val upEnabledPrefId = context?.getString(R.string.pref_unified_push_enabled) ?: return
@@ -82,7 +91,18 @@ class SettingsActivity : AppCompatActivity() {
             // Version
             val versionPrefId = context?.getString(R.string.pref_version) ?: return
             val versionPref: Preference? = findPreference(versionPrefId)
-            versionPref?.summary = getString(R.string.settings_about_version_format, BuildConfig.VERSION_NAME, BuildConfig.FLAVOR)
+            val version = getString(R.string.settings_about_version_format, BuildConfig.VERSION_NAME, BuildConfig.FLAVOR)
+            versionPref?.summary = version
+            versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
+                val context = context ?: return@OnPreferenceClickListener false
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("app version", version)
+                clipboard.setPrimaryClip(clip)
+                Toast
+                    .makeText(context, getString(R.string.settings_about_version_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                    .show()
+                true
+            }
         }
     }
 }
