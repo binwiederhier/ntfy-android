@@ -112,6 +112,7 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT")
+                db.execSQL("CREATE UNIQUE INDEX index_Subscription_upConnectorToken ON Subscription (upConnectorToken)")
             }
         }
     }
