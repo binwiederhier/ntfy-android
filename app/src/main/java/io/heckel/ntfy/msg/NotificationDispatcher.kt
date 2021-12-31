@@ -7,6 +7,10 @@ import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.safeLet
 
+/**
+ * The notification dispatcher figures out what to do with a notification.
+ * It may display a notification, send out a broadcast, or forward via UnifiedPush.
+ */
 class NotificationDispatcher(val context: Context, val repository: Repository) {
     private val notifier = NotificationService(context)
     private val broadcaster = BroadcastService(context)
@@ -47,9 +51,5 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             return true
         }
         return subscription.mutedUntil == 1L || (subscription.mutedUntil > 1L && subscription.mutedUntil > System.currentTimeMillis()/1000)
-    }
-
-    companion object {
-        private const val TAG = "NtfyNotificationDispatcher"
     }
 }

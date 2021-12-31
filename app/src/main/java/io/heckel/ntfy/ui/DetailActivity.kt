@@ -42,7 +42,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
     private val messenger = FirebaseMessenger()
-    private var serviceManager: SubscriberServiceManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
@@ -69,7 +68,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         Log.d(MainActivity.TAG, "Create $this")
 
         // Dependencies that depend on Context
-        serviceManager = SubscriberServiceManager(this)
         notifier = NotificationService(this)
         appBaseUrl = getString(R.string.app_base_url)
 
@@ -146,7 +144,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // React to changes in fast delivery setting
         repository.getSubscriptionIdsWithInstantStatusLiveData().observe(this) {
-            serviceManager?.refresh()
+            SubscriberServiceManager.refresh(this)
         }
 
         // Mark this subscription as "open" so we don't receive notifications for it

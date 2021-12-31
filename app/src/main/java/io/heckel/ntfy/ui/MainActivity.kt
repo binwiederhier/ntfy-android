@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
-    private var serviceManager: SubscriberServiceManager? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
         dispatcher = NotificationDispatcher(this, repository)
-        serviceManager = SubscriberServiceManager(this)
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
@@ -107,7 +105,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
-            serviceManager?.refresh()
+            SubscriberServiceManager.refresh(this)
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
