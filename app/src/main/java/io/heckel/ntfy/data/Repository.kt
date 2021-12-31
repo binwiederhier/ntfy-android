@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
+import androidx.preference.PreferenceManager
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -142,12 +143,32 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
-    private suspend fun isMuted(subscriptionId: Long): Boolean {
-        if (isGlobalMuted()) {
-            return true
+
+    fun getUnifiedPushEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default!
+    }
+
+    fun setUnifiedPushEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, enabled)
+            .apply()
+    }
+
+    fun getUnifiedPushBaseUrl(): String? {
+        return sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null)
+    }
+
+    fun setUnifiedPushBaseUrl(baseUrl: String) {
+        if (baseUrl == "") {
+            sharedPrefs
+                .edit()
+                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, baseUrl)
+                .apply()
         }
-        val s = getSubscription(subscriptionId) ?: return true
-        return s.mutedUntil == 1L || (s.mutedUntil > 1L && s.mutedUntil > System.currentTimeMillis()/1000)
     }
 
     fun isGlobalMuted(): Boolean {
@@ -242,6 +263,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
+        const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
+        const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

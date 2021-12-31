@@ -420,7 +420,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 val formattedDate = formatDateShort(subscriptionMutedUntil)
                 notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
             }
-
         }
     }
 

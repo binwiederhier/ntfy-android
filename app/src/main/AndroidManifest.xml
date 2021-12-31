@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
             android:name=".app.Application"
@@ -23,6 +23,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+
         <!-- Main activity -->
         <activity
                 android:name=".ui.MainActivity"
@@ -43,32 +44,51 @@
                     android:value=".ui.MainActivity"/>
         </activity>
 
+        <!-- Settings activity -->
+        <activity
+                android:name=".ui.SettingsActivity"
+                android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MainActivity"/>
+        </activity>
+
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
         <service android:name=".service.SubscriberService"/>
 
         <!-- Subscriber service restart on reboot -->
-        <receiver android:name=".service.SubscriberService$BootStartReceiver" android:enabled="true">
+        <receiver
+                android:name=".service.SubscriberService$BootStartReceiver"
+                android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
         <!-- Subscriber service restart on destruction -->
-        <receiver android:name=".service.SubscriberService$AutoRestartReceiver" android:enabled="true"
-                  android:exported="false"/>
+        <receiver
+                android:name=".service.SubscriberService$AutoRestartReceiver"
+                android:enabled="true"
+                android:exported="false"/>
 
         <!-- Broadcast receiver to send messages via intents -->
-        <receiver android:name=".msg.BroadcastService$BroadcastReceiver" android:enabled="true" android:exported="true">
+        <receiver
+                android:name=".msg.BroadcastService$BroadcastReceiver"
+                android:enabled="true"
+                android:exported="true">
             <intent-filter>
                 <action android:name="io.heckel.ntfy.SEND_MESSAGE"/>
             </intent-filter>
         </receiver>
 
-        <!-- Broadcast receiver for UnifiedPush; must match https://github.com/UnifiedPush/UP-spec/blob/main/specifications.md  -->
-        <receiver android:name=".up.BroadcastReceiver" android:enabled="true" android:exported="true">
+        <!-- Broadcast receiver for UnifiedPush; must match https://github.com/UnifiedPush/UP-spec/blob/main/specifications.md -->
+        <receiver
+                android:name=".up.BroadcastReceiver"
+                android:enabled="true"
+                android:exported="true">
             <intent-filter>
-                <action android:name="org.unifiedpush.android.distributor.REGISTER" />
-                <action android:name="org.unifiedpush.android.distributor.UNREGISTER" />
+                <action android:name="org.unifiedpush.android.distributor.REGISTER"/>
+                <action android:name="org.unifiedpush.android.distributor.UNREGISTER"/>
             </intent-filter>
         </receiver>
 
@@ -80,7 +100,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
         <meta-data
                 android:name="firebase_analytics_collection_enabled"
                 android:value="false"/>
@@ -88,5 +107,4 @@
                 android:name="com.google.firebase.messaging.default_notification_icon"
                 android:resource="@drawable/ic_notification"/>
     </application>
-
 </manifest>

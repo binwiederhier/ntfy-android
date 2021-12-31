@@ -3,9 +3,9 @@ package io.heckel.ntfy.up
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.preference.PreferenceManager
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.randomString
@@ -34,8 +34,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         val repository = app.repository
         val distributor = Distributor(app)
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
-        if (appId.isBlank()) {
-            Log.w(TAG, "Refusing registration: empty application")
+        if (!repository.getUnifiedPushEnabled() || appId.isBlank()) {
+            Log.w(TAG, "Refusing registration: UnifiedPush disabled or empty application")
             distributor.sendRegistrationRefused(appId, connectorToken)
             return
         }
@@ -54,8 +54,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
             }
 
             // Add subscription
-            val baseUrl = context.getString(R.string.app_base_url) // FIXME
-            val topic = UP_PREFIX + randomString(TOPIC_LENGTH)
+            val baseUrl = repository.getUnifiedPushBaseUrl() ?: context.getString(R.string.app_base_url)
+            val topic = UP_PREFIX + randomString(TOPIC_RANDOM_ID_LENGTH)
             val endpoint = topicUrlUp(baseUrl, topic)
             val subscription = Subscription(
                 id = Random.nextLong(),
@@ -105,6 +105,6 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
     companion object {
         private const val TAG = "NtfyUpBroadcastRecv"
         private const val UP_PREFIX = "up"
-        private const val TOPIC_LENGTH = 16
+        private const val TOPIC_RANDOM_ID_LENGTH = 12
     }
 }

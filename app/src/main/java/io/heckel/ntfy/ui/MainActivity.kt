@@ -232,6 +232,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 onNotificationSettingsClick(enable = true)
                 true
             }
+            R.id.main_menu_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
             R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true

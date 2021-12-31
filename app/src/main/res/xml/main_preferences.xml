@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  app:title="@string/settings_title">
+    <PreferenceCategory
+            app:title="@string/settings_unified_push_header"
+            app:summary="@string/settings_unified_push_header_summary"
+            app:layout="@layout/preference_category_material_edited">
+        <SwitchPreference
+                app:key="@string/pref_unified_push_enabled"
+                app:title="@string/settings_unified_push_enabled_title"
+                app:enabled="true"/>
+        <EditTextPreference
+                app:key="@string/pref_unified_push_base_url"
+                app:title="@string/settings_unified_push_base_url_title"
+                app:dependency="@string/pref_unified_push_enabled"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_about_header">
+        <Preference
+                app:key="@string/pref_version"
+                app:title="@string/settings_about_version"/>
+    </PreferenceCategory>
+</PreferenceScreen>
