@@ -129,7 +129,7 @@ interface SubscriptionDao {
         FROM Subscription AS s
         LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
         GROUP BY s.id
-        ORDER BY MAX(n.timestamp) DESC
+        ORDER BY s.upAppId ASC, MAX(n.timestamp) DESC
     """)
     fun listFlow(): Flow<List<SubscriptionWithMetadata>>
 
@@ -142,7 +142,7 @@ interface SubscriptionDao {
         FROM Subscription AS s
         LEFT JOIN Notification AS n ON s.id=n.subscriptionId AND n.deleted != 1
         GROUP BY s.id
-        ORDER BY MAX(n.timestamp) DESC
+        ORDER BY s.upAppId ASC, MAX(n.timestamp) DESC
     """)
     fun list(): List<SubscriptionWithMetadata>
 

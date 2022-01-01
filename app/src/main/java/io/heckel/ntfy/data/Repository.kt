@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
-import androidx.preference.PreferenceManager
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 

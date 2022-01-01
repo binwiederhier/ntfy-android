@@ -56,7 +56,8 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            var statusMessage = if (subscription.upAppId != null) {
+            val isUnifiedPush = subscription.upAppId != null
+            var statusMessage = if (isUnifiedPush) {
                 context.getString(R.string.main_item_status_unified_push, subscription.upAppId)
             } else if (subscription.totalCount == 1) {
                 context.getString(R.string.main_item_status_text_one, subscription.totalCount)
@@ -80,15 +81,16 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
                 dateStr
             }
             val globalMutedUntil = repository.getGlobalMutedUntil()
-            val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && subscription.upAppId == null
-            val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && subscription.upAppId == null
+            val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && !isUnifiedPush
+            val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
+            dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
             notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
             notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE
             instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
-            if (subscription.upAppId != null || subscription.newCount == 0) {
+            if (isUnifiedPush || subscription.newCount == 0) {
                 newItemsView.visibility = View.GONE
             } else {
                 newItemsView.visibility = View.VISIBLE
