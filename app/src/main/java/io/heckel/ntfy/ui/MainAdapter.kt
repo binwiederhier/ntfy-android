@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.ConnectionState
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
 
-class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
+class MainAdapter(private val repository: Repository, private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
     ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<Long>() // Subscription IDs
 
@@ -23,7 +24,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_main_item, parent, false)
-        return SubscriptionViewHolder(view, selected, onClick, onLongClick)
+        return SubscriptionViewHolder(view, repository, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -41,7 +42,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, private val repository: Repository, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
@@ -78,11 +79,14 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             } else {
                 dateStr
             }
+            val globalMutedUntil = repository.getGlobalMutedUntil()
+            val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && subscription.upAppId == null
+            val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && subscription.upAppId == null
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
-            notificationDisabledUntilImageView.visibility = if (subscription.mutedUntil > 1L) View.VISIBLE else View.GONE
-            notificationDisabledForeverImageView.visibility = if (subscription.mutedUntil == 1L) View.VISIBLE else View.GONE
+            notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
+            notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE
             instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
             if (subscription.upAppId != null || subscription.newCount == 0) {
                 newItemsView.visibility = View.GONE

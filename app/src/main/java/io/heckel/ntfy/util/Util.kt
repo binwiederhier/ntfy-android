@@ -28,6 +28,17 @@ fun toPriority(priority: Int?): Int {
     else return 3
 }
 
+fun toPriorityString(priority: Int): String {
+    return when (priority) {
+        1 -> "min"
+        2 -> "low"
+        3 -> "default"
+        4 -> "high"
+        5 -> "max"
+        else -> "default"
+    }
+}
+
 fun joinTags(tags: List<String>?): String {
     return tags?.joinToString(",") ?: ""
 }

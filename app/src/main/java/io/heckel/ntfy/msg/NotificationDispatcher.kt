@@ -21,10 +21,10 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     fun dispatch(subscription: Subscription, notification: Notification) {
-        val muted = checkMuted(subscription)
-        val notify = checkNotify(subscription, notification, muted)
-        val broadcast = subscription.upAppId == null // Never broadcast for UnifiedPush
-        val distribute = subscription.upAppId != null // Only distribute for UnifiedPush subscriptions
+        val muted = getMuted(subscription)
+        val notify = shouldNotify(subscription, notification, muted)
+        val broadcast = shouldBroadcast(subscription)
+        val distribute = shouldDistribute(subscription)
         if (notify) {
             notifier.send(subscription, notification)
         }
@@ -38,15 +38,30 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
     }
 
-    private fun checkNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
+    private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
         if (subscription.upAppId != null) {
+            return false
+        }
+        val priority = if (notification.priority > 0) notification.priority else 3
+        if (priority < repository.getMinPriority()) {
             return false
         }
         val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId
         return !detailsVisible && !muted
     }
 
-    private fun checkMuted(subscription: Subscription): Boolean {
+    private fun shouldBroadcast(subscription: Subscription): Boolean {
+        if (subscription.upAppId != null) { // Never broadcast for UnifiedPush subscriptions
+            return false
+        }
+        return repository.getBroadcastEnabled()
+    }
+
+    private fun shouldDistribute(subscription: Subscription): Boolean {
+        return subscription.upAppId != null // Only distribute for UnifiedPush subscriptions
+    }
+
+    private fun getMuted(subscription: Subscription): Boolean {
         if (repository.isGlobalMuted()) {
             return true
         }

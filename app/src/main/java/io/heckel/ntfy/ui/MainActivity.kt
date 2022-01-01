@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
 
         mainList = findViewById(R.id.main_subscriptions_list)
-        adapter = MainAdapter(onSubscriptionClick, onSubscriptionLongClick)
+        adapter = MainAdapter(repository, onSubscriptionClick, onSubscriptionLongClick)
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {
@@ -261,6 +261,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         repository.setGlobalMutedUntil(mutedUntilTimestamp)
         showHideNotificationMenuItems()
         runOnUiThread {
+            redrawList() // Update the "muted until" icons
             when (mutedUntilTimestamp) {
                 0L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
                 1L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()

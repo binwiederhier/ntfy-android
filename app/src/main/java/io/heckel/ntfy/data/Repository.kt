@@ -143,9 +143,34 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun setMinPriority(minPriority: Int) {
+        if (minPriority <= 1) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_MIN_PRIORITY)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putInt(SHARED_PREFS_MIN_PRIORITY, minPriority)
+                .apply()
+        }
+    }
+
+    fun getMinPriority(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
+    }
+
+    fun getBroadcastEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
+    }
+
+    fun setBroadcastEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_BROADCAST_ENABLED, enabled)
+            .apply()
+    }
 
     fun getUnifiedPushEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default!
+        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default
     }
 
     fun setUnifiedPushEnabled(enabled: Boolean) {
@@ -263,6 +288,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
+        const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
+        const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 
