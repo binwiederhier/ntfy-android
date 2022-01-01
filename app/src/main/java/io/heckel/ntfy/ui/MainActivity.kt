@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun startNotificationMutedChecker() {
         lifecycleScope.launch(Dispatchers.IO) {
-            delay(1000) // Just to be sure we've initialized all the things, we wait a bit ...
+            delay(5000) // Just to be sure we've initialized all the things, we wait a bit ...
             while (isActive) {
                 Log.d(DetailActivity.TAG, "Checking global and subscription-specific 'muted until' timestamp")
 

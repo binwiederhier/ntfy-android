@@ -8,12 +8,14 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.util.formatDateShort
 
 class SettingsActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
@@ -27,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.settings_layout, SettingsFragment(repository))
+                .replace(R.id.settings_layout, SettingsFragment(repository, supportFragmentManager))
                 .commit()
         }
 
@@ -38,13 +40,45 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    class SettingsFragment(val repository: Repository) : PreferenceFragmentCompat() {
+    class SettingsFragment(val repository: Repository, private val supportFragmentManager: FragmentManager) : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.main_preferences, rootKey)
 
             // Important note: We do not use the default shared prefs to store settings. Every
             // preferenceDataStore is overridden to use the repository. This is convenient, because
             // everybody has access to the repository.
+
+            // Notifications muted until (global)
+            val mutedUntilPrefId = context?.getString(R.string.pref_notifications_muted_until) ?: return
+            val mutedUntilSummary = { s: Long ->
+                when (s) {
+                    0L -> getString(R.string.settings_notifications_muted_until_enabled)
+                    1L -> getString(R.string.settings_notifications_muted_until_disabled_forever)
+                    else -> {
+                        val formattedDate = formatDateShort(s)
+                        getString(R.string.settings_notifications_muted_until_disabled_until, formattedDate)
+                    }
+                }
+            }
+            val mutedUntil: Preference? = findPreference(mutedUntilPrefId)
+            mutedUntil?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            mutedUntil?.summary = mutedUntilSummary(repository.getGlobalMutedUntil())
+            mutedUntil?.onPreferenceClickListener = OnPreferenceClickListener {
+                if (repository.getGlobalMutedUntil() > 0) {
+                    repository.setGlobalMutedUntil(0)
+                    mutedUntil?.summary = mutedUntilSummary(0)
+                } else {
+                    val notificationFragment = NotificationFragment()
+                    notificationFragment.settingsListener = object : NotificationFragment.NotificationSettingsListener {
+                        override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
+                            repository.setGlobalMutedUntil(mutedUntilTimestamp)
+                            mutedUntil?.summary = mutedUntilSummary(mutedUntilTimestamp)
+                        }
+                    }
+                    notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
+                }
+                true
+            }
 
             // UnifiedPush Enabled
             val upEnabledPrefId = context?.getString(R.string.pref_unified_push_enabled) ?: return

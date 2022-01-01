@@ -1,5 +1,14 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
                   app:title="@string/settings_title">
+    <PreferenceCategory
+            app:title="@string/settings_notifications_header"
+            app:summary="@string/settings_notifications_header_summary"
+            app:layout="@layout/preference_category_material_edited">
+        <Preference
+                app:key="@string/pref_notifications_muted_until"
+                app:title="@string/settings_notifications_muted_until_title"/>
+    </PreferenceCategory>
     <PreferenceCategory
             app:title="@string/settings_unified_push_header"
             app:summary="@string/settings_unified_push_header_summary"
@@ -16,6 +25,6 @@
     <PreferenceCategory app:title="@string/settings_about_header">
         <Preference
                 app:key="@string/pref_version"
-                app:title="@string/settings_about_version"/>
+                app:title="@string/settings_about_version_title"/>
     </PreferenceCategory>
 </PreferenceScreen>
