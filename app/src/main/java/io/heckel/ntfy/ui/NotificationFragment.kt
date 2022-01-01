@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.RadioButton
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -16,8 +17,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class NotificationFragment : DialogFragment() {
+    var settingsListener: NotificationSettingsListener? = null
+
     private lateinit var repository: Repository
-    private lateinit var settingsListener: NotificationSettingsListener
     private lateinit var muteFor30minButton: RadioButton
     private lateinit var muteFor1hButton: RadioButton
     private lateinit var muteFor2hButton: RadioButton
@@ -31,7 +33,9 @@ class NotificationFragment : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settingsListener = activity as NotificationSettingsListener
+        if (settingsListener == null) {
+            settingsListener = activity as NotificationSettingsListener
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -85,7 +89,7 @@ class NotificationFragment : DialogFragment() {
     private fun onClick(mutedUntilTimestamp: Long) {
         lifecycleScope.launch(Dispatchers.Main) {
             delay(150) // Another hack: Let the animation finish before dismissing the window
-            settingsListener.onNotificationMutedUntilChanged(mutedUntilTimestamp)
+            settingsListener?.onNotificationMutedUntilChanged(mutedUntilTimestamp)
             dismiss()
         }
     }

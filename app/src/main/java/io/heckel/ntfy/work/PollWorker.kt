@@ -7,8 +7,10 @@ import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.firebase.FirebaseService
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.BroadcastService
+import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,8 +27,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             val database = Database.getInstance(applicationContext)
             val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
             val repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
-            val notifier = NotificationService(applicationContext)
-            val broadcaster = BroadcastService(applicationContext)
+            val dispatcher = NotificationDispatcher(applicationContext, repository)
             val api = ApiService()
 
             repository.getSubscriptions().forEach{ subscription ->
@@ -36,12 +37,8 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
                     newNotifications.forEach { notification ->
-                        val result = repository.addNotification(notification)
-                        if (result.notify) {
-                            notifier.send(subscription, notification)
-                        }
-                        if (result.broadcast) {
-                            broadcaster.send(subscription, notification, result.muted)
+                        if (repository.addNotification(notification)) {
+                            dispatcher.dispatch(subscription, notification)
                         }
                     }
                 } catch (e: Exception) {

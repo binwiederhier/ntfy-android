@@ -1,0 +1,41 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  app:title="@string/settings_title">
+    <PreferenceCategory
+            app:title="@string/settings_notifications_header"
+            app:layout="@layout/preference_category_material_edited">
+        <Preference
+                app:key="@string/settings_notifications_muted_until_key"
+                app:title="@string/settings_notifications_muted_until_title"/>
+        <ListPreference
+            app:key="@string/settings_notifications_min_priority_key"
+            app:title="@string/settings_notifications_min_priority_title"
+            app:entries="@array/settings_notifications_min_priority_entries"
+            app:entryValues="@array/settings_notifications_min_priority_values"
+            app:defaultValue="1"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+            app:title="@string/settings_unified_push_header"
+            app:summary="@string/settings_unified_push_header_summary"
+            app:layout="@layout/preference_category_material_edited">
+        <SwitchPreference
+                app:key="@string/settings_unified_push_enabled_key"
+                app:title="@string/settings_unified_push_enabled_title"
+                app:enabled="true"/>
+        <EditTextPreference
+                app:key="@string/settings_unified_push_base_url_key"
+                app:title="@string/settings_unified_push_base_url_title"
+                app:dependency="@string/settings_unified_push_enabled_key"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_advanced_header">
+        <SwitchPreference
+                app:key="@string/settings_advanced_broadcast_key"
+                app:title="@string/settings_advanced_broadcast_title"
+                app:enabled="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_about_header">
+        <Preference
+                app:key="@string/settings_about_version_key"
+                app:title="@string/settings_about_version_title"/>
+    </PreferenceCategory>
+</PreferenceScreen>

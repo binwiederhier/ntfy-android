@@ -7,10 +7,8 @@ import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.BroadcastService
-import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.msg.SubscriberService
+import io.heckel.ntfy.msg.*
+import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -19,9 +17,8 @@ import kotlin.random.Random
 
 class FirebaseService : FirebaseMessagingService() {
     private val repository by lazy { (application as Application).repository }
+    private val dispatcher by lazy { NotificationDispatcher(this, repository) }
     private val job = SupervisorJob()
-    private val notifier = NotificationService(this)
-    private val broadcaster = BroadcastService(this)
     private val messenger = FirebaseMessenger()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -81,16 +78,9 @@ class FirebaseService : FirebaseMessagingService() {
                 tags = tags ?: "",
                 deleted = false
             )
-            val result = repository.addNotification(notification)
-
-            // Send notification (only if it's not already known)
-            if (result.notify) {
-                Log.d(TAG, "Sending notification for message: from=${remoteMessage.from}, data=${data}")
-                notifier.send(subscription, notification)
-            }
-            if (result.broadcast) {
-                Log.d(TAG, "Sending broadcast for message: from=${remoteMessage.from}, data=${data}")
-                broadcaster.send(subscription, notification, result.muted)
+            if (repository.addNotification(notification)) {
+                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, data=${data}")
+                dispatcher.dispatch(subscription, notification)
             }
         }
     }

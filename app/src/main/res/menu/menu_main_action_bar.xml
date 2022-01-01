@@ -5,6 +5,7 @@
           app:showAsAction="ifRoom" android:icon="@drawable/ic_notifications_off_time_white_outline_24dp"/>
     <item android:id="@+id/main_menu_notifications_disabled_forever" android:title="@string/detail_menu_notifications_disabled_forever"
           app:showAsAction="ifRoom" android:icon="@drawable/ic_notifications_off_white_outline_24dp"/>
+    <item android:id="@+id/main_menu_settings" android:title="@string/main_menu_settings_title"/>
     <item android:id="@+id/main_menu_source" android:title="@string/main_menu_source_title"/>
     <item android:id="@+id/main_menu_website" android:title="@string/main_menu_website_title"/>
 </menu>

@@ -36,6 +36,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return toSubscriptionList(subscriptionDao.list())
     }
 
+    fun getSubscriptionIdsWithInstantStatus(): Set<Pair<Long, Boolean>> {
+        return subscriptionDao
+            .list()
+            .map { Pair(it.id, it.instant) }.toSet()
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun getSubscription(subscriptionId: Long): Subscription? {
@@ -46,6 +52,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     @WorkerThread
     suspend fun getSubscription(baseUrl: String, topic: String): Subscription? {
         return toSubscription(subscriptionDao.get(baseUrl, topic))
+    }
+
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun getSubscriptionByConnectorToken(connectorToken: String): Subscription? {
+        return toSubscription(subscriptionDao.getByConnectorToken(connectorToken))
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -85,16 +97,13 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(notification: Notification): NotificationAddResult {
+    suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification == null) {
-            notificationDao.add(notification)
-            val detailsVisible = detailViewSubscriptionId.get() == notification.subscriptionId
-            val muted = isMuted(notification.subscriptionId)
-            val notify = !detailsVisible && !muted
-            return NotificationAddResult(notify = notify, broadcast = true, muted = muted)
+        if (maybeExistingNotification != null) {
+            return false
         }
-        return NotificationAddResult(notify = false, broadcast = false, muted = false)
+        notificationDao.add(notification)
+        return true
     }
 
     @Suppress("RedundantSuspendModifier")
@@ -133,15 +142,60 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
-    private suspend fun isMuted(subscriptionId: Long): Boolean {
-        if (isGlobalMuted()) {
-            return true
+    fun setMinPriority(minPriority: Int) {
+        if (minPriority <= 1) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_MIN_PRIORITY)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putInt(SHARED_PREFS_MIN_PRIORITY, minPriority)
+                .apply()
         }
-        val s = getSubscription(subscriptionId) ?: return true
-        return s.mutedUntil == 1L || (s.mutedUntil > 1L && s.mutedUntil > System.currentTimeMillis()/1000)
     }
 
-    private fun isGlobalMuted(): Boolean {
+    fun getMinPriority(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
+    }
+
+    fun getBroadcastEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
+    }
+
+    fun setBroadcastEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_BROADCAST_ENABLED, enabled)
+            .apply()
+    }
+
+    fun getUnifiedPushEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default
+    }
+
+    fun setUnifiedPushEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, enabled)
+            .apply()
+    }
+
+    fun getUnifiedPushBaseUrl(): String? {
+        return sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null)
+    }
+
+    fun setUnifiedPushBaseUrl(baseUrl: String) {
+        if (baseUrl == "") {
+            sharedPrefs
+                .edit()
+                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, baseUrl)
+                .apply()
+        }
+    }
+
+    fun isGlobalMuted(): Boolean {
         val mutedUntil = getGlobalMutedUntil()
         return mutedUntil == 1L || (mutedUntil > 1L && mutedUntil > System.currentTimeMillis()/1000)
     }
@@ -177,6 +231,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
+                upAppId = s.upAppId,
+                upConnectorToken = s.upConnectorToken,
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
@@ -195,6 +251,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             topic = s.topic,
             instant = s.instant,
             mutedUntil = s.mutedUntil,
+            upAppId = s.upAppId,
+            upConnectorToken = s.upConnectorToken,
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
@@ -224,17 +282,15 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
 
-    data class NotificationAddResult(
-        val notify: Boolean,
-        val broadcast: Boolean,
-        val muted: Boolean,
-    )
-
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
+        const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
+        const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
+        const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
+        const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

@@ -30,8 +30,9 @@
     <string name="main_menu_notifications_enabled">Notifications enabled</string>
     <string name="main_menu_notifications_disabled_forever">Notifications disabled</string>
     <string name="main_menu_notifications_disabled_until">Notifications disabled until %1$s</string>
+    <string name="main_menu_settings_title">Settings</string>
     <string name="main_menu_source_title">Report a bug</string>
-    <string name="main_menu_source_url">https://heckel.io/ntfy-android</string>
+    <string name="main_menu_source_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_website_title">Visit ntfy.sh</string>
 
     <!-- Main activity: Action mode -->
@@ -47,6 +48,7 @@
     <string name="main_item_status_text_one">%1$d notification</string>
     <string name="main_item_status_text_not_one">%1$d notifications</string>
     <string name="main_item_status_reconnecting">reconnecting …</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_date_yesterday">Yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
@@ -56,6 +58,7 @@
     </string>
     <string name="main_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.
     </string>
+    <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -80,10 +83,13 @@
     <!-- Detail activity -->
     <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
-    <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.</string>
+    <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.
+    </string>
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
-    <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.</string>
-    <string name="detail_clear_dialog_message">Do you really want to delete all of the notifications in this topic?</string>
+    <string name="detail_how_to_link">For more detailed instructions, check out the ntfy.sh website and documentation.
+    </string>
+    <string name="detail_clear_dialog_message">Do you really want to delete all of the notifications in this topic?
+    </string>
     <string name="detail_clear_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_clear_dialog_cancel">Cancel</string>
     <string name="detail_delete_dialog_message">
@@ -93,7 +99,9 @@
     <string name="detail_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_delete_dialog_cancel">Cancel</string>
     <string name="detail_test_title">Test: You can set a title if you like</string>
-    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It has a priority of %1$d. If you send another one, it may look different.</string>
+    <string name="detail_test_message">This is a test notification from the Ntfy Android app. It has a priority of %1$d.
+        If you send another one, it may look different.
+    </string>
     <string name="detail_test_message_error">Could not send test message: %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
@@ -135,4 +143,42 @@
     <string name="notification_dialog_8h">8 hours</string>
     <string name="notification_dialog_tomorrow">Until tomorrow</string>
     <string name="notification_dialog_forever">Forever</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_notifications_header">Notifications</string>
+    <string name="settings_notifications_muted_until_key">MutedUntil</string>
+    <string name="settings_notifications_muted_until_title">Pause notifications</string>
+    <string name="settings_notifications_muted_until_enabled">All notifications will be displayed</string>
+    <string name="settings_notifications_muted_until_disabled_forever">Notifications muted until re-enabled</string>
+    <string name="settings_notifications_muted_until_disabled_until">Notifications muted until %1$s</string>
+    <string name="settings_notifications_min_priority_key">MinPriority</string>
+    <string name="settings_notifications_min_priority_title">Minimum priority</string>
+    <string name="settings_notifications_min_priority_summary_any">Notifications of all priorities are shown</string>
+    <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or higher</string>
+    <string name="settings_notifications_min_priority_summary_max">Show notifications if priority is 5 (max)</string>
+    <string name="settings_notifications_min_priority_min">Any priority</string>
+    <string name="settings_notifications_min_priority_low">Low priority and higher</string>
+    <string name="settings_notifications_min_priority_default">Default priority and higher</string>
+    <string name="settings_notifications_min_priority_high">High priority and higher</string>
+    <string name="settings_notifications_min_priority_max">Only max priority</string>
+    <string name="settings_unified_push_header">UnifiedPush</string>
+    <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
+    <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>
+    <string name="settings_unified_push_enabled_title">Allow distributor use</string>
+    <string name="settings_unified_push_enabled_summary_on">Apps can use ntfy as distributor</string>
+    <string name="settings_unified_push_enabled_summary_off">Apps cannot use ntfy as distributor</string>
+    <string name="settings_unified_push_base_url_key">UnifiedPushBaseURL</string>
+    <string name="settings_unified_push_base_url_title">Server URL</string>
+    <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
+    <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
+    <string name="settings_advanced_broadcast_title">Broadcast messages</string>
+    <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
+    <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
+    <string name="settings_about_header">About</string>
+    <string name="settings_about_version_key">Version</string>
+    <string name="settings_about_version_title">Version</string>
+    <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
+    <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
 </resources>

@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.ConnectionState
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
 
-class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
+class MainAdapter(private val repository: Repository, private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
     ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<Long>() // Subscription IDs
 
@@ -23,7 +24,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_main_item, parent, false)
-        return SubscriptionViewHolder(view, selected, onClick, onLongClick)
+        return SubscriptionViewHolder(view, repository, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -41,7 +42,7 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(itemView: View, private val repository: Repository, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
@@ -55,7 +56,10 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
-            var statusMessage = if (subscription.totalCount == 1) {
+            val isUnifiedPush = subscription.upAppId != null
+            var statusMessage = if (isUnifiedPush) {
+                context.getString(R.string.main_item_status_unified_push, subscription.upAppId)
+            } else if (subscription.totalCount == 1) {
                 context.getString(R.string.main_item_status_text_one, subscription.totalCount)
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
@@ -76,17 +80,21 @@ class MainAdapter(private val onClick: (Subscription) -> Unit, private val onLon
             } else {
                 dateStr
             }
+            val globalMutedUntil = repository.getGlobalMutedUntil()
+            val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && !isUnifiedPush
+            val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
-            notificationDisabledUntilImageView.visibility = if (subscription.mutedUntil > 1L) View.VISIBLE else View.GONE
-            notificationDisabledForeverImageView.visibility = if (subscription.mutedUntil == 1L) View.VISIBLE else View.GONE
+            dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
+            notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
+            notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE
             instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
-            if (subscription.newCount > 0) {
+            if (isUnifiedPush || subscription.newCount == 0) {
+                newItemsView.visibility = View.GONE
+            } else {
                 newItemsView.visibility = View.VISIBLE
                 newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
-            } else {
-                newItemsView.visibility = View.GONE
             }
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }

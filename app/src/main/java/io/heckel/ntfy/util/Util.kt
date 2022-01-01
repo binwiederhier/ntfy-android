@@ -5,10 +5,12 @@ import android.animation.ValueAnimator
 import android.view.Window
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
+import java.security.SecureRandom
 import java.text.DateFormat
 import java.util.*
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
+fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
 fun topicUrlJsonPoll(baseUrl: String, topic: String) = "${topicUrl(baseUrl, topic)}/json?poll=1"
 fun topicShortUrl(baseUrl: String, topic: String) =
@@ -24,6 +26,17 @@ fun formatDateShort(timestampSecs: Long): String {
 fun toPriority(priority: Int?): Int {
     if (priority != null && (1..5).contains(priority)) return priority
     else return 3
+}
+
+fun toPriorityString(priority: Int): String {
+    return when (priority) {
+        1 -> "min"
+        2 -> "low"
+        3 -> "default"
+        4 -> "high"
+        5 -> "max"
+        else -> "default"
+    }
 }
 
 fun joinTags(tags: List<String>?): String {
@@ -100,4 +113,16 @@ fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
         window.statusBarColor = color
     }
     statusBarColorAnimation.start()
+}
+
+// Generates a (cryptographically secure) random string of a certain length
+fun randomString(len: Int): String {
+    val random = SecureRandom()
+    val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray()
+    return (1..len).map { chars[random.nextInt(chars.size)] }.joinToString("")
+}
+
+// Allows letting multiple variables at once, see https://stackoverflow.com/a/35522422/1440785
+inline fun <T1: Any, T2: Any, R: Any> safeLet(p1: T1?, p2: T2?, block: (T1, T2)->R?): R? {
+    return if (p1 != null && p2 != null) block(p1, p2) else null
 }

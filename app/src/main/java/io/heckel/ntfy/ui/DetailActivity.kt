@@ -4,9 +4,6 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.content.Intent.ACTION_VIEW
-import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -26,12 +23,12 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.*
@@ -45,7 +42,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
     private val messenger = FirebaseMessenger()
-    private var subscriberManager: SubscriberManager? = null // Context-dependent
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
@@ -72,7 +68,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         Log.d(MainActivity.TAG, "Create $this")
 
         // Dependencies that depend on Context
-        subscriberManager = SubscriberManager(this)
         notifier = NotificationService(this)
         appBaseUrl = getString(R.string.app_base_url)
 
@@ -149,7 +144,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // React to changes in fast delivery setting
         repository.getSubscriptionIdsWithInstantStatusLiveData().observe(this) {
-            subscriberManager?.refreshService(it)
+            SubscriberServiceManager.refresh(this)
         }
 
         // Mark this subscription as "open" so we don't receive notifications for it
@@ -423,7 +418,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 val formattedDate = formatDateShort(subscriptionMutedUntil)
                 notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
             }
-
         }
     }
 

@@ -20,12 +20,11 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.util.topicShortUrl
-import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.work.PollWorker
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.msg.BroadcastService
-import io.heckel.ntfy.msg.SubscriberService
+import io.heckel.ntfy.msg.*
+import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
 import kotlinx.coroutines.Dispatchers
@@ -54,9 +53,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     // Other stuff
     private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
-    private var notifier: NotificationService? = null // Context-dependent
-    private var broadcaster: BroadcastService? = null // Context-dependent
-    private var subscriberManager: SubscriberManager? = null // Context-dependent
+    private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,9 +64,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Dependencies that depend on Context
         workManager = WorkManager.getInstance(this)
-        notifier = NotificationService(this)
-        broadcaster = BroadcastService(this)
-        subscriberManager = SubscriberManager(this)
+        dispatcher = NotificationDispatcher(this, repository)
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
@@ -92,7 +87,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
 
         mainList = findViewById(R.id.main_subscriptions_list)
-        adapter = MainAdapter(onSubscriptionClick, onSubscriptionLongClick)
+        adapter = MainAdapter(repository, onSubscriptionClick, onSubscriptionLongClick)
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {
@@ -108,20 +103,20 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             }
         }
 
-        // React to changes in fast delivery setting
+        // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
-            subscriberManager?.refreshService(it)
+            SubscriberServiceManager.refresh(this)
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
-        notifier!!.createNotificationChannels()
+        dispatcher?.init()
 
         // Subscribe to control Firebase channel (so we can re-start the foreground service if it dies)
         messenger.subscribe(ApiService.CONTROL_TOPIC)
 
         // Background things
         startPeriodicPollWorker()
-        startPeriodicAutoRestartWorker()
+        startPeriodicServiceRefreshWorker()
     }
 
     private fun startPeriodicPollWorker() {
@@ -146,7 +141,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
     }
 
-    private fun startPeriodicAutoRestartWorker() {
+    private fun startPeriodicServiceRefreshWorker() {
         val workerVersion = repository.getAutoRestartWorkerVersion()
         val workPolicy = if (workerVersion == SubscriberService.AUTO_RESTART_WORKER_VERSION) {
             Log.d(TAG, "Auto restart worker version matches: choosing KEEP as existing work policy")
@@ -156,12 +151,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             repository.setAutoRestartWorkerVersion(SubscriberService.AUTO_RESTART_WORKER_VERSION)
             ExistingPeriodicWorkPolicy.REPLACE
         }
-        val work = PeriodicWorkRequestBuilder<SubscriberService.AutoRestartWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<SubscriberServiceManager.RefreshWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
             .addTag(SubscriberService.TAG)
             .addTag(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC)
             .build()
-        Log.d(TAG, "Auto restart worker: Scheduling period work every ${MINIMUM_PERIODIC_WORKER_INTERVAL} minutes")
-        workManager!!.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
+        Log.d(TAG, "Auto restart worker: Scheduling period work every $MINIMUM_PERIODIC_WORKER_INTERVAL minutes")
+        workManager?.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -174,7 +169,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun startNotificationMutedChecker() {
         lifecycleScope.launch(Dispatchers.IO) {
-            delay(1000) // Just to be sure we've initialized all the things, we wait a bit ...
+            delay(5000) // Just to be sure we've initialized all the things, we wait a bit ...
             while (isActive) {
                 Log.d(DetailActivity.TAG, "Checking global and subscription-specific 'muted until' timestamp")
 
@@ -235,6 +230,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 onNotificationSettingsClick(enable = true)
                 true
             }
+            R.id.main_menu_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
             R.id.main_menu_source -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
                 true
@@ -262,6 +261,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         repository.setGlobalMutedUntil(mutedUntilTimestamp)
         showHideNotificationMenuItems()
         runOnUiThread {
+            redrawList() // Update the "muted until" icons
             when (mutedUntilTimestamp) {
                 0L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
                 1L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()
@@ -288,6 +288,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             topic = topic,
             instant = instant,
             mutedUntil = 0,
+            upAppId = null,
+            upConnectorToken = null,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -317,8 +319,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private fun onSubscriptionItemClick(subscription: Subscription) {
         if (actionMode != null) {
             handleActionModeClick(subscription)
+        } else if (subscription.upAppId != null) { // Not UnifiedPush
+            displayUnifiedPushToast(subscription)
         } else {
             startDetailView(subscription)
+        }
+    }
+
+    private fun displayUnifiedPushToast(subscription: Subscription) {
+        runOnUiThread {
+            val appId = subscription.upAppId ?: return@runOnUiThread
+            val toastMessage = getString(R.string.main_unified_push_toast, appId)
+            Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -341,12 +353,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     newNotifications.forEach { notification ->
                         newNotificationsCount++
                         val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        val result = repository.addNotification(notificationWithId)
-                        if (result.notify) {
-                            notifier?.send(subscription, notificationWithId)
-                        }
-                        if (result.broadcast) {
-                            broadcaster?.send(subscription, notification, result.muted)
+                        if (repository.addNotification(notificationWithId)) {
+                            dispatcher?.dispatch(subscription, notificationWithId)
                         }
                     }
                 } catch (e: Exception) {
@@ -422,7 +430,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val dialog = builder
             .setMessage(R.string.main_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { viewModel.remove(it) }
+                adapter.selected.map { subscriptionId -> viewModel.remove(this, subscriptionId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.main_action_mode_delete_dialog_cancel) { _, _ ->
