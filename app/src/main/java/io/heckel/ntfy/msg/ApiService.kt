@@ -26,7 +26,7 @@ class ApiService {
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
     private val subscriberClient = OkHttpClient.Builder()
-        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
+        .readTimeout(5, TimeUnit.MINUTES) // Assuming that keepalive messages are more frequent than this
         .build()
 
     fun publish(baseUrl: String, topic: String, message: String, title: String, priority: Int, tags: List<String>, delay: String) {
@@ -58,7 +58,12 @@ class ApiService {
     }
 
     fun poll(subscriptionId: Long, baseUrl: String, topic: String): List<Notification> {
-        val url = topicUrlJsonPoll(baseUrl, topic)
+        return poll(subscriptionId, baseUrl, topic, 0)
+    }
+
+    fun poll(subscriptionId: Long, baseUrl: String, topic: String, since: Long): List<Notification> {
+        val sinceVal = if (since == 0L) "all" else since.toString()
+        val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
         val request = Request.Builder()

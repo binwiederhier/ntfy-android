@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        Log.d(MainActivity.TAG, "Create $this")
+        Log.d(TAG, "Create $this")
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -184,5 +184,9 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
         }
+    }
+
+    companion object {
+        const val TAG = "NtfySettingsActivity"
     }
 }

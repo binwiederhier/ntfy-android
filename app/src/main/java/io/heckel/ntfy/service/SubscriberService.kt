@@ -286,8 +286,8 @@ class SubscriberService : Service() {
 
     companion object {
         const val TAG = "NtfySubscriberService"
-        const val AUTO_RESTART_WORKER_VERSION =  BuildConfig.VERSION_CODE
-        const val AUTO_RESTART_WORKER_WORK_NAME_PERIODIC = "NtfyAutoRestartWorkerPeriodic"
+        const val SERVICE_START_WORKER_VERSION = BuildConfig.VERSION_CODE
+        const val SERVICE_START_WORKER_WORK_NAME_PERIODIC = "NtfyAutoRestartWorkerPeriodic" // Do not change!
 
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"

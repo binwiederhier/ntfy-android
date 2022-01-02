@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.up.BroadcastReceiver
 
 /**
  * This class only manages the SubscriberService, i.e. it starts or stops it.
@@ -21,7 +20,7 @@ class SubscriberServiceManager(private val context: Context) {
     fun refresh() {
         Log.d(TAG, "Enqueuing work to refresh subscriber service")
         val workManager = WorkManager.getInstance(context)
-        val startServiceRequest = OneTimeWorkRequest.Builder(RefreshWorker::class.java).build()
+        val startServiceRequest = OneTimeWorkRequest.Builder(ServiceStartWorker::class.java).build()
         workManager.enqueue(startServiceRequest)
     }
 
@@ -29,10 +28,10 @@ class SubscriberServiceManager(private val context: Context) {
      * Starts or stops the foreground service by figuring out how many instant delivery subscriptions
      * exist. If there's > 0, then we need a foreground service.
      */
-    class RefreshWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+    class ServiceStartWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
         override fun doWork(): Result {
             if (context.applicationContext !is Application) {
-                Log.d(TAG, "RefreshWorker: Failed, no application found (work ID: ${this.id})")
+                Log.d(TAG, "ServiceStartWorker: Failed, no application found (work ID: ${this.id})")
                 return Result.failure()
             }
             val app = context.applicationContext as Application
@@ -43,7 +42,7 @@ class SubscriberServiceManager(private val context: Context) {
             if (serviceState == SubscriberService.ServiceState.STOPPED && action == SubscriberService.Action.STOP) {
                 return Result.success()
             }
-            Log.d(TAG, "RefreshWorker: Starting foreground service with action $action (work ID: ${this.id})")
+            Log.d(TAG, "ServiceStartWorker: Starting foreground service with action $action (work ID: ${this.id})")
             Intent(context, SubscriberService::class.java).also {
                 it.action = action.name
                 ContextCompat.startForegroundService(context, it)

@@ -27,10 +27,7 @@ import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -116,7 +113,13 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Background things
         startPeriodicPollWorker()
-        startPeriodicServiceRefreshWorker()
+        startPeriodicServiceRestartWorker()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showHideNotificationMenuItems()
+        redrawList()
     }
 
     private fun startPeriodicPollWorker() {
@@ -132,75 +135,74 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val work = PeriodicWorkRequestBuilder<PollWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<PollWorker>(POLL_WORKER_INTERVAL_MINUTES, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .addTag(PollWorker.TAG)
             .addTag(PollWorker.WORK_NAME_PERIODIC)
             .build()
-        Log.d(TAG, "Poll worker: Scheduling period work every ${MINIMUM_PERIODIC_WORKER_INTERVAL} minutes")
+        Log.d(TAG, "Poll worker: Scheduling period work every $POLL_WORKER_INTERVAL_MINUTES minutes")
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
     }
 
-    private fun startPeriodicServiceRefreshWorker() {
+    private fun startPeriodicServiceRestartWorker() {
         val workerVersion = repository.getAutoRestartWorkerVersion()
-        val workPolicy = if (workerVersion == SubscriberService.AUTO_RESTART_WORKER_VERSION) {
-            Log.d(TAG, "Auto restart worker version matches: choosing KEEP as existing work policy")
+        val workPolicy = if (workerVersion == SubscriberService.SERVICE_START_WORKER_VERSION) {
+            Log.d(TAG, "ServiceStartWorker version matches: choosing KEEP as existing work policy")
             ExistingPeriodicWorkPolicy.KEEP
         } else {
-            Log.d(TAG, "Auto restart worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
-            repository.setAutoRestartWorkerVersion(SubscriberService.AUTO_RESTART_WORKER_VERSION)
+            Log.d(TAG, "ServiceStartWorker version DOES NOT MATCH: choosing REPLACE as existing work policy")
+            repository.setAutoRestartWorkerVersion(SubscriberService.SERVICE_START_WORKER_VERSION)
             ExistingPeriodicWorkPolicy.REPLACE
         }
-        val work = PeriodicWorkRequestBuilder<SubscriberServiceManager.RefreshWorker>(MINIMUM_PERIODIC_WORKER_INTERVAL, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<SubscriberServiceManager.ServiceStartWorker>(SERVICE_START_WORKER_INTERVAL_MINUTES, TimeUnit.MINUTES)
             .addTag(SubscriberService.TAG)
-            .addTag(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC)
+            .addTag(SubscriberService.SERVICE_START_WORKER_WORK_NAME_PERIODIC)
             .build()
-        Log.d(TAG, "Auto restart worker: Scheduling period work every $MINIMUM_PERIODIC_WORKER_INTERVAL minutes")
-        workManager?.enqueueUniquePeriodicWork(SubscriberService.AUTO_RESTART_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
+        Log.d(TAG, "ServiceStartWorker: Scheduling period work every $SERVICE_START_WORKER_INTERVAL_MINUTES minutes")
+        workManager?.enqueueUniquePeriodicWork(SubscriberService.SERVICE_START_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main_action_bar, menu)
         this.menu = menu
         showHideNotificationMenuItems()
-        startNotificationMutedChecker() // This is done here, because then we know that we've initialized the menu
+        checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true
     }
 
-    private fun startNotificationMutedChecker() {
+    private fun checkSubscriptionsMuted(delayMillis: Long = 0L) {
         lifecycleScope.launch(Dispatchers.IO) {
-            delay(5000) // Just to be sure we've initialized all the things, we wait a bit ...
-            while (isActive) {
-                Log.d(DetailActivity.TAG, "Checking global and subscription-specific 'muted until' timestamp")
+            delay(delayMillis) // Just to be sure we've initialized all the things, we wait a bit ...
+            Log.d(TAG, "Checking global and subscription-specific 'muted until' timestamp")
 
-                // Check global
-                val changed = repository.checkGlobalMutedUntil()
-                if (changed) {
-                    Log.d(TAG, "Global muted until timestamp expired; updating prefs")
-                    showHideNotificationMenuItems()
-                }
+            // Check global
+            val changed = repository.checkGlobalMutedUntil()
+            if (changed) {
+                Log.d(TAG, "Global muted until timestamp expired; updating prefs")
+                showHideNotificationMenuItems()
+            }
 
-                // Check subscriptions
-                var rerenderList = false
-                repository.getSubscriptions().forEach { subscription ->
-                    val mutedUntilExpired = subscription.mutedUntil > 1L && System.currentTimeMillis()/1000 > subscription.mutedUntil
-                    if (mutedUntilExpired) {
-                        Log.d(TAG, "Subscription ${subscription.id}: Muted until timestamp expired, updating subscription")
-                        val newSubscription = subscription.copy(mutedUntil = 0L)
-                        repository.updateSubscription(newSubscription)
-                        rerenderList = true
-                    }
+            // Check subscriptions
+            var rerenderList = false
+            repository.getSubscriptions().forEach { subscription ->
+                val mutedUntilExpired = subscription.mutedUntil > 1L && System.currentTimeMillis()/1000 > subscription.mutedUntil
+                if (mutedUntilExpired) {
+                    Log.d(TAG, "Subscription ${subscription.id}: Muted until timestamp expired, updating subscription")
+                    val newSubscription = subscription.copy(mutedUntil = 0L)
+                    repository.updateSubscription(newSubscription)
+                    rerenderList = true
                 }
-                if (rerenderList) {
-                    redrawList()
-                }
-
-                delay(60_000)
+            }
+            if (rerenderList) {
+                redrawList()
             }
         }
     }
 
     private fun showHideNotificationMenuItems() {
+        if (!this::menu.isInitialized) {
+            return
+        }
         val mutedUntilSeconds = repository.getGlobalMutedUntil()
         runOnUiThread {
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
@@ -502,6 +504,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
 
     private fun redrawList() {
+        if (!this::mainList.isInitialized) {
+            return
+        }
         runOnUiThread {
             mainList.adapter = adapter // Oh, what a hack ...
         }
@@ -516,9 +521,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
         const val ANIMATION_DURATION = 80L
 
-        // As per Documentation: The minimum repeat interval that can be defined is 15 minutes
+        // As per documentation: The minimum repeat interval that can be defined is 15 minutes
         // (same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here.
         // Thanks to varunon9 (https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd) for this!
-        const val MINIMUM_PERIODIC_WORKER_INTERVAL = 16L
+
+        const val POLL_WORKER_INTERVAL_MINUTES = 2 * 60L
+        const val SERVICE_START_WORKER_INTERVAL_MINUTES = 6 * 60L
     }
 }

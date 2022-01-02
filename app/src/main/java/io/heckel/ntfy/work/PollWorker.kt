@@ -32,7 +32,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
 
             repository.getSubscriptions().forEach{ subscription ->
                 try {
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
+                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, since = subscription.lastActive)
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
@@ -53,6 +53,6 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
     companion object {
         const val VERSION =  BuildConfig.VERSION_CODE
         const val TAG = "NtfyPollWorker"
-        const val WORK_NAME_PERIODIC = "NtfyPollWorkerPeriodic"
+        const val WORK_NAME_PERIODIC = "NtfyPollWorkerPeriodic" // Do not change
     }
 }
