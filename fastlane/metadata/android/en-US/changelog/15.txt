@@ -1,0 +1,9 @@
+New features:
+* Allow using ntfy as UnifiedPush distributor (#9)
+* Support for longer message up to 4096 bytes (#77)
+* Minimum priority: show notifications only if priority X or higher (#79)
+* Allowing disabling broadcasts in global settings (#80)
+
+Bug fixes:
+* Allow int/long extras for SEND_MESSAGE intent (#57)
+* Various battery improvement fixes (#76)
