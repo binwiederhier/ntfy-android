@@ -26,7 +26,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         val broadcast = shouldBroadcast(subscription)
         val distribute = shouldDistribute(subscription)
         if (notify) {
-            notifier.send(subscription, notification)
+            notifier.display(subscription, notification)
         }
         if (broadcast) {
             broadcaster.send(subscription, notification, muted)

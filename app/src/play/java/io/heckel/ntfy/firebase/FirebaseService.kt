@@ -56,6 +56,11 @@ class FirebaseService : FirebaseMessagingService() {
         val message = data["message"]
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
+        val attachmentName = data["attachment_name"]
+        val attachmentType = data["attachment_type"]
+        val attachmentSize = data["attachment_size"]?.toLongOrNull()
+        val attachmentExpires = data["attachment_expires"]?.toLongOrNull()
+        val attachmentUrl = data["attachment_url"]
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
             return
@@ -73,9 +78,14 @@ class FirebaseService : FirebaseMessagingService() {
                 timestamp = timestamp,
                 title = title ?: "",
                 message = message,
-                notificationId = Random.nextInt(),
                 priority = toPriority(priority),
                 tags = tags ?: "",
+                attachmentName = attachmentName,
+                attachmentType = attachmentType,
+                attachmentSize = attachmentSize,
+                attachmentExpires = attachmentExpires,
+                attachmentUrl = attachmentUrl,
+                notificationId = Random.nextInt(),
                 deleted = false
             )
             if (repository.addNotification(notification)) {

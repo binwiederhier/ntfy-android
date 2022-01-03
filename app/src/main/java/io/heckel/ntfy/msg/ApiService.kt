@@ -120,6 +120,11 @@ class ApiService {
                                 message = message.message,
                                 priority = toPriority(message.priority),
                                 tags = joinTags(message.tags),
+                                attachmentName = message.attachment?.name,
+                                attachmentType = message.attachment?.type,
+                                attachmentSize = message.attachment?.size,
+                                attachmentExpires = message.attachment?.expires?.toLong(),
+                                attachmentUrl = message.attachment?.url,
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
@@ -149,6 +154,11 @@ class ApiService {
             message = message.message,
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
+            attachmentName = message.attachment?.name,
+            attachmentType = message.attachment?.type,
+            attachmentSize = message.attachment?.size,
+            attachmentExpires = message.attachment?.expires,
+            attachmentUrl = message.attachment?.url,
             notificationId = 0,
             deleted = false
         )
@@ -165,12 +175,22 @@ class ApiService {
         val priority: Int?,
         val tags: List<String>?,
         val title: String?,
-        val message: String
+        val message: String,
+        val attachment: Attachment?,
+    )
+
+    @Keep
+    private data class Attachment(
+        val name: String,
+        val type: String,
+        val size: Long,
+        val expires: Long,
+        val url: String,
     )
 
     companion object {
+        val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
         private const val TAG = "NtfyApiService"
-        private val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
 
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"

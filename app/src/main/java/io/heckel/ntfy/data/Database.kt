@@ -51,6 +51,11 @@ data class Notification(
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
+    @ColumnInfo(name = "attachmentName") val attachmentName: String?, // Filename
+    @ColumnInfo(name = "attachmentType") val attachmentType: String?, // MIME type
+    @ColumnInfo(name = "attachmentSize") val attachmentSize: Long?, // Size in bytes
+    @ColumnInfo(name = "attachmentExpires") val attachmentExpires: Long?, // Unix timestamp
+    @ColumnInfo(name = "attachmentUrl") val attachmentUrl: String?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 

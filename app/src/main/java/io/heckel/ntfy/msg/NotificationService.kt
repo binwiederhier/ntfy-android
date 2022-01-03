@@ -6,10 +6,11 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
@@ -19,11 +20,43 @@ import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.formatMessage
 import io.heckel.ntfy.util.formatTitle
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 class NotificationService(val context: Context) {
-    fun send(subscription: Subscription, notification: Notification) {
+    private val client = OkHttpClient.Builder()
+        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
+
+    fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
 
+        val imageAttachment = notification.attachmentUrl != null && (notification.attachmentType?.startsWith("image/") ?: false)
+        if (imageAttachment) {
+            downloadImageAndDisplay(subscription, notification)
+        } else {
+            displayInternal(subscription, notification)
+        }
+    }
+
+    fun cancel(notification: Notification) {
+        if (notification.notificationId != 0) {
+            Log.d(TAG, "Cancelling notification ${notification.id}: ${notification.message}")
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(notification.notificationId)
+        }
+    }
+
+    fun createNotificationChannels() {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationManager, priority) }
+    }
+
+    private fun displayInternal(subscription: Subscription, notification: Notification, bitmap: Bitmap? = null) {
         // Create an Intent for the activity you want to start
         val intent = Intent(context, DetailActivity::class.java)
         intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
@@ -40,32 +73,41 @@ class NotificationService(val context: Context) {
         val message = formatMessage(notification)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val channelId = toChannelId(notification.priority)
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        var notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked
+        notificationBuilder = if (bitmap != null) {
+            notificationBuilder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmap))
+        } else {
+            notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+        }
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         maybeCreateNotificationChannel(notificationManager, notification.priority)
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
     }
 
-    fun cancel(notification: Notification) {
-        if (notification.notificationId != 0) {
-            Log.d(TAG, "Cancelling notification ${notification.id}: ${notification.message}")
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.cancel(notification.notificationId)
-        }
-    }
+    private fun downloadImageAndDisplay(subscription: Subscription, notification: Notification) {
+        val url = notification.attachmentUrl ?: return
+        Log.d(TAG, "Downloading image $url")
 
-    fun createNotificationChannels() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationManager, priority) }
+        val request = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", ApiService.USER_AGENT)
+            .build()
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful || response.body == null) {
+                displayInternal(subscription, notification)
+                return
+            }
+            val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
+            displayInternal(subscription, notification, bitmap)
+        }
     }
 
     private fun maybeCreateNotificationChannel(notificationManager: NotificationManager, priority: Int) {
