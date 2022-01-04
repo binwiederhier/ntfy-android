@@ -57,10 +57,10 @@ class FirebaseService : FirebaseMessagingService() {
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
         if (id == null || topic == null || message == null || timestamp == null) {
-            Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
+            Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
             return
         }
-        Log.d(TAG, "Received notification: from=${remoteMessage.from}, data=${data}")
+        Log.d(TAG, "Received message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
@@ -79,7 +79,7 @@ class FirebaseService : FirebaseMessagingService() {
                 deleted = false
             )
             if (repository.addNotification(notification)) {
-                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, data=${data}")
+                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)
             }
         }
