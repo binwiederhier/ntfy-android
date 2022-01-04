@@ -120,6 +120,7 @@ class ApiService {
                                 message = message.message,
                                 priority = toPriority(message.priority),
                                 tags = joinTags(message.tags),
+                                click = message.click ?: "",
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
@@ -149,6 +150,7 @@ class ApiService {
             message = message.message,
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
+            click = message.click ?: "",
             notificationId = 0,
             deleted = false
         )
@@ -164,6 +166,7 @@ class ApiService {
         val topic: String,
         val priority: Int?,
         val tags: List<String>?,
+        val click: String?,
         val title: String?,
         val message: String
     )

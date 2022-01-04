@@ -56,6 +56,7 @@ class FirebaseService : FirebaseMessagingService() {
         val message = data["message"]
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
+        val click = data["click"]
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
@@ -83,6 +84,7 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationId = Random.nextInt(),
                 priority = toPriority(priority),
                 tags = tags ?: "",
+                click = click ?: "",
                 deleted = false
             )
             if (repository.addNotification(notification)) {

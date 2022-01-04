@@ -7,9 +7,9 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
@@ -24,35 +24,36 @@ class NotificationService(val context: Context) {
     fun send(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
 
-        // Create an Intent for the activity you want to start
-        val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
-        val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
-        }
-
         val title = formatTitle(subscription, notification)
         val message = formatMessage(notification)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val channelId = toChannelId(notification.priority)
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        var notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setSound(defaultSoundUri)
-            .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked
+        notificationBuilder = setContentIntent(notificationBuilder, subscription, notification)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         maybeCreateNotificationChannel(notificationManager, notification.priority)
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
+    }
+
+    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder? {
+        if (notification.click == "") {
+            return builder.setContentIntent(detailActivityIntent(subscription))
+        }
+        return try {
+            val uri = Uri.parse(notification.click)
+            val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), 0)
+            builder.setContentIntent(viewIntent)
+        } catch (e: Exception) {
+            builder.setContentIntent(detailActivityIntent(subscription))
+        }
     }
 
     fun cancel(notification: Notification) {
@@ -66,6 +67,19 @@ class NotificationService(val context: Context) {
     fun createNotificationChannels() {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationManager, priority) }
+    }
+
+    private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
+        val intent = Intent(context, DetailActivity::class.java)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        return TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
+        }
     }
 
     private fun maybeCreateNotificationChannel(notificationManager: NotificationManager, priority: Int) {
