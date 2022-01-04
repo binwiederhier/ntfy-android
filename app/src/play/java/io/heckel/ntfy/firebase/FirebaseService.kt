@@ -56,6 +56,7 @@ class FirebaseService : FirebaseMessagingService() {
         val message = data["message"]
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
+        val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
             return
@@ -65,8 +66,14 @@ class FirebaseService : FirebaseMessagingService() {
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
 
-            // Add notification
+            // Check if notification was truncated and discard if it will (or likely already did) arrive via instant delivery
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
+            if (truncated && subscription.instant) {
+                Log.d(TAG, "Discarding truncated message that did/will arrive via instant delivery: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                return@launch
+            }
+
+            // Add notification
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
