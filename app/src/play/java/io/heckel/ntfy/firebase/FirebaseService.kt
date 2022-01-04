@@ -56,23 +56,31 @@ class FirebaseService : FirebaseMessagingService() {
         val message = data["message"]
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
+        val click = data["click"]
         val attachmentName = data["attachment_name"]
         val attachmentType = data["attachment_type"]
         val attachmentSize = data["attachment_size"]?.toLongOrNull()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()
         val attachmentPreviewUrl = data["attachment_preview_url"]
         val attachmentUrl = data["attachment_url"]
+        val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
-            Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, data=${data}")
+            Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
             return
         }
-        Log.d(TAG, "Received notification: from=${remoteMessage.from}, data=${data}")
+        Log.d(TAG, "Received message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
 
-            // Add notification
+            // Check if notification was truncated and discard if it will (or likely already did) arrive via instant delivery
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
+            if (truncated && subscription.instant) {
+                Log.d(TAG, "Discarding truncated message that did/will arrive via instant delivery: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                return@launch
+            }
+
+            // Add notification
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
@@ -81,6 +89,7 @@ class FirebaseService : FirebaseMessagingService() {
                 message = message,
                 priority = toPriority(priority),
                 tags = tags ?: "",
+                click = click ?: "",
                 attachmentName = attachmentName,
                 attachmentType = attachmentType,
                 attachmentSize = attachmentSize,
@@ -91,7 +100,7 @@ class FirebaseService : FirebaseMessagingService() {
                 deleted = false
             )
             if (repository.addNotification(notification)) {
-                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, data=${data}")
+                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)
             }
         }

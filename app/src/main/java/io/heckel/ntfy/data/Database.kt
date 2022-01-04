@@ -13,8 +13,8 @@ data class Subscription(
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
-    @ColumnInfo(name = "upAppId") val upAppId: String?,
-    @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?,
+    @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
+    @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
@@ -51,6 +51,7 @@ data class Notification(
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
+    @ColumnInfo(name = "click") val click: String, // URL/intent to open on notification click
     @ColumnInfo(name = "attachmentName") val attachmentName: String?, // Filename
     @ColumnInfo(name = "attachmentType") val attachmentType: String?, // MIME type
     @ColumnInfo(name = "attachmentSize") val attachmentSize: Long?, // Size in bytes
@@ -60,7 +61,7 @@ data class Notification(
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 5)
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -77,6 +78,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_5_6)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -119,6 +121,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upAppId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN upConnectorToken TEXT")
                 db.execSQL("CREATE UNIQUE INDEX index_Subscription_upConnectorToken ON Subscription (upConnectorToken)")
+            }
+        }
+
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN click TEXT NOT NULL DEFAULT('')")
             }
         }
     }

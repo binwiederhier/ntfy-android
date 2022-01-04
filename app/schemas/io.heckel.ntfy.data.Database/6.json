@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 5,
-    "identityHash": "f662a6c15e0b9e510350918228bfa0ea",
+    "version": 6,
+    "identityHash": "0c64bd96a759eb0d899cd251756d6c00",
     "entities": [
       {
         "tableName": "Subscription",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `deleted` INTEGER NOT NULL, PRIMARY KEY(`id`, `subscriptionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `attachmentName` TEXT, `attachmentType` TEXT, `attachmentSize` INTEGER, `attachmentExpires` INTEGER, `attachmentPreviewUrl` TEXT, `attachmentUrl` TEXT, `deleted` INTEGER NOT NULL, PRIMARY KEY(`id`, `subscriptionId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -138,6 +138,42 @@
             "notNull": true
           },
           {
+            "fieldPath": "attachmentName",
+            "columnName": "attachmentName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentType",
+            "columnName": "attachmentType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentSize",
+            "columnName": "attachmentSize",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentExpires",
+            "columnName": "attachmentExpires",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentPreviewUrl",
+            "columnName": "attachmentPreviewUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentUrl",
+            "columnName": "attachmentUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "deleted",
             "columnName": "deleted",
             "affinity": "INTEGER",
@@ -158,7 +194,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f662a6c15e0b9e510350918228bfa0ea')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0c64bd96a759eb0d899cd251756d6c00')"
     ]
   }
 }

@@ -27,7 +27,6 @@ import okhttp3.Request
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-
 class NotificationService(val context: Context) {
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
@@ -59,18 +58,6 @@ class NotificationService(val context: Context) {
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, bitmap: Bitmap? = null) {
-        // Create an Intent for the activity you want to start
-        val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
-        val pendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
-        }
-
         val title = formatTitle(subscription, notification)
         val message = formatMessage(notification)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -81,14 +68,15 @@ class NotificationService(val context: Context) {
             .setContentTitle(title)
             .setContentText(message)
             .setSound(defaultSoundUri)
-            .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked
+        notificationBuilder = setContentIntent(notificationBuilder, subscription, notification)
+
         if (notification.attachmentUrl != null) {
             val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
             notificationBuilder
                 .addAction(NotificationCompat.Action.Builder(0, "Open", viewIntent).build())
                 .addAction(NotificationCompat.Action.Builder(0, "Copy URL", viewIntent).build())
-                .addAction(NotificationCompat.Action.Builder(0, "Download", pendingIntent).build())
+                .addAction(NotificationCompat.Action.Builder(0, "Download", viewIntent).build())
         }
         notificationBuilder = if (bitmap != null) {
             notificationBuilder
@@ -124,6 +112,18 @@ class NotificationService(val context: Context) {
         }
     }
 
+    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder? {
+        if (notification.click == "") {
+            return builder.setContentIntent(detailActivityIntent(subscription))
+        }
+        return try {
+            val uri = Uri.parse(notification.click)
+            val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), 0)
+            builder.setContentIntent(viewIntent)
+        } catch (e: Exception) {
+            builder.setContentIntent(detailActivityIntent(subscription))
+        }
+    }
 
     private fun downloadPreviewAndUpdateXXX(subscription: Subscription, notification: Notification) {
         val url = notification.attachmentUrl ?: return
@@ -148,6 +148,19 @@ class NotificationService(val context: Context) {
                 val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
                 displayInternal(subscription, notification, bitmap)
             }
+        }
+    }
+
+    private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
+        val intent = Intent(context, DetailActivity::class.java)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        return TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
         }
     }
 
