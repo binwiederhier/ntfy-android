@@ -55,6 +55,7 @@ data class Notification(
     @ColumnInfo(name = "attachmentType") val attachmentType: String?, // MIME type
     @ColumnInfo(name = "attachmentSize") val attachmentSize: Long?, // Size in bytes
     @ColumnInfo(name = "attachmentExpires") val attachmentExpires: Long?, // Unix timestamp
+    @ColumnInfo(name = "attachmentPreviewUrl") val attachmentPreviewUrl: String?,
     @ColumnInfo(name = "attachmentUrl") val attachmentUrl: String?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )

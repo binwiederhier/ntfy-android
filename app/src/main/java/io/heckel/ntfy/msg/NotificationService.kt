@@ -9,7 +9,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -22,7 +24,9 @@ import io.heckel.ntfy.util.formatMessage
 import io.heckel.ntfy.util.formatTitle
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
 import java.util.concurrent.TimeUnit
+
 
 class NotificationService(val context: Context) {
     private val client = OkHttpClient.Builder()
@@ -35,11 +39,9 @@ class NotificationService(val context: Context) {
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
 
-        val imageAttachment = notification.attachmentUrl != null && (notification.attachmentType?.startsWith("image/") ?: false)
-        if (imageAttachment) {
-            downloadImageAndDisplay(subscription, notification)
-        } else {
-            displayInternal(subscription, notification)
+        displayInternal(subscription, notification)
+        if (notification.attachmentPreviewUrl != null) {
+            downloadPreviewAndUpdate(subscription, notification)
         }
     }
 
@@ -81,8 +83,19 @@ class NotificationService(val context: Context) {
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent) // Click target for notification
             .setAutoCancel(true) // Cancel when notification is clicked
+        if (notification.attachmentUrl != null) {
+            val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
+            notificationBuilder
+                .addAction(NotificationCompat.Action.Builder(0, "Open", viewIntent).build())
+                .addAction(NotificationCompat.Action.Builder(0, "Copy URL", viewIntent).build())
+                .addAction(NotificationCompat.Action.Builder(0, "Download", pendingIntent).build())
+        }
         notificationBuilder = if (bitmap != null) {
-            notificationBuilder.setStyle(NotificationCompat.BigPictureStyle().bigPicture(bitmap))
+            notificationBuilder
+                .setLargeIcon(bitmap)
+                .setStyle(NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(null))
         } else {
             notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
         }
@@ -92,9 +105,29 @@ class NotificationService(val context: Context) {
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
     }
 
-    private fun downloadImageAndDisplay(subscription: Subscription, notification: Notification) {
+    private fun downloadPreviewAndUpdate(subscription: Subscription, notification: Notification) {
+        val previewUrl = notification.attachmentPreviewUrl ?: return
+        Log.d(TAG, "Downloading preview image $previewUrl")
+
+        val request = Request.Builder()
+            .url(previewUrl)
+            .addHeader("User-Agent", ApiService.USER_AGENT)
+            .build()
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful || response.body == null) {
+                Log.d(TAG, "Preview response failed: ${response.code}")
+            } else {
+                Log.d(TAG, "Successful response, streaming preview")
+                val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
+                displayInternal(subscription, notification, bitmap)
+            }
+        }
+    }
+
+
+    private fun downloadPreviewAndUpdateXXX(subscription: Subscription, notification: Notification) {
         val url = notification.attachmentUrl ?: return
-        Log.d(TAG, "Downloading image $url")
+        Log.d(TAG, "Downloading attachment from $url")
 
         val request = Request.Builder()
             .url(url)
@@ -102,11 +135,19 @@ class NotificationService(val context: Context) {
             .build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful || response.body == null) {
-                displayInternal(subscription, notification)
-                return
+                Log.d(TAG, "Attachment download failed: ${response.code}")
+            } else {
+                Log.d(TAG, "Successful response")
+                /*val filename = notification.id
+                val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS + "/ntfy/" + notification.id)
+                context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+                    response.body!!.byteStream()
+                }*/
+                // TODO work manager
+
+                val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
+                displayInternal(subscription, notification, bitmap)
             }
-            val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
-            displayInternal(subscription, notification, bitmap)
         }
     }
 

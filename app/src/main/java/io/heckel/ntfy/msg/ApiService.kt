@@ -123,7 +123,8 @@ class ApiService {
                                 attachmentName = message.attachment?.name,
                                 attachmentType = message.attachment?.type,
                                 attachmentSize = message.attachment?.size,
-                                attachmentExpires = message.attachment?.expires?.toLong(),
+                                attachmentExpires = message.attachment?.expires,
+                                attachmentPreviewUrl = message.attachment?.preview_url,
                                 attachmentUrl = message.attachment?.url,
                                 notificationId = Random.nextInt(),
                                 deleted = false
@@ -158,6 +159,7 @@ class ApiService {
             attachmentType = message.attachment?.type,
             attachmentSize = message.attachment?.size,
             attachmentExpires = message.attachment?.expires,
+            attachmentPreviewUrl = message.attachment?.preview_url,
             attachmentUrl = message.attachment?.url,
             notificationId = 0,
             deleted = false
@@ -182,9 +184,10 @@ class ApiService {
     @Keep
     private data class Attachment(
         val name: String,
-        val type: String,
-        val size: Long,
-        val expires: Long,
+        val type: String?,
+        val size: Long?,
+        val expires: Long?,
+        val preview_url: String?,
         val url: String,
     )
 
