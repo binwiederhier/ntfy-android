@@ -42,9 +42,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .map { Pair(it.id, it.instant) }.toSet()
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun getSubscription(subscriptionId: Long): Subscription? {
+    fun getSubscription(subscriptionId: Long): Subscription? {
         return toSubscription(subscriptionDao.get(subscriptionId))
     }
 

@@ -7,14 +7,15 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
@@ -22,26 +23,25 @@ import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.formatMessage
 import io.heckel.ntfy.util.formatTitle
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.File
-import java.util.concurrent.TimeUnit
 
 class NotificationService(val context: Context) {
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
 
+        // Display notification immediately
         displayInternal(subscription, notification)
-        if (notification.attachmentPreviewUrl != null) {
-            downloadPreviewAndUpdate(subscription, notification)
+
+        // Download attachment (+ preview if available) in the background via WorkManager
+        // The indirection via WorkManager is required since this code may be executed
+        // in a doze state and Internet may not be available. It's also best practice apparently.
+        if (notification.attachmentUrl != null) {
+            scheduleAttachmentDownload(subscription, notification)
         }
+    }
+
+    fun update(subscription: Subscription, notification: Notification) {
+        Log.d(TAG, "Updating notification $notification")
+        displayInternal(subscription, notification)
     }
 
     fun cancel(notification: Notification) {
@@ -73,8 +73,9 @@ class NotificationService(val context: Context) {
 
         if (notification.attachmentUrl != null) {
             val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
+            val openIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/file/39")), 0)
             notificationBuilder
-                .addAction(NotificationCompat.Action.Builder(0, "Open", viewIntent).build())
+                .addAction(NotificationCompat.Action.Builder(0, "Open", openIntent).build())
                 .addAction(NotificationCompat.Action.Builder(0, "Copy URL", viewIntent).build())
                 .addAction(NotificationCompat.Action.Builder(0, "Download", viewIntent).build())
         }
@@ -93,23 +94,15 @@ class NotificationService(val context: Context) {
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
     }
 
-    private fun downloadPreviewAndUpdate(subscription: Subscription, notification: Notification) {
-        val previewUrl = notification.attachmentPreviewUrl ?: return
-        Log.d(TAG, "Downloading preview image $previewUrl")
-
-        val request = Request.Builder()
-            .url(previewUrl)
-            .addHeader("User-Agent", ApiService.USER_AGENT)
+    private fun scheduleAttachmentDownload(subscription: Subscription, notification: Notification) {
+        Log.d(TAG, "Enqueuing work to download attachment (+ preview if available)")
+        val workManager = WorkManager.getInstance(context)
+        val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
+            .setInputData(workDataOf(
+                "id" to notification.id,
+            ))
             .build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful || response.body == null) {
-                Log.d(TAG, "Preview response failed: ${response.code}")
-            } else {
-                Log.d(TAG, "Successful response, streaming preview")
-                val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
-                displayInternal(subscription, notification, bitmap)
-            }
-        }
+        workManager.enqueue(workRequest)
     }
 
     private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder? {
@@ -122,32 +115,6 @@ class NotificationService(val context: Context) {
             builder.setContentIntent(viewIntent)
         } catch (e: Exception) {
             builder.setContentIntent(detailActivityIntent(subscription))
-        }
-    }
-
-    private fun downloadPreviewAndUpdateXXX(subscription: Subscription, notification: Notification) {
-        val url = notification.attachmentUrl ?: return
-        Log.d(TAG, "Downloading attachment from $url")
-
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("User-Agent", ApiService.USER_AGENT)
-            .build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful || response.body == null) {
-                Log.d(TAG, "Attachment download failed: ${response.code}")
-            } else {
-                Log.d(TAG, "Successful response")
-                /*val filename = notification.id
-                val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS + "/ntfy/" + notification.id)
-                context.openFileOutput(filename, Context.MODE_PRIVATE).use {
-                    response.body!!.byteStream()
-                }*/
-                // TODO work manager
-
-                val bitmap = BitmapFactory.decodeStream(response.body!!.byteStream())
-                displayInternal(subscription, notification, bitmap)
-            }
         }
     }
 
