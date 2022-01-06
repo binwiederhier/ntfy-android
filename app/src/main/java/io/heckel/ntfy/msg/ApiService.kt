@@ -127,6 +127,7 @@ class ApiService {
                                 attachmentExpires = message.attachment?.expires,
                                 attachmentPreviewUrl = message.attachment?.preview_url,
                                 attachmentUrl = message.attachment?.url,
+                                attachmentContentUri = null,
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
@@ -163,6 +164,7 @@ class ApiService {
             attachmentExpires = message.attachment?.expires,
             attachmentPreviewUrl = message.attachment?.preview_url,
             attachmentUrl = message.attachment?.url,
+            attachmentContentUri = null,
             notificationId = 0,
             deleted = false
         )

@@ -96,6 +96,7 @@ class FirebaseService : FirebaseMessagingService() {
                 attachmentExpires = attachmentExpires,
                 attachmentPreviewUrl = attachmentPreviewUrl,
                 attachmentUrl = attachmentUrl,
+                attachmentContentUri = null,
                 notificationId = Random.nextInt(),
                 deleted = false
             )

@@ -7,6 +7,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -18,13 +19,17 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.formatMessage
 import io.heckel.ntfy.util.formatTitle
+import java.io.File
 
 class NotificationService(val context: Context) {
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
 
@@ -39,9 +44,9 @@ class NotificationService(val context: Context) {
         }
     }
 
-    fun update(subscription: Subscription, notification: Notification) {
+    fun update(subscription: Subscription, notification: Notification, progress: Int = PROGRESS_NONE) {
         Log.d(TAG, "Updating notification $notification")
-        displayInternal(subscription, notification)
+        displayInternal(subscription, notification, update = true, progress = progress)
     }
 
     fun cancel(notification: Notification) {
@@ -53,45 +58,94 @@ class NotificationService(val context: Context) {
     }
 
     fun createNotificationChannels() {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationManager, priority) }
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(priority) }
     }
 
-    private fun displayInternal(subscription: Subscription, notification: Notification, bitmap: Bitmap? = null) {
+    private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false, progress: Int = PROGRESS_NONE) {
         val title = formatTitle(subscription, notification)
         val message = formatMessage(notification)
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val channelId = toChannelId(notification.priority)
-        var notificationBuilder = NotificationCompat.Builder(context, channelId)
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
             .setContentText(message)
-            .setSound(defaultSoundUri)
+            .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-        notificationBuilder = setContentIntent(notificationBuilder, subscription, notification)
+        setStyle(builder, notification, message) // Preview picture or big text style
+        setContentIntent(builder, subscription, notification)
+        maybeSetSound(builder, update)
+        maybeSetProgress(builder, progress)
+        maybeAddOpenAction(builder, notification)
+        maybeAddCopyUrlAction(builder, notification)
 
-        if (notification.attachmentUrl != null) {
-            val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
-            val openIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/file/39")), 0)
-            notificationBuilder
-                .addAction(NotificationCompat.Action.Builder(0, "Open", openIntent).build())
-                .addAction(NotificationCompat.Action.Builder(0, "Copy URL", viewIntent).build())
-                .addAction(NotificationCompat.Action.Builder(0, "Download", viewIntent).build())
-        }
-        notificationBuilder = if (bitmap != null) {
-            notificationBuilder
-                .setLargeIcon(bitmap)
-                .setStyle(NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitmap)
-                    .bigLargeIcon(null))
+        maybeCreateNotificationChannel(notification.priority)
+        notificationManager.notify(notification.notificationId, builder.build())
+    }
+
+    private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
+        if (!update) {
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            builder.setSound(defaultSoundUri)
         } else {
-            notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            builder.setSound(null)
         }
+    }
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        maybeCreateNotificationChannel(notificationManager, notification.priority)
-        notificationManager.notify(notification.notificationId, notificationBuilder.build())
+    private fun setStyle(builder: NotificationCompat.Builder, notification: Notification, message: String) {
+        val previewFile = File(context.applicationContext.cacheDir.absolutePath, "preview-" + notification.id)
+        if (previewFile.exists()) {
+            try {
+                val bitmap = BitmapFactory.decodeFile(previewFile.absolutePath)
+                builder
+                    .setLargeIcon(bitmap)
+                    .setStyle(NotificationCompat.BigPictureStyle()
+                        .bigPicture(bitmap)
+                        .bigLargeIcon(null))
+            } catch (_: Exception) {
+                builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            }
+        } else {
+            builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+        }
+    }
+
+    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
+        if (notification.click == "") {
+            builder.setContentIntent(detailActivityIntent(subscription))
+        } else {
+            try {
+                val uri = Uri.parse(notification.click)
+                val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), 0)
+                builder.setContentIntent(viewIntent)
+            } catch (e: Exception) {
+                builder.setContentIntent(detailActivityIntent(subscription))
+            }
+        }
+    }
+
+    private fun maybeSetProgress(builder: NotificationCompat.Builder, progress: Int) {
+        if (progress >= 0) {
+            builder.setProgress(100, progress, false)
+        } else {
+            builder.setProgress(0, 0, false) // Remove progress bar
+        }
+    }
+
+    private fun maybeAddOpenAction(notificationBuilder: NotificationCompat.Builder, notification: Notification) {
+        if (notification.attachmentContentUri != null) {
+            val contentUri = Uri.parse(notification.attachmentContentUri)
+            val openIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, contentUri), 0)
+            notificationBuilder.addAction(NotificationCompat.Action.Builder(0, "Open", openIntent).build())
+        }
+    }
+
+    private fun maybeAddCopyUrlAction(builder: NotificationCompat.Builder, notification: Notification) {
+        if (notification.attachmentUrl != null) {
+            // XXXXXXXXx
+            val copyUrlIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
+            builder.addAction(NotificationCompat.Action.Builder(0, "Copy URL", copyUrlIntent).build())
+        }
     }
 
     private fun scheduleAttachmentDownload(subscription: Subscription, notification: Notification) {
@@ -103,19 +157,6 @@ class NotificationService(val context: Context) {
             ))
             .build()
         workManager.enqueue(workRequest)
-    }
-
-    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder? {
-        if (notification.click == "") {
-            return builder.setContentIntent(detailActivityIntent(subscription))
-        }
-        return try {
-            val uri = Uri.parse(notification.click)
-            val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), 0)
-            builder.setContentIntent(viewIntent)
-        } catch (e: Exception) {
-            builder.setContentIntent(detailActivityIntent(subscription))
-        }
     }
 
     private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
@@ -131,7 +172,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeCreateNotificationChannel(notificationManager: NotificationManager, priority: Int) {
+    private fun maybeCreateNotificationChannel(priority: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
@@ -179,6 +220,9 @@ class NotificationService(val context: Context) {
     }
 
     companion object {
+        const val PROGRESS_NONE = -1
+        const val PROGRESS_INDETERMINATE = -2
+
         private const val TAG = "NtfyNotificationService"
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

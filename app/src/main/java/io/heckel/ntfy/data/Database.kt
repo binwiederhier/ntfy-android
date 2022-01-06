@@ -58,6 +58,7 @@ data class Notification(
     @ColumnInfo(name = "attachmentExpires") val attachmentExpires: Long?, // Unix timestamp
     @ColumnInfo(name = "attachmentPreviewUrl") val attachmentPreviewUrl: String?,
     @ColumnInfo(name = "attachmentUrl") val attachmentUrl: String?,
+    @ColumnInfo(name = "attachmentContentUri") val attachmentContentUri: String?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
@@ -219,6 +220,9 @@ interface NotificationDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun update(notification: Notification)
 
     @Query("SELECT * FROM notification WHERE id = :notificationId")
     fun get(notificationId: String): Notification?

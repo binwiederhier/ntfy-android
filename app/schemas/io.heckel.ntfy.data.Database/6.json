@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "0c64bd96a759eb0d899cd251756d6c00",
+    "identityHash": "6fd36c6995d3ae734f4ba7c8beaf9a95",
     "entities": [
       {
         "tableName": "Subscription",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `attachmentName` TEXT, `attachmentType` TEXT, `attachmentSize` INTEGER, `attachmentExpires` INTEGER, `attachmentPreviewUrl` TEXT, `attachmentUrl` TEXT, `deleted` INTEGER NOT NULL, PRIMARY KEY(`id`, `subscriptionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `attachmentName` TEXT, `attachmentType` TEXT, `attachmentSize` INTEGER, `attachmentExpires` INTEGER, `attachmentPreviewUrl` TEXT, `attachmentUrl` TEXT, `attachmentContentUri` TEXT, `deleted` INTEGER NOT NULL, PRIMARY KEY(`id`, `subscriptionId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -174,6 +174,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "attachmentContentUri",
+            "columnName": "attachmentContentUri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "deleted",
             "columnName": "deleted",
             "affinity": "INTEGER",
@@ -194,7 +200,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0c64bd96a759eb0d899cd251756d6c00')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6fd36c6995d3ae734f4ba7c8beaf9a95')"
     ]
   }
 }

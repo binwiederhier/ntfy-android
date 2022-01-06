@@ -104,6 +104,11 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return true
     }
 
+    fun updateNotification(notification: Notification) {
+        notificationDao.update(notification)
+    }
+
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun markAsDeleted(notificationId: String) {
@@ -289,6 +294,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
+
+        const val PREVIEWS_CACHE_DIR = "Previews"
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
