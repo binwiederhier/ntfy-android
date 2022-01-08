@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.msg.*
 import io.heckel.ntfy.service.SubscriberService
@@ -81,6 +82,16 @@ class FirebaseService : FirebaseMessagingService() {
             }
 
             // Add notification
+            val attachment = if (attachmentUrl != null) {
+                Attachment(
+                    name = attachmentName,
+                    type = attachmentType,
+                    size = attachmentSize,
+                    expires = attachmentExpires,
+                    previewUrl = attachmentPreviewUrl,
+                    url = attachmentUrl,
+                )
+            } else null
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
@@ -90,13 +101,7 @@ class FirebaseService : FirebaseMessagingService() {
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
-                attachmentName = attachmentName,
-                attachmentType = attachmentType,
-                attachmentSize = attachmentSize,
-                attachmentExpires = attachmentExpires,
-                attachmentPreviewUrl = attachmentPreviewUrl,
-                attachmentUrl = attachmentUrl,
-                attachmentContentUri = null,
+                attachment = attachment,
                 notificationId = Random.nextInt(),
                 deleted = false
             )

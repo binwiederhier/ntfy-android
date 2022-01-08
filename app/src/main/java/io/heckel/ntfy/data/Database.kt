@@ -15,6 +15,7 @@ data class Subscription(
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
+    // TODO autoDownloadAttachments, minPriority
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
@@ -52,15 +53,25 @@ data class Notification(
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
     @ColumnInfo(name = "click") val click: String, // URL/intent to open on notification click
-    @ColumnInfo(name = "attachmentName") val attachmentName: String?, // Filename
-    @ColumnInfo(name = "attachmentType") val attachmentType: String?, // MIME type
-    @ColumnInfo(name = "attachmentSize") val attachmentSize: Long?, // Size in bytes
-    @ColumnInfo(name = "attachmentExpires") val attachmentExpires: Long?, // Unix timestamp
-    @ColumnInfo(name = "attachmentPreviewUrl") val attachmentPreviewUrl: String?,
-    @ColumnInfo(name = "attachmentUrl") val attachmentUrl: String?,
-    @ColumnInfo(name = "attachmentContentUri") val attachmentContentUri: String?,
+    @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
+
+@Entity
+data class Attachment(
+    @ColumnInfo(name = "name") val name: String?, // Filename
+    @ColumnInfo(name = "type") val type: String?, // MIME type
+    @ColumnInfo(name = "size") val size: Long?, // Size in bytes
+    @ColumnInfo(name = "expires") val expires: Long?, // Unix timestamp
+    @ColumnInfo(name = "previewUrl") val previewUrl: String?,
+    @ColumnInfo(name = "url") val url: String,
+    @ColumnInfo(name = "contentUri") val contentUri: String?,
+    @ColumnInfo(name = "previewFile") val previewFile: String?,
+    @ColumnInfo(name = "progress") val progress: Int,
+) {
+    constructor(name: String?, type: String?, size: Long?, expires: Long?, previewUrl: String?, url: String) :
+            this(name, type, size, expires, previewUrl, url, null, null, 0)
+}
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)
 abstract class Database : RoomDatabase() {

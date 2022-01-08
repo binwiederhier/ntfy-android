@@ -32,16 +32,7 @@ class NotificationService(val context: Context) {
 
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
-
-        // Display notification immediately
         displayInternal(subscription, notification)
-
-        // Download attachment (+ preview if available) in the background via WorkManager
-        // The indirection via WorkManager is required since this code may be executed
-        // in a doze state and Internet may not be available. It's also best practice apparently.
-        if (notification.attachmentUrl != null) {
-            scheduleAttachmentDownload(subscription, notification)
-        }
     }
 
     fun update(subscription: Subscription, notification: Notification, progress: Int = PROGRESS_NONE) {
@@ -133,30 +124,19 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeAddOpenAction(notificationBuilder: NotificationCompat.Builder, notification: Notification) {
-        if (notification.attachmentContentUri != null) {
-            val contentUri = Uri.parse(notification.attachmentContentUri)
+        if (notification.attachment?.contentUri != null) {
+            val contentUri = Uri.parse(notification.attachment.contentUri)
             val openIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, contentUri), 0)
             notificationBuilder.addAction(NotificationCompat.Action.Builder(0, "Open", openIntent).build())
         }
     }
 
     private fun maybeAddCopyUrlAction(builder: NotificationCompat.Builder, notification: Notification) {
-        if (notification.attachmentUrl != null) {
+        if (notification.attachment?.url != null) {
             // XXXXXXXXx
-            val copyUrlIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachmentUrl)), 0)
+            val copyUrlIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachment.url)), 0)
             builder.addAction(NotificationCompat.Action.Builder(0, "Copy URL", copyUrlIntent).build())
         }
-    }
-
-    private fun scheduleAttachmentDownload(subscription: Subscription, notification: Notification) {
-        Log.d(TAG, "Enqueuing work to download attachment (+ preview if available)")
-        val workManager = WorkManager.getInstance(context)
-        val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
-            .setInputData(workDataOf(
-                "id" to notification.id,
-            ))
-            .build()
-        workManager.enqueue(workRequest)
     }
 
     private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
@@ -223,7 +203,7 @@ class NotificationService(val context: Context) {
         const val PROGRESS_NONE = -1
         const val PROGRESS_INDETERMINATE = -2
 
-        private const val TAG = "NtfyNotificationService"
+        private const val TAG = "NtfyNotifService"
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"
         private const val CHANNEL_ID_DEFAULT = "ntfy"

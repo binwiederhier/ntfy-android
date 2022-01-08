@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
@@ -34,15 +35,16 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
         val repository = app.repository
         val notification = repository.getNotification(notificationId) ?: return Result.failure()
         val subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
-        if (notification.attachmentPreviewUrl != null) {
-            downloadPreview(repository, subscription, notification)
+        val attachment = notification.attachment ?: return Result.failure()
+        if (attachment.previewUrl != null) {
+            downloadPreview(subscription, notification, attachment)
         }
-        downloadAttachment(repository, subscription, notification)
+        downloadAttachment(repository, subscription, notification, attachment)
         return Result.success()
     }
 
-    private fun downloadPreview(repository: Repository, subscription: Subscription, notification: Notification) {
-        val url = notification.attachmentPreviewUrl ?: return
+    private fun downloadPreview(subscription: Subscription, notification: Notification, attachment: Attachment) {
+        val url = attachment.previewUrl ?: return
         Log.d(TAG, "Downloading preview from $url")
 
         val request = Request.Builder()
@@ -63,21 +65,20 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
         }
     }
 
-    private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification) {
-        val url = notification.attachmentUrl ?: return
-        Log.d(TAG, "Downloading attachment from $url")
+    private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification, attachment: Attachment) {
+        Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         val request = Request.Builder()
-            .url(url)
+            .url(attachment.url)
             .addHeader("User-Agent", ApiService.USER_AGENT)
             .build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful || response.body == null) {
                 throw Exception("Attachment download failed: ${response.code}")
             }
-            val name = notification.attachmentName ?: "attachment.bin"
-            val mimeType = notification.attachmentType ?: "application/octet-stream"
-            val size = notification.attachmentSize ?: 0
+            val name = attachment.name ?: "attachment.bin"
+            val mimeType = attachment.type ?: "application/octet-stream"
+            val size = attachment.size ?: 0
             val resolver = applicationContext.contentResolver
             val details = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
@@ -107,7 +108,8 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
                 }
             }
             Log.d(TAG, "Attachment download: successful response, proceeding with download")
-            val newNotification = notification.copy(attachmentContentUri = uri.toString())
+            val newAttachment = attachment.copy(contentUri = uri.toString())
+            val newNotification = notification.copy(attachment = newAttachment)
             repository.updateNotification(newNotification)
             notifier.update(subscription, newNotification)
         }

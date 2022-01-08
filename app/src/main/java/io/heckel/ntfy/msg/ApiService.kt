@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.Keep
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
+import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.util.topicUrlJson
@@ -112,6 +113,16 @@ class ApiService {
                         val message = gson.fromJson(line, Message::class.java)
                         if (message.event == EVENT_MESSAGE) {
                             val topic = message.topic
+                            val attachment = if (message.attachment?.url != null) {
+                                Attachment(
+                                    name = message.attachment.name,
+                                    type = message.attachment.type,
+                                    size = message.attachment.size,
+                                    expires = message.attachment.expires,
+                                    previewUrl = message.attachment.preview_url,
+                                    url = message.attachment.url,
+                                )
+                            } else null
                             val notification = Notification(
                                 id = message.id,
                                 subscriptionId = 0, // TO BE SET downstream
@@ -121,13 +132,7 @@ class ApiService {
                                 priority = toPriority(message.priority),
                                 tags = joinTags(message.tags),
                                 click = message.click ?: "",
-                                attachmentName = message.attachment?.name,
-                                attachmentType = message.attachment?.type,
-                                attachmentSize = message.attachment?.size,
-                                attachmentExpires = message.attachment?.expires,
-                                attachmentPreviewUrl = message.attachment?.preview_url,
-                                attachmentUrl = message.attachment?.url,
-                                attachmentContentUri = null,
+                                attachment = attachment,
                                 notificationId = Random.nextInt(),
                                 deleted = false
                             )
@@ -149,6 +154,16 @@ class ApiService {
 
     private fun fromString(subscriptionId: Long, s: String): Notification {
         val message = gson.fromJson(s, Message::class.java)
+        val attachment = if (message.attachment?.url != null) {
+            Attachment(
+                name = message.attachment.name,
+                type = message.attachment.type,
+                size = message.attachment.size,
+                expires = message.attachment.expires,
+                previewUrl = message.attachment.preview_url,
+                url = message.attachment.url,
+            )
+        } else null
         return Notification(
             id = message.id,
             subscriptionId = subscriptionId,
@@ -158,14 +173,8 @@ class ApiService {
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
             click = message.click ?: "",
-            attachmentName = message.attachment?.name,
-            attachmentType = message.attachment?.type,
-            attachmentSize = message.attachment?.size,
-            attachmentExpires = message.attachment?.expires,
-            attachmentPreviewUrl = message.attachment?.preview_url,
-            attachmentUrl = message.attachment?.url,
-            attachmentContentUri = null,
-            notificationId = 0,
+            attachment = attachment,
+            notificationId = 0, // zero!
             deleted = false
         )
     }
