@@ -1,12 +1,7 @@
 package io.heckel.ntfy.msg
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
+import android.app.*
+import android.content.*
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
@@ -14,18 +9,15 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.formatBytes
+import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.formatMessage
 import io.heckel.ntfy.util.formatTitle
-import java.io.File
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -54,7 +46,7 @@ class NotificationService(val context: Context) {
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false, progress: Int = PROGRESS_NONE) {
         val title = formatTitle(subscription, notification)
-        val message = formatMessage(notification)
+        val message = maybeWithAttachmentInfo(formatMessage(notification), notification, progress)
         val channelId = toChannelId(notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
@@ -68,10 +60,23 @@ class NotificationService(val context: Context) {
         maybeSetSound(builder, update)
         maybeSetProgress(builder, progress)
         maybeAddOpenAction(builder, notification)
-        maybeAddCopyUrlAction(builder, notification)
+        maybeAddBrowseAction(builder, notification)
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
+    }
+
+    private fun maybeWithAttachmentInfo(message: String, notification: Notification, progress: Int): String {
+        if (progress < 0 || notification.attachment == null) return message
+        val att = notification.attachment
+        val infos = mutableListOf<String>()
+        if (att.name != null) infos.add(att.name)
+        if (att.size != null) infos.add(formatBytes(att.size))
+        //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
+        if (progress >= 0) infos.add("${progress}%")
+        if (infos.size == 0) return message
+        if (progress < 100) return "Downloading ${infos.joinToString(", ")}\n${message}"
+        return "${message}\nFile: ${infos.joinToString(", ")}"
     }
 
     private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
@@ -84,10 +89,13 @@ class NotificationService(val context: Context) {
     }
 
     private fun setStyle(builder: NotificationCompat.Builder, notification: Notification, message: String) {
-        val previewFile = File(context.applicationContext.cacheDir.absolutePath, "preview-" + notification.id)
-        if (previewFile.exists()) {
+        val contentUri = notification.attachment?.contentUri
+        val isImage = listOf("image/jpeg", "image/png").contains(notification.attachment?.type)
+        if (contentUri != null && isImage) {
             try {
-                val bitmap = BitmapFactory.decodeFile(previewFile.absolutePath)
+                val resolver = context.applicationContext.contentResolver
+                val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
+                val bitmap = BitmapFactory.decodeStream(bitmapStream)
                 builder
                     .setLargeIcon(bitmap)
                     .setStyle(NotificationCompat.BigPictureStyle()
@@ -116,26 +124,27 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeSetProgress(builder: NotificationCompat.Builder, progress: Int) {
-        if (progress >= 0) {
+        if (progress in 0..99) {
             builder.setProgress(100, progress, false)
         } else {
             builder.setProgress(0, 0, false) // Remove progress bar
         }
     }
 
-    private fun maybeAddOpenAction(notificationBuilder: NotificationCompat.Builder, notification: Notification) {
+    private fun maybeAddOpenAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri != null) {
             val contentUri = Uri.parse(notification.attachment.contentUri)
-            val openIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, contentUri), 0)
-            notificationBuilder.addAction(NotificationCompat.Action.Builder(0, "Open", openIntent).build())
+            val intent = Intent(Intent.ACTION_VIEW, contentUri)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_open), pendingIntent).build())
         }
     }
 
-    private fun maybeAddCopyUrlAction(builder: NotificationCompat.Builder, notification: Notification) {
-        if (notification.attachment?.url != null) {
-            // XXXXXXXXx
-            val copyUrlIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, Uri.parse(notification.attachment.url)), 0)
-            builder.addAction(NotificationCompat.Action.Builder(0, "Copy URL", copyUrlIntent).build())
+    private fun maybeAddBrowseAction(builder: NotificationCompat.Builder, notification: Notification) {
+        if (notification.attachment?.contentUri != null) {
+            val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_browse), pendingIntent).build())
         }
     }
 
@@ -202,8 +211,10 @@ class NotificationService(val context: Context) {
     companion object {
         const val PROGRESS_NONE = -1
         const val PROGRESS_INDETERMINATE = -2
+        const val PROGRESS_DONE = 100
 
         private const val TAG = "NtfyNotifService"
+
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"
         private const val CHANNEL_ID_DEFAULT = "ntfy"

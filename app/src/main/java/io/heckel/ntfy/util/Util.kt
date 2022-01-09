@@ -7,6 +7,7 @@ import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
 import java.security.SecureRandom
 import java.text.DateFormat
+import java.text.StringCharacterIterator
 import java.util.*
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
@@ -19,8 +20,8 @@ fun topicShortUrl(baseUrl: String, topic: String) =
         .replace("https://", "")
 
 fun formatDateShort(timestampSecs: Long): String {
-    val mutedUntilDate = Date(timestampSecs*1000)
-    return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(mutedUntilDate)
+    val date = Date(timestampSecs*1000)
+    return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
 }
 
 fun toPriority(priority: Int?): Int {
@@ -125,4 +126,21 @@ fun randomString(len: Int): String {
 // Allows letting multiple variables at once, see https://stackoverflow.com/a/35522422/1440785
 inline fun <T1: Any, T2: Any, R: Any> safeLet(p1: T1?, p2: T2?, block: (T1, T2)->R?): R? {
     return if (p1 != null && p2 != null) block(p1, p2) else null
+}
+
+fun formatBytes(bytes: Long): String {
+    val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else Math.abs(bytes)
+    if (absB < 1024) {
+        return "$bytes B"
+    }
+    var value = absB
+    val ci = StringCharacterIterator("KMGTPE")
+    var i = 40
+    while (i >= 0 && absB > 0xfffccccccccccccL shr i) {
+        value = value shr 10
+        ci.next()
+        i -= 10
+    }
+    value *= java.lang.Long.signum(bytes).toLong()
+    return java.lang.String.format("%.1f %ciB", value / 1024.0, ci.current())
 }

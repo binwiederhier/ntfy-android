@@ -2,7 +2,6 @@ package io.heckel.ntfy.msg
 
 import android.content.ContentValues
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -13,10 +12,9 @@ import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.msg.NotificationService.Companion.PROGRESS_DONE
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.File
-import java.io.FileOutputStream
 import java.util.concurrent.TimeUnit
 
 class AttachmentDownloadWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -36,33 +34,8 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
         val notification = repository.getNotification(notificationId) ?: return Result.failure()
         val subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
         val attachment = notification.attachment ?: return Result.failure()
-        if (attachment.previewUrl != null) {
-            downloadPreview(subscription, notification, attachment)
-        }
         downloadAttachment(repository, subscription, notification, attachment)
         return Result.success()
-    }
-
-    private fun downloadPreview(subscription: Subscription, notification: Notification, attachment: Attachment) {
-        val url = attachment.previewUrl ?: return
-        Log.d(TAG, "Downloading preview from $url")
-
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("User-Agent", ApiService.USER_AGENT)
-            .build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful || response.body == null) {
-                throw Exception("Preview download failed: ${response.code}")
-            }
-            val previewFile = File(applicationContext.cacheDir.absolutePath, "preview-" + notification.id)
-            Log.d(TAG, "Downloading preview to cache file: $previewFile")
-            FileOutputStream(previewFile).use { fileOut ->
-                response.body!!.byteStream().copyTo(fileOut)
-            }
-            Log.d(TAG, "Preview downloaded; updating notification")
-            notifier.update(subscription, notification)
-        }
     }
 
     private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification, attachment: Attachment) {
@@ -111,7 +84,7 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
             val newAttachment = attachment.copy(contentUri = uri.toString())
             val newNotification = notification.copy(attachment = newAttachment)
             repository.updateNotification(newNotification)
-            notifier.update(subscription, newNotification)
+            notifier.update(subscription, newNotification, progress = PROGRESS_DONE)
         }
     }
 

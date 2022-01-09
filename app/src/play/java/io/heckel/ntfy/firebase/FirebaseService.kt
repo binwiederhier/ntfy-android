@@ -62,7 +62,6 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentType = data["attachment_type"]
         val attachmentSize = data["attachment_size"]?.toLongOrNull()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()
-        val attachmentPreviewUrl = data["attachment_preview_url"]
         val attachmentUrl = data["attachment_url"]
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
@@ -88,7 +87,6 @@ class FirebaseService : FirebaseMessagingService() {
                     type = attachmentType,
                     size = attachmentSize,
                     expires = attachmentExpires,
-                    previewUrl = attachmentPreviewUrl,
                     url = attachmentUrl,
                 )
             } else null

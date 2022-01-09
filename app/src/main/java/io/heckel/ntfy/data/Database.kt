@@ -63,14 +63,12 @@ data class Attachment(
     @ColumnInfo(name = "type") val type: String?, // MIME type
     @ColumnInfo(name = "size") val size: Long?, // Size in bytes
     @ColumnInfo(name = "expires") val expires: Long?, // Unix timestamp
-    @ColumnInfo(name = "previewUrl") val previewUrl: String?,
     @ColumnInfo(name = "url") val url: String,
     @ColumnInfo(name = "contentUri") val contentUri: String?,
-    @ColumnInfo(name = "previewFile") val previewFile: String?,
     @ColumnInfo(name = "progress") val progress: Int,
 ) {
-    constructor(name: String?, type: String?, size: Long?, expires: Long?, previewUrl: String?, url: String) :
-            this(name, type, size, expires, previewUrl, url, null, null, 0)
+    constructor(name: String?, type: String?, size: Long?, expires: Long?, url: String) :
+            this(name, type, size, expires, url, null, 0)
 }
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)

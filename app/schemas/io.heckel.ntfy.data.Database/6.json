@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "1ab02dd84a7f2655b4fc651574b24240",
+    "identityHash": "fc725df9153ee7088ae8024428b7f2cf",
     "entities": [
       {
         "tableName": "Subscription",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_previewUrl` TEXT, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_previewFile` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -168,12 +168,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "attachment.previewUrl",
-            "columnName": "attachment_previewUrl",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "attachment.url",
             "columnName": "attachment_url",
             "affinity": "TEXT",
@@ -182,12 +176,6 @@
           {
             "fieldPath": "attachment.contentUri",
             "columnName": "attachment_contentUri",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "attachment.previewFile",
-            "columnName": "attachment_previewFile",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -212,7 +200,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1ab02dd84a7f2655b4fc651574b24240')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fc725df9153ee7088ae8024428b7f2cf')"
     ]
   }
 }

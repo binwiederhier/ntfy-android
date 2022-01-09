@@ -7,11 +7,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.util.topicUrl
-import io.heckel.ntfy.util.topicUrlJson
-import io.heckel.ntfy.util.topicUrlJsonPoll
-import io.heckel.ntfy.util.toPriority
-import io.heckel.ntfy.util.joinTags
+import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -119,7 +115,6 @@ class ApiService {
                                     type = message.attachment.type,
                                     size = message.attachment.size,
                                     expires = message.attachment.expires,
-                                    previewUrl = message.attachment.preview_url,
                                     url = message.attachment.url,
                                 )
                             } else null
@@ -160,7 +155,6 @@ class ApiService {
                 type = message.attachment.type,
                 size = message.attachment.size,
                 expires = message.attachment.expires,
-                previewUrl = message.attachment.preview_url,
                 url = message.attachment.url,
             )
         } else null
@@ -174,7 +168,7 @@ class ApiService {
             tags = joinTags(message.tags),
             click = message.click ?: "",
             attachment = attachment,
-            notificationId = 0, // zero!
+            notificationId = 0, // zero: when we poll, we do not want a notificationId!
             deleted = false
         )
     }
@@ -192,16 +186,15 @@ class ApiService {
         val click: String?,
         val title: String?,
         val message: String,
-        val attachment: Attachment?,
+        val attachment: MessageAttachment?,
     )
 
     @Keep
-    private data class Attachment(
+    private data class MessageAttachment(
         val name: String,
         val type: String?,
         val size: Long?,
         val expires: Long?,
-        val preview_url: String?,
         val url: String,
     )
 

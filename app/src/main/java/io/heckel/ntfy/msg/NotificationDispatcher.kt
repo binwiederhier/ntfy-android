@@ -42,7 +42,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             }
         }
         if (download) {
-            // Download attachment (+ preview if available) in the background via WorkManager
+            // Download attachment in the background via WorkManager
             // The indirection via WorkManager is required since this code may be executed
             // in a doze state and Internet may not be available. It's also best practice apparently.
             scheduleAttachmentDownload(notification)

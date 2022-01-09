@@ -144,6 +144,10 @@
     <string name="notification_dialog_tomorrow">Until tomorrow</string>
     <string name="notification_dialog_forever">Forever</string>
 
+    <!-- Notification popup -->
+    <string name="notification_popup_action_open">Open</string>
+    <string name="notification_popup_action_browse">Browse</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_notifications_header">Notifications</string>
