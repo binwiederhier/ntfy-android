@@ -47,11 +47,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/detail_item_tags"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="10dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="10dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/detail_item_message_text"/>
+            app:layout_constraintTop_toBottomOf="@id/detail_item_message_text"
+            app:layout_constraintBottom_toTopOf="@id/detail_item_image"/>
     <TextView
             android:text="This is an optional title. It can also be a little longer but not too long."
             android:layout_width="0dp"
@@ -71,5 +70,13 @@
             app:layout_constraintStart_toEndOf="@+id/detail_item_date_text"
             app:layout_constraintTop_toTopOf="@+id/detail_item_date_text"
             app:layout_constraintBottom_toBottomOf="@+id/detail_item_date_text" android:layout_marginStart="5dp"/>
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_cancel_gray_24dp"
+            android:id="@+id/detail_item_image" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@id/detail_item_tags"
+            android:layout_marginStart="10dp" android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent" android:scaleType="centerCrop"
+            android:adjustViewBounds="true" android:maxHeight="150dp" android:layout_marginTop="5dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

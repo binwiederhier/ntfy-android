@@ -1,11 +1,14 @@
 package io.heckel.ntfy.ui
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -49,6 +52,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
         private val newImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
         private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags)
+        private val imageView: ImageView = itemView.findViewById(R.id.detail_item_image)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -96,6 +100,21 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
                     priorityImageView.visibility = View.VISIBLE
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_5_24dp))
                 }
+            }
+            // 📄
+            val contentUri = notification.attachment?.contentUri
+            if (contentUri != null && supportedImage(notification.attachment.type)) {
+                try {
+                    val resolver = itemView.context.applicationContext.contentResolver
+                    val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
+                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                    imageView.setImageBitmap(bitmap)
+                    imageView.visibility = View.VISIBLE
+                } catch (_: Exception) {
+                    imageView.visibility = View.GONE
+                }
+            } else {
+                imageView.visibility = View.GONE
             }
         }
     }

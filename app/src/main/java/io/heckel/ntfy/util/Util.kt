@@ -144,3 +144,7 @@ fun formatBytes(bytes: Long): String {
     value *= java.lang.Long.signum(bytes).toLong()
     return java.lang.String.format("%.1f %ciB", value / 1024.0, ci.current())
 }
+
+fun supportedImage(mimeType: String?): Boolean {
+    return listOf("image/jpeg", "image/png").contains(mimeType)
+}

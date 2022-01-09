@@ -14,10 +14,7 @@ import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
-import io.heckel.ntfy.util.formatBytes
-import io.heckel.ntfy.util.formatDateShort
-import io.heckel.ntfy.util.formatMessage
-import io.heckel.ntfy.util.formatTitle
+import io.heckel.ntfy.util.*
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -73,7 +70,7 @@ class NotificationService(val context: Context) {
         if (att.name != null) infos.add(att.name)
         if (att.size != null) infos.add(formatBytes(att.size))
         //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
-        if (progress >= 0) infos.add("${progress}%")
+        if (progress in 0..99) infos.add("${progress}%")
         if (infos.size == 0) return message
         if (progress < 100) return "Downloading ${infos.joinToString(", ")}\n${message}"
         return "${message}\nFile: ${infos.joinToString(", ")}"
@@ -90,8 +87,8 @@ class NotificationService(val context: Context) {
 
     private fun setStyle(builder: NotificationCompat.Builder, notification: Notification, message: String) {
         val contentUri = notification.attachment?.contentUri
-        val isImage = listOf("image/jpeg", "image/png").contains(notification.attachment?.type)
-        if (contentUri != null && isImage) {
+        val isSupportedImage = supportedImage(notification.attachment?.type)
+        if (contentUri != null && isSupportedImage) {
             try {
                 val resolver = context.applicationContext.contentResolver
                 val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
