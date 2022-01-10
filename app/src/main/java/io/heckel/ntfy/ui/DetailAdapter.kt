@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.app.DownloadManager
 import android.content.*
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
@@ -25,7 +27,6 @@ import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.msg.AttachmentDownloadWorker
 import io.heckel.ntfy.util.*
 import java.util.*
-import kotlin.math.exp
 
 
 class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -131,21 +132,13 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             }
             val attachment = notification.attachment
             val exists = if (attachment.contentUri != null) fileExists(context, attachment.contentUri) else false
-            maybeRenderAttachmentImage(context, attachment, exists)
-            renderAttachmentBox(context, notification, attachment, exists)
+            val image = attachment.contentUri != null && exists && supportedImage(attachment.type)
+            maybeRenderMenu(context, notification, attachment, exists)
+            maybeRenderAttachmentImage(context, attachment, image)
+            maybeRenderAttachmentBox(context, notification, attachment, exists, image)
         }
 
-        private fun renderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean) {
-            attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
-            attachmentIconView.setImageResource(if (attachment.type?.startsWith("image/") == true) {
-                R.drawable.ic_file_image_gray_24dp
-            } else if (attachment.type?.startsWith("video/") == true) {
-                R.drawable.ic_file_video_gray_24dp
-            } else if (attachment.type?.startsWith("audio/") == true) {
-                R.drawable.ic_file_audio_gray_24dp
-            } else {
-                R.drawable.ic_file_document_gray_24dp
-            })
+        private fun maybeRenderMenu(context: Context, notification: Notification, attachment: Attachment, exists: Boolean) {
             val menuButtonPopupMenu = createAttachmentPopup(context, menuButton, notification, attachment, exists) // Heavy lifting not during on-click
             if (menuButtonPopupMenu != null) {
                 menuButton.setOnClickListener { menuButtonPopupMenu.show() }
@@ -153,6 +146,25 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             } else {
                 menuButton.visibility = View.GONE
             }
+        }
+
+        private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean, image: Boolean) {
+            if (image) {
+                attachmentBoxView.visibility = View.GONE
+                return
+            }
+            attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
+            attachmentIconView.setImageResource(if (attachment.type?.startsWith("image/") == true) {
+                R.drawable.ic_file_image_red_24dp
+            } else if (attachment.type?.startsWith("video/") == true) {
+                R.drawable.ic_file_video_orange_24dp
+            } else if (attachment.type?.startsWith("audio/") == true) {
+                R.drawable.ic_file_audio_purple_24dp
+            } else if ("application/vnd.android.package-archive" == attachment.type) {
+                R.drawable.ic_file_app_gray_24dp
+            } else {
+                R.drawable.ic_file_document_blue_24dp
+            })
             val attachmentBoxPopupMenu = createAttachmentPopup(context, attachmentBoxView, notification, attachment, exists) // Heavy lifting not during on-click
             if (attachmentBoxPopupMenu != null) {
                 attachmentBoxView.setOnClickListener { attachmentBoxPopupMenu.show() }
@@ -231,7 +243,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
                 if (expired) {
                     infos.add("not downloaded, link expired")
                 } else if (expires) {
-                    infos.add("not downloaded, link expires ${formatDateShort(attachment.expires!!)}")
+                    infos.add("not downloaded, expires ${formatDateShort(attachment.expires!!)}")
                 } else {
                     infos.add("not downloaded")
                 }
@@ -270,17 +282,24 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             }
         }
 
-        private fun maybeRenderAttachmentImage(context: Context, att: Attachment, exists: Boolean) {
-            val fileIsImage = att.contentUri != null && exists && supportedImage(att.type)
-            if (!fileIsImage) {
+        private fun maybeRenderAttachmentImage(context: Context, attachment: Attachment, image: Boolean) {
+            if (!image) {
                 attachmentImageView.visibility = View.GONE
                 return
             }
             try {
                 val resolver = context.applicationContext.contentResolver
-                val bitmapStream = resolver.openInputStream(Uri.parse(att.contentUri))
+                val bitmapStream = resolver.openInputStream(Uri.parse(attachment.contentUri))
                 val bitmap = BitmapFactory.decodeStream(bitmapStream)
                 attachmentImageView.setImageBitmap(bitmap)
+                attachmentImageView.setOnClickListener {
+                    val loadImage = { view: ImageView, image: Bitmap -> view.setImageBitmap(image) }
+                    StfalconImageViewer.Builder(context, listOf(bitmap), loadImage)
+                        .allowZooming(true)
+                        .withTransitionFrom(attachmentImageView)
+                        .withHiddenStatusBar(false)
+                        .show()
+                }
                 attachmentImageView.visibility = View.VISIBLE
             } catch (_: Exception) {
                 attachmentImageView.visibility = View.GONE

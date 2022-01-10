@@ -93,4 +93,7 @@ dependencies {
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.liveDataVersion"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // Image viewer
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
 }
