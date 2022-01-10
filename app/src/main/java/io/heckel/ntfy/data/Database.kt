@@ -59,15 +59,15 @@ data class Notification(
 
 @Entity
 data class Attachment(
-    @ColumnInfo(name = "name") val name: String?, // Filename
+    @ColumnInfo(name = "name") val name: String, // Filename (mandatory, see ntfy server)
     @ColumnInfo(name = "type") val type: String?, // MIME type
     @ColumnInfo(name = "size") val size: Long?, // Size in bytes
     @ColumnInfo(name = "expires") val expires: Long?, // Unix timestamp
-    @ColumnInfo(name = "url") val url: String,
-    @ColumnInfo(name = "contentUri") val contentUri: String?,
-    @ColumnInfo(name = "progress") val progress: Int,
+    @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
+    @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
+    @ColumnInfo(name = "progress") val progress: Int, // Progress during download, -1 if not downloaded
 ) {
-    constructor(name: String?, type: String?, size: Long?, expires: Long?, url: String) :
+    constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
             this(name, type, size, expires, url, null, PROGRESS_NONE)
 }
 

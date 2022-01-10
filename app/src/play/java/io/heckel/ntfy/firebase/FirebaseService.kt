@@ -59,7 +59,7 @@ class FirebaseService : FirebaseMessagingService() {
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
         val click = data["click"]
-        val attachmentName = data["attachment_name"]
+        val attachmentName = data["attachment_name"] ?: "attachment.bin"
         val attachmentType = data["attachment_type"]
         val attachmentSize = data["attachment_size"]?.toLongOrNull()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()

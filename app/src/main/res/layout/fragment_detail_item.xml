@@ -48,7 +48,7 @@
             app:layout_constraintTop_toBottomOf="@id/detail_item_title_text"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="10dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="10dp"
-            app:layout_constraintBottom_toTopOf="@id/detail_item_image"/>
+            app:layout_constraintBottom_toTopOf="@id/detail_item_attachment_image"/>
     <TextView
             android:text="This is an optional title. It can also be a little longer but not too long."
             android:layout_width="0dp"
@@ -71,25 +71,13 @@
     <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_cancel_gray_24dp"
-            android:id="@+id/detail_item_image" app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/detail_item_attachment_image" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@id/detail_item_message_text"
             android:layout_marginStart="10dp" android:layout_marginEnd="10dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true" android:maxHeight="150dp" android:layout_marginTop="5dp"
-            app:layout_constraintBottom_toTopOf="@id/detail_item_attachment_text" android:layout_marginBottom="5dp"
-            app:shapeAppearanceOverlay="@style/roundedCornersImageView" android:visibility="visible"/>
-    <TextView
-            android:text="📄attachment.jpg, 20.1 KB"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_item_attachment_text"
-            android:textColor="@color/primaryTextColor"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:autoLink="web"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="10dp"
-            app:layout_constraintTop_toBottomOf="@id/detail_item_image"
-            app:layout_constraintBottom_toTopOf="@+id/detail_item_tags_text" android:layout_marginTop="3dp"/>
+            app:shapeAppearanceOverlay="@style/roundedCornersImageView" android:visibility="visible"
+            android:layout_marginBottom="3dp" app:layout_constraintBottom_toTopOf="@id/detail_item_tags_text"/>
     <TextView
             android:text="Tags: ssh, zfs"
             android:layout_width="0dp"
@@ -98,13 +86,43 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="10dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_text"
-            app:layout_constraintBottom_toTopOf="@id/detail_item_padding_bottom"/>
+            app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_image"
+            app:layout_constraintBottom_toTopOf="@id/detail_item_attachment_box"
+            app:layout_constraintHorizontal_bias="0.0" android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@id/detail_item_tags_text"
+            android:id="@+id/detail_item_attachment_box" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="10dp" android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toTopOf="@id/detail_item_padding_bottom"
+            android:visibility="visible" android:layout_marginTop="2dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true" android:focusable="true" android:padding="4dp" android:paddingStart="0dp">
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_cancel_gray_24dp"
+                android:id="@+id/detail_item_attachment_icon" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/detail_item_attachment_info" android:layout_marginEnd="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+        />
+        <TextView
+                android:text="attachment.jpg\n58 MB, not downloaded, expires 1/2/2022 10:30 PM"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_item_attachment_info"
+                android:textColor="@color/primaryTextColor"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintStart_toEndOf="@+id/detail_item_attachment_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/detail_item_attachment_icon"
+                app:layout_constraintBottom_toBottomOf="@+id/detail_item_attachment_icon"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
             android:layout_width="match_parent"
-            android:layout_height="10dp" android:id="@+id/detail_item_padding_bottom"
+            android:layout_height="5dp" android:id="@+id/detail_item_padding_bottom"
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/detail_item_tags_text"
-            app:layout_constraintTop_toBottomOf="@id/detail_item_tags_text"/>
+            app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_box"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -45,23 +45,24 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
             if (!response.isSuccessful || response.body == null) {
                 throw Exception("Attachment download failed: ${response.code}")
             }
-            val name = attachment.name ?: "attachment.bin"
-            val mimeType = attachment.type ?: "application/octet-stream"
+            val name = attachment.name
             val size = attachment.size ?: 0
             val resolver = applicationContext.contentResolver
             val details = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-                put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+                if (attachment.type != null) {
+                    put(MediaStore.MediaColumns.MIME_TYPE, attachment.type)
+                }
                 put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
                 put(MediaStore.MediaColumns.IS_DOWNLOAD, 1)
             }
             val uri = resolver.insert(MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL), details)
                 ?: throw Exception("Cannot get content URI")
             Log.d(TAG, "Starting download to content URI: $uri")
+            var bytesCopied: Long = 0
             val out = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
             out.use { fileOut ->
                 val fileIn = response.body!!.byteStream()
-                var bytesCopied: Long = 0
                 val buffer = ByteArray(8 * 1024)
                 var bytes = fileIn.read(buffer)
                 var lastProgress = 0L
@@ -80,7 +81,7 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
                 }
             }
             Log.d(TAG, "Attachment download: successful response, proceeding with download")
-            val newAttachment = attachment.copy(contentUri = uri.toString(), progress = PROGRESS_DONE)
+            val newAttachment = attachment.copy(contentUri = uri.toString(), size = bytesCopied, progress = PROGRESS_DONE)
             val newNotification = notification.copy(attachment = newAttachment)
             repository.updateNotification(newNotification)
             notifier.update(subscription, newNotification)

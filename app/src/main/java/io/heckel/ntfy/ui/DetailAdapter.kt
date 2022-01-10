@@ -1,12 +1,10 @@
 package io.heckel.ntfy.ui
 
 import android.app.DownloadManager
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +18,14 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import io.heckel.ntfy.R
+import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.PROGRESS_DONE
+import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.msg.AttachmentDownloadWorker
-import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.util.*
 import java.util.*
+import kotlin.math.exp
 
 
 class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -59,11 +60,13 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
         private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
-        private val newImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
+        private val newDotImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
         private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags_text)
-        private val imageView: ImageView = itemView.findViewById(R.id.detail_item_image)
-        private val attachmentView: TextView = itemView.findViewById(R.id.detail_item_attachment_text)
         private val menuButton: ImageButton = itemView.findViewById(R.id.detail_item_menu_button)
+        private val attachmentImageView: ImageView = itemView.findViewById(R.id.detail_item_attachment_image)
+        private val attachmentBoxView: View = itemView.findViewById(R.id.detail_item_attachment_box)
+        private val attachmentIconView: ImageView = itemView.findViewById(R.id.detail_item_attachment_icon)
+        private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_info)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -73,7 +76,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
 
             dateView.text = Date(notification.timestamp * 1000).toString()
             messageView.text = formatMessage(notification)
-            newImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
+            newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             itemView.setOnClickListener { onClick(notification) }
             itemView.setOnLongClickListener { onLongClick(notification); true }
             if (notification.title != "") {
@@ -91,6 +94,11 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             if (selected.contains(notification.id)) {
                 itemView.setBackgroundResource(R.color.primarySelectedRowColor);
             }
+            renderPriority(context, notification)
+            maybeRenderAttachment(context, notification)
+        }
+
+        private fun renderPriority(context: Context, notification: Notification) {
             when (notification.priority) {
                 1 -> {
                     priorityImageView.visibility = View.VISIBLE
@@ -112,66 +120,170 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_5_24dp))
                 }
             }
-            val contentUri = notification.attachment?.contentUri
-            val fileExists = if (contentUri != null) fileExists(context, contentUri) else false
-            if (contentUri != null && fileExists && supportedImage(notification.attachment.type)) {
-                try {
-                    val resolver = context.applicationContext.contentResolver
-                    val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
-                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
-                    imageView.setImageBitmap(bitmap)
-                    imageView.visibility = View.VISIBLE
-                } catch (_: Exception) {
-                    imageView.visibility = View.GONE
-                }
-            } else {
-                imageView.visibility = View.GONE
-            }
-            if (notification.attachment != null) {
-                attachmentView.text = formatAttachmentInfo(notification, fileExists)
-                attachmentView.visibility = View.VISIBLE
-                menuButton.visibility = View.VISIBLE
-                menuButton.setOnClickListener { menuView ->
-                    val popup = PopupMenu(context, menuView)
-                    popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
+        }
 
-                    val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
-                    val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
-                    val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
-                    val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
-                    if (contentUri != null && fileExists) {
-                        openItem.setOnMenuItemClickListener {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(contentUri))) // FIXME try/catch
-                            true
-                        }
-                        browseItem.setOnMenuItemClickListener {
-                            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
-                            true
-                        }
-                        copyUrlItem.setOnMenuItemClickListener {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText("attachment url", notification.attachment.url)
-                            clipboard.setPrimaryClip(clip)
-                            Toast
-                                .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                                .show()
-                            true
-                        }
-                        downloadItem.isVisible = false
-                    } else {
-                        openItem.isVisible = false
-                        browseItem.isVisible = false
-                        downloadItem.setOnMenuItemClickListener {
-                            scheduleAttachmentDownload(context, notification)
-                            true
-                        }
-                    }
-
-                    popup.show()
-                }
-            } else {
-                attachmentView.visibility = View.GONE
+        private fun maybeRenderAttachment(context: Context, notification: Notification) {
+            if (notification.attachment == null) {
                 menuButton.visibility = View.GONE
+                attachmentImageView.visibility = View.GONE
+                attachmentBoxView.visibility = View.GONE
+                return
+            }
+            val attachment = notification.attachment
+            val exists = if (attachment.contentUri != null) fileExists(context, attachment.contentUri) else false
+            maybeRenderAttachmentImage(context, attachment, exists)
+            renderAttachmentBox(context, notification, attachment, exists)
+        }
+
+        private fun renderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean) {
+            attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
+            attachmentIconView.setImageResource(if (attachment.type?.startsWith("image/") == true) {
+                R.drawable.ic_file_image_gray_24dp
+            } else if (attachment.type?.startsWith("video/") == true) {
+                R.drawable.ic_file_video_gray_24dp
+            } else if (attachment.type?.startsWith("audio/") == true) {
+                R.drawable.ic_file_audio_gray_24dp
+            } else {
+                R.drawable.ic_file_document_gray_24dp
+            })
+            val menuButtonPopupMenu = createAttachmentPopup(context, menuButton, notification, attachment, exists) // Heavy lifting not during on-click
+            if (menuButtonPopupMenu != null) {
+                menuButton.setOnClickListener { menuButtonPopupMenu.show() }
+                menuButton.visibility = View.VISIBLE
+            } else {
+                menuButton.visibility = View.GONE
+            }
+            val attachmentBoxPopupMenu = createAttachmentPopup(context, attachmentBoxView, notification, attachment, exists) // Heavy lifting not during on-click
+            if (attachmentBoxPopupMenu != null) {
+                attachmentBoxView.setOnClickListener { attachmentBoxPopupMenu.show() }
+            } else {
+                attachmentBoxView.setOnClickListener {
+                    Toast
+                        .makeText(context, context.getString(R.string.detail_item_cannot_download), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+            attachmentBoxView.visibility = View.VISIBLE
+        }
+
+        private fun createAttachmentPopup(context: Context, anchor: View?, notification: Notification, attachment: Attachment, exists: Boolean): PopupMenu? {
+            val popup = PopupMenu(context, anchor)
+            popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
+            val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
+            val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
+            val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
+            val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
+            val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
+            if (attachment.contentUri != null) {
+                openItem.setOnMenuItemClickListener {
+                    try {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(attachment.contentUri)))
+                    } catch (e: ActivityNotFoundException) {
+                        Toast
+                            .makeText(context, context.getString(R.string.detail_item_cannot_open), Toast.LENGTH_LONG)
+                            .show()
+                    } catch (_: Exception) {
+                        // URI parse exception and others; we don't care!
+                    }
+                    true
+                }
+            }
+            browseItem.setOnMenuItemClickListener {
+                context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+                true
+            }
+            copyUrlItem.setOnMenuItemClickListener {
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("attachment url", attachment.url)
+                clipboard.setPrimaryClip(clip)
+                Toast
+                    .makeText(context, context.getString(R.string.detail_item_menu_copy_url_copied), Toast.LENGTH_LONG)
+                    .show()
+                true
+            }
+            downloadItem.setOnMenuItemClickListener {
+                scheduleAttachmentDownload(context, notification)
+                true
+            }
+            openItem.isVisible = exists
+            browseItem.isVisible = exists
+            downloadItem.isVisible = !exists && !expired
+            copyUrlItem.isVisible = !expired
+            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible
+            if (noOptions) {
+                return null
+            }
+            return popup
+        }
+
+        private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
+            val name = queryAttachmentFilename(context, attachment)
+            val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
+            val downloading = !exists && attachment.progress in 0..99
+            val deleted = !exists && attachment.progress == PROGRESS_DONE
+            val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
+            val expires = attachment.expires != null && attachment.expires > System.currentTimeMillis()/1000
+            val infos = mutableListOf<String>()
+            if (attachment.size != null) {
+                infos.add(formatBytes(attachment.size))
+            }
+            if (notYetDownloaded) {
+                if (expired) {
+                    infos.add("not downloaded, link expired")
+                } else if (expires) {
+                    infos.add("not downloaded, link expires ${formatDateShort(attachment.expires!!)}")
+                } else {
+                    infos.add("not downloaded")
+                }
+            } else if (downloading) {
+                infos.add("${attachment.progress}% downloaded")
+            } else if (deleted) {
+                if (expired) {
+                    infos.add("deleted, link expired")
+                } else if (expires) {
+                    infos.add("deleted, link expires ${formatDateShort(attachment.expires!!)}")
+                } else {
+                    infos.add("deleted")
+                }
+            }
+            return if (infos.size > 0) {
+                "$name\n${infos.joinToString(", ")}"
+            } else {
+                name
+            }
+        }
+
+        private fun queryAttachmentFilename(context: Context, attachment: Attachment): String {
+            if (attachment.contentUri == null) {
+                return attachment.name
+            }
+            try {
+                val resolver = context.applicationContext.contentResolver
+                val cursor = resolver.query(Uri.parse(attachment.contentUri), null, null, null, null) ?: return attachment.name
+                return cursor.use { c ->
+                    val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                    c.moveToFirst()
+                    c.getString(nameIndex)
+                }
+            } catch (_: Exception) {
+                return attachment.name
+            }
+        }
+
+        private fun maybeRenderAttachmentImage(context: Context, att: Attachment, exists: Boolean) {
+            val fileIsImage = att.contentUri != null && exists && supportedImage(att.type)
+            if (!fileIsImage) {
+                attachmentImageView.visibility = View.GONE
+                return
+            }
+            try {
+                val resolver = context.applicationContext.contentResolver
+                val bitmapStream = resolver.openInputStream(Uri.parse(att.contentUri))
+                val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                attachmentImageView.setImageBitmap(bitmap)
+                attachmentImageView.visibility = View.VISIBLE
+            } catch (_: Exception) {
+                attachmentImageView.visibility = View.GONE
             }
         }
 

@@ -114,6 +114,8 @@
     <string name="detail_item_menu_download">Download file</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
     <string name="detail_item_menu_copy_url_copied">Copied URL to clipboard</string>
+    <string name="detail_item_cannot_download">Cannot open or download attachment. Link expired and no local file found.</string>
+    <string name="detail_item_cannot_open">Cannot open attachment: File may have been deleted, or there is no app to open the file.</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications enabled</string>

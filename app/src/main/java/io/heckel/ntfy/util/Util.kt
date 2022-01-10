@@ -109,24 +109,6 @@ fun formatTitle(notification: Notification): String {
     }
 }
 
-// FIXME duplicate code
-fun formatAttachmentInfo(notification: Notification, fileExists: Boolean): String {
-    if (notification.attachment == null) return ""
-    val att = notification.attachment
-    val infos = mutableListOf<String>()
-    if (att.name != null) infos.add(att.name)
-    if (att.size != null) infos.add(formatBytes(att.size))
-    //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
-    if (att.progress in 0..99) infos.add("${att.progress}%")
-    if (!fileExists) {
-        if (att.progress == PROGRESS_NONE) infos.add("not downloaded")
-        else infos.add("deleted")
-    }
-    if (infos.size == 0) return ""
-    if (att.progress < 100) return "Downloading ${infos.joinToString(", ")}"
-    return "\uD83D\uDCC4 " + infos.joinToString(", ")
-}
-
 // Checks in the most horrible way if a content URI exists; I couldn't find a better way
 fun fileExists(context: Context, uri: String): Boolean {
     val resolver = context.applicationContext.contentResolver
@@ -175,7 +157,7 @@ fun formatBytes(bytes: Long): String {
         i -= 10
     }
     value *= java.lang.Long.signum(bytes).toLong()
-    return java.lang.String.format("%.1f %ciB", value / 1024.0, ci.current())
+    return java.lang.String.format("%.1f %cB", value / 1024.0, ci.current())
 }
 
 fun supportedImage(mimeType: String?): Boolean {
