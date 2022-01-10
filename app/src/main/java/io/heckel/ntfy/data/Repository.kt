@@ -161,6 +161,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
     }
 
+    fun getAutoDownloadEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, true) // Enabled by default
+    }
+
+    fun setAutoDownloadEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, enabled)
+            .apply()
+    }
+
     fun getBroadcastEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
     }
@@ -291,6 +301,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
+        const val SHARED_PREFS_AUTO_DOWNLOAD_ENABLED = "AutoDownload"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"

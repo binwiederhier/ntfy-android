@@ -106,6 +106,26 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
+            // Auto download
+            val autoDownloadPrefId = context?.getString(R.string.settings_notifications_auto_download_key) ?: return
+            val autoDownload: SwitchPreference? = findPreference(autoDownloadPrefId)
+            autoDownload?.isChecked = repository.getAutoDownloadEnabled()
+            autoDownload?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setAutoDownloadEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getAutoDownloadEnabled()
+                }
+            }
+            autoDownload?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_auto_download_summary_on)
+                } else {
+                    getString(R.string.settings_notifications_auto_download_summary_off)
+                }
+            }
+
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
             val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)

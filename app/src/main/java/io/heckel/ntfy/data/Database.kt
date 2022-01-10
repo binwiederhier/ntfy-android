@@ -68,8 +68,12 @@ data class Attachment(
     @ColumnInfo(name = "progress") val progress: Int,
 ) {
     constructor(name: String?, type: String?, size: Long?, expires: Long?, url: String) :
-            this(name, type, size, expires, url, null, 0)
+            this(name, type, size, expires, url, null, PROGRESS_NONE)
 }
+
+const val PROGRESS_NONE = -1
+const val PROGRESS_INDETERMINATE = -2
+const val PROGRESS_DONE = 100
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)
 abstract class Database : RoomDatabase() {

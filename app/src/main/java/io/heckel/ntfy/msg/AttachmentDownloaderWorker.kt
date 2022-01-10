@@ -8,11 +8,7 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Attachment
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Repository
-import io.heckel.ntfy.data.Subscription
-import io.heckel.ntfy.msg.NotificationService.Companion.PROGRESS_DONE
+import io.heckel.ntfy.data.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
@@ -33,12 +29,12 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
         val repository = app.repository
         val notification = repository.getNotification(notificationId) ?: return Result.failure()
         val subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
-        val attachment = notification.attachment ?: return Result.failure()
-        downloadAttachment(repository, subscription, notification, attachment)
+        downloadAttachment(repository, subscription, notification)
         return Result.success()
     }
 
-    private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification, attachment: Attachment) {
+    private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification) {
+        val attachment = notification.attachment ?: return
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         val request = Request.Builder()
@@ -71,8 +67,11 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
                 var lastProgress = 0L
                 while (bytes >= 0) {
                     if (System.currentTimeMillis() - lastProgress > 500) {
-                        val progress = if (size > 0) (bytesCopied.toFloat()/size.toFloat()*100).toInt() else NotificationService.PROGRESS_INDETERMINATE
-                        notifier.update(subscription, notification, progress = progress)
+                        val progress = if (size > 0) (bytesCopied.toFloat()/size.toFloat()*100).toInt() else PROGRESS_INDETERMINATE
+                        val newAttachment = attachment.copy(progress = progress)
+                        val newNotification = notification.copy(attachment = newAttachment)
+                        notifier.update(subscription, newNotification)
+                        repository.updateNotification(newNotification)
                         lastProgress = System.currentTimeMillis()
                     }
                     fileOut.write(buffer, 0, bytes)
@@ -81,10 +80,10 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
                 }
             }
             Log.d(TAG, "Attachment download: successful response, proceeding with download")
-            val newAttachment = attachment.copy(contentUri = uri.toString())
+            val newAttachment = attachment.copy(contentUri = uri.toString(), progress = PROGRESS_DONE)
             val newNotification = notification.copy(attachment = newAttachment)
             repository.updateNotification(newNotification)
-            notifier.update(subscription, newNotification, progress = PROGRESS_DONE)
+            notifier.update(subscription, newNotification)
         }
     }
 

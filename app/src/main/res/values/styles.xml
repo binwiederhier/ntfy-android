@@ -6,4 +6,10 @@
         <item name="android:statusBarColor">@color/primaryColor</item>
         <item name="actionModeBackground">@color/primaryDarkColor</item>
     </style>
+
+    <!-- Rounded corners in images: https://stackoverflow.com/a/61960983/1440785 -->
+    <style name="roundedCornersImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+    </style>
 </resources>

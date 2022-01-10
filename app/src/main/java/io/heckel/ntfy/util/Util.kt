@@ -2,8 +2,11 @@ package io.heckel.ntfy.util
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.net.Uri
 import android.view.Window
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.data.Subscription
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -103,6 +106,36 @@ fun formatTitle(notification: Notification): String {
         notification.title
     } else {
         emojis.joinToString("") + " " + notification.title
+    }
+}
+
+// FIXME duplicate code
+fun formatAttachmentInfo(notification: Notification, fileExists: Boolean): String {
+    if (notification.attachment == null) return ""
+    val att = notification.attachment
+    val infos = mutableListOf<String>()
+    if (att.name != null) infos.add(att.name)
+    if (att.size != null) infos.add(formatBytes(att.size))
+    //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
+    if (att.progress in 0..99) infos.add("${att.progress}%")
+    if (!fileExists) {
+        if (att.progress == PROGRESS_NONE) infos.add("not downloaded")
+        else infos.add("deleted")
+    }
+    if (infos.size == 0) return ""
+    if (att.progress < 100) return "Downloading ${infos.joinToString(", ")}"
+    return "\uD83D\uDCC4 " + infos.joinToString(", ")
+}
+
+// Checks in the most horrible way if a content URI exists; I couldn't find a better way
+fun fileExists(context: Context, uri: String): Boolean {
+    val resolver = context.applicationContext.contentResolver
+    return try {
+        val fileIS = resolver.openInputStream(Uri.parse(uri))
+        fileIS?.close()
+        true
+    } catch (_: Exception) {
+        false
     }
 }
 

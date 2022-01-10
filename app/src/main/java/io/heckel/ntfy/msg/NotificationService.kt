@@ -24,15 +24,21 @@ class NotificationService(val context: Context) {
         displayInternal(subscription, notification)
     }
 
-    fun update(subscription: Subscription, notification: Notification, progress: Int = PROGRESS_NONE) {
-        Log.d(TAG, "Updating notification $notification")
-        displayInternal(subscription, notification, update = true, progress = progress)
+    fun update(subscription: Subscription, notification: Notification) {
+        val active = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            notificationManager.activeNotifications.find { it.id == notification.notificationId } != null
+        } else {
+            true
+        }
+        if (active) {
+            Log.d(TAG, "Updating notification $notification")
+            displayInternal(subscription, notification, update = true)
+        }
     }
 
     fun cancel(notification: Notification) {
         if (notification.notificationId != 0) {
             Log.d(TAG, "Cancelling notification ${notification.id}: ${notification.message}")
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(notification.notificationId)
         }
     }
@@ -41,9 +47,9 @@ class NotificationService(val context: Context) {
         (1..5).forEach { priority -> maybeCreateNotificationChannel(priority) }
     }
 
-    private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false, progress: Int = PROGRESS_NONE) {
+    private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val message = maybeWithAttachmentInfo(formatMessage(notification), notification, progress)
+        val message = maybeWithAttachmentInfo(formatMessage(notification), notification)
         val channelId = toChannelId(notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
@@ -55,7 +61,7 @@ class NotificationService(val context: Context) {
         setStyle(builder, notification, message) // Preview picture or big text style
         setContentIntent(builder, subscription, notification)
         maybeSetSound(builder, update)
-        maybeSetProgress(builder, progress)
+        maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
 
@@ -63,16 +69,17 @@ class NotificationService(val context: Context) {
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
-    private fun maybeWithAttachmentInfo(message: String, notification: Notification, progress: Int): String {
-        if (progress < 0 || notification.attachment == null) return message
-        val att = notification.attachment
+    // FIXME duplicate code
+    private fun maybeWithAttachmentInfo(message: String, notification: Notification): String {
+        val att = notification.attachment ?: return message
+        if (att.progress < 0) return message
         val infos = mutableListOf<String>()
         if (att.name != null) infos.add(att.name)
         if (att.size != null) infos.add(formatBytes(att.size))
         //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
-        if (progress in 0..99) infos.add("${progress}%")
+        if (att.progress in 0..99) infos.add("${att.progress}%")
         if (infos.size == 0) return message
-        if (progress < 100) return "Downloading ${infos.joinToString(", ")}\n${message}"
+        if (att.progress < 100) return "Downloading ${infos.joinToString(", ")}\n${message}"
         return "${message}\nFile: ${infos.joinToString(", ")}"
     }
 
@@ -120,9 +127,10 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeSetProgress(builder: NotificationCompat.Builder, progress: Int) {
+    private fun maybeSetProgress(builder: NotificationCompat.Builder, notification: Notification) {
+        val progress = notification.attachment?.progress
         if (progress in 0..99) {
-            builder.setProgress(100, progress, false)
+            builder.setProgress(100, progress!!, false)
         } else {
             builder.setProgress(0, 0, false) // Remove progress bar
         }
@@ -206,10 +214,6 @@ class NotificationService(val context: Context) {
     }
 
     companion object {
-        const val PROGRESS_NONE = -1
-        const val PROGRESS_INDETERMINATE = -2
-        const val PROGRESS_DONE = 100
-
         private const val TAG = "NtfyNotifService"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"

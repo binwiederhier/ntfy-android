@@ -8,6 +8,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.msg.*
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority

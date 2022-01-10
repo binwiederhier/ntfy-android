@@ -50,7 +50,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldDownload(subscription: Subscription, notification: Notification): Boolean {
-        return notification.attachment != null
+        return notification.attachment != null && repository.getAutoDownloadEnabled()
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
@@ -84,12 +84,10 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun scheduleAttachmentDownload(notification: Notification) {
-        Log.d(TAG, "Enqueuing work to download attachment (+ preview if available)")
+        Log.d(TAG, "Enqueuing work to download attachment")
         val workManager = WorkManager.getInstance(context)
         val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
-            .setInputData(workDataOf(
-                "id" to notification.id,
-            ))
+            .setInputData(workDataOf("id" to notification.id))
             .build()
         workManager.enqueue(workRequest)
     }

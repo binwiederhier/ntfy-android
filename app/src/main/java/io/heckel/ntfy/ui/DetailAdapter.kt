@@ -1,22 +1,31 @@
 package io.heckel.ntfy.ui
 
+import android.app.DownloadManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.app.NotificationCompat
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.msg.AttachmentDownloadWorker
+import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.util.*
 import java.util.*
+
 
 class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
@@ -51,13 +60,15 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
         private val newImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
-        private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags)
+        private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags_text)
         private val imageView: ImageView = itemView.findViewById(R.id.detail_item_image)
+        private val attachmentView: TextView = itemView.findViewById(R.id.detail_item_attachment_text)
+        private val menuButton: ImageButton = itemView.findViewById(R.id.detail_item_menu_button)
 
         fun bind(notification: Notification) {
             this.notification = notification
 
-            val ctx = itemView.context
+            val context = itemView.context
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
 
             dateView.text = Date(notification.timestamp * 1000).toString()
@@ -73,7 +84,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             }
             if (unmatchedTags.isNotEmpty()) {
                 tagsView.visibility = View.VISIBLE
-                tagsView.text = ctx.getString(R.string.detail_item_tags, unmatchedTags.joinToString(", "))
+                tagsView.text = context.getString(R.string.detail_item_tags, unmatchedTags.joinToString(", "))
             } else {
                 tagsView.visibility = View.GONE
             }
@@ -83,29 +94,29 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             when (notification.priority) {
                 1 -> {
                     priorityImageView.visibility = View.VISIBLE
-                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_1_24dp))
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_1_24dp))
                 }
                 2 -> {
                     priorityImageView.visibility = View.VISIBLE
-                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_2_24dp))
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_2_24dp))
                 }
                 3 -> {
                     priorityImageView.visibility = View.GONE
                 }
                 4 -> {
                     priorityImageView.visibility = View.VISIBLE
-                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_4_24dp))
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_4_24dp))
                 }
                 5 -> {
                     priorityImageView.visibility = View.VISIBLE
-                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_priority_5_24dp))
+                    priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_5_24dp))
                 }
             }
-            // 📄
             val contentUri = notification.attachment?.contentUri
-            if (contentUri != null && supportedImage(notification.attachment.type)) {
+            val fileExists = if (contentUri != null) fileExists(context, contentUri) else false
+            if (contentUri != null && fileExists && supportedImage(notification.attachment.type)) {
                 try {
-                    val resolver = itemView.context.applicationContext.contentResolver
+                    val resolver = context.applicationContext.contentResolver
                     val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
                     val bitmap = BitmapFactory.decodeStream(bitmapStream)
                     imageView.setImageBitmap(bitmap)
@@ -116,6 +127,61 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             } else {
                 imageView.visibility = View.GONE
             }
+            if (notification.attachment != null) {
+                attachmentView.text = formatAttachmentInfo(notification, fileExists)
+                attachmentView.visibility = View.VISIBLE
+                menuButton.visibility = View.VISIBLE
+                menuButton.setOnClickListener { menuView ->
+                    val popup = PopupMenu(context, menuView)
+                    popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
+
+                    val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
+                    val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
+                    val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
+                    val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
+                    if (contentUri != null && fileExists) {
+                        openItem.setOnMenuItemClickListener {
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(contentUri))) // FIXME try/catch
+                            true
+                        }
+                        browseItem.setOnMenuItemClickListener {
+                            context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+                            true
+                        }
+                        copyUrlItem.setOnMenuItemClickListener {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("attachment url", notification.attachment.url)
+                            clipboard.setPrimaryClip(clip)
+                            Toast
+                                .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                                .show()
+                            true
+                        }
+                        downloadItem.isVisible = false
+                    } else {
+                        openItem.isVisible = false
+                        browseItem.isVisible = false
+                        downloadItem.setOnMenuItemClickListener {
+                            scheduleAttachmentDownload(context, notification)
+                            true
+                        }
+                    }
+
+                    popup.show()
+                }
+            } else {
+                attachmentView.visibility = View.GONE
+                menuButton.visibility = View.GONE
+            }
+        }
+
+        private fun scheduleAttachmentDownload(context: Context, notification: Notification) {
+            Log.d(TAG, "Enqueuing work to download attachment")
+            val workManager = WorkManager.getInstance(context)
+            val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
+                .setInputData(workDataOf("id" to notification.id))
+                .build()
+            workManager.enqueue(workRequest)
         }
     }
 
@@ -127,5 +193,9 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        const val TAG = "NtfyDetailAdapter"
     }
 }

@@ -87,8 +87,8 @@ class SubscriberConnection(
 
     fun cancel() {
         Log.d(TAG, "[$url] Cancelling connection")
-        job?.cancel()
-        call?.cancel()
+        if (this::job.isInitialized) job?.cancel()
+        if (this::call.isInitialized) call?.cancel()
     }
 
     private fun nextRetryMillis(retryMillis: Long, startTime: Long): Long {

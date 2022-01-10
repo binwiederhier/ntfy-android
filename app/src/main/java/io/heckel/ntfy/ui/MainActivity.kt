@@ -118,12 +118,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         startPeriodicPollWorker()
         startPeriodicServiceRestartWorker()
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1234);
         }
         else {
             Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
