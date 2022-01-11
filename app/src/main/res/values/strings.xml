@@ -172,6 +172,10 @@
     <string name="settings_unified_push_base_url_title">Server URL</string>
     <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_wakelock_key">WakelockEnabled</string>
+    <string name="settings_advanced_wakelock_title">Permanent wakelock (needed for some devices)</string>
+    <string name="settings_advanced_wakelock_summary_enabled">Higher battery usage but should always wake up</string>
+    <string name="settings_advanced_wakelock_summary_disabled">Minimal battery drain, some devices will not wake up</string>
     <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
