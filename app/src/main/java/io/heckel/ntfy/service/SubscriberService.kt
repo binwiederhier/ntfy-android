@@ -123,6 +123,7 @@ class SubscriberService : Service() {
         // Releasing wake-lock and stopping ourselves
         try {
             wakeLock?.let {
+                // Release all acquire()
                 while (it.isHeld) {
                     it.release()
                 }
