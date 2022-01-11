@@ -25,6 +25,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     fun dispatch(subscription: Subscription, notification: Notification) {
+        Log.d(TAG, "Dispatching $notification for subscription $subscription")
+
         val muted = getMuted(subscription)
         val notify = shouldNotify(subscription, notification, muted)
         val broadcast = shouldBroadcast(subscription)

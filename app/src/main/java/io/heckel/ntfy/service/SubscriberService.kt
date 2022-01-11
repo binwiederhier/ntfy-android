@@ -11,8 +11,6 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.work.Worker
-import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -140,37 +138,38 @@ class SubscriberService : Service() {
 
     private fun refreshConnections() =
         GlobalScope.launch(Dispatchers.IO) {
-            // Group subscriptions by base URL (Base URL -> Map<SubId -> Sub>.
-            // There is only one connection per base URL.
-            val subscriptions = repository.getSubscriptions()
+            // Group INSTANT subscriptions by base URL, there is only one connection per base URL
+            val instantSubscriptions = repository.getSubscriptions()
                 .filter { s -> s.instant }
-            val subscriptionsByBaseUrl = subscriptions
+            val instantSubscriptionsByBaseUrl = instantSubscriptions // BaseUrl->Map[Topic->SubscriptionId]
                 .groupBy { s -> s.baseUrl }
-                .mapValues { entry -> entry.value.associateBy { it.id } }
+                .mapValues { entry ->
+                    entry.value.associate { subscription -> subscription.topic to subscription.id }
+                }
 
             Log.d(TAG, "Refreshing subscriptions")
-            Log.d(TAG, "- Subscriptions: $subscriptionsByBaseUrl")
+            Log.d(TAG, "- Subscriptions: $instantSubscriptionsByBaseUrl")
             Log.d(TAG, "- Active connections: $connections")
 
             // Start new connections and restart connections (if subscriptions have changed)
-            subscriptionsByBaseUrl.forEach { (baseUrl, subscriptions) ->
+            instantSubscriptionsByBaseUrl.forEach { (baseUrl, subscriptions) ->
                 val connection = connections[baseUrl]
                 var since = 0L
-                if (connection != null && !connection.matches(subscriptions)) {
+                if (connection != null && !connection.matches(subscriptions.values)) {
                     since = connection.since()
                     connections.remove(baseUrl)
                     connection.cancel()
                 }
                 if (!connections.containsKey(baseUrl)) {
                     val serviceActive = { -> isServiceStarted }
-                    val connection = SubscriberConnection(api, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                    val connection = SubscriberConnection(repository, api, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, serviceActive)
                     connections[baseUrl] = connection
                     connection.start(this)
                 }
             }
 
             // Close connections without subscriptions
-            val baseUrls = subscriptionsByBaseUrl.keys
+            val baseUrls = instantSubscriptionsByBaseUrl.keys
             connections.keys().toList().forEach { baseUrl ->
                 if (!baseUrls.contains(baseUrl)) {
                     val connection = connections.remove(baseUrl)
@@ -182,12 +181,12 @@ class SubscriberService : Service() {
             if (connections.size > 0) {
                 synchronized(this) {
                     val title = getString(R.string.channel_subscriber_notification_title)
-                    val text = when (subscriptions.size) {
+                    val text = when (instantSubscriptions.size) {
                         1 -> getString(R.string.channel_subscriber_notification_text_one)
                         2 -> getString(R.string.channel_subscriber_notification_text_two)
                         3 -> getString(R.string.channel_subscriber_notification_text_three)
                         4 -> getString(R.string.channel_subscriber_notification_text_four)
-                        else -> getString(R.string.channel_subscriber_notification_text_more, subscriptions.size)
+                        else -> getString(R.string.channel_subscriber_notification_text_more, instantSubscriptions.size)
                     }
                     serviceNotification = createNotification(title, text)
                     notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
@@ -195,8 +194,7 @@ class SubscriberService : Service() {
             }
         }
 
-    private fun onStateChanged(subscriptions: Collection<Subscription>, state: ConnectionState) {
-        val subscriptionIds = subscriptions.map { it.id }
+    private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
         repository.updateState(subscriptionIds, state)
     }
 

@@ -9,9 +9,12 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import io.heckel.ntfy.R
+import io.heckel.ntfy.data.*
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
@@ -49,38 +52,23 @@ class NotificationService(val context: Context) {
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val message = maybeWithAttachmentInfo(formatMessage(notification), notification)
         val channelId = toChannelId(notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.primaryColor))
             .setContentTitle(title)
-            .setContentText(message)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-        setStyle(builder, notification, message) // Preview picture or big text style
-        setContentIntent(builder, subscription, notification)
+        setStyleAndText(builder, notification) // Preview picture or big text style
+        setClickAction(builder, subscription, notification)
         maybeSetSound(builder, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
+        maybeAddDownloadAction(builder, notification)
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
-    }
-
-    // FIXME duplicate code
-    private fun maybeWithAttachmentInfo(message: String, notification: Notification): String {
-        val att = notification.attachment ?: return message
-        if (att.progress < 0) return message
-        val infos = mutableListOf<String>()
-        if (att.name != null) infos.add(att.name)
-        if (att.size != null) infos.add(formatBytes(att.size))
-        //if (att.expires != null && att.expires != 0L) infos.add(formatDateShort(att.expires))
-        if (att.progress in 0..99) infos.add("${att.progress}%")
-        if (infos.size == 0) return message
-        if (att.progress < 100) return "Downloading ${infos.joinToString(", ")}\n${message}"
-        return "${message}\nFile: ${infos.joinToString(", ")}"
     }
 
     private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
@@ -92,7 +80,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun setStyle(builder: NotificationCompat.Builder, notification: Notification, message: String) {
+    private fun setStyleAndText(builder: NotificationCompat.Builder, notification: Notification) {
         val contentUri = notification.attachment?.contentUri
         val isSupportedImage = supportedImage(notification.attachment?.type)
         if (contentUri != null && isSupportedImage) {
@@ -101,19 +89,46 @@ class NotificationService(val context: Context) {
                 val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
                 val bitmap = BitmapFactory.decodeStream(bitmapStream)
                 builder
+                    .setContentText(formatMessage(notification))
                     .setLargeIcon(bitmap)
                     .setStyle(NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
                         .bigLargeIcon(null))
             } catch (_: Exception) {
-                builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+                val message = formatMessageMaybeWithAttachmentInfo(notification)
+                builder
+                    .setContentText(message)
+                    .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             }
         } else {
-            builder.setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            val message = formatMessageMaybeWithAttachmentInfo(notification)
+            builder
+                .setContentText(message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(message))
         }
     }
 
-    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
+    private fun formatMessageMaybeWithAttachmentInfo(notification: Notification): String {
+        val message = formatMessage(notification)
+        val attachment = notification.attachment ?: return message
+        val infos = if (attachment.size != null) {
+            "${attachment.name}, ${formatBytes(attachment.size)}"
+        } else {
+            attachment.name
+        }
+        if (attachment.progress in 0..99) {
+            return context.getString(R.string.notification_popup_file_downloading, infos, attachment.progress, message)
+        }
+        if (attachment.progress == PROGRESS_DONE) {
+            return context.getString(R.string.notification_popup_file_download_successful, message, infos)
+        }
+        if (attachment.progress == PROGRESS_FAILED) {
+            return context.getString(R.string.notification_popup_file_download_failed, message, infos)
+        }
+        return context.getString(R.string.notification_popup_file, message, infos)
+    }
+
+    private fun setClickAction(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
         if (notification.click == "") {
             builder.setContentIntent(detailActivityIntent(subscription))
         } else {
@@ -140,6 +155,8 @@ class NotificationService(val context: Context) {
         if (notification.attachment?.contentUri != null) {
             val contentUri = Uri.parse(notification.attachment.contentUri)
             val intent = Intent(Intent.ACTION_VIEW, contentUri)
+            intent.setDataAndType(contentUri, notification.attachment.type ?: "application/octet-stream") // Required for Android <= P
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_open), pendingIntent).build())
         }
@@ -148,8 +165,30 @@ class NotificationService(val context: Context) {
     private fun maybeAddBrowseAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri != null) {
             val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_browse), pendingIntent).build())
+        }
+    }
+
+    private fun maybeAddDownloadAction(builder: NotificationCompat.Builder, notification: Notification) {
+        if (notification.attachment?.contentUri == null && listOf(PROGRESS_NONE, PROGRESS_FAILED).contains(notification.attachment?.progress)) {
+            val intent = Intent(context, DownloadBroadcastReceiver::class.java)
+            intent.putExtra("id", notification.id)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_download), pendingIntent).build())
+        }
+    }
+
+    class DownloadBroadcastReceiver : android.content.BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val id = intent.getStringExtra("id") ?: return
+            Log.d(TAG, "Enqueuing work to download attachment for notification $id")
+            val workManager = WorkManager.getInstance(context)
+            val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
+                .setInputData(workDataOf("id" to id))
+                .build()
+            workManager.enqueue(workRequest)
         }
     }
 
@@ -215,6 +254,7 @@ class NotificationService(val context: Context) {
 
     companion object {
         private const val TAG = "NtfyNotifService"
+        private const val DOWNLOAD_ATTACHMENT_ACTION = "io.heckel.ntfy.DOWNLOAD_ATTACHMENT"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

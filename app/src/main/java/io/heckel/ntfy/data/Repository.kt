@@ -1,6 +1,7 @@
 package io.heckel.ntfy.data
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
@@ -162,7 +163,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     }
 
     fun getAutoDownloadEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, true) // Enabled by default
+        val defaultEnabled = Build.VERSION.SDK_INT > Build.VERSION_CODES.P // Need to request permission on older versions
+        return sharedPrefs.getBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, defaultEnabled)
     }
 
     fun setAutoDownloadEnabled(enabled: Boolean) {

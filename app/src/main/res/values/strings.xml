@@ -115,7 +115,17 @@
     <string name="detail_item_menu_copy_url">Copy URL</string>
     <string name="detail_item_menu_copy_url_copied">Copied URL to clipboard</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. Link expired and no local file found.</string>
-    <string name="detail_item_cannot_open">Cannot open attachment: File may have been deleted, or there is no app to open the file.</string>
+    <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
+    <string name="detail_item_cannot_open_not_found">Cannot open attachment: File may have been deleted, or there is no app to open the file.</string>
+    <string name="detail_item_download_failed">Attachment download failed: %1$s</string>
+    <string name="detail_item_download_info_not_downloaded">not downloaded</string>
+    <string name="detail_item_download_info_not_downloaded_expired">not downloaded, link expired</string>
+    <string name="detail_item_download_info_not_downloaded_expires_x">not downloaded, expires %1$s</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d%% downloaded</string>
+    <string name="detail_item_download_info_deleted">deleted</string>
+    <string name="detail_item_download_info_deleted_expired">deleted, link expired</string>
+    <string name="detail_item_download_info_deleted_expires_x">deleted, link expires %1$s</string>
+    <string name="detail_item_download_info_download_failed">download failed</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications enabled</string>
@@ -155,6 +165,11 @@
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>
     <string name="notification_popup_action_browse">Browse</string>
+    <string name="notification_popup_action_download">Download</string>
+    <string name="notification_popup_file">%1$s\nFile: %2$s</string>
+    <string name="notification_popup_file_downloading">Downloading %1$s, %2$d%%\n%3$s</string>
+    <string name="notification_popup_file_download_successful">%1$s\nFile: %2$s, download successful</string>
+    <string name="notification_popup_file_download_failed">%1$s\nFile: %2$s, download failed</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

@@ -73,6 +73,7 @@ data class Attachment(
 
 const val PROGRESS_NONE = -1
 const val PROGRESS_INDETERMINATE = -2
+const val PROGRESS_FAILED = -3
 const val PROGRESS_DONE = 100
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)

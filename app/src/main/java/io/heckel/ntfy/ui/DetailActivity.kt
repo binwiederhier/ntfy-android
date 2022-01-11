@@ -111,7 +111,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val onNotificationClick = { n: Notification -> onNotificationClick(n) }
         val onNotificationLongClick = { n: Notification -> onNotificationLongClick(n) }
 
-        adapter = DetailAdapter(onNotificationClick, onNotificationLongClick)
+        adapter = DetailAdapter(this, onNotificationClick, onNotificationLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
 
@@ -298,6 +298,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
         lifecycleScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "Setting subscription 'muted until' to $mutedUntilTimestamp")
             val subscription = repository.getSubscription(subscriptionId)
             val newSubscription = subscription?.copy(mutedUntil = mutedUntilTimestamp)
             newSubscription?.let { repository.updateSubscription(newSubscription) }

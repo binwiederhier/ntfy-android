@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- Only required on SDK <= 28 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/> <!-- Only required on SDK <= 28 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> <!-- Required to install packages downloaded through ntfy; craazyy! -->
 
     <application
@@ -95,6 +95,16 @@
             </intent-filter>
         </receiver>
 
+        <!-- Broadcast receiver for the "Download" attachment action in the notification popup -->
+        <receiver
+                android:name=".msg.NotificationService$DownloadBroadcastReceiver"
+                android:enabled="true"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="io.heckel.ntfy.DOWNLOAD_ATTACHMENT"/>
+            </intent-filter>
+        </receiver>
+
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service
                 android:name=".firebase.FirebaseService"
@@ -110,5 +120,16 @@
                 android:name="com.google.firebase.messaging.default_notification_icon"
                 android:resource="@drawable/ic_notification"/>
 
+        <!-- FileProvider required for older Android versions (<= P), to allow passing the file URI in the open intent.
+             Avoids "exposed beyong app through Intent.getData" exception, see see https://stackoverflow.com/a/57288352/1440785 -->
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 </manifest>

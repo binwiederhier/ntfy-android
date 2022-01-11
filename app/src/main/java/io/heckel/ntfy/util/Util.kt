@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.view.Window
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.PROGRESS_NONE
@@ -110,7 +111,8 @@ fun formatTitle(notification: Notification): String {
 }
 
 // Checks in the most horrible way if a content URI exists; I couldn't find a better way
-fun fileExists(context: Context, uri: String): Boolean {
+fun fileExists(context: Context, uri: String?): Boolean {
+    if (uri == null) return false
     val resolver = context.applicationContext.contentResolver
     return try {
         val fileIS = resolver.openInputStream(Uri.parse(uri))
@@ -118,6 +120,24 @@ fun fileExists(context: Context, uri: String): Boolean {
         true
     } catch (_: Exception) {
         false
+    }
+}
+
+// Queries the filename of a content URI
+fun queryFilename(context: Context, contentUri: String?, fallbackName: String): String {
+    if (contentUri == null) {
+        return fallbackName
+    }
+    try {
+        val resolver = context.applicationContext.contentResolver
+        val cursor = resolver.query(Uri.parse(contentUri), null, null, null, null) ?: return fallbackName
+        return cursor.use { c ->
+            val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+            c.moveToFirst()
+            c.getString(nameIndex)
+        }
+    } catch (_: Exception) {
+        return fallbackName
     }
 }
 

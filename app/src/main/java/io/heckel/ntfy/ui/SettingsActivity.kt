@@ -1,13 +1,18 @@
 package io.heckel.ntfy.ui
 
+import android.Manifest
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
@@ -20,6 +25,7 @@ import io.heckel.ntfy.util.toPriorityString
 
 class SettingsActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
+    private lateinit var fragment: SettingsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +34,10 @@ class SettingsActivity : AppCompatActivity() {
         Log.d(TAG, "Create $this")
 
         if (savedInstanceState == null) {
+            fragment = SettingsFragment(repository, supportFragmentManager)
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.settings_layout, SettingsFragment(repository, supportFragmentManager))
+                .replace(R.id.settings_layout, fragment)
                 .commit()
         }
 
@@ -125,6 +132,16 @@ class SettingsActivity : AppCompatActivity() {
                     getString(R.string.settings_notifications_auto_download_summary_off)
                 }
             }
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                autoDownload?.setOnPreferenceChangeListener { _, v ->
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD)
+                        false // If permission is granted, auto-download will be enabled in onRequestPermissionsResult()
+                    } else {
+                        true
+                    }
+                }
+            }
 
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
@@ -204,9 +221,31 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
         }
+
+        fun enableAutoDownload() {
+            val autoDownloadPrefId = context?.getString(R.string.settings_notifications_auto_download_key) ?: return
+            val autoDownload: SwitchPreference? = findPreference(autoDownloadPrefId)
+            autoDownload?.isChecked = true
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableAutoDownload()
+                repository.setAutoDownloadEnabled(true)
+            }
+        }
+    }
+
+    private fun enableAutoDownload() {
+        if (!this::fragment.isInitialized) return
+        fragment.enableAutoDownload()
     }
 
     companion object {
-        const val TAG = "NtfySettingsActivity"
+        private const val TAG = "NtfySettingsActivity"
+        private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
     }
 }

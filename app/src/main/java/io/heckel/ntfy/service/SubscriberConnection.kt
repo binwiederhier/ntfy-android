@@ -3,6 +3,7 @@ package io.heckel.ntfy.service
 import android.util.Log
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
@@ -11,15 +12,17 @@ import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SubscriberConnection(
+    private val repository: Repository,
     private val api: ApiService,
     private val baseUrl: String,
     private val sinceTime: Long,
-    private val subscriptions: Map<Long, Subscription>,
-    private val stateChangeListener: (Collection<Subscription>, ConnectionState) -> Unit,
+    private val topicsToSubscriptionIds: Map<String, Long>, // Topic -> Subscription ID
+    private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
 ) {
-    private val topicsStr = subscriptions.values.joinToString(separator = ",") { s -> s.topic }
+    private val subscriptionIds = topicsToSubscriptionIds.values
+    private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
 
     private var since: Long = sinceTime
@@ -28,16 +31,17 @@ class SubscriberConnection(
 
     fun start(scope: CoroutineScope) {
         job = scope.launch(Dispatchers.IO) {
-            Log.d(TAG, "[$url] Starting connection for subscriptions: $subscriptions")
+            Log.d(TAG, "[$url] Starting connection for subscriptions: $topicsToSubscriptionIds")
 
             // Retry-loop: if the connection fails, we retry unless the job or service is cancelled/stopped
             var retryMillis = 0L
             while (isActive && serviceActive()) {
-                Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $subscriptions")
+                Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
                 val startTime = System.currentTimeMillis()
-                val notify = { topic: String, notification: Notification ->
+                val notify = notify@ { topic: String, notification: Notification ->
                     since = notification.timestamp
-                    val subscription = subscriptions.values.first { it.topic == topic }
+                    val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
+                    val subscription = repository.getSubscription(subscriptionId) ?: return@notify
                     val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
                     notificationListener(subscription, notificationWithSubscriptionId)
                 }
@@ -45,7 +49,7 @@ class SubscriberConnection(
                 val fail = { e: Exception ->
                     failed.set(true)
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
-                        stateChangeListener(subscriptions.values, ConnectionState.CONNECTING)
+                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                     }
                 }
 
@@ -54,14 +58,14 @@ class SubscriberConnection(
                 try {
                     call = api.subscribe(baseUrl, topicsStr, since, notify, fail)
                     while (!failed.get() && !call.isCanceled() && isActive && serviceActive()) {
-                        stateChangeListener(subscriptions.values, ConnectionState.CONNECTED)
+                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
                         Log.d(TAG,"[$url] Connection is active (failed=$failed, callCanceled=${call.isCanceled()}, jobActive=$isActive, serviceStarted=${serviceActive()}")
                         delay(CONNECTION_LOOP_DELAY_MILLIS) // Resumes immediately if job is cancelled
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
-                        stateChangeListener(subscriptions.values, ConnectionState.CONNECTING)
+                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                     }
                 }
 
@@ -77,10 +81,6 @@ class SubscriberConnection(
         }
     }
 
-    fun matches(otherSubscriptions: Map<Long, Subscription>): Boolean {
-        return subscriptions.keys == otherSubscriptions.keys
-    }
-
     fun since(): Long {
         return since
     }
@@ -89,6 +89,10 @@ class SubscriberConnection(
         Log.d(TAG, "[$url] Cancelling connection")
         if (this::job.isInitialized) job?.cancel()
         if (this::call.isInitialized) call?.cancel()
+    }
+
+    fun matches(otherSubscriptionIds: Collection<Long>): Boolean {
+        return subscriptionIds.toSet() == otherSubscriptionIds.toSet()
     }
 
     private fun nextRetryMillis(retryMillis: Long, startTime: Long): Long {

@@ -1,16 +1,20 @@
 package io.heckel.ntfy.ui
 
+import android.Manifest
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.OpenableColumns
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,16 +24,12 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Attachment
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.PROGRESS_DONE
-import io.heckel.ntfy.data.PROGRESS_NONE
+import io.heckel.ntfy.data.*
 import io.heckel.ntfy.msg.AttachmentDownloadWorker
 import io.heckel.ntfy.util.*
 import java.util.*
 
-
-class DetailAdapter(private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
+class DetailAdapter(private val activity: Activity, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<String>() // Notification IDs
 
@@ -37,7 +37,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -54,7 +54,7 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
+    class DetailViewHolder(private val activity: Activity, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
         private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
@@ -189,19 +189,27 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             if (attachment.contentUri != null) {
                 openItem.setOnMenuItemClickListener {
                     try {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(attachment.contentUri)))
+                        val contentUri = Uri.parse(attachment.contentUri)
+                        val intent = Intent(Intent.ACTION_VIEW, contentUri)
+                        intent.setDataAndType(contentUri, attachment.type ?: "application/octet-stream") // Required for Android <= P
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        context.startActivity(intent)
                     } catch (e: ActivityNotFoundException) {
                         Toast
-                            .makeText(context, context.getString(R.string.detail_item_cannot_open), Toast.LENGTH_LONG)
+                            .makeText(context, context.getString(R.string.detail_item_cannot_open_not_found), Toast.LENGTH_LONG)
                             .show()
-                    } catch (_: Exception) {
-                        // URI parse exception and others; we don't care!
+                    } catch (e: Exception) {
+                        Toast
+                            .makeText(context, context.getString(R.string.detail_item_cannot_open, e.message), Toast.LENGTH_LONG)
+                            .show()
                     }
                     true
                 }
             }
             browseItem.setOnMenuItemClickListener {
-                context.startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
+                val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.startActivity(intent)
                 true
             }
             copyUrlItem.setOnMenuItemClickListener {
@@ -214,6 +222,11 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
                 true
             }
             downloadItem.setOnMenuItemClickListener {
+                val requiresPermission = Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                if (requiresPermission) {
+                    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
+                    return@setOnMenuItemClickListener true
+                }
                 scheduleAttachmentDownload(context, notification)
                 true
             }
@@ -229,10 +242,11 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
         }
 
         private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
-            val name = queryAttachmentFilename(context, attachment)
+            val name = queryFilename(context, attachment.contentUri, attachment.name)
             val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
             val deleted = !exists && attachment.progress == PROGRESS_DONE
+            val failed = !exists && attachment.progress == PROGRESS_FAILED
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
             val expires = attachment.expires != null && attachment.expires > System.currentTimeMillis()/1000
             val infos = mutableListOf<String>()
@@ -241,44 +255,29 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
             }
             if (notYetDownloaded) {
                 if (expired) {
-                    infos.add("not downloaded, link expired")
+                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expired))
                 } else if (expires) {
-                    infos.add("not downloaded, expires ${formatDateShort(attachment.expires!!)}")
+                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expires_x, formatDateShort(attachment.expires!!)))
                 } else {
-                    infos.add("not downloaded")
+                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded))
                 }
             } else if (downloading) {
-                infos.add("${attachment.progress}% downloaded")
+                infos.add(context.getString(R.string.detail_item_download_info_downloading_x_percent, attachment.progress))
             } else if (deleted) {
                 if (expired) {
-                    infos.add("deleted, link expired")
+                    infos.add(context.getString(R.string.detail_item_download_info_deleted_expired))
                 } else if (expires) {
-                    infos.add("deleted, link expires ${formatDateShort(attachment.expires!!)}")
+                    infos.add(context.getString(R.string.detail_item_download_info_deleted_expires_x, formatDateShort(attachment.expires!!)))
                 } else {
-                    infos.add("deleted")
+                    infos.add(context.getString(R.string.detail_item_download_info_deleted))
                 }
+            } else if (failed) {
+                infos.add(context.getString(R.string.detail_item_download_info_download_failed))
             }
             return if (infos.size > 0) {
                 "$name\n${infos.joinToString(", ")}"
             } else {
                 name
-            }
-        }
-
-        private fun queryAttachmentFilename(context: Context, attachment: Attachment): String {
-            if (attachment.contentUri == null) {
-                return attachment.name
-            }
-            try {
-                val resolver = context.applicationContext.contentResolver
-                val cursor = resolver.query(Uri.parse(attachment.contentUri), null, null, null, null) ?: return attachment.name
-                return cursor.use { c ->
-                    val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
-                    c.moveToFirst()
-                    c.getString(nameIndex)
-                }
-            } catch (_: Exception) {
-                return attachment.name
             }
         }
 
@@ -328,5 +327,6 @@ class DetailAdapter(private val onClick: (Notification) -> Unit, private val onL
 
     companion object {
         const val TAG = "NtfyDetailAdapter"
+        const val REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD = 9876
     }
 }
