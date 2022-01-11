@@ -17,12 +17,13 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.util.queryFilename
+import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class AttachmentDownloadWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+class DownloadWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val client = OkHttpClient.Builder()
         .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -83,6 +84,14 @@ class AttachmentDownloadWorker(private val context: Context, params: WorkerParam
                     var lastProgress = 0L
                     while (bytes >= 0) {
                         if (System.currentTimeMillis() - lastProgress > 500) {
+                            if (isStopped) {
+                                Log.d(TAG, "Attachment download was canceled")
+                                val newAttachment = attachment.copy(progress = PROGRESS_NONE)
+                                val newNotification = notification.copy(attachment = newAttachment)
+                                notifier.update(subscription, newNotification)
+                                repository.updateNotification(newNotification)
+                                return
+                            }
                             val progress = if (size > 0) (bytesCopied.toFloat()/size.toFloat()*100).toInt() else PROGRESS_INDETERMINATE
                             val newAttachment = attachment.copy(progress = progress)
                             val newNotification = notification.copy(attachment = newAttachment)

@@ -9,9 +9,6 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.data.Notification
@@ -66,6 +63,7 @@ class NotificationService(val context: Context) {
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
         maybeAddDownloadAction(builder, notification)
+        maybeAddCancelAction(builder, notification)
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
@@ -164,7 +162,7 @@ class NotificationService(val context: Context) {
 
     private fun maybeAddBrowseAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri != null) {
-            val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+            val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_browse), pendingIntent).build())
@@ -174,21 +172,31 @@ class NotificationService(val context: Context) {
     private fun maybeAddDownloadAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri == null && listOf(PROGRESS_NONE, PROGRESS_FAILED).contains(notification.attachment?.progress)) {
             val intent = Intent(context, DownloadBroadcastReceiver::class.java)
+            intent.putExtra("action", DOWNLOAD_ACTION_START)
             intent.putExtra("id", notification.id)
             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_download), pendingIntent).build())
         }
     }
 
+    private fun maybeAddCancelAction(builder: NotificationCompat.Builder, notification: Notification) {
+        if (notification.attachment?.contentUri == null && notification.attachment?.progress in 0..99) {
+            val intent = Intent(context, DownloadBroadcastReceiver::class.java)
+            intent.putExtra("action", DOWNLOAD_ACTION_CANCEL)
+            intent.putExtra("id", notification.id)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_cancel), pendingIntent).build())
+        }
+    }
+
     class DownloadBroadcastReceiver : android.content.BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val id = intent.getStringExtra("id") ?: return
-            Log.d(TAG, "Enqueuing work to download attachment for notification $id")
-            val workManager = WorkManager.getInstance(context)
-            val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
-                .setInputData(workDataOf("id" to id))
-                .build()
-            workManager.enqueue(workRequest)
+            val action = intent.getStringExtra("action") ?: return
+            when (action) {
+                DOWNLOAD_ACTION_START -> DownloadManager.enqueue(context, id)
+                DOWNLOAD_ACTION_CANCEL -> DownloadManager.cancel(context, id)
+            }
         }
     }
 
@@ -254,7 +262,8 @@ class NotificationService(val context: Context) {
 
     companion object {
         private const val TAG = "NtfyNotifService"
-        private const val DOWNLOAD_ATTACHMENT_ACTION = "io.heckel.ntfy.DOWNLOAD_ATTACHMENT"
+        private const val DOWNLOAD_ACTION_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
+        private const val DOWNLOAD_ACTION_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

@@ -112,6 +112,7 @@
     <string name="detail_item_menu_open">Open file</string>
     <string name="detail_item_menu_browse">Browse file</string>
     <string name="detail_item_menu_download">Download file</string>
+    <string name="detail_item_menu_cancel">Cancel download</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
     <string name="detail_item_menu_copy_url_copied">Copied URL to clipboard</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. Link expired and no local file found.</string>
@@ -166,6 +167,7 @@
     <string name="notification_popup_action_open">Open</string>
     <string name="notification_popup_action_browse">Browse</string>
     <string name="notification_popup_action_download">Download</string>
+    <string name="notification_popup_action_cancel">Cancel</string>
     <string name="notification_popup_file">%1$s\nFile: %2$s</string>
     <string name="notification_popup_file_downloading">Downloading %1$s, %2$d%%\n%3$s</string>
     <string name="notification_popup_file_download_successful">%1$s\nFile: %2$s, download successful</string>

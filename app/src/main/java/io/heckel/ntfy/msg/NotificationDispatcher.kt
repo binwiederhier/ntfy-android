@@ -44,10 +44,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             }
         }
         if (download) {
-            // Download attachment in the background via WorkManager
-            // The indirection via WorkManager is required since this code may be executed
-            // in a doze state and Internet may not be available. It's also best practice apparently.
-            scheduleAttachmentDownload(notification)
+            DownloadManager.enqueue(context, notification.id)
         }
     }
 
@@ -83,15 +80,6 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             return true
         }
         return subscription.mutedUntil == 1L || (subscription.mutedUntil > 1L && subscription.mutedUntil > System.currentTimeMillis()/1000)
-    }
-
-    private fun scheduleAttachmentDownload(notification: Notification) {
-        Log.d(TAG, "Enqueuing work to download attachment")
-        val workManager = WorkManager.getInstance(context)
-        val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
-            .setInputData(workDataOf("id" to notification.id))
-            .build()
-        workManager.enqueue(workRequest)
     }
 
     companion object {

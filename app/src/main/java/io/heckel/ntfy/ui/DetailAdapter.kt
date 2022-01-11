@@ -2,7 +2,6 @@ package io.heckel.ntfy.ui
 
 import android.Manifest
 import android.app.Activity
-import android.app.DownloadManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -25,7 +24,8 @@ import androidx.work.workDataOf
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.*
-import io.heckel.ntfy.msg.AttachmentDownloadWorker
+import io.heckel.ntfy.msg.DownloadManager
+import io.heckel.ntfy.msg.DownloadWorker
 import io.heckel.ntfy.util.*
 import java.util.*
 
@@ -182,10 +182,12 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
             val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
+            val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
             val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
             val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
             val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
+            val inProgress = attachment.progress in 0..99
             if (attachment.contentUri != null) {
                 openItem.setOnMenuItemClickListener {
                     try {
@@ -207,7 +209,7 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
                 }
             }
             browseItem.setOnMenuItemClickListener {
-                val intent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+                val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 context.startActivity(intent)
                 true
@@ -227,14 +229,19 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
                     ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
                     return@setOnMenuItemClickListener true
                 }
-                scheduleAttachmentDownload(context, notification)
+                DownloadManager.enqueue(context, notification.id)
+                true
+            }
+            cancelItem.setOnMenuItemClickListener {
+                DownloadManager.cancel(context, notification.id)
                 true
             }
             openItem.isVisible = exists
             browseItem.isVisible = exists
-            downloadItem.isVisible = !exists && !expired
+            downloadItem.isVisible = !exists && !expired && !inProgress
             copyUrlItem.isVisible = !expired
-            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible
+            cancelItem.isVisible = inProgress
+            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible && !cancelItem.isVisible
             if (noOptions) {
                 return null
             }
@@ -303,15 +310,6 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
             } catch (_: Exception) {
                 attachmentImageView.visibility = View.GONE
             }
-        }
-
-        private fun scheduleAttachmentDownload(context: Context, notification: Notification) {
-            Log.d(TAG, "Enqueuing work to download attachment")
-            val workManager = WorkManager.getInstance(context)
-            val workRequest = OneTimeWorkRequest.Builder(AttachmentDownloadWorker::class.java)
-                .setInputData(workDataOf("id" to notification.id))
-                .build()
-            workManager.enqueue(workRequest)
         }
     }
 
