@@ -159,7 +159,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     }
 
     fun getWakelockEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_WAKELOCK_ENABLED, false) // Disabled by default
+        return sharedPrefs.getBoolean(SHARED_PREFS_WAKELOCK_ENABLED, true) // Enabled by default
     }
 
     fun setWakelockEnabled(enabled: Boolean) {

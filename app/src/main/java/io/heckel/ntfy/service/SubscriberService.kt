@@ -205,9 +205,7 @@ class SubscriberService : Service() {
         // If permanent wakelock is not enabled, still take the wakelock while notifications are being dispatched
         if (!repository.getWakelockEnabled()) {
             // Wakelocks are reference counted by default so that should work neatly here
-            wakeLock?.let {
-                it.acquire()
-            }
+            wakeLock?.acquire(10*60*1000L /*10 minutes*/)
         }
 
         val url = topicUrl(subscription.baseUrl, subscription.topic)
