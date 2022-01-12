@@ -2,6 +2,7 @@ package io.heckel.ntfy.msg
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
@@ -17,7 +18,6 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.util.queryFilename
-import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -31,6 +31,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
     private val notifier = NotificationService(context)
+    private var uri: Uri? = null
 
     override fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
@@ -41,6 +42,14 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
         val subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
         downloadAttachment(repository, subscription, notification)
         return Result.success()
+    }
+
+    override fun onStopped() {
+        val uriCopy = uri
+        if (uriCopy != null) {
+            val resolver = applicationContext.contentResolver
+            resolver.delete(uriCopy, null, null)
+        }
     }
 
     private fun downloadAttachment(repository: Repository, subscription: Subscription, notification: Notification) {
@@ -74,6 +83,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     resolver.insert(MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL), details)
                         ?: throw Exception("Cannot get content URI")
                 }
+                this.uri = uri // Required for cleanup in onStopped()
                 Log.d(TAG, "Starting download to content URI: $uri")
                 var bytesCopied: Long = 0
                 val out = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
@@ -90,7 +100,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                                 val newNotification = notification.copy(attachment = newAttachment)
                                 notifier.update(subscription, newNotification)
                                 repository.updateNotification(newNotification)
-                                return
+                                return // File will be deleted in onStopped()
                             }
                             val progress = if (size > 0) (bytesCopied.toFloat()/size.toFloat()*100).toInt() else PROGRESS_INDETERMINATE
                             val newAttachment = attachment.copy(progress = progress)
