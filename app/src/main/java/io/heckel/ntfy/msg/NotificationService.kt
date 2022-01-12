@@ -43,7 +43,7 @@ class NotificationService(val context: Context) {
         notificationManager.notify(notification.notificationId, notificationBuilder.build())
     }
 
-    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder? {
+    private fun setContentIntent(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification): NotificationCompat.Builder {
         if (notification.click == "") {
             return builder.setContentIntent(detailActivityIntent(subscription))
         }

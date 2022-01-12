@@ -29,6 +29,10 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
         <SwitchPreference
+            app:key="@string/settings_advanced_wakelock_key"
+            app:title="@string/settings_advanced_wakelock_title"
+            app:enabled="true"/>
+        <SwitchPreference
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"
                 app:enabled="true"/>

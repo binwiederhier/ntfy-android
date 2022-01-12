@@ -4,10 +4,7 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
-import android.os.PowerManager
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -94,6 +91,7 @@ class SubscriberService : Service() {
 
     override fun onDestroy() {
         Log.d(TAG, "Subscriber service has been destroyed")
+        stopService()
         sendBroadcast(Intent(this, AutoRestartReceiver::class.java)) // Restart it if necessary!
         super.onDestroy()
     }
@@ -107,9 +105,10 @@ class SubscriberService : Service() {
         isServiceStarted = true
         saveServiceState(this, ServiceState.STARTED)
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG).apply {
-                acquire()
-            }
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
+        }
+        if (repository.getWakelockEnabled()) {
+            wakeLock?.acquire()
         }
         refreshConnections()
     }
@@ -124,10 +123,12 @@ class SubscriberService : Service() {
         // Releasing wake-lock and stopping ourselves
         try {
             wakeLock?.let {
-                if (it.isHeld) {
+                // Release all acquire()
+                while (it.isHeld) {
                     it.release()
                 }
             }
+            wakeLock = null
             stopForeground(true)
             stopSelf()
         } catch (e: Exception) {
@@ -201,12 +202,28 @@ class SubscriberService : Service() {
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.data.Notification) {
+        // If permanent wakelock is not enabled, still take the wakelock while notifications are being dispatched
+        if (!repository.getWakelockEnabled()) {
+            // Wakelocks are reference counted by default so that should work neatly here
+            wakeLock?.let {
+                it.acquire()
+            }
+        }
+
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $notification")
         GlobalScope.launch(Dispatchers.IO) {
             if (repository.addNotification(notification)) {
                 Log.d(TAG, "[$url] Dispatching notification $notification")
                 dispatcher.dispatch(subscription, notification)
+            }
+
+            if (!repository.getWakelockEnabled()) {
+                wakeLock?.let {
+                    if (it.isHeld) {
+                        it.release()
+                    }
+                }
             }
         }
     }
