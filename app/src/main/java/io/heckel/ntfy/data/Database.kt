@@ -77,7 +77,7 @@ const val PROGRESS_FAILED = -3
 const val PROGRESS_DELETED = -4
 const val PROGRESS_DONE = 100
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 7)
+@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -95,7 +95,6 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
-                    .addMigrations(MIGRATION_6_7)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -144,18 +143,13 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN click TEXT NOT NULL DEFAULT('')")
-            }
-        }
-
-        private val MIGRATION_6_7 = object : Migration(6, 7) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_name TEXT NOT NULL DEFAULT('')")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_name TEXT") // Room limitation: Has to be nullable for @Embedded
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_type TEXT")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_size INT")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_expires INT")
-                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_url TEXT NOT NULL DEFAULT('')")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_url TEXT") // Room limitation: Has to be nullable for @Embedded
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_contentUri TEXT")
-                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_progress INT NOT NULL DEFAULT('0')")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_progress INT") // Room limitation: Has to be nullable for @Embedded
             }
         }
     }
