@@ -177,6 +177,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun getWakelockEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_WAKELOCK_ENABLED, true) // Enabled by default
+    }
+
+    fun setWakelockEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_WAKELOCK_ENABLED, enabled)
+            .apply()
+    }
+
     fun getBroadcastEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
     }
@@ -308,6 +318,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
+        const val SHARED_PREFS_WAKELOCK_ENABLED = "WakelockEnabled"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"

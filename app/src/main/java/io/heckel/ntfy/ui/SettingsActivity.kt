@@ -1,9 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +18,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.toPriorityString
@@ -146,6 +145,31 @@ class SettingsActivity : AppCompatActivity() {
                     } else {
                         true
                     }
+                }
+            }
+
+            // Permanent wakelock enabled
+            val wakelockEnabledPrefId = context?.getString(R.string.settings_advanced_wakelock_key) ?: return
+            val wakelockEnabled: SwitchPreference? = findPreference(wakelockEnabledPrefId)
+            wakelockEnabled?.isChecked = repository.getWakelockEnabled()
+            wakelockEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setWakelockEnabled(value)
+                    val context = this@SettingsFragment.context
+                    Intent(context, SubscriberService::class.java).also { intent ->
+                        // Service will autorestart
+                        context?.stopService(intent)
+                    }
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getWakelockEnabled()
+                }
+            }
+            wakelockEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_advanced_wakelock_summary_enabled)
+                } else {
+                    getString(R.string.settings_advanced_wakelock_summary_disabled)
                 }
             }
 
