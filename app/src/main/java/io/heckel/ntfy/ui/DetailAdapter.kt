@@ -27,9 +27,12 @@ import io.heckel.ntfy.data.*
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadWorker
 import io.heckel.ntfy.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
-class DetailAdapter(private val activity: Activity, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
+class DetailAdapter(private val activity: Activity, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<String>() // Notification IDs
 
@@ -37,7 +40,7 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, repository, view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -54,7 +57,7 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(private val activity: Activity, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
+    class DetailViewHolder(private val activity: Activity, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
         private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
@@ -185,6 +188,7 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
             val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
             val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
             val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
+            val deleteItem = popup.menu.findItem(R.id.detail_item_menu_delete)
             val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
             val inProgress = attachment.progress in 0..99
@@ -214,6 +218,27 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
                 context.startActivity(intent)
                 true
             }
+            if (attachment.contentUri != null) {
+                deleteItem.setOnMenuItemClickListener {
+                    try {
+                        val contentUri = Uri.parse(attachment.contentUri)
+                        val resolver = context.applicationContext.contentResolver
+                        val deleted = resolver.delete(contentUri, null, null) > 0
+                        if (!deleted) throw Exception("no rows deleted")
+                        val newAttachment = attachment.copy(progress = PROGRESS_DELETED)
+                        val newNotification = notification.copy(attachment = newAttachment)
+                        GlobalScope.launch(Dispatchers.IO) {
+                            repository.updateNotification(newNotification)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to update notification: ${e.message}", e)
+                        Toast
+                            .makeText(context, context.getString(R.string.detail_item_delete_failed, e.message), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    true
+                }
+            }
             copyUrlItem.setOnMenuItemClickListener {
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("attachment url", attachment.url)
@@ -239,9 +264,10 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
             openItem.isVisible = exists
             browseItem.isVisible = exists
             downloadItem.isVisible = !exists && !expired && !inProgress
+            deleteItem.isVisible = exists
             copyUrlItem.isVisible = !expired
             cancelItem.isVisible = inProgress
-            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible && !cancelItem.isVisible
+            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible && !cancelItem.isVisible && !deleteItem.isVisible
             if (noOptions) {
                 return null
             }
@@ -252,7 +278,7 @@ class DetailAdapter(private val activity: Activity, private val onClick: (Notifi
             val name = queryFilename(context, attachment.contentUri, attachment.name)
             val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
-            val deleted = !exists && attachment.progress == PROGRESS_DONE
+            val deleted = !exists && (attachment.progress == PROGRESS_DONE || attachment.progress == PROGRESS_DELETED)
             val failed = !exists && attachment.progress == PROGRESS_FAILED
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
             val expires = attachment.expires != null && attachment.expires > System.currentTimeMillis()/1000

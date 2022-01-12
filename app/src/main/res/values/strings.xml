@@ -111,6 +111,7 @@
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_menu_open">Open file</string>
     <string name="detail_item_menu_browse">Browse file</string>
+    <string name="detail_item_menu_delete">Delete file</string>
     <string name="detail_item_menu_download">Download file</string>
     <string name="detail_item_menu_cancel">Cancel download</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
@@ -118,6 +119,7 @@
     <string name="detail_item_cannot_download">Cannot open or download attachment. Link expired and no local file found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Cannot open attachment: File may have been deleted, or there is no app to open the file.</string>
+    <string name="detail_item_delete_failed">Cannot delete attachment: %1$s</string>
     <string name="detail_item_download_failed">Attachment download failed: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">not downloaded</string>
     <string name="detail_item_download_info_not_downloaded_expired">not downloaded, link expired</string>
