@@ -119,6 +119,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
         } catch (e: Exception) {
             Log.w(TAG, "Attachment download failed", e)
 
+            // Mark attachment download as failed
             val newAttachment = attachment.copy(progress = PROGRESS_FAILED)
             val newNotification = notification.copy(attachment = newAttachment)
             notifier.update(subscription, newNotification)

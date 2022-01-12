@@ -20,6 +20,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.toPriorityString
 
@@ -49,6 +50,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment(val repository: Repository, private val supportFragmentManager: FragmentManager) : PreferenceFragmentCompat() {
+        private var autoDownloadSelection = repository.getAutoDownloadMaxSize() // Only used for <= Android P, due to permissions request
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.main_preferences, rootKey)
 
@@ -115,27 +118,30 @@ class SettingsActivity : AppCompatActivity() {
 
             // Auto download
             val autoDownloadPrefId = context?.getString(R.string.settings_notifications_auto_download_key) ?: return
-            val autoDownload: SwitchPreference? = findPreference(autoDownloadPrefId)
-            autoDownload?.isChecked = repository.getAutoDownloadEnabled()
+            val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
+            autoDownload?.value = repository.getAutoDownloadMaxSize().toString()
             autoDownload?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setAutoDownloadEnabled(value)
+                override fun putString(key: String?, value: String?) {
+                    val maxSize = value?.toLongOrNull() ?:return
+                    repository.setAutoDownloadMaxSize(maxSize)
                 }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getAutoDownloadEnabled()
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getAutoDownloadMaxSize().toString()
                 }
             }
-            autoDownload?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
-                if (pref.isChecked) {
-                    getString(R.string.settings_notifications_auto_download_summary_on)
-                } else {
-                    getString(R.string.settings_notifications_auto_download_summary_off)
+            autoDownload?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                val maxSize = pref.value.toLongOrNull() ?: repository.getAutoDownloadMaxSize()
+                when (maxSize) {
+                    Repository.AUTO_DOWNLOAD_NEVER -> getString(R.string.settings_notifications_auto_download_summary_never)
+                    Repository.AUTO_DOWNLOAD_ALWAYS -> getString(R.string.settings_notifications_auto_download_summary_always)
+                    else -> getString(R.string.settings_notifications_auto_download_summary_smaller_than_x, formatBytes(maxSize, decimals = 0))
                 }
             }
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 autoDownload?.setOnPreferenceChangeListener { _, v ->
                     if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD)
+                        autoDownloadSelection = v.toString().toLongOrNull() ?: repository.getAutoDownloadMaxSize()
                         false // If permission is granted, auto-download will be enabled in onRequestPermissionsResult()
                     } else {
                         true
@@ -222,10 +228,11 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        fun enableAutoDownload() {
+        fun setAutoDownload() {
             val autoDownloadPrefId = context?.getString(R.string.settings_notifications_auto_download_key) ?: return
-            val autoDownload: SwitchPreference? = findPreference(autoDownloadPrefId)
-            autoDownload?.isChecked = true
+            val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
+            autoDownload?.value = autoDownloadSelection.toString()
+            repository.setAutoDownloadMaxSize(autoDownloadSelection)
         }
     }
 
@@ -233,15 +240,14 @@ class SettingsActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                enableAutoDownload()
-                repository.setAutoDownloadEnabled(true)
+                setAutoDownload()
             }
         }
     }
 
-    private fun enableAutoDownload() {
+    private fun setAutoDownload() {
         if (!this::fragment.isInitialized) return
-        fragment.enableAutoDownload()
+        fragment.setAutoDownload()
     }
 
     companion object {

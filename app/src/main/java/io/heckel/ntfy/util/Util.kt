@@ -13,6 +13,7 @@ import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
 import java.util.*
+import kotlin.math.abs
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
@@ -163,8 +164,8 @@ inline fun <T1: Any, T2: Any, R: Any> safeLet(p1: T1?, p2: T2?, block: (T1, T2)-
     return if (p1 != null && p2 != null) block(p1, p2) else null
 }
 
-fun formatBytes(bytes: Long): String {
-    val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else Math.abs(bytes)
+fun formatBytes(bytes: Long, decimals: Int = 1): String {
+    val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
     if (absB < 1024) {
         return "$bytes B"
     }
@@ -177,7 +178,7 @@ fun formatBytes(bytes: Long): String {
         i -= 10
     }
     value *= java.lang.Long.signum(bytes).toLong()
-    return java.lang.String.format("%.1f %cB", value / 1024.0, ci.current())
+    return java.lang.String.format("%.${decimals}f %cB", value / 1024.0, ci.current())
 }
 
 fun supportedImage(mimeType: String?): Boolean {

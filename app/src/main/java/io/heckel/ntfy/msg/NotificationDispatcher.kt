@@ -2,9 +2,6 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.util.Log
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
@@ -31,7 +28,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         val notify = shouldNotify(subscription, notification, muted)
         val broadcast = shouldBroadcast(subscription)
         val distribute = shouldDistribute(subscription)
-        val download = shouldDownload(subscription, notification)
+        val download = shouldDownload(notification)
         if (notify) {
             notifier.display(subscription, notification)
         }
@@ -48,8 +45,21 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
     }
 
-    private fun shouldDownload(subscription: Subscription, notification: Notification): Boolean {
-        return notification.attachment != null && repository.getAutoDownloadEnabled()
+    private fun shouldDownload(notification: Notification): Boolean {
+        if (notification.attachment == null) {
+            return false
+        }
+        val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()
+        when (maxAutoDownloadSize) {
+            Repository.AUTO_DOWNLOAD_ALWAYS -> return true
+            Repository.AUTO_DOWNLOAD_NEVER -> return false
+            else -> {
+                if (notification.attachment.size == null) {
+                    return false
+                }
+                return notification.attachment.size <= maxAutoDownloadSize
+            }
+        }
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {

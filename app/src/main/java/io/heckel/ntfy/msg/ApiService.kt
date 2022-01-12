@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -54,11 +55,7 @@ class ApiService {
         }
     }
 
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String): List<Notification> {
-        return poll(subscriptionId, baseUrl, topic, 0)
-    }
-
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String, since: Long): List<Notification> {
+    fun poll(subscriptionId: Long, baseUrl: String, topic: String, since: Long = 0L): List<Notification> {
         val sinceVal = if (since == 0L) "all" else since.toString()
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")

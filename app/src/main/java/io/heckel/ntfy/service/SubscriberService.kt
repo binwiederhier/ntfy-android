@@ -153,8 +153,10 @@ class SubscriberService : Service() {
 
             // Start new connections and restart connections (if subscriptions have changed)
             instantSubscriptionsByBaseUrl.forEach { (baseUrl, subscriptions) ->
+                // Do NOT request old messages for new connections; we'll call poll() in MainActivity.
+                // This is important, so we don't download attachments from old messages, which is not desired.
+                var since = System.currentTimeMillis()/1000
                 val connection = connections[baseUrl]
-                var since = 0L
                 if (connection != null && !connection.matches(subscriptions.values)) {
                     since = connection.since()
                     connections.remove(baseUrl)

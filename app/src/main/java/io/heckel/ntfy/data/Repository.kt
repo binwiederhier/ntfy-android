@@ -162,14 +162,18 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
     }
 
-    fun getAutoDownloadEnabled(): Boolean {
-        val defaultEnabled = Build.VERSION.SDK_INT > Build.VERSION_CODES.P // Need to request permission on older versions
-        return sharedPrefs.getBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, defaultEnabled)
+    fun getAutoDownloadMaxSize(): Long {
+        val defaultValue = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            AUTO_DOWNLOAD_NEVER // Need to request permission on older versions
+        } else {
+            AUTO_DOWNLOAD_DEFAULT
+        }
+        return sharedPrefs.getLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, defaultValue)
     }
 
-    fun setAutoDownloadEnabled(enabled: Boolean) {
+    fun setAutoDownloadMaxSize(maxSize: Long) {
         sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_AUTO_DOWNLOAD_ENABLED, enabled)
+            .putLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, maxSize)
             .apply()
     }
 
@@ -303,12 +307,14 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
-        const val SHARED_PREFS_AUTO_DOWNLOAD_ENABLED = "AutoDownload"
+        const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 
-        const val PREVIEWS_CACHE_DIR = "Previews"
+        const val AUTO_DOWNLOAD_NEVER = 0L
+        const val AUTO_DOWNLOAD_ALWAYS = 1L
+        const val AUTO_DOWNLOAD_DEFAULT = 1024 * 1024L // Must match a value in values.xml
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
