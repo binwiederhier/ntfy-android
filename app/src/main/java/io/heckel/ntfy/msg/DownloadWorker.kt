@@ -89,11 +89,11 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                 val out = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
                 out.use { fileOut ->
                     val fileIn = response.body!!.byteStream()
-                    val buffer = ByteArray(8 * 1024)
+                    val buffer = ByteArray(BUFFER_SIZE)
                     var bytes = fileIn.read(buffer)
                     var lastProgress = 0L
                     while (bytes >= 0) {
-                        if (System.currentTimeMillis() - lastProgress > 500) {
+                        if (System.currentTimeMillis() - lastProgress > NOTIFICATION_UPDATE_INTERVAL_MILLIS) {
                             if (isStopped) {
                                 Log.d(TAG, "Attachment download was canceled")
                                 val newAttachment = attachment.copy(progress = PROGRESS_NONE)
@@ -167,5 +167,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
     companion object {
         private const val TAG = "NtfyAttachDownload"
         private const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider" // See AndroidManifest.xml
+        private const val BUFFER_SIZE = 8 * 1024
+        private const val NOTIFICATION_UPDATE_INTERVAL_MILLIS = 800
     }
 }
