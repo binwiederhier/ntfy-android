@@ -95,14 +95,11 @@
             </intent-filter>
         </receiver>
 
-        <!-- Broadcast receiver for the "Download" attachment action in the notification popup -->
+        <!-- Broadcast receiver for the "Download"/"Cancel" attachment action in the notification popup -->
         <receiver
                 android:name=".msg.NotificationService$DownloadBroadcastReceiver"
                 android:enabled="true"
                 android:exported="false">
-            <intent-filter>
-                <action android:name="io.heckel.ntfy.DOWNLOAD_ATTACHMENT"/>
-            </intent-filter>
         </receiver>
 
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
