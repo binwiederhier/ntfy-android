@@ -4,7 +4,10 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.IBinder
+import android.os.PowerManager
+import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -17,7 +20,9 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.topicUrl
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -80,7 +85,11 @@ class SubscriberService : Service() {
         Log.d(TAG, "Subscriber service has been created")
 
         val title = getString(R.string.channel_subscriber_notification_title)
-        val text = getString(R.string.channel_subscriber_notification_text)
+        val text = if (BuildConfig.FIREBASE_AVAILABLE) {
+            getString(R.string.channel_subscriber_notification_instant_text)
+        } else {
+            getString(R.string.channel_subscriber_notification_noinstant_text)
+        }
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
@@ -184,12 +193,22 @@ class SubscriberService : Service() {
             if (connections.size > 0) {
                 synchronized(this) {
                     val title = getString(R.string.channel_subscriber_notification_title)
-                    val text = when (instantSubscriptions.size) {
-                        1 -> getString(R.string.channel_subscriber_notification_text_one)
-                        2 -> getString(R.string.channel_subscriber_notification_text_two)
-                        3 -> getString(R.string.channel_subscriber_notification_text_three)
-                        4 -> getString(R.string.channel_subscriber_notification_text_four)
-                        else -> getString(R.string.channel_subscriber_notification_text_more, instantSubscriptions.size)
+                    val text = if (BuildConfig.FIREBASE_AVAILABLE) {
+                        when (instantSubscriptions.size) {
+                            1 -> getString(R.string.channel_subscriber_notification_instant_text_one)
+                            2 -> getString(R.string.channel_subscriber_notification_instant_text_two)
+                            3 -> getString(R.string.channel_subscriber_notification_instant_text_three)
+                            4 -> getString(R.string.channel_subscriber_notification_instant_text_four)
+                            else -> getString(R.string.channel_subscriber_notification_instant_text_more, instantSubscriptions.size)
+                        }
+                    } else {
+                        when (instantSubscriptions.size) {
+                            1 -> getString(R.string.channel_subscriber_notification_noinstant_text_one)
+                            2 -> getString(R.string.channel_subscriber_notification_noinstant_text_two)
+                            3 -> getString(R.string.channel_subscriber_notification_noinstant_text_three)
+                            4 -> getString(R.string.channel_subscriber_notification_noinstant_text_four)
+                            else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
+                        }
                     }
                     serviceNotification = createNotification(title, text)
                     notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)

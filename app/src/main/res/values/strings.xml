@@ -13,12 +13,18 @@
     <string name="channel_notifications_max_name">Notifications (Max Priority)</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
-    <string name="channel_subscriber_notification_text">You are subscribed to instant delivery topics</string>
-    <string name="channel_subscriber_notification_text_one">You are subscribed to one instant delivery topic</string>
-    <string name="channel_subscriber_notification_text_two">You are subscribed to two instant delivery topics</string>
-    <string name="channel_subscriber_notification_text_three">You are subscribed to three instant delivery topics</string>
-    <string name="channel_subscriber_notification_text_four">You are subscribed to four instant delivery topics</string>
-    <string name="channel_subscriber_notification_text_more">You are subscribed to %1$d instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text">You are subscribed to instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_one">You are subscribed to one instant delivery topic</string>
+    <string name="channel_subscriber_notification_instant_text_two">You are subscribed to two instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_three">You are subscribed to three instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_four">You are subscribed to four instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_more">You are subscribed to %1$d instant delivery topics</string>
+    <string name="channel_subscriber_notification_noinstant_text">You are subscribed to topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">You are subscribed to one topic</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">You are subscribed to two topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">You are subscribed to three topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">You are subscribed to four topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">You are subscribed to %1$d topics</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>

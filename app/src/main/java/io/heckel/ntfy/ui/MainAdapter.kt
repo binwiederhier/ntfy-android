@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Repository
@@ -89,7 +90,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
             notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
             notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE
-            instantImageView.visibility = if (subscription.instant) View.VISIBLE else View.GONE
+            instantImageView.visibility = if (subscription.instant && BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
             if (isUnifiedPush || subscription.newCount == 0) {
                 newItemsView.visibility = View.GONE
             } else {

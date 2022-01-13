@@ -23,14 +23,11 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.util.topicShortUrl
-import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.fadeStatusBarColor
-import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.random.Random
@@ -401,7 +398,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             } else {
                 enableInstantItem?.isVisible = false
                 disableInstantItem?.isVisible = false
-                instantInfoItem?.isVisible = true
+                instantInfoItem?.isVisible = BuildConfig.FIREBASE_AVAILABLE
             }
         }
     }

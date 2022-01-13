@@ -184,3 +184,4 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
 fun supportedImage(mimeType: String?): Boolean {
     return listOf("image/jpeg", "image/png").contains(mimeType)
 }
+
