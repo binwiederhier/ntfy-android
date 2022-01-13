@@ -8,10 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.CheckBox
+import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
@@ -32,7 +29,7 @@ class AddFragment : DialogFragment() {
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: AutoCompleteTextView
     private lateinit var useAnotherServerCheckbox: CheckBox
-    private lateinit var useAnotherServerDescription: View
+    private lateinit var useAnotherServerDescription: TextView
     private lateinit var instantDeliveryBox: View
     private lateinit var instantDeliveryCheckbox: CheckBox
     private lateinit var instantDeliveryDescription: View
@@ -69,6 +66,13 @@ class AddFragment : DialogFragment() {
         instantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
         useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox)
         useAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
+
+        // Set "Use another server" description based on flavor
+        useAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
+            getString(R.string.add_dialog_use_another_server_description)
+        } else {
+            getString(R.string.add_dialog_use_another_server_description_noinstant)
+        }
 
         // Base URL dropdown behavior; Oh my, why is this so complicated?!
         val toggleEndIcon = {
