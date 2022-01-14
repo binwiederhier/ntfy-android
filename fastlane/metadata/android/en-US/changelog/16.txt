@@ -1,0 +1,11 @@
+New features:
+* Attachments: Send files to the phone (#25, #15)
+* Click action: Add a click action URL to notifications (#85)
+* Battery optimization: Allow disabling persistent wake-lock (#76, thanks @MatMaul)
+* Recognize imported user CA certificate for self-hosted servers (#87, thanks @keith24)
+* Remove mentions of "instant delivery" from F-Droid to make it less confusing (no ticket)
+
+Bug fixes:
+* Subscription "muted until" was not always respected (#90)
+* Fix two stack traces reported by Play console vitals (no ticket)
+* Truncate FCM messages >4,000 bytes, prefer instant messages (#84)
