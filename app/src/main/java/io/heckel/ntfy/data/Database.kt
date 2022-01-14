@@ -59,7 +59,7 @@ data class Notification(
 
 @Entity
 data class Attachment(
-    @ColumnInfo(name = "name") val name: String, // Filename (mandatory, see ntfy server)
+    @ColumnInfo(name = "name") val name: String, // Filename
     @ColumnInfo(name = "type") val type: String?, // MIME type
     @ColumnInfo(name = "size") val size: Long?, // Size in bytes
     @ColumnInfo(name = "expires") val expires: Long?, // Unix timestamp

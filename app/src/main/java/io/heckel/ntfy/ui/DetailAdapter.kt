@@ -18,14 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.msg.DownloadManager
-import io.heckel.ntfy.msg.DownloadWorker
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -254,7 +250,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                     ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
                     return@setOnMenuItemClickListener true
                 }
-                DownloadManager.enqueue(context, notification.id)
+                DownloadManager.enqueue(context, notification.id, userAction = true)
                 true
             }
             cancelItem.setOnMenuItemClickListener {

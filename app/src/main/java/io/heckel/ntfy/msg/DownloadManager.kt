@@ -18,12 +18,15 @@ class DownloadManager {
         private const val TAG = "NtfyDownloadManager"
         private const val DOWNLOAD_WORK_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
 
-        fun enqueue(context: Context, id: String) {
+        fun enqueue(context: Context, id: String, userAction: Boolean) {
             val workManager = WorkManager.getInstance(context)
             val workName = DOWNLOAD_WORK_NAME_PREFIX + id
             Log.d(TAG,"Enqueuing work to download attachment for notification $id, work: $workName")
             val workRequest = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
-                .setInputData(workDataOf("id" to id))
+                .setInputData(workDataOf(
+                    DownloadWorker.INPUT_DATA_ID to id,
+                    DownloadWorker.INPUT_DATA_USER_ACTION to userAction
+                ))
                 .build()
             workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
         }

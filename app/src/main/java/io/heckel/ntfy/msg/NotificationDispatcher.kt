@@ -41,7 +41,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             }
         }
         if (download) {
-            DownloadManager.enqueue(context, notification.id)
+            DownloadManager.enqueue(context, notification.id, userAction = false)
         }
     }
 
@@ -55,7 +55,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             Repository.AUTO_DOWNLOAD_NEVER -> return false
             else -> {
                 if (notification.attachment.size == null) {
-                    return false
+                    return true // DownloadWorker will bail out if attachment is too large!
                 }
                 return notification.attachment.size <= maxAutoDownloadSize
             }

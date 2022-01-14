@@ -199,7 +199,7 @@ class NotificationService(val context: Context) {
             val id = intent.getStringExtra("id") ?: return
             val action = intent.getStringExtra("action") ?: return
             when (action) {
-                DOWNLOAD_ACTION_START -> DownloadManager.enqueue(context, id)
+                DOWNLOAD_ACTION_START -> DownloadManager.enqueue(context, id, userAction = true)
                 DOWNLOAD_ACTION_CANCEL -> DownloadManager.cancel(context, id)
             }
         }
@@ -236,7 +236,7 @@ class NotificationService(val context: Context) {
                     channel
                 }
                 5 -> {
-                    val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_MAX)
+                    val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
