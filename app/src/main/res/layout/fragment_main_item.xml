@@ -6,13 +6,14 @@
                                                    android:layout_height="wrap_content"
                                                    android:background="?android:attr/selectableItemBackground"
                                                    android:orientation="horizontal" android:clickable="true"
-                                                   android:focusable="true">
+                                                   android:focusable="true" android:paddingEnd="15dp"
+                                                   android:paddingStart="15dp">
     <ImageView
             android:layout_width="35dp"
             android:layout_height="35dp" app:srcCompat="@drawable/ic_sms_gray_24dp"
             android:id="@+id/main_item_image" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="15dp" android:layout_marginTop="13dp"/>
+            android:layout_marginTop="13dp"/>
     <TextView
             android:text="ntfy.sh/example"
             android:layout_width="0dp"
@@ -56,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/main_item_date"
             app:layout_constraintTop_toTopOf="@+id/main_item_instant_image"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
             android:paddingTop="2dp"/>
     <TextView
             android:text="99+"
