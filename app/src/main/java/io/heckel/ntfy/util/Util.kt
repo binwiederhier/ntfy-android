@@ -7,7 +7,6 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.Window
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.data.Subscription
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -112,12 +111,9 @@ fun formatTitle(notification: Notification): String {
 }
 
 // Checks in the most horrible way if a content URI exists; I couldn't find a better way
-fun fileExists(context: Context, uri: String?): Boolean {
-    if (uri == null) return false
-    val resolver = context.applicationContext.contentResolver
+fun fileExists(context: Context, contentUri: String?): Boolean {
     return try {
-        val fileIS = resolver.openInputStream(Uri.parse(uri))
-        fileIS?.close()
+        queryFilenameInternal(context, contentUri) // Throws if the file does not exist
         true
     } catch (_: Exception) {
         false
@@ -126,19 +122,21 @@ fun fileExists(context: Context, uri: String?): Boolean {
 
 // Queries the filename of a content URI
 fun queryFilename(context: Context, contentUri: String?, fallbackName: String): String {
-    if (contentUri == null) {
-        return fallbackName
-    }
-    try {
-        val resolver = context.applicationContext.contentResolver
-        val cursor = resolver.query(Uri.parse(contentUri), null, null, null, null) ?: return fallbackName
-        return cursor.use { c ->
-            val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
-            c.moveToFirst()
-            c.getString(nameIndex)
-        }
+    return try {
+        queryFilenameInternal(context, contentUri)
     } catch (_: Exception) {
-        return fallbackName
+        fallbackName
+    }
+}
+
+fun queryFilenameInternal(context: Context, contentUri: String?): String {
+    if (contentUri == null) throw Exception("URI is null")
+    val resolver = context.applicationContext.contentResolver
+    val cursor = resolver.query(Uri.parse(contentUri), null, null, null, null) ?: throw Exception("Query returned null")
+    return cursor.use { c ->
+        val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+        c.moveToFirst()
+        c.getString(nameIndex)
     }
 }
 
