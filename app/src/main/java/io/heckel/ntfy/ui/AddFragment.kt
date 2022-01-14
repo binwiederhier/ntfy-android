@@ -51,10 +51,8 @@ class AddFragment : DialogFragment() {
             throw IllegalStateException("Activity cannot be null")
         }
 
-        // Dependencies
-        val database = Database.getInstance(requireActivity().applicationContext)
-        val sharedPrefs = requireActivity().getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
-        repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
+        // Dependencies (Fragments need a default constructor)
+        repository = Repository.getInstance(requireActivity())
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)

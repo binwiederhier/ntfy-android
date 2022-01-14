@@ -1,5 +1,7 @@
 package io.heckel.ntfy.data
 
+import android.app.Activity
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
@@ -329,6 +331,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
+
+        fun getInstance(activity: Activity): Repository {
+            val database = Database.getInstance(activity.applicationContext)
+            val sharedPrefs = activity.getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
+            return getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
+        }
 
         fun getInstance(sharedPrefs: SharedPreferences, subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
             return synchronized(Repository::class) {

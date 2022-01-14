@@ -17,6 +17,7 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes
@@ -24,7 +25,6 @@ import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.toPriorityString
 
 class SettingsActivity : AppCompatActivity() {
-    private val repository by lazy { (application as Application).repository }
     private lateinit var fragment: SettingsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class SettingsActivity : AppCompatActivity() {
         Log.d(TAG, "Create $this")
 
         if (savedInstanceState == null) {
-            fragment = SettingsFragment(repository, supportFragmentManager)
+            fragment = SettingsFragment(supportFragmentManager)
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settings_layout, fragment)
@@ -48,11 +48,16 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    class SettingsFragment(val repository: Repository, private val supportFragmentManager: FragmentManager) : PreferenceFragmentCompat() {
-        private var autoDownloadSelection = repository.getAutoDownloadMaxSize() // Only used for <= Android P, due to permissions request
+    class SettingsFragment(private val supportFragmentManager: FragmentManager) : PreferenceFragmentCompat() {
+        private lateinit var repository: Repository
+        private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.main_preferences, rootKey)
+
+            // Dependencies (Fragments need a default constructor)
+            repository = Repository.getInstance(requireActivity())
+            autoDownloadSelection = repository.getAutoDownloadMaxSize() // Only used for <= Android P, due to permissions request
 
             // Important note: We do not use the default shared prefs to store settings. Every
             // preferenceDataStore is overridden to use the repository. This is convenient, because
@@ -253,10 +258,12 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         fun setAutoDownload() {
+            val autoDownloadSelectionCopy = autoDownloadSelection
+            if (autoDownloadSelectionCopy == AUTO_DOWNLOAD_SELECTION_NOT_SET) return
             val autoDownloadPrefId = context?.getString(R.string.settings_notifications_auto_download_key) ?: return
             val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
-            autoDownload?.value = autoDownloadSelection.toString()
-            repository.setAutoDownloadMaxSize(autoDownloadSelection)
+            autoDownload?.value = autoDownloadSelectionCopy.toString()
+            repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
         }
     }
 
@@ -277,5 +284,6 @@ class SettingsActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "NtfySettingsActivity"
         private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
+        private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
     }
 }
