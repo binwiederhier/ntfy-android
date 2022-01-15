@@ -173,7 +173,7 @@ class ApiService {
     /* This annotation ensures that proguard still works in production builds,
      * see https://stackoverflow.com/a/62753300/1440785 */
     @Keep
-    private data class Message(
+    data class Message(
         val id: String,
         val time: Long,
         val event: String,
@@ -187,7 +187,7 @@ class ApiService {
     )
 
     @Keep
-    private data class MessageAttachment(
+    data class MessageAttachment(
         val name: String,
         val type: String?,
         val size: Long?,

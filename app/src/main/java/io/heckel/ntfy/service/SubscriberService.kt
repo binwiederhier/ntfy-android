@@ -54,12 +54,20 @@ import java.util.concurrent.ConcurrentHashMap
  * - https://github.com/robertohuertasm/endless-service/blob/master/app/src/main/java/com/robertohuertas/endless/EndlessService.kt
  * - https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd
  */
+
+interface Connection {
+    fun start()
+    fun cancel()
+    fun since(): Long
+    fun matches(otherSubscriptionIds: Collection<Long>): Boolean
+}
+
 class SubscriberService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
     private val repository by lazy { (application as Application).repository }
     private val dispatcher by lazy { NotificationDispatcher(this, repository) }
-    private val connections = ConcurrentHashMap<String, SubscriberConnection>() // Base URL -> Connection
+    private val connections = ConcurrentHashMap<String, Connection>() // Base URL -> Connection
     private val api = ApiService()
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
@@ -174,9 +182,14 @@ class SubscriberService : Service() {
                 }
                 if (!connections.containsKey(baseUrl)) {
                     val serviceActive = { -> isServiceStarted }
-                    val connection = SubscriberConnection(repository, api, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                    val connection = if (true) {
+                        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                        WsConnection(repository, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                    } else {
+                        JsonConnection(this, repository, api, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                    }
                     connections[baseUrl] = connection
-                    connection.start(this)
+                    connection.start()
                 }
             }
 

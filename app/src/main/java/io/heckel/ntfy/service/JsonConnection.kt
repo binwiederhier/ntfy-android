@@ -11,7 +11,8 @@ import kotlinx.coroutines.*
 import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean
 
-class SubscriberConnection(
+class JsonConnection(
+    private val scope: CoroutineScope,
     private val repository: Repository,
     private val api: ApiService,
     private val baseUrl: String,
@@ -20,7 +21,7 @@ class SubscriberConnection(
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
-) {
+) : Connection {
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
@@ -29,7 +30,7 @@ class SubscriberConnection(
     private lateinit var call: Call
     private lateinit var job: Job
 
-    fun start(scope: CoroutineScope) {
+    override fun start() {
         job = scope.launch(Dispatchers.IO) {
             Log.d(TAG, "[$url] Starting connection for subscriptions: $topicsToSubscriptionIds")
 
@@ -81,17 +82,17 @@ class SubscriberConnection(
         }
     }
 
-    fun since(): Long {
+    override fun since(): Long {
         return since
     }
 
-    fun cancel() {
+    override fun cancel() {
         Log.d(TAG, "[$url] Cancelling connection")
         if (this::job.isInitialized) job?.cancel()
         if (this::call.isInitialized) call?.cancel()
     }
 
-    fun matches(otherSubscriptionIds: Collection<Long>): Boolean {
+    override fun matches(otherSubscriptionIds: Collection<Long>): Boolean {
         return subscriptionIds.toSet() == otherSubscriptionIds.toSet()
     }
 
