@@ -189,6 +189,22 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun setConnectionProtocol(connectionProtocol: String) {
+        if (connectionProtocol == CONNECTION_PROTOCOL_JSONHTTP) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_CONNECTION_PROTOCOL)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_CONNECTION_PROTOCOL, connectionProtocol)
+                .apply()
+        }
+    }
+
+    fun getConnectionProtocol(): String {
+        return sharedPrefs.getString(SHARED_PREFS_CONNECTION_PROTOCOL, null) ?: CONNECTION_PROTOCOL_JSONHTTP
+    }
+
     fun getBroadcastEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
     }
@@ -321,6 +337,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
         const val SHARED_PREFS_WAKELOCK_ENABLED = "WakelockEnabled"
+        const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
@@ -328,6 +345,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val AUTO_DOWNLOAD_NEVER = 0L
         const val AUTO_DOWNLOAD_ALWAYS = 1L
         const val AUTO_DOWNLOAD_DEFAULT = 1024 * 1024L // Must match a value in values.xml
+
+        const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
+        const val CONNECTION_PROTOCOL_WS = "ws"
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

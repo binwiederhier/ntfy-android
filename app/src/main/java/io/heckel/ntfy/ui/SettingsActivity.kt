@@ -153,6 +153,27 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
+            // Connection protocol
+            val connectionProtocolPrefId = context?.getString(R.string.settings_advanced_connection_protocol_key) ?: return
+            val connectionProtocol: ListPreference? = findPreference(connectionProtocolPrefId)
+            connectionProtocol?.value = repository.getConnectionProtocol()
+            connectionProtocol?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val proto = value ?: repository.getConnectionProtocol()
+                    repository.setConnectionProtocol(proto)
+                    restartService()
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getConnectionProtocol()
+                }
+            }
+            connectionProtocol?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value) {
+                    Repository.CONNECTION_PROTOCOL_WS -> getString(R.string.settings_advanced_connection_protocol_summary_ws)
+                    else -> getString(R.string.settings_advanced_connection_protocol_summary_jsonhttp)
+                }
+            }
+
             // Permanent wakelock enabled
             val wakelockEnabledPrefId = context?.getString(R.string.settings_advanced_wakelock_key) ?: return
             val wakelockEnabled: SwitchPreference? = findPreference(wakelockEnabledPrefId)
@@ -160,11 +181,7 @@ class SettingsActivity : AppCompatActivity() {
             wakelockEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     repository.setWakelockEnabled(value)
-                    val context = this@SettingsFragment.context
-                    Intent(context, SubscriberService::class.java).also { intent ->
-                        // Service will autorestart
-                        context?.stopService(intent)
-                    }
+                    restartService()
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return repository.getWakelockEnabled()
@@ -264,6 +281,13 @@ class SettingsActivity : AppCompatActivity() {
             val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
             autoDownload?.value = autoDownloadSelectionCopy.toString()
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
+        }
+
+        private fun restartService() {
+            val context = this@SettingsFragment.context
+            Intent(context, SubscriberService::class.java).also { intent ->
+                context?.stopService(intent) // Service will auto-restart
+            }
         }
     }
 

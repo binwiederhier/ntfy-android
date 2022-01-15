@@ -226,6 +226,12 @@
     <string name="settings_unified_push_base_url_title">Server URL</string>
     <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_connection_protocol_key">ConnectionProtocol</string>
+    <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This is the tried and true method, though it may consume more battery.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This option is experimental. Let us know if it consumes less battery or is unstable.</string>
+    <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets (experimental)</string>
     <string name="settings_advanced_wakelock_key">WakelockEnabled</string>
     <string name="settings_advanced_wakelock_title">Permanent wakelock</string>
     <string name="settings_advanced_wakelock_summary_enabled">Prevents app from sleeping to ensure timely notification delivery. This consumes a lot of battery, but some devices require this.</string>

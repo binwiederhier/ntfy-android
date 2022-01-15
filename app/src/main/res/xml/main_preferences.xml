@@ -34,6 +34,12 @@
                 app:dependency="@string/settings_unified_push_enabled_key"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
+        <ListPreference
+                app:key="@string/settings_advanced_connection_protocol_key"
+                app:title="@string/settings_advanced_connection_protocol_title"
+                app:entries="@array/settings_advanced_connection_protocol_entries"
+                app:entryValues="@array/settings_advanced_connection_protocol_values"
+                app:defaultValue="jsonhttp"/>
         <SwitchPreference
             app:key="@string/settings_advanced_wakelock_key"
             app:title="@string/settings_advanced_wakelock_title"

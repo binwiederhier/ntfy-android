@@ -2,12 +2,8 @@ package io.heckel.ntfy.msg
 
 import android.os.Build
 import android.util.Log
-import androidx.annotation.Keep
-import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.PROGRESS_NONE
 import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -16,7 +12,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class ApiService {
-    private val gson = Gson()
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -26,6 +21,7 @@ class ApiService {
     private val subscriberClient = OkHttpClient.Builder()
         .readTimeout(5, TimeUnit.MINUTES) // Assuming that keepalive messages are more frequent than this
         .build()
+    private val parser = NotificationParser()
 
     fun publish(baseUrl: String, topic: String, message: String, title: String, priority: Int, tags: List<String>, delay: String) {
         val url = topicUrl(baseUrl, topic)
@@ -70,9 +66,10 @@ class ApiService {
             }
             val body = response.body?.string()?.trim()
             if (body == null || body.isEmpty()) return emptyList()
-            val notifications = body.lines().map { line ->
-                fromString(subscriptionId, line)
+            val notifications = body.lines().mapNotNull { line ->
+                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
             }
+
             Log.d(TAG, "Notifications: $notifications")
             return notifications
         }
@@ -103,32 +100,9 @@ class ApiService {
                     val source = response.body?.source() ?: throw Exception("Unexpected response for $url: body is empty")
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val message = gson.fromJson(line, Message::class.java)
-                        if (message.event == EVENT_MESSAGE) {
-                            val topic = message.topic
-                            val attachment = if (message.attachment?.url != null) {
-                                Attachment(
-                                    name = message.attachment.name,
-                                    type = message.attachment.type,
-                                    size = message.attachment.size,
-                                    expires = message.attachment.expires,
-                                    url = message.attachment.url,
-                                )
-                            } else null
-                            val notification = Notification(
-                                id = message.id,
-                                subscriptionId = 0, // TO BE SET downstream
-                                timestamp = message.time,
-                                title = message.title ?: "",
-                                message = message.message,
-                                priority = toPriority(message.priority),
-                                tags = joinTags(message.tags),
-                                click = message.click ?: "",
-                                attachment = attachment,
-                                notificationId = Random.nextInt(),
-                                deleted = false
-                            )
-                            notify(topic, notification)
+                        val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
+                        if (notification != null) {
+                            notify(notification.topic, notification.notification)
                         }
                     }
                 } catch (e: Exception) {
@@ -143,57 +117,6 @@ class ApiService {
         })
         return call
     }
-
-    private fun fromString(subscriptionId: Long, s: String): Notification {
-        val message = gson.fromJson(s, Message::class.java)
-        val attachment = if (message.attachment?.url != null) {
-            Attachment(
-                name = message.attachment.name,
-                type = message.attachment.type,
-                size = message.attachment.size,
-                expires = message.attachment.expires,
-                url = message.attachment.url,
-            )
-        } else null
-        return Notification(
-            id = message.id,
-            subscriptionId = subscriptionId,
-            timestamp = message.time,
-            title = message.title ?: "",
-            message = message.message,
-            priority = toPriority(message.priority),
-            tags = joinTags(message.tags),
-            click = message.click ?: "",
-            attachment = attachment,
-            notificationId = 0, // zero: when we poll, we do not want a notificationId!
-            deleted = false
-        )
-    }
-
-    /* This annotation ensures that proguard still works in production builds,
-     * see https://stackoverflow.com/a/62753300/1440785 */
-    @Keep
-    data class Message(
-        val id: String,
-        val time: Long,
-        val event: String,
-        val topic: String,
-        val priority: Int?,
-        val tags: List<String>?,
-        val click: String?,
-        val title: String?,
-        val message: String,
-        val attachment: MessageAttachment?,
-    )
-
-    @Keep
-    data class MessageAttachment(
-        val name: String,
-        val type: String?,
-        val size: Long?,
-        val expires: Long?,
-        val url: String,
-    )
 
     companion object {
         val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"

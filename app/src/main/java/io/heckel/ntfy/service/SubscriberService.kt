@@ -15,6 +15,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
+import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
@@ -182,7 +183,7 @@ class SubscriberService : Service() {
                 }
                 if (!connections.containsKey(baseUrl)) {
                     val serviceActive = { -> isServiceStarted }
-                    val connection = if (true) {
+                    val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                         WsConnection(repository, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, alarmManager)
                     } else {
