@@ -49,7 +49,7 @@ class WsConnection(
             return
         }
         if (webSocket != null) {
-            webSocket!!.close(1000, "")
+            webSocket!!.close(WS_CLOSE_NORMAL, "")
         }
         state = State.Connecting
         val nextId = ID.incrementAndGet()
@@ -68,7 +68,7 @@ class WsConnection(
         }
         Log.d(TAG, "[$url] WebSocket(${ID.get()}): closing existing connection")
         state = State.Disconnected
-        webSocket!!.close(1000, "")
+        webSocket!!.close(WS_CLOSE_NORMAL, "")
         webSocket = null
     }
 
@@ -166,6 +166,7 @@ class WsConnection(
     companion object {
         private const val TAG = "NtfyWsConnection"
         private const val RECONNECT_TAG = "WsReconnect"
+        private const val WS_CLOSE_NORMAL = 1000
         private val RETRY_SECONDS = listOf(5, 10, 15, 20, 30, 45, 60, 120)
         private val ID = AtomicLong(0)
     }

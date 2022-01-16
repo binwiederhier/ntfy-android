@@ -71,6 +71,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                 .addHeader("User-Agent", ApiService.USER_AGENT)
                 .build()
             client.newCall(request).execute().use { response ->
+                Log.d(TAG, "Download: headers received: $response")
                 if (!response.isSuccessful || response.body == null) {
                     throw Exception("Unexpected response: ${response.code}")
                 }

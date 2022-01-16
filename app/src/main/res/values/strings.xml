@@ -226,6 +226,11 @@
     <string name="settings_unified_push_base_url_title">Server URL</string>
     <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
+    <string name="settings_advanced_broadcast_title">Broadcast messages</string>
+    <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
+    <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
+    <string name="settings_experimental_header">Experimental</string>
     <string name="settings_advanced_connection_protocol_key">ConnectionProtocol</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This is the tried and true method, though it may consume more battery.</string>
@@ -236,10 +241,6 @@
     <string name="settings_advanced_wakelock_title">Permanent wakelock</string>
     <string name="settings_advanced_wakelock_summary_enabled">Prevents app from sleeping to ensure timely notification delivery. This consumes a lot of battery, but some devices require this.</string>
     <string name="settings_advanced_wakelock_summary_disabled">Allows app to enter sleep mode. This may negatively impact notification delivery. It depends on the device.</string>
-    <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
-    <string name="settings_advanced_broadcast_title">Broadcast messages</string>
-    <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
-    <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_key">Version</string>
     <string name="settings_about_version_title">Version</string>

@@ -19,7 +19,7 @@ class ApiService {
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
     private val subscriberClient = OkHttpClient.Builder()
-        .readTimeout(5, TimeUnit.MINUTES) // Assuming that keepalive messages are more frequent than this
+        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
     private val parser = NotificationParser()
 
