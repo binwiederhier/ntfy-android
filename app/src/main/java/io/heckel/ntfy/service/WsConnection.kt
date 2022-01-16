@@ -30,12 +30,13 @@ class WsConnection(
     private val parser = NotificationParser()
     private val client = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES)
+        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
         .connectTimeout(10, TimeUnit.SECONDS)
         .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
+    private var closed = false
 
     private var since: Long = sinceTime
     private val subscriptionIds = topicsToSubscriptionIds.values
@@ -44,10 +45,12 @@ class WsConnection(
 
     @Synchronized
     override fun start() {
-        if (state == State.Connecting || state == State.Connected) {
+        if (closed || state == State.Connecting || state == State.Connected) {
             return
         }
-        cancel()
+        if (webSocket != null) {
+            webSocket!!.close(1000, "")
+        }
         state = State.Connecting
         val nextId = ID.incrementAndGet()
         val sinceVal = if (since == 0L) "all" else since.toString()
@@ -58,7 +61,8 @@ class WsConnection(
     }
 
     @Synchronized
-    override fun cancel() {
+    override fun close() {
+        closed = true
         if (webSocket == null) {
             return
         }
@@ -79,7 +83,7 @@ class WsConnection(
 
     @Synchronized
     fun scheduleReconnect(seconds: Int) {
-        if (state == State.Connecting || state == State.Connected) {
+        if (closed || state == State.Connecting || state == State.Connected) {
             return
         }
         state = State.Scheduled
@@ -134,6 +138,10 @@ class WsConnection(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             Log.e(TAG, "[$url] WebSocket($id): failure ${response?.code}: ${response?.message}", t)
             syncExec {
+                if (closed) {
+                    Log.d(TAG, "WebSocket($id): Connection marked as closed. Not retrying.")
+                    return@syncExec
+                }
                 stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                 state = State.Disconnected
                 errorCount++
@@ -142,10 +150,10 @@ class WsConnection(
             }
         }
 
-        private fun syncExec(runnable: Runnable) {
+        private fun syncExec(fn: () -> Unit) {
             synchronized(this) {
                 if (ID.get() == id) {
-                    runnable.run()
+                    fn()
                 }
             }
         }

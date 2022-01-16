@@ -86,7 +86,7 @@ class JsonConnection(
         return since
     }
 
-    override fun cancel() {
+    override fun close() {
         Log.d(TAG, "[$url] Cancelling connection")
         if (this::job.isInitialized) job?.cancel()
         if (this::call.isInitialized) call?.cancel()

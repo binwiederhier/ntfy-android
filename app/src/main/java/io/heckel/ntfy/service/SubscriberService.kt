@@ -58,7 +58,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 interface Connection {
     fun start()
-    fun cancel()
+    fun close()
     fun since(): Long
     fun matches(otherSubscriptionIds: Collection<Long>): Boolean
 }
@@ -133,7 +133,7 @@ class SubscriberService : Service() {
         Log.d(TAG, "Stopping the foreground service")
 
         // Cancelling all remaining jobs and open HTTP calls
-        connections.values.forEach { connection -> connection.cancel() }
+        connections.values.forEach { connection -> connection.close() }
         connections.clear()
 
         // Releasing wake-lock and stopping ourselves
@@ -179,7 +179,7 @@ class SubscriberService : Service() {
                 if (connection != null && !connection.matches(subscriptions.values)) {
                     since = connection.since()
                     connections.remove(baseUrl)
-                    connection.cancel()
+                    connection.close()
                 }
                 if (!connections.containsKey(baseUrl)) {
                     val serviceActive = { -> isServiceStarted }
@@ -199,7 +199,7 @@ class SubscriberService : Service() {
             connections.keys().toList().forEach { baseUrl ->
                 if (!baseUrls.contains(baseUrl)) {
                     val connection = connections.remove(baseUrl)
-                    connection?.cancel()
+                    connection?.close()
                 }
             }
 
