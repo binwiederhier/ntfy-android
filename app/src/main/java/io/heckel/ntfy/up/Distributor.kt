@@ -2,7 +2,7 @@ package io.heckel.ntfy.up
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import io.heckel.ntfy.log.Log
 
 /**
  * This is the UnifiedPush distributor, an amalgamation of messages to be sent as part of the spec.

@@ -1,11 +1,11 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.util.Log
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import io.heckel.ntfy.log.Log
 
 /**
  * Download attachment in the background via WorkManager

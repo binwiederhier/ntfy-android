@@ -6,20 +6,15 @@ import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.*
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.ui.DetailActivity
-import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

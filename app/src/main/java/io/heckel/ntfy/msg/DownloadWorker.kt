@@ -25,7 +25,6 @@ import okhttp3.Response
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-
 class DownloadWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.MINUTES) // Total timeout for entire request

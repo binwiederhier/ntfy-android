@@ -77,10 +77,24 @@ const val PROGRESS_FAILED = -3
 const val PROGRESS_DELETED = -4
 const val PROGRESS_DONE = 100
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class], version = 6)
+@Entity
+data class Logs(
+    @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
+    @ColumnInfo(name = "timestamp") val timestamp: Long,
+    @ColumnInfo(name = "tag") val tag: String,
+    @ColumnInfo(name = "level") val level: Int,
+    @ColumnInfo(name = "message") val message: String,
+    @ColumnInfo(name = "exception") val exception: String?
+) {
+    constructor(timestamp: Long, tag: String, level: Int, message: String, exception: String?) :
+            this(0, timestamp, tag, level, message, exception)
+}
+
+@androidx.room.Database(entities = [Subscription::class, Notification::class, Logs::class], version = 6)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
+    abstract fun logsDao(): LogsDao
 
     companion object {
         @Volatile
@@ -260,4 +274,14 @@ interface NotificationDao {
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)
+}
+
+
+@Dao
+interface LogsDao {
+    @Insert
+    suspend fun insert(entry: Logs)
+
+    @Query("DELETE FROM logs WHERE id NOT IN (SELECT id FROM logs ORDER BY id DESC LIMIT :keepCount)")
+    suspend fun prune(keepCount: Int)
 }

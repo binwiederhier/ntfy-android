@@ -2,11 +2,10 @@ package io.heckel.ntfy.up
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import androidx.preference.PreferenceManager
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.randomString
 import io.heckel.ntfy.util.topicUrlUp
@@ -25,6 +24,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         if (context == null || intent == null) {
             return
         }
+        Log.init(context) // Init in all entrypoints
         when (intent.action) {
             ACTION_REGISTER -> register(context, intent)
             ACTION_UNREGISTER -> unregister(context, intent)

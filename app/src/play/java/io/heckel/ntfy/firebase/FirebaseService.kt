@@ -1,7 +1,6 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
@@ -9,6 +8,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.PROGRESS_NONE
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.*
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
@@ -22,6 +22,10 @@ class FirebaseService : FirebaseMessagingService() {
     private val dispatcher by lazy { NotificationDispatcher(this, repository) }
     private val job = SupervisorJob()
     private val messenger = FirebaseMessenger()
+
+    init {
+        Log.init(this) // Init in all entrypoints
+    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // We only process data messages

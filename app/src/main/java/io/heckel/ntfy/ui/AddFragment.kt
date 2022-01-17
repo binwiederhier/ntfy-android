@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.DialogFragment
@@ -15,11 +14,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class AddFragment : DialogFragment() {
     private lateinit var repository: Repository

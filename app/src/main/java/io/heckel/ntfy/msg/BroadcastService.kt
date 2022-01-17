@@ -2,10 +2,10 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import io.heckel.ntfy.R
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.util.joinTagsMap
 import io.heckel.ntfy.util.splitTags
 import kotlinx.coroutines.Dispatchers

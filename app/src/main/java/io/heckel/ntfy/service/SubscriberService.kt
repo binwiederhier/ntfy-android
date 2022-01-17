@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.BuildConfig
@@ -17,6 +16,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.MainActivity
@@ -25,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -55,14 +54,6 @@ import java.util.concurrent.ConcurrentHashMap
  * - https://github.com/robertohuertasm/endless-service/blob/master/app/src/main/java/com/robertohuertas/endless/EndlessService.kt
  * - https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd
  */
-
-interface Connection {
-    fun start()
-    fun close()
-    fun since(): Long
-    fun matches(otherSubscriptionIds: Collection<Long>): Boolean
-}
-
 class SubscriberService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false

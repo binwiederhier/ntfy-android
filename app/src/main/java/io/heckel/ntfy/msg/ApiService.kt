@@ -1,9 +1,9 @@
 package io.heckel.ntfy.msg
 
 import android.os.Build
-import android.util.Log
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody

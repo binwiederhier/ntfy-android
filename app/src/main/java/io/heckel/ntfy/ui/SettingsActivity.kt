@@ -1,12 +1,14 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,9 +18,8 @@ import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Database
 import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
