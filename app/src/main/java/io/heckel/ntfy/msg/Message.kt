@@ -15,6 +15,7 @@ data class Message(
     val click: String?,
     val title: String?,
     val message: String,
+    val encoding: String?,
     val attachment: MessageAttachment?,
 )
 
@@ -26,3 +27,5 @@ data class MessageAttachment(
     val expires: Long?,
     val url: String,
 )
+
+const val MESSAGE_ENCODING_BASE64 = "base64"

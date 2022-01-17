@@ -1,5 +1,6 @@
 package io.heckel.ntfy.msg
 
+import android.util.Base64
 import com.google.gson.Gson
 import io.heckel.ntfy.data.Attachment
 import io.heckel.ntfy.data.Notification
@@ -19,6 +20,11 @@ class NotificationParser {
         if (message.event != ApiService.EVENT_MESSAGE) {
             return null
         }
+        val decodedMessage = if (message.encoding == MESSAGE_ENCODING_BASE64) {
+            String(Base64.decode(message.message, Base64.DEFAULT))
+        } else {
+            message.message
+        }
         val attachment = if (message.attachment?.url != null) {
             Attachment(
                 name = message.attachment.name,
@@ -33,7 +39,7 @@ class NotificationParser {
             subscriptionId = subscriptionId,
             timestamp = message.time,
             title = message.title ?: "",
-            message = message.message,
+            message = decodedMessage,
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
             click = message.click ?: "",

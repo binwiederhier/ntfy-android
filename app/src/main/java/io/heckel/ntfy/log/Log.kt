@@ -57,13 +57,12 @@ class Log(private val logsDao: LogsDao) {
             return getInstance()?.record?.get() ?: false
         }
 
-        fun init(context: Context): Log {
+        fun init(context: Context) {
             return synchronized(Log::class) {
                 if (instance == null) {
                     val database = Database.getInstance(context.applicationContext)
                     instance = Log(database.logsDao())
                 }
-                instance!!
             }
         }
 

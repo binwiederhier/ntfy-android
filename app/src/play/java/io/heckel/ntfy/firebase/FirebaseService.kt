@@ -1,6 +1,7 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
+import android.util.Base64
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
@@ -23,11 +24,10 @@ class FirebaseService : FirebaseMessagingService() {
     private val job = SupervisorJob()
     private val messenger = FirebaseMessenger()
 
-    init {
-        Log.init(this) // Init in all entrypoints
-    }
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        // Init log (this is done in all entrypoints)
+        Log.init(this)
+
         // We only process data messages
         if (remoteMessage.data.isEmpty()) {
             Log.d(TAG, "Discarding unexpected message (1): from=${remoteMessage.from}")
@@ -63,6 +63,7 @@ class FirebaseService : FirebaseMessagingService() {
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
         val click = data["click"]
+        val encoding = data["encoding"]
         val attachmentName = data["attachment_name"] ?: "attachment.bin"
         val attachmentType = data["attachment_type"]
         val attachmentSize = data["attachment_size"]?.toLongOrNull()
@@ -86,6 +87,11 @@ class FirebaseService : FirebaseMessagingService() {
             }
 
             // Add notification
+            val decodedMessage = if (encoding == MESSAGE_ENCODING_BASE64) {
+                String(Base64.decode(message, Base64.DEFAULT))
+            } else {
+                message
+            }
             val attachment = if (attachmentUrl != null) {
                 Attachment(
                     name = attachmentName,
@@ -100,7 +106,7 @@ class FirebaseService : FirebaseMessagingService() {
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
                 title = title ?: "",
-                message = message,
+                message = decodedMessage,
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
