@@ -38,6 +38,14 @@
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"
                 app:enabled="true"/>
+        <SwitchPreference
+                app:key="@string/settings_advanced_record_logs_key"
+                app:title="@string/settings_advanced_record_logs_title"
+                app:enabled="true"/>
+        <Preference
+                app:key="@string/settings_advanced_copy_logs_key"
+                app:title="@string/settings_advanced_copy_logs_title"
+                android:summary="@string/settings_advanced_copy_logs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_experimental_header">
         <ListPreference

@@ -77,8 +77,8 @@ const val PROGRESS_FAILED = -3
 const val PROGRESS_DELETED = -4
 const val PROGRESS_DONE = 100
 
-@Entity
-data class Logs(
+@Entity(tableName = "Log")
+data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
     @ColumnInfo(name = "timestamp") val timestamp: Long,
     @ColumnInfo(name = "tag") val tag: String,
@@ -90,11 +90,11 @@ data class Logs(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, Logs::class], version = 6)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, LogEntry::class], version = 7)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
-    abstract fun logsDao(): LogsDao
+    abstract fun logDao(): LogDao
 
     companion object {
         @Volatile
@@ -109,6 +109,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_7)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -164,6 +165,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_url TEXT") // Room limitation: Has to be nullable for @Embedded
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_contentUri TEXT")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN attachment_progress INT") // Room limitation: Has to be nullable for @Embedded
+            }
+        }
+
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE Log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, timestamp INT NOT NULL, tag TEXT NOT NULL, level INT NOT NULL, message TEXT NOT NULL, exception TEXT)")
             }
         }
     }
@@ -276,12 +283,17 @@ interface NotificationDao {
     fun removeAll(subscriptionId: Long)
 }
 
-
 @Dao
-interface LogsDao {
+interface LogDao {
     @Insert
-    suspend fun insert(entry: Logs)
+    suspend fun insert(entry: LogEntry)
 
-    @Query("DELETE FROM logs WHERE id NOT IN (SELECT id FROM logs ORDER BY id DESC LIMIT :keepCount)")
+    @Query("DELETE FROM log WHERE id NOT IN (SELECT id FROM log ORDER BY id DESC LIMIT :keepCount)")
     suspend fun prune(keepCount: Int)
+
+    @Query("SELECT * FROM log ORDER BY timestamp ASC, id ASC")
+    fun getAll(): List<LogEntry>
+
+    @Query("DELETE FROM log")
+    fun deleteAll()
 }

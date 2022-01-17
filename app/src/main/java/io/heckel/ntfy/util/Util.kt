@@ -19,10 +19,11 @@ fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // U
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
 fun topicUrlWs(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/ws?since=$since"
 fun topicUrlJsonPoll(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?poll=1&since=$since"
-fun topicShortUrl(baseUrl: String, topic: String) =
-    topicUrl(baseUrl, topic)
-        .replace("http://", "")
-        .replace("https://", "")
+fun topicShortUrl(baseUrl: String, topic: String) = shortUrl(topicUrl(baseUrl, topic))
+
+fun shortUrl(url: String) = url
+    .replace("http://", "")
+    .replace("https://", "")
 
 fun formatDateShort(timestampSecs: Long): String {
     val date = Date(timestampSecs*1000)

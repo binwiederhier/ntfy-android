@@ -230,6 +230,17 @@
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
+    <string name="settings_advanced_record_logs_key">RecordLogs</string>
+    <string name="settings_advanced_record_logs_title">Record logs</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Logs are currently being recorded to your device. Up to 5,000 log lines are stored.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Enable log recording, so you can share the logs later. This is useful for diagnosing issues.</string>
+    <string name="settings_advanced_record_logs_delete_dialog_message">Would you like to delete the existing logs?</string>
+    <string name="settings_advanced_record_logs_delete_dialog_button_keep">Keep logs</string>
+    <string name="settings_advanced_record_logs_delete_dialog_button_delete">Delete logs</string>
+    <string name="settings_advanced_copy_logs_key">CopyLogs</string>
+    <string name="settings_advanced_copy_logs_title">Copy logs</string>
+    <string name="settings_advanced_copy_logs_summary">Copy logs to the clipboard. Hostnames and topics are scrubbed, notifications are not.</string>
+    <string name="settings_advanced_copy_logs_copied">Copied to clipboard</string>
     <string name="settings_experimental_header">Experimental</string>
     <string name="settings_advanced_connection_protocol_key">ConnectionProtocol</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>

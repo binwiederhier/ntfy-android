@@ -215,6 +215,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun getRecordLogs(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, false) // Disabled by default
+    }
+
+    fun setRecordLogsEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, enabled)
+            .apply()
+    }
+
     fun getUnifiedPushEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default
     }
@@ -339,6 +349,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_WAKELOCK_ENABLED = "WakelockEnabled"
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
+        const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 

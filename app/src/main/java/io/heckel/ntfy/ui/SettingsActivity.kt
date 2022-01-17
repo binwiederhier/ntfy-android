@@ -1,6 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
@@ -24,6 +26,10 @@ import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.toPriorityString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var fragment: SettingsFragment
@@ -154,68 +160,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            // Connection protocol
-            val connectionProtocolPrefId = context?.getString(R.string.settings_advanced_connection_protocol_key) ?: return
-            val connectionProtocol: ListPreference? = findPreference(connectionProtocolPrefId)
-            connectionProtocol?.value = repository.getConnectionProtocol()
-            connectionProtocol?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String?, value: String?) {
-                    val proto = value ?: repository.getConnectionProtocol()
-                    repository.setConnectionProtocol(proto)
-                    restartService()
-                }
-                override fun getString(key: String?, defValue: String?): String {
-                    return repository.getConnectionProtocol()
-                }
-            }
-            connectionProtocol?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
-                when (pref.value) {
-                    Repository.CONNECTION_PROTOCOL_WS -> getString(R.string.settings_advanced_connection_protocol_summary_ws)
-                    else -> getString(R.string.settings_advanced_connection_protocol_summary_jsonhttp)
-                }
-            }
-
-            // Permanent wakelock enabled
-            val wakelockEnabledPrefId = context?.getString(R.string.settings_advanced_wakelock_key) ?: return
-            val wakelockEnabled: SwitchPreference? = findPreference(wakelockEnabledPrefId)
-            wakelockEnabled?.isChecked = repository.getWakelockEnabled()
-            wakelockEnabled?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setWakelockEnabled(value)
-                    restartService()
-                }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getWakelockEnabled()
-                }
-            }
-            wakelockEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
-                if (pref.isChecked) {
-                    getString(R.string.settings_advanced_wakelock_summary_enabled)
-                } else {
-                    getString(R.string.settings_advanced_wakelock_summary_disabled)
-                }
-            }
-
-            // Broadcast enabled
-            val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
-            val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)
-            broadcastEnabled?.isChecked = repository.getBroadcastEnabled()
-            broadcastEnabled?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setBroadcastEnabled(value)
-                }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getBroadcastEnabled()
-                }
-            }
-            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
-                if (pref.isChecked) {
-                    getString(R.string.settings_advanced_broadcast_summary_enabled)
-                } else {
-                    getString(R.string.settings_advanced_broadcast_summary_disabled)
-                }
-            }
-
             // UnifiedPush enabled
             val upEnabledPrefId = context?.getString(R.string.settings_unified_push_enabled_key) ?: return
             val upEnabled: SwitchPreference? = findPreference(upEnabledPrefId)
@@ -258,6 +202,123 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
+            // Broadcast enabled
+            val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
+            val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)
+            broadcastEnabled?.isChecked = repository.getBroadcastEnabled()
+            broadcastEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setBroadcastEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getBroadcastEnabled()
+                }
+            }
+            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_advanced_broadcast_summary_enabled)
+                } else {
+                    getString(R.string.settings_advanced_broadcast_summary_disabled)
+                }
+            }
+
+            // Copy logs
+            val copyLogsPrefId = context?.getString(R.string.settings_advanced_copy_logs_key) ?: return
+            val copyLogs: Preference? = findPreference(copyLogsPrefId)
+            copyLogs?.isVisible = Log.getRecord()
+            copyLogs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            copyLogs?.onPreferenceClickListener = OnPreferenceClickListener {
+                copyLogsToClipboard()
+                true
+            }
+
+            // Record logs
+            val recordLogsPrefId = context?.getString(R.string.settings_advanced_record_logs_key) ?: return
+            val recordLogsEnabled: SwitchPreference? = findPreference(recordLogsPrefId)
+            recordLogsEnabled?.isChecked = Log.getRecord()
+            recordLogsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setRecordLogsEnabled(value)
+                    Log.setRecord(value)
+                    copyLogs?.isVisible = value
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return Log.getRecord()
+                }
+            }
+            recordLogsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_advanced_record_logs_summary_enabled)
+                } else {
+                    getString(R.string.settings_advanced_record_logs_summary_disabled)
+                }
+            }
+            recordLogsEnabled?.setOnPreferenceChangeListener { _, v ->
+                val newValue = v as Boolean
+                if (!newValue) {
+                    val dialog = AlertDialog.Builder(activity)
+                        .setMessage(R.string.settings_advanced_record_logs_delete_dialog_message)
+                        .setPositiveButton(R.string.settings_advanced_record_logs_delete_dialog_button_delete) { _, _ ->
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                Log.deleteAll()
+                            }                        }
+                        .setNegativeButton(R.string.settings_advanced_record_logs_delete_dialog_button_keep) { _, _ ->
+                            // Do nothing
+                        }
+                        .create()
+                    dialog
+                        .setOnShowListener {
+                            dialog
+                                .getButton(AlertDialog.BUTTON_POSITIVE)
+                                .setTextColor(ContextCompat.getColor(requireContext(), R.color.primaryDangerButtonColor))
+                        }
+                        dialog.show()
+                }
+                true
+            }
+
+            // Connection protocol
+            val connectionProtocolPrefId = context?.getString(R.string.settings_advanced_connection_protocol_key) ?: return
+            val connectionProtocol: ListPreference? = findPreference(connectionProtocolPrefId)
+            connectionProtocol?.value = repository.getConnectionProtocol()
+            connectionProtocol?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val proto = value ?: repository.getConnectionProtocol()
+                    repository.setConnectionProtocol(proto)
+                    restartService()
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getConnectionProtocol()
+                }
+            }
+            connectionProtocol?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value) {
+                    Repository.CONNECTION_PROTOCOL_WS -> getString(R.string.settings_advanced_connection_protocol_summary_ws)
+                    else -> getString(R.string.settings_advanced_connection_protocol_summary_jsonhttp)
+                }
+            }
+
+            // Permanent wakelock enabled
+            val wakelockEnabledPrefId = context?.getString(R.string.settings_advanced_wakelock_key) ?: return
+            val wakelockEnabled: SwitchPreference? = findPreference(wakelockEnabledPrefId)
+            wakelockEnabled?.isChecked = repository.getWakelockEnabled()
+            wakelockEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setWakelockEnabled(value)
+                    restartService()
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getWakelockEnabled()
+                }
+            }
+            wakelockEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_advanced_wakelock_summary_enabled)
+                } else {
+                    getString(R.string.settings_advanced_wakelock_summary_disabled)
+                }
+            }
+
             // Version
             val versionPrefId = context?.getString(R.string.settings_about_version_key) ?: return
             val versionPref: Preference? = findPreference(versionPrefId)
@@ -266,7 +327,7 @@ class SettingsActivity : AppCompatActivity() {
             versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("app version", version)
+                val clip = ClipData.newPlainText("ntfy version", version)
                 clipboard.setPrimaryClip(clip)
                 Toast
                     .makeText(context, getString(R.string.settings_about_version_copied_to_clipboard_message), Toast.LENGTH_LONG)
@@ -288,6 +349,38 @@ class SettingsActivity : AppCompatActivity() {
             val context = this@SettingsFragment.context
             Intent(context, SubscriberService::class.java).also { intent ->
                 context?.stopService(intent) // Service will auto-restart
+            }
+        }
+
+        private fun copyLogsToClipboard() {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val log = Log.getAll().joinToString(separator = "\n") { e ->
+                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date(e.timestamp))
+                    val level = when (e.level) {
+                        android.util.Log.DEBUG -> "D"
+                        android.util.Log.INFO -> "I"
+                        android.util.Log.WARN -> "W"
+                        android.util.Log.ERROR -> "E"
+                        else -> "?"
+                    }
+                    val tag = e.tag.format("%-23s")
+                    val prefix = "${e.timestamp} $date $level $tag"
+                    val message = if (e.exception != null) {
+                        "${e.message}\nException:\n${e.exception}"
+                    } else {
+                        e.message
+                    }
+                    "$prefix $message"
+                }
+                val context = context ?: return@launch
+                requireActivity().runOnUiThread {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("ntfy logs", log)
+                    clipboard.setPrimaryClip(clip)
+                    Toast
+                        .makeText(context, getString(R.string.settings_advanced_copy_logs_copied), Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
     }

@@ -1,10 +1,10 @@
 package io.heckel.ntfy.service
 
-import android.util.Log
 import io.heckel.ntfy.data.ConnectionState
 import io.heckel.ntfy.data.Notification
 import io.heckel.ntfy.data.Repository
 import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
@@ -47,7 +47,7 @@ class JsonConnection(
                     notificationListener(subscription, notificationWithSubscriptionId)
                 }
                 val failed = AtomicBoolean(false)
-                val fail = { e: Exception ->
+                val fail = { _: Exception ->
                     failed.set(true)
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)

@@ -12,8 +12,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
 
-        versionCode 16
-        versionName "1.6.0"
+        versionCode 17
+        versionName "1.7.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -64,7 +64,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.activityVersion"
     implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentVersion"
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.8.9'
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.6.0"
@@ -76,7 +76,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 
     // OkHttp (HTTP library)
-    implementation "com.squareup.okhttp3:okhttp:4.9.2"
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     // Firebase, sigh ... (only Google Play)
     playImplementation 'com.google.firebase:firebase-messaging:22.0.0'

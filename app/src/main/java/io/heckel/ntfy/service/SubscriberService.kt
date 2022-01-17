@@ -82,6 +82,8 @@ class SubscriberService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Log.init(this) // Init logs in all entry points
         Log.d(TAG, "Subscriber service has been created")
 
         val title = getString(R.string.channel_subscriber_notification_title)

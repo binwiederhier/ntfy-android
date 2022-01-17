@@ -29,6 +29,7 @@ import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.fadeStatusBarColor
 import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
@@ -63,9 +64,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.init(this)
-        Log.setRecord(true)
-
+        Log.init(this) // Init logs in all entry points
         Log.d(TAG, "Create $this")
 
         // Dependencies that depend on Context
@@ -98,6 +97,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         viewModel.list().observe(this) {
             it?.let { subscriptions ->
+                // Update main list
                 adapter.submitList(subscriptions as MutableList<Subscription>)
                 if (it.isEmpty()) {
                     mainListContainer.visibility = View.GONE
@@ -105,6 +105,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 } else {
                     mainListContainer.visibility = View.VISIBLE
                     noEntries.visibility = View.GONE
+                }
+
+                // Add scrub terms to log (in case it gets exported)
+                subscriptions.forEach { s ->
+                    Log.addScrubTerm(shortUrl(s.baseUrl), Log.TermType.Domain)
+                    Log.addScrubTerm(s.topic)
                 }
             }
         }
