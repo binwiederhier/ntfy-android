@@ -1,9 +1,9 @@
 package io.heckel.ntfy.log
 
 import android.content.Context
-import io.heckel.ntfy.data.Database
-import io.heckel.ntfy.data.LogDao
-import io.heckel.ntfy.data.LogEntry
+import io.heckel.ntfy.db.Database
+import io.heckel.ntfy.db.LogDao
+import io.heckel.ntfy.db.LogEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

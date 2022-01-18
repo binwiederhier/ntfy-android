@@ -1,0 +1,7 @@
+New features:
+* Report logs: Copy/export logs to help troubleshooting (#94)
+* WebSockets (experimental): Use WebSockets to subscribe to topics (#96, #100, #97)
+
+Bug fixes:
+* Support for binary UnifiedPush messages (#101)
+

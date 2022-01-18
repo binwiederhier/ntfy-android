@@ -3,8 +3,8 @@ package io.heckel.ntfy.msg
 import android.content.Context
 import android.content.Intent
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.util.joinTagsMap
 import io.heckel.ntfy.util.splitTags

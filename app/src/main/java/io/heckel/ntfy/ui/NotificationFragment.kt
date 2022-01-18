@@ -8,8 +8,8 @@ import android.widget.RadioButton
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Database
-import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.db.Database
+import io.heckel.ntfy.db.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

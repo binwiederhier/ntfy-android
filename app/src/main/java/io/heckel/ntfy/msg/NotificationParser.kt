@@ -2,8 +2,8 @@ package io.heckel.ntfy.msg
 
 import android.util.Base64
 import com.google.gson.Gson
-import io.heckel.ntfy.data.Attachment
-import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.joinTags
 import io.heckel.ntfy.util.toPriority
 

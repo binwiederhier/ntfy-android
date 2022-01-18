@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.randomString

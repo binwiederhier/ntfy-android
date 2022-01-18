@@ -6,11 +6,12 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Attachment
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.PROGRESS_NONE
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.log.Log
-import io.heckel.ntfy.msg.*
+import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
+import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
 import kotlinx.coroutines.CoroutineScope

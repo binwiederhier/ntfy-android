@@ -13,9 +13,9 @@ import androidx.core.content.ContextCompat
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.ConnectionState
-import io.heckel.ntfy.data.Repository
-import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.db.ConnectionState
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
@@ -227,7 +227,7 @@ class SubscriberService : Service() {
         repository.updateState(subscriptionIds, state)
     }
 
-    private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.data.Notification) {
+    private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
         // If permanent wakelock is not enabled, still take the wakelock while notifications are being dispatched
         if (!repository.getWakelockEnabled()) {
             // Wakelocks are reference counted by default so that should work neatly here

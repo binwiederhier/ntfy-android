@@ -6,8 +6,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.Window
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Subscription
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator

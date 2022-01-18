@@ -4,10 +4,10 @@ import android.app.AlarmManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import io.heckel.ntfy.data.ConnectionState
-import io.heckel.ntfy.data.Notification
-import io.heckel.ntfy.data.Repository
-import io.heckel.ntfy.data.Subscription
+import io.heckel.ntfy.db.ConnectionState
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.topicUrl

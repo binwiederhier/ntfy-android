@@ -1,4 +1,4 @@
-package io.heckel.ntfy.data
+package io.heckel.ntfy.db
 
 import android.app.Activity
 import android.content.Context

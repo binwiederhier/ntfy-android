@@ -2,8 +2,8 @@ package io.heckel.ntfy.app
 
 import android.app.Application
 import android.content.Context
-import io.heckel.ntfy.data.Database
-import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.db.Database
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.log.Log
 
 class Application : Application() {

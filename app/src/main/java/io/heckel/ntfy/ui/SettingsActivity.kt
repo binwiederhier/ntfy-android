@@ -20,7 +20,7 @@ import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes

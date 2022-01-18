@@ -21,7 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService

@@ -2,7 +2,7 @@ package io.heckel.ntfy.msg
 
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.util.*
 import okhttp3.*

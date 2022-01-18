@@ -9,8 +9,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.*
-import io.heckel.ntfy.data.Notification
+import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity

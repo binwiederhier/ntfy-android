@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.data.Database
-import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.db.Database
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher

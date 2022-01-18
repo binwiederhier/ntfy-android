@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.data.Repository
+import io.heckel.ntfy.db.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
