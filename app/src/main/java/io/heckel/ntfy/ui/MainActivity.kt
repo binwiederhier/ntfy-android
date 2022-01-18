@@ -5,11 +5,14 @@ import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.*
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.log.Log
@@ -27,10 +31,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.fadeStatusBarColor
-import io.heckel.ntfy.util.formatDateShort
-import io.heckel.ntfy.util.shortUrl
-import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.util.*
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -118,6 +119,34 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
             SubscriberServiceManager.refresh(this)
+        }
+
+        // Battery banner
+        val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
+        val ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(this)
+        val showBatteryBanner = batteryRemindTimeReached && !ignoringBatteryOptimizations
+        val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+        batteryBanner.visibility = if (showBatteryBanner) View.VISIBLE else View.GONE
+        Log.d(TAG, "Battery: ignoring optimizations = $ignoringBatteryOptimizations (we want this to be true); remind time reached = $batteryRemindTimeReached")
+        if (showBatteryBanner) {
+            val dismissButton = findViewById<Button>(R.id.main_banner_battery_dismiss)
+            val askLaterButton = findViewById<Button>(R.id.main_banner_battery_ask_later)
+            val fixNowButton = findViewById<Button>(R.id.main_banner_battery_fix_now)
+            dismissButton.setOnClickListener {
+                batteryBanner.visibility = View.GONE
+                repository.setBatteryOptimizationsRemindTime(Repository.BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER)
+            }
+            askLaterButton.setOnClickListener {
+                batteryBanner.visibility = View.GONE
+                repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
+            }
+            fixNowButton.setOnClickListener {
+                batteryBanner.visibility = View.GONE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                    startActivity(intent)
+                }
+            }
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
@@ -535,6 +564,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
         const val ANIMATION_DURATION = 80L
+        const val ONE_DAY_MILLIS = 86400000L
 
         // As per documentation: The minimum repeat interval that can be defined is 15 minutes
         // (same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here.

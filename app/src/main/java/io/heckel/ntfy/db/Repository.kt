@@ -225,6 +225,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             .apply()
     }
 
+    fun getBatteryOptimizationsRemindTime(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME, BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS)
+    }
+
+    fun setBatteryOptimizationsRemindTime(timeMillis: Long) {
+        sharedPrefs.edit()
+            .putLong(SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME, timeMillis)
+            .apply()
+    }
+
     fun getUnifiedPushEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default
     }
@@ -350,6 +360,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
+        const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
 
@@ -359,6 +370,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"
+
+        const val BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS = 1L
+        const val BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER = Long.MAX_VALUE
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

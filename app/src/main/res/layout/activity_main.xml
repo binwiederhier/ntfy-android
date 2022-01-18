@@ -1,15 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_width="match_parent"
                                                    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:shapeAppearance="?shapeAppearanceLargeComponent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/main_banner_battery" android:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/main_banner_battery_constraint" android:elevation="5dp">
+
+            <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp" app:srcCompat="@drawable/ic_battery_alert_red_24dp"
+                    android:id="@+id/main_banner_battery_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/main_banner_battery_text"
+                    app:layout_constraintEnd_toStartOf="@id/main_banner_battery_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/main_banner_battery_text"
+                    android:layout_marginStart="15dp"/>
+            <TextView
+                    android:id="@+id/main_banner_battery_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_banner_battery_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginEnd="15dp" android:layout_marginTop="15dp"
+                    app:layout_constraintStart_toEndOf="@+id/main_banner_battery_image"
+                    android:layout_marginStart="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_banner_battery_ask_later"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/main_banner_battery_button_ask_later"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/main_banner_battery_fix_now"
+                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
+                    android:layout_marginBottom="5dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_banner_battery_dismiss"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/main_banner_battery_button_dismiss"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/main_banner_battery_ask_later"
+                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
+                    android:layout_marginBottom="5dp"/>
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/main_banner_battery_fix_now"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="@string/main_banner_battery_button_fix_now"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
+                    android:layout_marginBottom="5dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/main_subscriptions_list_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone">
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_banner_battery">
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/main_subscriptions_list"
                 android:layout_width="match_parent"
@@ -19,13 +95,14 @@
                 android:background="?android:attr/selectableItemBackground"
                 app:layoutManager="LinearLayoutManager"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/fab" app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/main_no_subscriptions">
+            android:id="@+id/main_no_subscriptions" android:visibility="gone">
         <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"

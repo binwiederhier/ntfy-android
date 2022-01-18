@@ -3,9 +3,14 @@ package io.heckel.ntfy.util
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
 import android.provider.OpenableColumns
+import android.provider.Settings
 import android.view.Window
+import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Subscription
 import java.security.SecureRandom
@@ -183,5 +188,15 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
 
 fun supportedImage(mimeType: String?): Boolean {
     return listOf("image/jpeg", "image/png").contains(mimeType)
+}
+
+// Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
+fun isIgnoringBatteryOptimizations(context: Context): Boolean {
+    val powerManager = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+    val appName = context.applicationContext.packageName
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        return powerManager.isIgnoringBatteryOptimizations(appName)
+    }
+    return true
 }
 
