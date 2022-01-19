@@ -6,6 +6,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.LogDao
 import io.heckel.ntfy.db.LogEntry
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,15 +42,14 @@ class Log(private val logsDao: LogDao) {
         return """
             This is a log of the ntfy Android app. The log shows up to 5,000 lines.
             Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.
-            
+
             Device info:
             --
             ntfy: ${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR})
             OS: ${System.getProperty("os.version")}
             Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})
             Model: ${Build.DEVICE}
-            Product: ${Build.PRODUCT}        
-            ---           
+            Product: ${Build.PRODUCT}
         """.trimIndent() + "\n\n$s"
     }
 

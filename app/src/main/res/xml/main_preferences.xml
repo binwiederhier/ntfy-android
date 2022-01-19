@@ -53,6 +53,10 @@
                 app:key="@string/settings_advanced_clear_logs_key"
                 app:title="@string/settings_advanced_clear_logs_title"
                 app:summary="@string/settings_advanced_clear_logs_summary"/>
+        <SwitchPreference
+                app:key="@string/settings_advanced_wakelock_key"
+                app:title="@string/settings_advanced_wakelock_title"
+                app:enabled="true"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_experimental_header">
         <ListPreference
@@ -61,10 +65,6 @@
                 app:entries="@array/settings_advanced_connection_protocol_entries"
                 app:entryValues="@array/settings_advanced_connection_protocol_values"
                 app:defaultValue="jsonhttp"/>
-        <SwitchPreference
-                app:key="@string/settings_advanced_wakelock_key"
-                app:title="@string/settings_advanced_wakelock_title"
-                app:enabled="true"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_about_header">
         <Preference
