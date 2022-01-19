@@ -50,6 +50,7 @@ class Log(private val logsDao: LogDao) {
             Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})
             Model: ${Build.DEVICE}
             Product: ${Build.PRODUCT}
+            --
         """.trimIndent() + "\n\n$s"
     }
 
