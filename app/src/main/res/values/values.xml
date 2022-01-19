@@ -42,4 +42,12 @@
         <item>jsonhttp</item>
         <item>ws</item>
     </string-array>
+    <string-array name="settings_advanced_export_logs_entries">
+        <item>@string/settings_advanced_export_logs_entry_copy</item>
+        <item>@string/settings_advanced_export_logs_entry_upload</item>
+    </string-array>
+    <string-array name="settings_advanced_export_logs_values">
+        <item>copy</item>
+        <item>upload</item>
+    </string-array>
 </resources>

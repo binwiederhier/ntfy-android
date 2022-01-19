@@ -1,12 +1,16 @@
 package io.heckel.ntfy.log
 
 import android.content.Context
+import android.os.Build
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.LogDao
 import io.heckel.ntfy.db.LogEntry
+import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
@@ -29,9 +33,40 @@ class Log(private val logsDao: LogDao) {
         }
     }
 
-    fun getAll(): Collection<LogEntry> {
-        return logsDao
-            .getAll()
+    fun getFormatted(): String {
+        return prependDeviceInfo(formatEntries(scrubEntries(logsDao.getAll())))
+    }
+
+    private fun prependDeviceInfo(s: String): String {
+        return """
+            This is a log of the ntfy Android app. The log shows up to 5,000 lines.
+            Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.
+            
+            Device info:
+            --
+            ntfy: ${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR})
+            OS: ${System.getProperty("os.version")}
+            Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})
+            Model: ${Build.DEVICE}
+            Product: ${Build.PRODUCT}        
+            ---           
+        """.trimIndent() + "\n\n$s"
+    }
+
+    fun addScrubTerm(term: String, type: TermType = TermType.Term) {
+        if (scrubTerms[term] != null || IGNORE_TERMS.contains(term)) {
+            return
+        }
+        val replaceTermIndex = scrubNum.incrementAndGet()
+        val replaceTerm = REPLACE_TERMS.getOrNull(replaceTermIndex) ?: "fruit${replaceTermIndex}"
+        scrubTerms[term] = when (type) {
+            TermType.Domain -> "$replaceTerm.example.com"
+            else -> replaceTerm
+        }
+    }
+
+    private fun scrubEntries(entries: List<LogEntry>): List<LogEntry> {
+        return entries
             .map { e ->
                 e.copy(
                     message = scrub(e.message)!!,
@@ -40,28 +75,37 @@ class Log(private val logsDao: LogDao) {
             }
     }
 
-    private fun deleteAll() {
-        return logsDao.deleteAll()
-    }
-
-    fun addScrubTerm(term: String, type: TermType = TermType.Term) {
-        if (scrubTerms[term] != null || IGNORE_TERMS.contains(term)) {
-            return
-        }
-        val replaceTermIndex = scrubNum.incrementAndGet()
-        val replaceTerm = REPLACE_TERMS.getOrNull(replaceTermIndex) ?: "scrubbed${replaceTermIndex}"
-        scrubTerms[term] = when (type) {
-            TermType.Domain -> "$replaceTerm.example.com"
-            else -> replaceTerm
-        }
-    }
-
     private fun scrub(line: String?): String? {
         var newLine = line ?: return null
         scrubTerms.forEach { (scrubTerm, replaceTerm) ->
             newLine = newLine.replace(scrubTerm, replaceTerm)
         }
         return newLine
+    }
+
+    private fun formatEntries(entries: List<LogEntry>): String {
+        return entries.joinToString(separator = "\n") { e ->
+            val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date(e.timestamp))
+            val level = when (e.level) {
+                android.util.Log.DEBUG -> "D"
+                android.util.Log.INFO -> "I"
+                android.util.Log.WARN -> "W"
+                android.util.Log.ERROR -> "E"
+                else -> "?"
+            }
+            val tag = e.tag.format("%-23s")
+            val prefix = "${e.timestamp} $date $level $tag"
+            val message = if (e.exception != null) {
+                "${e.message}\nException:\n${e.exception}"
+            } else {
+                e.message
+            }
+            "$prefix $message"
+        }
+    }
+
+    private fun deleteAll() {
+        return logsDao.deleteAll()
     }
 
     enum class TermType {
@@ -74,7 +118,7 @@ class Log(private val logsDao: LogDao) {
         private const val ENTRIES_MAX = 5000
         private val IGNORE_TERMS = listOf("ntfy.sh")
         private val REPLACE_TERMS = listOf(
-            "potato", "banana", "coconut", "kiwi", "avocado", "orange", "apple", "lemon", "olive", "peach"
+            "banana", "kiwi", "lemon", "coconut", "avocado", "orange", "apple", "peach"
         )
         private var instance: Log? = null
 
@@ -108,12 +152,13 @@ class Log(private val logsDao: LogDao) {
             return getInstance()?.record?.get() ?: false
         }
 
-        fun getAll(): Collection<LogEntry> {
-            return getInstance()?.getAll().orEmpty()
+        fun getFormatted(): String {
+            return getInstance()?.getFormatted() ?: "(no logs)"
         }
 
         fun deleteAll() {
             getInstance()?.deleteAll()
+            d(TAG, "Log was truncated")
         }
 
         fun addScrubTerm(term: String, type: TermType = TermType.Term) {

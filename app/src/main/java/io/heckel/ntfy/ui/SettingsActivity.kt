@@ -1,7 +1,6 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -11,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -28,8 +29,10 @@ import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.toPriorityString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.concurrent.TimeUnit
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var fragment: SettingsFragment
@@ -222,14 +225,26 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            // Copy logs
-            val copyLogsPrefId = context?.getString(R.string.settings_advanced_copy_logs_key) ?: return
-            val copyLogs: Preference? = findPreference(copyLogsPrefId)
-            copyLogs?.isVisible = Log.getRecord()
-            copyLogs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            copyLogs?.onPreferenceClickListener = OnPreferenceClickListener {
-                copyLogsToClipboard()
-                true
+            // Export logs
+            val exportLogsPrefId = context?.getString(R.string.settings_advanced_export_logs_key) ?: return
+            val exportLogs: ListPreference? = findPreference(exportLogsPrefId)
+            exportLogs?.isVisible = Log.getRecord()
+            exportLogs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            exportLogs?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
+                when (v) {
+                    EXPORT_LOGS_COPY -> copyLogsToClipboard()
+                    EXPORT_LOGS_UPLOAD -> uploadLogsToNopaste()
+                }
+                false
+            }
+
+            val clearLogsPrefId = context?.getString(R.string.settings_advanced_clear_logs_key) ?: return
+            val clearLogs: Preference? = findPreference(clearLogsPrefId)
+            clearLogs?.isVisible = Log.getRecord()
+            clearLogs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            clearLogs?.onPreferenceClickListener = OnPreferenceClickListener {
+                deleteLogs()
+                false
             }
 
             // Record logs
@@ -240,7 +255,8 @@ class SettingsActivity : AppCompatActivity() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     repository.setRecordLogsEnabled(value)
                     Log.setRecord(value)
-                    copyLogs?.isVisible = value
+                    exportLogs?.isVisible = value
+                    clearLogs?.isVisible = value
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return Log.getRecord()
@@ -252,29 +268,6 @@ class SettingsActivity : AppCompatActivity() {
                 } else {
                     getString(R.string.settings_advanced_record_logs_summary_disabled)
                 }
-            }
-            recordLogsEnabled?.setOnPreferenceChangeListener { _, v ->
-                val newValue = v as Boolean
-                if (!newValue) {
-                    val dialog = AlertDialog.Builder(activity)
-                        .setMessage(R.string.settings_advanced_record_logs_delete_dialog_message)
-                        .setPositiveButton(R.string.settings_advanced_record_logs_delete_dialog_button_delete) { _, _ ->
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                Log.deleteAll()
-                            }                        }
-                        .setNegativeButton(R.string.settings_advanced_record_logs_delete_dialog_button_keep) { _, _ ->
-                            // Do nothing
-                        }
-                        .create()
-                    dialog
-                        .setOnShowListener {
-                            dialog
-                                .getButton(AlertDialog.BUTTON_POSITIVE)
-                                .setTextColor(ContextCompat.getColor(requireContext(), R.color.primaryDangerButtonColor))
-                        }
-                        dialog.show()
-                }
-                true
             }
 
             // Connection protocol
@@ -354,35 +347,79 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun copyLogsToClipboard() {
             lifecycleScope.launch(Dispatchers.IO) {
-                val log = Log.getAll().joinToString(separator = "\n") { e ->
-                    val date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(Date(e.timestamp))
-                    val level = when (e.level) {
-                        android.util.Log.DEBUG -> "D"
-                        android.util.Log.INFO -> "I"
-                        android.util.Log.WARN -> "W"
-                        android.util.Log.ERROR -> "E"
-                        else -> "?"
-                    }
-                    val tag = e.tag.format("%-23s")
-                    val prefix = "${e.timestamp} $date $level $tag"
-                    val message = if (e.exception != null) {
-                        "${e.message}\nException:\n${e.exception}"
-                    } else {
-                        e.message
-                    }
-                    "$prefix $message"
-                }
+                val log = Log.getFormatted()
                 val context = context ?: return@launch
                 requireActivity().runOnUiThread {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("ntfy logs", log)
                     clipboard.setPrimaryClip(clip)
                     Toast
-                        .makeText(context, getString(R.string.settings_advanced_copy_logs_copied), Toast.LENGTH_LONG)
+                        .makeText(context, getString(R.string.settings_advanced_export_logs_copied_logs), Toast.LENGTH_LONG)
                         .show()
                 }
             }
         }
+
+        private fun uploadLogsToNopaste() {
+            lifecycleScope.launch(Dispatchers.IO) {
+                Log.d(TAG, "Uploading log to $EXPORT_LOGS_UPLOAD_URL ...")
+                val log = Log.getFormatted()
+                val gson = Gson()
+                val request = Request.Builder()
+                    .url(EXPORT_LOGS_UPLOAD_URL)
+                    .put(log.toRequestBody())
+                    .build()
+                val client = OkHttpClient.Builder()
+                    .callTimeout(1, TimeUnit.MINUTES) // Total timeout for entire request
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .readTimeout(15, TimeUnit.SECONDS)
+                    .writeTimeout(15, TimeUnit.SECONDS)
+                    .build()
+                try {
+                    client.newCall(request).execute().use { response ->
+                        if (!response.isSuccessful) {
+                            throw Exception("Unexpected response ${response.code}")
+                        }
+                        val body = response.body?.string()?.trim()
+                        if (body == null || body.isEmpty()) throw Exception("Return body is empty")
+                        Log.d(TAG, "Logs uploaded successfully: $body")
+                        val resp = gson.fromJson(body.toString(), NopasteResponse::class.java)
+                        val context = context ?: return@launch
+                        requireActivity().runOnUiThread {
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("logs URL", resp.url)
+                            clipboard.setPrimaryClip(clip)
+                            Toast
+                                .makeText(context, getString(R.string.settings_advanced_export_logs_copied_url), Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Error uploading logs", e)
+                    val context = context ?: return@launch
+                    requireActivity().runOnUiThread {
+                        Toast
+                            .makeText(context, getString(R.string.settings_advanced_export_logs_error_uploading, e.message), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+            }
+        }
+
+        private fun deleteLogs() {
+            lifecycleScope.launch(Dispatchers.IO) {
+                Log.deleteAll()
+                val context = context ?: return@launch
+                requireActivity().runOnUiThread {
+                    Toast
+                        .makeText(context, getString(R.string.settings_advanced_clear_logs_deleted_toast), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+
+        @Keep
+        data class NopasteResponse(val url: String)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -403,5 +440,8 @@ class SettingsActivity : AppCompatActivity() {
         private const val TAG = "NtfySettingsActivity"
         private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
         private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
+        private const val EXPORT_LOGS_COPY = "copy"
+        private const val EXPORT_LOGS_UPLOAD = "upload"
+        private const val EXPORT_LOGS_UPLOAD_URL = "https://nopaste.net/?f=json" // Run by binwiederhier; see https://github.com/binwiederhier/pcopy
     }
 }

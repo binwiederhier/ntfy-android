@@ -42,10 +42,17 @@
                 app:key="@string/settings_advanced_record_logs_key"
                 app:title="@string/settings_advanced_record_logs_title"
                 app:enabled="true"/>
+        <ListPreference
+                app:key="@string/settings_advanced_export_logs_key"
+                app:title="@string/settings_advanced_export_logs_title"
+                app:summary="@string/settings_advanced_export_logs_summary"
+                app:entries="@array/settings_advanced_export_logs_entries"
+                app:entryValues="@array/settings_advanced_export_logs_values"
+                app:defaultValue="copy"/>
         <Preference
-                app:key="@string/settings_advanced_copy_logs_key"
-                app:title="@string/settings_advanced_copy_logs_title"
-                android:summary="@string/settings_advanced_copy_logs_summary"/>
+                app:key="@string/settings_advanced_clear_logs_key"
+                app:title="@string/settings_advanced_clear_logs_title"
+                app:summary="@string/settings_advanced_clear_logs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_experimental_header">
         <ListPreference
