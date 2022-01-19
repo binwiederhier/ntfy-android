@@ -113,6 +113,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     Log.addScrubTerm(shortUrl(s.baseUrl), Log.TermType.Domain)
                     Log.addScrubTerm(s.topic)
                 }
+
+                // Update battery banner
+                showHideBatteryBanner(subscriptions)
             }
         }
 
@@ -154,18 +157,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     override fun onResume() {
         super.onResume()
-
-        // Menu and main list
         showHideNotificationMenuItems()
         redrawList()
+    }
 
-        // Battery banner
+    private fun showHideBatteryBanner(subscriptions: List<Subscription>) {
+        val hasInstantSubscriptions = subscriptions.count { it.instant } > 0
         val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
-        val ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(this)
-        val showBatteryBanner = batteryRemindTimeReached && !ignoringBatteryOptimizations
+        val ignoringOptimizations = isIgnoringBatteryOptimizations(this@MainActivity)
+        val showBanner = hasInstantSubscriptions && batteryRemindTimeReached && !ignoringOptimizations
         val batteryBanner = findViewById<View>(R.id.main_banner_battery)
-        batteryBanner.visibility = if (showBatteryBanner) View.VISIBLE else View.GONE
-        Log.d(TAG, "Battery: ignoring optimizations = $ignoringBatteryOptimizations (we want this to be true); remind time reached = $batteryRemindTimeReached")
+        batteryBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
+        Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
     }
 
     private fun startPeriodicPollWorker() {
