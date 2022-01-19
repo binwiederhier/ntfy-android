@@ -122,30 +122,22 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
 
         // Battery banner
-        val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
-        val ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(this)
-        val showBatteryBanner = batteryRemindTimeReached && !ignoringBatteryOptimizations
-        val batteryBanner = findViewById<View>(R.id.main_banner_battery)
-        batteryBanner.visibility = if (showBatteryBanner) View.VISIBLE else View.GONE
-        Log.d(TAG, "Battery: ignoring optimizations = $ignoringBatteryOptimizations (we want this to be true); remind time reached = $batteryRemindTimeReached")
-        if (showBatteryBanner) {
-            val dismissButton = findViewById<Button>(R.id.main_banner_battery_dismiss)
-            val askLaterButton = findViewById<Button>(R.id.main_banner_battery_ask_later)
-            val fixNowButton = findViewById<Button>(R.id.main_banner_battery_fix_now)
-            dismissButton.setOnClickListener {
-                batteryBanner.visibility = View.GONE
-                repository.setBatteryOptimizationsRemindTime(Repository.BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER)
-            }
-            askLaterButton.setOnClickListener {
-                batteryBanner.visibility = View.GONE
-                repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
-            }
-            fixNowButton.setOnClickListener {
-                batteryBanner.visibility = View.GONE
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                    startActivity(intent)
-                }
+        val batteryBanner = findViewById<View>(R.id.main_banner_battery) // Banner visibility is toggled in onResume()
+        val dontAskAgainButton = findViewById<Button>(R.id.main_banner_battery_dontaskagain)
+        val askLaterButton = findViewById<Button>(R.id.main_banner_battery_ask_later)
+        val fixNowButton = findViewById<Button>(R.id.main_banner_battery_fix_now)
+        dontAskAgainButton.setOnClickListener {
+            batteryBanner.visibility = View.GONE
+            repository.setBatteryOptimizationsRemindTime(Repository.BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER)
+        }
+        askLaterButton.setOnClickListener {
+            batteryBanner.visibility = View.GONE
+            repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
+        }
+        fixNowButton.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                startActivity(intent)
             }
         }
 
@@ -162,8 +154,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     override fun onResume() {
         super.onResume()
+
+        // Menu and main list
         showHideNotificationMenuItems()
         redrawList()
+
+        // Battery banner
+        val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
+        val ignoringBatteryOptimizations = isIgnoringBatteryOptimizations(this)
+        val showBatteryBanner = batteryRemindTimeReached && !ignoringBatteryOptimizations
+        val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+        batteryBanner.visibility = if (showBatteryBanner) View.VISIBLE else View.GONE
+        Log.d(TAG, "Battery: ignoring optimizations = $ignoringBatteryOptimizations (we want this to be true); remind time reached = $batteryRemindTimeReached")
     }
 
     private fun startPeriodicPollWorker() {

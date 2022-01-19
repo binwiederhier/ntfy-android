@@ -70,7 +70,7 @@
     <!-- Main activity: Battery banner -->
     <string name="main_banner_battery_text">Battery optimization should be disabled to avoid issues with notification delivery.</string>
     <string name="main_banner_battery_button_ask_later">Ask later</string>
-    <string name="main_banner_battery_button_dismiss">Dismiss</string>
+    <string name="main_banner_battery_button_dismiss">Don\'t ask again</string>
     <string name="main_banner_battery_button_fix_now">Fix now</string>
 
     <!-- Add dialog -->

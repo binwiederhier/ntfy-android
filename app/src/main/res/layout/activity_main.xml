@@ -51,7 +51,7 @@
                     android:layout_marginBottom="5dp"/>
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/main_banner_battery_dismiss"
+                    android:id="@+id/main_banner_battery_dontaskagain"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
