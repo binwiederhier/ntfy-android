@@ -1,12 +1,13 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
     <color name="primaryColor">#338574</color>
-    <color name="primaryLightColor">#338574</color>
-    <color name="primaryDarkColor">#2A6E60</color>
-    <color name="primaryLightTextColor">#FFFFFF</color>
-    <color name="primarySelectedRowColor">#EEEEEE</color>
     <color name="primaryDangerButtonColor">#C30000</color>
-    <color name="primaryPriorityUrgentColor">#C30000</color>
-    <color name="primaryPriorityHighColor">#E10000</color>
+
+    <color name="primaryLightColor">#338574</color>
+    <color name="primaryLightTextColor">#FFFFFF</color>
+    <color name="primaryLightSelectedRowColor">#EEEEEE</color>
+
+    <color name="primaryDarkColor">#2A6E60</color>
+    <color name="primaryDarkSelectedRowColor">#444444</color>
 </resources>
 

@@ -4,14 +4,18 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.view.Window
+import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -200,3 +204,19 @@ fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     return true
 }
 
+// Returns true if dark mode is on, see https://stackoverflow.com/a/60761189/1440785
+fun Context.isDarkThemeOn(): Boolean {
+    return resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
+}
+
+fun isDarkThemeOn(context: Context, repository: Repository): Boolean {
+    val darkMode = repository.getDarkMode()
+    if (darkMode == AppCompatDelegate.MODE_NIGHT_YES) {
+        return true
+    }
+    if (darkMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM && context.isDarkThemeOn()) {
+        return true
+    }
+    return false
+}

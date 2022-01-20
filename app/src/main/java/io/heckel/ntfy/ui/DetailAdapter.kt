@@ -92,7 +92,8 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 tagsView.visibility = View.GONE
             }
             if (selected.contains(notification.id)) {
-                itemView.setBackgroundResource(R.color.primarySelectedRowColor);
+                val backgroundColor = if (isDarkThemeOn(context, repository)) R.color.primaryDarkSelectedRowColor else R.color.primaryLightSelectedRowColor
+                itemView.setBackgroundResource(backgroundColor);
             }
             renderPriority(context, notification)
             maybeRenderAttachment(context, notification)

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
@@ -100,7 +102,8 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
-                itemView.setBackgroundResource(R.color.primarySelectedRowColor);
+                val backgroundColor = if (isDarkThemeOn(context, repository)) R.color.primaryDarkSelectedRowColor else R.color.primaryLightSelectedRowColor
+                itemView.setBackgroundResource(backgroundColor)
             }
         }
     }
