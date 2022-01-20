@@ -22,6 +22,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
@@ -289,7 +290,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
         } else {
             Log.d(TAG, "Re-enabling notifications ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-            onNotificationMutedUntilChanged(0L)
+            onNotificationMutedUntilChanged(Repository.MUTED_UNTIL_SHOW_ALL)
         }
     }
 

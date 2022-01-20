@@ -16,10 +16,10 @@
             android:paddingBottom="8dp"
             android:text="@string/notification_dialog_title"
             android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:paddingStart="5dp" android:paddingEnd="5dp"
-            android:textColor="@color/primaryTextColor"/>
+            android:textColor="?android:attr/textColorPrimary"/>
     <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

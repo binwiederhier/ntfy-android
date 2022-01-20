@@ -173,13 +173,14 @@
     <string name="notification_dialog_save">Save</string>
     <string name="notification_dialog_enabled_toast_message">Notifications re-enabled</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifications are now paused</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifications are now paused until %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications are paused until %1$s</string>
+    <string name="notification_dialog_show_all">Show all notifications</string>
     <string name="notification_dialog_30min">30 minutes</string>
     <string name="notification_dialog_1h">1 hour</string>
     <string name="notification_dialog_2h">2 hours</string>
     <string name="notification_dialog_8h">8 hours</string>
     <string name="notification_dialog_tomorrow">Until tomorrow</string>
-    <string name="notification_dialog_forever">Forever</string>
+    <string name="notification_dialog_forever">Until re-enabled</string>
 
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>
@@ -196,9 +197,9 @@
     <string name="settings_notifications_header">Notifications</string>
     <string name="settings_notifications_muted_until_key">MutedUntil</string>
     <string name="settings_notifications_muted_until_title">Pause notifications</string>
-    <string name="settings_notifications_muted_until_enabled">All notifications will be displayed</string>
-    <string name="settings_notifications_muted_until_disabled_forever">Notifications muted until re-enabled</string>
-    <string name="settings_notifications_muted_until_disabled_until">Notifications muted until %1$s</string>
+    <string name="settings_notifications_muted_until_show_all">All notifications will be displayed</string>
+    <string name="settings_notifications_muted_until_forever">Notifications muted until re-enabled</string>
+    <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
     <string name="settings_notifications_min_priority_key">MinPriority</string>
     <string name="settings_notifications_min_priority_title">Minimum priority</string>
     <string name="settings_notifications_min_priority_summary_any">Notifications of all priorities are shown</string>
@@ -222,6 +223,15 @@
     <string name="settings_notifications_auto_download_5m">If smaller than 5 MB</string>
     <string name="settings_notifications_auto_download_10m">If smaller than 10 MB</string>
     <string name="settings_notifications_auto_download_50m">If smaller than 50 MB</string>
+    <string name="settings_appearance_header">Appearance</string>
+    <string name="settings_appearance_dark_mode_key">DarkMode</string>
+    <string name="settings_appearance_dark_mode_title">Dark mode</string>
+    <string name="settings_appearance_dark_mode_summary_system">Use the system default</string>
+    <string name="settings_appearance_dark_mode_summary_light">Light mode is enabled</string>
+    <string name="settings_appearance_dark_mode_summary_dark">Dark mode is enabled. Are you a vampire?</string>
+    <string name="settings_appearance_dark_mode_entry_system">Use system default</string>
+    <string name="settings_appearance_dark_mode_entry_light">Light mode</string>
+    <string name="settings_appearance_dark_mode_entry_dark">Dark mode</string>
     <string name="settings_unified_push_header">UnifiedPush</string>
     <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
     <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>

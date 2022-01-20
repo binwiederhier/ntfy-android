@@ -64,6 +64,7 @@ class NotificationFragment : DialogFragment() {
 
         muteUntilTomorrowButton = view.findViewById(R.id.notification_dialog_tomorrow)
         muteUntilTomorrowButton.setOnClickListener {
+            // Duplicate code in SettingsActivity, :shrug: ...
             val date = Calendar.getInstance()
             date.add(Calendar.DAY_OF_MONTH, 1)
             date.set(Calendar.HOUR_OF_DAY, 8)
@@ -74,7 +75,7 @@ class NotificationFragment : DialogFragment() {
         }
 
         muteForeverButton = view.findViewById(R.id.notification_dialog_forever)
-        muteForeverButton.setOnClickListener{ onClick(1) }
+        muteForeverButton.setOnClickListener{ onClick(Repository.MUTED_UNTIL_FOREVER) }
 
         return AlertDialog.Builder(activity)
             .setView(view)

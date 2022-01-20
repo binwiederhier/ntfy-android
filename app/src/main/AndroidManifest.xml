@@ -118,7 +118,7 @@
                 android:resource="@drawable/ic_notification"/>
 
         <!-- FileProvider required for older Android versions (<= P), to allow passing the file URI in the open intent.
-             Avoids "exposed beyong app through Intent.getData" exception, see see https://stackoverflow.com/a/57288352/1440785 -->
+             Avoids "exposed beyond app through Intent.getData" exception, see see https://stackoverflow.com/a/57288352/1440785 -->
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="${applicationId}.provider"

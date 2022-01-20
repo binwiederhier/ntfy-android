@@ -12,9 +12,9 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class SettingsActivity : AppCompatActivity() {
@@ -44,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
         Log.d(TAG, "Create $this")
 
         if (savedInstanceState == null) {
-            fragment = SettingsFragment(supportFragmentManager)
+            fragment = SettingsFragment()
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settings_layout, fragment)
@@ -58,7 +59,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    class SettingsFragment(private val supportFragmentManager: FragmentManager) : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat() {
         private lateinit var repository: Repository
         private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
 
@@ -75,34 +76,43 @@ class SettingsActivity : AppCompatActivity() {
 
             // Notifications muted until (global)
             val mutedUntilPrefId = context?.getString(R.string.settings_notifications_muted_until_key) ?: return
-            val mutedUntilSummary = { s: Long ->
-                when (s) {
-                    0L -> getString(R.string.settings_notifications_muted_until_enabled)
-                    1L -> getString(R.string.settings_notifications_muted_until_disabled_forever)
-                    else -> {
-                        val formattedDate = formatDateShort(s)
-                        getString(R.string.settings_notifications_muted_until_disabled_until, formattedDate)
-                    }
-                }
-            }
-            val mutedUntil: Preference? = findPreference(mutedUntilPrefId)
-            mutedUntil?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            mutedUntil?.summary = mutedUntilSummary(repository.getGlobalMutedUntil())
-            mutedUntil?.onPreferenceClickListener = OnPreferenceClickListener {
-                if (repository.getGlobalMutedUntil() > 0) {
-                    repository.setGlobalMutedUntil(0)
-                    mutedUntil?.summary = mutedUntilSummary(0)
-                } else {
-                    val notificationFragment = NotificationFragment()
-                    notificationFragment.settingsListener = object : NotificationFragment.NotificationSettingsListener {
-                        override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
+            val mutedUntil: ListPreference? = findPreference(mutedUntilPrefId)
+            mutedUntil?.value = repository.getGlobalMutedUntil().toString()
+            mutedUntil?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val mutedUntilValue = value?.toLongOrNull() ?:return
+                    when (mutedUntilValue) {
+                        Repository.MUTED_UNTIL_SHOW_ALL -> repository.setGlobalMutedUntil(mutedUntilValue)
+                        Repository.MUTED_UNTIL_FOREVER -> repository.setGlobalMutedUntil(mutedUntilValue)
+                        Repository.MUTED_UNTIL_TOMORROW -> {
+                            val date = Calendar.getInstance()
+                            date.add(Calendar.DAY_OF_MONTH, 1)
+                            date.set(Calendar.HOUR_OF_DAY, 8)
+                            date.set(Calendar.MINUTE, 30)
+                            date.set(Calendar.SECOND, 0)
+                            date.set(Calendar.MILLISECOND, 0)
+                            repository.setGlobalMutedUntil(date.timeInMillis/1000)
+                        }
+                        else -> {
+                            val mutedUntilTimestamp = System.currentTimeMillis()/1000 + mutedUntilValue * 60
                             repository.setGlobalMutedUntil(mutedUntilTimestamp)
-                            mutedUntil?.summary = mutedUntilSummary(mutedUntilTimestamp)
                         }
                     }
-                    notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
                 }
-                true
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getGlobalMutedUntil().toString()
+                }
+            }
+            mutedUntil?.summaryProvider = Preference.SummaryProvider<ListPreference> { _ ->
+                val mutedUntilValue = repository.getGlobalMutedUntil()
+                when (mutedUntilValue) {
+                    Repository.MUTED_UNTIL_SHOW_ALL -> getString(R.string.settings_notifications_muted_until_show_all)
+                    Repository.MUTED_UNTIL_FOREVER -> getString(R.string.settings_notifications_muted_until_forever)
+                    else -> {
+                        val formattedDate = formatDateShort(mutedUntilValue)
+                        getString(R.string.settings_notifications_muted_until_x, formattedDate)
+                    }
+                }
             }
 
             // Minimum priority
@@ -160,6 +170,30 @@ class SettingsActivity : AppCompatActivity() {
                     } else {
                         true
                     }
+                }
+            }
+
+            // Dark mode
+            val darkModePrefId = context?.getString(R.string.settings_appearance_dark_mode_key) ?: return
+            val darkMode: ListPreference? = findPreference(darkModePrefId)
+            darkMode?.value = repository.getDarkMode().toString()
+            darkMode?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val darkModeValue = value?.toIntOrNull() ?: return
+                    repository.setDarkMode(darkModeValue)
+                    AppCompatDelegate.setDefaultNightMode(darkModeValue)
+
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getDarkMode().toString()
+                }
+            }
+            darkMode?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                val darkModeValue = pref.value.toIntOrNull() ?: repository.getDarkMode()
+                when (darkModeValue) {
+                    AppCompatDelegate.MODE_NIGHT_NO -> getString(R.string.settings_appearance_dark_mode_summary_light)
+                    AppCompatDelegate.MODE_NIGHT_YES -> getString(R.string.settings_appearance_dark_mode_summary_dark)
+                    else -> getString(R.string.settings_appearance_dark_mode_summary_system)
                 }
             }
 

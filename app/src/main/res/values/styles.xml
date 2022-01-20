@@ -1,13 +1,19 @@
 <resources>
-    <style name="AppTheme"  parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <!-- DayNight mode for easy dark mode, see https://material.io/develop/android/theming/dark -->
+    <style name="AppTheme"  parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="actionBarStyle">@style/Custom.ActionBar</item>
         <item name="android:statusBarColor">@color/primaryColor</item>
         <item name="actionModeBackground">@color/primaryDarkColor</item>
     </style>
 
-    <!-- Rounded corners in images: https://stackoverflow.com/a/61960983/1440785 -->
+    <!-- Action bar color identical in dark mode, see https://stackoverflow.com/a/58368668/1440785 -->
+    <style name="Custom.ActionBar" parent="Widget.MaterialComponents.Light.ActionBar.Solid">
+        <item name="background">@color/primaryColor</item>
+    </style>
+
+    <!-- Rounded corners in images, see https://stackoverflow.com/a/61960983/1440785 -->
     <style name="roundedCornersImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>

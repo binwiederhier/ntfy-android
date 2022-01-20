@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="settings_notifications_muted_until_entries">
+        <item>@string/notification_dialog_show_all</item>
+        <item>@string/notification_dialog_30min</item>
+        <item>@string/notification_dialog_1h</item>
+        <item>@string/notification_dialog_2h</item>
+        <item>@string/notification_dialog_8h</item>
+        <item>@string/notification_dialog_tomorrow</item>
+        <item>@string/notification_dialog_forever</item>
+    </string-array>
+    <string-array name="settings_notifications_muted_until_values">
+        <item>0</item> <!-- See Repository -->
+        <item>30</item> <!-- See Minutes -->
+        <item>60</item>
+        <item>120</item>
+        <item>480</item>
+        <item>2</item> <!-- See Repository -->
+        <item>1</item> <!-- See Repository -->
+    </string-array>
     <string-array name="settings_notifications_min_priority_entries">
         <item>@string/settings_notifications_min_priority_min</item>
         <item>@string/settings_notifications_min_priority_low</item>
@@ -49,5 +67,16 @@
     <string-array name="settings_advanced_export_logs_values">
         <item>copy</item>
         <item>upload</item>
+    </string-array>
+    <string-array name="settings_appearance_dark_mode_entries">
+        <item>@string/settings_appearance_dark_mode_entry_system</item>
+        <item>@string/settings_appearance_dark_mode_entry_light</item>
+        <item>@string/settings_appearance_dark_mode_entry_dark</item>
+    </string-array>
+    <string-array name="settings_appearance_dark_mode_values">
+        <!-- Must match values in AppCompatDelegate -->
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>

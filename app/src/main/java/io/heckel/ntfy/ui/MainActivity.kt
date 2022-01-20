@@ -16,6 +16,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -149,6 +152,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Subscribe to control Firebase channel (so we can re-start the foreground service if it dies)
         messenger.subscribe(ApiService.CONTROL_TOPIC)
+
+        // Darrkkkk mode
+        AppCompatDelegate.setDefaultNightMode(repository.getDarkMode())
 
         // Background things
         startPeriodicPollWorker()
@@ -304,7 +310,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             notificationFragment.show(supportFragmentManager, NotificationFragment.TAG)
         } else {
             Log.d(TAG, "Re-enabling global notifications")
-            onNotificationMutedUntilChanged(0L)
+            onNotificationMutedUntilChanged(Repository.MUTED_UNTIL_SHOW_ALL)
         }
     }
 

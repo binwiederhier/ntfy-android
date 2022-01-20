@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="wrap_content"
                                                    android:background="?android:attr/selectableItemBackground"
@@ -22,7 +21,7 @@
             app:layout_constraintBottom_toTopOf="@+id/main_item_status"
             android:layout_marginStart="10dp" app:layout_constraintStart_toEndOf="@+id/main_item_image"
             app:layout_constraintVertical_bias="0.0" android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/primaryTextColor" android:layout_marginTop="10dp"
+            android:textColor="?android:attr/textColorPrimary" android:layout_marginTop="10dp"
             app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image"/>
     <TextView
             android:text="89 notifications, reconnecting ... This may wrap in the case of UnifiedPush"

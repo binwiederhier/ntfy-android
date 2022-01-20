@@ -3,13 +3,9 @@
     <color name="primaryColor">#338574</color>
     <color name="primaryLightColor">#338574</color>
     <color name="primaryDarkColor">#2A6E60</color>
-
-    <color name="primaryTextColor">#000000</color>
     <color name="primaryLightTextColor">#FFFFFF</color>
-
     <color name="primarySelectedRowColor">#EEEEEE</color>
     <color name="primaryDangerButtonColor">#C30000</color>
-
     <color name="primaryPriorityUrgentColor">#C30000</color>
     <color name="primaryPriorityHighColor">#E10000</color>
 </resources>

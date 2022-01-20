@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.WorkerThread
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
 import io.heckel.ntfy.log.Log
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -177,6 +179,22 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         sharedPrefs.edit()
             .putLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, maxSize)
             .apply()
+    }
+
+    fun setDarkMode(mode: Int) {
+        if (mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_DARK_MODE)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putInt(SHARED_PREFS_DARK_MODE, mode)
+                .apply()
+        }
+    }
+
+    fun getDarkMode(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_DARK_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
     fun getWakelockEnabled(): Boolean {
@@ -358,11 +376,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
         const val SHARED_PREFS_WAKELOCK_ENABLED = "WakelockEnabled"
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
+        const val SHARED_PREFS_DARK_MODE = "DarkMode"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
+
+        const val MUTED_UNTIL_SHOW_ALL = 0L
+        const val MUTED_UNTIL_FOREVER = 1L
+        const val MUTED_UNTIL_TOMORROW = 2L
 
         const val AUTO_DOWNLOAD_NEVER = 0L
         const val AUTO_DOWNLOAD_ALWAYS = 1L
