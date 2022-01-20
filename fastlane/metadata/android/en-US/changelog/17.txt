@@ -1,4 +1,5 @@
 New features:
+* Battery improvements: wakelock disabled by default (#76)
 * Dark mode: Allow changing app appearance (#102)
 * Report logs: Copy/export logs to help troubleshooting (#94)
 * WebSockets (experimental): Use WebSockets to subscribe to topics (#96, #100, #97)

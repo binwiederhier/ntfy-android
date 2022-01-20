@@ -41,9 +41,11 @@ android {
     productFlavors {
         play {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
+            buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'true'
         }
         fdroid {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
+            buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'false'
         }
     }
 
@@ -96,4 +98,7 @@ dependencies {
 
     // Image viewer
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
+
+    // For "Rate this app" menu item (Google Play only)
+    playImplementation 'com.google.android.play:core-ktx:1.8.1'
 }

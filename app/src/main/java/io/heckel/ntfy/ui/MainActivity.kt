@@ -17,13 +17,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.*
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
@@ -260,6 +259,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
         val mutedUntilSeconds = repository.getGlobalMutedUntil()
         runOnUiThread {
+            // Show/hide in-app rate widget
+            val rateAppItem = menu.findItem(R.id.main_menu_rate)
+            rateAppItem.isVisible = BuildConfig.RATE_APP_AVAILABLE
+
+            // Pause notification icons
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
             val notificationsDisabledUntilItem = menu.findItem(R.id.main_menu_notifications_disabled_until)
             val notificationsDisabledForeverItem = menu.findItem(R.id.main_menu_notifications_disabled_forever)
@@ -291,12 +295,16 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 startActivity(Intent(this, SettingsActivity::class.java))
                 true
             }
-            R.id.main_menu_source -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_source_url))))
+            R.id.main_menu_report_bug -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_report_bug_url))))
                 true
             }
-            R.id.main_menu_website -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appBaseUrl)))
+            R.id.main_menu_rate -> {
+                rateApp(this)
+                true
+            }
+            R.id.main_menu_docs -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_docs_url))))
                 true
             }
             else -> super.onOptionsItemSelected(item)

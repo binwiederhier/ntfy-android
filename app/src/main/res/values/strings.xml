@@ -38,9 +38,11 @@
     <string name="main_menu_notifications_disabled_forever">Notifications disabled</string>
     <string name="main_menu_notifications_disabled_until">Notifications disabled until %1$s</string>
     <string name="main_menu_settings_title">Settings</string>
-    <string name="main_menu_source_title">Report a bug</string>
-    <string name="main_menu_source_url">https://github.com/binwiederhier/ntfy/issues</string>
-    <string name="main_menu_website_title">Visit ntfy.sh</string>
+    <string name="main_menu_report_bug_title">Report a bug</string>
+    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
+    <string name="main_menu_docs_title">Read the docs</string>
+    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
+    <string name="main_menu_rate_title">Rate this app ⭐</string>
 
     <!-- Main activity: Action mode -->
     <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
