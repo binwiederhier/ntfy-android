@@ -18,6 +18,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
 
+/**
+ * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
+ * one or more topics. When the topics are changed, the connection is recreated by the service.
+ *
+ * The connection re-connects on failure, indefinitely. It reports limited status via the stateChangeListener,
+ * and forwards incoming messages via the notificationListener.
+ *
+ * The original class is taken from the fantastic Gotify project (MIT). Thank you:
+ * https://github.com/gotify/android/blob/master/app/src/main/java/com/github/gotify/service/WebSocketConnection.java
+ */
 class WsConnection(
     private val repository: Repository,
     private val baseUrl: String,

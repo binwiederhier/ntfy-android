@@ -45,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
         Log.d(TAG, "Create $this")
 
         if (savedInstanceState == null) {
-            fragment = SettingsFragment()
+            fragment = SettingsFragment() // Empty constructor!
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.settings_layout, fragment)
