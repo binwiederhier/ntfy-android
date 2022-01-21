@@ -40,7 +40,7 @@ class Log(private val logsDao: LogDao) {
 
     private fun prependDeviceInfo(s: String): String {
         return """
-            This is a log of the ntfy Android app. The log shows up to 5,000 lines.
+            This is a log of the ntfy Android app. The log shows up to 2,000 lines.
             Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.
 
             Device info:
@@ -94,7 +94,7 @@ class Log(private val logsDao: LogDao) {
                 android.util.Log.ERROR -> "E"
                 else -> "?"
             }
-            val tag = e.tag.format("%-23s")
+            val tag = e.tag.format("%23s")
             val prefix = "${e.timestamp} $date $level $tag"
             val message = if (e.exception != null) {
                 "${e.message}\nException:\n${e.exception}"
@@ -116,7 +116,7 @@ class Log(private val logsDao: LogDao) {
     companion object {
         private const val TAG = "NtfyLog"
         private const val PRUNE_EVERY = 100
-        private const val ENTRIES_MAX = 5000
+        private const val ENTRIES_MAX = 2000
         private val IGNORE_TERMS = listOf("ntfy.sh")
         private val REPLACE_TERMS = listOf(
             "banana", "kiwi", "lemon", "coconut", "avocado", "orange", "apple", "peach"

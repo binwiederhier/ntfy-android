@@ -70,7 +70,7 @@ dependencies {
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.6.0"
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
     // Room (SQLite)
     def roomVersion = "2.3.0"
@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     // Firebase, sigh ... (only Google Play)
-    playImplementation 'com.google.firebase:firebase-messaging:22.0.0'
+    playImplementation 'com.google.firebase:firebase-messaging:23.0.0'
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"

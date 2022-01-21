@@ -250,7 +250,7 @@
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
     <string name="settings_advanced_record_logs_key">RecordLogs</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
-    <string name="settings_advanced_record_logs_summary_enabled">Logs are currently being recorded to your device. Up to 5,000 log lines are stored.</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Logs are currently being recorded to your device. Up to 2,000 log lines are stored.</string>
     <string name="settings_advanced_record_logs_summary_disabled">Enable log recording, so you can share the logs later. This is useful for diagnosing issues.</string>
     <string name="settings_advanced_export_logs_key">ExportLogs</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
@@ -258,6 +258,7 @@
     <string name="settings_advanced_export_logs_entry_copy">Copy to clipboard</string>
     <string name="settings_advanced_export_logs_entry_upload">Upload to nopaste.net</string>
     <string name="settings_advanced_export_logs_copied_logs">Logs copied to clipboard</string>
+    <string name="settings_advanced_export_logs_uploading">Uploading log …</string>
     <string name="settings_advanced_export_logs_copied_url">URL copied to clipboard</string>
     <string name="settings_advanced_export_logs_error_uploading">Error uploading logs: %1$s</string>
     <string name="settings_advanced_clear_logs_key">ClearLogs</string>

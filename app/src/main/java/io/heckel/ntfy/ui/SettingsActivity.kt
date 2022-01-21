@@ -398,6 +398,13 @@ class SettingsActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 Log.d(TAG, "Uploading log to $EXPORT_LOGS_UPLOAD_URL ...")
                 val log = Log.getFormatted()
+                if (log.length > EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD) {
+                    requireActivity().runOnUiThread {
+                        Toast
+                            .makeText(context, getString(R.string.settings_advanced_export_logs_uploading), Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
                 val gson = Gson()
                 val request = Request.Builder()
                     .url(EXPORT_LOGS_UPLOAD_URL)
@@ -477,5 +484,6 @@ class SettingsActivity : AppCompatActivity() {
         private const val EXPORT_LOGS_COPY = "copy"
         private const val EXPORT_LOGS_UPLOAD = "upload"
         private const val EXPORT_LOGS_UPLOAD_URL = "https://nopaste.net/?f=json" // Run by binwiederhier; see https://github.com/binwiederhier/pcopy
+        private const val EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD = 100 * 1024 // Show "Uploading ..." if log larger than X
     }
 }

@@ -288,7 +288,7 @@ interface LogDao {
     @Insert
     suspend fun insert(entry: LogEntry)
 
-    @Query("DELETE FROM log WHERE id NOT IN (SELECT id FROM log ORDER BY id DESC LIMIT :keepCount)")
+    @Query("DELETE FROM log WHERE id NOT IN (SELECT id FROM log ORDER BY timestamp DESC, id DESC LIMIT :keepCount)")
     suspend fun prune(keepCount: Int)
 
     @Query("SELECT * FROM log ORDER BY timestamp ASC, id ASC")
