@@ -3,6 +3,7 @@ package io.heckel.ntfy.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -300,7 +301,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 true
             }
             R.id.main_menu_rate -> {
-                rateApp(this)
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                } catch (e: ActivityNotFoundException) {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                }
                 true
             }
             R.id.main_menu_docs -> {
