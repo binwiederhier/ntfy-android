@@ -1,0 +1,2 @@
+Bug fixes:
+* Fix download issues on SDK 29 "Movement not allowed" (#116)
