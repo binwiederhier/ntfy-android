@@ -140,6 +140,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     progress = PROGRESS_DONE
                 ))
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    values.clear() // See #116 to avoid "movement" error
                     values.put(MediaStore.MediaColumns.IS_PENDING, 0)
                     resolver.update(uri, values, null, null)
                 }
