@@ -1,0 +1,13 @@
+New features:
+* Battery improvements: wakelock disabled by default (#76)
+* Dark mode: Allow changing app appearance (#102)
+* Report logs: Copy/export logs to help troubleshooting (#94)
+* WebSockets (experimental): Use WebSockets to subscribe to topics (#96, #100, #97)
+* Show battery optimization banner (#105)
+
+Bug fixes:
+* Support for binary UnifiedPush messages (#101)
+
+Notes:
+* The foreground wakelock is now disabled by default
+* The service restarter is now scheduled every 3h instead of every 6h
