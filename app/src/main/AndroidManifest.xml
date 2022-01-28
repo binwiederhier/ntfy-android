@@ -30,7 +30,8 @@
         <!-- Main activity -->
         <activity
                 android:name=".ui.MainActivity"
-                android:label="@string/app_name">
+                android:label="@string/app_name"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -62,7 +63,8 @@
         <!-- Subscriber service restart on reboot -->
         <receiver
                 android:name=".service.SubscriberService$BootStartReceiver"
-                android:enabled="true">
+                android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
