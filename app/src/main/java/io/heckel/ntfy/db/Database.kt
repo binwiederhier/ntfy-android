@@ -87,13 +87,7 @@ data class User(
     @ColumnInfo(name = "username") val username: String,
     @ColumnInfo(name = "password") val password: String
 ) {
-    override fun toString(): String {
-        return if (baseUrl == "") {
-            username
-        } else {
-            "$username (${shortUrl(baseUrl)})"
-        }
-    }
+    override fun toString(): String = username
 }
 
 @Entity(tableName = "Log")

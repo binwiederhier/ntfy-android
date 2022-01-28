@@ -1,5 +1,6 @@
 package io.heckel.ntfy.ui
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+
 class AddFragment : DialogFragment() {
     private val api = ApiService()
 
@@ -33,6 +35,8 @@ class AddFragment : DialogFragment() {
 
     private lateinit var subscribeView: View
     private lateinit var loginView: View
+    private lateinit var positiveButton: Button
+    private lateinit var negativeButton: Button
 
     // Subscribe page
     private lateinit var subscribeTopicText: TextInputEditText
@@ -45,7 +49,6 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeInstantDeliveryDescription: View
     private lateinit var subscribeProgress: ProgressBar
     private lateinit var subscribeErrorImage: View
-    private lateinit var subscribeButton: Button
 
     // Login page
     private lateinit var users: List<User>
@@ -79,6 +82,7 @@ class AddFragment : DialogFragment() {
 
         // Main "pages"
         subscribeView = view.findViewById(R.id.add_dialog_subscribe_view)
+        subscribeView.visibility = View.VISIBLE
         loginView = view.findViewById(R.id.add_dialog_login_view)
         loginView.visibility = View.GONE
 
@@ -153,8 +157,9 @@ class AddFragment : DialogFragment() {
                 .map { it.key }
                 .filterNot { it == appBaseUrl }
                 .sorted()
-            val adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, baseUrls)
-            requireActivity().runOnUiThread {
+            val activity = activity ?: return@launch // We may have pressed "Cancel"
+            val adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, baseUrls)
+            activity.runOnUiThread {
                 subscribeBaseUrlText.threshold = 1
                 subscribeBaseUrlText.setAdapter(adapter)
                 if (baseUrls.count() == 1) {
@@ -179,16 +184,40 @@ class AddFragment : DialogFragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
                     loginUsernameText.visibility = View.VISIBLE
+                    loginUsernameText.isEnabled = true
                     loginPasswordText.visibility = View.VISIBLE
+                    loginPasswordText.isEnabled = true
+                    if (loginUsernameText.requestFocus()) {
+                        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                        imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
+                    }
                 } else {
                     loginUsernameText.visibility = View.GONE
+                    loginUsernameText.isEnabled = false
                     loginPasswordText.visibility = View.GONE
+                    loginPasswordText.isEnabled = false
                 }
+                validateInputLoginView()
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // This should not happen, ha!
             }
         }
+
+        // Username/password validation on type
+        val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                validateInputLoginView()
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Nothing
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Nothing
+            }
+        }
+        loginUsernameText.addTextChangedListener(textWatcher)
+        loginPasswordText.addTextChangedListener(textWatcher)
 
         // Build dialog
         val dialog = AlertDialog.Builder(activity)
@@ -197,7 +226,7 @@ class AddFragment : DialogFragment() {
                 // This will be overridden below to avoid closing the dialog immediately
             }
             .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
-                dialog?.cancel()
+                // This will be overridden below
             }
             .create()
 
@@ -206,15 +235,18 @@ class AddFragment : DialogFragment() {
 
         // Add logic to disable "Subscribe" button on invalid input
         dialog.setOnShowListener {
-            subscribeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            subscribeButton.isEnabled = false
-            subscribeButton.setOnClickListener {
-                subscribeButtonClick()
+            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveButton.isEnabled = false
+            positiveButton.setOnClickListener {
+                positiveButtonClick()
             }
-
+            negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            negativeButton.setOnClickListener {
+                negativeButtonClick()
+            }
             val textWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    validateInput()
+                    validateInputSubscribeView()
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // Nothing
@@ -242,7 +274,7 @@ class AddFragment : DialogFragment() {
                     if (subscribeInstantDeliveryCheckbox.isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
                     else subscribeInstantDeliveryDescription.visibility = View.GONE
                 }
-                validateInput()
+                validateInputSubscribeView()
             }
             subscribeUseAnotherServerCheckbox.isChecked = this::baseUrls.isInitialized && baseUrls.count() == 1
 
@@ -253,19 +285,20 @@ class AddFragment : DialogFragment() {
         return dialog
     }
 
-    private fun subscribeButtonClick() {
+    private fun positiveButtonClick() {
         val topic = subscribeTopicText.text.toString()
         val baseUrl = getBaseUrl()
         if (subscribeView.visibility == View.VISIBLE) {
             checkAnonReadAndMaybeShowLogin(baseUrl, topic)
         } else if (loginView.visibility == View.VISIBLE) {
-            checkAuthAndMaybeDismiss(baseUrl, topic)
+            loginAndMaybeDismiss(baseUrl, topic)
         }
     }
 
     private fun checkAnonReadAndMaybeShowLogin(baseUrl: String, topic: String) {
         subscribeProgress.visibility = View.VISIBLE
         subscribeErrorImage.visibility = View.GONE
+        enableSubscribeView(false)
         lifecycleScope.launch(Dispatchers.IO) {
             Log.d(TAG, "Checking anonymous read access to topic ${topicUrl(baseUrl, topic)}")
             try {
@@ -275,29 +308,18 @@ class AddFragment : DialogFragment() {
                     dismiss(authUserId = null)
                 } else {
                     Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
-                    requireActivity().runOnUiThread {
-                        // Show/hide users dropdown
-                        val relevantUsers = users.filter { it.baseUrl == baseUrl }
-                        if (relevantUsers.isEmpty()) {
-                            loginUsersSpinner.visibility = View.GONE
-                        } else {
-                            val spinnerEntries = relevantUsers.toMutableList()
-                            spinnerEntries.add(0, User(0, "", getString(R.string.add_dialog_login_new_user), ""))
-                            loginUsersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
-                            loginUsersSpinner.setSelection(1)
-                        }
-
-                        // Show login page
-                        subscribeView.visibility = View.GONE
-                        loginProgress.visibility = View.INVISIBLE
-                        loginView.visibility = View.VISIBLE
+                    val activity = activity ?: return@launch // We may have pressed "Cancel"
+                    activity.runOnUiThread {
+                        showLoginView(activity, baseUrl)
                     }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
-                requireActivity().runOnUiThread {
+                val activity = activity ?: return@launch // We may have pressed "Cancel"
+                activity.runOnUiThread {
                     subscribeProgress.visibility = View.GONE
                     subscribeErrorImage.visibility = View.VISIBLE
+                    enableSubscribeView(true)
                     Toast
                         .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
                         .show()
@@ -306,9 +328,10 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun checkAuthAndMaybeDismiss(baseUrl: String, topic: String) {
+    private fun loginAndMaybeDismiss(baseUrl: String, topic: String) {
         loginProgress.visibility = View.VISIBLE
         loginErrorImage.visibility = View.GONE
+        enableLoginView(false)
         val existingUser = loginUsersSpinner.selectedItem != null && loginUsersSpinner.selectedItem is User && loginUsersSpinner.selectedItemPosition > 0
         val user = if (existingUser) {
             loginUsersSpinner.selectedItem as User
@@ -333,18 +356,22 @@ class AddFragment : DialogFragment() {
                     dismiss(authUserId = user.id)
                 } else {
                     Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                    requireActivity().runOnUiThread {
+                    val activity = activity ?: return@launch // We may have pressed "Cancel"
+                    activity.runOnUiThread {
                         loginProgress.visibility = View.GONE
                         loginErrorImage.visibility = View.VISIBLE
+                        enableLoginView(true)
                         Toast
                             .makeText(context, getString(R.string.add_dialog_login_error_not_authorized), Toast.LENGTH_LONG)
                             .show()
                     }
                 }
             } catch (e: Exception) {
-                requireActivity().runOnUiThread {
+                val activity = activity ?: return@launch // We may have pressed "Cancel"
+                activity.runOnUiThread {
                     loginProgress.visibility = View.GONE
                     loginErrorImage.visibility = View.VISIBLE
+                    enableLoginView(true)
                     Toast
                         .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
                         .show()
@@ -353,31 +380,51 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun validateInput() = lifecycleScope.launch(Dispatchers.IO) {
-        val baseUrl = getBaseUrl()
-        val topic = subscribeTopicText.text.toString()
-        val subscription = repository.getSubscription(baseUrl, topic)
+    private fun negativeButtonClick() {
+        if (subscribeView.visibility == View.VISIBLE) {
+            dialog?.cancel()
+        } else if (loginView.visibility == View.VISIBLE) {
+            showSubscribeView()
+        }
+    }
 
-        activity?.let {
-            it.runOnUiThread {
-                if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
-                    subscribeButton.isEnabled = false
-                } else if (subscribeUseAnotherServerCheckbox.isChecked) {
-                    subscribeButton.isEnabled = topic.isNotBlank()
-                            && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
-                            && baseUrl.isNotBlank()
-                            && "^https?://.+".toRegex().matches(baseUrl)
-                } else {
-                    subscribeButton.isEnabled = topic.isNotBlank()
-                            && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
+    private fun validateInputSubscribeView() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val baseUrl = getBaseUrl()
+            val topic = subscribeTopicText.text.toString()
+            val subscription = repository.getSubscription(baseUrl, topic)
+
+            activity?.let {
+                it.runOnUiThread {
+                    if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
+                        positiveButton.isEnabled = false
+                    } else if (subscribeUseAnotherServerCheckbox.isChecked) {
+                        positiveButton.isEnabled = topic.isNotBlank()
+                                && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
+                                && baseUrl.isNotBlank()
+                                && "^https?://.+".toRegex().matches(baseUrl)
+                    } else {
+                        positiveButton.isEnabled = topic.isNotBlank()
+                                && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
+                    }
                 }
             }
         }
     }
 
+    private fun validateInputLoginView() {
+        if (loginUsernameText.visibility == View.GONE) {
+            positiveButton.isEnabled = true
+        } else {
+            positiveButton.isEnabled = (loginUsernameText.text?.isNotEmpty() ?: false)
+                    && (loginPasswordText.text?.isNotEmpty() ?: false)
+        }
+    }
+
     private fun dismiss(authUserId: Long?) {
         Log.d(TAG, "Closing dialog and calling onSubscribe handler")
-        requireActivity().runOnUiThread {
+        val activity = activity?: return // We may have pressed "Cancel"
+        activity.runOnUiThread {
             val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
             val instant = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeUseAnotherServerCheckbox.isChecked) {
@@ -396,6 +443,77 @@ class AddFragment : DialogFragment() {
         } else {
             getString(R.string.app_base_url)
         }
+    }
+
+    private fun showSubscribeView() {
+        resetSubscribeView()
+        positiveButton.text = getString(R.string.add_dialog_button_subscribe)
+        negativeButton.text = getString(R.string.add_dialog_button_cancel)
+        loginView.visibility = View.GONE
+        subscribeView.visibility = View.VISIBLE
+        if (subscribeTopicText.requestFocus()) {
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
+    private fun showLoginView(activity: Activity, baseUrl: String) {
+        resetLoginView()
+        loginProgress.visibility = View.INVISIBLE
+        positiveButton.text = getString(R.string.add_dialog_button_login)
+        negativeButton.text = getString(R.string.add_dialog_button_back)
+        subscribeView.visibility = View.GONE
+        loginView.visibility = View.VISIBLE
+
+        // Show/hide dropdown
+        val relevantUsers = users.filter { it.baseUrl == baseUrl }
+        if (relevantUsers.isEmpty()) {
+            loginUsersSpinner.visibility = View.GONE
+            loginUsersSpinner.adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, emptyArray<User>())
+            if (loginUsernameText.requestFocus()) {
+                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
+            }
+        } else {
+            val spinnerEntries = relevantUsers.toMutableList()
+            spinnerEntries.add(0, User(0, "", getString(R.string.add_dialog_login_new_user), ""))
+            loginUsersSpinner.adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
+            loginUsersSpinner.setSelection(1)
+        }
+    }
+
+    private fun enableSubscribeView(enable: Boolean) {
+        subscribeTopicText.isEnabled = enable
+        subscribeBaseUrlText.isEnabled = enable
+        subscribeInstantDeliveryCheckbox.isEnabled = enable
+        subscribeUseAnotherServerCheckbox.isEnabled = enable
+        positiveButton.isEnabled = enable
+    }
+
+    private fun resetSubscribeView() {
+        subscribeProgress.visibility = View.GONE
+        subscribeErrorImage.visibility = View.GONE
+        enableSubscribeView(true)
+    }
+
+    private fun enableLoginView(enable: Boolean) {
+        loginUsernameText.isEnabled = enable
+        loginPasswordText.isEnabled = enable
+        loginUsersSpinner.isEnabled = enable
+        positiveButton.isEnabled = enable
+        if (enable && loginUsernameText.requestFocus()) {
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
+    private fun resetLoginView() {
+        loginProgress.visibility = View.GONE
+        loginErrorImage.visibility = View.GONE
+        loginUsersSpinner.visibility = View.VISIBLE
+        loginUsernameText.visibility = View.VISIBLE
+        loginPasswordText.visibility = View.VISIBLE
+        enableLoginView(true)
     }
 
     companion object {

@@ -97,6 +97,8 @@
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
+    <string name="add_dialog_button_back">Back</string>
+    <string name="add_dialog_button_login">Login</string>
     <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
     <string name="add_dialog_login_error_not_authorized">Login failed. User not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
