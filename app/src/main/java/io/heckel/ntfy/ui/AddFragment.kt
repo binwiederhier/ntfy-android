@@ -512,12 +512,14 @@ class AddFragment : DialogFragment() {
         loginErrorImage.visibility = View.GONE
         loginUsersSpinner.visibility = View.VISIBLE
         loginUsernameText.visibility = View.VISIBLE
+        loginUsernameText.text?.clear()
         loginPasswordText.visibility = View.VISIBLE
+        loginPasswordText.text?.clear()
         enableLoginView(true)
     }
 
     companion object {
         const val TAG = "NtfyAddFragment"
-        private val DISALLOWED_TOPICS = listOf("docs", "static")
+        private val DISALLOWED_TOPICS = listOf("docs", "static", "file") // If updated, also update in server
     }
 }
