@@ -132,7 +132,7 @@ class NotificationService(val context: Context) {
         } else {
             try {
                 val uri = Uri.parse(notification.click)
-                val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), 0)
+                val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), PendingIntent.FLAG_IMMUTABLE)
                 builder.setContentIntent(viewIntent)
             } catch (e: Exception) {
                 builder.setContentIntent(detailActivityIntent(subscription))
@@ -155,7 +155,7 @@ class NotificationService(val context: Context) {
             val intent = Intent(Intent.ACTION_VIEW, contentUri)
             intent.setDataAndType(contentUri, notification.attachment.type ?: "application/octet-stream") // Required for Android <= P
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_open), pendingIntent).build())
         }
     }
@@ -164,7 +164,7 @@ class NotificationService(val context: Context) {
         if (notification.attachment?.contentUri != null) {
             val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_browse), pendingIntent).build())
         }
     }
@@ -174,7 +174,7 @@ class NotificationService(val context: Context) {
             val intent = Intent(context, DownloadBroadcastReceiver::class.java)
             intent.putExtra("action", DOWNLOAD_ACTION_START)
             intent.putExtra("id", notification.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_download), pendingIntent).build())
         }
     }
@@ -184,7 +184,7 @@ class NotificationService(val context: Context) {
             val intent = Intent(context, DownloadBroadcastReceiver::class.java)
             intent.putExtra("action", DOWNLOAD_ACTION_CANCEL)
             intent.putExtra("id", notification.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_cancel), pendingIntent).build())
         }
     }
@@ -209,7 +209,7 @@ class NotificationService(val context: Context) {
         intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         return TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT) // Get the PendingIntent containing the entire back stack
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE) // Get the PendingIntent containing the entire back stack
         }
     }
 
