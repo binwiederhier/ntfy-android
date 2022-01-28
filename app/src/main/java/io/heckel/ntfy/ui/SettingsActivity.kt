@@ -22,10 +22,12 @@ import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.User
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.toPriorityString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +37,13 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class SettingsActivity : AppCompatActivity() {
+/**
+ * Main settings
+ *
+ * The "nested screen" navigation stuff (for user management) has been taken from
+ * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
+ */
+class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var fragment: SettingsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,13 +58,56 @@ class SettingsActivity : AppCompatActivity() {
                 .beginTransaction()
                 .replace(R.id.settings_layout, fragment)
                 .commit()
+        } else {
+            title = savedInstanceState.getCharSequence(TITLE_TAG)
+        }
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                setTitle(R.string.settings_title)
+            }
         }
 
         // Action bar
-        title = getString(R.string.settings_title)
+        //title = getString(R.string.settings_title)
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save current activity title so we can set it again after a configuration change
+        outState.putCharSequence(TITLE_TAG, title)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        if (supportFragmentManager.popBackStackImmediate()) {
+            return true
+        }
+        return super.onSupportNavigateUp()
+    }
+
+
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
+        // Instantiate the new Fragment
+        val args = pref.extras
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,
+            pref.fragment!!
+        ).apply {
+            arguments = args
+            setTargetFragment(caller, 0)
+        }
+        // Replace the existing Fragment with the new Fragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.settings_layout, fragment)
+            .addToBackStack(null)
+            .commit()
+        title = pref.title
+        return true
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -463,6 +514,41 @@ class SettingsActivity : AppCompatActivity() {
         data class NopasteResponse(val url: String)
     }
 
+    class UserSettingsFragment : PreferenceFragmentCompat() {
+        private lateinit var repository: Repository
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.user_preferences, rootKey)
+
+            // Dependencies (Fragments need a default constructor)
+            repository = Repository.getInstance(requireActivity())
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val usersByBaseUrl = repository.getUsers().groupBy { it.baseUrl }
+                activity?.runOnUiThread {
+                    addUserPreferences(usersByBaseUrl)
+                }
+            }
+        }
+
+        private fun addUserPreferences(usersByBaseUrl: Map<String, List<User>>) {
+            usersByBaseUrl.forEach { entry ->
+                val baseUrl = entry.key
+                val users = entry.value
+
+                val preferenceCategory = PreferenceCategory(preferenceScreen.context)
+                preferenceCategory.title = shortUrl(baseUrl)
+                preferenceScreen.addPreference(preferenceCategory)
+
+                users.forEach { user ->
+                    val preference = Preference(preferenceScreen.context)
+                    preference.title = user.username
+                    preferenceCategory.addPreference(preference)
+                }
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
@@ -479,6 +565,7 @@ class SettingsActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "NtfySettingsActivity"
+        private const val TITLE_TAG = "title"
         private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
         private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
         private const val EXPORT_LOGS_COPY = "copy"

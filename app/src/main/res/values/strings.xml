@@ -238,6 +238,11 @@
     <string name="settings_appearance_dark_mode_entry_system">Use system default</string>
     <string name="settings_appearance_dark_mode_entry_light">Light mode</string>
     <string name="settings_appearance_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_users_header">Users</string>
+    <string name="settings_users_key">ManageUsers</string>
+    <string name="settings_users_title">Manage users</string>
+    <string name="settings_users_summary">Add or remove users used for protected topics</string>
+    <string name="settings_users_prefs_title">Users</string>
     <string name="settings_unified_push_header">UnifiedPush</string>
     <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
     <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>

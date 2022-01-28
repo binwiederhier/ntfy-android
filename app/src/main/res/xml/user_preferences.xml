@@ -1,0 +1,3 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  app:title="@string/settings_users_prefs_title">
+</PreferenceScreen>

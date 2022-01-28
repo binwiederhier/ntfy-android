@@ -33,6 +33,15 @@
                 app:defaultValue="-1"/>
     </PreferenceCategory>
     <PreferenceCategory
+            app:title="@string/settings_users_header"
+            app:layout="@layout/preference_category_material_edited">
+        <Preference
+                app:key="@string/settings_users_key"
+                app:title="@string/settings_users_title"
+                app:summary="@string/settings_users_summary"
+                app:fragment="io.heckel.ntfy.ui.SettingsActivity$UserSettingsFragment"/>
+    </PreferenceCategory>
+    <PreferenceCategory
             app:title="@string/settings_unified_push_header"
             app:summary="@string/settings_unified_push_header_summary"
             app:layout="@layout/preference_category_material_edited">
