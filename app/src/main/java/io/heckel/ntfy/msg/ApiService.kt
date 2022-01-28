@@ -34,6 +34,8 @@ class ApiService {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
+        // XXXXXXXXXXXx
+
         var builder = Request.Builder()
             .url(url)
             .put(message.toRequestBody())

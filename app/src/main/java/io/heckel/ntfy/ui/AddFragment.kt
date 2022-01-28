@@ -33,6 +33,7 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeView: View
     private lateinit var loginView: View
 
+    // Subscribe page
     private lateinit var topicNameText: TextInputEditText
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: AutoCompleteTextView
@@ -43,11 +44,13 @@ class AddFragment : DialogFragment() {
     private lateinit var instantDeliveryDescription: View
     private lateinit var subscribeButton: Button
 
+    // Login page
     private lateinit var users: List<User>
     private lateinit var usersSpinner: Spinner
-    private var userSelected: User? = null
     private lateinit var usernameText: TextInputEditText
     private lateinit var passwordText: TextInputEditText
+    private lateinit var loginProgress: ProgressBar
+    private lateinit var loginError: TextView
 
     private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
 
@@ -90,6 +93,8 @@ class AddFragment : DialogFragment() {
         usersSpinner = view.findViewById(R.id.add_dialog_login_users_spinner)
         usernameText = view.findViewById(R.id.add_dialog_login_username)
         passwordText = view.findViewById(R.id.add_dialog_login_password)
+        loginProgress = view.findViewById(R.id.add_dialog_login_progress)
+        loginError = view.findViewById(R.id.add_dialog_login_error)
 
         // Set "Use another server" description based on flavor
         useAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
@@ -162,10 +167,8 @@ class AddFragment : DialogFragment() {
             if (users.isEmpty()) {
                 usersSpinner.visibility = View.GONE
             } else {
-                val spinnerEntries = users
-                    //.map { it.username }
-                    .toMutableList()
-                spinnerEntries.add(0, User(0, "Create new", ""))
+                val spinnerEntries = users.toMutableList()
+                spinnerEntries.add(0, User(0, "Create new", "")) // FIXME
                 usersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
             }
         }
@@ -177,11 +180,9 @@ class AddFragment : DialogFragment() {
         usersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
-                    userSelected = null
                     usernameText.visibility = View.VISIBLE
                     passwordText.visibility = View.VISIBLE
                 } else {
-                    userSelected = usersSpinner.selectedItem as User
                     usernameText.visibility = View.GONE
                     passwordText.visibility = View.GONE
                 }
@@ -270,6 +271,8 @@ class AddFragment : DialogFragment() {
                 Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
                 requireActivity().runOnUiThread {
                     subscribeView.visibility = View.GONE
+                    loginError.visibility = View.INVISIBLE
+                    loginProgress.visibility = View.INVISIBLE
                     loginView.visibility = View.VISIBLE
                 }
             }
@@ -277,6 +280,8 @@ class AddFragment : DialogFragment() {
     }
 
     private fun checkAuthAndMaybeDismiss(baseUrl: String, topic: String) {
+        loginProgress.visibility = View.VISIBLE
+        loginError.visibility = View.INVISIBLE
         val existingUser = usersSpinner.selectedItem != null && usersSpinner.selectedItem is User && usersSpinner.selectedItemPosition > 0
         val user = if (existingUser) {
             usersSpinner.selectedItem as User
@@ -299,7 +304,10 @@ class AddFragment : DialogFragment() {
                 dismiss(authUserId = user.id)
             } else {
                 Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                // Show some error message
+                requireActivity().runOnUiThread {
+                    loginProgress.visibility = View.GONE
+                    loginError.visibility = View.VISIBLE
+                }
             }
         }
     }

@@ -98,38 +98,70 @@
                 android:paddingStart="4dp" android:paddingTop="0dp" android:layout_marginTop="-5dp"
                 android:visibility="gone"/>
     </LinearLayout>
-    <LinearLayout
-            android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/add_dialog_login_view" tools:visibility="visible">
+                                                       android:layout_height="match_parent"
+                                                       android:orientation="horizontal"
+                                                       android:id="@+id/add_dialog_login_view"
+    >
         <TextView
                 android:id="@+id/add_dialog_login_title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
                 android:paddingBottom="3dp"
                 android:text="Login required"
                 android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/add_dialog_login_progress"/>
         <TextView
                 android:text="This topic requires you to login. Please pick an existing user or type in a username and password."
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:id="@+id/add_dialog_login_description"
-                android:paddingStart="4dp" android:paddingTop="3dp"/>
+                android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_title"/>
         <Spinner
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_login_users_spinner"/>
+                android:layout_height="wrap_content" android:id="@+id/add_dialog_login_users_spinner"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_description"/>
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_dialog_login_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="Username"
                 android:importantForAutofill="no"
-                android:maxLines="1" android:inputType="text" android:maxLength="64"/>
+                android:maxLines="1" android:inputType="text" android:maxLength="64"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_users_spinner"/>
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_dialog_login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="Password"
                 android:importantForAutofill="no"
-                android:maxLines="1" android:inputType="textPassword"/>
-    </LinearLayout>
+                android:maxLines="1" android:inputType="textPassword" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_username"/>
+        <TextView
+                android:text="Login failed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/add_dialog_login_error"
+                android:paddingStart="4dp" android:paddingTop="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_dialog_login_password"
+                app:layout_constraintStart_toStartOf="parent" android:visibility="invisible"/>
+        <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:id="@+id/add_dialog_login_progress"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/add_dialog_login_title"
+                app:layout_constraintBottom_toTopOf="@+id/add_dialog_login_description" android:layout_marginTop="5dp"
+                android:indeterminate="true"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </LinearLayout>
