@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -172,7 +174,7 @@ class AddFragment : DialogFragment() {
         // Show/hide based on flavor
         subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
-        // Show/hide spinner and username/password fields
+        // Show/hide drop-down and username/password fields
         loginUsersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
@@ -189,7 +191,7 @@ class AddFragment : DialogFragment() {
         }
 
         // Build dialog
-        val alert = AlertDialog.Builder(activity)
+        val dialog = AlertDialog.Builder(activity)
             .setView(view)
             .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
                 // This will be overridden below to avoid closing the dialog immediately
@@ -199,10 +201,11 @@ class AddFragment : DialogFragment() {
             }
             .create()
 
-        // Add logic to disable "Subscribe" button on invalid input
-        alert.setOnShowListener {
-            val dialog = it as AlertDialog
+        // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        // Add logic to disable "Subscribe" button on invalid input
+        dialog.setOnShowListener {
             subscribeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             subscribeButton.isEnabled = false
             subscribeButton.setOnClickListener {
@@ -241,9 +244,13 @@ class AddFragment : DialogFragment() {
                 }
                 validateInput()
             }
+            subscribeUseAnotherServerCheckbox.isChecked = this::baseUrls.isInitialized && baseUrls.count() == 1
+
+            // Focus topic text (keyboard is shown too, see above)
+            subscribeTopicText.requestFocus()
         }
 
-        return alert
+        return dialog
     }
 
     private fun subscribeButtonClick() {
@@ -270,15 +277,14 @@ class AddFragment : DialogFragment() {
                     Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
                     requireActivity().runOnUiThread {
                         // Show/hide users dropdown
-                        if (users.isEmpty()) {
+                        val relevantUsers = users.filter { it.baseUrl == baseUrl }
+                        if (relevantUsers.isEmpty()) {
                             loginUsersSpinner.visibility = View.GONE
                         } else {
-                            val spinnerEntries = users.toMutableList()
-                            spinnerEntries.add(0, User(0, getString(R.string.add_dialog_login_new_user), ""))
+                            val spinnerEntries = relevantUsers.toMutableList()
+                            spinnerEntries.add(0, User(0, "", getString(R.string.add_dialog_login_new_user), ""))
                             loginUsersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
                             loginUsersSpinner.setSelection(1)
-                            /*loginUsernameText.visibility = View.GONE
-                            loginPasswordText.visibility = View.GONE*/
                         }
 
                         // Show login page
@@ -309,6 +315,7 @@ class AddFragment : DialogFragment() {
         } else {
             User(
                 id = Random.nextLong(),
+                baseUrl = baseUrl,
                 username = loginUsernameText.text.toString(),
                 password = loginPasswordText.text.toString()
             )

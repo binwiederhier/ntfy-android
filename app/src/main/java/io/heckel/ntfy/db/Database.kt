@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import io.heckel.ntfy.util.shortUrl
 import kotlinx.coroutines.flow.Flow
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
@@ -82,10 +83,17 @@ const val PROGRESS_DONE = 100
 @Entity
 data class User(
     @PrimaryKey(autoGenerate = true) val id: Long,
+    @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "username") val username: String,
     @ColumnInfo(name = "password") val password: String
 ) {
-    override fun toString(): String = username
+    override fun toString(): String {
+        return if (baseUrl == "") {
+            username
+        } else {
+            "$username (${shortUrl(baseUrl)})"
+        }
+    }
 }
 
 @Entity(tableName = "Log")
