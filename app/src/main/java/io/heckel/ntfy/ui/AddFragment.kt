@@ -19,7 +19,6 @@ import io.heckel.ntfy.db.User
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
-import kotlinx.android.synthetic.main.fragment_add_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -34,23 +33,25 @@ class AddFragment : DialogFragment() {
     private lateinit var loginView: View
 
     // Subscribe page
-    private lateinit var topicNameText: TextInputEditText
-    private lateinit var baseUrlLayout: TextInputLayout
-    private lateinit var baseUrlText: AutoCompleteTextView
-    private lateinit var useAnotherServerCheckbox: CheckBox
-    private lateinit var useAnotherServerDescription: TextView
-    private lateinit var instantDeliveryBox: View
-    private lateinit var instantDeliveryCheckbox: CheckBox
-    private lateinit var instantDeliveryDescription: View
+    private lateinit var subscribeTopicText: TextInputEditText
+    private lateinit var subscribeBaseUrlLayout: TextInputLayout
+    private lateinit var subscribeBaseUrlText: AutoCompleteTextView
+    private lateinit var subscribeUseAnotherServerCheckbox: CheckBox
+    private lateinit var subscribeUseAnotherServerDescription: TextView
+    private lateinit var subscribeInstantDeliveryBox: View
+    private lateinit var subscribeInstantDeliveryCheckbox: CheckBox
+    private lateinit var subscribeInstantDeliveryDescription: View
+    private lateinit var subscribeProgress: ProgressBar
+    private lateinit var subscribeErrorImage: View
     private lateinit var subscribeButton: Button
 
     // Login page
     private lateinit var users: List<User>
-    private lateinit var usersSpinner: Spinner
-    private lateinit var usernameText: TextInputEditText
-    private lateinit var passwordText: TextInputEditText
+    private lateinit var loginUsersSpinner: Spinner
+    private lateinit var loginUsernameText: TextInputEditText
+    private lateinit var loginPasswordText: TextInputEditText
     private lateinit var loginProgress: ProgressBar
-    private lateinit var loginError: TextView
+    private lateinit var loginErrorImage: View
 
     private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
 
@@ -80,24 +81,26 @@ class AddFragment : DialogFragment() {
         loginView.visibility = View.GONE
 
         // Fields for "subscribe page"
-        topicNameText = view.findViewById(R.id.add_dialog_topic_text)
-        baseUrlLayout = view.findViewById(R.id.add_dialog_base_url_layout)
-        baseUrlText = view.findViewById(R.id.add_dialog_base_url_text)
-        instantDeliveryBox = view.findViewById(R.id.add_dialog_instant_delivery_box)
-        instantDeliveryCheckbox = view.findViewById(R.id.add_dialog_instant_delivery_checkbox)
-        instantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
-        useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox)
-        useAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
+        subscribeTopicText = view.findViewById(R.id.add_dialog_topic_text)
+        subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_base_url_layout)
+        subscribeBaseUrlText = view.findViewById(R.id.add_dialog_base_url_text)
+        subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_instant_delivery_box)
+        subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_instant_delivery_checkbox)
+        subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
+        subscribeUseAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox)
+        subscribeUseAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
+        subscribeProgress = view.findViewById(R.id.add_dialog_progress)
+        subscribeErrorImage = view.findViewById(R.id.add_dialog_error_image)
 
         // Fields for "login page"
-        usersSpinner = view.findViewById(R.id.add_dialog_login_users_spinner)
-        usernameText = view.findViewById(R.id.add_dialog_login_username)
-        passwordText = view.findViewById(R.id.add_dialog_login_password)
+        loginUsersSpinner = view.findViewById(R.id.add_dialog_login_users_spinner)
+        loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
+        loginPasswordText = view.findViewById(R.id.add_dialog_login_password)
         loginProgress = view.findViewById(R.id.add_dialog_login_progress)
-        loginError = view.findViewById(R.id.add_dialog_login_error)
+        loginErrorImage = view.findViewById(R.id.add_dialog_login_error_image)
 
         // Set "Use another server" description based on flavor
-        useAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
+        subscribeUseAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
             getString(R.string.add_dialog_use_another_server_description)
         } else {
             getString(R.string.add_dialog_use_another_server_description_noinstant)
@@ -105,29 +108,29 @@ class AddFragment : DialogFragment() {
 
         // Base URL dropdown behavior; Oh my, why is this so complicated?!
         val toggleEndIcon = {
-            if (baseUrlText.text.isNotEmpty()) {
-                baseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
+            if (subscribeBaseUrlText.text.isNotEmpty()) {
+                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
             } else if (baseUrls.isEmpty()) {
-                baseUrlLayout.setEndIconDrawable(0)
+                subscribeBaseUrlLayout.setEndIconDrawable(0)
             } else {
-                baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
             }
         }
-        baseUrlLayout.setEndIconOnClickListener {
-            if (baseUrlText.text.isNotEmpty()) {
-                baseUrlText.text.clear()
+        subscribeBaseUrlLayout.setEndIconOnClickListener {
+            if (subscribeBaseUrlText.text.isNotEmpty()) {
+                subscribeBaseUrlText.text.clear()
                 if (baseUrls.isEmpty()) {
-                    baseUrlLayout.setEndIconDrawable(0)
+                    subscribeBaseUrlLayout.setEndIconDrawable(0)
                 } else {
-                    baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
                 }
-            } else if (baseUrlText.text.isEmpty() && baseUrls.isNotEmpty()) {
-                baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_up_gray_24dp)
-                baseUrlText.showDropDown()
+            } else if (subscribeBaseUrlText.text.isEmpty() && baseUrls.isNotEmpty()) {
+                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_up_gray_24dp)
+                subscribeBaseUrlText.showDropDown()
             }
         }
-        baseUrlText.setOnDismissListener { toggleEndIcon() }
-        baseUrlText.addTextChangedListener(object : TextWatcher {
+        subscribeBaseUrlText.setOnDismissListener { toggleEndIcon() }
+        subscribeBaseUrlText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 toggleEndIcon()
             }
@@ -150,41 +153,34 @@ class AddFragment : DialogFragment() {
                 .sorted()
             val adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, baseUrls)
             requireActivity().runOnUiThread {
-                baseUrlText.threshold = 1
-                baseUrlText.setAdapter(adapter)
+                subscribeBaseUrlText.threshold = 1
+                subscribeBaseUrlText.setAdapter(adapter)
                 if (baseUrls.count() == 1) {
-                    baseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
-                    baseUrlText.setText(baseUrls.first())
+                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
+                    subscribeBaseUrlText.setText(baseUrls.first())
                 } else if (baseUrls.count() > 1) {
-                    baseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
                 } else {
-                    baseUrlLayout.setEndIconDrawable(0)
+                    subscribeBaseUrlLayout.setEndIconDrawable(0)
                 }
             }
 
             // Users dropdown
             users = repository.getUsers()
-            if (users.isEmpty()) {
-                usersSpinner.visibility = View.GONE
-            } else {
-                val spinnerEntries = users.toMutableList()
-                spinnerEntries.add(0, User(0, "Create new", "")) // FIXME
-                usersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
-            }
         }
 
         // Show/hide based on flavor
-        instantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
+        subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
         // Show/hide spinner and username/password fields
-        usersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        loginUsersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position == 0) {
-                    usernameText.visibility = View.VISIBLE
-                    passwordText.visibility = View.VISIBLE
+                    loginUsernameText.visibility = View.VISIBLE
+                    loginPasswordText.visibility = View.VISIBLE
                 } else {
-                    usernameText.visibility = View.GONE
-                    passwordText.visibility = View.GONE
+                    loginUsernameText.visibility = View.GONE
+                    loginPasswordText.visibility = View.GONE
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -224,24 +220,24 @@ class AddFragment : DialogFragment() {
                     // Nothing
                 }
             }
-            topicNameText.addTextChangedListener(textWatcher)
-            baseUrlText.addTextChangedListener(textWatcher)
-            instantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) instantDeliveryDescription.visibility = View.VISIBLE
-                else instantDeliveryDescription.visibility = View.GONE
+            subscribeTopicText.addTextChangedListener(textWatcher)
+            subscribeBaseUrlText.addTextChangedListener(textWatcher)
+            subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
+                else subscribeInstantDeliveryDescription.visibility = View.GONE
             }
-            useAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    useAnotherServerDescription.visibility = View.VISIBLE
-                    baseUrlLayout.visibility = View.VISIBLE
-                    instantDeliveryBox.visibility = View.GONE
-                    instantDeliveryDescription.visibility = View.GONE
+                    subscribeUseAnotherServerDescription.visibility = View.VISIBLE
+                    subscribeBaseUrlLayout.visibility = View.VISIBLE
+                    subscribeInstantDeliveryBox.visibility = View.GONE
+                    subscribeInstantDeliveryDescription.visibility = View.GONE
                 } else {
-                    useAnotherServerDescription.visibility = View.GONE
-                    baseUrlLayout.visibility = View.GONE
-                    instantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
-                    if (instantDeliveryCheckbox.isChecked) instantDeliveryDescription.visibility = View.VISIBLE
-                    else instantDeliveryDescription.visibility = View.GONE
+                    subscribeUseAnotherServerDescription.visibility = View.GONE
+                    subscribeBaseUrlLayout.visibility = View.GONE
+                    subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
+                    if (subscribeInstantDeliveryCheckbox.isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
+                    else subscribeInstantDeliveryDescription.visibility = View.GONE
                 }
                 validateInput()
             }
@@ -251,7 +247,7 @@ class AddFragment : DialogFragment() {
     }
 
     private fun subscribeButtonClick() {
-        val topic = topicNameText.text.toString()
+        val topic = subscribeTopicText.text.toString()
         val baseUrl = getBaseUrl()
         if (subscribeView.visibility == View.VISIBLE) {
             checkAnonReadAndMaybeShowLogin(baseUrl, topic)
@@ -261,19 +257,44 @@ class AddFragment : DialogFragment() {
     }
 
     private fun checkAnonReadAndMaybeShowLogin(baseUrl: String, topic: String) {
+        subscribeProgress.visibility = View.VISIBLE
+        subscribeErrorImage.visibility = View.GONE
         lifecycleScope.launch(Dispatchers.IO) {
             Log.d(TAG, "Checking anonymous read access to topic ${topicUrl(baseUrl, topic)}")
-            val authorized = api.checkAnonTopicRead(baseUrl, topic)
-            if (authorized) {
-                Log.d(TAG, "Anonymous access granted to topic ${topicUrl(baseUrl, topic)}")
-                dismiss(authUserId = null)
-            } else {
-                Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
+            try {
+                val authorized = api.checkAnonTopicRead(baseUrl, topic)
+                if (authorized) {
+                    Log.d(TAG, "Anonymous access granted to topic ${topicUrl(baseUrl, topic)}")
+                    dismiss(authUserId = null)
+                } else {
+                    Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
+                    requireActivity().runOnUiThread {
+                        // Show/hide users dropdown
+                        if (users.isEmpty()) {
+                            loginUsersSpinner.visibility = View.GONE
+                        } else {
+                            val spinnerEntries = users.toMutableList()
+                            spinnerEntries.add(0, User(0, getString(R.string.add_dialog_login_new_user), ""))
+                            loginUsersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
+                            loginUsersSpinner.setSelection(1)
+                            /*loginUsernameText.visibility = View.GONE
+                            loginPasswordText.visibility = View.GONE*/
+                        }
+
+                        // Show login page
+                        subscribeView.visibility = View.GONE
+                        loginProgress.visibility = View.INVISIBLE
+                        loginView.visibility = View.VISIBLE
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Connection to topic failed: ${e.message}", e)
                 requireActivity().runOnUiThread {
-                    subscribeView.visibility = View.GONE
-                    loginError.visibility = View.INVISIBLE
-                    loginProgress.visibility = View.INVISIBLE
-                    loginView.visibility = View.VISIBLE
+                    subscribeProgress.visibility = View.GONE
+                    subscribeErrorImage.visibility = View.VISIBLE
+                    Toast
+                        .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -281,32 +302,45 @@ class AddFragment : DialogFragment() {
 
     private fun checkAuthAndMaybeDismiss(baseUrl: String, topic: String) {
         loginProgress.visibility = View.VISIBLE
-        loginError.visibility = View.INVISIBLE
-        val existingUser = usersSpinner.selectedItem != null && usersSpinner.selectedItem is User && usersSpinner.selectedItemPosition > 0
+        loginErrorImage.visibility = View.GONE
+        val existingUser = loginUsersSpinner.selectedItem != null && loginUsersSpinner.selectedItem is User && loginUsersSpinner.selectedItemPosition > 0
         val user = if (existingUser) {
-            usersSpinner.selectedItem as User
+            loginUsersSpinner.selectedItem as User
         } else {
             User(
                 id = Random.nextLong(),
-                username = usernameText.text.toString(),
-                password = passwordText.text.toString()
+                username = loginUsernameText.text.toString(),
+                password = loginPasswordText.text.toString()
             )
         }
         lifecycleScope.launch(Dispatchers.IO) {
             Log.d(TAG, "Checking read access for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-            val authorized = api.checkUserTopicRead(baseUrl, topic, user.username, user.password)
-            if (authorized) {
-                Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                if (!existingUser) {
-                    Log.d(TAG, "Adding new user ${user.username} to database")
-                    repository.addUser(user)
+            try {
+                val authorized = api.checkUserTopicRead(baseUrl, topic, user.username, user.password)
+                if (authorized) {
+                    Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+                    if (!existingUser) {
+                        Log.d(TAG, "Adding new user ${user.username} to database")
+                        repository.addUser(user)
+                    }
+                    dismiss(authUserId = user.id)
+                } else {
+                    Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+                    requireActivity().runOnUiThread {
+                        loginProgress.visibility = View.GONE
+                        loginErrorImage.visibility = View.VISIBLE
+                        Toast
+                            .makeText(context, getString(R.string.add_dialog_login_error_not_authorized), Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
-                dismiss(authUserId = user.id)
-            } else {
-                Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+            } catch (e: Exception) {
                 requireActivity().runOnUiThread {
                     loginProgress.visibility = View.GONE
-                    loginError.visibility = View.VISIBLE
+                    loginErrorImage.visibility = View.VISIBLE
+                    Toast
+                        .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -314,14 +348,14 @@ class AddFragment : DialogFragment() {
 
     private fun validateInput() = lifecycleScope.launch(Dispatchers.IO) {
         val baseUrl = getBaseUrl()
-        val topic = topicNameText.text.toString()
+        val topic = subscribeTopicText.text.toString()
         val subscription = repository.getSubscription(baseUrl, topic)
 
         activity?.let {
             it.runOnUiThread {
                 if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
                     subscribeButton.isEnabled = false
-                } else if (useAnotherServerCheckbox.isChecked) {
+                } else if (subscribeUseAnotherServerCheckbox.isChecked) {
                     subscribeButton.isEnabled = topic.isNotBlank()
                             && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
                             && baseUrl.isNotBlank()
@@ -337,12 +371,12 @@ class AddFragment : DialogFragment() {
     private fun dismiss(authUserId: Long?) {
         Log.d(TAG, "Closing dialog and calling onSubscribe handler")
         requireActivity().runOnUiThread {
-            val topic = topicNameText.text.toString()
+            val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
-            val instant = if (!BuildConfig.FIREBASE_AVAILABLE || useAnotherServerCheckbox.isChecked) {
+            val instant = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeUseAnotherServerCheckbox.isChecked) {
                 true
             } else {
-                instantDeliveryCheckbox.isChecked
+                subscribeInstantDeliveryCheckbox.isChecked
             }
             subscribeListener.onSubscribe(topic, baseUrl, instant, authUserId = authUserId)
             dialog?.dismiss()
@@ -350,8 +384,8 @@ class AddFragment : DialogFragment() {
     }
 
     private fun getBaseUrl(): String {
-        return if (useAnotherServerCheckbox.isChecked) {
-            baseUrlText.text.toString()
+        return if (subscribeUseAnotherServerCheckbox.isChecked) {
+            subscribeBaseUrlText.text.toString()
         } else {
             getString(R.string.app_base_url)
         }

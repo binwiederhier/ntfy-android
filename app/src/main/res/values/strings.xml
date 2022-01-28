@@ -78,14 +78,13 @@
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
     <string name="add_dialog_description_below">
-        Topics are not password-protected, so choose a name that\'s not easy to
-        guess. Once subscribed, you can PUT/POST to receive notifications on your phone.
+        Topics may not be password-protected, so choose a name that\'s not easy to
+        guess. Once subscribed, you can PUT/POST to receive notifications.
     </string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
-        You can subscribe to topics from your own server. This option requires a foreground service and
-        consumes more power, but also delivers notifications faster.
+        You can subscribe to topics from your own server. This option requires a foreground service.
     </string>
     <string name="add_dialog_use_another_server_description_noinstant">
         You can subscribe to topics from your own server. Simply type in the base
@@ -98,6 +97,9 @@
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
+    <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
+    <string name="add_dialog_login_error_not_authorized">Login failed. User not authorized.</string>
+    <string name="add_dialog_login_new_user">New user</string>
 
     <!-- Detail activity -->
     <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
