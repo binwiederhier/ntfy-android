@@ -13,6 +13,7 @@ data class Subscription(
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
+    @ColumnInfo(name = "authUserId") val authUserId: Long?,
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     // TODO autoDownloadAttachments, minPriority
@@ -21,8 +22,8 @@ data class Subscription(
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, upAppId: String, upConnectorToken: String) :
-            this(id, baseUrl, topic, instant, mutedUntil, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, authUserId: Long?, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, authUserId, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -35,6 +36,7 @@ data class SubscriptionWithMetadata(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
+    val authUserId: Long?,
     val upAppId: String?,
     val upConnectorToken: String?,
     val totalCount: Int,
@@ -77,6 +79,15 @@ const val PROGRESS_FAILED = -3
 const val PROGRESS_DELETED = -4
 const val PROGRESS_DONE = 100
 
+@Entity
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    @ColumnInfo(name = "username") val username: String,
+    @ColumnInfo(name = "password") val password: String
+) {
+    override fun toString(): String = username
+}
+
 @Entity(tableName = "Log")
 data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
@@ -90,10 +101,11 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, LogEntry::class], version = 7)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 7)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
+    abstract fun userDao(): UserDao
     abstract fun logDao(): LogDao
 
     companion object {
@@ -180,7 +192,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -193,7 +205,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -206,7 +218,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -281,6 +293,24 @@ interface NotificationDao {
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)
+}
+
+@Dao
+interface UserDao {
+    @Insert
+    suspend fun insert(user: User)
+
+    @Query("SELECT * FROM user ORDER BY username")
+    suspend fun list(): List<User>
+
+    @Query("SELECT * FROM user WHERE id = :id")
+    suspend fun get(id: Long): User
+
+    @Update
+    suspend fun update(user: User)
+
+    @Delete
+    suspend fun delete(user: User)
 }
 
 @Dao

@@ -85,7 +85,7 @@
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
         You can subscribe to topics from your own server. This option requires a foreground service and
-        consumes more power, but also delivers notifications faster (even in doze mode).
+        consumes more power, but also delivers notifications faster.
     </string>
     <string name="add_dialog_use_another_server_description_noinstant">
         You can subscribe to topics from your own server. Simply type in the base

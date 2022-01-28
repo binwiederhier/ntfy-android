@@ -3,13 +3,20 @@ package io.heckel.ntfy.msg
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.User
 import io.heckel.ntfy.log.Log
-import io.heckel.ntfy.util.*
+import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.util.topicUrlAuth
+import io.heckel.ntfy.util.topicUrlJson
+import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.nio.charset.StandardCharsets
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+
 
 class ApiService {
     private val client = OkHttpClient.Builder()
@@ -79,17 +86,21 @@ class ApiService {
         baseUrl: String,
         topics: String,
         since: Long,
+        user: User?,
         notify: (topic: String, Notification) -> Unit,
         fail: (Exception) -> Unit
     ): Call {
         val sinceVal = if (since == 0L) "all" else since.toString()
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-
-        val request = Request.Builder()
+        val builder = Request.Builder()
+            .get()
             .url(url)
             .addHeader("User-Agent", USER_AGENT)
-            .build()
+        if (user != null) {
+            builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
+        }
+        val request = builder.build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -116,6 +127,34 @@ class ApiService {
             }
         })
         return call
+    }
+
+    fun checkAnonTopicRead(baseUrl: String, topic: String): Boolean {
+        return checkTopicRead(baseUrl, topic, creds = null)
+    }
+
+    fun checkUserTopicRead(baseUrl: String, topic: String, username: String, password: String): Boolean {
+        Log.d(TAG, "Authorizing user $username against ${topicUrl(baseUrl, topic)}")
+        return checkTopicRead(baseUrl, topic, creds = Credentials.basic(username, password, UTF_8))
+    }
+
+    private fun checkTopicRead(baseUrl: String, topic: String, creds: String?): Boolean {
+        val url = topicUrlAuth(baseUrl, topic)
+        val builder = Request.Builder()
+            .get()
+            .url(url)
+            .addHeader("User-Agent", USER_AGENT)
+        if (creds != null) {
+            builder.addHeader("Authorization", creds)
+        }
+        val request = builder.build()
+        client.newCall(request).execute().use { response ->
+            if (creds == null) {
+                return response.isSuccessful || response.code == 404 // Treat 404 as success (old server; to be removed in future versions)
+            } else {
+                return response.isSuccessful
+            }
+        }
     }
 
     companion object {

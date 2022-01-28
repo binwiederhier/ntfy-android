@@ -1,9 +1,6 @@
 package io.heckel.ntfy.service
 
-import io.heckel.ntfy.db.ConnectionState
-import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.*
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
@@ -12,16 +9,18 @@ import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean
 
 class JsonConnection(
+    private val connectionId: ConnectionId,
     private val scope: CoroutineScope,
     private val repository: Repository,
     private val api: ApiService,
-    private val baseUrl: String,
+    private val user: User?,
     private val sinceTime: Long,
-    private val topicsToSubscriptionIds: Map<String, Long>, // Topic -> Subscription ID
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
+    private val baseUrl = connectionId.baseUrl
+    private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
@@ -57,7 +56,7 @@ class JsonConnection(
                 // Call /json subscribe endpoint and loop until the call fails, is canceled,
                 // or the job or service are cancelled/stopped
                 try {
-                    call = api.subscribe(baseUrl, topicsStr, since, notify, fail)
+                    call = api.subscribe(baseUrl, topicsStr, since, user, notify, fail)
                     while (!failed.get() && !call.isCanceled() && isActive && serviceActive()) {
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
                         Log.d(TAG,"[$url] Connection is active (failed=$failed, callCanceled=${call.isCanceled()}, jobActive=$isActive, serviceStarted=${serviceActive()}")
@@ -90,10 +89,6 @@ class JsonConnection(
         Log.d(TAG, "[$url] Cancelling connection")
         if (this::job.isInitialized) job?.cancel()
         if (this::call.isInitialized) call?.cancel()
-    }
-
-    override fun matches(otherSubscriptionIds: Collection<Long>): Boolean {
-        return subscriptionIds.toSet() == otherSubscriptionIds.toSet()
     }
 
     private fun nextRetryMillis(retryMillis: Long, startTime: Long): Long {

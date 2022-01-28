@@ -59,7 +59,7 @@ class SubscriberService : Service() {
     private var isServiceStarted = false
     private val repository by lazy { (application as Application).repository }
     private val dispatcher by lazy { NotificationDispatcher(this, repository) }
-    private val connections = ConcurrentHashMap<String, Connection>() // Base URL -> Connection
+    private val connections = ConcurrentHashMap<ConnectionId, Connection>()
     private val api = ApiService()
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
@@ -153,47 +153,55 @@ class SubscriberService : Service() {
             // Group INSTANT subscriptions by base URL, there is only one connection per base URL
             val instantSubscriptions = repository.getSubscriptions()
                 .filter { s -> s.instant }
-            val instantSubscriptionsByBaseUrl = instantSubscriptions // BaseUrl->Map[Topic->SubscriptionId]
-                .groupBy { s -> s.baseUrl }
-                .mapValues { entry ->
-                    entry.value.associate { subscription -> subscription.topic to subscription.id }
-                }
+            val activeConnectionIds = connections.keys().toList().toSet()
+            val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
+                .groupBy { s -> ConnectionId(s.baseUrl, s.authUserId, emptyMap()) }
+                .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
+                .toSet()
+            val newConnectionIds = desiredConnectionIds subtract activeConnectionIds
+            val obsoleteConnectionIds = activeConnectionIds subtract desiredConnectionIds
+            val match = activeConnectionIds == desiredConnectionIds
 
             Log.d(TAG, "Refreshing subscriptions")
-            Log.d(TAG, "- Subscriptions: $instantSubscriptionsByBaseUrl")
-            Log.d(TAG, "- Active connections: $connections")
+            Log.d(TAG, "- Desired connections: $desiredConnectionIds")
+            Log.d(TAG, "- Active connections: $activeConnectionIds")
+            Log.d(TAG, "- New connections: $newConnectionIds")
+            Log.d(TAG, "- Obsolete connections: $obsoleteConnectionIds")
+            Log.d(TAG, "- Match? --> $match")
 
-            // Start new connections and restart connections (if subscriptions have changed)
-            instantSubscriptionsByBaseUrl.forEach { (baseUrl, subscriptions) ->
+            if (match) {
+                Log.d(TAG, "- No action required.")
+                return@launch
+            }
+
+            // Open new connections
+            newConnectionIds.forEach { connectionId ->
+                // FIXME since !!!
+
                 // Do NOT request old messages for new connections; we'll call poll() in MainActivity.
                 // This is important, so we don't download attachments from old messages, which is not desired.
-                var since = System.currentTimeMillis()/1000
-                val connection = connections[baseUrl]
-                if (connection != null && !connection.matches(subscriptions.values)) {
-                    since = connection.since()
-                    connections.remove(baseUrl)
-                    connection.close()
+
+                val since = System.currentTimeMillis()/1000
+                val serviceActive = { -> isServiceStarted }
+                val user = if (connectionId.authUserId != null) {
+                    repository.getUser(connectionId.authUserId)
+                } else {
+                    null
                 }
-                if (!connections.containsKey(baseUrl)) {
-                    val serviceActive = { -> isServiceStarted }
-                    val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
-                        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                        WsConnection(repository, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, alarmManager)
-                    } else {
-                        JsonConnection(this, repository, api, baseUrl, since, subscriptions, ::onStateChanged, ::onNotificationReceived, serviceActive)
-                    }
-                    connections[baseUrl] = connection
-                    connection.start()
+                val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
+                    val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                    WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                } else {
+                    JsonConnection(connectionId, this, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
                 }
+                connections[connectionId] = connection
+                connection.start()
             }
 
             // Close connections without subscriptions
-            val baseUrls = instantSubscriptionsByBaseUrl.keys
-            connections.keys().toList().forEach { baseUrl ->
-                if (!baseUrls.contains(baseUrl)) {
-                    val connection = connections.remove(baseUrl)
-                    connection?.close()
-                }
+            obsoleteConnectionIds.forEach { connectionId ->
+                val connection = connections.remove(connectionId)
+                connection?.close()
             }
 
             // Update foreground service notification popup

@@ -28,7 +28,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             Log.d(TAG, "Polling for new notifications")
             val database = Database.getInstance(applicationContext)
             val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
-            val repository = Repository.getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
+            val repository = Repository.getInstance(sharedPrefs, database)
             val dispatcher = NotificationDispatcher(applicationContext, repository)
             val api = ApiService()
 

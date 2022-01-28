@@ -4,5 +4,10 @@ interface Connection {
     fun start()
     fun close()
     fun since(): Long
-    fun matches(otherSubscriptionIds: Collection<Long>): Boolean
 }
+
+data class ConnectionId(
+    val baseUrl: String,
+    val authUserId: Long?,
+    val topicsToSubscriptionIds: Map<String, Long>
+)

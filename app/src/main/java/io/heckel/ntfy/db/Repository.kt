@@ -8,11 +8,14 @@ import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
 import io.heckel.ntfy.log.Log
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
-class Repository(private val sharedPrefs: SharedPreferences, private val subscriptionDao: SubscriptionDao, private val notificationDao: NotificationDao) {
+class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
+    private val subscriptionDao = database.subscriptionDao()
+    private val notificationDao = database.notificationDao()
+    private val userDao = database.userDao()
+
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -113,7 +116,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         notificationDao.update(notification)
     }
 
-
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun markAsDeleted(notificationId: String) {
@@ -128,6 +130,18 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
     @WorkerThread
     fun removeAllNotifications(subscriptionId: Long) {
         notificationDao.removeAll(subscriptionId)
+    }
+
+    suspend fun getUsers(): List<User> {
+        return userDao.list()
+    }
+
+    suspend fun addUser(user: User) {
+        return userDao.insert(user)
+    }
+
+    suspend fun getUser(userId: Long): User {
+        return userDao.get(userId)
     }
 
     fun getPollWorkerVersion(): Int {
@@ -316,6 +330,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
+                authUserId = s.authUserId,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
                 totalCount = s.totalCount,
@@ -336,6 +351,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
             topic = s.topic,
             instant = s.instant,
             mutedUntil = s.mutedUntil,
+            authUserId = s.authUserId,
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,
             totalCount = s.totalCount,
@@ -403,12 +419,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val subscri
         fun getInstance(activity: Activity): Repository {
             val database = Database.getInstance(activity.applicationContext)
             val sharedPrefs = activity.getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
-            return getInstance(sharedPrefs, database.subscriptionDao(), database.notificationDao())
+            return getInstance(sharedPrefs, database)
         }
 
-        fun getInstance(sharedPrefs: SharedPreferences, subscriptionDao: SubscriptionDao, notificationDao: NotificationDao): Repository {
+        fun getInstance(sharedPrefs: SharedPreferences, database: Database): Repository {
             return synchronized(Repository::class) {
-                val newInstance = instance ?: Repository(sharedPrefs, subscriptionDao, notificationDao)
+                val newInstance = instance ?: Repository(sharedPrefs, database)
                 instance = newInstance
                 newInstance
             }

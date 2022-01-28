@@ -15,12 +15,23 @@ import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.User
+import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.util.topicUrl
+import kotlinx.android.synthetic.main.fragment_add_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class AddFragment : DialogFragment() {
+    private val api = ApiService()
+
     private lateinit var repository: Repository
     private lateinit var subscribeListener: SubscribeListener
+
+    private lateinit var subscribeView: View
+    private lateinit var loginView: View
 
     private lateinit var topicNameText: TextInputEditText
     private lateinit var baseUrlLayout: TextInputLayout
@@ -32,10 +43,16 @@ class AddFragment : DialogFragment() {
     private lateinit var instantDeliveryDescription: View
     private lateinit var subscribeButton: Button
 
+    private lateinit var users: List<User>
+    private lateinit var usersSpinner: Spinner
+    private var userSelected: User? = null
+    private lateinit var usernameText: TextInputEditText
+    private lateinit var passwordText: TextInputEditText
+
     private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
 
     interface SubscribeListener {
-        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean)
+        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, authUserId: Long?)
     }
 
     override fun onAttach(context: Context) {
@@ -53,6 +70,13 @@ class AddFragment : DialogFragment() {
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)
+
+        // Main "pages"
+        subscribeView = view.findViewById(R.id.add_dialog_subscribe_view)
+        loginView = view.findViewById(R.id.add_dialog_login_view)
+        loginView.visibility = View.GONE
+
+        // Fields for "subscribe page"
         topicNameText = view.findViewById(R.id.add_dialog_topic_text)
         baseUrlLayout = view.findViewById(R.id.add_dialog_base_url_layout)
         baseUrlText = view.findViewById(R.id.add_dialog_base_url_text)
@@ -61,6 +85,11 @@ class AddFragment : DialogFragment() {
         instantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
         useAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox)
         useAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
+
+        // Fields for "login page"
+        usersSpinner = view.findViewById(R.id.add_dialog_login_users_spinner)
+        usernameText = view.findViewById(R.id.add_dialog_login_username)
+        passwordText = view.findViewById(R.id.add_dialog_login_password)
 
         // Set "Use another server" description based on flavor
         useAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
@@ -105,8 +134,9 @@ class AddFragment : DialogFragment() {
             }
         })
 
-        // Fill autocomplete for base URL
+        // Fill autocomplete for base URL & users drop-down
         lifecycleScope.launch(Dispatchers.IO) {
+            // Auto-complete
             val appBaseUrl = getString(R.string.app_base_url)
             baseUrls = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
@@ -126,23 +156,46 @@ class AddFragment : DialogFragment() {
                     baseUrlLayout.setEndIconDrawable(0)
                 }
             }
+
+            // Users dropdown
+            users = repository.getUsers()
+            if (users.isEmpty()) {
+                usersSpinner.visibility = View.GONE
+            } else {
+                val spinnerEntries = users
+                    //.map { it.username }
+                    .toMutableList()
+                spinnerEntries.add(0, User(0, "Create new", ""))
+                usersSpinner.adapter = ArrayAdapter(requireActivity(), R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
+            }
         }
 
         // Show/hide based on flavor
         instantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
+        // Show/hide spinner and username/password fields
+        usersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position == 0) {
+                    userSelected = null
+                    usernameText.visibility = View.VISIBLE
+                    passwordText.visibility = View.VISIBLE
+                } else {
+                    userSelected = usersSpinner.selectedItem as User
+                    usernameText.visibility = View.GONE
+                    passwordText.visibility = View.GONE
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // This should not happen, ha!
+            }
+        }
+
         // Build dialog
         val alert = AlertDialog.Builder(activity)
             .setView(view)
             .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
-                val topic = topicNameText.text.toString()
-                val baseUrl = getBaseUrl()
-                val instant = if (!BuildConfig.FIREBASE_AVAILABLE || useAnotherServerCheckbox.isChecked) {
-                    true
-                } else {
-                    instantDeliveryCheckbox.isChecked
-                }
-                subscribeListener.onSubscribe(topic, baseUrl, instant)
+                // This will be overridden below to avoid closing the dialog immediately
             }
             .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
                 dialog?.cancel()
@@ -155,6 +208,9 @@ class AddFragment : DialogFragment() {
 
             subscribeButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             subscribeButton.isEnabled = false
+            subscribeButton.setOnClickListener {
+                subscribeButtonClick()
+            }
 
             val textWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -193,6 +249,61 @@ class AddFragment : DialogFragment() {
         return alert
     }
 
+    private fun subscribeButtonClick() {
+        val topic = topicNameText.text.toString()
+        val baseUrl = getBaseUrl()
+        if (subscribeView.visibility == View.VISIBLE) {
+            checkAnonReadAndMaybeShowLogin(baseUrl, topic)
+        } else if (loginView.visibility == View.VISIBLE) {
+            checkAuthAndMaybeDismiss(baseUrl, topic)
+        }
+    }
+
+    private fun checkAnonReadAndMaybeShowLogin(baseUrl: String, topic: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "Checking anonymous read access to topic ${topicUrl(baseUrl, topic)}")
+            val authorized = api.checkAnonTopicRead(baseUrl, topic)
+            if (authorized) {
+                Log.d(TAG, "Anonymous access granted to topic ${topicUrl(baseUrl, topic)}")
+                dismiss(authUserId = null)
+            } else {
+                Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
+                requireActivity().runOnUiThread {
+                    subscribeView.visibility = View.GONE
+                    loginView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun checkAuthAndMaybeDismiss(baseUrl: String, topic: String) {
+        val existingUser = usersSpinner.selectedItem != null && usersSpinner.selectedItem is User && usersSpinner.selectedItemPosition > 0
+        val user = if (existingUser) {
+            usersSpinner.selectedItem as User
+        } else {
+            User(
+                id = Random.nextLong(),
+                username = usernameText.text.toString(),
+                password = passwordText.text.toString()
+            )
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "Checking read access for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+            val authorized = api.checkUserTopicRead(baseUrl, topic, user.username, user.password)
+            if (authorized) {
+                Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+                if (!existingUser) {
+                    Log.d(TAG, "Adding new user ${user.username} to database")
+                    repository.addUser(user)
+                }
+                dismiss(authUserId = user.id)
+            } else {
+                Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
+                // Show some error message
+            }
+        }
+    }
+
     private fun validateInput() = lifecycleScope.launch(Dispatchers.IO) {
         val baseUrl = getBaseUrl()
         val topic = topicNameText.text.toString()
@@ -212,6 +323,21 @@ class AddFragment : DialogFragment() {
                             && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
                 }
             }
+        }
+    }
+
+    private fun dismiss(authUserId: Long?) {
+        Log.d(TAG, "Closing dialog and calling onSubscribe handler")
+        requireActivity().runOnUiThread {
+            val topic = topicNameText.text.toString()
+            val baseUrl = getBaseUrl()
+            val instant = if (!BuildConfig.FIREBASE_AVAILABLE || useAnotherServerCheckbox.isChecked) {
+                true
+            } else {
+                instantDeliveryCheckbox.isChecked
+            }
+            subscribeListener.onSubscribe(topic, baseUrl, instant, authUserId = authUserId)
+            dialog?.dismiss()
         }
     }
 

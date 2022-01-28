@@ -4,15 +4,14 @@ import android.app.AlarmManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import io.heckel.ntfy.db.ConnectionState
-import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.*
 import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.topicUrl
 import io.heckel.ntfy.util.topicUrlWs
 import okhttp3.*
+import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
@@ -29,10 +28,10 @@ import kotlin.random.Random
  * https://github.com/gotify/android/blob/master/app/src/main/java/com/github/gotify/service/WebSocketConnection.java
  */
 class WsConnection(
+    private val connectionId: ConnectionId,
     private val repository: Repository,
-    private val baseUrl: String,
+    private val user: User?,
     private val sinceTime: Long,
-    private val topicsToSubscriptionIds: Map<String, Long>, // Topic -> Subscription ID
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
@@ -49,6 +48,8 @@ class WsConnection(
     private var closed = false
 
     private var since: Long = sinceTime
+    private val baseUrl = connectionId.baseUrl
+    private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
@@ -65,7 +66,14 @@ class WsConnection(
         val nextId = ID.incrementAndGet()
         val sinceVal = if (since == 0L) "all" else since.toString()
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = Request.Builder().url(urlWithSince).get().build()
+        val builder = Request.Builder()
+            .get()
+            .url(urlWithSince)
+            .addHeader("User-Agent", ApiService.USER_AGENT)
+        if (user != null) {
+            builder.addHeader("Authorization", Credentials.basic(user.username, user.password, StandardCharsets.UTF_8))
+        }
+        val request = builder.build()
         Log.d(TAG, "[$url] WebSocket($nextId): opening $urlWithSince ...")
         webSocket = client.newWebSocket(request, Listener(nextId))
     }
@@ -85,10 +93,6 @@ class WsConnection(
     @Synchronized
     override fun since(): Long {
         return since
-    }
-
-    override fun matches(otherSubscriptionIds: Collection<Long>): Boolean {
-        return subscriptionIds.toSet() == otherSubscriptionIds.toSet()
     }
 
     @Synchronized
