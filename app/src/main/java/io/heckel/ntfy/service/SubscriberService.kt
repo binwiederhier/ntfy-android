@@ -276,7 +276,7 @@ class SubscriberService : Service() {
 
     private fun createNotification(title: String, text: String): Notification {
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
-            PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
