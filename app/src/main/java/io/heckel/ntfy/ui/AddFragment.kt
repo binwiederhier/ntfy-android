@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-
 class AddFragment : DialogFragment() {
     private val api = ApiService()
 

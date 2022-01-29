@@ -246,6 +246,7 @@
     <string name="settings_users_prefs_user_not_used">Not used by any topics</string>
     <string name="settings_users_prefs_user_used_by_one">Used by topic %1$s</string>
     <string name="settings_users_prefs_user_used_by_many">Used by topics %1$s</string>
+    <string name="settings_users_prefs_user_add">Add user</string>
     <string name="settings_unified_push_header">UnifiedPush</string>
     <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
     <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>
@@ -297,8 +298,12 @@
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>
     <string name="user_dialog_title_edit">Edit user</string>
+    <string name="user_dialog_description_add">You can add a user here that you can later associate with a specific topic.</string>
+    <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it entirely.</string>
+    <string name="user_dialog_base_url_hint">Server URL</string>
     <string name="user_dialog_username_hint">Username</string>
-    <string name="user_dialog_password_hint">Password</string>
+    <string name="user_dialog_password_hint_add">Password</string>
+    <string name="user_dialog_password_hint_edit">Password (unchanged if blank)</string>
     <string name="user_dialog_button_add">Add user</string>
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>

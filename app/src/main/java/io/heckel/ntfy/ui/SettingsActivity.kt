@@ -563,13 +563,28 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                     preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                         activity?.let {
-                            UserFragment().show(it.supportFragmentManager, UserFragment.TAG)
+                            UserFragment
+                                .newInstance(user.user)
+                                .show(it.supportFragmentManager, UserFragment.TAG)
                         }
                         true
                     }
                     preferenceCategory.addPreference(preference)
                 }
             }
+
+            // Add user
+            val preference = Preference(preferenceScreen.context)
+            preference.title = getString(R.string.settings_users_prefs_user_add)
+            preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                activity?.let {
+                    UserFragment
+                        .newInstance(user = null)
+                        .show(it.supportFragmentManager, UserFragment.TAG)
+                }
+                true
+            }
+            preferenceScreen.addPreference(preference)
         }
     }
 
