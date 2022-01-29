@@ -67,9 +67,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
         }
 
-        // Action bar
-        //title = getString(R.string.settings_title)
-
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -524,14 +521,28 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository = Repository.getInstance(requireActivity())
 
             lifecycleScope.launch(Dispatchers.IO) {
-                val usersByBaseUrl = repository.getUsers().groupBy { it.baseUrl }
+                val userIdsWithTopics = repository.getSubscriptions()
+                    .groupBy { it.authUserId }
+                    .mapValues { e -> e.value.map { it.topic } }
+                val usersByBaseUrl = repository.getUsers()
+                    .map { user ->
+                        val topics = userIdsWithTopics[user.id] ?: emptyList()
+                        UserWithMetadata(user, topics)
+                    }
+                    .groupBy { it.user.baseUrl }
+
                 activity?.runOnUiThread {
                     addUserPreferences(usersByBaseUrl)
                 }
             }
         }
 
-        private fun addUserPreferences(usersByBaseUrl: Map<String, List<User>>) {
+        data class UserWithMetadata(
+            val user: User,
+            val topics: List<String>
+        )
+
+        private fun addUserPreferences(usersByBaseUrl: Map<String, List<UserWithMetadata>>) {
             usersByBaseUrl.forEach { entry ->
                 val baseUrl = entry.key
                 val users = entry.value
@@ -542,7 +553,20 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
                 users.forEach { user ->
                     val preference = Preference(preferenceScreen.context)
-                    preference.title = user.username
+                    preference.title = user.user.username
+                    preference.summary = if (user.topics.isEmpty()) {
+                        getString(R.string.settings_users_prefs_user_not_used)
+                    } else if (user.topics.size == 1) {
+                        getString(R.string.settings_users_prefs_user_used_by_one, user.topics[0])
+                    } else {
+                        getString(R.string.settings_users_prefs_user_used_by_many, user.topics.joinToString(", "))
+                    }
+                    preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                        activity?.let {
+                            UserFragment().show(it.supportFragmentManager, UserFragment.TAG)
+                        }
+                        true
+                    }
                     preferenceCategory.addPreference(preference)
                 }
             }
