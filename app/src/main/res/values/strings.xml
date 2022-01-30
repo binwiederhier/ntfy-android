@@ -246,7 +246,9 @@
     <string name="settings_users_prefs_user_not_used">Not used by any topics</string>
     <string name="settings_users_prefs_user_used_by_one">Used by topic %1$s</string>
     <string name="settings_users_prefs_user_used_by_many">Used by topics %1$s</string>
-    <string name="settings_users_prefs_user_add">Add user</string>
+    <string name="settings_users_prefs_user_add">Add users</string>
+    <string name="settings_users_prefs_user_add_title">Add new user</string>
+    <string name="settings_users_prefs_user_add_summary">Create a new user that can be associated to topics. You can also create a new user when adding a topic.</string>
     <string name="settings_unified_push_header">UnifiedPush</string>
     <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
     <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>

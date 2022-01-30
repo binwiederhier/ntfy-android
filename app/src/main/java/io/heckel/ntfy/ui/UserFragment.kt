@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,14 +15,27 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
+import kotlin.random.Random
 
 class UserFragment : DialogFragment() {
     private var user: User? = null
+    private lateinit var listener: UserDialogListener
 
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var usernameView: TextInputEditText
     private lateinit var passwordView: TextInputEditText
     private lateinit var positiveButton: Button
+
+    interface UserDialogListener {
+        fun onAddUser(dialog: DialogFragment, user: User)
+        fun onUpdateUser(dialog: DialogFragment, user: User)
+        fun onDeleteUser(dialog: DialogFragment, authUserId: Long)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = activity as UserDialogListener
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Reconstruct user (if it is present in the bundle)
@@ -62,14 +76,16 @@ class UserFragment : DialogFragment() {
         val builder = AlertDialog.Builder(activity)
             .setView(view)
             .setPositiveButton(positiveButtonTextResId) { _, _ ->
-                // This will be overridden below to avoid closing the dialog immediately
+                saveClicked()
             }
             .setNegativeButton(R.string.user_dialog_button_cancel) { _, _ ->
-                // This will be overridden below
+                // Do nothing
             }
         if (user != null) {
             builder.setNeutralButton(R.string.user_dialog_button_delete)  { _, _ ->
-                // This will be overridden below
+                if (this::listener.isInitialized && userId != null) {
+                    listener.onDeleteUser(this, userId)
+                }
             }
         }
         val dialog = builder.create()
@@ -107,6 +123,24 @@ class UserFragment : DialogFragment() {
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         return dialog
+    }
+
+    private fun saveClicked() {
+        if (!this::listener.isInitialized) return
+        val baseUrl = baseUrlView.text?.toString() ?: ""
+        val username = usernameView.text?.toString() ?: ""
+        val password = passwordView.text?.toString() ?: ""
+        if (user == null) {
+            user = User(Random.nextLong(), baseUrl, username, password)
+            listener.onAddUser(this, user!!)
+        } else {
+            user = if (password.isNotEmpty()) {
+                user!!.copy(username = username, password = password)
+            } else {
+                user!!.copy(username = username)
+            }
+            listener.onUpdateUser(this, user!!)
+        }
     }
 
     private fun validateInput() {

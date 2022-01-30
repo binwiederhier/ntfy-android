@@ -7,7 +7,7 @@
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:visibility="visible">
+        android:visibility="visible" android:paddingBottom="10dp">
     <TextView
             android:text="This topic requires you to login. Please pick an existing user or type in a username and password."
             android:layout_width="match_parent"

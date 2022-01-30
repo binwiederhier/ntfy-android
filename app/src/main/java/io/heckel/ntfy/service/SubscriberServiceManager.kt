@@ -24,6 +24,12 @@ class SubscriberServiceManager(private val context: Context) {
         workManager.enqueue(startServiceRequest)
     }
 
+    fun stop() {
+        Intent(context, SubscriberService::class.java).also { intent ->
+            context.stopService(intent) // Service will auto-restart
+        }
+    }
+
     /**
      * Starts or stops the foreground service by figuring out how many instant delivery subscriptions
      * exist. If there's > 0, then we need a foreground service.

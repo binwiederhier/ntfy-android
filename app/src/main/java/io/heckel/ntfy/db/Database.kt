@@ -265,6 +265,9 @@ interface SubscriptionDao {
 
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
+
+    @Query("UPDATE subscription SET authUserId = null WHERE authUserId = :authUserId")
+    fun removeAuthUserFromSubscriptions(authUserId: Long)
 }
 
 @Dao
@@ -311,8 +314,8 @@ interface UserDao {
     @Update
     suspend fun update(user: User)
 
-    @Delete
-    suspend fun delete(user: User)
+    @Query("DELETE FROM user WHERE id = :id")
+    suspend fun delete(id: Long)
 }
 
 @Dao

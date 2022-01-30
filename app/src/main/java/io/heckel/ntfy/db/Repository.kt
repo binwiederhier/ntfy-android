@@ -84,6 +84,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         subscriptionDao.remove(subscriptionId)
     }
 
+    suspend fun removeAuthUserFromSubscriptions(authUserId: Long) {
+        subscriptionDao.removeAuthUserFromSubscriptions(authUserId)
+    }
+
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }
@@ -137,11 +141,19 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     suspend fun addUser(user: User) {
-        return userDao.insert(user)
+        userDao.insert(user)
+    }
+
+    suspend fun updateUser(user: User) {
+        userDao.update(user)
     }
 
     suspend fun getUser(userId: Long): User {
         return userDao.get(userId)
+    }
+
+    suspend fun deleteUser(userId: Long) {
+        userDao.delete(userId)
     }
 
     fun getPollWorkerVersion(): Int {

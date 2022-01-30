@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
@@ -25,6 +26,7 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.shortUrl
@@ -43,8 +45,13 @@ import java.util.concurrent.TimeUnit
  * The "nested screen" navigation stuff (for user management) has been taken from
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
-class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-    private lateinit var fragment: SettingsFragment
+class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
+    UserFragment.UserDialogListener {
+    private lateinit var settingsFragment: SettingsFragment
+    private lateinit var userSettingsFragment: UserSettingsFragment
+
+    private lateinit var repository: Repository
+    private lateinit var serviceManager: SubscriberServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,11 +59,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         Log.d(TAG, "Create $this")
 
+        repository = Repository.getInstance(this)
+        serviceManager = SubscriberServiceManager(this)
+
         if (savedInstanceState == null) {
-            fragment = SettingsFragment() // Empty constructor!
+            settingsFragment = SettingsFragment() // Empty constructor!
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.settings_layout, fragment)
+                .replace(R.id.settings_layout, settingsFragment)
                 .commit()
         } else {
             title = savedInstanceState.getCharSequence(TITLE_TAG)
@@ -84,7 +94,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         return super.onSupportNavigateUp()
     }
 
-
     override fun onPreferenceStartFragment(
         caller: PreferenceFragmentCompat,
         pref: Preference
@@ -98,17 +107,25 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             arguments = args
             setTargetFragment(caller, 0)
         }
+
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.settings_layout, fragment)
             .addToBackStack(null)
             .commit()
         title = pref.title
+
+        // Save user settings fragment for later
+        if (fragment is UserSettingsFragment) {
+            userSettingsFragment = fragment
+        }
+
         return true
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
         private lateinit var repository: Repository
+        private lateinit var serviceManager: SubscriberServiceManager
         private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -116,6 +133,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Dependencies (Fragments need a default constructor)
             repository = Repository.getInstance(requireActivity())
+            serviceManager = SubscriberServiceManager(requireActivity())
             autoDownloadSelection = repository.getAutoDownloadMaxSize() // Only used for <= Android P, due to permissions request
 
             // Important note: We do not use the default shared prefs to store settings. Every
@@ -421,10 +439,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         private fun restartService() {
-            val context = this@SettingsFragment.context
-            Intent(context, SubscriberService::class.java).also { intent ->
-                context?.stopService(intent) // Service will auto-restart
-            }
+            serviceManager.stop() // Service will auto-restart
         }
 
         private fun copyLogsToClipboard() {
@@ -516,10 +531,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.user_preferences, rootKey)
-
-            // Dependencies (Fragments need a default constructor)
             repository = Repository.getInstance(requireActivity())
+            reload()
+        }
 
+        data class UserWithMetadata(
+            val user: User,
+            val topics: List<String>
+        )
+
+        fun reload() {
+            preferenceScreen.removeAll()
             lifecycleScope.launch(Dispatchers.IO) {
                 val userIdsWithTopics = repository.getSubscriptions()
                     .groupBy { it.authUserId }
@@ -530,17 +552,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         UserWithMetadata(user, topics)
                     }
                     .groupBy { it.user.baseUrl }
-
                 activity?.runOnUiThread {
                     addUserPreferences(usersByBaseUrl)
                 }
             }
         }
-
-        data class UserWithMetadata(
-            val user: User,
-            val topics: List<String>
-        )
 
         private fun addUserPreferences(usersByBaseUrl: Map<String, List<UserWithMetadata>>) {
             usersByBaseUrl.forEach { entry ->
@@ -574,9 +590,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
 
             // Add user
-            val preference = Preference(preferenceScreen.context)
-            preference.title = getString(R.string.settings_users_prefs_user_add)
-            preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+            val userAddCategory = PreferenceCategory(preferenceScreen.context)
+            userAddCategory.title = getString(R.string.settings_users_prefs_user_add)
+            preferenceScreen.addPreference(userAddCategory)
+
+            val userAddPref = Preference(preferenceScreen.context)
+            userAddPref.title = getString(R.string.settings_users_prefs_user_add_title)
+            userAddPref.summary = getString(R.string.settings_users_prefs_user_add_summary)
+            userAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                 activity?.let {
                     UserFragment
                         .newInstance(user = null)
@@ -584,7 +605,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
                 true
             }
-            preferenceScreen.addPreference(preference)
+            userAddCategory.addPreference(userAddPref)
         }
     }
 
@@ -597,9 +618,39 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
+    override fun onAddUser(dialog: DialogFragment, user: User) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.addUser(user) // New users are not used, so no service refresh required
+            runOnUiThread {
+                userSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onUpdateUser(dialog: DialogFragment, user: User) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.updateUser(user)
+            serviceManager.stop() // Editing does not change the user ID
+            runOnUiThread {
+                userSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onDeleteUser(dialog: DialogFragment, authUserId: Long) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.removeAuthUserFromSubscriptions(authUserId)
+            repository.deleteUser(authUserId)
+            serviceManager.refresh() // authUserId changed, so refresh is enough
+            runOnUiThread {
+                userSettingsFragment.reload()
+            }
+        }
+    }
+
     private fun setAutoDownload() {
-        if (!this::fragment.isInitialized) return
-        fragment.setAutoDownload()
+        if (!this::settingsFragment.isInitialized) return
+        settingsFragment.setAutoDownload()
     }
 
     companion object {
