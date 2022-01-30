@@ -448,7 +448,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun onSettingsClick() {
         Log.d(TAG, "Opening subscription settings for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-        startActivity(Intent(this, DetailSettingsActivity::class.java))
+
+        val intent = Intent(this, DetailSettingsActivity::class.java)
+        intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscriptionId)
+        startActivity(intent)
     }
 
     private fun onDeleteClick() {
@@ -622,5 +625,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     companion object {
         const val TAG = "NtfyDetailActivity"
+        const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
     }
 }

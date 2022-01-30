@@ -69,6 +69,9 @@ class ApiService {
             .url(url)
             .addHeader("User-Agent", USER_AGENT)
             .build()
+
+        // XXXXXXXXXXXx
+
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")

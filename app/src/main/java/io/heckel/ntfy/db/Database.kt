@@ -263,6 +263,9 @@ interface SubscriptionDao {
     @Update
     fun update(subscription: Subscription)
 
+    @Query("UPDATE subscription SET authUserId = :authUserId WHERE id = :subscriptionId")
+    fun updateSubscriptionAuthUserId(subscriptionId: Long, authUserId: Long?)
+
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
 

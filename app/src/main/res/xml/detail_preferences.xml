@@ -4,7 +4,7 @@
             app:title="@string/detail_settings_auth_header"
             app:summary="@string/detail_settings_auth_header_summary"
             app:layout="@layout/preference_category_material_edited">
-        <Preference
+        <ListPreference
                 app:key="@string/detail_settings_auth_user_key"
                 app:title="@string/detail_settings_auth_user_title"
                 app:summary="@string/detail_settings_auth_user_summary_none"/>

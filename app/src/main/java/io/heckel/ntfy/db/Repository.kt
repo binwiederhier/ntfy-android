@@ -78,13 +78,17 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         subscriptionDao.update(subscription)
     }
 
+    fun updateSubscriptionAuthUserId(subscriptionId: Long, authUserId: Long?) {
+        subscriptionDao.updateSubscriptionAuthUserId(subscriptionId, authUserId)
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun removeSubscription(subscriptionId: Long) {
         subscriptionDao.remove(subscriptionId)
     }
 
-    suspend fun removeAuthUserFromSubscriptions(authUserId: Long) {
+    fun removeAuthUserFromSubscriptions(authUserId: Long) {
         subscriptionDao.removeAuthUserFromSubscriptions(authUserId)
     }
 

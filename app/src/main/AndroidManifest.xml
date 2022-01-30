@@ -61,9 +61,6 @@
         <activity
                 android:name=".ui.DetailSettingsActivity"
                 android:parentActivityName=".ui.DetailActivity">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".ui.DetailActivity"/>
         </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
