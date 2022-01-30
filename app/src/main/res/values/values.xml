@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">
         <item>@string/notification_dialog_show_all</item>
         <item>@string/notification_dialog_30min</item>

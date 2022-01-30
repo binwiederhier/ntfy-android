@@ -162,6 +162,7 @@
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
     <string name="detail_menu_clear">Clear all notifications</string>
+    <string name="detail_menu_settings">Subscription settings</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
@@ -172,6 +173,15 @@
     </string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Permanently delete</string>
     <string name="detail_action_mode_delete_dialog_cancel">Cancel</string>
+
+    <!-- Detail settings -->
+    <string name="detail_settings_title">Subscription settings</string>
+    <string name="detail_settings_auth_header">Login</string>
+    <string name="detail_settings_auth_header_summary">For topics that require a login, you may pick the login user here. You can add/edit users in the main settings.</string>
+    <string name="detail_settings_auth_user_key">SubscriptionAuthUserKey</string>
+    <string name="detail_settings_auth_user_title">Login user</string>
+    <string name="detail_settings_auth_user_summary_none">No user selected to log in to the topic</string>
+    <string name="detail_settings_auth_user_summary_user_x">User %1$s selected as a login user</string>
 
     <!-- Notification dialog -->
     <string name="notification_dialog_title">Pause notifications</string>

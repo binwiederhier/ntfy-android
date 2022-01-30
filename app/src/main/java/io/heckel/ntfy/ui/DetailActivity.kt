@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.ActionMode
@@ -220,15 +221,15 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 true
             }
             R.id.detail_menu_notifications_enabled -> {
-                onNotificationSettingsClick(enable = false)
+                onMutedUntilClick(enable = false)
                 true
             }
             R.id.detail_menu_notifications_disabled_until -> {
-                onNotificationSettingsClick(enable = true)
+                onMutedUntilClick(enable = true)
                 true
             }
             R.id.detail_menu_notifications_disabled_forever -> {
-                onNotificationSettingsClick(enable = true)
+                onMutedUntilClick(enable = true)
                 true
             }
             R.id.detail_menu_enable_instant -> {
@@ -249,6 +250,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             }
             R.id.detail_menu_clear -> {
                 onClearClick()
+                true
+            }
+            R.id.detail_menu_settings -> {
+                onSettingsClick()
                 true
             }
             R.id.detail_menu_unsubscribe -> {
@@ -283,7 +288,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
-    private fun onNotificationSettingsClick(enable: Boolean) {
+    private fun onMutedUntilClick(enable: Boolean) {
         if (!enable) {
             Log.d(TAG, "Showing notification settings dialog for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
             val notificationFragment = NotificationFragment()
@@ -439,6 +444,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
         }
         dialog.show()
+    }
+
+    private fun onSettingsClick() {
+        Log.d(TAG, "Opening subscription settings for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
+        startActivity(Intent(this, DetailSettingsActivity::class.java))
     }
 
     private fun onDeleteClick() {
