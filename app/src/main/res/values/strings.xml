@@ -58,7 +58,7 @@
     <string name="main_item_status_text_not_one">%1$d notifications</string>
     <string name="main_item_status_reconnecting">reconnecting …</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
-    <string name="main_item_date_yesterday">Yesterday</string>
+    <string name="main_item_date_yesterday">yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
     <string name="main_how_to_intro">
