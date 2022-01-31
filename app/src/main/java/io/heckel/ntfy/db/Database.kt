@@ -233,7 +233,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -246,7 +246,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

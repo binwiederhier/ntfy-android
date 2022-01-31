@@ -73,33 +73,50 @@ class DetailSettingsActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 val subscription = repository.getSubscription(subscriptionId) ?: return@launch
                 val users = repository.getUsers().filter { it.baseUrl == subscription.baseUrl }
+                val authUser = users.firstOrNull { it.id == subscription.authUserId }
+                Log.d(TAG, "subscription: $subscription")
                 activity?.runOnUiThread {
-                    loadView(subscription.id, users)
+                    loadView(subscription, authUser, users)
                 }
             }
         }
 
-        private fun loadView(subscriptionId: Long, users: List<User>) {
+        private fun loadView(subscription: Subscription, authUser: User?, users: List<User>) {
             // Login user
-            val authUserPrefId = context?.getString(R.string.detail_settings_auth_user_key) ?: return
-            val authUser: ListPreference? = findPreference(authUserPrefId)
-            authUser?.entries = users.map { it.username }.toTypedArray()
-            authUser?.entryValues = users.map { it.id.toString() }.toTypedArray()
-            authUser?.preferenceDataStore = object : PreferenceDataStore() {
+            val anonUser = User(0, "", getString(R.string.detail_settings_auth_user_entry_anon), "")
+            val usersWithAnon = users.toMutableList()
+            usersWithAnon.add(0, anonUser)
+            val authUserPrefId = getString(R.string.detail_settings_auth_user_key)
+            val authUserPref: ListPreference? = findPreference(authUserPrefId)
+            authUserPref?.entries = usersWithAnon.map { it.username }.toTypedArray()
+            authUserPref?.entryValues = usersWithAnon.map { it.id.toString() }.toTypedArray()
+            authUserPref?.value = authUser?.id?.toString() ?: anonUser.id.toString()
+            Log.d(TAG, "--> ${authUser?.id?.toString() ?: anonUser.id.toString()}")
+            authUserPref?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value) {
+                    anonUser.id.toString() -> getString(R.string.detail_settings_auth_user_summary_none)
+                    else -> {
+                        val username = users.firstOrNull { it.id.toString() == pref.value } ?: "?"
+                        getString(R.string.detail_settings_auth_user_summary_user_x, username)
+                    }
+                }
+            }
+            authUserPref?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
-                    val authUserId = when (value) {
-                        "" -> null
+                    val newAuthUserId = when (value) {
+                        anonUser.id.toString() -> null
                         else -> value?.toLongOrNull()
                     }
                     lifecycleScope.launch(Dispatchers.IO) {
-                        Log.d(TAG, "Updating auth user ID to $authUserId for subscription $subscriptionId")
-                        repository.updateSubscriptionAuthUserId(subscriptionId, authUserId)
+                        Log.d(TAG, "Updating subscription ${subscription.id} with new auth user ID $newAuthUserId")
+                        repository.updateSubscriptionAuthUserId(subscription.id, newAuthUserId)
+                        Log.d(TAG, "after save: ${repository.getSubscription(subscription.id)}")
                         serviceManager.refresh()
                     }
                 }
                 override fun getString(key: String?, defValue: String?): String? {
-                    Log.d(TAG, "getstring called $key $defValue")
-                    return "xxx"
+                    Log.d(TAG, "getstring called $key $defValue -> ${authUser?.id?.toString() ?: anonUser.id.toString()}")
+                    return authUser?.id?.toString() ?: anonUser.id.toString()
                 }
             }
         }
