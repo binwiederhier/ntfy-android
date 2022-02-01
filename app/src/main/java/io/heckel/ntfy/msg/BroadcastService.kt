@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.util.joinTagsMap
@@ -65,9 +66,12 @@ class BroadcastService(private val ctx: Context) {
             }
             val delay = getStringExtra(intent,"delay") ?: ""
             GlobalScope.launch(Dispatchers.IO) {
+                val repository = Repository.getInstance(ctx)
+                val user = repository.getUser(baseUrl) // May be null
                 api.publish(
                     baseUrl = baseUrl,
                     topic = topic,
+                    user = user,
                     message = message,
                     title = title,
                     priority = priority,
@@ -94,8 +98,10 @@ class BroadcastService(private val ctx: Context) {
 
     companion object {
         private const val TAG = "NtfyBroadcastService"
-        private const val MESSAGE_RECEIVED_ACTION = "io.heckel.ntfy.MESSAGE_RECEIVED"
-        private const val MESSAGE_SEND_ACTION = "io.heckel.ntfy.SEND_MESSAGE" // If changed, change in manifest too!
         private const val DOES_NOT_EXIST = -2586000
+
+        // These constants cannot be changed without breaking the contract; also see manifest
+        private const val MESSAGE_RECEIVED_ACTION = "io.heckel.ntfy.MESSAGE_RECEIVED"
+        private const val MESSAGE_SEND_ACTION = "io.heckel.ntfy.SEND_MESSAGE"
     }
 }

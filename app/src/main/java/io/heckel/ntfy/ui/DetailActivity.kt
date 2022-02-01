@@ -269,6 +269,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                val user = repository.getUser(subscriptionBaseUrl) // May be null
                 val possibleTags = listOf(
                     "warning", "skull", "success", "triangular_flag_on_post", "de",  "dog", "rotating_light", "cat", "bike", // Emojis
                     "backup", "rsync", "de-server1", "this-is-a-tag"
@@ -277,7 +278,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 val tags = possibleTags.shuffled().take(Random.nextInt(0, 4))
                 val title = if (Random.nextBoolean()) getString(R.string.detail_test_title) else ""
                 val message = getString(R.string.detail_test_message, priority)
-                api.publish(subscriptionBaseUrl, subscriptionTopic, message, title, priority, tags, delay = "")
+                api.publish(subscriptionBaseUrl, subscriptionTopic, user, message, title, priority, tags, delay = "")
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast
@@ -339,7 +340,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val notifications = api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic)
+                val user = repository.getUser(subscriptionBaseUrl) // May be null
+                val notifications = api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, user)
                 val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
                 val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)

@@ -193,10 +193,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val work = PeriodicWorkRequestBuilder<PollWorker>(POLL_WORKER_INTERVAL_MINUTES, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .addTag(PollWorker.TAG)
-            .addTag(PollWorker.WORK_NAME_PERIODIC)
+            .addTag(PollWorker.WORK_NAME_PERIODIC_ALL)
             .build()
         Log.d(TAG, "Poll worker: Scheduling period work every $POLL_WORKER_INTERVAL_MINUTES minutes")
-        workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC, workPolicy, work)
+        workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC_ALL, workPolicy, work)
     }
 
     private fun startPeriodicServiceRestartWorker() {
@@ -375,7 +375,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Fetch cached messages
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
+                val user = repository.getUser(subscription.baseUrl) // May be null
+                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
                 notifications.forEach { notification -> repository.addNotification(notification) }
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to fetch notifications: ${e.stackTrace}")
@@ -418,7 +419,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             var newNotificationsCount = 0
             repository.getSubscriptions().forEach { subscription ->
                 try {
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic)
+                    val user = repository.getUser(subscription.baseUrl) // May be null
+                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
                         newNotificationsCount++

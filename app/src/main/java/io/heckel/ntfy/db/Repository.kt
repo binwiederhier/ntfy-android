@@ -422,9 +422,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null
 
-        fun getInstance(activity: Activity): Repository {
-            val database = Database.getInstance(activity.applicationContext)
-            val sharedPrefs = activity.getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
+        fun getInstance(context: Context): Repository {
+            val database = Database.getInstance(context.applicationContext)
+            val sharedPrefs = context.getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
             return getInstance(sharedPrefs, database)
         }
 

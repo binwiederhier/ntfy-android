@@ -2,8 +2,6 @@
     <!-- Main app-->
     <string name="app_name">Ntfy</string>
     <string name="app_base_url">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
-    <string name="app_base_scheme">https</string> <!-- If changed, you must also change google-services.json! -->
-    <string name="app_base_host">ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Notifications (Min Priority)</string>

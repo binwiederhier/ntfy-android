@@ -23,7 +23,6 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
     }
 
     override suspend fun doWork(): Result {
-
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Polling for new notifications")
             val database = Database.getInstance(applicationContext)
@@ -32,9 +31,25 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             val dispatcher = NotificationDispatcher(applicationContext, repository)
             val api = ApiService()
 
-            repository.getSubscriptions().forEach{ subscription ->
+            val baseUrl = inputData.getString(INPUT_DATA_BASE_URL)
+            val topic = inputData.getString(INPUT_DATA_TOPIC)
+            val subscriptions = if (baseUrl != null && topic != null) {
+                val subscription = repository.getSubscription(baseUrl, topic) ?: return@withContext Result.success()
+                listOf(subscription)
+            } else {
+                repository.getSubscriptions()
+            }
+
+            subscriptions.forEach{ subscription ->
                 try {
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, since = subscription.lastActive)
+                    val user = repository.getUser(subscription.baseUrl)
+                    val notifications = api.poll(
+                        subscriptionId = subscription.id,
+                        baseUrl = subscription.baseUrl,
+                        topic = subscription.topic,
+                        user = user,
+                        since = subscription.lastActive
+                    )
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
@@ -55,6 +70,9 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
     companion object {
         const val VERSION =  BuildConfig.VERSION_CODE
         const val TAG = "NtfyPollWorker"
-        const val WORK_NAME_PERIODIC = "NtfyPollWorkerPeriodic" // Do not change
+        const val WORK_NAME_PERIODIC_ALL = "NtfyPollWorkerPeriodic" // Do not change
+        const val WORK_NAME_ONCE_SINGE_PREFIX = "NtfyPollWorkerSingle" // e.g. NtfyPollWorkerSingle_https://ntfy.sh_mytopic
+        const val INPUT_DATA_BASE_URL = "baseUrl"
+        const val INPUT_DATA_TOPIC = "topic"
     }
 }

@@ -2,6 +2,7 @@ package io.heckel.ntfy.firebase
 
 import android.content.Intent
 import android.util.Base64
+import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
@@ -14,6 +15,8 @@ import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
+import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -38,8 +41,9 @@ class FirebaseService : FirebaseMessagingService() {
         // Dispatch event
         val data = remoteMessage.data
         when (data["event"]) {
-            ApiService.EVENT_KEEPALIVE -> handleKeepalive(remoteMessage)
             ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)
+            ApiService.EVENT_KEEPALIVE -> handleKeepalive(remoteMessage)
+            ApiService.EVENT_POLL_REQUEST -> handlePollRequest(remoteMessage)
             else -> Log.d(TAG, "Discarding unexpected message (2): from=${remoteMessage.from}, data=${data}")
         }
     }
@@ -52,6 +56,26 @@ class FirebaseService : FirebaseMessagingService() {
             Log.d(TAG, "Keepalive on non-control topic $topic received, subscribing to control topic ${ApiService.CONTROL_TOPIC}")
             messenger.subscribe(ApiService.CONTROL_TOPIC)
         }
+    }
+
+    private fun handlePollRequest(remoteMessage: RemoteMessage) {
+        val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
+        val topic = remoteMessage.data["topic"] ?: return
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val workName = "${PollWorker.WORK_NAME_ONCE_SINGE_PREFIX}_${baseUrl}_${topic}"
+        val workManager = WorkManager.getInstance(this)
+        val workRequest = OneTimeWorkRequest.Builder(PollWorker::class.java)
+            .setInputData(workDataOf(
+                PollWorker.INPUT_DATA_BASE_URL to baseUrl,
+                PollWorker.INPUT_DATA_TOPIC to topic
+            ))
+            .setConstraints(constraints)
+            .build()
+        Log.d(TAG, "Poll request for ${topicShortUrl(baseUrl, topic)} received, scheduling unique poll worker with name $workName")
+
+        workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, workRequest)
     }
 
     private fun handleMessage(remoteMessage: RemoteMessage) {
