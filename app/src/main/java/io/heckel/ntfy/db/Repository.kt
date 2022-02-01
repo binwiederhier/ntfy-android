@@ -78,18 +78,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         subscriptionDao.update(subscription)
     }
 
-    fun updateSubscriptionAuthUserId(subscriptionId: Long, authUserId: Long?) {
-        subscriptionDao.updateSubscriptionAuthUserId(subscriptionId, authUserId)
-    }
-
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun removeSubscription(subscriptionId: Long) {
         subscriptionDao.remove(subscriptionId)
-    }
-
-    fun removeAuthUserFromSubscriptions(authUserId: Long) {
-        subscriptionDao.removeAuthUserFromSubscriptions(authUserId)
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
@@ -152,12 +144,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         userDao.update(user)
     }
 
-    suspend fun getUser(userId: Long): User {
-        return userDao.get(userId)
+    suspend fun getUser(baseUrl: String): User? {
+        return userDao.get(baseUrl)
     }
 
-    suspend fun deleteUser(userId: Long) {
-        userDao.delete(userId)
+    suspend fun deleteUser(baseUrl: String) {
+        userDao.delete(baseUrl)
     }
 
     fun getPollWorkerVersion(): Int {
@@ -346,7 +338,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
-                authUserId = s.authUserId,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
                 totalCount = s.totalCount,
@@ -367,7 +358,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             topic = s.topic,
             instant = s.instant,
             mutedUntil = s.mutedUntil,
-            authUserId = s.authUserId,
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,
             totalCount = s.totalCount,

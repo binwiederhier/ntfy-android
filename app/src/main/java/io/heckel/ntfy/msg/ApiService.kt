@@ -12,7 +12,6 @@ import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -134,30 +133,26 @@ class ApiService {
         return call
     }
 
-    fun checkAnonTopicRead(baseUrl: String, topic: String): Boolean {
-        return checkTopicRead(baseUrl, topic, creds = null)
-    }
-
-    fun checkUserTopicRead(baseUrl: String, topic: String, username: String, password: String): Boolean {
-        Log.d(TAG, "Authorizing user $username against ${topicUrl(baseUrl, topic)}")
-        return checkTopicRead(baseUrl, topic, creds = Credentials.basic(username, password, UTF_8))
-    }
-
-    private fun checkTopicRead(baseUrl: String, topic: String, creds: String?): Boolean {
+    fun authTopicRead(baseUrl: String, topic: String, user: User?): Boolean {
+        if (user == null) {
+            Log.d(TAG, "Checking anonymous read against ${topicUrl(baseUrl, topic)}")
+        } else {
+            Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
+        }
         val url = topicUrlAuth(baseUrl, topic)
         val builder = Request.Builder()
             .get()
             .url(url)
             .addHeader("User-Agent", USER_AGENT)
-        if (creds != null) {
-            builder.addHeader("Authorization", creds)
+        if (user != null) {
+            builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
         }
         val request = builder.build()
         client.newCall(request).execute().use { response ->
-            if (creds == null) {
-                return response.isSuccessful || response.code == 404 // Treat 404 as success (old server; to be removed in future versions)
+            return if (user == null) {
+                response.isSuccessful || response.code == 404 // Treat 404 as success (old server; to be removed in future versions)
             } else {
-                return response.isSuccessful
+                response.isSuccessful
             }
         }
     }

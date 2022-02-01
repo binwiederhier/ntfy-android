@@ -24,7 +24,7 @@ class SubscriberServiceManager(private val context: Context) {
         workManager.enqueue(startServiceRequest)
     }
 
-    fun stop() {
+    fun restart() {
         Intent(context, SubscriberService::class.java).also { intent ->
             context.stopService(intent) // Service will auto-restart
         }

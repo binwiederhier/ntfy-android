@@ -8,6 +8,5 @@ interface Connection {
 
 data class ConnectionId(
     val baseUrl: String,
-    val authUserId: Long?,
     val topicsToSubscriptionIds: Map<String, Long>
 )

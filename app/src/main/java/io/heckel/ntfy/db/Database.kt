@@ -14,7 +14,6 @@ data class Subscription(
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
-    @ColumnInfo(name = "authUserId") val authUserId: Long?,
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     // TODO autoDownloadAttachments, minPriority
@@ -23,8 +22,8 @@ data class Subscription(
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, authUserId: Long?, upAppId: String, upConnectorToken: String) :
-            this(id, baseUrl, topic, instant, mutedUntil, authUserId, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -37,7 +36,6 @@ data class SubscriptionWithMetadata(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
-    val authUserId: Long?,
     val upAppId: String?,
     val upConnectorToken: String?,
     val totalCount: Int,
@@ -82,8 +80,7 @@ const val PROGRESS_DONE = 100
 
 @Entity
 data class User(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "username") val username: String,
     @ColumnInfo(name = "password") val password: String
 ) {
@@ -194,7 +191,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -207,7 +204,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -220,7 +217,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -233,7 +230,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -246,7 +243,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.authUserId, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil,s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -263,14 +260,8 @@ interface SubscriptionDao {
     @Update
     fun update(subscription: Subscription)
 
-    @Query("UPDATE subscription SET authUserId = :authUserId WHERE id = :subscriptionId")
-    fun updateSubscriptionAuthUserId(subscriptionId: Long, authUserId: Long?)
-
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
-
-    @Query("UPDATE subscription SET authUserId = null WHERE authUserId = :authUserId")
-    fun removeAuthUserFromSubscriptions(authUserId: Long)
 }
 
 @Dao
@@ -311,14 +302,14 @@ interface UserDao {
     @Query("SELECT * FROM user ORDER BY username")
     suspend fun list(): List<User>
 
-    @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun get(id: Long): User
+    @Query("SELECT * FROM user WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): User?
 
     @Update
     suspend fun update(user: User)
 
-    @Query("DELETE FROM user WHERE id = :id")
-    suspend fun delete(id: Long)
+    @Query("DELETE FROM user WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
 }
 
 @Dao

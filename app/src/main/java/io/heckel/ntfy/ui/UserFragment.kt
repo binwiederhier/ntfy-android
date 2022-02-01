@@ -19,6 +19,7 @@ import kotlin.random.Random
 
 class UserFragment : DialogFragment() {
     private var user: User? = null
+    private lateinit var baseUrlsInUse: ArrayList<String>
     private lateinit var listener: UserDialogListener
 
     private lateinit var baseUrlView: TextInputEditText
@@ -29,7 +30,7 @@ class UserFragment : DialogFragment() {
     interface UserDialogListener {
         fun onAddUser(dialog: DialogFragment, user: User)
         fun onUpdateUser(dialog: DialogFragment, user: User)
-        fun onDeleteUser(dialog: DialogFragment, authUserId: Long)
+        fun onDeleteUser(dialog: DialogFragment, baseUrl: String)
     }
 
     override fun onAttach(context: Context) {
@@ -39,14 +40,16 @@ class UserFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Reconstruct user (if it is present in the bundle)
-        val userId = arguments?.getLong(BUNDLE_USER_ID)
         val baseUrl = arguments?.getString(BUNDLE_BASE_URL)
         val username = arguments?.getString(BUNDLE_USERNAME)
         val password = arguments?.getString(BUNDLE_PASSWORD)
 
-        if (userId != null && baseUrl != null && username != null && password != null) {
-            user = User(userId, baseUrl, username, password)
+        if (baseUrl != null && username != null && password != null) {
+            user = User(baseUrl, username, password)
         }
+
+        // Required for validation
+        baseUrlsInUse = arguments?.getStringArrayList(BUNDLE_BASE_URLS_IN_USE) ?: arrayListOf()
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_user_dialog, null)
@@ -83,8 +86,8 @@ class UserFragment : DialogFragment() {
             }
         if (user != null) {
             builder.setNeutralButton(R.string.user_dialog_button_delete)  { _, _ ->
-                if (this::listener.isInitialized && userId != null) {
-                    listener.onDeleteUser(this, userId)
+                if (this::listener.isInitialized) {
+                    listener.onDeleteUser(this, user!!.baseUrl)
                 }
             }
         }
@@ -131,7 +134,7 @@ class UserFragment : DialogFragment() {
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
         if (user == null) {
-            user = User(Random.nextLong(), baseUrl, username, password)
+            user = User(baseUrl, username, password)
             listener.onAddUser(this, user!!)
         } else {
             user = if (password.isNotEmpty()) {
@@ -149,6 +152,7 @@ class UserFragment : DialogFragment() {
         val password = passwordView.text?.toString() ?: ""
         if (user == null) {
             positiveButton.isEnabled = (baseUrl.startsWith("http://") || baseUrl.startsWith("https://"))
+                    && !baseUrlsInUse.contains(baseUrl)
                     && username.isNotEmpty() && password.isNotEmpty()
         } else {
             positiveButton.isEnabled = username.isNotEmpty() // Unchanged if left blank
@@ -157,21 +161,21 @@ class UserFragment : DialogFragment() {
 
     companion object {
         const val TAG = "NtfyUserFragment"
-        private const val BUNDLE_USER_ID = "userId"
         private const val BUNDLE_BASE_URL = "baseUrl"
         private const val BUNDLE_USERNAME = "username"
         private const val BUNDLE_PASSWORD = "password"
+        private const val BUNDLE_BASE_URLS_IN_USE = "baseUrlsInUse"
 
-        fun newInstance(user: User?): UserFragment {
+        fun newInstance(user: User?, baseUrlsInUse: ArrayList<String>): UserFragment {
             val fragment = UserFragment()
             val args = Bundle()
+            args.putStringArrayList(BUNDLE_BASE_URLS_IN_USE, baseUrlsInUse)
             if (user != null) {
-                args.putLong(BUNDLE_USER_ID, user.id)
                 args.putString(BUNDLE_BASE_URL, user.baseUrl)
                 args.putString(BUNDLE_USERNAME, user.username)
                 args.putString(BUNDLE_PASSWORD, user.password)
-                fragment.arguments = args
             }
+            fragment.arguments = args
             return fragment
         }
     }

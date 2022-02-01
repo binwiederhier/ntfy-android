@@ -155,7 +155,7 @@ class SubscriberService : Service() {
                 .filter { s -> s.instant }
             val activeConnectionIds = connections.keys().toList().toSet()
             val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-                .groupBy { s -> ConnectionId(s.baseUrl, s.authUserId, emptyMap()) }
+                .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
                 .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
                 .toSet()
             val newConnectionIds = desiredConnectionIds subtract activeConnectionIds
@@ -183,11 +183,7 @@ class SubscriberService : Service() {
 
                 val since = System.currentTimeMillis()/1000
                 val serviceActive = { -> isServiceStarted }
-                val user = if (connectionId.authUserId != null) {
-                    repository.getUser(connectionId.authUserId)
-                } else {
-                    null
-                }
+                val user = repository.getUser(connectionId.baseUrl)
                 val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                     val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                     WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)

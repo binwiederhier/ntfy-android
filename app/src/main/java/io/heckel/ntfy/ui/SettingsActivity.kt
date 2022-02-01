@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +24,6 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.log.Log
-import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
@@ -439,7 +437,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         private fun restartService() {
-            serviceManager.stop() // Service will auto-restart
+            serviceManager.restart() // Service will auto-restart
         }
 
         private fun copyLogsToClipboard() {
@@ -543,12 +541,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         fun reload() {
             preferenceScreen.removeAll()
             lifecycleScope.launch(Dispatchers.IO) {
-                val userIdsWithTopics = repository.getSubscriptions()
-                    .groupBy { it.authUserId }
+                val baseUrlsWithTopics = repository.getSubscriptions()
+                    .groupBy { it.baseUrl }
                     .mapValues { e -> e.value.map { it.topic } }
                 val usersByBaseUrl = repository.getUsers()
                     .map { user ->
-                        val topics = userIdsWithTopics[user.id] ?: emptyList()
+                        val topics = baseUrlsWithTopics[user.baseUrl] ?: emptyList()
                         UserWithMetadata(user, topics)
                     }
                     .groupBy { it.user.baseUrl }
@@ -559,6 +557,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         private fun addUserPreferences(usersByBaseUrl: Map<String, List<UserWithMetadata>>) {
+            val baseUrlsInUse = ArrayList(usersByBaseUrl.keys)
             usersByBaseUrl.forEach { entry ->
                 val baseUrl = entry.key
                 val users = entry.value
@@ -580,7 +579,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                         activity?.let {
                             UserFragment
-                                .newInstance(user.user)
+                                .newInstance(user.user, baseUrlsInUse)
                                 .show(it.supportFragmentManager, UserFragment.TAG)
                         }
                         true
@@ -600,7 +599,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             userAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                 activity?.let {
                     UserFragment
-                        .newInstance(user = null)
+                        .newInstance(user = null, baseUrlsInUse = baseUrlsInUse)
                         .show(it.supportFragmentManager, UserFragment.TAG)
                 }
                 true
@@ -630,18 +629,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onUpdateUser(dialog: DialogFragment, user: User) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateUser(user)
-            serviceManager.stop() // Editing does not change the user ID
+            serviceManager.restart() // Editing does not change the user ID
             runOnUiThread {
                 userSettingsFragment.reload()
             }
         }
     }
 
-    override fun onDeleteUser(dialog: DialogFragment, authUserId: Long) {
+    override fun onDeleteUser(dialog: DialogFragment, baseUrl: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            repository.removeAuthUserFromSubscriptions(authUserId)
-            repository.deleteUser(authUserId)
-            serviceManager.refresh() // authUserId changed, so refresh is enough
+            repository.deleteUser(baseUrl)
+            serviceManager.restart()
             runOnUiThread {
                 userSettingsFragment.reload()
             }

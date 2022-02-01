@@ -252,10 +252,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 onClearClick()
                 true
             }
-            R.id.detail_menu_settings -> {
+            /*R.id.detail_menu_settings -> {
                 onSettingsClick()
                 true
-            }
+            }*/
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true

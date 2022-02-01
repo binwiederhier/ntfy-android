@@ -67,7 +67,6 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 topic = topic,
                 instant = true, // No Firebase, always instant!
                 mutedUntil = 0,
-                authUserId = null, // FIXME add UP user in settings
                 upAppId = appId,
                 upConnectorToken = connectorToken,
                 totalCount = 0,

@@ -24,7 +24,6 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class AddFragment : DialogFragment() {
     private val api = ApiService()
@@ -51,7 +50,6 @@ class AddFragment : DialogFragment() {
 
     // Login page
     private lateinit var users: List<User>
-    private lateinit var loginUsersSpinner: Spinner
     private lateinit var loginUsernameText: TextInputEditText
     private lateinit var loginPasswordText: TextInputEditText
     private lateinit var loginProgress: ProgressBar
@@ -60,7 +58,7 @@ class AddFragment : DialogFragment() {
     private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
 
     interface SubscribeListener {
-        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, authUserId: Long?)
+        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean)
     }
 
     override fun onAttach(context: Context) {
@@ -98,7 +96,6 @@ class AddFragment : DialogFragment() {
         subscribeErrorImage = view.findViewById(R.id.add_dialog_error_image)
 
         // Fields for "login page"
-        loginUsersSpinner = view.findViewById(R.id.add_dialog_login_users_spinner)
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
         loginPasswordText = view.findViewById(R.id.add_dialog_login_password)
         loginProgress = view.findViewById(R.id.add_dialog_login_progress)
@@ -177,31 +174,6 @@ class AddFragment : DialogFragment() {
 
         // Show/hide based on flavor
         subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
-
-        // Show/hide drop-down and username/password fields
-        loginUsersSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if (position == 0) {
-                    loginUsernameText.visibility = View.VISIBLE
-                    loginUsernameText.isEnabled = true
-                    loginPasswordText.visibility = View.VISIBLE
-                    loginPasswordText.isEnabled = true
-                    if (loginUsernameText.requestFocus()) {
-                        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                        imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
-                    }
-                } else {
-                    loginUsernameText.visibility = View.GONE
-                    loginUsernameText.isEnabled = false
-                    loginPasswordText.visibility = View.GONE
-                    loginPasswordText.isEnabled = false
-                }
-                validateInputLoginView()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // This should not happen, ha!
-            }
-        }
 
         // Username/password validation on type
         val textWatcher = object : TextWatcher {
@@ -288,42 +260,51 @@ class AddFragment : DialogFragment() {
         val topic = subscribeTopicText.text.toString()
         val baseUrl = getBaseUrl()
         if (subscribeView.visibility == View.VISIBLE) {
-            checkAnonReadAndMaybeShowLogin(baseUrl, topic)
+            checkReadAndMaybeShowLogin(baseUrl, topic)
         } else if (loginView.visibility == View.VISIBLE) {
             loginAndMaybeDismiss(baseUrl, topic)
         }
     }
 
-    private fun checkAnonReadAndMaybeShowLogin(baseUrl: String, topic: String) {
+    private fun checkReadAndMaybeShowLogin(baseUrl: String, topic: String) {
         subscribeProgress.visibility = View.VISIBLE
         subscribeErrorImage.visibility = View.GONE
         enableSubscribeView(false)
         lifecycleScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "Checking anonymous read access to topic ${topicUrl(baseUrl, topic)}")
             try {
-                val authorized = api.checkAnonTopicRead(baseUrl, topic)
+                val user = repository.getUser(baseUrl) // May be null
+                val authorized = api.authTopicRead(baseUrl, topic, user)
                 if (authorized) {
-                    Log.d(TAG, "Anonymous access granted to topic ${topicUrl(baseUrl, topic)}")
-                    dismiss(authUserId = null)
+                    Log.d(TAG, "Access granted to topic ${topicUrl(baseUrl, topic)}")
+                    dismissDialog()
                 } else {
-                    Log.w(TAG, "Anonymous access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
-                    val activity = activity ?: return@launch // We may have pressed "Cancel"
-                    activity.runOnUiThread {
-                        showLoginView(activity, baseUrl)
+                    if (user != null) {
+                        Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, but user already exists")
+                        showToastAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized))
+                    } else {
+                        Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
+                        val activity = activity ?: return@launch // We may have pressed "Cancel"
+                        activity.runOnUiThread {
+                            showLoginView(activity, baseUrl)
+                        }
                     }
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
-                val activity = activity ?: return@launch // We may have pressed "Cancel"
-                activity.runOnUiThread {
-                    subscribeProgress.visibility = View.GONE
-                    subscribeErrorImage.visibility = View.VISIBLE
-                    enableSubscribeView(true)
-                    Toast
-                        .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
-                        .show()
-                }
+                showToastAndReenableSubscribeView(e.message)
             }
+        }
+    }
+
+    private fun showToastAndReenableSubscribeView(message: String?) {
+        val activity = activity ?: return // We may have pressed "Cancel"
+        activity.runOnUiThread {
+            subscribeProgress.visibility = View.GONE
+            subscribeErrorImage.visibility = View.VISIBLE
+            enableSubscribeView(true)
+            Toast
+                .makeText(context, message, Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -331,51 +312,39 @@ class AddFragment : DialogFragment() {
         loginProgress.visibility = View.VISIBLE
         loginErrorImage.visibility = View.GONE
         enableLoginView(false)
-        val existingUser = loginUsersSpinner.selectedItem != null && loginUsersSpinner.selectedItem is User && loginUsersSpinner.selectedItemPosition > 0
-        val user = if (existingUser) {
-            loginUsersSpinner.selectedItem as User
-        } else {
-            User(
-                id = Random.nextLong(),
-                baseUrl = baseUrl,
-                username = loginUsernameText.text.toString(),
-                password = loginPasswordText.text.toString()
-            )
-        }
+        val user = User(
+            baseUrl = baseUrl,
+            username = loginUsernameText.text.toString(),
+            password = loginPasswordText.text.toString()
+        )
         lifecycleScope.launch(Dispatchers.IO) {
             Log.d(TAG, "Checking read access for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
             try {
-                val authorized = api.checkUserTopicRead(baseUrl, topic, user.username, user.password)
+                val authorized = api.authTopicRead(baseUrl, topic, user)
                 if (authorized) {
-                    Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                    if (!existingUser) {
-                        Log.d(TAG, "Adding new user ${user.username} to database")
-                        repository.addUser(user)
-                    }
-                    dismiss(authUserId = user.id)
+                    Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}, adding to database")
+                    repository.addUser(user)
+                    dismissDialog()
                 } else {
                     Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                    val activity = activity ?: return@launch // We may have pressed "Cancel"
-                    activity.runOnUiThread {
-                        loginProgress.visibility = View.GONE
-                        loginErrorImage.visibility = View.VISIBLE
-                        enableLoginView(true)
-                        Toast
-                            .makeText(context, getString(R.string.add_dialog_login_error_not_authorized), Toast.LENGTH_LONG)
-                            .show()
-                    }
+                    showToastAndReenableLoginView(getString(R.string.add_dialog_login_error_not_authorized))
                 }
             } catch (e: Exception) {
-                val activity = activity ?: return@launch // We may have pressed "Cancel"
-                activity.runOnUiThread {
-                    loginProgress.visibility = View.GONE
-                    loginErrorImage.visibility = View.VISIBLE
-                    enableLoginView(true)
-                    Toast
-                        .makeText(context, getString(R.string.add_dialog_error_connection_failed, e.message), Toast.LENGTH_LONG)
-                        .show()
-                }
+                Log.w(TAG, "Connection to topic failed during login: ${e.message}", e)
+                showToastAndReenableLoginView(e.message)
             }
+        }
+    }
+
+    private fun showToastAndReenableLoginView(message: String?) {
+        val activity = activity ?: return // We may have pressed "Cancel"
+        activity.runOnUiThread {
+            loginProgress.visibility = View.GONE
+            loginErrorImage.visibility = View.VISIBLE
+            enableLoginView(true)
+            Toast
+                .makeText(context, message, Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -420,7 +389,7 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun dismiss(authUserId: Long?) {
+    private fun dismissDialog() {
         Log.d(TAG, "Closing dialog and calling onSubscribe handler")
         val activity = activity?: return // We may have pressed "Cancel"
         activity.runOnUiThread {
@@ -431,7 +400,7 @@ class AddFragment : DialogFragment() {
             } else {
                 subscribeInstantDeliveryCheckbox.isChecked
             }
-            subscribeListener.onSubscribe(topic, baseUrl, instant, authUserId = authUserId)
+            subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()
         }
     }
@@ -463,21 +432,9 @@ class AddFragment : DialogFragment() {
         negativeButton.text = getString(R.string.add_dialog_button_back)
         subscribeView.visibility = View.GONE
         loginView.visibility = View.VISIBLE
-
-        // Show/hide dropdown
-        val relevantUsers = users.filter { it.baseUrl == baseUrl }
-        if (relevantUsers.isEmpty()) {
-            loginUsersSpinner.visibility = View.GONE
-            loginUsersSpinner.adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, emptyArray<User>())
-            if (loginUsernameText.requestFocus()) {
-                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
-            }
-        } else {
-            val spinnerEntries = relevantUsers.toMutableList()
-            spinnerEntries.add(0, User(0, "", getString(R.string.add_dialog_login_new_user), ""))
-            loginUsersSpinner.adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, spinnerEntries)
-            loginUsersSpinner.setSelection(1)
+        if (loginUsernameText.requestFocus()) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
@@ -498,7 +455,6 @@ class AddFragment : DialogFragment() {
     private fun enableLoginView(enable: Boolean) {
         loginUsernameText.isEnabled = enable
         loginPasswordText.isEnabled = enable
-        loginUsersSpinner.isEnabled = enable
         positiveButton.isEnabled = enable
         if (enable && loginUsernameText.requestFocus()) {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -509,7 +465,6 @@ class AddFragment : DialogFragment() {
     private fun resetLoginView() {
         loginProgress.visibility = View.GONE
         loginErrorImage.visibility = View.GONE
-        loginUsersSpinner.visibility = View.VISIBLE
         loginUsernameText.visibility = View.VISIBLE
         loginUsernameText.text?.clear()
         loginPasswordText.visibility = View.VISIBLE

@@ -100,6 +100,10 @@
     <string name="add_dialog_button_back">Back</string>
     <string name="add_dialog_button_login">Login</string>
     <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
+    <string name="add_dialog_login_title">Login required</string>
+    <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
+    <string name="add_dialog_login_username_hint">Username</string>
+    <string name="add_dialog_login_password_hint">Password</string>
     <string name="add_dialog_login_error_not_authorized">Login failed. User not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
 
@@ -259,7 +263,7 @@
     <string name="settings_users_prefs_user_used_by_many">Used by topics %1$s</string>
     <string name="settings_users_prefs_user_add">Add users</string>
     <string name="settings_users_prefs_user_add_title">Add new user</string>
-    <string name="settings_users_prefs_user_add_summary">Create a new user that can be associated to topics. You can also create a new user when adding a topic.</string>
+    <string name="settings_users_prefs_user_add_summary">Create a new user for a new server</string>
     <string name="settings_unified_push_header">UnifiedPush</string>
     <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
     <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>

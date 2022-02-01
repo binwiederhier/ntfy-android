@@ -348,7 +348,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 
-    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, authUserId: Long?) {
+    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
 
         // Add subscription to database
@@ -358,7 +358,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             topic = topic,
             instant = instant,
             mutedUntil = 0,
-            authUserId = authUserId,
             upAppId = null,
             upConnectorToken = null,
             totalCount = 0,
