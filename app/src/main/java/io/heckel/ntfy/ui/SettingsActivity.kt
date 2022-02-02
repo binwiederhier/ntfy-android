@@ -66,6 +66,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 .beginTransaction()
                 .replace(R.id.settings_layout, settingsFragment)
                 .commit()
+            title = getString(R.string.settings_title)
         } else {
             title = savedInstanceState.getCharSequence(TITLE_TAG)
         }

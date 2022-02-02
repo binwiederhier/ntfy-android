@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="io.heckel.ntfy">
-    <!--
-         Permissions
-         - INTERNET is needed because we need to talk to the ntfy server(s)
-         - FOREGROUND_SERVICE is needed to support "use another server" feature
-         - WAKE_LOCK & RECEIVE_BOOT_COMPLETED are required to restart the foreground service
-           if it is stopped; see https://robertohuertas.com/2019/06/29/android_foreground_services/
-    -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> <!-- For instant delivery foregrounds service -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- To keep foreground service awake; soon not needed anymore -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!-- To restart service on reboot -->
+    <uses-permission android:name="android.permission.VIBRATE"/> <!-- Incoming notifications should be able to vibrate the phone -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/> <!-- Only required on SDK <= 28 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> <!-- Required to install packages downloaded through ntfy; craazyy! -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> <!-- To install packages downloaded through ntfy; craazyy! -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> <!-- To reschedule the websocket retry -->
 
     <application
             android:name=".app.Application"

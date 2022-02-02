@@ -32,7 +32,7 @@ class ApiService {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
-        val builder = builder(url, user)
+        val builder = requestBuilder(url, user)
             .put(message.toRequestBody())
         if (priority in 1..5) {
             builder.addHeader("X-Priority", priority.toString())
@@ -59,7 +59,7 @@ class ApiService {
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
-        val request = builder(url, user).build()
+        val request = requestBuilder(url, user).build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
@@ -86,7 +86,7 @@ class ApiService {
         val sinceVal = if (since == 0L) "all" else since.toString()
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = builder(url, user).build()
+        val request = requestBuilder(url, user).build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -122,7 +122,7 @@ class ApiService {
             Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
         }
         val url = topicUrlAuth(baseUrl, topic)
-        val request = builder(url, user).build()
+        val request = requestBuilder(url, user).build()
         client.newCall(request).execute().use { response ->
             return if (user == null) {
                 response.isSuccessful || response.code == 404 // Treat 404 as success (old server; to be removed in future versions)
@@ -130,16 +130,6 @@ class ApiService {
                 response.isSuccessful
             }
         }
-    }
-
-    private fun builder(url: String, user: User?): Request.Builder {
-        val builder = Request.Builder()
-            .url(url)
-            .addHeader("User-Agent", USER_AGENT)
-        if (user != null) {
-            builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
-        }
-        return builder
     }
 
     companion object {
@@ -151,5 +141,15 @@ class ApiService {
         const val EVENT_MESSAGE = "message"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
+
+        fun requestBuilder(url: String, user: User?): Request.Builder {
+            val builder = Request.Builder()
+                .url(url)
+                .addHeader("User-Agent", USER_AGENT)
+            if (user != null) {
+                builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
+            }
+            return builder
+        }
     }
 }
