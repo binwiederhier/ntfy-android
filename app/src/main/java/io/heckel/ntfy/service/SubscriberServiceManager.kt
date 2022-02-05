@@ -21,7 +21,7 @@ class SubscriberServiceManager(private val context: Context) {
         Log.d(TAG, "Enqueuing work to refresh subscriber service")
         val workManager = WorkManager.getInstance(context)
         val startServiceRequest = OneTimeWorkRequest.Builder(ServiceStartWorker::class.java).build()
-        workManager.enqueue(startServiceRequest)
+        workManager.enqueueUniqueWork(WORK_NAME_ONCE, ExistingWorkPolicy.KEEP, startServiceRequest) // Unique avoids races!
     }
 
     fun restart() {
@@ -59,6 +59,7 @@ class SubscriberServiceManager(private val context: Context) {
 
     companion object {
         const val TAG = "NtfySubscriberMgr"
+        const val WORK_NAME_ONCE = "ServiceStartWorkerOnce"
 
         fun refresh(context: Context) {
             val manager = SubscriberServiceManager(context)

@@ -43,43 +43,49 @@ class WsConnection(
         .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
-    private val listenerId = AtomicLong(0)
     private var state: State? = null
     private var closed = false
 
-    private var since: Long = sinceTime
+    private val globalId = GLOBAL_ID.incrementAndGet()
+    private val listenerId = AtomicLong(0)
+
+    private val since = AtomicLong(sinceTime)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
+    init {
+        Log.d(TAG, "$shortUrl (gid=$globalId): New connection with global ID $globalId")
+    }
+
     @Synchronized
     override fun start() {
         if (closed || state == State.Connecting || state == State.Connected) {
-            Log.d(TAG,"$shortUrl: Not (re-)starting, because connection is marked closed/connecting/connected")
+            Log.d(TAG,"$shortUrl (gid=$globalId): Not (re-)starting, because connection is marked closed/connecting/connected")
             return
         }
         if (webSocket != null) {
             webSocket!!.close(WS_CLOSE_NORMAL, "")
         }
         state = State.Connecting
-        val nextId = listenerId.incrementAndGet()
-        val sinceVal = if (since == 0L) "all" else since.toString()
+        val nextListenerId = listenerId.incrementAndGet()
+        val sinceVal = if (since.get() == 0L) "all" else since.get().toString()
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
         val request = requestBuilder(urlWithSince, user).build()
-        Log.d(TAG, "$shortUrl: Opening $urlWithSince with listener ID $nextId ...")
-        webSocket = client.newWebSocket(request, Listener(nextId))
+        Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
+        webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }
 
     @Synchronized
     override fun close() {
         closed = true
         if (webSocket == null) {
-            Log.d(TAG,"$shortUrl: Not closing existing connection, because there is no active web socket")
+            Log.d(TAG,"$shortUrl (gid=$globalId): Not closing existing connection, because there is no active web socket")
             return
         }
-        Log.d(TAG, "$shortUrl: Closing existing connection")
+        Log.d(TAG, "$shortUrl (gid=$globalId): Closing connection")
         state = State.Disconnected
         webSocket!!.close(WS_CLOSE_NORMAL, "")
         webSocket = null
@@ -87,23 +93,23 @@ class WsConnection(
 
     @Synchronized
     override fun since(): Long {
-        return since
+        return since.get()
     }
 
     @Synchronized
     fun scheduleReconnect(seconds: Int) {
         if (closed || state == State.Connecting || state == State.Connected) {
-            Log.d(TAG,"$shortUrl: Not rescheduling connection, because connection is marked closed/connecting/connected")
+            Log.d(TAG,"$shortUrl (gid=$globalId): Not rescheduling connection, because connection is marked closed/connecting/connected")
             return
         }
         state = State.Scheduled
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Log.d(TAG,"$shortUrl: Scheduling a restart in $seconds seconds (via alarm manager)")
+            Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
             val reconnectTime = Calendar.getInstance()
             reconnectTime.add(Calendar.SECOND, seconds)
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, reconnectTime.timeInMillis, RECONNECT_TAG, { start() }, null)
         } else {
-            Log.d(TAG, "$shortUrl: Scheduling a restart in $seconds seconds (via handler)")
+            Log.d(TAG, "$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via handler)")
             val handler = Handler(Looper.getMainLooper())
             handler.postDelayed({ start() }, TimeUnit.SECONDS.toMillis(seconds.toLong()))
         }
@@ -112,7 +118,7 @@ class WsConnection(
     private inner class Listener(private val id: Long) : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             synchronize("onOpen") {
-                Log.d(TAG, "$shortUrl (listener $id): Opened connection")
+                Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Opened connection")
                 state = State.Connected
                 if (errorCount > 0) {
                     errorCount = 0
@@ -123,10 +129,10 @@ class WsConnection(
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
-                Log.d(TAG, "$shortUrl (listener $id): Received message: $text")
+                Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
                 val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, notificationId = Random.nextInt())
                 if (notificationWithTopic == null) {
-                    Log.d(TAG, "$shortUrl (listener $id): Irrelevant or unknown message. Discarding.")
+                    Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                     return@synchronize
                 }
                 val topic = notificationWithTopic.topic
@@ -135,13 +141,13 @@ class WsConnection(
                 val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
                 val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
                 notificationListener(subscription, notificationWithSubscriptionId)
-                since = notification.timestamp
+                since.set(notification.timestamp)
             }
         }
 
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             synchronize("onClosed") {
-                Log.w(TAG, "$shortUrl (listener $id): Closed connection")
+                Log.w(TAG, "$shortUrl (gid=$globalId, lid=$id): Closed connection")
                 state = State.Disconnected
             }
         }
@@ -149,12 +155,12 @@ class WsConnection(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             synchronize("onFailure") {
                 if (response == null) {
-                    Log.e(TAG, "$shortUrl (listener $id): Connection failed (response is null): ${t.message}", t)
+                    Log.e(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection failed (response is null): ${t.message}", t)
                 } else {
-                    Log.e(TAG, "$shortUrl (listener $id): Connection failed (response code ${response.code}, message: ${response.message}): ${t.message}", t)
+                    Log.e(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection failed (response code ${response.code}, message: ${response.message}): ${t.message}", t)
                 }
                 if (closed) {
-                    Log.d(TAG, "$shortUrl (listener $id): Connection marked as closed. Not retrying.")
+                    Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection marked as closed. Not retrying.")
                     return@synchronize
                 }
                 stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
@@ -170,7 +176,7 @@ class WsConnection(
                 if (listenerId.get() == id) {
                     fn()
                 } else {
-                    Log.w(TAG, "$shortUrl (listener $id): Skipping synchronized block '$tag', because listener ID does not match ${listenerId.get()}")
+                    Log.w(TAG, "$shortUrl (gid=$globalId, lid=$id): Skipping synchronized block '$tag', because listener ID does not match ${listenerId.get()}")
                 }
             }
         }
@@ -185,5 +191,6 @@ class WsConnection(
         private const val RECONNECT_TAG = "WsReconnect"
         private const val WS_CLOSE_NORMAL = 1000
         private val RETRY_SECONDS = listOf(5, 10, 15, 20, 30, 45, 60, 120)
+        private val GLOBAL_ID = AtomicLong(0)
     }
 }

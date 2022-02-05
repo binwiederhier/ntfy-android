@@ -47,6 +47,9 @@ class ApiService {
             builder.addHeader("X-Delay", delay)
         }
         client.newCall(builder.build()).execute().use { response ->
+            if (response.code == 401 || response.code == 403) {
+                throw UnauthorizedException(user)
+            }
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when publishing to $url")
             }
@@ -131,6 +134,8 @@ class ApiService {
             }
         }
     }
+
+    class UnauthorizedException(val user: User?) : Exception()
 
     companion object {
         val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"

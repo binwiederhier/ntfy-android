@@ -46,14 +46,16 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeInstantDeliveryCheckbox: CheckBox
     private lateinit var subscribeInstantDeliveryDescription: View
     private lateinit var subscribeProgress: ProgressBar
-    private lateinit var subscribeErrorImage: View
+    private lateinit var subscribeErrorText: TextView
+    private lateinit var subscribeErrorTextImage: View
 
     // Login page
     private lateinit var users: List<User>
     private lateinit var loginUsernameText: TextInputEditText
     private lateinit var loginPasswordText: TextInputEditText
     private lateinit var loginProgress: ProgressBar
-    private lateinit var loginErrorImage: View
+    private lateinit var loginErrorText: TextView
+    private lateinit var loginErrorTextImage: View
 
     private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
 
@@ -84,22 +86,26 @@ class AddFragment : DialogFragment() {
         loginView.visibility = View.GONE
 
         // Fields for "subscribe page"
-        subscribeTopicText = view.findViewById(R.id.add_dialog_topic_text)
-        subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_base_url_layout)
-        subscribeBaseUrlText = view.findViewById(R.id.add_dialog_base_url_text)
-        subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_instant_delivery_box)
-        subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_instant_delivery_checkbox)
-        subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_instant_delivery_description)
-        subscribeUseAnotherServerCheckbox = view.findViewById(R.id.add_dialog_use_another_server_checkbox)
-        subscribeUseAnotherServerDescription = view.findViewById(R.id.add_dialog_use_another_server_description)
-        subscribeProgress = view.findViewById(R.id.add_dialog_progress)
-        subscribeErrorImage = view.findViewById(R.id.add_dialog_error_image)
+        subscribeTopicText = view.findViewById(R.id.add_dialog_subscribe_topic_text)
+        subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_subscribe_base_url_layout)
+        subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
+        subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
+        subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_checkbox)
+        subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
+        subscribeUseAnotherServerCheckbox = view.findViewById(R.id.add_dialog_subscribe_use_another_server_checkbox)
+        subscribeUseAnotherServerDescription = view.findViewById(R.id.add_dialog_subscribe_use_another_server_description)
+        subscribeProgress = view.findViewById(R.id.add_dialog_subscribe_progress)
+        subscribeErrorText = view.findViewById(R.id.add_dialog_subscribe_error_text)
+        subscribeErrorText.visibility = View.GONE
+        subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
+        subscribeErrorTextImage.visibility = View.GONE
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
         loginPasswordText = view.findViewById(R.id.add_dialog_login_password)
         loginProgress = view.findViewById(R.id.add_dialog_login_progress)
-        loginErrorImage = view.findViewById(R.id.add_dialog_login_error_image)
+        loginErrorText = view.findViewById(R.id.add_dialog_login_error_text)
+        loginErrorTextImage = view.findViewById(R.id.add_dialog_login_error_text_image)
 
         // Set "Use another server" description based on flavor
         subscribeUseAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
@@ -268,7 +274,8 @@ class AddFragment : DialogFragment() {
 
     private fun checkReadAndMaybeShowLogin(baseUrl: String, topic: String) {
         subscribeProgress.visibility = View.VISIBLE
-        subscribeErrorImage.visibility = View.GONE
+        subscribeErrorText.visibility = View.GONE
+        subscribeErrorTextImage.visibility = View.GONE
         enableSubscribeView(false)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -280,7 +287,7 @@ class AddFragment : DialogFragment() {
                 } else {
                     if (user != null) {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, but user already exists")
-                        showToastAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized))
+                        showErrorAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized))
                     } else {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
                         val activity = activity ?: return@launch // We may have pressed "Cancel"
@@ -291,26 +298,26 @@ class AddFragment : DialogFragment() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
-                showToastAndReenableSubscribeView(e.message)
+                showErrorAndReenableSubscribeView(e.message)
             }
         }
     }
 
-    private fun showToastAndReenableSubscribeView(message: String?) {
+    private fun showErrorAndReenableSubscribeView(message: String?) {
         val activity = activity ?: return // We may have pressed "Cancel"
         activity.runOnUiThread {
             subscribeProgress.visibility = View.GONE
-            subscribeErrorImage.visibility = View.VISIBLE
+            subscribeErrorText.visibility = View.VISIBLE
+            subscribeErrorText.text = message
+            subscribeErrorTextImage.visibility = View.VISIBLE
             enableSubscribeView(true)
-            Toast
-                .makeText(context, message, Toast.LENGTH_LONG)
-                .show()
         }
     }
 
     private fun loginAndMaybeDismiss(baseUrl: String, topic: String) {
         loginProgress.visibility = View.VISIBLE
-        loginErrorImage.visibility = View.GONE
+        loginErrorText.visibility = View.GONE
+        loginErrorTextImage.visibility = View.GONE
         enableLoginView(false)
         val user = User(
             baseUrl = baseUrl,
@@ -327,24 +334,23 @@ class AddFragment : DialogFragment() {
                     dismissDialog()
                 } else {
                     Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                    showToastAndReenableLoginView(getString(R.string.add_dialog_login_error_not_authorized))
+                    showErrorAndReenableLoginView(getString(R.string.add_dialog_login_error_not_authorized))
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed during login: ${e.message}", e)
-                showToastAndReenableLoginView(e.message)
+                showErrorAndReenableLoginView(e.message)
             }
         }
     }
 
-    private fun showToastAndReenableLoginView(message: String?) {
+    private fun showErrorAndReenableLoginView(message: String?) {
         val activity = activity ?: return // We may have pressed "Cancel"
         activity.runOnUiThread {
             loginProgress.visibility = View.GONE
-            loginErrorImage.visibility = View.VISIBLE
+            loginErrorText.visibility = View.VISIBLE
+            loginErrorText.text = message
+            loginErrorTextImage.visibility = View.VISIBLE
             enableLoginView(true)
-            Toast
-                .makeText(context, message, Toast.LENGTH_LONG)
-                .show()
         }
     }
 
@@ -448,7 +454,8 @@ class AddFragment : DialogFragment() {
 
     private fun resetSubscribeView() {
         subscribeProgress.visibility = View.GONE
-        subscribeErrorImage.visibility = View.GONE
+        subscribeErrorText.visibility = View.GONE
+        subscribeErrorTextImage.visibility = View.GONE
         enableSubscribeView(true)
     }
 
@@ -464,7 +471,8 @@ class AddFragment : DialogFragment() {
 
     private fun resetLoginView() {
         loginProgress.visibility = View.GONE
-        loginErrorImage.visibility = View.GONE
+        loginErrorText.visibility = View.GONE
+        loginErrorTextImage.visibility = View.GONE
         loginUsernameText.visibility = View.VISIBLE
         loginUsernameText.text?.clear()
         loginPasswordText.visibility = View.VISIBLE

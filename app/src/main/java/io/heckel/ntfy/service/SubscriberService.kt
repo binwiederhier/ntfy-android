@@ -21,9 +21,11 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.topicUrl
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -63,16 +65,16 @@ class SubscriberService : Service() {
     private val api = ApiService()
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
+    private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
         if (intent != null) {
-            val action = intent.action
-            Log.d(TAG, "using an intent with action $action")
-            when (action) {
+            Log.d(TAG, "using an intent with action ${intent.action}")
+            when (intent.action) {
                 Action.START.name -> startService()
                 Action.STOP.name -> stopService()
-                else -> Log.e(TAG, "This should never happen. No action in the received intent")
+                else -> Log.w(TAG, "This should never happen. No action in the received intent")
             }
         } else {
             Log.d(TAG, "with a null intent. It has been probably restarted by the system.")
@@ -116,9 +118,6 @@ class SubscriberService : Service() {
         wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         }
-        if (repository.getWakelockEnabled()) {
-            wakeLock?.acquire()
-        }
         refreshConnections()
     }
 
@@ -148,95 +147,115 @@ class SubscriberService : Service() {
         saveServiceState(this, ServiceState.STOPPED)
     }
 
-    private fun refreshConnections() =
+    private fun refreshConnections() {
         GlobalScope.launch(Dispatchers.IO) {
-            // Group INSTANT subscriptions by base URL, there is only one connection per base URL
-            val instantSubscriptions = repository.getSubscriptions()
-                .filter { s -> s.instant }
-            val activeConnectionIds = connections.keys().toList().toSet()
-            val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-                .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
-                .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
-                .toSet()
-            val newConnectionIds = desiredConnectionIds subtract activeConnectionIds
-            val obsoleteConnectionIds = activeConnectionIds subtract desiredConnectionIds
-            val match = activeConnectionIds == desiredConnectionIds
-
-            Log.d(TAG, "Refreshing subscriptions")
-            Log.d(TAG, "- Desired connections: $desiredConnectionIds")
-            Log.d(TAG, "- Active connections: $activeConnectionIds")
-            Log.d(TAG, "- New connections: $newConnectionIds")
-            Log.d(TAG, "- Obsolete connections: $obsoleteConnectionIds")
-            Log.d(TAG, "- Match? --> $match")
-
-            if (match) {
-                Log.d(TAG, "- No action required.")
+            if (!refreshMutex.tryLock()) {
+                Log.d(TAG, "Refreshing subscriptions already in progress. Skipping.")
                 return@launch
             }
-
-            // Open new connections
-            newConnectionIds.forEach { connectionId ->
-                // FIXME since !!!
-
-                // Do NOT request old messages for new connections; we'll call poll() in MainActivity.
-                // This is important, so we don't download attachments from old messages, which is not desired.
-
-                val since = System.currentTimeMillis()/1000
-                val serviceActive = { -> isServiceStarted }
-                val user = repository.getUser(connectionId.baseUrl)
-                val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
-                    val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                    WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
-                } else {
-                    JsonConnection(connectionId, this, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
-                }
-                connections[connectionId] = connection
-                connection.start()
-            }
-
-            // Close connections without subscriptions
-            obsoleteConnectionIds.forEach { connectionId ->
-                val connection = connections.remove(connectionId)
-                connection?.close()
-            }
-
-            // Update foreground service notification popup
-            if (connections.size > 0) {
-                synchronized(this) {
-                    val title = getString(R.string.channel_subscriber_notification_title)
-                    val text = if (BuildConfig.FIREBASE_AVAILABLE) {
-                        when (instantSubscriptions.size) {
-                            1 -> getString(R.string.channel_subscriber_notification_instant_text_one)
-                            2 -> getString(R.string.channel_subscriber_notification_instant_text_two)
-                            3 -> getString(R.string.channel_subscriber_notification_instant_text_three)
-                            4 -> getString(R.string.channel_subscriber_notification_instant_text_four)
-                            else -> getString(R.string.channel_subscriber_notification_instant_text_more, instantSubscriptions.size)
-                        }
-                    } else {
-                        when (instantSubscriptions.size) {
-                            1 -> getString(R.string.channel_subscriber_notification_noinstant_text_one)
-                            2 -> getString(R.string.channel_subscriber_notification_noinstant_text_two)
-                            3 -> getString(R.string.channel_subscriber_notification_noinstant_text_three)
-                            4 -> getString(R.string.channel_subscriber_notification_noinstant_text_four)
-                            else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
-                        }
-                    }
-                    serviceNotification = createNotification(title, text)
-                    notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
-                }
+            try {
+                reallyRefreshConnections(this)
+            } finally {
+                refreshMutex.unlock()
             }
         }
+    }
+
+    /**
+     * Start/stop connections based on the desired state
+     * It is guaranteed that only one of function is run at a time (see mutex above).
+     */
+    private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
+        // Group INSTANT subscriptions by base URL, there is only one connection per base URL
+        val instantSubscriptions = repository.getSubscriptions()
+            .filter { s -> s.instant }
+        val activeConnectionIds = connections.keys().toList().toSet()
+        val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
+            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
+            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
+            .toSet()
+        val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
+        val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
+        val match = activeConnectionIds == desiredConnectionIds
+        val newSinceByBaseUrl = connections
+            .map { e ->
+                // Get last message timestamp to determine new ?since= param; set to $last+1 if it
+                // is defined to avoid retrieving old messages. See comment below too.
+                val lastMessage = e.value.since()
+                val newSince = if (lastMessage > 0) lastMessage+1 else 0
+                e.key.baseUrl to newSince
+            }
+            .toMap()
+
+        Log.d(TAG, "Refreshing subscriptions")
+        Log.d(TAG, "- Desired connections: $desiredConnectionIds")
+        Log.d(TAG, "- Active connections: $activeConnectionIds")
+        Log.d(TAG, "- New connections: $newConnectionIds")
+        Log.d(TAG, "- Obsolete connections: $obsoleteConnectionIds")
+        Log.d(TAG, "- Match? --> $match")
+
+        if (match) {
+            Log.d(TAG, "- No action required.")
+            return
+        }
+
+        // Open new connections
+        newConnectionIds.forEach { connectionId ->
+            // IMPORTANT: Do NOT request old messages for new connections; we call poll() in MainActivity to
+            // retrieve old messages. This is important, so we don't download attachments from old messages.
+
+            val since = newSinceByBaseUrl[connectionId.baseUrl] ?: (System.currentTimeMillis() / 1000)
+            val serviceActive = { -> isServiceStarted }
+            val user = repository.getUser(connectionId.baseUrl)
+            val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
+                val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+            } else {
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
+            }
+            connections[connectionId] = connection
+            connection.start()
+        }
+
+        // Close connections without subscriptions
+        obsoleteConnectionIds.forEach { connectionId ->
+            val connection = connections.remove(connectionId)
+            connection?.close()
+        }
+
+        // Update foreground service notification popup
+        if (connections.size > 0) {
+            val title = getString(R.string.channel_subscriber_notification_title)
+            val text = if (BuildConfig.FIREBASE_AVAILABLE) {
+                when (instantSubscriptions.size) {
+                    1 -> getString(R.string.channel_subscriber_notification_instant_text_one)
+                    2 -> getString(R.string.channel_subscriber_notification_instant_text_two)
+                    3 -> getString(R.string.channel_subscriber_notification_instant_text_three)
+                    4 -> getString(R.string.channel_subscriber_notification_instant_text_four)
+                    else -> getString(R.string.channel_subscriber_notification_instant_text_more, instantSubscriptions.size)
+                }
+            } else {
+                when (instantSubscriptions.size) {
+                    1 -> getString(R.string.channel_subscriber_notification_noinstant_text_one)
+                    2 -> getString(R.string.channel_subscriber_notification_noinstant_text_two)
+                    3 -> getString(R.string.channel_subscriber_notification_noinstant_text_three)
+                    4 -> getString(R.string.channel_subscriber_notification_noinstant_text_four)
+                    else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
+                }
+            }
+            serviceNotification = createNotification(title, text)
+            notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
+        }
+    }
 
     private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
         repository.updateState(subscriptionIds, state)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
-        // If permanent wakelock is not enabled, still take the wakelock while notifications are being dispatched
-        if (!repository.getWakelockEnabled()) {
-            // Wakelocks are reference counted by default so that should work neatly here
-            wakeLock?.acquire(10*60*1000L /*10 minutes*/)
-        }
+        // Wakelock while notifications are being dispatched
+        // Wakelocks are reference counted by default so that should work neatly here
+        wakeLock?.acquire(NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS)
 
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $notification")
@@ -245,12 +264,9 @@ class SubscriberService : Service() {
                 Log.d(TAG, "[$url] Dispatching notification $notification")
                 dispatcher.dispatch(subscription, notification)
             }
-
-            if (!repository.getWakelockEnabled()) {
-                wakeLock?.let {
-                    if (it.isHeld) {
-                        it.release()
-                    }
+            wakeLock?.let {
+                if (it.isHeld) {
+                    it.release()
                 }
             }
         }
@@ -337,6 +353,7 @@ class SubscriberService : Service() {
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_SERVICE_ID = 2586
+        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
         private const val SHARED_PREFS_ID = "SubscriberService"
         private const val SHARED_PREFS_SERVICE_STATE = "ServiceState"
 

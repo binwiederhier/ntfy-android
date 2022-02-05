@@ -62,12 +62,16 @@
         <item>ws</item>
     </string-array>
     <string-array name="settings_advanced_export_logs_entries">
-        <item>@string/settings_advanced_export_logs_entry_copy</item>
-        <item>@string/settings_advanced_export_logs_entry_upload</item>
+        <item>@string/settings_advanced_export_logs_entry_copy_original</item>
+        <item>@string/settings_advanced_export_logs_entry_copy_scrubbed</item>
+        <item>@string/settings_advanced_export_logs_entry_upload_original</item>
+        <item>@string/settings_advanced_export_logs_entry_upload_scrubbed</item>
     </string-array>
     <string-array name="settings_advanced_export_logs_values">
-        <item>copy</item>
-        <item>upload</item>
+        <item>copy_original</item>
+        <item>copy_scrubbed</item>
+        <item>upload_original</item>
+        <item>upload_scrubbed</item>
     </string-array>
     <string-array name="settings_appearance_dark_mode_entries">
         <item>@string/settings_appearance_dark_mode_entry_system</item>

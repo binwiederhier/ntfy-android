@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 
 /**
  * Subscription settings
+ *
+ * THIS IS CURRENTLY UNUSED.
  */
 class DetailSettingsActivity : AppCompatActivity() {
     private lateinit var repository: Repository

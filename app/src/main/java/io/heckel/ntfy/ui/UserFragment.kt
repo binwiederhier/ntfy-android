@@ -118,6 +118,16 @@ class UserFragment : DialogFragment() {
             usernameView.addTextChangedListener(textWatcher)
             passwordView.addTextChangedListener(textWatcher)
 
+            // Focus
+            if (user != null) {
+                usernameView.requestFocus()
+                if (usernameView.text != null) {
+                    usernameView.setSelection(usernameView.text!!.length)
+                }
+            } else {
+                baseUrlView.requestFocus()
+            }
+
             // Validate now!
             validateInput()
         }

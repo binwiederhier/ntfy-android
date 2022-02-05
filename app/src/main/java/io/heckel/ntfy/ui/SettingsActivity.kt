@@ -1,9 +1,11 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -98,14 +100,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         pref: Preference
     ): Boolean {
         // Instantiate the new Fragment
-        val args = pref.extras
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(
-            classLoader,
-            pref.fragment!!
-        ).apply {
-            arguments = args
-            setTargetFragment(caller, 0)
-        }
+        val fragmentClass = pref.fragment ?: return false
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, fragmentClass)
+        fragment.arguments = pref.extras
 
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
@@ -118,7 +115,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         if (fragment is UserSettingsFragment) {
             userSettingsFragment = fragment
         }
-
         return true
     }
 
@@ -331,8 +327,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             exportLogs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             exportLogs?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
                 when (v) {
-                    EXPORT_LOGS_COPY -> copyLogsToClipboard()
-                    EXPORT_LOGS_UPLOAD -> uploadLogsToNopaste()
+                    EXPORT_LOGS_COPY_ORIGINAL -> copyLogsToClipboard(scrub = false)
+                    EXPORT_LOGS_COPY_SCRUBBED -> copyLogsToClipboard(scrub = true)
+                    EXPORT_LOGS_UPLOAD_ORIGINAL -> uploadLogsToNopaste(scrub = false)
+                    EXPORT_LOGS_UPLOAD_SCRUBBED -> uploadLogsToNopaste(scrub = true)
                 }
                 false
             }
@@ -368,6 +366,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     getString(R.string.settings_advanced_record_logs_summary_disabled)
                 }
             }
+            recordLogsEnabled?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
+                lifecycleScope.launch(Dispatchers.IO) {
+                    repository.getSubscriptions().forEach { s ->
+                        Log.addScrubTerm(shortUrl(s.baseUrl), Log.TermType.Domain)
+                        Log.addScrubTerm(s.topic)
+                    }
+                }
+                false
+            }
 
             // Connection protocol
             val connectionProtocolPrefId = context?.getString(R.string.settings_advanced_connection_protocol_key) ?: return
@@ -387,27 +394,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 when (pref.value) {
                     Repository.CONNECTION_PROTOCOL_WS -> getString(R.string.settings_advanced_connection_protocol_summary_ws)
                     else -> getString(R.string.settings_advanced_connection_protocol_summary_jsonhttp)
-                }
-            }
-
-            // Permanent wakelock enabled
-            val wakelockEnabledPrefId = context?.getString(R.string.settings_advanced_wakelock_key) ?: return
-            val wakelockEnabled: SwitchPreference? = findPreference(wakelockEnabledPrefId)
-            wakelockEnabled?.isChecked = repository.getWakelockEnabled()
-            wakelockEnabled?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setWakelockEnabled(value)
-                    restartService()
-                }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getWakelockEnabled()
-                }
-            }
-            wakelockEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
-                if (pref.isChecked) {
-                    getString(R.string.settings_advanced_wakelock_summary_enabled)
-                } else {
-                    getString(R.string.settings_advanced_wakelock_summary_disabled)
                 }
             }
 
@@ -441,25 +427,29 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             serviceManager.restart() // Service will auto-restart
         }
 
-        private fun copyLogsToClipboard() {
+        private fun copyLogsToClipboard(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
-                val log = Log.getFormatted()
+                val log = Log.getFormatted(scrub = scrub)
                 val context = context ?: return@launch
                 requireActivity().runOnUiThread {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("ntfy logs", log)
                     clipboard.setPrimaryClip(clip)
-                    Toast
-                        .makeText(context, getString(R.string.settings_advanced_export_logs_copied_logs), Toast.LENGTH_LONG)
-                        .show()
+                    if (scrub) {
+                        showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_logs))
+                    } else {
+                        Toast
+                            .makeText(context, getString(R.string.settings_advanced_export_logs_copied_logs), Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }
 
-        private fun uploadLogsToNopaste() {
+        private fun uploadLogsToNopaste(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
                 Log.d(TAG, "Uploading log to $EXPORT_LOGS_UPLOAD_URL ...")
-                val log = Log.getFormatted()
+                val log = Log.getFormatted(scrub = scrub)
                 if (log.length > EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD) {
                     requireActivity().runOnUiThread {
                         Toast
@@ -492,9 +482,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("logs URL", resp.url)
                             clipboard.setPrimaryClip(clip)
-                            Toast
-                                .makeText(context, getString(R.string.settings_advanced_export_logs_copied_url), Toast.LENGTH_LONG)
-                                .show()
+                            if (scrub) {
+                                showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_url))
+                            } else {
+                                Toast
+                                    .makeText(context, getString(R.string.settings_advanced_export_logs_copied_url), Toast.LENGTH_LONG)
+                                    .show()
+                            }
                         }
                     }
                 } catch (e: Exception) {
@@ -507,6 +501,22 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 }
             }
+        }
+
+        private fun showScrubDialog(title: String) {
+            val scrubbed = Log.getScrubTerms()
+            val scrubbedText = if (scrubbed.isNotEmpty()) {
+                val scrubTerms = scrubbed.map { e -> "${e.key} -> ${e.value}"}.joinToString(separator = "\n")
+                getString(R.string.settings_advanced_export_logs_scrub_dialog_text, scrubTerms)
+            } else {
+                getString(R.string.settings_advanced_export_logs_scrub_dialog_empty)
+            }
+            val dialog = AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(scrubbedText)
+                .setPositiveButton(R.string.settings_advanced_export_logs_scrub_dialog_button_ok) { _, _ -> /* Nothing */ }
+                .create()
+            dialog.show()
         }
 
         private fun deleteLogs() {
@@ -657,8 +667,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         private const val TITLE_TAG = "title"
         private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
         private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
-        private const val EXPORT_LOGS_COPY = "copy"
-        private const val EXPORT_LOGS_UPLOAD = "upload"
+        private const val EXPORT_LOGS_COPY_ORIGINAL = "copy_original"
+        private const val EXPORT_LOGS_COPY_SCRUBBED = "copy_scrubbed"
+        private const val EXPORT_LOGS_UPLOAD_ORIGINAL = "upload_original"
+        private const val EXPORT_LOGS_UPLOAD_SCRUBBED = "upload_scrubbed"
         private const val EXPORT_LOGS_UPLOAD_URL = "https://nopaste.net/?f=json" // Run by binwiederhier; see https://github.com/binwiederhier/pcopy
         private const val EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD = 100 * 1024 // Show "Uploading ..." if log larger than X
     }

@@ -281,8 +281,17 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 api.publish(subscriptionBaseUrl, subscriptionTopic, user, message, title, priority, tags, delay = "")
             } catch (e: Exception) {
                 runOnUiThread {
+                    val message = if (e is ApiService.UnauthorizedException) {
+                        if (e.user != null) {
+                            getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
+                        }  else {
+                            getString(R.string.detail_test_message_error_unauthorized_anon)
+                        }
+                    } else {
+                        getString(R.string.detail_test_message_error, e.message)
+                    }
                     Toast
-                        .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
+                        .makeText(this@DetailActivity, message, Toast.LENGTH_LONG)
                         .show()
                 }
             }

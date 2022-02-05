@@ -91,7 +91,7 @@
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
         Ensures that messages are immediately delivered, even if the device is inactive or in doze mode.
-        This requires a foreground service and consumes a little more power.
+        This requires a foreground service.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
@@ -127,7 +127,9 @@
     <string name="detail_test_message">This is a test notification from the Ntfy Android app. It has a priority of %1$d.
         If you send another one, it may look different.
     </string>
-    <string name="detail_test_message_error">Could not send test message: %1$s</string>
+    <string name="detail_test_message_error">Cannot send message: %1$s</string>
+    <string name="detail_test_message_error_unauthorized_anon">Cannot send message: Anonymous publishing not allowed</string>
+    <string name="detail_test_message_error_unauthorized_user">Cannot send message: User %1$s not authorized</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
@@ -178,13 +180,7 @@
 
     <!-- Detail settings -->
     <string name="detail_settings_title">Subscription settings</string>
-    <string name="detail_settings_auth_header">Login</string>
-    <string name="detail_settings_auth_header_summary">For topics that require a login, you may pick the login user here. You can add/edit users in the main settings.</string>
-    <string name="detail_settings_auth_user_key">SubscriptionAuthUserKey</string>
-    <string name="detail_settings_auth_user_title">Login user</string>
-    <string name="detail_settings_auth_user_entry_anon">Anonymous login</string>
-    <string name="detail_settings_auth_user_summary_none">No user selected to log in to the topic</string>
-    <string name="detail_settings_auth_user_summary_user_x">User %1$s selected as a login user</string>
+    <!-- ... -->
 
     <!-- Notification dialog -->
     <string name="notification_dialog_title">Pause notifications</string>
@@ -278,17 +274,22 @@
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
     <string name="settings_advanced_record_logs_key">RecordLogs</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
-    <string name="settings_advanced_record_logs_summary_enabled">Logs are currently being recorded to your device. Up to 2,000 log lines are stored.</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Logs are currently being recorded to your device. Up to 1,000 log entries are stored.</string>
     <string name="settings_advanced_record_logs_summary_disabled">Enable log recording, so you can share the logs later. This is useful for diagnosing issues.</string>
     <string name="settings_advanced_export_logs_key">ExportLogs</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
-    <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by ntfy author). Hostnames and topics are scrubbed, notifications are not.</string>
-    <string name="settings_advanced_export_logs_entry_copy">Copy to clipboard</string>
-    <string name="settings_advanced_export_logs_entry_upload">Upload to nopaste.net</string>
+    <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
+    <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>
+    <string name="settings_advanced_export_logs_entry_copy_scrubbed">Copy to clipboard (censored)</string>
+    <string name="settings_advanced_export_logs_entry_upload_original">Upload &amp; copy link</string>
+    <string name="settings_advanced_export_logs_entry_upload_scrubbed">Upload &amp; copy link (censored)</string>
     <string name="settings_advanced_export_logs_copied_logs">Logs copied to clipboard</string>
     <string name="settings_advanced_export_logs_uploading">Uploading log …</string>
-    <string name="settings_advanced_export_logs_copied_url">URL copied to clipboard</string>
+    <string name="settings_advanced_export_logs_copied_url">Logs uploaded &amp; URL copied</string>
     <string name="settings_advanced_export_logs_error_uploading">Error uploading logs: %1$s</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">The following topics/hostnames were replaced with fruit names, so you can share the log without worry:\n\n%1$s</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted, maybe you don\'t have any subscriptions?</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_button_ok">Got it</string>
     <string name="settings_advanced_clear_logs_key">ClearLogs</string>
     <string name="settings_advanced_clear_logs_title">Clear logs</string>
     <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
@@ -300,10 +301,6 @@
     <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This option is experimental. Let us know if it consumes less battery or is unstable.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets (experimental)</string>
-    <string name="settings_advanced_wakelock_key">WakelockEnabled</string>
-    <string name="settings_advanced_wakelock_title">Permanent wakelock</string>
-    <string name="settings_advanced_wakelock_summary_enabled">Prevents app from sleeping to ensure timely notification delivery. This consumes a lot of battery, but some devices require this.</string>
-    <string name="settings_advanced_wakelock_summary_disabled">Allows app to enter sleep mode. This may negatively impact notification delivery. It depends on the device.</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_key">Version</string>
     <string name="settings_about_version_title">Version</string>

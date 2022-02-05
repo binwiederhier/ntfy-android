@@ -219,16 +219,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return sharedPrefs.getInt(SHARED_PREFS_DARK_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
-    fun getWakelockEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_WAKELOCK_ENABLED, false) // Disabled by default!
-    }
-
-    fun setWakelockEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_WAKELOCK_ENABLED, enabled)
-            .apply()
-    }
-
     fun setConnectionProtocol(connectionProtocol: String) {
         if (connectionProtocol == CONNECTION_PROTOCOL_JSONHTTP) {
             sharedPrefs.edit()

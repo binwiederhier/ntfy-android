@@ -68,16 +68,21 @@ class BroadcastService(private val ctx: Context) {
             GlobalScope.launch(Dispatchers.IO) {
                 val repository = Repository.getInstance(ctx)
                 val user = repository.getUser(baseUrl) // May be null
-                api.publish(
-                    baseUrl = baseUrl,
-                    topic = topic,
-                    user = user,
-                    message = message,
-                    title = title,
-                    priority = priority,
-                    tags = splitTags(tags),
-                    delay = delay
-                )
+                try {
+                    Log.d(TAG, "Publishing message $intent")
+                    api.publish(
+                        baseUrl = baseUrl,
+                        topic = topic,
+                        user = user,
+                        message = message,
+                        title = title,
+                        priority = priority,
+                        tags = splitTags(tags),
+                        delay = delay
+                    )
+                } catch (e: Exception) {
+                    Log.w(TAG, "Unable to publish message: ${e.message}", e)
+                }
             }
         }
 

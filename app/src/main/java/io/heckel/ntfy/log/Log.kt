@@ -6,8 +6,6 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.LogDao
 import io.heckel.ntfy.db.LogEntry
-import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,15 +32,19 @@ class Log(private val logsDao: LogDao) {
         }
     }
 
-    fun getFormatted(): String {
-        return prependDeviceInfo(formatEntries(scrubEntries(logsDao.getAll())))
+    fun getFormatted(scrub: Boolean): String {
+        return if (scrub) {
+            prependDeviceInfo(formatEntries(scrubEntries(logsDao.getAll())), scrubLine = true)
+        } else {
+            prependDeviceInfo(formatEntries(logsDao.getAll()), scrubLine = false)
+        }
     }
 
-    private fun prependDeviceInfo(s: String): String {
+    private fun prependDeviceInfo(s: String, scrubLine: Boolean): String {
+        val maybeScrubLine = if (scrubLine) "Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.\n" else ""
         return """
-            This is a log of the ntfy Android app. The log shows up to 2,000 lines.
-            Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.
-
+            This is a log of the ntfy Android app. The log shows up to 1,000 entries.
+            $maybeScrubLine
             Device info:
             --
             ntfy: ${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR})
@@ -116,7 +118,7 @@ class Log(private val logsDao: LogDao) {
     companion object {
         private const val TAG = "NtfyLog"
         private const val PRUNE_EVERY = 100
-        private const val ENTRIES_MAX = 2000
+        private const val ENTRIES_MAX = 1000
         private val IGNORE_TERMS = listOf("ntfy.sh")
         private val REPLACE_TERMS = listOf(
             "banana", "kiwi", "lemon", "coconut", "avocado", "orange", "apple", "peach"
@@ -153,8 +155,12 @@ class Log(private val logsDao: LogDao) {
             return getInstance()?.record?.get() ?: false
         }
 
-        fun getFormatted(): String {
-            return getInstance()?.getFormatted() ?: "(no logs)"
+        fun getFormatted(scrub: Boolean): String {
+            return getInstance()?.getFormatted(scrub) ?: "(no logs)"
+        }
+
+        fun getScrubTerms(): Map<String, String> {
+            return getInstance()?.scrubTerms!!.toMap()
         }
 
         fun deleteAll() {
