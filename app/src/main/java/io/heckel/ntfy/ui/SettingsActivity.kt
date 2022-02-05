@@ -373,7 +373,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         Log.addScrubTerm(s.topic)
                     }
                 }
-                false
+                true
             }
 
             // Connection protocol
