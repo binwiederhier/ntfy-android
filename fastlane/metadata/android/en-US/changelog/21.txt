@@ -1,2 +1,18 @@
 Features:
+* Support auth / access control (#19, thanks to @cmeis, @gedw99, @karmanyaahm,
+  @Mek101, @gc-ss, @julianfoad, @nmoseman, Jakob, PeterCxy, Techlosopher)
+* Export/upload log now allows censored/uncensored logs (no ticket)
+* Removed wake lock (except for notification dispatching, no ticket)
 * Swipe to remove notifications (#117)
+
+Bug fixes:
+* Fix download issues on SDK 29 "Movement not allowed" (#116, thanks Jakob)
+* Fix for Android 12 crashes (#124, thanks @eskilop)
+* Fix WebSocket retry logic bug with multiple servers (no ticket)
+* Fix race in refresh logic leading to duplicate connections (no ticket)
+* Fix scrolling issue in subscribe to topic dialog (#131, thanks @arminus)
+* Fix base URL text field color in dark mode, and size with large fonts (no ticket)
+* Fix action bar color in dark mode (make black, no ticket)
+
+Notes:
+* Foundational work for per-subscription settings

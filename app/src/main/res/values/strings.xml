@@ -77,7 +77,7 @@
     <string name="add_dialog_title">Subscribe to topic</string>
     <string name="add_dialog_description_below">
         Topics may not be password-protected, so choose a name that\'s not easy to
-        guess. Once subscribed, you can PUT/POST to receive notifications.
+        guess. Once subscribed, you can PUT/POST notifications.
     </string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
@@ -85,12 +85,11 @@
         You can subscribe to topics from your own server. This option requires a foreground service.
     </string>
     <string name="add_dialog_use_another_server_description_noinstant">
-        You can subscribe to topics from your own server. Simply type in the base
-        URL of your server.
+        You can subscribe to topics from your own server. Type the server URL below.
     </string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
-        Ensures that messages are immediately delivered, even if the device is inactive or in doze mode.
+        Ensures that messages are immediately delivered, even if the device is inactive.
         This requires a foreground service.
     </string>
     <string name="add_dialog_button_cancel">Cancel</string>
@@ -102,7 +101,7 @@
     <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
     <string name="add_dialog_login_username_hint">Username</string>
     <string name="add_dialog_login_password_hint">Password</string>
-    <string name="add_dialog_login_error_not_authorized">Login failed. User not authorized.</string>
+    <string name="add_dialog_login_error_not_authorized">Login failed. User %1$s not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
 
     <!-- Detail activity -->

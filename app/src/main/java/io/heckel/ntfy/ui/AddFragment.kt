@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -88,7 +89,9 @@ class AddFragment : DialogFragment() {
         // Fields for "subscribe page"
         subscribeTopicText = view.findViewById(R.id.add_dialog_subscribe_topic_text)
         subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_subscribe_base_url_layout)
+        subscribeBaseUrlLayout.background = view.background
         subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
+        subscribeBaseUrlText.background = view.background
         subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
         subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_checkbox)
         subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
@@ -99,6 +102,14 @@ class AddFragment : DialogFragment() {
         subscribeErrorText.visibility = View.GONE
         subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
         subscribeErrorTextImage.visibility = View.GONE
+
+        // Hack: Make end icon smaller, see https://stackoverflow.com/a/57098715/1440785
+        val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+        val endIconImageView = subscribeBaseUrlLayout.findViewById<ImageView>(R.id.text_input_end_icon)
+        endIconImageView.minimumHeight = dimension.toInt()
+        endIconImageView.minimumWidth = dimension.toInt()
+        subscribeBaseUrlLayout.requestLayout()
+
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
@@ -280,14 +291,14 @@ class AddFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(baseUrl) // May be null
-                val authorized = api.authTopicRead(baseUrl, topic, user)
+                val authorized = api.checkAuth(baseUrl, topic, user)
                 if (authorized) {
                     Log.d(TAG, "Access granted to topic ${topicUrl(baseUrl, topic)}")
                     dismissDialog()
                 } else {
                     if (user != null) {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, but user already exists")
-                        showErrorAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized))
+                        showErrorAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized, user.username))
                     } else {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
                         val activity = activity ?: return@launch // We may have pressed "Cancel"
@@ -327,14 +338,14 @@ class AddFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             Log.d(TAG, "Checking read access for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
             try {
-                val authorized = api.authTopicRead(baseUrl, topic, user)
+                val authorized = api.checkAuth(baseUrl, topic, user)
                 if (authorized) {
                     Log.d(TAG, "Access granted for user ${user.username} to topic ${topicUrl(baseUrl, topic)}, adding to database")
                     repository.addUser(user)
                     dismissDialog()
                 } else {
                     Log.w(TAG, "Access not allowed for user ${user.username} to topic ${topicUrl(baseUrl, topic)}")
-                    showErrorAndReenableLoginView(getString(R.string.add_dialog_login_error_not_authorized))
+                    showErrorAndReenableLoginView(getString(R.string.add_dialog_login_error_not_authorized, user.username))
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed during login: ${e.message}", e)

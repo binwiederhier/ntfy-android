@@ -118,7 +118,7 @@ class ApiService {
         return call
     }
 
-    fun authTopicRead(baseUrl: String, topic: String, user: User?): Boolean {
+    fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
         if (user == null) {
             Log.d(TAG, "Checking anonymous read against ${topicUrl(baseUrl, topic)}")
         } else {
@@ -127,11 +127,14 @@ class ApiService {
         val url = topicUrlAuth(baseUrl, topic)
         val request = requestBuilder(url, user).build()
         client.newCall(request).execute().use { response ->
-            return if (user == null) {
-                response.isSuccessful || response.code == 404 // Treat 404 as success (old server; to be removed in future versions)
-            } else {
-                response.isSuccessful
+            if (response.isSuccessful) {
+                return true
+            } else if (user == null && response.code == 404) {
+                return true // Special case: Anonymous login to old servers return 404 since /<topic>/auth doesn't exist
+            } else if (response.code == 401 || response.code == 403) { // See server/server.go
+                return false
             }
+            throw Exception("Unexpected server response ${response.code}")
         }
     }
 
