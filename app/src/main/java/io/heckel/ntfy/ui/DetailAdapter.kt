@@ -44,6 +44,10 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
         holder.bind(getItem(position))
     }
 
+    fun get(position: Int): Notification {
+        return getItem(position)
+    }
+
     fun toggleSelection(notificationId: String) {
         if (selected.contains(notificationId)) {
             selected.remove(notificationId)

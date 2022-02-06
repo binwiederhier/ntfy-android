@@ -17,8 +17,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -33,6 +35,7 @@ import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.random.Random
+
 
 class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -130,6 +133,28 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 maybeCancelNotificationPopups(it)
             }
         }
+
+        // Swipe to remove
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                val notification = adapter.get(viewHolder.absoluteAdapterPosition)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    repository.markAsDeleted(notification.id)
+                }
+                val snackbar = Snackbar.make(mainList, R.string.detail_item_snack_deleted, Snackbar.LENGTH_SHORT)
+                snackbar.setAction(R.string.detail_item_snack_undo) {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        repository.undeleteNotification(notification.id)
+                    }
+                }
+                snackbar.show()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(mainList)
 
         // Scroll up when new notification is added
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {

@@ -116,10 +116,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         notificationDao.update(notification)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun markAsDeleted(notificationId: String) {
+    fun markAsDeleted(notificationId: String) {
         notificationDao.markAsDeleted(notificationId)
+    }
+
+    fun undeleteNotification(notificationId: String) {
+        notificationDao.undelete(notificationId)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {
