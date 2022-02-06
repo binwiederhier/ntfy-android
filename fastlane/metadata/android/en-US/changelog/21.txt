@@ -1,0 +1,2 @@
+Features:
+* Swipe to remove notifications (#117)
