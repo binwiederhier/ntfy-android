@@ -3,6 +3,7 @@ package io.heckel.ntfy.ui
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +16,6 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
-import kotlin.random.Random
 
 class UserFragment : DialogFragment() {
     private var user: User? = null
@@ -97,9 +97,15 @@ class UserFragment : DialogFragment() {
 
             // Delete button should be red
             if (user != null) {
-                dialog
-                    .getButton(AlertDialog.BUTTON_NEUTRAL)
-                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.primaryDangerButtonColor))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    dialog
+                        .getButton(AlertDialog.BUTTON_NEUTRAL)
+                        .setTextAppearance(R.style.DangerText)
+                } else {
+                    dialog
+                        .getButton(AlertDialog.BUTTON_NEUTRAL)
+                        .setTextColor(ContextCompat.getColor(requireContext(), Colors.dangerText(requireContext())))
+                }
             }
 
             // Validate input when typing

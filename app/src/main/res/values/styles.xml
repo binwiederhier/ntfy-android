@@ -1,10 +1,22 @@
 <resources>
-    <!-- DayNight mode for easy dark mode, see https://material.io/develop/android/theming/dark -->
+    <!-- Main app theme; dark theme styles see values-night/styles.xml -->
     <style name="AppTheme"  parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorAccent">@color/primaryLightColor</item>
-        <item name="android:statusBarColor">@color/primaryColor</item>
-        <item name="actionModeBackground">@color/primaryDarkColor</item>
+        <item name="colorPrimary">@color/teal</item>
+        <item name="colorAccent">@color/teal</item> <!-- checkboxes, text fields -->
+        <item name="android:colorBackground">@color/white</item> <!-- background -->
+        <item name="android:statusBarColor">@color/teal</item>
+        <item name="actionModeBackground">@color/teal_dark</item>
+    </style>
+
+    <!-- Danger buttons & text -->
+    <style name="DangerText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/red_dark</item>
+    </style>
+
+    <!-- Floating action button -->
+    <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">@color/white</item>
+        <item name="backgroundTint">@color/teal</item>
     </style>
 
     <!-- Rounded corners in images, see https://stackoverflow.com/a/61960983/1440785 -->

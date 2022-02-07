@@ -19,6 +19,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
@@ -292,7 +293,7 @@ class SubscriberService : Service() {
         }
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
-            .setColor(ContextCompat.getColor(this, R.color.primaryColor))
+            .setColor(ContextCompat.getColor(this, Colors.notificationIcon))
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)

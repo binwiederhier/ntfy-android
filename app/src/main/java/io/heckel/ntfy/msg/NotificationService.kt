@@ -12,6 +12,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
@@ -52,7 +53,7 @@ class NotificationService(val context: Context) {
         val channelId = toChannelId(notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setColor(ContextCompat.getColor(context, R.color.primaryColor))
+            .setColor(ContextCompat.getColor(context, Colors.notificationIcon))
             .setContentTitle(title)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked

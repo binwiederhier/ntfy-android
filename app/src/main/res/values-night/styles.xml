@@ -1,0 +1,33 @@
+<resources>
+    <!--
+        This file contains only overrides for the dark theme.
+        Also see "ui/Colors.kt" for colors that have to be defined in code.
+
+        Resources:
+        - https://material.io/design/color/dark-theme.html
+        - https://material.io/develop/android/theming/dark
+        - https://developer.android.com/codelabs/basic-android-kotlin-training-change-app-theme#4
+        - https://developer.android.com/guide/topics/ui/look-and-feel/themes
+   -->
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/teal_light</item>
+        <item name="colorAccent">@color/teal_light</item> <!-- checkboxes, text fields -->
+        <item name="android:colorBackground">@color/black_light</item> <!-- background -->
+        <item name="android:statusBarColor">@color/black_light</item>
+        <item name="actionModeBackground">@color/black_light</item>
+
+        <!-- Action bar background & text color -->
+        <item name="colorSurface">@color/gray_dark</item>
+        <item name="colorOnSurface">@color/white</item>
+    </style>
+
+    <style name="DangerText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/red_light</item>
+    </style>
+
+    <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
+        <item name="tint">@color/black_light</item>
+        <item name="backgroundTint">@color/teal_light</item>
+    </style>
+</resources>

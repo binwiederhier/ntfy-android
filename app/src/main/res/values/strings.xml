@@ -188,8 +188,8 @@
     <string name="notification_dialog_cancel">Cancel</string>
     <string name="notification_dialog_save">Save</string>
     <string name="notification_dialog_enabled_toast_message">Notifications re-enabled</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notifications are now paused</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifications are paused until %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifications paused</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications paused until %1$s</string>
     <string name="notification_dialog_show_all">Show all notifications</string>
     <string name="notification_dialog_30min">30 minutes</string>
     <string name="notification_dialog_1h">1 hour</string>

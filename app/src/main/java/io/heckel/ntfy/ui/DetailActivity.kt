@@ -106,7 +106,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         // Swipe to refresh
         mainListContainer = findViewById(R.id.detail_notification_list_container)
         mainListContainer.setOnRefreshListener { refresh() }
-        mainListContainer.setColorSchemeResources(R.color.primaryColor)
+        mainListContainer.setColorSchemeResources(Colors.refreshProgressIndicator)
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
@@ -477,7 +477,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+                .setTextAppearance(R.style.DangerText)
         }
         dialog.show()
     }
@@ -512,7 +512,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+                .setTextAppearance(R.style.DangerText)
         }
         dialog.show()
     }
@@ -619,7 +619,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(ContextCompat.getColor(this, R.color.primaryDangerButtonColor))
+                .setTextAppearance(R.style.DangerText)
         }
         dialog.show()
     }
@@ -634,8 +634,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         redrawList()
 
         // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, R.color.primaryColor)
-        val toColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
+        val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
+        val toColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
         fadeStatusBarColor(window, fromColor, toColor)
     }
 
@@ -650,8 +650,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         redrawList()
 
         // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, R.color.primaryDarkColor)
-        val toColor = ContextCompat.getColor(this, R.color.primaryColor)
+        val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
+        val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
         fadeStatusBarColor(window, fromColor, toColor)
     }
 

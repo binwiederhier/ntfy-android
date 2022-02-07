@@ -139,11 +139,12 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="24dp"
             android:contentDescription="@string/main_add_button_description"
             android:src="@drawable/ic_add_black_24dp"
-            app:tint="@color/primaryLightTextColor"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:backgroundTint="@color/primaryColor"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/FloatingActionButton"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -102,8 +101,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
-                val backgroundColor = if (isDarkThemeOn(context, repository)) R.color.primaryDarkSelectedRowColor else R.color.primaryLightSelectedRowColor
-                itemView.setBackgroundResource(backgroundColor)
+                itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
             }
         }
     }
