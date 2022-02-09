@@ -1,13 +1,12 @@
 package io.heckel.ntfy.db
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -116,20 +115,26 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         notificationDao.update(notification)
     }
 
-    fun markAsDeleted(notificationId: String) {
-        notificationDao.markAsDeleted(notificationId)
-    }
-
     fun undeleteNotification(notificationId: String) {
         notificationDao.undelete(notificationId)
+    }
+
+    fun markAsDeleted(notificationId: String) {
+        notificationDao.markAsDeleted(notificationId)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {
         notificationDao.markAllAsDeleted(subscriptionId)
     }
 
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
+    fun markAsDeletedIfOlderThan(olderThanTimestamp: Long) {
+        notificationDao.markAsDeletedIfOlderThan(olderThanTimestamp)
+    }
+
+    fun removeNotificationsIfOlderThan(olderThanTimestamp: Long) {
+        notificationDao.removeIfOlderThan(olderThanTimestamp)
+    }
+
     fun removeAllNotifications(subscriptionId: Long) {
         notificationDao.removeAll(subscriptionId)
     }
@@ -161,6 +166,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     fun setPollWorkerVersion(version: Int) {
         sharedPrefs.edit()
             .putInt(SHARED_PREFS_POLL_WORKER_VERSION, version)
+            .apply()
+    }
+
+    fun getDeleteWorkerVersion(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_DELETE_WORKER_VERSION, 0)
+    }
+
+    fun setDeleteWorkerVersion(version: Int) {
+        sharedPrefs.edit()
+            .putInt(SHARED_PREFS_DELETE_WORKER_VERSION, version)
             .apply()
     }
 
@@ -202,6 +217,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     fun setAutoDownloadMaxSize(maxSize: Long) {
         sharedPrefs.edit()
             .putLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, maxSize)
+            .apply()
+    }
+
+    fun getAutoDeleteSeconds(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_AUTO_DELETE_SECONDS, AUTO_DELETE_DEFAULT_SECONDS)
+    }
+
+    fun setAutoDeleteSeconds(seconds: Long) {
+        sharedPrefs.edit()
+            .putLong(SHARED_PREFS_AUTO_DELETE_SECONDS, seconds)
             .apply()
     }
 
@@ -384,11 +409,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
+        const val SHARED_PREFS_DELETE_WORKER_VERSION = "DeleteWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
-        const val SHARED_PREFS_WAKELOCK_ENABLED = "WakelockEnabled"
+        const val SHARED_PREFS_AUTO_DELETE_SECONDS = "AutoDelete"
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_DARK_MODE = "DarkMode"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
@@ -401,9 +427,19 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val MUTED_UNTIL_FOREVER = 1L
         const val MUTED_UNTIL_TOMORROW = 2L
 
-        const val AUTO_DOWNLOAD_NEVER = 0L
+        private const val ONE_MB = 1024 * 1024L
+        const val AUTO_DOWNLOAD_NEVER = 0L // Values must match values.xml
         const val AUTO_DOWNLOAD_ALWAYS = 1L
-        const val AUTO_DOWNLOAD_DEFAULT = 1024 * 1024L // Must match a value in values.xml
+        const val AUTO_DOWNLOAD_DEFAULT = ONE_MB
+
+        private const val ONE_DAY_SECONDS = 24 * 60 * 60L
+        const val AUTO_DELETE_NEVER = 0L // Values must match values.xml
+        const val AUTO_DELETE_ONE_DAY_SECONDS = ONE_DAY_SECONDS
+        const val AUTO_DELETE_THREE_DAYS_SECONDS = 3 * ONE_DAY_SECONDS
+        const val AUTO_DELETE_ONE_WEEK_SECONDS = 7 * ONE_DAY_SECONDS
+        const val AUTO_DELETE_ONE_MONTH_SECONDS = 30 * ONE_DAY_SECONDS
+        const val AUTO_DELETE_THREE_MONTHS_SECONDS = 90 * ONE_DAY_SECONDS
+        const val AUTO_DELETE_DEFAULT_SECONDS = AUTO_DELETE_ONE_MONTH_SECONDS
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

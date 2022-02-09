@@ -1,7 +1,7 @@
 package io.heckel.ntfy.firebase
 
 import com.google.firebase.messaging.FirebaseMessaging
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 
 class FirebaseMessenger {
     fun subscribe(topic: String) {

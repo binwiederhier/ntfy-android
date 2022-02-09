@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 
 class Application : Application() {
     private val database by lazy {

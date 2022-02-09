@@ -17,7 +17,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.queryFilename
 import okhttp3.OkHttpClient
 import okhttp3.Request

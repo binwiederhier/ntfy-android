@@ -1,7 +1,7 @@
 package io.heckel.ntfy.service
 
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*

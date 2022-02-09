@@ -297,8 +297,14 @@ interface NotificationDao {
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)
 
+    @Query("UPDATE notification SET deleted = 1 WHERE timestamp < :olderThanTimestamp")
+    fun markAsDeletedIfOlderThan(olderThanTimestamp: Long)
+
     @Query("UPDATE notification SET deleted = 0 WHERE id = :notificationId")
     fun undelete(notificationId: String)
+
+    @Query("DELETE FROM notification WHERE timestamp < :olderThanTimestamp")
+    fun removeIfOlderThan(olderThanTimestamp: Long)
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)

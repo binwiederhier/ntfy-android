@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity

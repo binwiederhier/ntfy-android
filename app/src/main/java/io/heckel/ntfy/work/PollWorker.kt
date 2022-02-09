@@ -4,17 +4,16 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.log.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
-    // IMPORTANT WARNING:
+    // IMPORTANT:
     //   Every time the worker is changed, the periodic work has to be REPLACEd.
     //   This is facilitated in the MainActivity using the VERSION below.
 
@@ -25,9 +24,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             Log.d(TAG, "Polling for new notifications")
-            val database = Database.getInstance(applicationContext)
-            val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
-            val repository = Repository.getInstance(sharedPrefs, database)
+            val repository = Repository.getInstance(applicationContext)
             val dispatcher = NotificationDispatcher(applicationContext, repository)
             val api = ApiService()
 

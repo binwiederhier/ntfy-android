@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 
 /**
  * This class only manages the SubscriberService, i.e. it starts or stops it.

@@ -7,7 +7,7 @@ import androidx.preference.PreferenceFragmentCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -5,7 +5,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 
 /**
  * Download attachment in the background via WorkManager

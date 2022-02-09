@@ -4,7 +4,7 @@ import android.content.Context
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.safeLet
 

@@ -30,12 +30,13 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
+import io.heckel.ntfy.work.DeleteWorker
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -158,8 +159,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         AppCompatDelegate.setDefaultNightMode(repository.getDarkMode())
 
         // Background things
-        startPeriodicPollWorker()
-        startPeriodicServiceRestartWorker()
+        schedulePeriodicPollWorker()
+        schedulePeriodicServiceRestartWorker()
+        schedulePeriodicDeleteWorker()
     }
 
     override fun onResume() {
@@ -178,7 +180,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
     }
 
-    private fun startPeriodicPollWorker() {
+    private fun schedulePeriodicPollWorker() {
         val workerVersion = repository.getPollWorkerVersion()
         val workPolicy = if (workerVersion == PollWorker.VERSION) {
             Log.d(TAG, "Poll worker version matches: choosing KEEP as existing work policy")
@@ -200,7 +202,26 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC_ALL, workPolicy, work)
     }
 
-    private fun startPeriodicServiceRestartWorker() {
+
+    private fun schedulePeriodicDeleteWorker() {
+        val workerVersion = repository.getDeleteWorkerVersion()
+        val workPolicy = if (workerVersion == DeleteWorker.VERSION) {
+            Log.d(TAG, "Delete worker version matches: choosing KEEP as existing work policy")
+            ExistingPeriodicWorkPolicy.KEEP
+        } else {
+            Log.d(TAG, "Delete worker version DOES NOT MATCH: choosing REPLACE as existing work policy")
+            repository.setDeleteWorkerVersion(DeleteWorker.VERSION)
+            ExistingPeriodicWorkPolicy.REPLACE
+        }
+        val work = PeriodicWorkRequestBuilder<DeleteWorker>(DELETE_WORKER_INTERVAL_MINUTES, TimeUnit.MINUTES)
+            .addTag(DeleteWorker.TAG)
+            .addTag(DeleteWorker.WORK_NAME_PERIODIC_ALL)
+            .build()
+        Log.d(TAG, "Delete worker: Scheduling period work every $DELETE_WORKER_INTERVAL_MINUTES minutes")
+        workManager!!.enqueueUniquePeriodicWork(DeleteWorker.WORK_NAME_PERIODIC_ALL, workPolicy, work)
+    }
+
+    private fun schedulePeriodicServiceRestartWorker() {
         val workerVersion = repository.getAutoRestartWorkerVersion()
         val workPolicy = if (workerVersion == SubscriberService.SERVICE_START_WORKER_VERSION) {
             Log.d(TAG, "ServiceStartWorker version matches: choosing KEEP as existing work policy")
@@ -598,6 +619,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Thanks to varunon9 (https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd) for this!
 
         const val POLL_WORKER_INTERVAL_MINUTES = 2 * 60L
+        const val DELETE_WORKER_INTERVAL_MINUTES = 8 * 60L
         const val SERVICE_START_WORKER_INTERVAL_MINUTES = 3 * 60L
     }
 }

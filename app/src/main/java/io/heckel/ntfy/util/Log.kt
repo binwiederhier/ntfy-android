@@ -1,4 +1,4 @@
-package io.heckel.ntfy.log
+package io.heckel.ntfy.util
 
 import android.content.Context
 import android.os.Build

@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +24,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.log.Log
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.formatDateShort
@@ -231,6 +230,32 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     } else {
                         true
                     }
+                }
+            }
+
+            // Auto delete
+            val autoDeletePrefId = context?.getString(R.string.settings_notifications_auto_delete_key) ?: return
+            val autoDelete: ListPreference? = findPreference(autoDeletePrefId)
+            autoDelete?.value = repository.getAutoDeleteSeconds().toString()
+            autoDelete?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val seconds = value?.toLongOrNull() ?:return
+                    repository.setAutoDeleteSeconds(seconds)
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getAutoDeleteSeconds().toString()
+                }
+            }
+            autoDelete?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                val seconds = pref.value.toLongOrNull() ?: repository.getAutoDeleteSeconds()
+                when (seconds) {
+                    Repository.AUTO_DELETE_NEVER -> getString(R.string.settings_notifications_auto_delete_summary_never)
+                    Repository.AUTO_DELETE_ONE_DAY_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_one_day)
+                    Repository.AUTO_DELETE_THREE_DAYS_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_three_days)
+                    Repository.AUTO_DELETE_ONE_WEEK_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_one_week)
+                    Repository.AUTO_DELETE_ONE_MONTH_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_one_month)
+                    Repository.AUTO_DELETE_THREE_MONTHS_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_three_months)
+                    else -> getString(R.string.settings_notifications_auto_delete_summary_one_month) // Must match default const
                 }
             }
 
