@@ -49,15 +49,20 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         if (notification.attachment == null) {
             return false
         }
+        val attachment = notification.attachment
+        if (attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000) {
+            Log.d(TAG, "Attachment already expired at ${attachment.expires}, not downloading")
+            return false
+        }
         val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()
         when (maxAutoDownloadSize) {
             Repository.AUTO_DOWNLOAD_ALWAYS -> return true
             Repository.AUTO_DOWNLOAD_NEVER -> return false
             else -> {
-                if (notification.attachment.size == null) {
+                if (attachment.size == null) {
                     return true // DownloadWorker will bail out if attachment is too large!
                 }
-                return notification.attachment.size <= maxAutoDownloadSize
+                return attachment.size <= maxAutoDownloadSize
             }
         }
     }

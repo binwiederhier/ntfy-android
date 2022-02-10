@@ -305,7 +305,13 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                     infos.add(context.getString(R.string.detail_item_download_info_deleted))
                 }
             } else if (failed) {
-                infos.add(context.getString(R.string.detail_item_download_info_download_failed))
+                if (expired) {
+                    infos.add(context.getString(R.string.detail_item_download_info_download_failed_expired))
+                } else if (expires) {
+                    infos.add(context.getString(R.string.detail_item_download_info_download_failed_expires_x, formatDateShort(attachment.expires!!)))
+                } else {
+                    infos.add(context.getString(R.string.detail_item_download_info_download_failed))
+                }
             }
             return if (infos.size > 0) {
                 "$name\n${infos.joinToString(", ")}"
