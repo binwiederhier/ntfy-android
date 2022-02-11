@@ -14,14 +14,22 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.util.ContentUriRequestBody
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.supportedImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ShareActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
     private val api = ApiService()
+
+    // File to share
+    private var fileUri: Uri? = null
 
     // UI elements
     private lateinit var menu: Menu
@@ -30,6 +38,8 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var contentText: TextView
     private lateinit var topicText: TextView
     private lateinit var progress: ProgressBar
+    private lateinit var errorText: TextView
+    private lateinit var errorImage: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +60,10 @@ class ShareActivity : AppCompatActivity() {
         topicText = findViewById(R.id.share_topic_text)
         progress = findViewById(R.id.share_progress)
         progress.visibility = View.GONE
+        errorText = findViewById(R.id.share_error_text)
+        errorText.visibility = View.GONE
+        errorImage = findViewById(R.id.share_error_image)
+        errorImage.visibility = View.GONE
 
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -62,6 +76,7 @@ class ShareActivity : AppCompatActivity() {
                 // Nothing
             }
         }
+        contentText.addTextChangedListener(textWatcher)
         topicText.addTextChangedListener(textWatcher)
 
         // Incoming intent
@@ -69,8 +84,10 @@ class ShareActivity : AppCompatActivity() {
         if (intent.action != Intent.ACTION_SEND) return
         if ("text/plain" == intent.type) {
             handleSendText(intent)
-        } else if (intent.type?.startsWith("image/") == true) {
+        } else if (supportedImage(intent.type)) {
             handleSendImage(intent)
+        } else {
+            handleSendFile(intent)
         }
     }
 
@@ -82,17 +99,24 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun handleSendImage(intent: Intent) {
-        val uri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
+        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
         try {
             val resolver = applicationContext.contentResolver
-            val bitmapStream = resolver.openInputStream(uri)
+            val bitmapStream = resolver.openInputStream(fileUri!!)
             val bitmap = BitmapFactory.decodeStream(bitmapStream)
             contentImage.setImageBitmap(bitmap)
             contentImage.visibility = View.VISIBLE
             contentText.text = getString(R.string.share_content_image_text)
         } catch (_: Exception) {
+            fileUri = null
+            contentImage.visibility = View.GONE
             contentText.text = getString(R.string.share_content_image_error)
         }
+    }
+
+    private fun handleSendFile(intent: Intent) {
+        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
+        contentText.text = getString(R.string.share_content_file_text)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -119,7 +143,42 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun onShareClick() {
-
+        val baseUrl = "https://ntfy.sh" // FIXME
+        val topic = topicText.text.toString()
+        val message = contentText.text.toString()
+        progress.visibility = View.VISIBLE
+        lifecycleScope.launch(Dispatchers.IO) {
+            val user = repository.getUser(baseUrl)
+            try {
+                val body = if (fileUri != null) {
+                    val resolver = applicationContext.contentResolver
+                    ContentUriRequestBody(resolver, fileUri!!)
+                } else {
+                    null
+                }
+                api.publish(
+                    baseUrl = baseUrl,
+                    topic = topic,
+                    user = user,
+                    message = message,
+                    title = "",
+                    priority = 3,
+                    tags = emptyList(),
+                    delay = "",
+                    body = body // May be null
+                )
+                runOnUiThread {
+                    finish()
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    progress.visibility = View.GONE
+                    errorText.text = e.message
+                    errorImage.visibility = View.VISIBLE
+                    errorText.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     private fun validateInput() {

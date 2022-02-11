@@ -31,7 +31,7 @@
             android:scaleType="fitStart"
             android:adjustViewBounds="true" android:maxHeight="150dp"
             app:shapeAppearanceOverlay="@style/roundedCornersImageView" android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/share_content_title" android:layout_marginTop="5dp" android:layout_marginStart="5dp"/>
+            app:layout_constraintTop_toBottomOf="@id/share_content_title" android:layout_marginStart="3dp"/>
     <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/share_content_text"
             android:layout_width="match_parent"
@@ -58,5 +58,21 @@
             android:maxLines="1" android:inputType="text" android:maxLength="64"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/share_topic_title"/>
+    <TextView
+            android:text="Unable to resolve host example.com"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/share_error_text"
+            android:paddingStart="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingEnd="4dp"
+            android:textAppearance="@style/DangerText"
+            app:layout_constraintStart_toEndOf="@id/share_error_image"
+            android:layout_marginTop="5dp" app:layout_constraintTop_toBottomOf="@+id/share_topic_text"/>
+    <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp" app:srcCompat="@drawable/ic_error_red_24dp"
+            android:id="@+id/share_error_image"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@+id/share_error_text" android:layout_marginTop="2dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

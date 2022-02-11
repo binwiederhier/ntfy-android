@@ -2,6 +2,7 @@ package io.heckel.ntfy.util
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -14,6 +15,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okio.BufferedSink
+import okio.source
+import java.io.IOException
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
@@ -217,4 +224,23 @@ fun isDarkThemeOn(context: Context): Boolean {
         return true
     }
     return false
+}
+
+// https://cketti.de/2020/05/23/content-uris-and-okhttp/
+class ContentUriRequestBody(
+    private val contentResolver: ContentResolver,
+    private val contentUri: Uri
+) : RequestBody() {
+
+    override fun contentType(): MediaType? {
+        val contentType = contentResolver.getType(contentUri)
+        return contentType?.toMediaTypeOrNull()
+    }
+
+    override fun writeTo(sink: BufferedSink) {
+        val inputStream = contentResolver.openInputStream(contentUri) ?: throw IOException("Couldn't open content URI for reading")
+        inputStream.source().use { source ->
+            sink.writeAll(source)
+        }
+    }
 }

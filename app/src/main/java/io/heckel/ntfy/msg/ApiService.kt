@@ -1,5 +1,6 @@
 package io.heckel.ntfy.msg
 
+import android.net.Uri
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
@@ -28,12 +29,11 @@ class ApiService {
         .build()
     private val parser = NotificationParser()
 
-    fun publish(baseUrl: String, topic: String, user: User?, message: String, title: String, priority: Int, tags: List<String>, delay: String) {
+    fun publish(baseUrl: String, topic: String, user: User?, message: String, title: String, priority: Int, tags: List<String>, delay: String, body: RequestBody? = null) {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
         val builder = requestBuilder(url, user)
-            .put(message.toRequestBody())
         if (priority in 1..5) {
             builder.addHeader("X-Priority", priority.toString())
         }
@@ -45,6 +45,13 @@ class ApiService {
         }
         if (delay.isNotEmpty()) {
             builder.addHeader("X-Delay", delay)
+        }
+        if (body != null) {
+            builder
+                .addHeader("X-Message", message)
+                .put(body)
+        } else {
+            builder.put(message.toRequestBody())
         }
         client.newCall(builder.build()).execute().use { response ->
             if (response.code == 401 || response.code == 403) {

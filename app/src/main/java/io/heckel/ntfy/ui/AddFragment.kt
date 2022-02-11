@@ -193,7 +193,7 @@ class AddFragment : DialogFragment() {
         subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
         // Username/password validation on type
-        val textWatcher = object : TextWatcher {
+        val loginTextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 validateInputLoginView()
             }
@@ -204,8 +204,8 @@ class AddFragment : DialogFragment() {
                 // Nothing
             }
         }
-        loginUsernameText.addTextChangedListener(textWatcher)
-        loginPasswordText.addTextChangedListener(textWatcher)
+        loginUsernameText.addTextChangedListener(loginTextWatcher)
+        loginPasswordText.addTextChangedListener(loginTextWatcher)
 
         // Build dialog
         val dialog = AlertDialog.Builder(activity)
@@ -219,7 +219,7 @@ class AddFragment : DialogFragment() {
             .create()
 
         // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
         // Add logic to disable "Subscribe" button on invalid input
         dialog.setOnShowListener {
@@ -232,7 +232,7 @@ class AddFragment : DialogFragment() {
             negativeButton.setOnClickListener {
                 negativeButtonClick()
             }
-            val textWatcher = object : TextWatcher {
+            val subscribeTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     validateInputSubscribeView()
                 }
@@ -243,8 +243,8 @@ class AddFragment : DialogFragment() {
                     // Nothing
                 }
             }
-            subscribeTopicText.addTextChangedListener(textWatcher)
-            subscribeBaseUrlText.addTextChangedListener(textWatcher)
+            subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
+            subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
             subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
                 else subscribeInstantDeliveryDescription.visibility = View.GONE
@@ -303,7 +303,7 @@ class AddFragment : DialogFragment() {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
                         val activity = activity ?: return@launch // We may have pressed "Cancel"
                         activity.runOnUiThread {
-                            showLoginView(activity, baseUrl)
+                            showLoginView(activity)
                         }
                     }
                 }
@@ -444,7 +444,7 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun showLoginView(activity: Activity, baseUrl: String) {
+    private fun showLoginView(activity: Activity) {
         resetLoginView()
         loginProgress.visibility = View.INVISIBLE
         positiveButton.text = getString(R.string.add_dialog_button_login)
