@@ -374,6 +374,7 @@ class AddFragment : DialogFragment() {
     }
 
     private fun validateInputSubscribeView() {
+        if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
         lifecycleScope.launch(Dispatchers.IO) {
             val baseUrl = getBaseUrl()
             val topic = subscribeTopicText.text.toString()
@@ -398,6 +399,7 @@ class AddFragment : DialogFragment() {
     }
 
     private fun validateInputLoginView() {
+        if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
         if (loginUsernameText.visibility == View.GONE) {
             positiveButton.isEnabled = true
         } else {

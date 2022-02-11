@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
         <TextView
-                android:id="@+id/add_dialog_subscribe_title_text"
+                android:id="@+id/add_dialog_subscribe_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_description"
                 android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_title_text"/>
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_title"/>
         <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_dialog_subscribe_topic_text"
                 android:layout_width="match_parent"

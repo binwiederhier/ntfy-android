@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" android:padding="10dp">
+
+    <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/share_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:indeterminate="true" android:visibility="visible" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="5dp"/>
+    <TextView
+            android:id="@+id/share_content_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="2dp"
+            android:text="@string/share_content_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" android:paddingStart="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/ic_cancel_gray_24dp"
+            android:id="@+id/share_content_image" app:layout_constraintStart_toStartOf="parent"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true" android:maxHeight="150dp"
+            app:shapeAppearanceOverlay="@style/roundedCornersImageView" android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/share_content_title" android:layout_marginTop="5dp" android:layout_marginStart="5dp"/>
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/share_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="@string/share_content_text_hint"
+            android:importantForAutofill="no"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:lines="10" android:gravity="start|top" app:layout_constraintTop_toBottomOf="@id/share_content_image" android:minLines="1" android:layout_marginTop="5dp"/>
+    <TextView
+            android:id="@+id/share_topic_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="3dp"
+            android:text="Share to topic"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" android:paddingStart="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/share_content_text" android:layout_marginTop="10dp"/>
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/share_topic_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
+            android:importantForAutofill="no"
+            android:maxLines="1" android:inputType="text" android:maxLength="64"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/share_topic_title"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

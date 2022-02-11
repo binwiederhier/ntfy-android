@@ -4,3 +4,4 @@ Features:
 
 Bug fixes:
 * Do not attempt to download attachments if they are already expired (#135)
+* Fixed crash in AddFragment as seen per stack trace in Play Console (no ticket)

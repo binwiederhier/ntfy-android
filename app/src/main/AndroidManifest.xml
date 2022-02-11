@@ -58,6 +58,20 @@
                 android:parentActivityName=".ui.DetailActivity">
         </activity>
 
+        <!-- Share file activity, incoming files/shares -->
+        <activity android:name=".ui.ShareActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
         <service android:name=".service.SubscriberService"/>
 
