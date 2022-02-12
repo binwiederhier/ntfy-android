@@ -20,9 +20,8 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -51,7 +50,6 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeErrorTextImage: View
 
     // Login page
-    private lateinit var users: List<User>
     private lateinit var loginUsernameText: TextInputEditText
     private lateinit var loginPasswordText: TextInputEditText
     private lateinit var loginProgress: ProgressBar
@@ -90,6 +88,7 @@ class AddFragment : DialogFragment() {
         subscribeTopicText = view.findViewById(R.id.add_dialog_subscribe_topic_text)
         subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_subscribe_base_url_layout)
         subscribeBaseUrlLayout.background = view.background
+        subscribeBaseUrlLayout.makeEndIconSmaller(resources) // Hack!
         subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
         subscribeBaseUrlText.background = view.background
         subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
@@ -102,13 +101,6 @@ class AddFragment : DialogFragment() {
         subscribeErrorText.visibility = View.GONE
         subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
         subscribeErrorTextImage.visibility = View.GONE
-
-        // Hack: Make end icon smaller, see https://stackoverflow.com/a/57098715/1440785
-        val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
-        val endIconImageView = subscribeBaseUrlLayout.findViewById<ImageView>(R.id.text_input_end_icon)
-        endIconImageView.minimumHeight = dimension.toInt()
-        endIconImageView.minimumWidth = dimension.toInt()
-        subscribeBaseUrlLayout.requestLayout()
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
@@ -124,45 +116,11 @@ class AddFragment : DialogFragment() {
             getString(R.string.add_dialog_use_another_server_description_noinstant)
         }
 
-        // Base URL dropdown behavior; Oh my, why is this so complicated?!
-        val toggleEndIcon = {
-            if (subscribeBaseUrlText.text.isNotEmpty()) {
-                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
-            } else if (baseUrls.isEmpty()) {
-                subscribeBaseUrlLayout.setEndIconDrawable(0)
-            } else {
-                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
-            }
-        }
-        subscribeBaseUrlLayout.setEndIconOnClickListener {
-            if (subscribeBaseUrlText.text.isNotEmpty()) {
-                subscribeBaseUrlText.text.clear()
-                if (baseUrls.isEmpty()) {
-                    subscribeBaseUrlLayout.setEndIconDrawable(0)
-                } else {
-                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
-                }
-            } else if (subscribeBaseUrlText.text.isEmpty() && baseUrls.isNotEmpty()) {
-                subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_up_gray_24dp)
-                subscribeBaseUrlText.showDropDown()
-            }
-        }
-        subscribeBaseUrlText.setOnDismissListener { toggleEndIcon() }
-        subscribeBaseUrlText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                toggleEndIcon()
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Nothing
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Nothing
-            }
-        })
+        // Show/hide based on flavor
+        subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
-        // Fill autocomplete for base URL & users drop-down
+        // Add baseUrl auto-complete behavior
         lifecycleScope.launch(Dispatchers.IO) {
-            // Auto-complete
             val appBaseUrl = getString(R.string.app_base_url)
             baseUrls = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
@@ -170,26 +128,10 @@ class AddFragment : DialogFragment() {
                 .filterNot { it == appBaseUrl }
                 .sorted()
             val activity = activity ?: return@launch // We may have pressed "Cancel"
-            val adapter = ArrayAdapter(activity, R.layout.fragment_add_dialog_dropdown_item, baseUrls)
             activity.runOnUiThread {
-                subscribeBaseUrlText.threshold = 1
-                subscribeBaseUrlText.setAdapter(adapter)
-                if (baseUrls.count() == 1) {
-                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
-                    subscribeBaseUrlText.setText(baseUrls.first())
-                } else if (baseUrls.count() > 1) {
-                    subscribeBaseUrlLayout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
-                } else {
-                    subscribeBaseUrlLayout.setEndIconDrawable(0)
-                }
+                initBaseUrlDropdown(baseUrls, subscribeBaseUrlText, subscribeBaseUrlLayout)
             }
-
-            // Users dropdown
-            users = repository.getUsers()
         }
-
-        // Show/hide based on flavor
-        subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
 
         // Username/password validation on type
         val loginTextWatcher = object : TextWatcher {
@@ -384,13 +326,9 @@ class AddFragment : DialogFragment() {
                     if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
                         positiveButton.isEnabled = false
                     } else if (subscribeUseAnotherServerCheckbox.isChecked) {
-                        positiveButton.isEnabled = topic.isNotBlank()
-                                && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
-                                && baseUrl.isNotBlank()
-                                && "^https?://.+".toRegex().matches(baseUrl)
+                        positiveButton.isEnabled = validTopic(topic) && validUrl(baseUrl)
                     } else {
-                        positiveButton.isEnabled = topic.isNotBlank()
-                                && "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic)
+                        positiveButton.isEnabled = validTopic(topic)
                     }
                 }
             }

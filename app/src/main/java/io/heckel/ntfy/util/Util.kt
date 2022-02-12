@@ -6,11 +6,15 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
+import android.util.TypedValue
+import android.view.View
 import android.view.Window
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
@@ -39,6 +43,14 @@ fun topicShortUrl(baseUrl: String, topic: String) = shortUrl(topicUrl(baseUrl, t
 fun shortUrl(url: String) = url
     .replace("http://", "")
     .replace("https://", "")
+
+fun validTopic(topic: String): Boolean {
+    return "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic) // Must match server side!
+}
+
+fun validUrl(url: String): Boolean {
+    return "^https?://.+".toRegex().matches(url)
+}
 
 fun formatDateShort(timestampSecs: Long): String {
     val date = Date(timestampSecs*1000)
@@ -270,4 +282,13 @@ class ContentUriRequestBody(
             sink.writeAll(source)
         }
     }
+}
+
+// Hack: Make end icon for drop down smaller, see https://stackoverflow.com/a/57098715/1440785
+fun View.makeEndIconSmaller(resources: Resources) {
+    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
+    endIconImageView.minimumHeight = dimension.toInt()
+    endIconImageView.minimumWidth = dimension.toInt()
+    requestLayout()
 }

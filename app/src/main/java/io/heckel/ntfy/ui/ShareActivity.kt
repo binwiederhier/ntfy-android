@@ -10,12 +10,10 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.msg.ApiService
@@ -30,6 +28,9 @@ class ShareActivity : AppCompatActivity() {
     // File to share
     private var fileUri: Uri? = null
 
+    // List of base URLs used, excluding app_base_url
+    private lateinit var baseUrls: List<String>
+
     // UI elements
     private lateinit var menu: Menu
     private lateinit var sendItem: MenuItem
@@ -39,6 +40,9 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var contentFileIcon: ImageView
     private lateinit var contentText: TextView
     private lateinit var topicText: TextView
+    private lateinit var baseUrlLayout: TextInputLayout
+    private lateinit var baseUrlText: AutoCompleteTextView
+    private lateinit var useAnotherServerCheckbox: CheckBox
     private lateinit var progress: ProgressBar
     private lateinit var errorText: TextView
     private lateinit var errorImage: ImageView
@@ -48,7 +52,7 @@ class ShareActivity : AppCompatActivity() {
         setContentView(R.layout.activity_share)
 
         Log.init(this) // Init logs in all entry points
-        Log.d(TAG, "Create $this")
+        Log.d(TAG, "Create $this with intent $intent")
 
         // Action bar
         title = getString(R.string.share_title)
@@ -63,6 +67,12 @@ class ShareActivity : AppCompatActivity() {
         contentFileInfo = findViewById(R.id.share_content_file_info)
         contentFileIcon = findViewById(R.id.share_content_file_icon)
         topicText = findViewById(R.id.share_topic_text)
+        baseUrlLayout = findViewById(R.id.share_base_url_layout)
+        //baseUrlLayout.background = window.background
+        baseUrlLayout.makeEndIconSmaller(resources) // Hack!
+        baseUrlText = findViewById(R.id.share_base_url_text)
+        //baseUrlText.background = topicText.background
+        useAnotherServerCheckbox = findViewById(R.id.share_use_another_server_checkbox)
         progress = findViewById(R.id.share_progress)
         progress.visibility = View.GONE
         errorText = findViewById(R.id.share_error_text)
@@ -84,10 +94,31 @@ class ShareActivity : AppCompatActivity() {
         contentText.addTextChangedListener(textWatcher)
         topicText.addTextChangedListener(textWatcher)
 
+        // Add behavior to "use another" checkbox
+        useAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            baseUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            validateInput()
+        }
+
+        // Add baseUrl auto-complete behavior
+        lifecycleScope.launch(Dispatchers.IO) {
+            val appBaseUrl = getString(R.string.app_base_url)
+            baseUrls = repository.getSubscriptions()
+                .groupBy { it.baseUrl }
+                .map { it.key }
+                .filterNot { it == appBaseUrl }
+                .sorted()
+            val activity = this@ShareActivity
+            activity.runOnUiThread {
+                initBaseUrlDropdown(baseUrls, baseUrlText, baseUrlLayout)
+                useAnotherServerCheckbox.isChecked = baseUrls.count() == 1
+            }
+        }
+
         // Incoming intent
         val intent = intent ?: return
         if (intent.action != Intent.ACTION_SEND) return
-        if ("text/plain" == intent.type) {
+        if (intent.type == "text/plain") {
             handleSendText(intent)
         } else if (supportedImage(intent.type)) {
             handleSendImage(intent)
@@ -97,14 +128,19 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun handleSendText(intent: Intent) {
-        intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
-            contentText.text = text
-            show()
-        }
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: "(no text)"
+        Log.d(TAG, "Shared content is text: $text")
+        contentText.text = text
+        show()
     }
 
     private fun handleSendImage(intent: Intent) {
-        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
+        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+        Log.d(TAG, "Shared content is an image with URI $fileUri")
+        if (fileUri == null) {
+            Log.w(TAG, "Null URI is not allowed. Aborting.")
+            return
+        }
         try {
             val resolver = applicationContext.contentResolver
             val bitmapStream = resolver.openInputStream(fileUri!!)
@@ -121,7 +157,12 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun handleSendFile(intent: Intent) {
-        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
+        fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri
+        Log.d(TAG, "Shared content is a file with URI $fileUri")
+        if (fileUri == null) {
+            Log.w(TAG, "Null URI is not allowed. Aborting.")
+            return
+        }
         try {
             val resolver = applicationContext.contentResolver
             val info = fileStat(this, fileUri)
@@ -130,7 +171,6 @@ class ShareActivity : AppCompatActivity() {
             contentFileInfo.text = "${info.filename}\n${formatBytes(info.size)}"
             contentFileIcon.setImageResource(mimeTypeToIconResource(mimeType))
             show(file = true)
-
         } catch (e: Exception) {
             fileUri = null
             contentText.text = ""
@@ -170,7 +210,7 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun onShareClick() {
-        val baseUrl = "https://ntfy.sh" // FIXME
+        val baseUrl = getBaseUrl()
         val topic = topicText.text.toString()
         val message = contentText.text.toString()
         progress.visibility = View.VISIBLE
@@ -226,8 +266,21 @@ class ShareActivity : AppCompatActivity() {
 
     private fun validateInput() {
         if (!this::sendItem.isInitialized) return // Initialized late in onCreateOptionsMenu
-        sendItem.isEnabled = contentText.text.isNotEmpty() && topicText.text.isNotEmpty()
-        sendItem.icon.alpha = if (sendItem.isEnabled) 255 else 130
+        val enabled = if (useAnotherServerCheckbox.isChecked) {
+            contentText.text.isNotEmpty() && validTopic(topicText.text.toString()) && validUrl(baseUrlText.text.toString())
+        } else {
+            contentText.text.isNotEmpty() && topicText.text.isNotEmpty()
+        }
+        sendItem.isEnabled = enabled
+        sendItem.icon.alpha = if (enabled) 255 else 130
+    }
+
+    private fun getBaseUrl(): String {
+        return if (useAnotherServerCheckbox.isChecked) {
+            baseUrlText.text.toString()
+        } else {
+            getString(R.string.app_base_url)
+        }
     }
 
     companion object {
