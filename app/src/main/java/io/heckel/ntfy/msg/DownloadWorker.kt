@@ -18,7 +18,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.queryFilename
+import io.heckel.ntfy.util.fileName
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -132,7 +132,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     }
                 }
                 Log.d(TAG, "Attachment download: successful response, proceeding with download")
-                val actualName = queryFilename(context, uri.toString(), attachment.name)
+                val actualName = fileName(context, uri.toString(), attachment.name)
                 save(attachment.copy(
                     name = actualName,
                     size = bytesCopied,

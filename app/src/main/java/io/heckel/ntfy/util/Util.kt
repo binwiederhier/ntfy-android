@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.view.Window
 import androidx.appcompat.app.AppCompatDelegate
+import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -129,7 +130,7 @@ fun formatTitle(notification: Notification): String {
 // Checks in the most horrible way if a content URI exists; I couldn't find a better way
 fun fileExists(context: Context, contentUri: String?): Boolean {
     return try {
-        queryFilenameInternal(context, contentUri) // Throws if the file does not exist
+        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
         true
     } catch (_: Exception) {
         false
@@ -137,24 +138,34 @@ fun fileExists(context: Context, contentUri: String?): Boolean {
 }
 
 // Queries the filename of a content URI
-fun queryFilename(context: Context, contentUri: String?, fallbackName: String): String {
+fun fileName(context: Context, contentUri: String?, fallbackName: String): String {
     return try {
-        queryFilenameInternal(context, contentUri)
+        val info = fileStat(context, Uri.parse(contentUri))
+        info.filename
     } catch (_: Exception) {
         fallbackName
     }
 }
 
-fun queryFilenameInternal(context: Context, contentUri: String?): String {
+fun fileStat(context: Context, contentUri: Uri?): FileInfo {
     if (contentUri == null) throw Exception("URI is null")
     val resolver = context.applicationContext.contentResolver
-    val cursor = resolver.query(Uri.parse(contentUri), null, null, null, null) ?: throw Exception("Query returned null")
+    val cursor = resolver.query(contentUri, null, null, null, null) ?: throw Exception("Query returned null")
     return cursor.use { c ->
         val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+        val sizeIndex = c.getColumnIndexOrThrow(OpenableColumns.SIZE)
         c.moveToFirst()
-        c.getString(nameIndex)
+        FileInfo(
+            filename = c.getString(nameIndex),
+            size = c.getLong(sizeIndex)
+        )
     }
 }
+
+data class FileInfo(
+    val filename: String,
+    val size: Long,
+)
 
 // Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
 fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
@@ -195,6 +206,20 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
     return java.lang.String.format("%.${decimals}f %cB", value / 1024.0, ci.current())
 }
 
+fun mimeTypeToIconResource(mimeType: String?): Int {
+    return if (mimeType?.startsWith("image/") == true) {
+        R.drawable.ic_file_image_red_24dp
+    } else if (mimeType?.startsWith("video/") == true) {
+        R.drawable.ic_file_video_orange_24dp
+    } else if (mimeType?.startsWith("audio/") == true) {
+        R.drawable.ic_file_audio_purple_24dp
+    } else if (mimeType == "application/vnd.android.package-archive") {
+        R.drawable.ic_file_app_gray_24dp
+    } else {
+        R.drawable.ic_file_document_blue_24dp
+    }
+}
+
 fun supportedImage(mimeType: String?): Boolean {
     return listOf("image/jpeg", "image/png").contains(mimeType)
 }
@@ -231,12 +256,10 @@ class ContentUriRequestBody(
     private val contentResolver: ContentResolver,
     private val contentUri: Uri
 ) : RequestBody() {
-
     override fun contentType(): MediaType? {
         val contentType = contentResolver.getType(contentUri)
         return contentType?.toMediaTypeOrNull()
     }
-
     override fun writeTo(sink: BufferedSink) {
         val inputStream = contentResolver.openInputStream(contentUri) ?: throw IOException("Couldn't open content URI for reading")
         inputStream.source().use { source ->

@@ -68,9 +68,9 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
         private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags_text)
         private val menuButton: ImageButton = itemView.findViewById(R.id.detail_item_menu_button)
         private val attachmentImageView: ImageView = itemView.findViewById(R.id.detail_item_attachment_image)
-        private val attachmentBoxView: View = itemView.findViewById(R.id.detail_item_attachment_box)
-        private val attachmentIconView: ImageView = itemView.findViewById(R.id.detail_item_attachment_icon)
-        private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_info)
+        private val attachmentBoxView: View = itemView.findViewById(R.id.share_content_file_box)
+        private val attachmentIconView: ImageView = itemView.findViewById(R.id.share_content_file_icon)
+        private val attachmentInfoView: TextView = itemView.findViewById(R.id.share_content_file_info)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -157,17 +157,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 return
             }
             attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
-            attachmentIconView.setImageResource(if (attachment.type?.startsWith("image/") == true) {
-                R.drawable.ic_file_image_red_24dp
-            } else if (attachment.type?.startsWith("video/") == true) {
-                R.drawable.ic_file_video_orange_24dp
-            } else if (attachment.type?.startsWith("audio/") == true) {
-                R.drawable.ic_file_audio_purple_24dp
-            } else if ("application/vnd.android.package-archive" == attachment.type) {
-                R.drawable.ic_file_app_gray_24dp
-            } else {
-                R.drawable.ic_file_document_blue_24dp
-            })
+            attachmentIconView.setImageResource(mimeTypeToIconResource(attachment.type))
             val attachmentBoxPopupMenu = createAttachmentPopup(context, attachmentBoxView, notification, attachment, exists) // Heavy lifting not during on-click
             if (attachmentBoxPopupMenu != null) {
                 attachmentBoxView.setOnClickListener { attachmentBoxPopupMenu.show() }
@@ -275,7 +265,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
         }
 
         private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
-            val name = queryFilename(context, attachment.contentUri, attachment.name)
+            val name = fileName(context, attachment.contentUri, attachment.name)
             val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
             val deleted = !exists && (attachment.progress == PROGRESS_DONE || attachment.progress == PROGRESS_DELETED)

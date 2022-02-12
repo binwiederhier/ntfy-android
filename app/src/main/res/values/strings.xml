@@ -191,8 +191,10 @@
     <string name="share_content_title">Message preview</string>
     <string name="share_content_text_hint">Add the content you\'d like to share here</string>
     <string name="share_content_image_text">An image was shared with you</string>
-    <string name="share_content_image_error">Cannot read image</string>
-    <string name="share_content_file_text">An file was shared with you</string>
+    <string name="share_content_image_error">Cannot read image: %1$s</string>
+    <string name="share_content_file_text">A file was shared with you</string>
+    <string name="share_content_file_error">Cannot read file infos: %1$s</string>
+    <string name="share_successful">Message successfully published</string>
 
     <!-- Notification dialog -->
     <string name="notification_dialog_title">Pause notifications</string>

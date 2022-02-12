@@ -13,14 +13,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.util.ContentUriRequestBody
-import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.supportedImage
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -35,6 +34,9 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var menu: Menu
     private lateinit var sendItem: MenuItem
     private lateinit var contentImage: ImageView
+    private lateinit var contentFileBox: View
+    private lateinit var contentFileInfo: TextView
+    private lateinit var contentFileIcon: ImageView
     private lateinit var contentText: TextView
     private lateinit var topicText: TextView
     private lateinit var progress: ProgressBar
@@ -57,6 +59,9 @@ class ShareActivity : AppCompatActivity() {
         // UI elements
         contentText = findViewById(R.id.share_content_text)
         contentImage = findViewById(R.id.share_content_image)
+        contentFileBox = findViewById(R.id.share_content_file_box)
+        contentFileInfo = findViewById(R.id.share_content_file_info)
+        contentFileIcon = findViewById(R.id.share_content_file_icon)
         topicText = findViewById(R.id.share_topic_text)
         progress = findViewById(R.id.share_progress)
         progress.visibility = View.GONE
@@ -93,8 +98,8 @@ class ShareActivity : AppCompatActivity() {
 
     private fun handleSendText(intent: Intent) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let { text ->
-            contentImage.visibility = View.GONE
             contentText.text = text
+            show()
         }
     }
 
@@ -105,18 +110,33 @@ class ShareActivity : AppCompatActivity() {
             val bitmapStream = resolver.openInputStream(fileUri!!)
             val bitmap = BitmapFactory.decodeStream(bitmapStream)
             contentImage.setImageBitmap(bitmap)
-            contentImage.visibility = View.VISIBLE
             contentText.text = getString(R.string.share_content_image_text)
-        } catch (_: Exception) {
+            show(image = true)
+        } catch (e: Exception) {
             fileUri = null
-            contentImage.visibility = View.GONE
-            contentText.text = getString(R.string.share_content_image_error)
+            contentText.text = ""
+            errorText.text = getString(R.string.share_content_image_error, e.message)
+            show(error = true)
         }
     }
 
     private fun handleSendFile(intent: Intent) {
         fileUri = intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri ?: return
-        contentText.text = getString(R.string.share_content_file_text)
+        try {
+            val resolver = applicationContext.contentResolver
+            val info = fileStat(this, fileUri)
+            val mimeType = resolver.getType(fileUri!!)
+            contentText.text = getString(R.string.share_content_file_text)
+            contentFileInfo.text = "${info.filename}\n${formatBytes(info.size)}"
+            contentFileIcon.setImageResource(mimeTypeToIconResource(mimeType))
+            show(file = true)
+
+        } catch (e: Exception) {
+            fileUri = null
+            contentText.text = ""
+            errorText.text = getString(R.string.share_content_file_error, e.message)
+            show(error = true)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -142,6 +162,13 @@ class ShareActivity : AppCompatActivity() {
         }
     }
 
+    private fun show(image: Boolean = false, file: Boolean = false, error: Boolean = false) {
+        contentImage.visibility = if (image) View.VISIBLE else View.GONE
+        contentFileBox.visibility = if (file) View.VISIBLE else View.GONE
+        errorImage.visibility = if (error) View.VISIBLE else View.GONE
+        errorText.visibility = if (error) View.VISIBLE else View.GONE
+    }
+
     private fun onShareClick() {
         val baseUrl = "https://ntfy.sh" // FIXME
         val topic = topicText.text.toString()
@@ -150,6 +177,11 @@ class ShareActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val user = repository.getUser(baseUrl)
             try {
+                val filename = if (fileUri != null) {
+                    fileStat(this@ShareActivity, fileUri).filename
+                } else {
+                    ""
+                }
                 val body = if (fileUri != null) {
                     val resolver = applicationContext.contentResolver
                     ContentUriRequestBody(resolver, fileUri!!)
@@ -165,10 +197,14 @@ class ShareActivity : AppCompatActivity() {
                     priority = 3,
                     tags = emptyList(),
                     delay = "",
-                    body = body // May be null
+                    body = body, // May be null
+                    filename = filename // May be empty
                 )
                 runOnUiThread {
                     finish()
+                    Toast
+                        .makeText(this@ShareActivity, getString(R.string.share_successful), Toast.LENGTH_LONG)
+                        .show()
                 }
             } catch (e: Exception) {
                 runOnUiThread {

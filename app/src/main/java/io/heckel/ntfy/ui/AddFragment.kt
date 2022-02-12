@@ -110,7 +110,6 @@ class AddFragment : DialogFragment() {
         endIconImageView.minimumWidth = dimension.toInt()
         subscribeBaseUrlLayout.requestLayout()
 
-
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
         loginPasswordText = view.findViewById(R.id.add_dialog_login_password)

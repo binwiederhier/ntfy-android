@@ -29,7 +29,7 @@ class ApiService {
         .build()
     private val parser = NotificationParser()
 
-    fun publish(baseUrl: String, topic: String, user: User?, message: String, title: String, priority: Int, tags: List<String>, delay: String, body: RequestBody? = null) {
+    fun publish(baseUrl: String, topic: String, user: User?, message: String, title: String, priority: Int, tags: List<String>, delay: String, body: RequestBody? = null, filename: String = "") {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
@@ -45,6 +45,9 @@ class ApiService {
         }
         if (delay.isNotEmpty()) {
             builder.addHeader("X-Delay", delay)
+        }
+        if (filename.isNotEmpty()) {
+            builder.addHeader("X-Filename", filename)
         }
         if (body != null) {
             builder
