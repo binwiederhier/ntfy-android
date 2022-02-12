@@ -129,6 +129,7 @@
     <string name="detail_test_message_error">Cannot send message: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Cannot send message: Anonymous publishing not allowed</string>
     <string name="detail_test_message_error_unauthorized_user">Cannot send message: User %1$s not authorized</string>
+    <string name="detail_test_message_error_too_large">Cannot send message: Attachment too large</string>
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>

@@ -177,16 +177,12 @@ class ShareActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val user = repository.getUser(baseUrl)
             try {
-                val filename = if (fileUri != null) {
-                    fileStat(this@ShareActivity, fileUri).filename
+                val (filename, body) = if (fileUri != null) {
+                    val stat = fileStat(this@ShareActivity, fileUri)
+                    val body = ContentUriRequestBody(applicationContext.contentResolver, fileUri!!, stat.size)
+                    Pair(stat.filename, body)
                 } else {
-                    ""
-                }
-                val body = if (fileUri != null) {
-                    val resolver = applicationContext.contentResolver
-                    ContentUriRequestBody(resolver, fileUri!!)
-                } else {
-                    null
+                    Pair("", null)
                 }
                 api.publish(
                     baseUrl = baseUrl,
@@ -198,7 +194,7 @@ class ShareActivity : AppCompatActivity() {
                     tags = emptyList(),
                     delay = "",
                     body = body, // May be null
-                    filename = filename // May be empty
+                    filename = filename, // May be empty
                 )
                 runOnUiThread {
                     finish()
@@ -207,9 +203,20 @@ class ShareActivity : AppCompatActivity() {
                         .show()
                 }
             } catch (e: Exception) {
+                val message = if (e is ApiService.UnauthorizedException) {
+                    if (e.user != null) {
+                        getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
+                    }  else {
+                        getString(R.string.detail_test_message_error_unauthorized_anon)
+                    }
+                } else if (e is ApiService.EntityTooLargeException) {
+                    getString(R.string.detail_test_message_error_too_large)
+                } else {
+                    getString(R.string.detail_test_message_error, e.message)
+                }
                 runOnUiThread {
                     progress.visibility = View.GONE
-                    errorText.text = e.message
+                    errorText.text = message
                     errorImage.visibility = View.VISIBLE
                     errorText.visibility = View.VISIBLE
                 }

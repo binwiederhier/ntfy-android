@@ -1,15 +1,10 @@
 package io.heckel.ntfy.msg
 
-import android.net.Uri
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.topicUrl
-import io.heckel.ntfy.util.topicUrlAuth
-import io.heckel.ntfy.util.topicUrlJson
-import io.heckel.ntfy.util.topicUrlJsonPoll
+import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -24,12 +19,29 @@ class ApiService {
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
+    private val publishClient = OkHttpClient.Builder()
+        .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
     private val subscriberClient = OkHttpClient.Builder()
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
         .build()
     private val parser = NotificationParser()
 
-    fun publish(baseUrl: String, topic: String, user: User?, message: String, title: String, priority: Int, tags: List<String>, delay: String, body: RequestBody? = null, filename: String = "") {
+    fun publish(
+        baseUrl: String,
+        topic: String,
+        user: User? = null,
+        message: String,
+        title: String = "",
+        priority: Int = 3,
+        tags: List<String> = emptyList(),
+        delay: String = "",
+        body: RequestBody? = null,
+        filename: String = ""
+    ) {
         val url = topicUrl(baseUrl, topic)
         Log.d(TAG, "Publishing to $url")
 
@@ -56,11 +68,14 @@ class ApiService {
         } else {
             builder.put(message.toRequestBody())
         }
-        client.newCall(builder.build()).execute().use { response ->
+        val request = builder.build()
+        Log.d(TAG, request.toString())
+        publishClient.newCall(request).execute().use { response ->
             if (response.code == 401 || response.code == 403) {
                 throw UnauthorizedException(user)
-            }
-            if (!response.isSuccessful) {
+            } else if (response.code == 413) {
+                throw EntityTooLargeException()
+            } else if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when publishing to $url")
             }
             Log.d(TAG, "Successfully published to $url")
@@ -149,6 +164,7 @@ class ApiService {
     }
 
     class UnauthorizedException(val user: User?) : Exception()
+    class EntityTooLargeException() : Exception()
 
     companion object {
         val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"

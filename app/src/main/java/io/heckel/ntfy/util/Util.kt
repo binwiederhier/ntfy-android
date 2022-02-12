@@ -253,15 +253,19 @@ fun isDarkThemeOn(context: Context): Boolean {
 
 // https://cketti.de/2020/05/23/content-uris-and-okhttp/
 class ContentUriRequestBody(
-    private val contentResolver: ContentResolver,
-    private val contentUri: Uri
+    private val resolver: ContentResolver,
+    private val uri: Uri,
+    private val size: Long
 ) : RequestBody() {
+    override fun contentLength(): Long {
+        return size
+    }
     override fun contentType(): MediaType? {
-        val contentType = contentResolver.getType(contentUri)
+        val contentType = resolver.getType(uri)
         return contentType?.toMediaTypeOrNull()
     }
     override fun writeTo(sink: BufferedSink) {
-        val inputStream = contentResolver.openInputStream(contentUri) ?: throw IOException("Couldn't open content URI for reading")
+        val inputStream = resolver.openInputStream(uri) ?: throw IOException("Couldn't open content URI for reading")
         inputStream.source().use { source ->
             sink.writeAll(source)
         }
