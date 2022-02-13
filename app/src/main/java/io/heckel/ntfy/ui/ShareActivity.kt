@@ -156,10 +156,11 @@ class ShareActivity : AppCompatActivity() {
 
         // Incoming intent
         val intent = intent ?: return
+        val type = intent.type ?: return
         if (intent.action != Intent.ACTION_SEND) return
-        if (intent.type == "text/plain") {
+        if (type == "text/plain") {
             handleSendText(intent)
-        } else if (supportedImage(intent.type)) {
+        } else if (type.startsWith("image/")) {
             handleSendImage(intent)
         } else {
             handleSendFile(intent)

@@ -1,6 +1,7 @@
 Features:
-* Dark theme: Improvements around style and contrast (#119, thanks @kzshantonu for reporting)
 * Automatically delete notifications (#71, thanks @arjan-s for reporting)
+* Share to topic feature (#131, thanks u/emptymatrix for reporting)
+* Dark theme: Improvements around style and contrast (#119, thanks @kzshantonu for reporting)
 
 Bug fixes:
 * Do not attempt to download attachments if they are already expired (#135)
