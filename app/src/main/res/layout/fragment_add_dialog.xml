@@ -77,7 +77,8 @@
                     android:visibility="gone"
                     app:endIconMode="custom"
                     app:hintEnabled="false"
-                    app:boxBackgroundColor="@null" app:layout_constraintStart_toStartOf="parent"
+                    app:boxBackgroundColor="@null"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_use_another_server_description">
                 <AutoCompleteTextView
