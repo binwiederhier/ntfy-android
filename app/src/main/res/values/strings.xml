@@ -195,6 +195,8 @@
     <string name="share_content_image_error">Cannot read image: %1$s</string>
     <string name="share_content_file_text">A file was shared with you</string>
     <string name="share_content_file_error">Cannot read file infos: %1$s</string>
+    <string name="share_topic_title">Share to</string>
+    <string name="share_previous_topics">Last topics</string>
     <string name="share_successful">Message successfully published</string>
 
     <!-- Notification dialog -->

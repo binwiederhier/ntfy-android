@@ -28,7 +28,7 @@ class ShareActivity : AppCompatActivity() {
     // File to share
     private var fileUri: Uri? = null
 
-    // List of base URLs used, excluding app_base_url
+    // Lazy-loaded things from Repository
     private lateinit var baseUrls: List<String>
 
     // UI elements
@@ -114,6 +114,10 @@ class ShareActivity : AppCompatActivity() {
                 useAnotherServerCheckbox.isChecked = baseUrls.count() == 1
             }
         }
+
+        // Populate "last topics"
+        val lastTopics = repository.getLastShareTopics()
+        Log.d(TAG, "last topics: $lastTopics")
 
         // Incoming intent
         val intent = intent ?: return
@@ -229,14 +233,11 @@ class ShareActivity : AppCompatActivity() {
                     topic = topic,
                     user = user,
                     message = message,
-                    title = "",
-                    priority = 3,
-                    tags = emptyList(),
-                    delay = "",
                     body = body, // May be null
                     filename = filename, // May be empty
                 )
                 runOnUiThread {
+                    repository.addLastShareTopic(topicUrl(baseUrl, topic))
                     finish()
                     Toast
                         .makeText(this@ShareActivity, getString(R.string.share_successful), Toast.LENGTH_LONG)

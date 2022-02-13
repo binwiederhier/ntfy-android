@@ -12,8 +12,7 @@ class Application : Application() {
         Database.getInstance(this)
     }
     val repository by lazy {
-        val sharedPrefs = applicationContext.getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
-        val repository = Repository.getInstance(sharedPrefs, database)
+        val repository = Repository.getInstance(applicationContext)
         if (repository.getRecordLogs()) {
             Log.setRecord(true)
         }

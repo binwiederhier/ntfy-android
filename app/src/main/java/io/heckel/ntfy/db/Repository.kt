@@ -7,6 +7,7 @@ import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -346,6 +347,18 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return false
     }
 
+    fun getLastShareTopics(): List<String> {
+        val topics = sharedPrefs.getString(SHARED_PREFS_LAST_TOPICS, "") ?: ""
+        return topics.split("\n").filter { validUrl(it) }
+    }
+
+    fun addLastShareTopic(topic: String) {
+        val topics = (getLastShareTopics() + topic).takeLast(LAST_TOPICS_COUNT)
+        sharedPrefs.edit()
+            .putString(SHARED_PREFS_LAST_TOPICS, topics.joinToString(separator = "\n"))
+            .apply()
+    }
+
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
         return list.map { s ->
             val connectionState = connectionStates.getOrElse(s.id) { ConnectionState.NOT_APPLICABLE }
@@ -422,6 +435,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
+        const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
+
+        private const val LAST_TOPICS_COUNT = 5
 
         const val MUTED_UNTIL_SHOW_ALL = 0L
         const val MUTED_UNTIL_FOREVER = 1L
@@ -456,7 +472,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             return getInstance(sharedPrefs, database)
         }
 
-        fun getInstance(sharedPrefs: SharedPreferences, database: Database): Repository {
+        private fun getInstance(sharedPrefs: SharedPreferences, database: Database): Repository {
             return synchronized(Repository::class) {
                 val newInstance = instance ?: Repository(sharedPrefs, database)
                 instance = newInstance

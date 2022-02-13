@@ -43,9 +43,7 @@ class NotificationFragment : DialogFragment() {
         }
 
         // Dependencies
-        val database = Database.getInstance(requireActivity().applicationContext)
-        val sharedPrefs = requireActivity().getSharedPreferences(Repository.SHARED_PREFS_ID, Context.MODE_PRIVATE)
-        repository = Repository.getInstance(sharedPrefs, database)
+        repository = Repository.getInstance(requireContext())
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_notification_dialog, null)
