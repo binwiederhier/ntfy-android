@@ -7,15 +7,15 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +31,9 @@ class ShareActivity : AppCompatActivity() {
     // Lazy-loaded things from Repository
     private lateinit var baseUrls: List<String>
 
+    // Context-dependent things
+    private lateinit var appBaseUrl: String
+
     // UI elements
     private lateinit var menu: Menu
     private lateinit var sendItem: MenuItem
@@ -43,6 +46,7 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: AutoCompleteTextView
     private lateinit var useAnotherServerCheckbox: CheckBox
+    private lateinit var lastTopicsList: RecyclerView
     private lateinit var progress: ProgressBar
     private lateinit var errorText: TextView
     private lateinit var errorImage: ImageView
@@ -60,6 +64,9 @@ class ShareActivity : AppCompatActivity() {
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // Context-dependent things
+        appBaseUrl = getString(R.string.app_base_url)
+
         // UI elements
         contentText = findViewById(R.id.share_content_text)
         contentImage = findViewById(R.id.share_content_image)
@@ -73,6 +80,7 @@ class ShareActivity : AppCompatActivity() {
         baseUrlText = findViewById(R.id.share_base_url_text)
         //baseUrlText.background = topicText.background
         useAnotherServerCheckbox = findViewById(R.id.share_use_another_server_checkbox)
+        lastTopicsList = findViewById(R.id.share_last_topics)
         progress = findViewById(R.id.share_progress)
         progress.visibility = View.GONE
         errorText = findViewById(R.id.share_error_text)
@@ -93,6 +101,7 @@ class ShareActivity : AppCompatActivity() {
         }
         contentText.addTextChangedListener(textWatcher)
         topicText.addTextChangedListener(textWatcher)
+        baseUrlText.addTextChangedListener(textWatcher)
 
         // Add behavior to "use another" checkbox
         useAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
@@ -100,9 +109,25 @@ class ShareActivity : AppCompatActivity() {
             validateInput()
         }
 
+        // Populate "last topics"
+        val reversedLastTopics = repository.getLastShareTopics().reversed()
+        lastTopicsList.adapter = TopicAdapter(reversedLastTopics) { topicUrl ->
+            try {
+                val (baseUrl, topic) = splitTopicUrl(topicUrl)
+                topicText.text = topic
+                if (baseUrl == appBaseUrl) {
+                    useAnotherServerCheckbox.isChecked = false
+                } else {
+                    useAnotherServerCheckbox.isChecked = true
+                    baseUrlText.setText(baseUrl)
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Invalid topicUrl $topicUrl", e)
+            }
+        }
+
         // Add baseUrl auto-complete behavior
         lifecycleScope.launch(Dispatchers.IO) {
-            val appBaseUrl = getString(R.string.app_base_url)
             baseUrls = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
                 .map { it.key }
@@ -111,13 +136,19 @@ class ShareActivity : AppCompatActivity() {
             val activity = this@ShareActivity
             activity.runOnUiThread {
                 initBaseUrlDropdown(baseUrls, baseUrlText, baseUrlLayout)
-                useAnotherServerCheckbox.isChecked = baseUrls.count() == 1
+                useAnotherServerCheckbox.isChecked = if (reversedLastTopics.isNotEmpty()) {
+                    try {
+                        val (baseUrl, _) = splitTopicUrl(reversedLastTopics.first())
+                        baseUrl != appBaseUrl
+                    } catch (_: Exception) {
+                        false
+                    }
+                } else {
+                    baseUrls.count() == 1
+                }
+                baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
             }
         }
-
-        // Populate "last topics"
-        val lastTopics = repository.getLastShareTopics()
-        Log.d(TAG, "last topics: $lastTopics")
 
         // Incoming intent
         val intent = intent ?: return
@@ -281,6 +312,24 @@ class ShareActivity : AppCompatActivity() {
             baseUrlText.text.toString()
         } else {
             getString(R.string.app_base_url)
+        }
+    }
+
+    class TopicAdapter(private val topicUrls: List<String>, val onClick: (String) -> Unit) : RecyclerView.Adapter<TopicAdapter.ViewHolder>() {
+        override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.fragment_share_item, viewGroup, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            viewHolder.topicName.text = shortUrl(topicUrls[position])
+            viewHolder.view.setOnClickListener { onClick(topicUrls[position]) }
+        }
+
+        override fun getItemCount() = topicUrls.size
+
+        class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+            val topicName: TextView = view.findViewById(R.id.share_item_text)
         }
     }
 

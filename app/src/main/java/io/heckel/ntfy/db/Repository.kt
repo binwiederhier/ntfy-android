@@ -353,7 +353,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun addLastShareTopic(topic: String) {
-        val topics = (getLastShareTopics() + topic).takeLast(LAST_TOPICS_COUNT)
+        val topics = (getLastShareTopics().filterNot { it == topic } + topic).takeLast(LAST_TOPICS_COUNT)
         sharedPrefs.edit()
             .putString(SHARED_PREFS_LAST_TOPICS, topics.joinToString(separator = "\n"))
             .apply()
@@ -437,7 +437,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
-        private const val LAST_TOPICS_COUNT = 5
+        private const val LAST_TOPICS_COUNT = 3
 
         const val MUTED_UNTIL_SHOW_ALL = 0L
         const val MUTED_UNTIL_FOREVER = 1L

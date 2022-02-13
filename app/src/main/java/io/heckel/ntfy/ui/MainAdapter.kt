@@ -13,7 +13,6 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*

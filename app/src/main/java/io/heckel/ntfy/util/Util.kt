@@ -44,6 +44,11 @@ fun shortUrl(url: String) = url
     .replace("http://", "")
     .replace("https://", "")
 
+fun splitTopicUrl(topicUrl: String): Pair<String, String> {
+    if (topicUrl.lastIndexOf("/") == -1) throw Exception("Invalid argument $topicUrl")
+    return Pair(topicUrl.substringBeforeLast("/"), topicUrl.substringAfterLast("/"))
+}
+
 fun validTopic(topic: String): Boolean {
     return "[-_A-Za-z0-9]{1,64}".toRegex().matches(topic) // Must match server side!
 }
