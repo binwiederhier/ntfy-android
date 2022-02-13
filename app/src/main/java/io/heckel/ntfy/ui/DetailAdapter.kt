@@ -68,9 +68,9 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
         private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags_text)
         private val menuButton: ImageButton = itemView.findViewById(R.id.detail_item_menu_button)
         private val attachmentImageView: ImageView = itemView.findViewById(R.id.detail_item_attachment_image)
-        private val attachmentBoxView: View = itemView.findViewById(R.id.share_content_file_box)
-        private val attachmentIconView: ImageView = itemView.findViewById(R.id.share_content_file_icon)
-        private val attachmentInfoView: TextView = itemView.findViewById(R.id.share_content_file_info)
+        private val attachmentBoxView: View = itemView.findViewById(R.id.detail_item_attachment_file_box)
+        private val attachmentIconView: ImageView = itemView.findViewById(R.id.detail_item_attachment_file_icon)
+        private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_file_info)
 
         fun bind(notification: Notification) {
             this.notification = notification

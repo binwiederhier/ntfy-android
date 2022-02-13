@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:paddingBottom="3dp"
-                android:text="@string/share_previous_topics"
+                android:text="@string/share_suggested_topics"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintTop_toBottomOf="@id/share_base_url_layout" app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="13dp"/>

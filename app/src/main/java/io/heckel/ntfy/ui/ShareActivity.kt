@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
@@ -109,26 +108,32 @@ class ShareActivity : AppCompatActivity() {
             validateInput()
         }
 
-        // Populate "last topics"
-        val reversedLastTopics = repository.getLastShareTopics().reversed()
-        lastTopicsList.adapter = TopicAdapter(reversedLastTopics) { topicUrl ->
-            try {
-                val (baseUrl, topic) = splitTopicUrl(topicUrl)
-                topicText.text = topic
-                if (baseUrl == appBaseUrl) {
-                    useAnotherServerCheckbox.isChecked = false
-                } else {
-                    useAnotherServerCheckbox.isChecked = true
-                    baseUrlText.setText(baseUrl)
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Invalid topicUrl $topicUrl", e)
-            }
-        }
-
-        // Add baseUrl auto-complete behavior
+        // Things that need the database
         lifecycleScope.launch(Dispatchers.IO) {
-            baseUrls = repository.getSubscriptions()
+            // Populate "suggested topics"
+            val subscriptions = repository.getSubscriptions()
+            val lastShareTopics = repository.getLastShareTopics()
+            val subscribedTopics = subscriptions
+                .map { topicUrl(it.baseUrl, it.topic) }
+                .subtract(lastShareTopics.toSet())
+            val suggestedTopics = lastShareTopics.reversed() + subscribedTopics
+            lastTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
+                try {
+                    val (baseUrl, topic) = splitTopicUrl(topicUrl)
+                    topicText.text = topic
+                    if (baseUrl == appBaseUrl) {
+                        useAnotherServerCheckbox.isChecked = false
+                    } else {
+                        useAnotherServerCheckbox.isChecked = true
+                        baseUrlText.setText(baseUrl)
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Invalid topicUrl $topicUrl", e)
+                }
+            }
+
+            // Add baseUrl auto-complete behavior
+            baseUrls = subscriptions
                 .groupBy { it.baseUrl }
                 .map { it.key }
                 .filterNot { it == appBaseUrl }
@@ -136,9 +141,9 @@ class ShareActivity : AppCompatActivity() {
             val activity = this@ShareActivity
             activity.runOnUiThread {
                 initBaseUrlDropdown(baseUrls, baseUrlText, baseUrlLayout)
-                useAnotherServerCheckbox.isChecked = if (reversedLastTopics.isNotEmpty()) {
+                useAnotherServerCheckbox.isChecked = if (suggestedTopics.isNotEmpty()) {
                     try {
-                        val (baseUrl, _) = splitTopicUrl(reversedLastTopics.first())
+                        val (baseUrl, _) = splitTopicUrl(suggestedTopics.first())
                         baseUrl != appBaseUrl
                     } catch (_: Exception) {
                         false

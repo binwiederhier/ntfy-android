@@ -63,7 +63,7 @@ class ApiService {
         }
         if (body != null) {
             builder
-                .addHeader("X-Message", message)
+                .addHeader("X-Message", message.replace("\n", "\\n"))
                 .put(body)
         } else {
             builder.put(message.toRequestBody())
