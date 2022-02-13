@@ -27,9 +27,6 @@ class ShareActivity : AppCompatActivity() {
     // File to share
     private var fileUri: Uri? = null
 
-    // Lazy-loaded things from Repository
-    private lateinit var baseUrls: List<String>
-
     // Context-dependent things
     private lateinit var appBaseUrl: String
 
@@ -67,6 +64,7 @@ class ShareActivity : AppCompatActivity() {
         appBaseUrl = getString(R.string.app_base_url)
 
         // UI elements
+        val root: View = findViewById(R.id.share_root_view)
         contentText = findViewById(R.id.share_content_text)
         contentImage = findViewById(R.id.share_content_image)
         contentFileBox = findViewById(R.id.share_content_file_box)
@@ -74,10 +72,10 @@ class ShareActivity : AppCompatActivity() {
         contentFileIcon = findViewById(R.id.share_content_file_icon)
         topicText = findViewById(R.id.share_topic_text)
         baseUrlLayout = findViewById(R.id.share_base_url_layout)
-        //baseUrlLayout.background = window.background
+        baseUrlLayout.background = root.background
         baseUrlLayout.makeEndIconSmaller(resources) // Hack!
         baseUrlText = findViewById(R.id.share_base_url_text)
-        //baseUrlText.background = topicText.background
+        baseUrlText.background = root.background
         useAnotherServerCheckbox = findViewById(R.id.share_use_another_server_checkbox)
         lastTopicsList = findViewById(R.id.share_last_topics)
         progress = findViewById(R.id.share_progress)
@@ -117,6 +115,12 @@ class ShareActivity : AppCompatActivity() {
                 .map { topicUrl(it.baseUrl, it.topic) }
                 .subtract(lastShareTopics.toSet())
             val suggestedTopics = lastShareTopics.reversed() + subscribedTopics
+            val baseUrls = suggestedTopics
+                .mapNotNull {
+                    try { splitTopicUrl(it).first }
+                    catch (_: Exception) { null }
+                }
+                .filterNot { it == appBaseUrl }
             lastTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
                 try {
                     val (baseUrl, topic) = splitTopicUrl(topicUrl)
@@ -133,11 +137,6 @@ class ShareActivity : AppCompatActivity() {
             }
 
             // Add baseUrl auto-complete behavior
-            baseUrls = subscriptions
-                .groupBy { it.baseUrl }
-                .map { it.key }
-                .filterNot { it == appBaseUrl }
-                .sorted()
             val activity = this@ShareActivity
             activity.runOnUiThread {
                 initBaseUrlDropdown(baseUrls, baseUrlText, baseUrlLayout)
