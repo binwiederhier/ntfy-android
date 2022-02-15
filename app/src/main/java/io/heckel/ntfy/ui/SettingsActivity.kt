@@ -325,6 +325,28 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+
+            // Default Base URL
+            val defaultBaseUrlPrefId = context?.getString(R.string.settings_advanced_default_base_url_key) ?: return
+            val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
+            defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
+            defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String, value: String?) {
+                    val baseUrl = value ?: return
+                    repository.setDefaultBaseUrl(baseUrl)
+                }
+                override fun getString(key: String, defValue: String?): String? {
+                    return repository.getDefaultBaseUrl()
+                }
+            }
+            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
+                if (TextUtils.isEmpty(pref.text)) {
+                    getString(R.string.settings_advanced_default_base_url_default_summary, appBaseUrl)
+                } else {
+                    pref.text
+                }
+            }
+
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
             val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)

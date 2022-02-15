@@ -58,9 +58,16 @@
         <EditTextPreference
                 app:key="@string/settings_unified_push_base_url_key"
                 app:title="@string/settings_unified_push_base_url_title"
-                app:dependency="@string/settings_unified_push_enabled_key"/>
+                app:dependency="@string/settings_unified_push_enabled_key"
+                app:dialogLayout="@layout/preference_dialog_edittext_edited"
+                app:dialogMessage="@string/settings_unified_push_base_url_message"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
+        <EditTextPreference
+                app:key="@string/settings_advanced_default_base_url_key"
+                app:title="@string/settings_advanced_default_base_url_title"
+                app:dialogLayout="@layout/preference_dialog_edittext_edited"
+                app:dialogMessage="@string/settings_advanced_default_base_url_message"/>
         <SwitchPreference
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"

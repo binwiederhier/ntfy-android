@@ -320,6 +320,23 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         }
     }
 
+    fun getDefaultBaseUrl(): String? {
+        return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null)
+    }
+
+    fun setDefaultBaseUrl(baseUrl: String) {
+        if (baseUrl == "") {
+            sharedPrefs
+                .edit()
+                .remove(SHARED_PREFS_DEFAULT_BASE_URL)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
+                .apply()
+        }
+    }
+
     fun isGlobalMuted(): Boolean {
         val mutedUntil = getGlobalMutedUntil()
         return mutedUntil == 1L || (mutedUntil > 1L && mutedUntil > System.currentTimeMillis()/1000)
@@ -435,6 +452,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
+        const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
         private const val LAST_TOPICS_COUNT = 3

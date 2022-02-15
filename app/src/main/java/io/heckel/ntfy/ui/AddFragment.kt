@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -30,6 +29,7 @@ class AddFragment : DialogFragment() {
 
     private lateinit var repository: Repository
     private lateinit var subscribeListener: SubscribeListener
+    private lateinit var appBaseUrl: String
 
     private lateinit var subscribeView: View
     private lateinit var loginView: View
@@ -56,8 +56,6 @@ class AddFragment : DialogFragment() {
     private lateinit var loginErrorText: TextView
     private lateinit var loginErrorTextImage: View
 
-    private lateinit var baseUrls: List<String> // List of base URLs already used, excluding app_base_url
-
     interface SubscribeListener {
         fun onSubscribe(topic: String, baseUrl: String, instant: Boolean)
     }
@@ -73,6 +71,7 @@ class AddFragment : DialogFragment() {
         }
 
         // Dependencies (Fragments need a default constructor)
+        appBaseUrl = getString(R.string.app_base_url)
         repository = Repository.getInstance(requireActivity())
 
         // Build root view
@@ -121,12 +120,15 @@ class AddFragment : DialogFragment() {
 
         // Add baseUrl auto-complete behavior
         lifecycleScope.launch(Dispatchers.IO) {
-            val appBaseUrl = getString(R.string.app_base_url)
-            baseUrls = repository.getSubscriptions()
+            val defaultBaseUrl = repository.getDefaultBaseUrl()
+            val baseUrlsRaw = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
                 .map { it.key }
-                .filterNot { it == appBaseUrl }
-                .sorted()
+            val baseUrls = if (defaultBaseUrl != null) {
+                (baseUrlsRaw.filterNot { it == defaultBaseUrl } + appBaseUrl).sorted()
+            } else {
+                baseUrlsRaw.filterNot { it == appBaseUrl }.sorted()
+            }
             val activity = activity ?: return@launch // We may have pressed "Cancel"
             activity.runOnUiThread {
                 initBaseUrlDropdown(baseUrls, subscribeBaseUrlText, subscribeBaseUrlLayout)
@@ -205,7 +207,6 @@ class AddFragment : DialogFragment() {
                 }
                 validateInputSubscribeView()
             }
-            subscribeUseAnotherServerCheckbox.isChecked = this::baseUrls.isInitialized && baseUrls.count() == 1
 
             // Focus topic text (keyboard is shown too, see above)
             subscribeTopicText.requestFocus()
@@ -365,7 +366,7 @@ class AddFragment : DialogFragment() {
         return if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeBaseUrlText.text.toString()
         } else {
-            getString(R.string.app_base_url)
+            return repository.getDefaultBaseUrl() ?: appBaseUrl
         }
     }
 

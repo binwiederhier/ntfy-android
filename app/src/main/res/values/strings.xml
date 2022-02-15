@@ -297,8 +297,13 @@
     <string name="settings_unified_push_enabled_summary_off">Apps cannot use ntfy as distributor</string>
     <string name="settings_unified_push_base_url_key">UnifiedPushBaseURL</string>
     <string name="settings_unified_push_base_url_title">Server URL</string>
+    <string name="settings_unified_push_base_url_message">Set the root server URL to be used for new UnifiedPush topics here.</string>
     <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_default_base_url_key">DefaultBaseURL</string>
+    <string name="settings_advanced_default_base_url_title">Default Server URL</string>
+    <string name="settings_advanced_default_base_url_message">Set the default server URL to be used for new topics here. Topics on other hosts can still be subscribed to using the "use another server" checkbox.</string>
+    <string name="settings_advanced_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
