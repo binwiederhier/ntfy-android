@@ -283,50 +283,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
-            // UnifiedPush enabled
-            val upEnabledPrefId = context?.getString(R.string.settings_unified_push_enabled_key) ?: return
-            val upEnabled: SwitchPreference? = findPreference(upEnabledPrefId)
-            upEnabled?.isChecked = repository.getUnifiedPushEnabled()
-            upEnabled?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setUnifiedPushEnabled(value)
-                }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getUnifiedPushEnabled()
-                }
-            }
-            upEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
-                if (pref.isChecked) {
-                    getString(R.string.settings_unified_push_enabled_summary_on)
-                } else {
-                    getString(R.string.settings_unified_push_enabled_summary_off)
-                }
-            }
-
-            // UnifiedPush Base URL
-            val appBaseUrl = context?.getString(R.string.app_base_url) ?: return
-            val upBaseUrlPrefId = context?.getString(R.string.settings_unified_push_base_url_key) ?: return
-            val upBaseUrl: EditTextPreference? = findPreference(upBaseUrlPrefId)
-            upBaseUrl?.text = repository.getUnifiedPushBaseUrl() ?: ""
-            upBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String, value: String?) {
-                    val baseUrl = value ?: return
-                    repository.setUnifiedPushBaseUrl(baseUrl)
-                }
-                override fun getString(key: String, defValue: String?): String? {
-                    return repository.getUnifiedPushBaseUrl()
-                }
-            }
-            upBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
-                if (TextUtils.isEmpty(pref.text)) {
-                    getString(R.string.settings_unified_push_base_url_default_summary, appBaseUrl)
-                } else {
-                    pref.text
-                }
-            }
-
-
             // Default Base URL
+            val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_advanced_default_base_url_key) ?: return
             val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
             defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""

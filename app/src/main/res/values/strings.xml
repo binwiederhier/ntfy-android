@@ -82,10 +82,10 @@
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">
-        You can subscribe to topics from your own server. This option requires a foreground service.
+        You can subscribe to topics from another server. This option requires a foreground service.
     </string>
     <string name="add_dialog_use_another_server_description_noinstant">
-        You can subscribe to topics from your own server. Type the server URL below.
+        You can subscribe to topics from another server. Type the server URL below.
     </string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">
@@ -133,7 +133,6 @@
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery enabled</string>
     <string name="detail_instant_delivery_disabled">Instant delivery disabled</string>
-    <string name="detail_instant_info">Instant delivery is enabled</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notification deleted</string>
     <string name="detail_item_snack_undo">Undo</string>
@@ -166,7 +165,6 @@
     <string name="detail_menu_notifications_disabled_until">Notifications disabled until %1$s</string>
     <string name="detail_menu_enable_instant">Enable instant delivery</string>
     <string name="detail_menu_disable_instant">Disable instant delivery</string>
-    <string name="detail_menu_instant_info">Instant delivery enabled</string>
     <string name="detail_menu_test">Send test notification</string>
     <string name="detail_menu_copy_url">Copy topic address</string>
     <string name="detail_menu_clear">Clear all notifications</string>
@@ -226,6 +224,7 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="settings_general_header">General</string>
     <string name="settings_notifications_header">Notifications</string>
     <string name="settings_notifications_muted_until_key">MutedUntil</string>
     <string name="settings_notifications_muted_until_title">Pause notifications</string>
@@ -289,20 +288,10 @@
     <string name="settings_users_prefs_user_add">Add users</string>
     <string name="settings_users_prefs_user_add_title">Add new user</string>
     <string name="settings_users_prefs_user_add_summary">Create a new user for a new server</string>
-    <string name="settings_unified_push_header">UnifiedPush</string>
-    <string name="settings_unified_push_header_summary">Allows other apps to use ntfy as a message distributor. Find out more at unifiedpush.org.</string>
-    <string name="settings_unified_push_enabled_key">UnifiedPushEnabled</string>
-    <string name="settings_unified_push_enabled_title">Allow distributor use</string>
-    <string name="settings_unified_push_enabled_summary_on">Apps can use ntfy as distributor</string>
-    <string name="settings_unified_push_enabled_summary_off">Apps cannot use ntfy as distributor</string>
-    <string name="settings_unified_push_base_url_key">UnifiedPushBaseURL</string>
-    <string name="settings_unified_push_base_url_title">Server URL</string>
-    <string name="settings_unified_push_base_url_message">Set the root server URL to be used for new UnifiedPush topics here.</string>
-    <string name="settings_unified_push_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_header">Advanced</string>
     <string name="settings_advanced_default_base_url_key">DefaultBaseURL</string>
-    <string name="settings_advanced_default_base_url_title">Default Server URL</string>
-    <string name="settings_advanced_default_base_url_message">Set the default server URL to be used for new topics here. Topics on other hosts can still be subscribed to using the "use another server" checkbox.</string>
+    <string name="settings_advanced_default_base_url_title">Default server</string>
+    <string name="settings_advanced_default_base_url_message">To use your own server as a default when subscribing to new topics and/or sharing to topics, enter the server base URL.</string>
     <string name="settings_advanced_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>

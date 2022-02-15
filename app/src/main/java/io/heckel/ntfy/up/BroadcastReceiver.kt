@@ -38,8 +38,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         val repository = app.repository
         val distributor = Distributor(app)
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
-        if (!repository.getUnifiedPushEnabled() || appId.isBlank()) {
-            Log.w(TAG, "Refusing registration: UnifiedPush disabled or empty application")
+        if (appId.isBlank()) {
+            Log.w(TAG, "Refusing registration: Empty application")
             distributor.sendRegistrationRefused(appId, connectorToken)
             return
         }
@@ -58,7 +58,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
             }
 
             // Add subscription
-            val baseUrl = repository.getUnifiedPushBaseUrl() ?: context.getString(R.string.app_base_url)
+            val baseUrl = repository.getDefaultBaseUrl() ?: context.getString(R.string.app_base_url)
             val topic = UP_PREFIX + randomString(TOPIC_RANDOM_ID_LENGTH)
             val endpoint = topicUrlUp(baseUrl, topic)
             val subscription = Subscription(

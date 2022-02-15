@@ -371,7 +371,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     }
 
     override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
-        Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)}")
+        Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)} (instant = $instant)")
 
         // Add subscription to database
         val subscription = Subscription(
@@ -390,7 +390,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
         if (baseUrl == appBaseUrl) {
-            Log.d(TAG, "Subscribing to Firebase")
+            Log.d(TAG, "Subscribing to Firebase topic $topic")
             messenger.subscribe(topic)
         }
 
@@ -401,7 +401,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
                 notifications.forEach { notification -> repository.addNotification(notification) }
             } catch (e: Exception) {
-                Log.e(TAG, "Unable to fetch notifications: ${e.stackTrace}")
+                Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
             }
         }
 

@@ -367,11 +367,7 @@ class AddFragment : DialogFragment() {
         activity.runOnUiThread {
             val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
-            val instant = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeUseAnotherServerCheckbox.isChecked) {
-                true
-            } else {
-                subscribeInstantDeliveryCheckbox.isChecked
-            }
+            val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl
             subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()
         }
@@ -381,7 +377,7 @@ class AddFragment : DialogFragment() {
         return if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeBaseUrlText.text.toString()
         } else {
-            return repository.getDefaultBaseUrl() ?: appBaseUrl
+            return defaultBaseUrl ?: appBaseUrl
         }
     }
 

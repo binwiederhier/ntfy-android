@@ -293,20 +293,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
-    fun getUnifiedPushEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, true) // Enabled by default
-    }
-
-    fun setUnifiedPushEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_UNIFIED_PUSH_ENABLED, enabled)
-            .apply()
-    }
-
-    fun getUnifiedPushBaseUrl(): String? {
-        return sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null)
-    }
-
     fun setUnifiedPushBaseUrl(baseUrl: String) {
         if (baseUrl == "") {
             sharedPrefs
@@ -321,17 +307,20 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun getDefaultBaseUrl(): String? {
-        return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null)
+        return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
+            sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
     }
 
     fun setDefaultBaseUrl(baseUrl: String) {
         if (baseUrl == "") {
             sharedPrefs
                 .edit()
+                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
                 .remove(SHARED_PREFS_DEFAULT_BASE_URL)
                 .apply()
         } else {
             sharedPrefs.edit()
+                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
                 .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
                 .apply()
         }

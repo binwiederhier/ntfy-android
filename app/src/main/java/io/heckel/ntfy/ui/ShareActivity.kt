@@ -29,6 +29,7 @@ class ShareActivity : AppCompatActivity() {
 
     // Context-dependent things
     private lateinit var appBaseUrl: String
+    private var defaultBaseUrl: String? = null
 
     // UI elements
     private lateinit var menu: Menu
@@ -42,7 +43,7 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: AutoCompleteTextView
     private lateinit var useAnotherServerCheckbox: CheckBox
-    private lateinit var lastTopicsList: RecyclerView
+    private lateinit var suggestedTopicsList: RecyclerView
     private lateinit var progress: ProgressBar
     private lateinit var errorText: TextView
     private lateinit var errorImage: ImageView
@@ -62,6 +63,7 @@ class ShareActivity : AppCompatActivity() {
 
         // Context-dependent things
         appBaseUrl = getString(R.string.app_base_url)
+        defaultBaseUrl = repository.getDefaultBaseUrl()
 
         // UI elements
         val root: View = findViewById(R.id.share_root_view)
@@ -76,8 +78,9 @@ class ShareActivity : AppCompatActivity() {
         baseUrlLayout.makeEndIconSmaller(resources) // Hack!
         baseUrlText = findViewById(R.id.share_base_url_text)
         baseUrlText.background = root.background
+        baseUrlText.hint = defaultBaseUrl ?: appBaseUrl
         useAnotherServerCheckbox = findViewById(R.id.share_use_another_server_checkbox)
-        lastTopicsList = findViewById(R.id.share_last_topics)
+        suggestedTopicsList = findViewById(R.id.share_suggested_topics)
         progress = findViewById(R.id.share_progress)
         progress.visibility = View.GONE
         errorText = findViewById(R.id.share_error_text)
@@ -113,19 +116,25 @@ class ShareActivity : AppCompatActivity() {
             val lastShareTopics = repository.getLastShareTopics()
             val subscribedTopics = subscriptions
                 .map { topicUrl(it.baseUrl, it.topic) }
+                .toSet()
                 .subtract(lastShareTopics.toSet())
-            val suggestedTopics = lastShareTopics.reversed() + subscribedTopics
-            val baseUrls = suggestedTopics
+            val suggestedTopics = (lastShareTopics.reversed() + subscribedTopics).distinct()
+            val baseUrlsRaw = suggestedTopics
                 .mapNotNull {
                     try { splitTopicUrl(it).first }
                     catch (_: Exception) { null }
                 }
-                .filterNot { it == appBaseUrl }
-            lastTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
+                .distinct()
+            val baseUrls = if (defaultBaseUrl != null) {
+                baseUrlsRaw.filterNot { it == defaultBaseUrl }
+            } else {
+                baseUrlsRaw.filterNot { it == appBaseUrl }
+            }
+            suggestedTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
                 try {
                     val (baseUrl, topic) = splitTopicUrl(topicUrl)
                     topicText.text = topic
-                    if (baseUrl == appBaseUrl) {
+                    if (baseUrl == defaultBaseUrl) {
                         useAnotherServerCheckbox.isChecked = false
                     } else {
                         useAnotherServerCheckbox.isChecked = true
@@ -143,7 +152,8 @@ class ShareActivity : AppCompatActivity() {
                 useAnotherServerCheckbox.isChecked = if (suggestedTopics.isNotEmpty()) {
                     try {
                         val (baseUrl, _) = splitTopicUrl(suggestedTopics.first())
-                        baseUrl != appBaseUrl
+                        val defaultUrl = defaultBaseUrl ?: appBaseUrl
+                        baseUrl != defaultUrl
                     } catch (_: Exception) {
                         false
                     }
@@ -254,6 +264,11 @@ class ShareActivity : AppCompatActivity() {
         val topic = topicText.text.toString()
         val message = contentText.text.toString()
         progress.visibility = View.VISIBLE
+        contentText.isEnabled = false
+        topicText.isEnabled = false
+        useAnotherServerCheckbox.isEnabled = false
+        baseUrlText.isEnabled = false
+        suggestedTopicsList.isEnabled = false
         lifecycleScope.launch(Dispatchers.IO) {
             val user = repository.getUser(baseUrl)
             try {
@@ -316,7 +331,7 @@ class ShareActivity : AppCompatActivity() {
         return if (useAnotherServerCheckbox.isChecked) {
             baseUrlText.text.toString()
         } else {
-            getString(R.string.app_base_url)
+            defaultBaseUrl ?: appBaseUrl
         }
     }
 

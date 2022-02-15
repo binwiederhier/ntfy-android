@@ -1,8 +1,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
                   app:title="@string/settings_title">
-    <PreferenceCategory
-            app:title="@string/settings_notifications_header"
-            app:layout="@layout/preference_category_material_edited">
+    <PreferenceCategory app:title="@string/settings_notifications_header">
         <ListPreference
                 app:key="@string/settings_notifications_muted_until_key"
                 app:title="@string/settings_notifications_muted_until_title"
@@ -28,46 +26,25 @@
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
     </PreferenceCategory>
-    <PreferenceCategory
-            app:title="@string/settings_appearance_header"
-            app:layout="@layout/preference_category_material_edited">
+    <PreferenceCategory app:title="@string/settings_general_header">
+        <EditTextPreference
+                app:key="@string/settings_advanced_default_base_url_key"
+                app:title="@string/settings_advanced_default_base_url_title"
+                app:dialogLayout="@layout/preference_dialog_edittext_edited"
+                app:dialogMessage="@string/settings_advanced_default_base_url_message"/>
         <ListPreference
                 app:key="@string/settings_appearance_dark_mode_key"
                 app:title="@string/settings_appearance_dark_mode_title"
                 app:entries="@array/settings_appearance_dark_mode_entries"
                 app:entryValues="@array/settings_appearance_dark_mode_values"
                 app:defaultValue="-1"/>
-    </PreferenceCategory>
-    <PreferenceCategory
-            app:title="@string/settings_users_header"
-            app:layout="@layout/preference_category_material_edited">
         <Preference
                 app:key="@string/settings_users_key"
                 app:title="@string/settings_users_title"
                 app:summary="@string/settings_users_summary"
                 app:fragment="io.heckel.ntfy.ui.SettingsActivity$UserSettingsFragment"/>
     </PreferenceCategory>
-    <PreferenceCategory
-            app:title="@string/settings_unified_push_header"
-            app:summary="@string/settings_unified_push_header_summary"
-            app:layout="@layout/preference_category_material_edited">
-        <SwitchPreference
-                app:key="@string/settings_unified_push_enabled_key"
-                app:title="@string/settings_unified_push_enabled_title"
-                app:enabled="true"/>
-        <EditTextPreference
-                app:key="@string/settings_unified_push_base_url_key"
-                app:title="@string/settings_unified_push_base_url_title"
-                app:dependency="@string/settings_unified_push_enabled_key"
-                app:dialogLayout="@layout/preference_dialog_edittext_edited"
-                app:dialogMessage="@string/settings_unified_push_base_url_message"/>
-    </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
-        <EditTextPreference
-                app:key="@string/settings_advanced_default_base_url_key"
-                app:title="@string/settings_advanced_default_base_url_title"
-                app:dialogLayout="@layout/preference_dialog_edittext_edited"
-                app:dialogMessage="@string/settings_advanced_default_base_url_message"/>
         <SwitchPreference
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"
