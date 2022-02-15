@@ -88,7 +88,7 @@
                         android:hint="@string/app_base_url"
                         android:maxLines="1"
                         android:layout_marginTop="0dp"
-                        android:layout_marginBottom="0dp"
+                        android:layout_marginBottom="15dp"
                         android:inputType="textNoSuggestions"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"

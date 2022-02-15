@@ -30,6 +30,7 @@ class AddFragment : DialogFragment() {
     private lateinit var repository: Repository
     private lateinit var subscribeListener: SubscribeListener
     private lateinit var appBaseUrl: String
+    private var defaultBaseUrl: String? = null
 
     private lateinit var subscribeView: View
     private lateinit var loginView: View
@@ -71,8 +72,9 @@ class AddFragment : DialogFragment() {
         }
 
         // Dependencies (Fragments need a default constructor)
-        appBaseUrl = getString(R.string.app_base_url)
         repository = Repository.getInstance(requireActivity())
+        appBaseUrl = getString(R.string.app_base_url)
+        defaultBaseUrl = repository.getDefaultBaseUrl()
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)
@@ -90,6 +92,7 @@ class AddFragment : DialogFragment() {
         subscribeBaseUrlLayout.makeEndIconSmaller(resources) // Hack!
         subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
         subscribeBaseUrlText.background = view.background
+        subscribeBaseUrlText.hint = defaultBaseUrl ?: appBaseUrl
         subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
         subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_checkbox)
         subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
@@ -116,18 +119,18 @@ class AddFragment : DialogFragment() {
         }
 
         // Show/hide based on flavor
-        subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
+        subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
 
         // Add baseUrl auto-complete behavior
         lifecycleScope.launch(Dispatchers.IO) {
-            val defaultBaseUrl = repository.getDefaultBaseUrl()
             val baseUrlsRaw = repository.getSubscriptions()
                 .groupBy { it.baseUrl }
                 .map { it.key }
+                .filterNot { it == appBaseUrl }
             val baseUrls = if (defaultBaseUrl != null) {
                 (baseUrlsRaw.filterNot { it == defaultBaseUrl } + appBaseUrl).sorted()
             } else {
-                baseUrlsRaw.filterNot { it == appBaseUrl }.sorted()
+                baseUrlsRaw.sorted()
             }
             val activity = activity ?: return@launch // We may have pressed "Cancel"
             activity.runOnUiThread {
@@ -189,30 +192,40 @@ class AddFragment : DialogFragment() {
             subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
             subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
             subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
-                else subscribeInstantDeliveryDescription.visibility = View.GONE
+                subscribeInstantDeliveryDescription.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
             subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     subscribeUseAnotherServerDescription.visibility = View.VISIBLE
                     subscribeBaseUrlLayout.visibility = View.VISIBLE
-                    subscribeInstantDeliveryBox.visibility = View.GONE
+                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
                     subscribeInstantDeliveryDescription.visibility = View.GONE
                 } else {
                     subscribeUseAnotherServerDescription.visibility = View.GONE
                     subscribeBaseUrlLayout.visibility = View.GONE
-                    subscribeInstantDeliveryBox.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
-                    if (subscribeInstantDeliveryCheckbox.isChecked) subscribeInstantDeliveryDescription.visibility = View.VISIBLE
-                    else subscribeInstantDeliveryDescription.visibility = View.GONE
+                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
+                    subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryBox.visibility == View.VISIBLE && subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
                 }
                 validateInputSubscribeView()
             }
+            subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
 
             // Focus topic text (keyboard is shown too, see above)
             subscribeTopicText.requestFocus()
         }
 
         return dialog
+    }
+
+    private fun instantCheckboxVisible(): Int {
+        if (!BuildConfig.FIREBASE_AVAILABLE) {
+            return View.GONE
+        } else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
+            return View.VISIBLE
+        } else if (!subscribeUseAnotherServerCheckbox.isChecked && defaultBaseUrl == null) {
+            return View.VISIBLE
+        }
+        return View.GONE
     }
 
     private fun positiveButtonClick() {
@@ -331,6 +344,8 @@ class AddFragment : DialogFragment() {
                     } else {
                         positiveButton.isEnabled = validTopic(topic)
                     }
+                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
+                    subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryBox.visibility == View.VISIBLE && subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
                 }
             }
         }
