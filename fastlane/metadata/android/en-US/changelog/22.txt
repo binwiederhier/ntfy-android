@@ -1,6 +1,7 @@
 Features:
-* Automatically delete notifications (#71, thanks @arjan-s for reporting)
 * Share to topic feature (#131, thanks u/emptymatrix for reporting)
+* Ability to pick a default server (#127, thanks to @poblabs for reporting and testing)
+* Automatically delete notifications (#71, thanks @arjan-s for reporting)
 * Dark theme: Improvements around style and contrast (#119, thanks @kzshantonu for reporting)
 
 Bug fixes:
@@ -8,4 +9,4 @@ Bug fixes:
 * Fixed crash in AddFragment as seen per stack trace in Play Console (no ticket)
 
 Other thanks:
-* Thanks to @rogeliodh for testing
+* Thanks to @rogeliodh, @cmeis and @poblabs for testing

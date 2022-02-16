@@ -273,7 +273,7 @@
     <string name="settings_users_header">Users</string>
     <string name="settings_users_key">ManageUsers</string>
     <string name="settings_users_title">Manage users</string>
-    <string name="settings_users_summary">Add or remove users used for protected topics</string>
+    <string name="settings_users_summary">Add/remove users for protected topics</string>
     <string name="settings_users_prefs_title">Users</string>
     <string name="settings_users_prefs_user_not_used">Not used by any topics</string>
     <string name="settings_users_prefs_user_used_by_one">Used by topic %1$s</string>
