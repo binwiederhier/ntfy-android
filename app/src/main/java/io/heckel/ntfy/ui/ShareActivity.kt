@@ -133,8 +133,9 @@ class ShareActivity : AppCompatActivity() {
             suggestedTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
                 try {
                     val (baseUrl, topic) = splitTopicUrl(topicUrl)
+                    val defaultUrl = defaultBaseUrl ?: appBaseUrl
                     topicText.text = topic
-                    if (baseUrl == defaultBaseUrl) {
+                    if (baseUrl == defaultUrl) {
                         useAnotherServerCheckbox.isChecked = false
                     } else {
                         useAnotherServerCheckbox.isChecked = true
