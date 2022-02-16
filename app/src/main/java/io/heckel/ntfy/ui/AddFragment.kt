@@ -116,8 +116,10 @@ class AddFragment : DialogFragment() {
         // Set foreground description text
         subscribeForegroundDescription.text = getString(R.string.add_dialog_foreground_description, shortUrl(appBaseUrl))
 
-        // Show/hide based on flavor
-        subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
+        // Show/hide based on flavor (faster shortcut for validateInputSubscribeView, which can only run onShow)
+        if (!BuildConfig.FIREBASE_AVAILABLE) {
+            subscribeInstantDeliveryBox.visibility = View.GONE
+        }
 
         // Add baseUrl auto-complete behavior
         lifecycleScope.launch(Dispatchers.IO) {
@@ -137,16 +139,8 @@ class AddFragment : DialogFragment() {
         }
 
         // Username/password validation on type
-        val loginTextWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                validateInputLoginView()
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Nothing
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Nothing
-            }
+        val loginTextWatcher = AfterChangedTextWatcher {
+            validateInputLoginView()
         }
         loginUsernameText.addTextChangedListener(loginTextWatcher)
         loginPasswordText.addTextChangedListener(loginTextWatcher)
@@ -176,55 +170,24 @@ class AddFragment : DialogFragment() {
             negativeButton.setOnClickListener {
                 negativeButtonClick()
             }
-            val subscribeTextWatcher = object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    validateInputSubscribeView()
-                }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // Nothing
-                }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // Nothing
-                }
+            val subscribeTextWatcher = AfterChangedTextWatcher {
+                validateInputSubscribeView()
             }
             subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
             subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
-            subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                subscribeInstantDeliveryDescription.visibility = if (isChecked) View.VISIBLE else View.GONE
-            }
-            subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    subscribeUseAnotherServerDescription.visibility = View.VISIBLE
-                    subscribeBaseUrlLayout.visibility = View.VISIBLE
-                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
-                    subscribeInstantDeliveryDescription.visibility = View.GONE
-                } else {
-                    subscribeUseAnotherServerDescription.visibility = View.GONE
-                    subscribeBaseUrlLayout.visibility = View.GONE
-                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
-                    subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryBox.visibility == View.VISIBLE && subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
-                }
+            subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, _ ->
                 validateInputSubscribeView()
             }
-            subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
-            subscribeForegroundDescription.visibility = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeInstantDeliveryBox.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, _ ->
+                validateInputSubscribeView()
+            }
+            validateInputSubscribeView()
 
             // Focus topic text (keyboard is shown too, see above)
             subscribeTopicText.requestFocus()
         }
 
         return dialog
-    }
-
-    private fun instantCheckboxVisible(): Int {
-        if (!BuildConfig.FIREBASE_AVAILABLE) {
-            return View.GONE
-        } else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
-            return View.VISIBLE
-        } else if (!subscribeUseAnotherServerCheckbox.isChecked && defaultBaseUrl == null) {
-            return View.VISIBLE
-        }
-        return View.GONE
     }
 
     private fun positiveButtonClick() {
@@ -329,6 +292,35 @@ class AddFragment : DialogFragment() {
 
     private fun validateInputSubscribeView() {
         if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
+
+        // Show/hide things: This logic is intentionally kept simple. Do not simplify "just because it's pretty".
+        val instantToggleAllowed = if (!BuildConfig.FIREBASE_AVAILABLE) {
+            false
+        } else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
+            true
+        } else if (!subscribeUseAnotherServerCheckbox.isChecked && defaultBaseUrl == null) {
+            true
+        } else {
+            false
+        }
+        if (subscribeUseAnotherServerCheckbox.isChecked) {
+            subscribeUseAnotherServerDescription.visibility = View.VISIBLE
+            subscribeBaseUrlLayout.visibility = View.VISIBLE
+        } else {
+            subscribeUseAnotherServerDescription.visibility = View.GONE
+            subscribeBaseUrlLayout.visibility = View.GONE
+        }
+        if (instantToggleAllowed) {
+            subscribeInstantDeliveryBox.visibility = View.VISIBLE
+            subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
+            subscribeForegroundDescription.visibility = View.GONE
+        } else {
+            subscribeInstantDeliveryBox.visibility = View.GONE
+            subscribeInstantDeliveryDescription.visibility = View.GONE
+            subscribeForegroundDescription.visibility = if (BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE
+        }
+
+        // Enable/disable "Subscribe" button
         lifecycleScope.launch(Dispatchers.IO) {
             val baseUrl = getBaseUrl()
             val topic = subscribeTopicText.text.toString()
@@ -343,9 +335,6 @@ class AddFragment : DialogFragment() {
                     } else {
                         positiveButton.isEnabled = validTopic(topic)
                     }
-                    subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
-                    subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryBox.visibility == View.VISIBLE && subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
-                    subscribeForegroundDescription.visibility = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeInstantDeliveryBox.visibility == View.VISIBLE) View.GONE else View.VISIBLE
                 }
             }
         }

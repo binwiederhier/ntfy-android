@@ -11,6 +11,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
@@ -297,3 +299,17 @@ fun View.makeEndIconSmaller(resources: Resources) {
     endIconImageView.minimumWidth = dimension.toInt()
     requestLayout()
 }
+
+// TextWatcher that only implements the afterTextChanged method
+class AfterChangedTextWatcher(val afterTextChangedFn: (s: Editable?) -> Unit) : TextWatcher {
+    override fun afterTextChanged(s: Editable?) {
+        afterTextChangedFn(s)
+    }
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        // Nothing
+    }
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        // Nothing
+    }
+}
+
