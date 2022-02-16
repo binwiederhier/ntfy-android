@@ -89,12 +89,12 @@
         <item>upload_original</item>
         <item>upload_scrubbed</item>
     </string-array>
-    <string-array name="settings_appearance_dark_mode_entries">
-        <item>@string/settings_appearance_dark_mode_entry_system</item>
-        <item>@string/settings_appearance_dark_mode_entry_light</item>
-        <item>@string/settings_appearance_dark_mode_entry_dark</item>
+    <string-array name="settings_general_dark_mode_entries">
+        <item>@string/settings_general_dark_mode_entry_system</item>
+        <item>@string/settings_general_dark_mode_entry_light</item>
+        <item>@string/settings_general_dark_mode_entry_dark</item>
     </string-array>
-    <string-array name="settings_appearance_dark_mode_values">
+    <string-array name="settings_general_dark_mode_values">
         <!-- Must match values in AppCompatDelegate -->
         <item>-1</item>
         <item>1</item>

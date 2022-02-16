@@ -317,7 +317,9 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun validateInput() {
-        if (!this::sendItem.isInitialized) return // Initialized late in onCreateOptionsMenu
+        if (!this::sendItem.isInitialized || !this::useAnotherServerCheckbox.isInitialized || !this::contentText.isInitialized || !this::topicText.isInitialized) {
+            return // sendItem is initialized late in onCreateOptionsMenu
+        }
         val enabled = if (useAnotherServerCheckbox.isChecked) {
             contentText.text.isNotEmpty() && validTopic(topicText.text.toString()) && validUrl(baseUrlText.text.toString())
         } else {

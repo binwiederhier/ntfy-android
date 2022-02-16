@@ -293,19 +293,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
-    fun setUnifiedPushBaseUrl(baseUrl: String) {
-        if (baseUrl == "") {
-            sharedPrefs
-                .edit()
-                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL)
-                .apply()
-        } else {
-            sharedPrefs.edit()
-                .putString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, baseUrl)
-                .apply()
-        }
-    }
-
     fun getDefaultBaseUrl(): String? {
         return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
             sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
@@ -439,8 +426,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
-        const val SHARED_PREFS_UNIFIED_PUSH_ENABLED = "UnifiedPushEnabled"
-        const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL"
+        const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 

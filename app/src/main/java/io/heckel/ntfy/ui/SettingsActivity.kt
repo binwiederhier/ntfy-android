@@ -260,7 +260,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
 
             // Dark mode
-            val darkModePrefId = context?.getString(R.string.settings_appearance_dark_mode_key) ?: return
+            val darkModePrefId = context?.getString(R.string.settings_general_dark_mode_key) ?: return
             val darkMode: ListPreference? = findPreference(darkModePrefId)
             darkMode?.value = repository.getDarkMode().toString()
             darkMode?.preferenceDataStore = object : PreferenceDataStore() {
@@ -277,15 +277,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             darkMode?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
                 val darkModeValue = pref.value.toIntOrNull() ?: repository.getDarkMode()
                 when (darkModeValue) {
-                    AppCompatDelegate.MODE_NIGHT_NO -> getString(R.string.settings_appearance_dark_mode_summary_light)
-                    AppCompatDelegate.MODE_NIGHT_YES -> getString(R.string.settings_appearance_dark_mode_summary_dark)
-                    else -> getString(R.string.settings_appearance_dark_mode_summary_system)
+                    AppCompatDelegate.MODE_NIGHT_NO -> getString(R.string.settings_general_dark_mode_summary_light)
+                    AppCompatDelegate.MODE_NIGHT_YES -> getString(R.string.settings_general_dark_mode_summary_dark)
+                    else -> getString(R.string.settings_general_dark_mode_summary_system)
                 }
             }
 
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
-            val defaultBaseUrlPrefId = context?.getString(R.string.settings_advanced_default_base_url_key) ?: return
+            val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
             val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
             defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
             defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
@@ -299,7 +299,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
             defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
                 if (TextUtils.isEmpty(pref.text)) {
-                    getString(R.string.settings_advanced_default_base_url_default_summary, appBaseUrl)
+                    getString(R.string.settings_general_default_base_url_default_summary, appBaseUrl)
                 } else {
                     pref.text
                 }
@@ -586,11 +586,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     val preference = Preference(preferenceScreen.context)
                     preference.title = user.user.username
                     preference.summary = if (user.topics.isEmpty()) {
-                        getString(R.string.settings_users_prefs_user_not_used)
+                        getString(R.string.settings_general_users_prefs_user_not_used)
                     } else if (user.topics.size == 1) {
-                        getString(R.string.settings_users_prefs_user_used_by_one, user.topics[0])
+                        getString(R.string.settings_general_users_prefs_user_used_by_one, user.topics[0])
                     } else {
-                        getString(R.string.settings_users_prefs_user_used_by_many, user.topics.joinToString(", "))
+                        getString(R.string.settings_general_users_prefs_user_used_by_many, user.topics.joinToString(", "))
                     }
                     preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                         activity?.let {
@@ -606,12 +606,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Add user
             val userAddCategory = PreferenceCategory(preferenceScreen.context)
-            userAddCategory.title = getString(R.string.settings_users_prefs_user_add)
+            userAddCategory.title = getString(R.string.settings_general_users_prefs_user_add)
             preferenceScreen.addPreference(userAddCategory)
 
             val userAddPref = Preference(preferenceScreen.context)
-            userAddPref.title = getString(R.string.settings_users_prefs_user_add_title)
-            userAddPref.summary = getString(R.string.settings_users_prefs_user_add_summary)
+            userAddPref.title = getString(R.string.settings_general_users_prefs_user_add_title)
+            userAddPref.summary = getString(R.string.settings_general_users_prefs_user_add_summary)
             userAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                 activity?.let {
                     UserFragment

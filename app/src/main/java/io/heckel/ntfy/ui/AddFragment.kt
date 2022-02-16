@@ -341,7 +341,9 @@ class AddFragment : DialogFragment() {
     }
 
     private fun validateInputLoginView() {
-        if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
+        if (!this::positiveButton.isInitialized || !this::loginUsernameText.isInitialized || !this::loginPasswordText.isInitialized) {
+            return // As per crash seen in Google Play
+        }
         if (loginUsernameText.visibility == View.GONE) {
             positiveButton.isEnabled = true
         } else {
