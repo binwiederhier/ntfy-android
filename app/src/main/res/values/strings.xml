@@ -81,17 +81,10 @@
     </string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
-    <string name="add_dialog_use_another_server_description">
-        You can subscribe to topics from another server. This option requires a foreground service.
-    </string>
-    <string name="add_dialog_use_another_server_description_noinstant">
-        You can subscribe to topics from another server. Type the server URL below.
-    </string>
+    <string name="add_dialog_use_another_server_description">You can subscribe to topics from another server. Type the server URL below.</string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
-    <string name="add_dialog_instant_delivery_description">
-        Ensures that messages are immediately delivered, even if the device is inactive.
-        This requires a foreground service.
-    </string>
+    <string name="add_dialog_instant_delivery_description">Ensures that messages are immediately delivered, even if the device is inactive.</string>
+    <string name="add_dialog_foreground_description">Instant delivery is always enabled for hosts other than %1$s.</string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
     <string name="add_dialog_button_back">Back</string>

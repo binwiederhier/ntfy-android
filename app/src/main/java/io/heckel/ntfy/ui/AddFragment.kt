@@ -46,6 +46,7 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeInstantDeliveryBox: View
     private lateinit var subscribeInstantDeliveryCheckbox: CheckBox
     private lateinit var subscribeInstantDeliveryDescription: View
+    private lateinit var subscribeForegroundDescription: TextView
     private lateinit var subscribeProgress: ProgressBar
     private lateinit var subscribeErrorText: TextView
     private lateinit var subscribeErrorTextImage: View
@@ -98,6 +99,7 @@ class AddFragment : DialogFragment() {
         subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
         subscribeUseAnotherServerCheckbox = view.findViewById(R.id.add_dialog_subscribe_use_another_server_checkbox)
         subscribeUseAnotherServerDescription = view.findViewById(R.id.add_dialog_subscribe_use_another_server_description)
+        subscribeForegroundDescription = view.findViewById(R.id.add_dialog_subscribe_foreground_description)
         subscribeProgress = view.findViewById(R.id.add_dialog_subscribe_progress)
         subscribeErrorText = view.findViewById(R.id.add_dialog_subscribe_error_text)
         subscribeErrorText.visibility = View.GONE
@@ -111,12 +113,8 @@ class AddFragment : DialogFragment() {
         loginErrorText = view.findViewById(R.id.add_dialog_login_error_text)
         loginErrorTextImage = view.findViewById(R.id.add_dialog_login_error_text_image)
 
-        // Set "Use another server" description based on flavor
-        subscribeUseAnotherServerDescription.text = if (BuildConfig.FIREBASE_AVAILABLE) {
-            getString(R.string.add_dialog_use_another_server_description)
-        } else {
-            getString(R.string.add_dialog_use_another_server_description_noinstant)
-        }
+        // Set foreground description text
+        subscribeForegroundDescription.text = getString(R.string.add_dialog_foreground_description, shortUrl(appBaseUrl))
 
         // Show/hide based on flavor
         subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
@@ -209,6 +207,7 @@ class AddFragment : DialogFragment() {
                 validateInputSubscribeView()
             }
             subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
+            subscribeForegroundDescription.visibility = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeInstantDeliveryBox.visibility == View.VISIBLE) View.GONE else View.VISIBLE
 
             // Focus topic text (keyboard is shown too, see above)
             subscribeTopicText.requestFocus()
@@ -346,6 +345,7 @@ class AddFragment : DialogFragment() {
                     }
                     subscribeInstantDeliveryBox.visibility = instantCheckboxVisible()
                     subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryBox.visibility == View.VISIBLE && subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
+                    subscribeForegroundDescription.visibility = if (!BuildConfig.FIREBASE_AVAILABLE || subscribeInstantDeliveryBox.visibility == View.VISIBLE) View.GONE else View.VISIBLE
                 }
             }
         }

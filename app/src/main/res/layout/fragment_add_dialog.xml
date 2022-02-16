@@ -42,7 +42,7 @@
                 android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_title"/>
-        <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_dialog_subscribe_topic_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
@@ -88,7 +88,7 @@
                         android:hint="@string/app_base_url"
                         android:maxLines="1"
                         android:layout_marginTop="0dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginBottom="10dp"
                         android:inputType="textNoSuggestions"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"
@@ -128,24 +128,31 @@
                     android:visibility="gone" app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_box"/>
-        <ImageView
+            <TextView
+                    android:text="@string/add_dialog_foreground_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_foreground_description"
+                    android:paddingStart="4dp" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_description"/>
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp" app:srcCompat="@drawable/ic_error_red_24dp"
                 android:id="@+id/add_dialog_subscribe_error_text_image"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@id/add_dialog_subscribe_error_text" android:layout_marginTop="1dp"/>
-        <TextView
-                android:text="Unable to resolve host example.com"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_error_text"
-                android:paddingStart="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_description"
-                android:paddingEnd="4dp"
-                android:textAppearance="@style/DangerText"
-                app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
-                android:layout_marginTop="5dp"
-                tools:visibility="gone"/>
+            <TextView
+                    android:text="Unable to resolve host example.com"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_error_text"
+                    android:paddingStart="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_foreground_description"
+                    android:paddingEnd="4dp"
+                    android:textAppearance="@style/DangerText"
+                    app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
+                    android:layout_marginTop="5dp"
+                    tools:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
     <ScrollView
