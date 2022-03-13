@@ -13,6 +13,7 @@ import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
@@ -22,6 +23,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -110,18 +112,42 @@ fun unmatchedTags(tags: List<String>): List<String> {
 
 /**
  * Prepend tags/emojis to message, but only if there is a non-empty title.
- * Otherwise the tags will be prepended to the title.
+ * Otherwise, the tags will be prepended to the title.
  */
 fun formatMessage(notification: Notification): String {
     return if (notification.title != "") {
-        notification.message
+        decodeMessage(notification)
     } else {
         val emojis = toEmojis(splitTags(notification.tags))
         if (emojis.isEmpty()) {
-            notification.message
+            decodeMessage(notification)
         } else {
-            emojis.joinToString("") + " " + notification.message
+            emojis.joinToString("") + " " + decodeMessage(notification)
         }
+    }
+}
+
+fun decodeMessage(notification: Notification): String {
+    return try {
+        if (notification.encoding == MESSAGE_ENCODING_BASE64) {
+            String(Base64.decode(notification.message, Base64.DEFAULT))
+        } else {
+            notification.message
+        }
+    } catch (e: IllegalArgumentException) {
+        notification.message + "(invalid base64)"
+    }
+}
+
+fun decodeBytesMessage(notification: Notification): ByteArray {
+    return try {
+        if (notification.encoding == MESSAGE_ENCODING_BASE64) {
+            Base64.decode(notification.message, Base64.DEFAULT)
+        } else {
+            notification.message.toByteArray()
+        }
+    } catch (e: IllegalArgumentException) {
+        notification.message.toByteArray()
     }
 }
 

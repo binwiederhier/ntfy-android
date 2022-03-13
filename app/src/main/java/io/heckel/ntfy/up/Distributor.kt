@@ -9,13 +9,14 @@ import io.heckel.ntfy.util.Log
  * See https://unifiedpush.org/spec/android/ for details.
  */
 class Distributor(val context: Context) {
-    fun sendMessage(app: String, connectorToken: String, message: String) {
-        Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): $message")
+    fun sendMessage(app: String, connectorToken: String, message: ByteArray) {
+        Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): ${String(message)} (${message.size} bytes)}")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_MESSAGE
         broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
-        broadcastIntent.putExtra(EXTRA_MESSAGE, message)
+        broadcastIntent.putExtra(EXTRA_MESSAGE, String(message)) // UTF-8
+        broadcastIntent.putExtra(EXTRA_BYTES_MESSAGE, message)
         context.sendBroadcast(broadcastIntent)
     }
 

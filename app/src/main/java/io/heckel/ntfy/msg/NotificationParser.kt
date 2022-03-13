@@ -20,11 +20,6 @@ class NotificationParser {
         if (message.event != ApiService.EVENT_MESSAGE) {
             return null
         }
-        val decodedMessage = if (message.encoding == MESSAGE_ENCODING_BASE64) {
-            String(Base64.decode(message.message, Base64.DEFAULT))
-        } else {
-            message.message
-        }
         val attachment = if (message.attachment?.url != null) {
             Attachment(
                 name = message.attachment.name,
@@ -39,7 +34,8 @@ class NotificationParser {
             subscriptionId = subscriptionId,
             timestamp = message.time,
             title = message.title ?: "",
-            message = decodedMessage,
+            message = message.message,
+            encoding = message.encoding ?: "",
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
             click = message.click ?: "",

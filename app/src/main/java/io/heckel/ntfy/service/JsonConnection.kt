@@ -87,8 +87,8 @@ class JsonConnection(
 
     override fun close() {
         Log.d(TAG, "[$url] Cancelling connection")
-        if (this::job.isInitialized) job?.cancel()
-        if (this::call.isInitialized) call?.cancel()
+        if (this::job.isInitialized) job.cancel()
+        if (this::call.isInitialized) call.cancel()
     }
 
     private fun nextRetryMillis(retryMillis: Long, startTime: Long): Long {

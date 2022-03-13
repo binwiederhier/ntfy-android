@@ -39,7 +39,7 @@ class NotificationService(val context: Context) {
 
     fun cancel(notification: Notification) {
         if (notification.notificationId != 0) {
-            Log.d(TAG, "Cancelling notification ${notification.id}: ${notification.message}")
+            Log.d(TAG, "Cancelling notification ${notification.id}: ${decodeMessage(notification)}")
             notificationManager.cancel(notification.notificationId)
         }
     }

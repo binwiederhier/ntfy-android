@@ -1,0 +1,2 @@
+Features:
+* Support for UnifiedPush 2.0 specification (bytes messages, #130)

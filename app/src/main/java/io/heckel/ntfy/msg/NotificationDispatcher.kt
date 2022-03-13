@@ -1,11 +1,13 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
+import android.util.Base64
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
+import io.heckel.ntfy.util.decodeBytesMessage
 import io.heckel.ntfy.util.safeLet
 
 /**
@@ -37,7 +39,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
         if (distribute) {
             safeLet(subscription.upAppId, subscription.upConnectorToken) { appId, connectorToken ->
-                distributor.sendMessage(appId, connectorToken, notification.message)
+                distributor.sendMessage(appId, connectorToken, decodeBytesMessage(notification))
             }
         }
         if (download) {

@@ -2,13 +2,12 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.content.Intent
+import android.util.Base64
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.joinTagsMap
-import io.heckel.ntfy.util.splitTags
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,7 +25,9 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("topic", subscription.topic)
         intent.putExtra("time", notification.timestamp.toInt())
         intent.putExtra("title", notification.title)
-        intent.putExtra("message", notification.message)
+        intent.putExtra("message", decodeMessage(notification))
+        intent.putExtra("message_bytes", decodeBytesMessage(notification))
+        intent.putExtra("message_encoding", notification.encoding)
         intent.putExtra("tags", notification.tags)
         intent.putExtra("tags_map", joinTagsMap(splitTags(notification.tags)))
         intent.putExtra("priority", notification.priority)

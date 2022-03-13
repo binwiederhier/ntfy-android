@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
+import android.util.Base64
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -29,6 +30,7 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
@@ -514,9 +516,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun copyToClipboard(notification: Notification) {
         runOnUiThread {
-            val message = notification.message + "\n\n" + Date(notification.timestamp * 1000).toString()
+            val message = decodeMessage(notification)
+            val text = message + "\n\n" + Date(notification.timestamp * 1000).toString()
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("notification message", message)
+            val clip = ClipData.newPlainText("notification message", text)
             clipboard.setPrimaryClip(clip)
             Toast
                 .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
@@ -574,7 +577,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val content = adapter.selected.joinToString("\n\n") { notificationId ->
                 val notification = repository.getNotification(notificationId)
                 notification?.let {
-                    it.message + "\n" + Date(it.timestamp * 1000).toString()
+                    decodeMessage(it) + "\n" + Date(it.timestamp * 1000).toString()
                 }.orEmpty()
             }
             runOnUiThread {

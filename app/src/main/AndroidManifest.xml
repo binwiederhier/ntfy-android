@@ -108,6 +108,7 @@
             <intent-filter>
                 <action android:name="org.unifiedpush.android.distributor.REGISTER"/>
                 <action android:name="org.unifiedpush.android.distributor.UNREGISTER"/>
+                <action android:name="org.unifiedpush.android.distributor.feature.BYTES_MESSAGE"/>
             </intent-filter>
         </receiver>
 

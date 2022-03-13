@@ -112,11 +112,6 @@ class FirebaseService : FirebaseMessagingService() {
             }
 
             // Add notification
-            val decodedMessage = if (encoding == MESSAGE_ENCODING_BASE64) {
-                String(Base64.decode(message, Base64.DEFAULT))
-            } else {
-                message
-            }
             val attachment = if (attachmentUrl != null) {
                 Attachment(
                     name = attachmentName,
@@ -131,7 +126,8 @@ class FirebaseService : FirebaseMessagingService() {
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
                 title = title ?: "",
-                message = decodedMessage,
+                message = message,
+                encoding = encoding ?: "",
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
