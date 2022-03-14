@@ -78,7 +78,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             val context = itemView.context
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
 
-            dateView.text = Date(notification.timestamp * 1000).toString()
+            dateView.text = formatDateShort(notification.timestamp)
             messageView.text = formatMessage(notification)
             newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             itemView.setOnClickListener { onClick(notification) }
