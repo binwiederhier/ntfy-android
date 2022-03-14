@@ -40,11 +40,11 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .map { list -> list.map { Pair(it.id, it.instant) }.toSet() }
     }
 
-    fun getSubscriptions(): List<Subscription> {
+    suspend fun getSubscriptions(): List<Subscription> {
         return toSubscriptionList(subscriptionDao.list())
     }
 
-    fun getSubscriptionIdsWithInstantStatus(): Set<Pair<Long, Boolean>> {
+    suspend fun getSubscriptionIdsWithInstantStatus(): Set<Pair<Long, Boolean>> {
         return subscriptionDao
             .list()
             .map { Pair(it.id, it.instant) }.toSet()
@@ -82,6 +82,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     @WorkerThread
     suspend fun removeSubscription(subscriptionId: Long) {
         subscriptionDao.remove(subscriptionId)
+    }
+
+    suspend fun getNotifications(): List<Notification> {
+        return notificationDao.list()
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
@@ -142,6 +146,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
     suspend fun getUsers(): List<User> {
         return userDao.list()
+    }
+
+    fun getUsersLiveData(): LiveData<List<User>> {
+        return userDao.listFlow().asLiveData()
     }
 
     suspend fun addUser(user: User) {

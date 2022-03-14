@@ -3,6 +3,7 @@ package io.heckel.ntfy.util
 import android.content.Context
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
+import io.heckel.ntfy.backup.Backuper
 import io.heckel.ntfy.db.Database
 import io.heckel.ntfy.db.LogDao
 import io.heckel.ntfy.db.LogEntry
@@ -18,7 +19,7 @@ class Log(private val logsDao: LogDao) {
     private val record: AtomicBoolean = AtomicBoolean(false)
     private val count: AtomicInteger = AtomicInteger(0)
     private val scrubNum: AtomicInteger = AtomicInteger(-1)
-    private val scrubTerms = Collections.synchronizedMap(mutableMapOf<String, String>())
+    private val scrubTerms = Collections.synchronizedMap(mutableMapOf<String, ReplaceTerm>())
 
     private fun log(level: Int, tag: String, message: String, exception: Throwable?) {
         if (!record.get()) return
@@ -32,15 +33,20 @@ class Log(private val logsDao: LogDao) {
         }
     }
 
-    fun getFormatted(scrub: Boolean): String {
+    fun getFormatted(context: Context, scrub: Boolean): String {
+        val backuper = Backuper(context)
         return if (scrub) {
-            prependDeviceInfo(formatEntries(scrubEntries(logsDao.getAll())), scrubLine = true)
+            val logs = formatEntries(scrubEntries(logsDao.getAll()))
+            val settings = scrub(backuper.settingsAsString()) ?: ""
+            prependDeviceInfo(logs, settings, scrubLine = true)
         } else {
-            prependDeviceInfo(formatEntries(logsDao.getAll()), scrubLine = false)
+            val logs = formatEntries(logsDao.getAll())
+            val settings = backuper.settingsAsString()
+            prependDeviceInfo(logs, settings, scrubLine = false)
         }
     }
 
-    private fun prependDeviceInfo(s: String, scrubLine: Boolean): String {
+    private fun prependDeviceInfo(logs: String, settings: String, scrubLine: Boolean): String {
         val maybeScrubLine = if (scrubLine) "Server URLs (aside from ntfy.sh) and topics have been replaced with fruits 🍌🥝🍋🥥🥑🍊🍎🍑.\n" else ""
         return """
             This is a log of the ntfy Android app. The log shows up to 1,000 entries.
@@ -52,20 +58,27 @@ class Log(private val logsDao: LogDao) {
             Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})
             Model: ${Build.DEVICE}
             Product: ${Build.PRODUCT}
+
             --
-        """.trimIndent() + "\n\n$s"
+            Settings:                    
+        """.trimIndent() + "\n$settings\n\nLogs\n--\n\n$logs"
     }
 
     fun addScrubTerm(term: String, type: TermType = TermType.Term) {
         if (scrubTerms[term] != null || IGNORE_TERMS.contains(term)) {
             return
         }
+        if (type == TermType.Password) {
+            scrubTerms[term] = ReplaceTerm(type, "********")
+            return
+        }
         val replaceTermIndex = scrubNum.incrementAndGet()
         val replaceTerm = REPLACE_TERMS.getOrNull(replaceTermIndex) ?: "fruit${replaceTermIndex}"
-        scrubTerms[term] = when (type) {
+        scrubTerms[term] = ReplaceTerm(type, when (type) {
             TermType.Domain -> "$replaceTerm.example.com"
+            TermType.Username -> "${replaceTerm}user"
             else -> replaceTerm
-        }
+        })
     }
 
     private fun scrubEntries(entries: List<LogEntry>): List<LogEntry> {
@@ -81,7 +94,7 @@ class Log(private val logsDao: LogDao) {
     private fun scrub(line: String?): String? {
         var newLine = line ?: return null
         scrubTerms.forEach { (scrubTerm, replaceTerm) ->
-            newLine = newLine.replace(scrubTerm, replaceTerm)
+            newLine = newLine.replace(scrubTerm, replaceTerm.replaceTerm)
         }
         return newLine
     }
@@ -112,8 +125,13 @@ class Log(private val logsDao: LogDao) {
     }
 
     enum class TermType {
-        Domain, Term
+        Domain, Username, Password, Term
     }
+
+    data class ReplaceTerm(
+        val termType: TermType,
+        val replaceTerm: String
+    )
 
     companion object {
         private const val TAG = "NtfyLog"
@@ -121,7 +139,8 @@ class Log(private val logsDao: LogDao) {
         private const val ENTRIES_MAX = 1000
         private val IGNORE_TERMS = listOf("ntfy.sh")
         private val REPLACE_TERMS = listOf(
-            "banana", "kiwi", "lemon", "coconut", "avocado", "orange", "apple", "peach"
+            "banana", "kiwi", "lemon", "coconut", "avocado", "orange", "apple", "peach",
+            "pineapple", "dragonfruit", "durian", "starfruit"
         )
         private var instance: Log? = null
 
@@ -155,12 +174,15 @@ class Log(private val logsDao: LogDao) {
             return getInstance()?.record?.get() ?: false
         }
 
-        fun getFormatted(scrub: Boolean): String {
-            return getInstance()?.getFormatted(scrub) ?: "(no logs)"
+        fun getFormatted(context: Context, scrub: Boolean): String {
+            return getInstance()?.getFormatted(context, scrub) ?: "(no logs)"
         }
 
         fun getScrubTerms(): Map<String, String> {
-            return getInstance()?.scrubTerms!!.toMap()
+            return getInstance()?.scrubTerms!!
+                .filter { e -> e.value.termType != TermType.Password } // We do not want to display passwords
+                .map { e -> e.key to e.value.replaceTerm }
+                .toMap()
         }
 
         fun deleteAll() {

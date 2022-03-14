@@ -228,7 +228,7 @@ interface SubscriptionDao {
         GROUP BY s.id
         ORDER BY s.upAppId ASC, MAX(n.timestamp) DESC
     """)
-    fun list(): List<SubscriptionWithMetadata>
+    suspend fun list(): List<SubscriptionWithMetadata>
 
     @Query("""
         SELECT 
@@ -281,6 +281,9 @@ interface SubscriptionDao {
 
 @Dao
 interface NotificationDao {
+    @Query("SELECT * FROM notification")
+    suspend fun list(): List<Notification>
+
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
@@ -325,6 +328,9 @@ interface UserDao {
 
     @Query("SELECT * FROM user ORDER BY username")
     suspend fun list(): List<User>
+
+    @Query("SELECT * FROM user ORDER BY username")
+    fun listFlow(): Flow<List<User>>
 
     @Query("SELECT * FROM user WHERE baseUrl = :baseUrl")
     suspend fun get(baseUrl: String): User?

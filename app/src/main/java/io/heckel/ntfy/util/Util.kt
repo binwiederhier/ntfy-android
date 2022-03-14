@@ -29,6 +29,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
+import java.io.File
 import java.io.IOException
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -51,6 +52,14 @@ fun shortUrl(url: String) = url
 fun splitTopicUrl(topicUrl: String): Pair<String, String> {
     if (topicUrl.lastIndexOf("/") == -1) throw Exception("Invalid argument $topicUrl")
     return Pair(topicUrl.substringBeforeLast("/"), topicUrl.substringAfterLast("/"))
+}
+
+fun maybeSplitTopicUrl(topicUrl: String): Pair<String, String>? {
+    return try {
+        splitTopicUrl(topicUrl)
+    } catch (_: Exception) {
+        null
+    }
 }
 
 fun validTopic(topic: String): Boolean {
@@ -339,3 +348,21 @@ class AfterChangedTextWatcher(val afterTextChangedFn: (s: Editable?) -> Unit) : 
     }
 }
 
+fun ensureSafeNewFile(dir: File, name: String): File {
+    val safeName = name.replace("[^-_.()\\w]+".toRegex(), "_");
+    val file = File(dir, safeName)
+    if (!file.exists()) {
+        return file
+    }
+    (1..1000).forEach { i ->
+        val newFile = File(dir, if (file.extension == "") {
+            "${file.nameWithoutExtension} ($i)"
+        } else {
+            "${file.nameWithoutExtension} ($i).${file.extension}"
+        })
+        if (!newFile.exists()) {
+            return newFile
+        }
+    }
+    throw Exception("Cannot find safe file")
+}

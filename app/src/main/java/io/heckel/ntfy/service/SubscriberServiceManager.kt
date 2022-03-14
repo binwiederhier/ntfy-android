@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * This class only manages the SubscriberService, i.e. it starts or stops it.
@@ -34,24 +36,27 @@ class SubscriberServiceManager(private val context: Context) {
      * Starts or stops the foreground service by figuring out how many instant delivery subscriptions
      * exist. If there's > 0, then we need a foreground service.
      */
-    class ServiceStartWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-        override fun doWork(): Result {
+    class ServiceStartWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+        override suspend fun doWork(): Result {
+            val id = this.id
             if (context.applicationContext !is Application) {
-                Log.d(TAG, "ServiceStartWorker: Failed, no application found (work ID: ${this.id})")
+                Log.d(TAG, "ServiceStartWorker: Failed, no application found (work ID: ${id})")
                 return Result.failure()
             }
-            val app = context.applicationContext as Application
-            val subscriptionIdsWithInstantStatus = app.repository.getSubscriptionIdsWithInstantStatus()
-            val instantSubscriptions = subscriptionIdsWithInstantStatus.toList().filter { (_, instant) -> instant }.size
-            val action = if (instantSubscriptions > 0) SubscriberService.Action.START else SubscriberService.Action.STOP
-            val serviceState = SubscriberService.readServiceState(context)
-            if (serviceState == SubscriberService.ServiceState.STOPPED && action == SubscriberService.Action.STOP) {
-                return Result.success()
-            }
-            Log.d(TAG, "ServiceStartWorker: Starting foreground service with action $action (work ID: ${this.id})")
-            Intent(context, SubscriberService::class.java).also {
-                it.action = action.name
-                ContextCompat.startForegroundService(context, it)
+            withContext(Dispatchers.IO) {
+                val app = context.applicationContext as Application
+                val subscriptionIdsWithInstantStatus = app.repository.getSubscriptionIdsWithInstantStatus()
+                val instantSubscriptions = subscriptionIdsWithInstantStatus.toList().filter { (_, instant) -> instant }.size
+                val action = if (instantSubscriptions > 0) SubscriberService.Action.START else SubscriberService.Action.STOP
+                val serviceState = SubscriberService.readServiceState(context)
+                if (serviceState == SubscriberService.ServiceState.STOPPED && action == SubscriberService.Action.STOP) {
+                    return@withContext Result.success()
+                }
+                Log.d(TAG, "ServiceStartWorker: Starting foreground service with action $action (work ID: ${id})")
+                Intent(context, SubscriberService::class.java).also {
+                    it.action = action.name
+                    ContextCompat.startForegroundService(context, it)
+                }
             }
             return Result.success()
         }

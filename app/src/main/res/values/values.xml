@@ -89,6 +89,16 @@
         <item>upload_original</item>
         <item>upload_scrubbed</item>
     </string-array>
+    <string-array name="settings_backup_restore_backup_entries">
+        <item>@string/settings_backup_restore_backup_entry_everything</item>
+        <item>@string/settings_backup_restore_backup_entry_everything_no_users</item>
+        <item>@string/settings_backup_restore_backup_entry_settings_only</item>
+    </string-array>
+    <string-array name="settings_backup_restore_backup_values">
+        <item>everything</item>
+        <item>everything_no_users</item>
+        <item>settings_only</item>
+    </string-array>
     <string-array name="settings_general_dark_mode_entries">
         <item>@string/settings_general_dark_mode_entry_system</item>
         <item>@string/settings_general_dark_mode_entry_light</item>

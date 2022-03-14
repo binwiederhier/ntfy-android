@@ -124,6 +124,25 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             }
         }
 
+        // Add scrub terms to log (in case it gets exported) // FIXME this should be in Log.getFormatted
+        repository.getUsersLiveData().observe(this) {
+            it?.let { users ->
+                users.forEach { u ->
+                    Log.addScrubTerm(shortUrl(u.baseUrl), Log.TermType.Domain)
+                    Log.addScrubTerm(u.username, Log.TermType.Username)
+                    Log.addScrubTerm(u.password, Log.TermType.Password)
+                }
+            }
+        }
+
+        // Scrub terms for last topics // FIXME this should be in Log.getFormatted
+        repository.getLastShareTopics().forEach { topicUrl ->
+            maybeSplitTopicUrl(topicUrl)?.let {
+                Log.addScrubTerm(shortUrl(it.first), Log.TermType.Domain)
+                Log.addScrubTerm(shortUrl(it.second), Log.TermType.Term)
+            }
+        }
+
         // React to changes in instant delivery setting
         viewModel.listIdsWithInstantStatus().observe(this) {
             SubscriberServiceManager.refresh(this)

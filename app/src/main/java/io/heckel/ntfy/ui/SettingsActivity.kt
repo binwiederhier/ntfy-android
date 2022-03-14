@@ -1,6 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -22,19 +24,17 @@ import androidx.preference.Preference.OnPreferenceClickListener
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
+import io.heckel.ntfy.backup.Backuper
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.formatBytes
-import io.heckel.ntfy.util.formatDateShort
-import io.heckel.ntfy.util.shortUrl
-import io.heckel.ntfy.util.toPriorityString
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -340,6 +340,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 false
             }
 
+            // Clear logs
             val clearLogsPrefId = context?.getString(R.string.settings_advanced_clear_logs_key) ?: return
             val clearLogs: Preference? = findPreference(clearLogsPrefId)
             clearLogs?.isVisible = Log.getRecord()
@@ -377,7 +378,81 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         Log.addScrubTerm(shortUrl(s.baseUrl), Log.TermType.Domain)
                         Log.addScrubTerm(s.topic)
                     }
+                    repository.getUsers().forEach { u ->
+                        Log.addScrubTerm(shortUrl(u.baseUrl), Log.TermType.Domain)
+                        Log.addScrubTerm(u.username, Log.TermType.Username)
+                        Log.addScrubTerm(u.password, Log.TermType.Password)
+                    }
                 }
+                true
+            }
+
+            // Backup
+            val backuper = Backuper(requireContext())
+            val backupPrefId = context?.getString(R.string.settings_backup_restore_backup_key) ?: return
+            val backup: ListPreference? = findPreference(backupPrefId)
+            var backupSelection = BACKUP_EVERYTHING
+            val backupResultLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument()) { uri ->
+                if (uri == null) {
+                    return@registerForActivityResult
+                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        when (backupSelection) {
+                            BACKUP_EVERYTHING -> backuper.backup(uri)
+                            BACKUP_EVERYTHING_NO_USERS -> backuper.backup(uri, withUsers = false)
+                            BACKUP_SETTINGS_ONLY -> backuper.backup(uri, withUsers = false, withSubscriptions = false)
+                        }
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, getString(R.string.settings_backup_restore_backup_successful), Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Backup failed", e)
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, getString(R.string.settings_backup_restore_backup_failed, e.message), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+            backup?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            backup?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
+                backupSelection = v.toString()
+                val timestamp = SimpleDateFormat("yyMMdd-HHmm").format(Date());
+                val suggestedFilename = when (backupSelection) {
+                    BACKUP_EVERYTHING_NO_USERS -> "ntfy-backup-no-users-$timestamp.json"
+                    BACKUP_SETTINGS_ONLY -> "ntfy-settings-$timestamp.json"
+                    else -> "ntfy-backup-$timestamp.json"
+                }
+                backupResultLauncher.launch(suggestedFilename)
+                false
+            }
+            backup?.onPreferenceClickListener = OnPreferenceClickListener {
+                true
+            }
+
+            // Restore
+            val restorePrefId = context?.getString(R.string.settings_backup_restore_restore_key) ?: return
+            val restore: Preference? = findPreference(restorePrefId)
+            val restoreResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                if (uri == null) {
+                    return@registerForActivityResult
+                }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        backuper.restore(uri)
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, getString(R.string.settings_backup_restore_restore_successful), Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Restore failed", e)
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, getString(R.string.settings_backup_restore_restore_failed, e.message), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+            restore?.onPreferenceClickListener = OnPreferenceClickListener {
+                restoreResultLauncher.launch(Backuper.MIME_TYPE)
                 true
             }
 
@@ -434,8 +509,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         private fun copyLogsToClipboard(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
-                val log = Log.getFormatted(scrub = scrub)
                 val context = context ?: return@launch
+                val log = Log.getFormatted(context, scrub = scrub)
                 requireActivity().runOnUiThread {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("ntfy logs", log)
@@ -454,7 +529,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         private fun uploadLogsToNopaste(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
                 Log.d(TAG, "Uploading log to $EXPORT_LOGS_UPLOAD_URL ...")
-                val log = Log.getFormatted(scrub = scrub)
+                val context = context ?: return@launch
+                val log = Log.getFormatted(context, scrub = scrub)
                 if (log.length > EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD) {
                     requireActivity().runOnUiThread {
                         Toast
@@ -672,6 +748,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         private const val TITLE_TAG = "title"
         private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
         private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
+        private const val BACKUP_EVERYTHING = "everything"
+        private const val BACKUP_EVERYTHING_NO_USERS = "everything_no_users"
+        private const val BACKUP_SETTINGS_ONLY = "settings_only"
         private const val EXPORT_LOGS_COPY_ORIGINAL = "copy_original"
         private const val EXPORT_LOGS_COPY_SCRUBBED = "copy_scrubbed"
         private const val EXPORT_LOGS_UPLOAD_ORIGINAL = "upload_original"

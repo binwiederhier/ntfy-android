@@ -44,6 +44,19 @@
                 app:entryValues="@array/settings_general_dark_mode_values"
                 app:defaultValue="-1"/>
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_backup_restore_header">
+        <ListPreference
+                app:key="@string/settings_backup_restore_backup_key"
+                app:title="@string/settings_backup_restore_backup_title"
+                app:summary="@string/settings_backup_restore_backup_summary"
+                app:entries="@array/settings_backup_restore_backup_entries"
+                app:entryValues="@array/settings_backup_restore_backup_values"
+                app:defaultValue="everything"/>
+        <Preference
+                app:key="@string/settings_backup_restore_restore_key"
+                app:title="@string/settings_backup_restore_restore_title"
+                app:summary="@string/settings_backup_restore_restore_summary"/>
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
         <SwitchPreference
                 app:key="@string/settings_advanced_broadcast_key"

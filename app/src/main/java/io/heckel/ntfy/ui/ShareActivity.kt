@@ -290,6 +290,8 @@ class ShareActivity : AppCompatActivity() {
                 )
                 runOnUiThread {
                     repository.addLastShareTopic(topicUrl(baseUrl, topic))
+                    Log.addScrubTerm(shortUrl(baseUrl), Log.TermType.Domain)
+                    Log.addScrubTerm(topic, Log.TermType.Term)
                     finish()
                     Toast
                         .makeText(this@ShareActivity, getString(R.string.share_successful), Toast.LENGTH_LONG)

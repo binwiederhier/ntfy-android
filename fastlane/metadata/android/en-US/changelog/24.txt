@@ -1,5 +1,6 @@
 Features:
 * Support for UnifiedPush 2.0 specification (bytes messages, #130)
+* Export/import settings and subscriptions (#115, thanks @cmeis for reporting)
 
 Bugs:
 * Display locale-specific times, with AM/PM or 24h format (#140, thanks @hl2guide for reporting)
