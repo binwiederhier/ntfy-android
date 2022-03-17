@@ -301,6 +301,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
+    fun getJsonStreamRemindTime(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_JSON_STREAM_REMIND_TIME, JSON_STREAM_REMIND_TIME_ALWAYS)
+    }
+
+    fun setJsonStreamRemindTime(timeMillis: Long) {
+        sharedPrefs.edit()
+            .putLong(SHARED_PREFS_JSON_STREAM_REMIND_TIME, timeMillis)
+            .apply()
+    }
+
     fun getDefaultBaseUrl(): String? {
         return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
             sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
@@ -434,6 +444,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
+        const val SHARED_PREFS_JSON_STREAM_REMIND_TIME = "JsonStreamRemindTime" // Deprecation of JSON stream
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
@@ -463,6 +474,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS = 1L
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER = Long.MAX_VALUE
+
+        const val JSON_STREAM_REMIND_TIME_ALWAYS = 1L
+        const val JSON_STREAM_REMIND_TIME_NEVER = Long.MAX_VALUE
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

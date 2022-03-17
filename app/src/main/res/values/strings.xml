@@ -69,9 +69,16 @@
 
     <!-- Main activity: Battery banner -->
     <string name="main_banner_battery_text">Battery optimization should be disabled to avoid issues with notification delivery.</string>
-    <string name="main_banner_battery_button_ask_later">Ask later</string>
-    <string name="main_banner_battery_button_dismiss">Don\'t ask again</string>
+    <string name="main_banner_battery_button_remind_later">Remind later</string>
+    <string name="main_banner_battery_button_dismiss">Dismiss</string>
     <string name="main_banner_battery_button_fix_now">Fix now</string>
+
+    <!-- Main activity: JSON stream banner -->
+    <string name="main_banner_json_stream_text">Starting June 2022, WebSockets will be used to communicate with the server. Be sure get your selfhosted server ready.</string>
+    <string name="main_banner_json_stream_button_remind_later">Remind later</string>
+    <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
+    <string name="main_banner_json_stream_button_learn_more">Learn more</string>
+    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>

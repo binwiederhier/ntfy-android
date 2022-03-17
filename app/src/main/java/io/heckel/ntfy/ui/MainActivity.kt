@@ -119,8 +119,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     Log.addScrubTerm(s.topic)
                 }
 
-                // Update battery banner
+                // Update banner + JSON stream banner
                 showHideBatteryBanner(subscriptions)
+                showHideJsonStreamBanner(subscriptions)
             }
         }
 
@@ -168,6 +169,23 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             }
         }
 
+        // JSON stream banner
+        val jsonStreamBanner = findViewById<View>(R.id.main_banner_json_stream) // Banner visibility is toggled in onResume()
+        val jsonStreamDismissButton = findViewById<Button>(R.id.main_banner_json_stream_dontaskagain)
+        val jsonStreamRemindButton = findViewById<Button>(R.id.main_banner_json_stream_remind_later)
+        val jsonStreamLearnMoreButton = findViewById<Button>(R.id.main_banner_json_stream_learn_mode)
+        jsonStreamDismissButton.setOnClickListener {
+            jsonStreamBanner.visibility = View.GONE
+            repository.setJsonStreamRemindTime(Repository.JSON_STREAM_REMIND_TIME_NEVER)
+        }
+        jsonStreamRemindButton.setOnClickListener {
+            jsonStreamBanner.visibility = View.GONE
+            repository.setJsonStreamRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
+        }
+        jsonStreamLearnMoreButton.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_banner_json_stream_button_learn_more_url))))
+        }
+
         // Create notification channels right away, so we can configure them immediately after installing the app
         dispatcher?.init()
 
@@ -197,6 +215,15 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val batteryBanner = findViewById<View>(R.id.main_banner_battery)
         batteryBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
+    }
+
+    private fun showHideJsonStreamBanner(subscriptions: List<Subscription>) {
+        val hasSelfhostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
+        val usingWebSockets = repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
+        val jsonStreamRemindTimeReached = repository.getJsonStreamRemindTime() < System.currentTimeMillis()
+        val showBanner = hasSelfhostedSubscriptions && jsonStreamRemindTimeReached && !usingWebSockets
+        val jsonStreamBanner = findViewById<View>(R.id.main_banner_json_stream)
+        jsonStreamBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
     }
 
     private fun schedulePeriodicPollWorker() {
