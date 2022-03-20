@@ -108,7 +108,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginEnd="15dp" android:layout_marginTop="15dp"
                     app:layout_constraintStart_toEndOf="@+id/main_banner_json_stream_image"
-                    android:layout_marginStart="10dp"/>
+                    android:layout_marginStart="10dp" android:autoLink="web"/>
 
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_json_stream_remind_later"

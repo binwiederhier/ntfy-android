@@ -248,7 +248,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         workManager!!.enqueueUniquePeriodicWork(PollWorker.WORK_NAME_PERIODIC_ALL, workPolicy, work)
     }
 
-
     private fun schedulePeriodicDeleteWorker() {
         val workerVersion = repository.getDeleteWorkerVersion()
         val workPolicy = if (workerVersion == DeleteWorker.VERSION) {

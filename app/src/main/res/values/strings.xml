@@ -69,16 +69,17 @@
 
     <!-- Main activity: Battery banner -->
     <string name="main_banner_battery_text">Battery optimization should be disabled to avoid issues with notification delivery.</string>
-    <string name="main_banner_battery_button_remind_later">Remind later</string>
+    <string name="main_banner_battery_button_remind_later">Ask later</string>
     <string name="main_banner_battery_button_dismiss">Dismiss</string>
     <string name="main_banner_battery_button_fix_now">Fix now</string>
 
     <!-- Main activity: JSON stream banner -->
-    <string name="main_banner_json_stream_text">Starting June 2022, WebSockets will be used to communicate with the server. Be sure get your selfhosted server ready.</string>
-    <string name="main_banner_json_stream_button_remind_later">Remind later</string>
+    <string name="main_banner_json_stream_text">Starting June 2022, WebSockets will be used to communicate with the ntfy servers. Be sure to configure your selfhosted server to support it. To check if WebSocket support is working, enable it in the Settings under Connection protocol.</string>
+    <string name="main_banner_json_stream_button_remind_later">Ask later</string>
     <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
     <string name="main_banner_json_stream_button_learn_more">Learn more</string>
     <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
+    <string name="main_banner_json_stream_button_enable_ws">Enable now</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -331,13 +332,12 @@
     <string name="settings_advanced_clear_logs_title">Clear logs</string>
     <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs successfully deleted</string>
-    <string name="settings_experimental_header">Experimental</string>
     <string name="settings_advanced_connection_protocol_key">ConnectionProtocol</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This is the tried and true method, though it may consume more battery.</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This option is experimental. Let us know if it consumes less battery or is unstable.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
-    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets (experimental)</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_key">Version</string>
     <string name="settings_about_version_title">Version</string>

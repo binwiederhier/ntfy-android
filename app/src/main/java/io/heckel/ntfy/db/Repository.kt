@@ -256,15 +256,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setConnectionProtocol(connectionProtocol: String) {
-        if (connectionProtocol == CONNECTION_PROTOCOL_JSONHTTP) {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_CONNECTION_PROTOCOL)
-                .apply()
-        } else {
-            sharedPrefs.edit()
-                .putString(SHARED_PREFS_CONNECTION_PROTOCOL, connectionProtocol)
-                .apply()
-        }
+        sharedPrefs.edit()
+            .putString(SHARED_PREFS_CONNECTION_PROTOCOL, connectionProtocol)
+            .apply()
     }
 
     fun getConnectionProtocol(): String {
