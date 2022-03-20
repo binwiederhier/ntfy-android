@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.util.Base64
@@ -509,6 +510,17 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onNotificationClick(notification: Notification) {
         if (actionMode != null) {
             handleActionModeClick(notification)
+        } else if (notification.click != "") {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(notification.click)))
+            } catch (e: Exception) {
+                Log.w(TAG, "Cannot open click URL", e)
+                runOnUiThread {
+                    Toast
+                        .makeText(this@DetailActivity, getString(R.string.detail_item_cannot_open_click_url, e.message), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
         } else {
             copyToClipboard(notification)
         }
@@ -516,14 +528,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun copyToClipboard(notification: Notification) {
         runOnUiThread {
-            val message = decodeMessage(notification)
-            val text = message + "\n\n" + Date(notification.timestamp * 1000).toString()
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("notification message", text)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                .show()
+            copyToClipboard(this, notification)
         }
     }
 

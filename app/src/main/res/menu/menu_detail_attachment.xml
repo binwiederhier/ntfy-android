@@ -6,4 +6,5 @@
     <item android:id="@+id/detail_item_menu_browse" android:title="@string/detail_item_menu_browse"/>
     <item android:id="@+id/detail_item_menu_delete" android:title="@string/detail_item_menu_delete"/>
     <item android:id="@+id/detail_item_menu_copy_url" android:title="@string/detail_item_menu_copy_url"/>
+    <item android:id="@+id/detail_item_menu_contents" android:title="@string/detail_item_menu_copy_contents"/>
 </menu>

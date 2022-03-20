@@ -20,13 +20,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 class DetailAdapter(private val activity: Activity, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
@@ -98,8 +96,11 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             if (selected.contains(notification.id)) {
                 itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
             }
+            val attachment = notification.attachment
+            val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
             renderPriority(context, notification)
-            maybeRenderAttachment(context, notification)
+            maybeRenderMenu(context, notification, exists)
+            maybeRenderAttachment(context, notification, exists)
         }
 
         private fun renderPriority(context: Context, notification: Notification) {
@@ -126,23 +127,20 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             }
         }
 
-        private fun maybeRenderAttachment(context: Context, notification: Notification) {
+        private fun maybeRenderAttachment(context: Context, notification: Notification, exists: Boolean) {
             if (notification.attachment == null) {
-                menuButton.visibility = View.GONE
                 attachmentImageView.visibility = View.GONE
                 attachmentBoxView.visibility = View.GONE
                 return
             }
             val attachment = notification.attachment
-            val exists = if (attachment.contentUri != null) fileExists(context, attachment.contentUri) else false
             val image = attachment.contentUri != null && exists && supportedImage(attachment.type)
-            maybeRenderMenu(context, notification, attachment, exists)
             maybeRenderAttachmentImage(context, attachment, image)
             maybeRenderAttachmentBox(context, notification, attachment, exists, image)
         }
 
-        private fun maybeRenderMenu(context: Context, notification: Notification, attachment: Attachment, exists: Boolean) {
-            val menuButtonPopupMenu = createAttachmentPopup(context, menuButton, notification, attachment, exists) // Heavy lifting not during on-click
+        private fun maybeRenderMenu(context: Context, notification: Notification, exists: Boolean) {
+            val menuButtonPopupMenu = maybeCreateMenuPopup(context, menuButton, notification, exists) // Heavy lifting not during on-click
             if (menuButtonPopupMenu != null) {
                 menuButton.setOnClickListener { menuButtonPopupMenu.show() }
                 menuButton.visibility = View.VISIBLE
@@ -158,7 +156,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             }
             attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
             attachmentIconView.setImageResource(mimeTypeToIconResource(attachment.type))
-            val attachmentBoxPopupMenu = createAttachmentPopup(context, attachmentBoxView, notification, attachment, exists) // Heavy lifting not during on-click
+            val attachmentBoxPopupMenu = maybeCreateMenuPopup(context, attachmentBoxView, notification, exists) // Heavy lifting not during on-click
             if (attachmentBoxPopupMenu != null) {
                 attachmentBoxView.setOnClickListener { attachmentBoxPopupMenu.show() }
             } else {
@@ -171,93 +169,107 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             attachmentBoxView.visibility = View.VISIBLE
         }
 
-        private fun createAttachmentPopup(context: Context, anchor: View?, notification: Notification, attachment: Attachment, exists: Boolean): PopupMenu? {
+        private fun maybeCreateMenuPopup(context: Context, anchor: View?, notification: Notification, exists: Boolean): PopupMenu? {
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
+            val attachment = notification.attachment // May be null
+            val hasAttachment = attachment != null
             val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
             val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
             val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
             val browseItem = popup.menu.findItem(R.id.detail_item_menu_browse)
             val deleteItem = popup.menu.findItem(R.id.detail_item_menu_delete)
             val copyUrlItem = popup.menu.findItem(R.id.detail_item_menu_copy_url)
-            val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
-            val inProgress = attachment.progress in 0..99
-            if (attachment.contentUri != null) {
-                openItem.setOnMenuItemClickListener {
-                    try {
-                        val contentUri = Uri.parse(attachment.contentUri)
-                        val intent = Intent(Intent.ACTION_VIEW, contentUri)
-                        intent.setDataAndType(contentUri, attachment.type ?: "application/octet-stream") // Required for Android <= P
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        context.startActivity(intent)
-                    } catch (e: ActivityNotFoundException) {
-                        Toast
-                            .makeText(context, context.getString(R.string.detail_item_cannot_open_not_found), Toast.LENGTH_LONG)
-                            .show()
-                    } catch (e: Exception) {
-                        Toast
-                            .makeText(context, context.getString(R.string.detail_item_cannot_open, e.message), Toast.LENGTH_LONG)
-                            .show()
-                    }
-                    true
-                }
-            }
-            browseItem.setOnMenuItemClickListener {
-                val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                context.startActivity(intent)
-                true
-            }
-            if (attachment.contentUri != null) {
-                deleteItem.setOnMenuItemClickListener {
-                    try {
-                        val contentUri = Uri.parse(attachment.contentUri)
-                        val resolver = context.applicationContext.contentResolver
-                        val deleted = resolver.delete(contentUri, null, null) > 0
-                        if (!deleted) throw Exception("no rows deleted")
-                        val newAttachment = attachment.copy(progress = PROGRESS_DELETED)
-                        val newNotification = notification.copy(attachment = newAttachment)
-                        GlobalScope.launch(Dispatchers.IO) {
-                            repository.updateNotification(newNotification)
+            val copyContentsItem = popup.menu.findItem(R.id.detail_item_menu_contents)
+            val expired = attachment?.expires != null && attachment.expires < System.currentTimeMillis()/1000
+            val inProgress = attachment?.progress in 0..99
+            if (attachment != null) {
+                if (attachment.contentUri != null) {
+                    openItem.setOnMenuItemClickListener {
+                        try {
+                            val contentUri = Uri.parse(attachment.contentUri)
+                            val intent = Intent(Intent.ACTION_VIEW, contentUri)
+                            intent.setDataAndType(contentUri, attachment.type ?: "application/octet-stream") // Required for Android <= P
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            context.startActivity(intent)
+                        } catch (e: ActivityNotFoundException) {
+                            Toast
+                                .makeText(context, context.getString(R.string.detail_item_cannot_open_not_found), Toast.LENGTH_LONG)
+                                .show()
+                        } catch (e: Exception) {
+                            Toast
+                                .makeText(context, context.getString(R.string.detail_item_cannot_open, e.message), Toast.LENGTH_LONG)
+                                .show()
                         }
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Failed to update notification: ${e.message}", e)
-                        Toast
-                            .makeText(context, context.getString(R.string.detail_item_delete_failed, e.message), Toast.LENGTH_LONG)
-                            .show()
+                        true
                     }
+                }
+                browseItem.setOnMenuItemClickListener {
+                    val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    context.startActivity(intent)
+                    true
+                }
+                if (attachment.contentUri != null) {
+                    deleteItem.setOnMenuItemClickListener {
+                        try {
+                            val contentUri = Uri.parse(attachment.contentUri)
+                            val resolver = context.applicationContext.contentResolver
+                            val deleted = resolver.delete(contentUri, null, null) > 0
+                            if (!deleted) throw Exception("no rows deleted")
+                            val newAttachment = attachment.copy(progress = PROGRESS_DELETED)
+                            val newNotification = notification.copy(attachment = newAttachment)
+                            GlobalScope.launch(Dispatchers.IO) {
+                                repository.updateNotification(newNotification)
+                            }
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Failed to update notification: ${e.message}", e)
+                            Toast
+                                .makeText(context, context.getString(R.string.detail_item_delete_failed, e.message), Toast.LENGTH_LONG)
+                                .show()
+                        }
+                        true
+                    }
+                }
+                copyUrlItem.setOnMenuItemClickListener {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("attachment url", attachment.url)
+                    clipboard.setPrimaryClip(clip)
+                    Toast
+                        .makeText(context, context.getString(R.string.detail_item_menu_copy_url_copied), Toast.LENGTH_LONG)
+                        .show()
+                    true
+                }
+                downloadItem.setOnMenuItemClickListener {
+                    val requiresPermission = Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                    if (requiresPermission) {
+                        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
+                        return@setOnMenuItemClickListener true
+                    }
+                    DownloadManager.enqueue(context, notification.id, userAction = true)
+                    true
+                }
+                cancelItem.setOnMenuItemClickListener {
+                    DownloadManager.cancel(context, notification.id)
                     true
                 }
             }
-            copyUrlItem.setOnMenuItemClickListener {
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("attachment url", attachment.url)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(context, context.getString(R.string.detail_item_menu_copy_url_copied), Toast.LENGTH_LONG)
-                    .show()
-                true
-            }
-            downloadItem.setOnMenuItemClickListener {
-                val requiresPermission = Build.VERSION.SDK_INT <= Build.VERSION_CODES.P && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
-                if (requiresPermission) {
-                    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
-                    return@setOnMenuItemClickListener true
+            if (notification.click != "") {
+                copyContentsItem.setOnMenuItemClickListener {
+                    copyToClipboard(context, notification)
+                    true
                 }
-                DownloadManager.enqueue(context, notification.id, userAction = true)
-                true
             }
-            cancelItem.setOnMenuItemClickListener {
-                DownloadManager.cancel(context, notification.id)
-                true
-            }
-            openItem.isVisible = exists
-            browseItem.isVisible = exists
-            downloadItem.isVisible = !exists && !expired && !inProgress
-            deleteItem.isVisible = exists
-            copyUrlItem.isVisible = !expired
-            cancelItem.isVisible = inProgress
-            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible && !copyUrlItem.isVisible && !cancelItem.isVisible && !deleteItem.isVisible
+            openItem.isVisible = hasAttachment && exists
+            browseItem.isVisible = hasAttachment && exists
+            downloadItem.isVisible = hasAttachment && !exists && !expired && !inProgress
+            deleteItem.isVisible = hasAttachment && exists
+            copyUrlItem.isVisible = hasAttachment && !expired
+            cancelItem.isVisible = hasAttachment && inProgress
+            copyContentsItem.isVisible = notification.click != ""
+            val noOptions = !openItem.isVisible && !browseItem.isVisible && !downloadItem.isVisible
+                    && !copyUrlItem.isVisible && !cancelItem.isVisible && !deleteItem.isVisible
+                    && !copyContentsItem.isVisible
             if (noOptions) {
                 return null
             }

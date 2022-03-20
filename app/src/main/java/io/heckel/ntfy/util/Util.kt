@@ -2,6 +2,8 @@ package io.heckel.ntfy.util
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.res.Configuration
@@ -18,6 +20,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
@@ -365,4 +368,15 @@ fun ensureSafeNewFile(dir: File, name: String): File {
         }
     }
     throw Exception("Cannot find safe file")
+}
+
+fun copyToClipboard(context: Context, notification: Notification) {
+    val message = decodeMessage(notification)
+    val text = message + "\n\n" + formatDateShort(notification.timestamp)
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("notification message", text)
+    clipboard.setPrimaryClip(clip)
+    Toast
+        .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
+        .show()
 }

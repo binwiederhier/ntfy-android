@@ -144,9 +144,12 @@
     <string name="detail_item_menu_cancel">Cancel download</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
     <string name="detail_item_menu_copy_url_copied">Copied URL to clipboard</string>
+    <string name="detail_item_menu_copy_contents">Copy notification</string>
+    <string name="detail_item_menu_copy_contents_copied">Copied notification clipboard</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. Link expired and no local file found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Cannot open attachment: File may have been deleted, or there is no app to open the file.</string>
+    <string name="detail_item_cannot_open_click_url">Cannot open click URL: %1$s</string>
     <string name="detail_item_delete_failed">Cannot delete attachment: %1$s</string>
     <string name="detail_item_download_failed">Attachment download failed: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">not downloaded</string>
