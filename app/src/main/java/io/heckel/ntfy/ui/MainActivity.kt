@@ -663,7 +663,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // (same as the JobScheduler API), but in practice 15 doesn't work. Using 16 here.
         // Thanks to varunon9 (https://gist.github.com/varunon9/f2beec0a743c96708eb0ef971a9ff9cd) for this!
 
-        const val POLL_WORKER_INTERVAL_MINUTES = 2 * 60L
+        const val POLL_WORKER_INTERVAL_MINUTES = 60L
         const val DELETE_WORKER_INTERVAL_MINUTES = 8 * 60L
         const val SERVICE_START_WORKER_INTERVAL_MINUTES = 3 * 60L
     }

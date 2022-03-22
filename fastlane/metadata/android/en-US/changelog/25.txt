@@ -1,5 +1,10 @@
 Features:
 * Download attachments to cache folder (#181)
+* Regularly delete attachments for deleted notifications (#142)
 
 Bugs:
 * IllegalStateException: Failed to build unique file (#177, thanks to @Fallenbagel for reporting)
+
+Thanks:
+* Many thanks to @cmeis, @Fallenbagel, @J117 and @rogeliodh for input on the new attachment logic, and for
+  testing the release

@@ -88,6 +88,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return notificationDao.list()
     }
 
+    fun getDeletedNotificationsWithAttachments(): List<Notification> {
+        return notificationDao.listDeletedWithAttachments()
+    }
+
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }

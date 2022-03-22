@@ -355,7 +355,10 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 val resolver = context.applicationContext.contentResolver
                 val deleted = resolver.delete(contentUri, null, null) > 0
                 if (!deleted) throw Exception("no rows deleted")
-                val newAttachment = attachment.copy(progress = PROGRESS_DELETED)
+                val newAttachment = attachment.copy(
+                    contentUri = null,
+                    progress = PROGRESS_DELETED
+                )
                 val newNotification = notification.copy(attachment = newAttachment)
                 GlobalScope.launch(Dispatchers.IO) {
                     repository.updateNotification(newNotification)
