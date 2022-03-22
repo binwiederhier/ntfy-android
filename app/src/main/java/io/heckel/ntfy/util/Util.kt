@@ -33,6 +33,7 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.IOException
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -205,13 +206,23 @@ fun fileName(context: Context, contentUri: String?, fallbackName: String): Strin
 }
 
 fun fileStat(context: Context, contentUri: Uri?): FileInfo {
-    if (contentUri == null) throw Exception("URI is null")
+    if (contentUri == null) {
+        throw FileNotFoundException("URI is null")
+    }
     val resolver = context.applicationContext.contentResolver
     val cursor = resolver.query(contentUri, null, null, null, null) ?: throw Exception("Query returned null")
     return cursor.use { c ->
         val nameIndex = c.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
         val sizeIndex = c.getColumnIndexOrThrow(OpenableColumns.SIZE)
-        c.moveToFirst()
+        if (!c.moveToFirst()) {
+            throw FileNotFoundException("Not found: $contentUri")
+        }
+        val size = c.getLong(sizeIndex)
+        if (size == 0L) {
+            // Content provider URIs (e.g. content://io.heckel.ntfy.provider/cache_files/DQ4o7DitZAmw) return an entry, even
+            // when they do not exist, but with an empty size. This is a practical/fast way to weed out non-existing files.
+            throw FileNotFoundException("Not found or empty: $contentUri")
+        }
         FileInfo(
             filename = c.getString(nameIndex),
             size = c.getLong(sizeIndex)

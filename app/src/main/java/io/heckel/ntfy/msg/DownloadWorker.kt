@@ -1,13 +1,9 @@
 package io.heckel.ntfy.msg
 
-import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -19,7 +15,6 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
-import io.heckel.ntfy.util.fileName
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -81,24 +76,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     return
                 }
                 val resolver = applicationContext.contentResolver
-                val values = ContentValues().apply {
-                    put(MediaStore.MediaColumns.DISPLAY_NAME, attachment.name)
-                    if (attachment.type != null) {
-                        put(MediaStore.MediaColumns.MIME_TYPE, attachment.type)
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                        put(MediaStore.MediaColumns.IS_DOWNLOAD, 1)
-                        put(MediaStore.MediaColumns.IS_PENDING, 1) // While downloading
-                    }
-                }
-                val uri = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                    val file = ensureSafeNewFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), attachment.name)
-                    FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file)
-                } else {
-                    val contentUri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
-                    resolver.insert(contentUri, values) ?: throw Exception("Cannot insert content")
-                }
+                val uri = createUri(notification)
                 this.uri = uri // Required for cleanup in onStopped()
 
                 Log.d(TAG, "Starting download to content URI: $uri")
@@ -133,18 +111,11 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     }
                 }
                 Log.d(TAG, "Attachment download: successful response, proceeding with download")
-                val actualName = fileName(context, uri.toString(), attachment.name)
                 save(attachment.copy(
-                    name = actualName,
                     size = bytesCopied,
                     contentUri = uri.toString(),
                     progress = PROGRESS_DONE
                 ))
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    values.clear() // See #116 to avoid "movement" error
-                    values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-                    resolver.update(uri, values, null, null)
-                }
             }
         } catch (e: Exception) {
             failed(e)
@@ -217,12 +188,22 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
         }
     }
 
+    private fun createUri(notification: Notification): Uri {
+        val attachmentDir = File(context.cacheDir, ATTACHMENT_CACHE_DIR)
+        if (!attachmentDir.exists() && !attachmentDir.mkdirs()) {
+            throw Exception("Cannot create cache directory for attachments: $attachmentDir")
+        }
+        val file = ensureSafeNewFile(attachmentDir, notification.id)
+        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file)
+    }
+
     companion object {
         const val INPUT_DATA_ID = "id"
         const val INPUT_DATA_USER_ACTION = "userAction"
+        const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider" // See AndroidManifest.xml
 
         private const val TAG = "NtfyAttachDownload"
-        private const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider" // See AndroidManifest.xml
+        private const val ATTACHMENT_CACHE_DIR = "attachments"
         private const val BUFFER_SIZE = 8 * 1024
         private const val NOTIFICATION_UPDATE_INTERVAL_MILLIS = 800
     }
