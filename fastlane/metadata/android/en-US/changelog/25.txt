@@ -1,2 +1,5 @@
 Features:
 * Download attachments to cache folder (#181)
+
+Bugs:
+* IllegalStateException: Failed to build unique file (#177, thanks to @Fallenbagel for reporting)
