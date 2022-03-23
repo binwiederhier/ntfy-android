@@ -6,7 +6,7 @@ package io.heckel.ntfy.up
  */
 
 const val ACTION_NEW_ENDPOINT = "org.unifiedpush.android.connector.NEW_ENDPOINT"
-const val ACTION_REGISTRATION_REFUSED = "org.unifiedpush.android.connector.REGISTRATION_REFUSED"
+const val ACTION_REGISTRATION_FAILED = "org.unifiedpush.android.connector.REGISTRATION_FAILED"
 const val ACTION_UNREGISTERED = "org.unifiedpush.android.connector.UNREGISTERED"
 const val ACTION_MESSAGE = "org.unifiedpush.android.connector.MESSAGE"
 

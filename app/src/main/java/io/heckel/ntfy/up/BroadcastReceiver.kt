@@ -5,8 +5,8 @@ import android.content.Intent
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.randomString
 import io.heckel.ntfy.util.topicUrlUp
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
         if (appId.isBlank()) {
             Log.w(TAG, "Refusing registration: Empty application")
-            distributor.sendRegistrationRefused(appId, connectorToken)
+            distributor.sendRegistrationFailed(appId, connectorToken, "Empty application string")
             return
         }
         GlobalScope.launch(Dispatchers.IO) {
@@ -52,7 +52,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     distributor.sendEndpoint(appId, connectorToken, endpoint)
                 } else {
                     Log.d(TAG, "Subscription with connectorToken $connectorToken exists for a different app. Refusing registration.")
-                    distributor.sendRegistrationRefused(appId, connectorToken)
+                    distributor.sendRegistrationFailed(appId, connectorToken, "Connector token already exists")
                 }
                 return@launch
             }
@@ -74,11 +74,17 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 lastActive = Date().time/1000
             )
             Log.d(TAG, "Adding subscription with for app $appId (connectorToken $connectorToken): $subscription")
-            repository.addSubscription(subscription)
-            distributor.sendEndpoint(appId, connectorToken, endpoint)
+            try {
+                // Note, this may fail due to a SQL constraint exception, see https://github.com/binwiederhier/ntfy/issues/185
+                repository.addSubscription(subscription)
+                distributor.sendEndpoint(appId, connectorToken, endpoint)
 
-            // Refresh (and maybe start) foreground service
-            SubscriberServiceManager.refresh(app)
+                // Refresh (and maybe start) foreground service
+                SubscriberServiceManager.refresh(app)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to add subscription", e)
+                distributor.sendRegistrationFailed(appId, connectorToken, e.message)
+            }
         }
     }
 
