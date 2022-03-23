@@ -439,9 +439,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
+                        val currentDarkMode = repository.getDarkMode()
                         backuper.restore(uri)
                         requireActivity().runOnUiThread {
                             Toast.makeText(context, getString(R.string.settings_backup_restore_restore_successful), Toast.LENGTH_LONG).show()
+                            requireActivity().recreate()
+                            val newDarkMode = repository.getDarkMode()
+                            if (newDarkMode != currentDarkMode) {
+                                AppCompatDelegate.setDefaultNightMode(newDarkMode)
+                            }
                         }
                     } catch (e: Exception) {
                         Log.w(TAG, "Restore failed", e)
