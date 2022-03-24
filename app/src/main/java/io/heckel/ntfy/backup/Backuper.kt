@@ -122,10 +122,11 @@ class Backuper(val context: Context) {
                 } else {
                     null
                 }
-                repository.addNotification(io.heckel.ntfy.db.Notification(
+                repository.upsertNotification(io.heckel.ntfy.db.Notification(
                     id = n.id,
                     subscriptionId = n.subscriptionId,
                     timestamp = n.timestamp,
+                    updated = n.updated ?: 0L,
                     title = n.title,
                     message = n.message,
                     encoding = n.encoding,
@@ -218,6 +219,7 @@ class Backuper(val context: Context) {
                 id = n.id,
                 subscriptionId = n.subscriptionId,
                 timestamp = n.timestamp,
+                updated = n.updated,
                 title = n.title,
                 message = n.message,
                 encoding = n.encoding,
@@ -284,6 +286,7 @@ data class Notification(
     val id: String,
     val subscriptionId: Long,
     val timestamp: Long,
+    val updated: Long?,
     val title: String,
     val message: String,
     val encoding: String, // "base64" or ""

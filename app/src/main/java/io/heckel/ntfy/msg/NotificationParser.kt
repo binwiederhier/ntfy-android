@@ -33,6 +33,7 @@ class NotificationParser {
             id = message.id,
             subscriptionId = subscriptionId,
             timestamp = message.time,
+            updated = message.updated ?: 0,
             title = message.title ?: "",
             message = message.message,
             encoding = message.encoding ?: "",

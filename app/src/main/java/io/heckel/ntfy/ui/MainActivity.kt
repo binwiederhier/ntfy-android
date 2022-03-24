@@ -444,7 +444,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             try {
                 val user = repository.getUser(subscription.baseUrl) // May be null
                 val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
-                notifications.forEach { notification -> repository.addNotification(notification) }
+                notifications.forEach { notification -> repository.upsertNotification(notification) }
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
             }
@@ -492,8 +492,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     newNotifications.forEach { notification ->
                         newNotificationsCount++
                         val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        if (repository.addNotification(notificationWithId)) {
-                            dispatcher?.dispatch(subscription, notificationWithId)
+                        val maybeUpdatedNotification = repository.upsertNotification(notificationWithId)
+                        if (maybeUpdatedNotification != null) {
+                            dispatcher?.dispatch(subscription, maybeUpdatedNotification)
                         }
                     }
                 } catch (e: Exception) {

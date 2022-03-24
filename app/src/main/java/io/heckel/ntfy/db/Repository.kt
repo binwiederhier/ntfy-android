@@ -109,15 +109,37 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return notifications.filterNot { existingIds.contains(it.id) }
     }
 
+    /**
+     * Adds the notification to the database (if it does not exist), or updates it if it does.
+     * Returns null if the notification was not added/updated, or the added/updated notification if it was.
+     *
+     * You should use the returned notification for further processing.
+     */
     @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun addNotification(notification: Notification): Boolean {
-        val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification != null) {
-            return false
+    suspend fun upsertNotification(notification: Notification): Notification? {
+        val existingNotification = notificationDao.get(notification.id)
+        if (existingNotification != null) {
+            return maybeUpdateExistingNotification(existingNotification, notification)
         }
         notificationDao.add(notification)
-        return true
+        return notification
+    }
+
+    private fun maybeUpdateExistingNotification(existingNotification: Notification, notification: Notification): Notification? {
+        if (notification.updated == 0L) {
+            return null
+        } else if (notification.updated <= existingNotification.updated) {
+            return null
+        }
+        val newNotification = existingNotification.copy(
+            message = notification.message,
+            title = notification.title,
+            tags = notification.tags,
+            priority = notification.priority,
+            click = notification.click
+        )
+        notificationDao.update(newNotification)
+        return newNotification
     }
 
     fun updateNotification(notification: Notification) {

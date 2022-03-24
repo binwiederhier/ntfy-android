@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 9,
-    "identityHash": "5bab75c3b41c53c9855fe3a7ef8f0669",
+    "identityHash": "9d62f6db149468db28b5e175be3a9669",
     "entities": [
       {
         "tableName": "Subscription",
@@ -82,7 +82,7 @@
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `encoding` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `encoding` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -99,6 +99,12 @@
           {
             "fieldPath": "timestamp",
             "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updated",
+            "columnName": "updated",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -290,7 +296,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5bab75c3b41c53c9855fe3a7ef8f0669')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9d62f6db149468db28b5e175be3a9669')"
     ]
   }
 }

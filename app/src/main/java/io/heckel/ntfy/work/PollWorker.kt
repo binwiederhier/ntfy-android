@@ -51,8 +51,9 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }
                     newNotifications.forEach { notification ->
-                        if (repository.addNotification(notification)) {
-                            dispatcher.dispatch(subscription, notification)
+                        val maybeUpdatedNotification = repository.upsertNotification(notification)
+                        if (maybeUpdatedNotification != null) {
+                            dispatcher.dispatch(subscription, maybeUpdatedNotification)
                         }
                     }
                 } catch (e: Exception) {

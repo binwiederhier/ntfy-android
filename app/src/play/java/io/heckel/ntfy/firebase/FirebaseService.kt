@@ -1,7 +1,6 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import android.util.Base64
 import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -11,7 +10,6 @@ import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
@@ -82,6 +80,7 @@ class FirebaseService : FirebaseMessagingService() {
         val data = remoteMessage.data
         val id = data["id"]
         val timestamp = data["time"]?.toLongOrNull()
+        val updated = data["updated"]?.toLongOrNull()
         val topic = data["topic"]
         val title = data["title"]
         val message = data["message"]
@@ -125,6 +124,7 @@ class FirebaseService : FirebaseMessagingService() {
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
+                updated = updated ?: 0L,
                 title = title ?: "",
                 message = message,
                 encoding = encoding ?: "",
@@ -135,9 +135,10 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationId = Random.nextInt(),
                 deleted = false
             )
-            if (repository.addNotification(notification)) {
+            val maybeUpdatedNotification = repository.upsertNotification(notification)
+            if (maybeUpdatedNotification != null) {
                 Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
-                dispatcher.dispatch(subscription, notification)
+                dispatcher.dispatch(subscription, maybeUpdatedNotification)
             }
         }
     }

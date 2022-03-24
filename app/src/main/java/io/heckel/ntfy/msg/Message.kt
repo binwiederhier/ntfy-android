@@ -8,6 +8,7 @@ import androidx.annotation.Keep
 data class Message(
     val id: String,
     val time: Long,
+    val updated: Long?,
     val event: String,
     val topic: String,
     val priority: Int?,

@@ -48,6 +48,7 @@ data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "updated") val updated: Long, // Unix timestamp, may be zero
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "encoding") val encoding: String, // "base64" or ""

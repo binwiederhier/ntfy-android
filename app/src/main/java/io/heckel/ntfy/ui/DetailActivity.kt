@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.util.Base64
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -31,7 +30,6 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
@@ -381,7 +379,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 } else {
                     getString(R.string.refresh_message_result, newNotifications.size)
                 }
-                newNotifications.forEach { notification -> repository.addNotification(notification) }
+                newNotifications.forEach { notification -> repository.upsertNotification(notification) }
                 runOnUiThread {
                     Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show()
                     mainListContainer.isRefreshing = false
