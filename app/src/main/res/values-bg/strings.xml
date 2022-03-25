@@ -1,2 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_low_name">Известия (нисък приоритет)</string>
+    <string name="channel_notifications_default_name">Известия (подразбиран приоритет)</string>
+    <string name="channel_notifications_high_name">Известия (висок приоритет)</string>
+    <string name="channel_notifications_max_name">Известия (минимален приоритет)</string>
+    <string name="channel_subscriber_service_name">Абонаментна услуга</string>
+    <string name="channel_subscriber_notification_instant_text">Абонирани сте за теми с незабавно доставяне</string>
+    <string name="channel_subscriber_notification_instant_text_three">Абонирани сте за три теми с незабавно доставяне</string>
+    <string name="channel_subscriber_notification_instant_text_four">Абонирани сте за четири теми с незабавно доставяне</string>
+    <string name="channel_subscriber_notification_noinstant_text">Абонирани сте за теми</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Абонирани сте за една тема</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Абонирани сте за две теми</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Абонирани сте за три теми</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Абонирани сте за четири теми</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Абонирани сте за %1$d теми</string>
+    <string name="main_action_bar_title">Абонаменти</string>
+    <string name="refresh_message_result">Получено(и) %1$d известия</string>
+    <string name="refresh_message_no_results">Няма нови известия</string>
+    <string name="refresh_message_error">%1$d абонамент(а) не могат да бъдат обновени
+\n
+\n%2$s</string>
+    <string name="main_menu_notifications_enabled">Известията са включени</string>
+    <string name="main_menu_notifications_disabled_forever">Известията са изключени</string>
+    <string name="main_menu_settings_title">Настройки</string>
+    <string name="main_action_mode_delete_dialog_message">Наистина ли желаете да се отпишете от избраните теми и да премахнете окончателно всички получени известия\?</string>
+    <string name="add_dialog_title">Абониране за тема</string>
+    <string name="add_dialog_topic_name_hint">Име на темата, напр. phils_alerts</string>
+    <string name="add_dialog_use_another_server">Използване на друг сървър</string>
+    <string name="add_dialog_use_another_server_description">Можете да се абонирате за теми от друг сървър. Въведете адреса на сървъра по-долу.</string>
+    <string name="add_dialog_login_description">Тази тема изисква да влезете. Въведете потребителско име и парола.</string>
+    <string name="detail_deep_link_subscribed_toast_message">Абонирахте се за тема %1$s</string>
+    <string name="detail_clear_dialog_message">Наистина ли искате да премахнете всички известия в темата\?</string>
+    <string name="detail_delete_dialog_message">Наистина ли желаете да се отпишете от темата и да премахнете всички получени известия\?</string>
+    <string name="settings_notifications_muted_until_title">Спиране на известията</string>
+    <string name="notification_dialog_tomorrow">До утре</string>
+    <string name="detail_menu_copy_url">Копиране адреса на темата</string>
+    <string name="share_topic_title">Споделяне с</string>
+    <string name="share_suggested_topics">Предложени теми</string>
+    <string name="settings_notifications_muted_until_show_all">Всички известия ще бъдат показвани</string>
+    <string name="notification_dialog_forever">До включване</string>
+    <string name="settings_notifications_muted_until_forever">Известията са спрени до повторно включване</string>
+    <string name="settings_notifications_muted_until_x">Известията са спрени до %1$s</string>
+    <string name="settings_general_users_summary">Управление на потребители за защитени теми</string>
+    <string name="settings_general_users_prefs_user_not_used">Не се използва от никоя тема</string>
+    <string name="settings_general_users_prefs_user_used_by_one">Използва се от %1$s</string>
+    <string name="settings_general_users_prefs_user_used_by_many">Използва се от %1$s</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">Следните теми/имена на хостове са заменени с имена на плодове, така че можете да споделяте дневника без притеснения:
+\n
+\n%1$s
+\n
+\nПаролите винаги се премахват, но не са изброени тук.</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">Не са променени никакви теми/имена на хостове, може би нямате абонаменти\?</string>
+    <string name="user_dialog_description_add">Тук можете да добавите потребител, който да свържете с дадена тема.</string>
+    <string name="app_name">Ntfy</string>
+    <string name="channel_notifications_min_name">Известия (минимален приоритет)</string>
+    <string name="channel_subscriber_notification_instant_text_one">Абонирани сте за тема с незабавно доставяне</string>
+    <string name="app_base_url">https://ntfy.sh</string>
+    <string name="notification_dialog_muted_forever_toast_message">Известията са спрени</string>
+    <string name="channel_subscriber_notification_title">Слушател за постъпващи известия</string>
+    <string name="channel_subscriber_notification_instant_text_two">Абонирани сте за две теми с незабавно доставяне</string>
+    <string name="add_dialog_description_below">Възможно е темите да не са защитени с парола, затова изберете име, което е трудно за отгатване. След като се абонирате, можете да изпращате известия по PUT или POST.</string>
+    <string name="notification_dialog_title">Спиране на известията</string>
+    <string name="channel_subscriber_notification_instant_text_more">Абонирани сте за %1$d теми с незабавно доставяне</string>
+    <string name="refresh_message_error_one">Абонамент не може да бъде обновен: %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Известията са спиране до %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Известията са спрени до %1$s</string>
+    <string name="main_how_to_intro">Докоснете бутона, за да създадете или да се абонирате за тема. След това можете да изпращате съобщения чрез PUT или POST и ще получавате известия на устройството си.</string>
+    <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса на темата.</string>
+    <string name="detail_no_notifications_text">Все още не сте получили известия в тази тема.</string>
+    <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
+    <string name="notification_dialog_muted_until_toast_message">Известията са спрени до %1$s</string>
+    <string name="settings_advanced_export_logs_summary">Дневниците се копират в междинната памет или се изпращат към nopaste.net (собственост на автора на ntfy). Имената на хостовете и темите могат да бъдат цензурирани, но съдържанието на известията никога.</string>
+</resources>
