@@ -238,7 +238,7 @@
     <string name="settings_notifications_muted_until_forever">Notifications muted until re-enabled</string>
     <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
     <string name="settings_notifications_min_priority_key">MinPriority</string>
-    <string name="settings_notifications_min_priority_title">Minde4ed priority</string>
+    <string name="settings_notifications_min_priority_title">Min priority</string>
     <string name="settings_notifications_min_priority_summary_any">Showing all notifications</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or above</string>
     <string name="settings_notifications_min_priority_summary_max">Show notifications if priority is 5 (max)</string>
