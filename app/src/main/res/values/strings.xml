@@ -32,9 +32,9 @@
 
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
-    <string name="main_menu_notifications_enabled">Notifications enabled</string>
-    <string name="main_menu_notifications_disabled_forever">Notifications disabled</string>
-    <string name="main_menu_notifications_disabled_until">Notifications disabled until %1$s</string>
+    <string name="main_menu_notifications_enabled">Notifications paused</string>
+    <string name="main_menu_notifications_disabled_forever">Notifications paused</string>
+    <string name="main_menu_notifications_disabled_until">Notifications paused until %1$s</string>
     <string name="main_menu_settings_title">Settings</string>
     <string name="main_menu_report_bug_title">Report a bug</string>
     <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
@@ -166,9 +166,9 @@
     <string name="detail_item_download_info_download_failed_expires_x">download failed, link expires %1$s</string>
 
     <!-- Detail activity: Action bar -->
-    <string name="detail_menu_notifications_enabled">Notifications enabled</string>
-    <string name="detail_menu_notifications_disabled_forever">Notifications disabled</string>
-    <string name="detail_menu_notifications_disabled_until">Notifications disabled until %1$s</string>
+    <string name="detail_menu_notifications_enabled">Notifications resumed</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifications paused</string>
+    <string name="detail_menu_notifications_disabled_until">Notifications paused until %1$s</string>
     <string name="detail_menu_enable_instant">Enable instant delivery</string>
     <string name="detail_menu_disable_instant">Disable instant delivery</string>
     <string name="detail_menu_test">Send test notification</string>
@@ -207,7 +207,7 @@
     <string name="notification_dialog_title">Pause notifications</string>
     <string name="notification_dialog_cancel">Cancel</string>
     <string name="notification_dialog_save">Save</string>
-    <string name="notification_dialog_enabled_toast_message">Notifications re-enabled</string>
+    <string name="notification_dialog_enabled_toast_message">Notifications resumed</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifications paused</string>
     <string name="notification_dialog_muted_until_toast_message">Notifications paused until %1$s</string>
     <string name="notification_dialog_show_all">Show all notifications</string>
@@ -216,7 +216,7 @@
     <string name="notification_dialog_2h">2 hours</string>
     <string name="notification_dialog_8h">8 hours</string>
     <string name="notification_dialog_tomorrow">Until tomorrow</string>
-    <string name="notification_dialog_forever">Until re-enabled</string>
+    <string name="notification_dialog_forever">Until resumed</string>
 
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>
@@ -234,8 +234,8 @@
     <string name="settings_notifications_muted_until_key">MutedUntil</string>
     <string name="settings_notifications_muted_until_title">Pause notifications</string>
     <string name="settings_notifications_muted_until_show_all">All notifications will be displayed</string>
-    <string name="settings_notifications_muted_until_forever">Notifications muted until re-enabled</string>
-    <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Notifications paused until resumed</string>
+    <string name="settings_notifications_muted_until_x">Notifications paused until %1$s</string>
     <string name="settings_notifications_min_priority_key">MinPriority</string>
     <string name="settings_notifications_min_priority_title">Minimum priority</string>
     <string name="settings_notifications_min_priority_summary_any">Notifications of all priorities are shown</string>
