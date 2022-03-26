@@ -1,2 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="main_item_status_text_not_one">%1$d 条通知</string>
+    <string name="main_add_button_description">增添订阅</string>
+    <string name="main_how_to_intro">点击下方按钮可以新建主题或订阅主题。此后，您可以通过 PUT 或者 POST 发送消息，然后您的手机就能收到通知了。</string>
+    <string name="refresh_message_no_results">都同步过来了</string>
+    <string name="refresh_message_error_one">没刷新成功订阅：%1$s</string>
+    <string name="main_menu_notifications_enabled">通知开启了</string>
+    <string name="main_menu_notifications_disabled_forever">通知关闭了</string>
+    <string name="main_menu_notifications_disabled_until">等到 %1$s 再开启通知</string>
+    <string name="main_menu_settings_title">设置</string>
+    <string name="main_menu_report_bug_title">提交软件的错误</string>
+    <string name="main_menu_docs_title">阅读帮助文档</string>
+    <string name="main_menu_rate_title">给应用打个分吧⭐</string>
+    <string name="main_action_mode_delete_dialog_message">您确定不再订阅选中的主题，并且永久删除所有您收到的通知吗？</string>
+    <string name="main_action_bar_title">订阅的主题</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">永久删除</string>
+    <string name="main_action_mode_delete_dialog_cancel">取消</string>
+    <string name="main_item_status_reconnecting">正在重新连接……</string>
+    <string name="main_item_date_yesterday">昨天</string>
+    <string name="main_item_status_unified_push">%1$s【统一推送（UnifiedPush）】</string>
+    <string name="main_how_to_link">详细的说明请见 ntfy.sh 网和帮助文档。</string>
+    <string name="main_unified_push_toast">此通知由 %1$s 通过统一推送（UnifiedPush）管理</string>
+    <string name="main_banner_battery_text">得关闭电量优化，否则通知的推送可能出问题。</string>
+    <string name="main_banner_battery_button_remind_later">稍后询问</string>
+    <string name="main_banner_battery_button_dismiss">忽略</string>
+    <string name="main_banner_battery_button_fix_now">现在修复</string>
+    <string name="refresh_message_result">收到了 %1$d 条通知</string>
+    <string name="main_item_status_text_one">%1$d 条通知</string>
+    <string name="refresh_message_error">有 %1$d 条订阅没刷新成功
+\n
+\n%2$s</string>
+    <string name="main_action_mode_menu_unsubscribe">结束订阅</string>
+    <string name="main_no_subscriptions_text">您目前似乎还没有订阅。</string>
+</resources>
