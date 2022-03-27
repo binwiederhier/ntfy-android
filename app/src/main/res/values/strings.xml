@@ -162,7 +162,7 @@
     <string name="detail_item_download_info_deleted">deleted</string>
     <string name="detail_item_download_info_deleted_expired">deleted, link expired</string>
     <string name="detail_item_download_info_deleted_expires_x">deleted, link expires %1$s</string>
-    <string name="detail_item_download_info_download_failed">Download failed</string>
+    <string name="detail_item_download_info_download_failed">download failed</string>
     <string name="detail_item_download_info_download_failed_expired">download failed, link expired</string>
     <string name="detail_item_download_info_download_failed_expires_x">download failed, link expires %1$s</string>
 
