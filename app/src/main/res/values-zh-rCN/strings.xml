@@ -22,8 +22,8 @@
     <string name="main_how_to_link">详细的说明请见 ntfy.sh 网和帮助文档。</string>
     <string name="main_unified_push_toast">此通知由 %1$s 通过统一推送（UnifiedPush）管理</string>
     <string name="main_banner_battery_text">得关闭电量优化，否则通知的推送可能出问题。</string>
-    <string name="main_banner_battery_button_remind_later">稍后询问</string>
-    <string name="main_banner_battery_button_dismiss">忽略</string>
+    <string name="main_banner_battery_button_remind_later">稍后再问</string>
+    <string name="main_banner_battery_button_dismiss">暂时不管</string>
     <string name="main_banner_battery_button_fix_now">现在修复</string>
     <string name="refresh_message_result">收到了 %1$d 条通知</string>
     <string name="main_item_status_text_one">%1$d 条通知</string>
@@ -32,4 +32,28 @@
 \n%2$s</string>
     <string name="main_action_mode_menu_unsubscribe">结束订阅</string>
     <string name="main_no_subscriptions_text">您目前似乎还没有订阅。</string>
+    <string name="add_dialog_instant_delivery">低电耗模式（Doze mode）下仍实时推送</string>
+    <string name="add_dialog_instant_delivery_description">确保消息在用户没有使用设备的情况下也能立即送达。</string>
+    <string name="add_dialog_foreground_description">低电耗模式（Doze mode）下仍实时推送给除了 %1$s 之外的所有设备。</string>
+    <string name="add_dialog_button_cancel">取消</string>
+    <string name="add_dialog_button_subscribe">订阅</string>
+    <string name="add_dialog_button_back">返回</string>
+    <string name="add_dialog_button_login">登录</string>
+    <string name="add_dialog_error_connection_failed">没连接上：%1$s</string>
+    <string name="add_dialog_login_title">需要登录</string>
+    <string name="add_dialog_login_description">此主题需要您登录。请输入用户名和密码。</string>
+    <string name="add_dialog_login_username_hint">用户名</string>
+    <string name="add_dialog_login_password_hint">密码</string>
+    <string name="add_dialog_login_error_not_authorized">登录失败。用户 %1$s 未获得授权。</string>
+    <string name="add_dialog_login_new_user">新用户</string>
+    <string name="detail_deep_link_subscribed_toast_message">主题 %1$s 已经订阅了</string>
+    <string name="detail_no_notifications_text">目前还没有关于此主题的通知。</string>
+    <string name="main_banner_json_stream_text">2022 年 6 月之后，WebSockets 将开始用于与 ntfy 的服务器进行通信。请一定要配置自托管服务器，让它支持 WebSockets 。先在“连接协议”中的“设置”里启用 WebSockets，这样才能判断 WebSocket 是否正常运作，可以使用。</string>
+    <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
+    <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
+    <string name="main_banner_json_stream_button_learn_more">详情</string>
+    <string name="main_banner_json_stream_button_enable_ws">立即开启</string>
+    <string name="add_dialog_title">订阅主题</string>
+    <string name="add_dialog_description_below">主题可能没输密码就能看到，所以起个隐晦些的名字吧。订阅后就可以 PUT 或者 POST 通知了。</string>
+    <string name="add_dialog_topic_name_hint">主题名称，比如：小飞的提醒</string>
 </resources>
