@@ -37,9 +37,9 @@
     <string name="main_menu_notifications_disabled_until">Notifications off until %1$s</string>
     <string name="main_menu_settings_title">Settings</string>
     <string name="main_menu_report_bug_title">Report a bug</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
+    <string name="main_menu_report_bug_url" translatable="false">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_title">Read the docs</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
+    <string name="main_menu_docs_url" translatable="false">https://ntfy.sh/docs</string>
     <string name="main_menu_rate_title">Rate the app ⭐</string>
 
     <!-- Main activity: Action mode -->
@@ -75,11 +75,11 @@
     <string name="main_banner_battery_button_fix_now">Fix now</string>
 
     <!-- Main activity: JSON stream banner -->
-    <string name="main_banner_json_stream_text">Switch to WebSockets in Settings / \"Connection protocol\" now to ensure you can communicate with ntfy servers after June 2022.</string>
+    <string name="main_banner_json_stream_text">Switch to WebSockets in Settings / \"Connection protocol\" now to ensure you can communicate with your selfhosted ntfy server after June 2022.</string>
     <string name="main_banner_json_stream_button_remind_later">Ask later</string>
     <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
     <string name="main_banner_json_stream_button_learn_more">Learn more</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
+    <string name="main_banner_json_stream_button_learn_more_url" translatable="false">https://ntfy.sh/docs/deprecations</string>
     <string name="main_banner_json_stream_button_enable_ws">Turn on now</string>
 
     <!-- Add dialog -->
@@ -276,7 +276,7 @@
     <string name="settings_general_header">General</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_default_base_url_title">Default server</string>
-    <string name="settings_general_default_base_url_message">Enter your server's root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
+    <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_users_title">Manage users</string>

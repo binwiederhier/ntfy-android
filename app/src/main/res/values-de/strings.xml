@@ -29,9 +29,7 @@
     <string name="main_menu_notifications_disabled_forever">Benachrichtigungen deaktiviert</string>
     <string name="channel_subscriber_notification_instant_text">Du hast Sofortnachrichten-Themen abonniert</string>
     <string name="main_menu_report_bug_title">Fehler melden</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_title">Dokumentation lesen</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="main_menu_rate_title">App bewerten ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Abmelden</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Endgültig löschen</string>
@@ -49,7 +47,6 @@
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
     <string name="main_banner_json_stream_button_remind_later">Später fragen</string>
     <string name="main_banner_json_stream_button_learn_more">Mehr erfahren</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="main_banner_json_stream_button_enable_ws">Jetzt aktivieren</string>
     <string name="add_dialog_title">Thema abonnieren</string>
     <string name="add_dialog_description_below">Themen sind vielleicht nicht kennwort-geschützt, also wähle einen schwer zu erratenden Namen. Nach dem Abonnieren kannst Du Benachrichtigungen POSTen/PUTen.</string>

@@ -38,7 +38,6 @@
     <string name="main_banner_battery_button_fix_now">Corregir ahora</string>
     <string name="main_banner_json_stream_button_dismiss">Descartar</string>
     <string name="main_banner_json_stream_button_learn_more">Más información</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="main_banner_json_stream_button_enable_ws">Habilitar ahora</string>
     <string name="add_dialog_title">Suscribirse al tópico</string>
     <string name="add_dialog_description_below">Los tópicos podrían no estar protegidos por contraseña, así que elija un nombre que no sea fácil de adivinar. Una vez suscrito, puedes enviar notificaciones con PUT/POST.</string>
@@ -286,7 +285,6 @@
     <string name="settings_notifications_auto_download_10m">Si es más pequeño que 10 MB</string>
     <string name="settings_general_users_prefs_user_add_summary">Crear un nuevo usuario para un nuevo servidor</string>
     <string name="settings_general_dark_mode_summary_system">Usar el valor predeterminado del sistema</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="settings_about_header">Acerca de</string>
     <string name="user_dialog_base_url_hint">URL del servidor</string>
     <string name="main_menu_rate_title">Califica esta aplicación ⭐</string>
@@ -297,6 +295,5 @@
     <string name="detail_how_to_link">Para obtener instrucciones más detalladas, consulte el sitio web y la documentación de ntfy.sh.</string>
     <string name="main_menu_settings_title">Ajustes</string>
     <string name="main_menu_report_bug_title">Reportar un error</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="add_dialog_instant_delivery">Entrega instantánea en modo doze</string>
 </resources>

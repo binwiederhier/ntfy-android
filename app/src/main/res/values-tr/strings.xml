@@ -2,8 +2,6 @@
 <resources>
     <string name="main_item_status_text_one">%1$d bildirim</string>
     <string name="detail_how_to_intro">Bu konuya bildirim göndermek için konu URL\'sine PUT veya POST göndermeniz yeterlidir.</string>
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="channel_notifications_low_name">Bildirimler (Düşük Öncelik)</string>
     <string name="channel_notifications_default_name">Bildirimler (Öntanımlı Öncelik)</string>
     <string name="channel_subscriber_service_name">Abonelik Hizmeti</string>
@@ -30,7 +28,6 @@
     <string name="main_menu_notifications_disabled_forever">Bildirimler devre dışı bırakıldı</string>
     <string name="main_menu_settings_title">Ayarlar</string>
     <string name="main_menu_report_bug_title">Hata bildir</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_title">Belgeleri oku</string>
     <string name="main_menu_rate_title">Bu uygulamayı değerlendir ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Abonelikten çık</string>
@@ -215,7 +212,6 @@
     <string name="channel_subscriber_notification_noinstant_text_three">Üç konuya abone oldunuz</string>
     <string name="refresh_message_result">%1$d bildirim alındı</string>
     <string name="main_action_mode_delete_dialog_cancel">İptal</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="add_dialog_login_username_hint">Kullanıcı adı</string>
     <string name="detail_item_menu_delete">Dosyayı sil</string>
     <string name="detail_item_download_info_deleted_expires_x">silindi, bağlantının süresi doluyor: %1$s</string>
@@ -223,7 +219,6 @@
     <string name="main_banner_battery_button_remind_later">Daha sonra sor</string>
     <string name="add_dialog_description_below">Konular parola korumalı olmayabilir, bu nedenle tahmin edilmesi kolay olmayan bir ad seçin. Abone olduktan sonra PUT/POST bildirimleri yapabilirsiniz.</string>
     <string name="detail_delete_dialog_cancel">İptal</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="main_item_date_yesterday">dün</string>
     <string name="main_banner_battery_button_dismiss">Kapat</string>
     <string name="main_banner_battery_button_fix_now">Şimdi düzelt</string>

@@ -77,8 +77,6 @@
     <string name="main_item_status_text_not_one">%1$d известия</string>
     <string name="main_item_date_yesterday">вчера</string>
     <string name="main_add_button_description">Добавяне на абонамент</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Безвъзвратно премахване</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_status_reconnecting">Повторно свързване…</string>
@@ -92,7 +90,6 @@
     <string name="add_dialog_error_connection_failed">Грешка при свързване: %1$s</string>
     <string name="add_dialog_login_password_hint">Парола</string>
     <string name="add_dialog_login_new_user">Нов потребител</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="add_dialog_login_title">Изисква се вход</string>
     <string name="add_dialog_login_username_hint">Потребител</string>
     <string name="add_dialog_login_error_not_authorized">Неуспешен вход. Потребителят %1$s няма достъп.</string>
