@@ -31,7 +31,6 @@
     <string name="main_add_button_description">Legg til abonnement</string>
     <string name="main_banner_json_stream_button_remind_later">Spør senere</string>
     <string name="main_banner_json_stream_button_learn_more">Lær mer</string>
-    <string name="main_banner_json_stream_button_enable_ws">Skru på nå</string>
     <string name="add_dialog_title">Abonner på emnet</string>
     <string name="add_dialog_topic_name_hint">Emnenavn, f.eks. halgeirs_varsler</string>
     <string name="add_dialog_use_another_server">Bruk en annen tjener</string>

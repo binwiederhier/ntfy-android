@@ -43,7 +43,6 @@
     <string name="main_banner_battery_text">Bildirim teslimiyle ilgili sorunları önlemek için pil iyileştirmesi devre dışı bırakılmalıdır.</string>
     <string name="main_banner_json_stream_button_remind_later">Daha sonra sor</string>
     <string name="main_banner_json_stream_button_dismiss">Kapat</string>
-    <string name="main_banner_json_stream_button_enable_ws">Şimdi etkinleştir</string>
     <string name="add_dialog_title">Konuya abone ol</string>
     <string name="add_dialog_topic_name_hint">Konu adı, örn. benim_uyarilarim</string>
     <string name="add_dialog_use_another_server">Başka bir sunucu kullan</string>

@@ -80,7 +80,6 @@
     <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
     <string name="main_banner_json_stream_button_learn_more">Learn more</string>
     <string name="main_banner_json_stream_button_learn_more_url" translatable="false">https://ntfy.sh/docs/deprecations</string>
-    <string name="main_banner_json_stream_button_enable_ws">Turn on now</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -103,7 +102,7 @@
     <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
     <string name="add_dialog_login_username_hint">Username</string>
     <string name="add_dialog_login_password_hint">Password</string>
-    <string name="add_dialog_login_error_not_authorized">Login failed. User \"%1$s\" not authorized.</string>
+    <string name="add_dialog_login_error_not_authorized">Login failed. User %1$s not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
 
     <!-- Detail activity -->

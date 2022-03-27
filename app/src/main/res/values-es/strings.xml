@@ -38,7 +38,6 @@
     <string name="main_banner_battery_button_fix_now">Corregir ahora</string>
     <string name="main_banner_json_stream_button_dismiss">Descartar</string>
     <string name="main_banner_json_stream_button_learn_more">Más información</string>
-    <string name="main_banner_json_stream_button_enable_ws">Habilitar ahora</string>
     <string name="add_dialog_title">Suscribirse al tópico</string>
     <string name="add_dialog_description_below">Los tópicos podrían no estar protegidos por contraseña, así que elija un nombre que no sea fácil de adivinar. Una vez suscrito, puedes enviar notificaciones con PUT/POST.</string>
     <string name="add_dialog_topic_name_hint">Nombre del tópico, p. ej. phils_alerts</string>

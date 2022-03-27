@@ -47,7 +47,6 @@
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
     <string name="main_banner_json_stream_button_remind_later">Später fragen</string>
     <string name="main_banner_json_stream_button_learn_more">Mehr erfahren</string>
-    <string name="main_banner_json_stream_button_enable_ws">Jetzt aktivieren</string>
     <string name="add_dialog_title">Thema abonnieren</string>
     <string name="add_dialog_description_below">Themen sind vielleicht nicht kennwort-geschützt, also wähle einen schwer zu erratenden Namen. Nach dem Abonnieren kannst Du Benachrichtigungen POSTen/PUTen.</string>
     <string name="add_dialog_topic_name_hint">Themenname, z.B. phils_alerts</string>
