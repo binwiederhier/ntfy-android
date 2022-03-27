@@ -64,7 +64,7 @@
         Afterwards you receive notifications on your device
         when sending messages via PUT or POST.
     </string>
-    <string name="main_how_to_link">Detailed instructions on ntfy.sh, and in the docs.
+    <string name="main_how_to_link">Detailed instructions available on ntfy.sh, and in the docs.
     </string>
     <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
 
@@ -92,7 +92,7 @@
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">Enter server URLs below to subscribe to topics from other servers.</string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
-    <string name="add_dialog_instant_delivery_description">Ensures messages are immediately delivered, even if the device is inactive.</string>
+    <string name="add_dialog_instant_delivery_description">Ensures messages are delivered immediately, even if the device is inactive.</string>
     <string name="add_dialog_foreground_description">Instant delivery is always on for hosts other than %1$s.</string>
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
@@ -330,9 +330,9 @@
     <string name="settings_advanced_export_logs_copied_logs">Logs copied to clipboard</string>
     <string name="settings_advanced_export_logs_uploading">Uploading log…</string>
     <string name="settings_advanced_export_logs_copied_url">Logs uploaded and URL copied</string>
-    <string name="settings_advanced_export_logs_error_uploading">Could not uploading logs: %1$s</string>
+    <string name="settings_advanced_export_logs_error_uploading">Could not upload logs: %1$s</string>
     <string name="settings_advanced_export_logs_scrub_dialog_text">These topics/hostnames were replaced with fruit names, so you can share the log without worry:\n\n%1$s\n\nPasswords are scrubbed, but not listed here.</string>
-    <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted, maybe you don\'t have any subscriptions?</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted. Maybe you don\'t have any subscriptions?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
     <string name="settings_advanced_clear_logs_key">ClearLogs</string>
     <string name="settings_advanced_clear_logs_title">Clear logs</string>
