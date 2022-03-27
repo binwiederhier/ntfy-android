@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_item_status_text_not_one">%1$d 条通知</string>
+    <string name="main_add_button_description">增添订阅</string>
+    <string name="main_how_to_intro">点击下方按钮可以新建主题或订阅主题。此后，您可以通过 PUT 或者 POST 发送消息，然后您的手机就能收到通知了。</string>
+    <string name="refresh_message_no_results">都同步过来了</string>
+    <string name="refresh_message_error_one">没刷新成功订阅：%1$s</string>
+    <string name="main_menu_notifications_enabled">通知开启了</string>
+    <string name="main_menu_notifications_disabled_forever">通知关闭了</string>
+    <string name="main_menu_notifications_disabled_until">等到 %1$s 再开启通知</string>
+    <string name="main_menu_settings_title">设置</string>
+    <string name="main_menu_report_bug_title">提交软件的错误</string>
+    <string name="main_menu_docs_title">阅读帮助文档</string>
+    <string name="main_menu_rate_title">给应用打个分吧⭐</string>
+    <string name="main_action_mode_delete_dialog_message">您确定不再订阅选中的主题，并且永久删除所有您收到的通知吗？</string>
+    <string name="main_action_bar_title">订阅的主题</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">永久删除</string>
+    <string name="main_action_mode_delete_dialog_cancel">取消</string>
+    <string name="main_item_status_reconnecting">正在重新连接……</string>
+    <string name="main_item_date_yesterday">昨天</string>
+    <string name="main_item_status_unified_push">%1$s【统一推送（UnifiedPush）】</string>
+    <string name="main_how_to_link">详细的说明请见 ntfy.sh 网和帮助文档。</string>
+    <string name="main_unified_push_toast">此通知由 %1$s 通过统一推送（UnifiedPush）管理</string>
+    <string name="main_banner_battery_text">得关闭电量优化，否则通知的推送可能出问题。</string>
+    <string name="main_banner_battery_button_remind_later">稍后再问</string>
+    <string name="main_banner_battery_button_dismiss">暂时不管</string>
+    <string name="main_banner_battery_button_fix_now">现在修复</string>
+    <string name="refresh_message_result">收到了 %1$d 条通知</string>
+    <string name="main_item_status_text_one">%1$d 条通知</string>
+    <string name="refresh_message_error">有 %1$d 条订阅没刷新成功
+\n
+\n%2$s</string>
+    <string name="main_action_mode_menu_unsubscribe">结束订阅</string>
+    <string name="main_no_subscriptions_text">您目前似乎还没有订阅。</string>
+    <string name="add_dialog_instant_delivery">低电耗模式（Doze mode）下仍实时推送</string>
+    <string name="add_dialog_instant_delivery_description">确保消息在用户没有使用设备的情况下也能立即送达。</string>
+    <string name="add_dialog_foreground_description">低电耗模式（Doze mode）下仍实时推送给除了 %1$s 之外的所有设备。</string>
+    <string name="add_dialog_button_cancel">取消</string>
+    <string name="add_dialog_button_subscribe">订阅</string>
+    <string name="add_dialog_button_back">返回</string>
+    <string name="add_dialog_button_login">登录</string>
+    <string name="add_dialog_error_connection_failed">没连接上：%1$s</string>
+    <string name="add_dialog_login_title">需要登录</string>
+    <string name="add_dialog_login_description">此主题需要您登录。请输入用户名和密码。</string>
+    <string name="add_dialog_login_username_hint">用户名</string>
+    <string name="add_dialog_login_password_hint">密码</string>
+    <string name="add_dialog_login_error_not_authorized">登录失败。用户 %1$s 未获得授权。</string>
+    <string name="add_dialog_login_new_user">新用户</string>
+    <string name="detail_deep_link_subscribed_toast_message">主题 %1$s 已经订阅了</string>
+    <string name="detail_no_notifications_text">目前还没有关于此主题的通知。</string>
+    <string name="main_banner_json_stream_text">2022 年 6 月之后，WebSockets 将开始用于与 ntfy 的服务器进行通信。请一定要配置自托管服务器，让它支持 WebSockets 。先在“连接协议”中的“设置”里启用 WebSockets，这样才能判断 WebSocket 是否正常运作，可以使用。</string>
+    <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
+    <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
+    <string name="main_banner_json_stream_button_learn_more">详情</string>
+    <string name="main_banner_json_stream_button_enable_ws">立即开启</string>
+    <string name="add_dialog_title">订阅主题</string>
+    <string name="add_dialog_description_below">主题可能没输密码就能看到，所以起个隐晦些的名字吧。订阅后就可以 PUT 或者 POST 通知了。</string>
+    <string name="add_dialog_topic_name_hint">主题名称，比如：小飞的提醒</string>
+</resources>
