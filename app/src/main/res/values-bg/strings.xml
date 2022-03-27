@@ -40,7 +40,7 @@
     <string name="notification_dialog_forever">До включване</string>
     <string name="settings_notifications_muted_until_forever">Известията са изключени до повторно включване</string>
     <string name="settings_notifications_muted_until_x">Известията са изключени до %1$s</string>
-    <string name="settings_general_users_summary">Управление на потребители за защитени теми</string>
+    <string name="settings_general_users_summary">Добавяне и премахване на потребители за защитени теми</string>
     <string name="settings_general_users_prefs_user_not_used">Не се използва от никоя тема</string>
     <string name="settings_general_users_prefs_user_used_by_one">Използва се от %1$s</string>
     <string name="settings_general_users_prefs_user_used_by_many">Използва се от %1$s</string>
