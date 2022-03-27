@@ -1,7 +1,7 @@
 <resources>
     <!-- Main app-->
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
+    <string name="app_name" translatable="false">Ntfy</string>
+    <string name="app_base_url" translatable="false">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
 
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Notifications (min priority)</string>
@@ -54,7 +54,7 @@
     <!-- Main activity: List and such -->
     <string name="main_item_status_text_one">%1$d notification</string>
     <string name="main_item_status_text_not_one">%1$d notifications</string>
-    <string name="main_item_status_reconnecting">reconnecting…</string>
+    <string name="main_item_status_reconnecting">reconnecting …</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_date_yesterday">yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
@@ -69,13 +69,13 @@
     <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
 
     <!-- Main activity: Battery banner -->
-    <string name="main_banner_battery_text">Battery optimization should be off for the app to avoid notification-delivery issues.</string>
+    <string name="main_banner_battery_text">Battery optimization should be off for the app to avoid notification delivery issues.</string>
     <string name="main_banner_battery_button_remind_later">Ask later</string>
     <string name="main_banner_battery_button_dismiss">Dismiss</string>
     <string name="main_banner_battery_button_fix_now">Fix now</string>
 
     <!-- Main activity: JSON stream banner -->
-    <string name="main_banner_json_stream_text">Switch to WebSockets in Settings → \"Connection protocol\" now to ensure you can communicate with ntfy servers after June 2022.</string>
+    <string name="main_banner_json_stream_text">Switch to WebSockets in Settings / \"Connection protocol\" now to ensure you can communicate with ntfy servers after June 2022.</string>
     <string name="main_banner_json_stream_button_remind_later">Ask later</string>
     <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
     <string name="main_banner_json_stream_button_learn_more">Learn more</string>
@@ -100,14 +100,13 @@
     <string name="add_dialog_button_login">Log in</string>
     <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
     <string name="add_dialog_login_title">Login required</string>
-    <string name="add_dialog_login_description">Please type in your username and password to access the topic.</string>
+    <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
     <string name="add_dialog_login_username_hint">Username</string>
     <string name="add_dialog_login_password_hint">Password</string>
-    <string name="add_dialog_login_error_not_authorized">Login failed. The user \"%1$s\" is not authorized.</string>
+    <string name="add_dialog_login_error_not_authorized">Login failed. User \"%1$s\" not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
 
     <!-- Detail activity -->
-    <string name="detail_deep_link_subscribed_toast_message">Subscribed to \"%1$s\" topic</string>
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
     <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.
     </string>
@@ -147,7 +146,7 @@
     <string name="detail_item_menu_copy_url_copied">URL copied to clipboard</string>
     <string name="detail_item_menu_copy_contents">Copy notification</string>
     <string name="detail_item_menu_copy_contents_copied">Notification copied to clipboard</string>
-    <string name="detail_item_saved_successfully">Saved as %1$s in the \"Downloads\" folder</string>
+    <string name="detail_item_saved_successfully">Saved as \"%1$s\" in the \"Downloads\" folder</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. The link expired and no local file could be found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Cannot open attachment: The file may have been deleted, or no installed app can open the file.</string>
@@ -199,7 +198,7 @@
     <string name="share_content_image_text">An image was shared with you</string>
     <string name="share_content_image_error">Cannot read image: %1$s</string>
     <string name="share_content_file_text">A file was shared with you</string>
-    <string name="share_content_file_error">Cannot read file infos: %1$s</string>
+    <string name="share_content_file_error">Cannot read file info: %1$s</string>
     <string name="share_topic_title">Share to</string>
     <string name="share_suggested_topics">Suggested topics</string>
     <string name="share_successful">Message published</string>
@@ -232,13 +231,13 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_notifications_header">Notifications</string>
-    <string name="settings_notifications_muted_until_key">MutedUntil</string>
+    <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>
     <string name="settings_notifications_muted_until_title">Pause notifications</string>
     <string name="settings_notifications_muted_until_show_all">Showing all notifications</string>
     <string name="settings_notifications_muted_until_forever">Notifications muted until re-enabled</string>
     <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
-    <string name="settings_notifications_min_priority_key">MinPriority</string>
-    <string name="settings_notifications_min_priority_title">Min priority</string>
+    <string name="settings_notifications_min_priority_key" translatable="false">MinPriority</string>
+    <string name="settings_notifications_min_priority_title">Minimum priority</string>
     <string name="settings_notifications_min_priority_summary_any">Showing all notifications</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or above</string>
     <string name="settings_notifications_min_priority_summary_max">Show notifications if priority is 5 (max)</string>
@@ -247,20 +246,20 @@
     <string name="settings_notifications_min_priority_default">Default priority and above</string>
     <string name="settings_notifications_min_priority_high">High priority and above</string>
     <string name="settings_notifications_min_priority_max">Only max priority</string>
-    <string name="settings_notifications_auto_download_key">AutoDownload</string>
+    <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_download_title">Download attachments</string>
     <string name="settings_notifications_auto_download_summary_always">Auto-download all attachments</string>
     <string name="settings_notifications_auto_download_summary_never">Never auto-download attachments</string>
     <string name="settings_notifications_auto_download_summary_smaller_than_x">Auto-download attachments up to %1$s</string>
     <string name="settings_notifications_auto_download_never">Never auto-download anything</string>
     <string name="settings_notifications_auto_download_always">Auto-download everything</string>
-    <string name="settings_notifications_auto_download_100k">If smaller than 100 kB</string>
-    <string name="settings_notifications_auto_download_500k">If smaller than 500 kB</string>
-    <string name="settings_notifications_auto_download_1m">If smaller than 1 MB</string>
-    <string name="settings_notifications_auto_download_5m">If smaller than 5 MB</string>
-    <string name="settings_notifications_auto_download_10m">If smaller than 10 MB</string>
-    <string name="settings_notifications_auto_download_50m">If smaller than 50 MB</string>
-    <string name="settings_notifications_auto_delete_key">AutoDelete</string>
+    <string name="settings_notifications_auto_download_100k">If below 100 kB</string>
+    <string name="settings_notifications_auto_download_500k">If below 500 kB</string>
+    <string name="settings_notifications_auto_download_1m">If below 1 MB</string>
+    <string name="settings_notifications_auto_download_5m">If below 5 MB</string>
+    <string name="settings_notifications_auto_download_10m">If below 10 MB</string>
+    <string name="settings_notifications_auto_download_50m">If below 50 MB</string>
+    <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
     <string name="settings_notifications_auto_delete_title">Delete notifications</string>
     <string name="settings_notifications_auto_delete_summary_never">Never automatically delete notifications</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Auto-delete notifications after one day</string>
@@ -275,21 +274,21 @@
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
     <string name="settings_general_header">General</string>
-    <string name="settings_general_default_base_url_key">DefaultBaseURL</string>
+    <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_default_base_url_title">Default server</string>
-    <string name="settings_general_default_base_url_message">Enter its base URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
+    <string name="settings_general_default_base_url_message">Enter your server's root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
-    <string name="settings_general_users_key">ManageUsers</string>
+    <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_users_title">Manage users</string>
     <string name="settings_general_users_summary">Add/remove users for protected topics</string>
     <string name="settings_general_users_prefs_title">Users</string>
     <string name="settings_general_users_prefs_user_not_used">Not used by any topics</string>
-    <string name="settings_general_users_prefs_user_used_by_one">Used by \"%1$s\" topic</string>
-    <string name="settings_general_users_prefs_user_used_by_many">Used by \"%1$s\" topics</string>
+    <string name="settings_general_users_prefs_user_used_by_one">Used by topic %1$s</string>
+    <string name="settings_general_users_prefs_user_used_by_many">Used by topics %1$s</string>
     <string name="settings_general_users_prefs_user_add">Add users</string>
     <string name="settings_general_users_prefs_user_add_title">Add new user</string>
     <string name="settings_general_users_prefs_user_add_summary">Create a new user for a new server</string>
-    <string name="settings_general_dark_mode_key">DarkMode</string>
+    <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
     <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="settings_general_dark_mode_summary_system">Using the system default</string>
     <string name="settings_general_dark_mode_summary_light">Light mode on</string>
@@ -297,30 +296,30 @@
     <string name="settings_general_dark_mode_entry_system">Use system default</string>
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
-    <string name="settings_backup_restore_header">Backups/restoring</string>
-    <string name="settings_backup_restore_backup_key">Backup</string>
+    <string name="settings_backup_restore_header">Backup &amp; Restore</string>
+    <string name="settings_backup_restore_backup_key" translatable="false">Backup</string>
     <string name="settings_backup_restore_backup_title">Back up to file</string>
-    <string name="settings_backup_restore_backup_summary">Export config, notifications and users</string>
+    <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>
     <string name="settings_backup_restore_backup_entry_everything">Everything</string>
     <string name="settings_backup_restore_backup_entry_everything_no_users">Everything, except users</string>
     <string name="settings_backup_restore_backup_entry_settings_only">Settings only</string>
     <string name="settings_backup_restore_backup_successful">Backup created</string>
     <string name="settings_backup_restore_backup_failed">Backup failed: %1$s</string>
-    <string name="settings_backup_restore_restore_key">Restore</string>
+    <string name="settings_backup_restore_restore_key" translatable="false">Restore</string>
     <string name="settings_backup_restore_restore_title">Restore from file</string>
     <string name="settings_backup_restore_restore_summary">Import config, notifications and users</string>
-    <string name="settings_backup_restore_restore_successful">Restored</string>
-    <string name="settings_backup_restore_restore_failed">Restoration failed: %1$s</string>
+    <string name="settings_backup_restore_restore_successful">Restore successful</string>
+    <string name="settings_backup_restore_restore_failed">Restore failed: %1$s</string>
     <string name="settings_advanced_header">Advanced</string>
-    <string name="settings_advanced_broadcast_key">BroadcastEnabled</string>
+    <string name="settings_advanced_broadcast_key" translatable="false">BroadcastEnabled</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
-    <string name="settings_advanced_record_logs_key">RecordLogs</string>
+    <string name="settings_advanced_record_logs_key" translatable="false">RecordLogs</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
-    <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1000 entries) to device…</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
     <string name="settings_advanced_record_logs_summary_disabled">Turn on logging so you can share logs later to diagnose issues.</string>
-    <string name="settings_advanced_export_logs_key">ExportLogs</string>
+    <string name="settings_advanced_export_logs_key" translatable="false">ExportLogs</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
     <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by the ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>
@@ -328,24 +327,24 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Upload and copy link</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Upload and copy link (censored)</string>
     <string name="settings_advanced_export_logs_copied_logs">Logs copied to clipboard</string>
-    <string name="settings_advanced_export_logs_uploading">Uploading log…</string>
+    <string name="settings_advanced_export_logs_uploading">Uploading log …</string>
     <string name="settings_advanced_export_logs_copied_url">Logs uploaded and URL copied</string>
     <string name="settings_advanced_export_logs_error_uploading">Could not upload logs: %1$s</string>
     <string name="settings_advanced_export_logs_scrub_dialog_text">These topics/hostnames were replaced with fruit names, so you can share the log without worry:\n\n%1$s\n\nPasswords are scrubbed, but not listed here.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted. Maybe you don\'t have any subscriptions?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
-    <string name="settings_advanced_clear_logs_key">ClearLogs</string>
+    <string name="settings_advanced_clear_logs_key" translatable="false">ClearLogs</string>
     <string name="settings_advanced_clear_logs_title">Clear logs</string>
     <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs deleted</string>
-    <string name="settings_advanced_connection_protocol_key">ConnectionProtocol</string>
+    <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This is the tried and true method, though it may use more battery.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. (Experimental.) File a bug if it consumes more battery or is unstable.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This method is deprecated and will be removed in June 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This will become the default in June 2022.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>
-    <string name="settings_about_version_key">Version</string>
+    <string name="settings_about_version_key" translatable="false">Version</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
@@ -353,7 +352,7 @@
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>
     <string name="user_dialog_title_edit">Edit user</string>
-    <string name="user_dialog_description_add">You can add a user and associate a specific topic to it later.</string>
+    <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
     <string name="user_dialog_base_url_hint">Server URL</string>
     <string name="user_dialog_username_hint">Username</string>

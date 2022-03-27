@@ -5,8 +5,6 @@
     <string name="channel_notifications_high_name">Benachrichtigungen (Hohe Priorität)</string>
     <string name="channel_notifications_max_name">Benachrichtigungen (Max. Priorität)</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="channel_notifications_min_name">Benachrichtigungen (Min. Priorität)</string>
     <string name="channel_subscriber_notification_title">Warte auf Benachrichtigungen</string>
 </resources>
