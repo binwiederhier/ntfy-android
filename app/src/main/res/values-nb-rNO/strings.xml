@@ -16,13 +16,10 @@
     <string name="channel_subscriber_notification_noinstant_text_four">Du abonnerer på fire emner</string>
     <string name="refresh_message_result">%1$d merknad(er) mottatt</string>
     <string name="channel_notifications_max_name">Merknader (maks.-prioritet)</string>
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="refresh_message_error_one">Kunne ikke gjenoppfriske abonnementet: %1$s</string>
     <string name="main_menu_notifications_enabled">Merknader påslått</string>
     <string name="main_menu_notifications_disabled_forever">Merknader avslått</string>
     <string name="main_menu_docs_title">Les dokumentasjonen</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="main_menu_rate_title">Vurder programmet ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Opphev abonnement</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Slett for godt</string>
@@ -34,7 +31,6 @@
     <string name="main_add_button_description">Legg til abonnement</string>
     <string name="main_banner_json_stream_button_remind_later">Spør senere</string>
     <string name="main_banner_json_stream_button_learn_more">Lær mer</string>
-    <string name="main_banner_json_stream_button_enable_ws">Skru på nå</string>
     <string name="add_dialog_title">Abonner på emnet</string>
     <string name="add_dialog_topic_name_hint">Emnenavn, f.eks. halgeirs_varsler</string>
     <string name="add_dialog_use_another_server">Bruk en annen tjener</string>
@@ -49,7 +45,6 @@
     <string name="add_dialog_description_below">Det kan hende emner ikke er passordsbeskyttet, så velg et navn som ikke er enkelt å gjette. Når du har abonnert kan du utføre PUT/POST av merknader.</string>
     <string name="add_dialog_use_another_server_description">Du kan abonnere på emner fra en annen tjener. Skriv inn tjener-nettadressen nedenfor.</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="add_dialog_button_login">Logg inn</string>
     <string name="add_dialog_error_connection_failed">Tilkobling mislyktes: %1$s</string>
     <string name="add_dialog_login_username_hint">Brukernavn</string>
@@ -243,7 +238,6 @@
     <string name="main_menu_notifications_disabled_until">Merknader avslått til %1$s</string>
     <string name="add_dialog_login_title">Innlogging kreves</string>
     <string name="main_menu_report_bug_title">Innrapporter en feil</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="add_dialog_button_subscribe">Abonner</string>
     <string name="detail_clear_dialog_permanently_delete">Slett for godt</string>
     <string name="detail_item_tags">Etiketter: %1$s</string>

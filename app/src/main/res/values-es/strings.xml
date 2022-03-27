@@ -32,16 +32,12 @@
     <string name="main_item_status_reconnecting">reconectando…</string>
     <string name="main_item_date_yesterday">ayer</string>
     <string name="main_add_button_description">Agregar suscripción</string>
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="main_how_to_link">Para obtener instrucciones más detalladas, consulte el sitio web y la documentación de ntfy.sh.</string>
     <string name="main_banner_battery_text">La optimización de la batería debe deshabilitarse para evitar problemas con la entrega de notificaciones.</string>
     <string name="main_banner_battery_button_remind_later">Preguntar más tarde</string>
     <string name="main_banner_battery_button_fix_now">Corregir ahora</string>
     <string name="main_banner_json_stream_button_dismiss">Descartar</string>
     <string name="main_banner_json_stream_button_learn_more">Más información</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
-    <string name="main_banner_json_stream_button_enable_ws">Habilitar ahora</string>
     <string name="add_dialog_title">Suscribirse al tópico</string>
     <string name="add_dialog_description_below">Los tópicos podrían no estar protegidos por contraseña, así que elija un nombre que no sea fácil de adivinar. Una vez suscrito, puedes enviar notificaciones con PUT/POST.</string>
     <string name="add_dialog_topic_name_hint">Nombre del tópico, p. ej. phils_alerts</string>
@@ -173,7 +169,6 @@
     <string name="settings_general_dark_mode_entry_light">Modo claro</string>
     <string name="settings_general_dark_mode_entry_dark">Modo oscuro</string>
     <string name="settings_backup_restore_header">Respaldo y Restauración</string>
-    <string name="settings_backup_restore_backup_key">Respaldo</string>
     <string name="settings_backup_restore_backup_title">Respaldar en un archivo</string>
     <string name="settings_backup_restore_backup_summary">Exportar configuración, notificaciones y usuarios</string>
     <string name="settings_backup_restore_backup_entry_everything">Todo</string>
@@ -181,7 +176,6 @@
     <string name="settings_backup_restore_backup_entry_settings_only">Sólo ajustes</string>
     <string name="settings_backup_restore_backup_successful">Respaldo exitoso</string>
     <string name="settings_backup_restore_backup_failed">El respaldo falló: %1$s</string>
-    <string name="settings_backup_restore_restore_key">Restaurar</string>
     <string name="settings_backup_restore_restore_title">Restaurar desde un archivo</string>
     <string name="settings_backup_restore_restore_successful">Restauración exitosa</string>
     <string name="settings_backup_restore_restore_failed">La restauración ha fallado: %1$s</string>
@@ -216,7 +210,6 @@
     <string name="settings_advanced_connection_protocol_summary_ws">Utilizar WebSockets para conectarse al servidor. Esta opción es experimental. Háganos saber si consume menos batería o es inestable.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream sobre HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="settings_about_version_key">Versión</string>
     <string name="settings_about_version_title">Versión</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copiado al portapapeles</string>
@@ -257,7 +250,6 @@
     <string name="share_topic_title">Compartir con</string>
     <string name="notification_dialog_enabled_toast_message">Notificaciones re-habilitadas</string>
     <string name="settings_notifications_auto_delete_summary_three_months">Eliminar automáticamente las notificaciones después de 3 meses</string>
-    <string name="detail_deep_link_subscribed_toast_message">Suscrito al tópico %1$s</string>
     <string name="detail_item_cannot_open_not_found">No se puede abrir el archivo adjunto: El archivo puede haber sido borrado, o no hay ninguna aplicación para abrir el archivo.</string>
     <string name="detail_menu_notifications_disabled_forever">Notificaciones deshabilitadas</string>
     <string name="notification_dialog_2h">2 horas</string>
@@ -292,7 +284,6 @@
     <string name="settings_notifications_auto_download_10m">Si es más pequeño que 10 MB</string>
     <string name="settings_general_users_prefs_user_add_summary">Crear un nuevo usuario para un nuevo servidor</string>
     <string name="settings_general_dark_mode_summary_system">Usar el valor predeterminado del sistema</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="settings_about_header">Acerca de</string>
     <string name="user_dialog_base_url_hint">URL del servidor</string>
     <string name="main_menu_rate_title">Califica esta aplicación ⭐</string>
@@ -303,6 +294,5 @@
     <string name="detail_how_to_link">Para obtener instrucciones más detalladas, consulte el sitio web y la documentación de ntfy.sh.</string>
     <string name="main_menu_settings_title">Ajustes</string>
     <string name="main_menu_report_bug_title">Reportar un error</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="add_dialog_instant_delivery">Entrega instantánea en modo doze</string>
 </resources>

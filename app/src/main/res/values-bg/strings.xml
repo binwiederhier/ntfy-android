@@ -29,7 +29,6 @@
     <string name="add_dialog_use_another_server">Използване на друг сървър</string>
     <string name="add_dialog_use_another_server_description">Можете да се абонирате за теми от друг сървър. Въведете адреса на сървъра по-долу.</string>
     <string name="add_dialog_login_description">Тази тема изисква да влезете. Въведете потребителско име и парола.</string>
-    <string name="detail_deep_link_subscribed_toast_message">Абонирахте се за темата %1$s</string>
     <string name="detail_clear_dialog_message">Наистина ли искате да премахнете всички известия в темата\?</string>
     <string name="detail_delete_dialog_message">Наистина ли желаете да се отпишете от темата и да премахнете всички получени известия\?</string>
     <string name="settings_notifications_muted_until_title">Спиране на известията</string>
@@ -52,10 +51,8 @@
 \nПаролите винаги се премахват, но не са изброени тук.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Не са променени никакви теми/имена на хостове, може би нямате абонаменти\?</string>
     <string name="user_dialog_description_add">Тук можете да добавите потребител, който да свържете с дадена тема.</string>
-    <string name="app_name">Ntfy</string>
     <string name="channel_notifications_min_name">Известия (минимален приоритет)</string>
     <string name="channel_subscriber_notification_instant_text_one">Абонирани сте за тема с незабавно доставяне</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="notification_dialog_muted_forever_toast_message">Известията са изключени</string>
     <string name="channel_subscriber_notification_title">Слушане на входящи известия</string>
     <string name="channel_subscriber_notification_instant_text_two">Абонирани сте за две теми с незабавно доставяне</string>
@@ -80,8 +77,6 @@
     <string name="main_item_status_text_not_one">%1$d известия</string>
     <string name="main_item_date_yesterday">вчера</string>
     <string name="main_add_button_description">Добавяне на абонамент</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Безвъзвратно премахване</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_status_reconnecting">Повторно свързване…</string>
@@ -95,7 +90,6 @@
     <string name="add_dialog_error_connection_failed">Грешка при свързване: %1$s</string>
     <string name="add_dialog_login_password_hint">Парола</string>
     <string name="add_dialog_login_new_user">Нов потребител</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
     <string name="add_dialog_login_title">Изисква се вход</string>
     <string name="add_dialog_login_username_hint">Потребител</string>
     <string name="add_dialog_login_error_not_authorized">Неуспешен вход. Потребителят %1$s няма достъп.</string>

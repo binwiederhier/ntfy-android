@@ -5,8 +5,6 @@
     <string name="channel_notifications_high_name">Benachrichtigungen (Hohe Priorität)</string>
     <string name="channel_notifications_max_name">Benachrichtigungen (Max. Priorität)</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
-    <string name="app_name">Ntfy</string>
-    <string name="app_base_url">https://ntfy.sh</string>
     <string name="channel_notifications_min_name">Benachrichtigungen (Min. Priorität)</string>
     <string name="channel_subscriber_notification_title">Warte auf Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Du hast ein Sofortnachrichten-Thema abonniert</string>
@@ -31,9 +29,7 @@
     <string name="main_menu_notifications_disabled_forever">Benachrichtigungen deaktiviert</string>
     <string name="channel_subscriber_notification_instant_text">Du hast Sofortnachrichten-Themen abonniert</string>
     <string name="main_menu_report_bug_title">Fehler melden</string>
-    <string name="main_menu_report_bug_url">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_title">Dokumentation lesen</string>
-    <string name="main_menu_docs_url">https://ntfy.sh/docs</string>
     <string name="main_menu_rate_title">App bewerten ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Abmelden</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Endgültig löschen</string>
@@ -51,8 +47,6 @@
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
     <string name="main_banner_json_stream_button_remind_later">Später fragen</string>
     <string name="main_banner_json_stream_button_learn_more">Mehr erfahren</string>
-    <string name="main_banner_json_stream_button_learn_more_url">https://ntfy.sh/docs/deprecations</string>
-    <string name="main_banner_json_stream_button_enable_ws">Jetzt aktivieren</string>
     <string name="add_dialog_title">Thema abonnieren</string>
     <string name="add_dialog_description_below">Themen sind vielleicht nicht kennwort-geschützt, also wähle einen schwer zu erratenden Namen. Nach dem Abonnieren kannst Du Benachrichtigungen POSTen/PUTen.</string>
     <string name="add_dialog_topic_name_hint">Themenname, z.B. phils_alerts</string>
@@ -298,7 +292,7 @@
     <string name="settings_backup_restore_backup_failed">Sicherung fehlgeschlagen: %1$s</string>
     <string name="settings_advanced_export_logs_title">Logs kopieren/hochladen</string>
     <string name="settings_advanced_export_logs_summary">Logs in die Zwischenablage kopieren oder auf nopaste.net hochladen (betrieben vom ntfy-Autor). Servernamen und Themen können zensiert werden, Benachrichtigungen niemals.</string>
-    <string name="settings_advanced_export_logs_scrub_dialog_text">Die folgenden Themen/Servernamen wurden durch Obstnamen ersetzt, so dass Du das Logs bedenkenlos teilen kannst:
+    <string name="settings_advanced_export_logs_scrub_dialog_text">Die folgenden Themen/Servernamen wurden durch Obstnamen ersetzt, sodass Du die Log-Datei bedenkenlos teilen kannst:
 \n
 \n%1$s
 \n

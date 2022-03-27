@@ -52,7 +52,6 @@
     <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
     <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
     <string name="main_banner_json_stream_button_learn_more">详情</string>
-    <string name="main_banner_json_stream_button_enable_ws">立即开启</string>
     <string name="add_dialog_title">订阅主题</string>
     <string name="add_dialog_description_below">主题可能没输密码就能看到，所以起个隐晦些的名字吧。订阅后就可以 PUT 或者 POST 通知了。</string>
     <string name="add_dialog_topic_name_hint">主题名称，比如：小飞的提醒</string>
