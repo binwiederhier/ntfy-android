@@ -37,43 +37,44 @@
                     app:layout_constraintStart_toEndOf="@+id/main_banner_battery_image"
                     android:layout_marginStart="10dp"/>
 
+            <androidx.constraintlayout.helper.widget.Flow
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:constraint_referenced_ids="main_banner_battery_ask_later,main_banner_battery_dontaskagain,main_banner_battery_fix_now"
+                    app:layout_constraintTop_toBottomOf="@id/main_banner_battery_text"
+                    app:flow_horizontalAlign="end"
+                    app:flow_wrapMode="chain"
+                    app:flow_horizontalStyle="packed"
+                    android:layout_marginEnd="15dp"
+                    android:id="@+id/main_banner_battery_flow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="15dp"
+                    app:flow_horizontalBias="1"
+                    app:flow_verticalGap="0dp" app:flow_horizontalGap="0dp"/>
+
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_battery_ask_later"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
                     android:text="@string/main_banner_battery_button_remind_later"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/main_banner_battery_fix_now"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
-                    android:layout_marginBottom="5dp"/>
+                    tools:layout_editor_absoluteX="15dp" tools:layout_editor_absoluteY="67dp"/>
 
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_battery_dontaskagain"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
                     android:text="@string/main_banner_battery_button_dismiss"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/main_banner_battery_ask_later"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
-                    android:layout_marginBottom="5dp"/>
+                    tools:layout_editor_absoluteX="142dp" tools:layout_editor_absoluteY="71dp"/>
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_battery_fix_now"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="15dp"
                     android:text="@string/main_banner_battery_button_fix_now"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_battery_text"
-                    android:layout_marginBottom="5dp"/>
+                    tools:layout_editor_absoluteX="269dp" tools:layout_editor_absoluteY="67dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -110,41 +111,37 @@
                     app:layout_constraintStart_toEndOf="@+id/main_banner_json_stream_image"
                     android:layout_marginStart="10dp" android:autoLink="web"/>
 
+            <androidx.constraintlayout.helper.widget.Flow
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:constraint_referenced_ids="main_banner_json_stream_remind_later,main_banner_json_stream_dontaskagain,main_banner_json_stream_learn_mode" app:layout_constraintTop_toBottomOf="@id/main_banner_json_stream_text" app:flow_horizontalAlign="end" app:flow_wrapMode="chain" app:flow_horizontalStyle="packed" android:layout_marginEnd="15dp" android:id="@+id/flow" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="15dp" app:flow_horizontalBias="1"
+                    app:flow_verticalGap="0dp" app:flow_horizontalGap="0dp"/>
+
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_json_stream_remind_later"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:text="@string/main_banner_json_stream_button_remind_later"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_json_stream_text"
-                    android:layout_marginBottom="5dp" app:layout_constraintEnd_toStartOf="@+id/main_banner_json_stream_learn_mode" android:layout_marginEnd="5dp"/>
+                    tools:layout_editor_absoluteX="86dp" tools:layout_editor_absoluteY="83dp"/>
 
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_json_stream_dontaskagain"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
                     android:text="@string/main_banner_json_stream_button_dismiss"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/main_banner_json_stream_remind_later"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_json_stream_text"
-                    android:layout_marginBottom="5dp"/>
+                    tools:layout_editor_absoluteX="260dp" tools:layout_editor_absoluteY="83dp"/>
 
 
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_json_stream_learn_mode"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:text="@string/main_banner_json_stream_button_learn_more"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/main_banner_json_stream_text"
-                    android:layout_marginBottom="5dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="15dp"/>
+                    tools:layout_editor_absoluteX="253dp" tools:layout_editor_absoluteY="131dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
