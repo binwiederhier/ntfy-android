@@ -29,6 +29,13 @@ To build your own version with Firebase, you must:
 ./gradlew bundlePlayRelease
 ```
 
+## Translations
+We're using [Weblate](https://hosted.weblate.org/projects/ntfy/) to translate the ntfy Android app. We'd love your participation.
+
+<a href="https://hosted.weblate.org/engage/ntfy/">
+<img src="https://hosted.weblate.org/widgets/ntfy/-/multi-blue.svg" alt="Translation status" />
+</a>
+
 ## License
 Made with ❤️ by [Philipp C. Heckel](https://heckel.io), distributed under the [Apache License 2.0](LICENSE).
 
