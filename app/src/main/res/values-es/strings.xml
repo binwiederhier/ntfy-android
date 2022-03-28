@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Notificaciones (Prioridad Mínima)</string>
+    <string name="channel_notifications_min_name">Notificaciones (prioridad mínima)</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
     <string name="notification_popup_action_open">Abrir</string>
-    <string name="channel_notifications_low_name">Notificaciones (Prioridad Baja)</string>
-    <string name="channel_notifications_default_name">Notificaciones (Prioridad por defecto)</string>
-    <string name="channel_notifications_max_name">Notificaciones (Prioridad Máxima)</string>
+    <string name="channel_notifications_low_name">Notificaciones (prioridad baja)</string>
+    <string name="channel_notifications_default_name">Notificaciones (prioridad por defecto)</string>
+    <string name="channel_notifications_max_name">Notificaciones (prioridad máxima)</string>
     <string name="channel_subscriber_service_name">Servicio de Suscripciones</string>
     <string name="channel_subscriber_notification_title">Escuchando por notificaciones entrantes</string>
-    <string name="channel_subscriber_notification_instant_text_one">Está suscrito a un tópico de entrega instantánea</string>
-    <string name="channel_subscriber_notification_instant_text_two">Está suscrito a dos tópicos de entrega instantánea</string>
-    <string name="channel_subscriber_notification_instant_text_four">Está suscrito a cuatro tópicos de entrega instantánea</string>
-    <string name="channel_subscriber_notification_instant_text_more">Está suscrito a %1$d tópicos de entrega instantánea</string>
-    <string name="channel_subscriber_notification_noinstant_text">Está suscrito a tópicos</string>
-    <string name="channel_subscriber_notification_noinstant_text_two">Está suscrito a dos tópicos</string>
-    <string name="channel_subscriber_notification_noinstant_text_four">Está suscrito a cuatro tópicos</string>
-    <string name="channel_subscriber_notification_noinstant_text_more">Está suscrito a %1$d tópicos</string>
+    <string name="channel_subscriber_notification_instant_text_one">Suscrito a un tópico de entrega instantánea</string>
+    <string name="channel_subscriber_notification_instant_text_two">Suscrito a dos tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_instant_text_four">Suscrito a cuatro tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_instant_text_more">Suscrito a %1$d tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_noinstant_text">Suscrito a tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Suscrito a dos tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Suscrito a cuatro tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Suscrito a %1$d tópicos</string>
     <string name="refresh_message_result">%1$d notificación(es) recibida(s)</string>
     <string name="refresh_message_no_results">Todo está actualizado</string>
-    <string name="refresh_message_error">%1$d suscripción(es) no ha(n) podido ser actualizada(s)
+    <string name="refresh_message_error">No se pudieron actualizar %1$d suscripciones 
 \n
 \n%2$s</string>
     <string name="refresh_message_error_one">No se pudo actualizar la suscripción: %1$s</string>
@@ -222,23 +222,23 @@
     <string name="user_dialog_button_add">Añadir usuario</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_save">Guardar</string>
-    <string name="channel_notifications_high_name">Notificaciones (Prioridad Alta)</string>
-    <string name="channel_subscriber_notification_instant_text">Está suscrito a tópicos de entrega instantánea</string>
+    <string name="channel_notifications_high_name">Notificaciones (prioridad alta)</string>
+    <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="add_dialog_use_another_server_description">Puede suscribirse a tópicos de otro servidor. Escriba la URL del servidor a continuación.</string>
     <string name="detail_item_menu_copy_url_copied">URL copiada al portapapeles</string>
     <string name="settings_notifications_min_priority_summary_any">Se muestran notificaciones de todas las prioridades</string>
     <string name="settings_notifications_auto_delete_one_month">Después de un mes</string>
-    <string name="channel_subscriber_notification_instant_text_three">Está suscrito a tres tópicos de entrega instantánea</string>
-    <string name="channel_subscriber_notification_noinstant_text_one">Está suscrito a un tópico</string>
-    <string name="channel_subscriber_notification_noinstant_text_three">Está suscrito a tres tópicos</string>
+    <string name="channel_subscriber_notification_instant_text_three">Suscrito a tres tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Suscrito a un tópico</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Suscrito a tres tópicos</string>
     <string name="main_menu_notifications_disabled_until">Notificaciones deshabilitadas hasta %1$s</string>
     <string name="add_dialog_error_connection_failed">Error de conexión: %1$s</string>
     <string name="detail_item_menu_save_file">Guardar archivo</string>
     <string name="detail_menu_settings">Ajustes de la suscripción</string>
     <string name="main_no_subscriptions_text">Parece que aún no tiene ninguna suscripción.</string>
-    <string name="main_how_to_intro">Haz clic en el botón de abajo para crear o suscribirse a un tópico. Después, puede enviar mensajes mediante PUT o POST y recibirá las notificaciones en su teléfono.</string>
-    <string name="main_action_mode_delete_dialog_message">¿Realmente quiere cancelar la suscripción de los tópicos seleccionados y eliminar permanentemente todas las notificaciones que ha recibido\?</string>
+    <string name="main_how_to_intro">Haga clic en + para crear o suscribirse a un tópico. Recibirá notificaciones en su dispositivo enviando mensajes mediante PUT o POST.</string>
+    <string name="main_action_mode_delete_dialog_message">¿Cancelar la suscripción de los tópicos seleccionados y eliminar permanentemente todas las notificaciones\?</string>
     <string name="detail_clear_dialog_message">¿Realmente desea eliminar todas las notificaciones en este tópico\?</string>
     <string name="detail_delete_dialog_permanently_delete">Eliminar permanentemente</string>
     <string name="detail_delete_dialog_cancel">Cancelar</string>
@@ -286,7 +286,7 @@
     <string name="settings_general_dark_mode_summary_system">Usar el valor predeterminado del sistema</string>
     <string name="settings_about_header">Acerca de</string>
     <string name="user_dialog_base_url_hint">URL del servidor</string>
-    <string name="main_menu_rate_title">Califica esta aplicación ⭐</string>
+    <string name="main_menu_rate_title">Califica la aplicación ⭐</string>
     <string name="main_unified_push_toast">Esta suscripción es gestionada por %1$s a través de UnifiedPush</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
     <string name="main_banner_json_stream_text">A partir de junio de 2022, se utilizarán WebSockets para comunicarse con los servidores de ntfy. Asegúrese de configurar su servidor autoalojado para que lo soporte. Para comprobar si el soporte de WebSocket está funcionando, habilítelo en los Ajustes bajo Protocolo de conexión.</string>
