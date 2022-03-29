@@ -38,7 +38,7 @@
     <string name="share_suggested_topics">Предложени теми</string>
     <string name="settings_notifications_muted_until_show_all">Показват се всички известия</string>
     <string name="notification_dialog_forever">До включване</string>
-    <string name="settings_notifications_muted_until_forever">Известията са изключени до повторно включване</string>
+    <string name="settings_notifications_muted_until_forever">Известията са изключени до включването им</string>
     <string name="settings_notifications_muted_until_x">Известията са изключени до %1$s</string>
     <string name="settings_general_users_summary">Добавяне и премахване на потребители за защитени теми</string>
     <string name="settings_general_users_prefs_user_not_used">Не се използва от никоя тема</string>
@@ -59,8 +59,8 @@
     <string name="add_dialog_description_below">Възможно е темите да не са защитени с парола, затова изберете име, което е трудно за отгатване. След като се абонирате, можете да изпращате известия по PUT или POST.</string>
     <string name="notification_dialog_title">Спиране на известията</string>
     <string name="channel_subscriber_notification_instant_text_more">Абонирани сте за %1$d теми с незабавно доставяне</string>
-    <string name="refresh_message_error_one">Абонамент не може да бъде обновен: %1$s</string>
-    <string name="main_menu_notifications_disabled_until">Известията са спиране до %1$s</string>
+    <string name="refresh_message_error_one">Абонаментът не може да бъде обновен: %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
     <string name="main_how_to_intro">Докоснете бутона с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
     <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса на темата.</string>
@@ -229,7 +229,7 @@
     <string name="settings_about_header">Относно</string>
     <string name="settings_about_version_copied_to_clipboard_message">Копирано в междинната памет</string>
     <string name="user_dialog_base_url_hint">Адрес на сървъра</string>
-    <string name="detail_item_cannot_open">Грешка при отваряне на прикачения файл: %1$s</string>
+    <string name="detail_item_cannot_open">Прикаченият файл не може да бъде отворен: %1$s</string>
     <string name="detail_item_snack_deleted">Известието е премахнато</string>
     <string name="detail_item_snack_undo">Отменяне</string>
     <string name="detail_item_menu_copy_url">Копиране на адреса</string>
@@ -268,7 +268,7 @@
     <string name="settings_notifications_auto_delete_summary_never">Никога не се премахват автоматично</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Премахват се автоматично след един ден</string>
     <string name="settings_notifications_auto_download_always">Всичко се изтегля автоматично</string>
-    <string name="settings_advanced_broadcast_summary_disabled">Известията нама да бъдат излъчвани към други приложения</string>
+    <string name="settings_advanced_broadcast_summary_disabled">Известията няма да бъдат излъчвани към други приложения</string>
     <string name="settings_advanced_broadcast_summary_enabled">Известията ще да бъдат излъчвани към други приложения</string>
     <string name="settings_general_users_prefs_user_add_summary">Създава се потребител за нов сървър</string>
     <string name="settings_advanced_broadcast_title">Излъчване на съобщения</string>
@@ -291,4 +291,23 @@
     <string name="settings_advanced_export_logs_copied_url">Дневникът е изпратен и адресът е копиран</string>
     <string name="settings_advanced_export_logs_error_uploading">Грешка при качване на дневник: %1$s</string>
     <string name="settings_advanced_clear_logs_summary">Премахване на текущия дневник и създаване на нов</string>
+    <string name="detail_item_cannot_open_not_found">Прикаченият файл не може да бъде отворен: Или е премахнат, или липсва приложение, с което да бъде отворен.</string>
+    <string name="detail_item_cannot_save">Прикаченият файл не може да бъде запазен: %1$s</string>
+    <string name="detail_item_cannot_delete">Прикаченият файл не може да бъде премахнат: %1$s</string>
+    <string name="detail_item_cannot_open_click_url">Адресът не може да бъде посетен: %1$s</string>
+    <string name="detail_item_download_failed">Прикаченият файл не може да бъде изтеглен: %1$s</string>
+    <string name="detail_item_download_info_not_downloaded">не е изтеглен</string>
+    <string name="detail_item_download_info_not_downloaded_expired">не е изтеглен, препратката е с изтекла валидност</string>
+    <string name="detail_item_download_info_deleted">премахнат</string>
+    <string name="detail_item_download_info_deleted_expired">премахнат, препратката е с изтекла валидност</string>
+    <string name="detail_item_download_info_deleted_expires_x">премахнат, валидността изтича на %1$s</string>
+    <string name="detail_item_download_info_download_failed_expired">грешка при изтегляне, препратката е с изтекла валидност</string>
+    <string name="detail_menu_notifications_disabled_forever">Известията са изключени</string>
+    <string name="detail_menu_notifications_enabled">Известията са включени</string>
+    <string name="detail_item_download_info_not_downloaded_expires_x">не е изтеглен, валидността изтича на %1$s</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d%% изтеглен</string>
+    <string name="detail_item_download_info_download_failed">грешка при изтегляне</string>
+    <string name="detail_item_download_info_download_failed_expires_x">грешка при изтегляне, валидността изтича на %1$s</string>
+    <string name="share_content_image_error">Изображението не може да бъде отворено: %1$s</string>
+    <string name="share_content_file_error">Информацията за файла не може да бъде прочетена: %1$s</string>
 </resources>
