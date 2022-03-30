@@ -1,8 +1,4 @@
 <resources>
-    <!-- Main app-->
-    <string name="app_name" translatable="false">Ntfy</string>
-    <string name="app_base_url" translatable="false">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
-
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Notifications (min priority)</string>
     <string name="channel_notifications_low_name">Notifications (low priority)</string>
@@ -37,9 +33,7 @@
     <string name="main_menu_notifications_disabled_until">Notifications paused until %1$s</string>
     <string name="main_menu_settings_title">Settings</string>
     <string name="main_menu_report_bug_title">Report a bug</string>
-    <string name="main_menu_report_bug_url" translatable="false">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_title">Read the docs</string>
-    <string name="main_menu_docs_url" translatable="false">https://ntfy.sh/docs</string>
     <string name="main_menu_rate_title">Rate the app ⭐</string>
 
     <!-- Main activity: Action mode -->
@@ -79,7 +73,6 @@
     <string name="main_banner_json_stream_button_remind_later">Ask later</string>
     <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
     <string name="main_banner_json_stream_button_learn_more">Learn more</string>
-    <string name="main_banner_json_stream_button_learn_more_url" translatable="false">https://ntfy.sh/docs/deprecations</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -230,12 +223,10 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_notifications_header">Notifications</string>
-    <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>
     <string name="settings_notifications_muted_until_title">Pause notifications</string>
     <string name="settings_notifications_muted_until_show_all">Showing all notifications</string>
     <string name="settings_notifications_muted_until_forever">Notifications paused until resumed</string>
     <string name="settings_notifications_muted_until_x">Notifications paused until %1$s</string>
-    <string name="settings_notifications_min_priority_key" translatable="false">MinPriority</string>
     <string name="settings_notifications_min_priority_title">Minimum priority</string>
     <string name="settings_notifications_min_priority_summary_any">Showing all notifications</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or above</string>
@@ -245,7 +236,6 @@
     <string name="settings_notifications_min_priority_default">Default priority and above</string>
     <string name="settings_notifications_min_priority_high">High priority and above</string>
     <string name="settings_notifications_min_priority_max">Only max priority</string>
-    <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_download_title">Download attachments</string>
     <string name="settings_notifications_auto_download_summary_always">Auto-download all attachments</string>
     <string name="settings_notifications_auto_download_summary_never">Never auto-download attachments</string>
@@ -258,7 +248,6 @@
     <string name="settings_notifications_auto_download_5m">If below 5 MB</string>
     <string name="settings_notifications_auto_download_10m">If below 10 MB</string>
     <string name="settings_notifications_auto_download_50m">If below 50 MB</string>
-    <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
     <string name="settings_notifications_auto_delete_title">Delete notifications</string>
     <string name="settings_notifications_auto_delete_summary_never">Never automatically delete notifications</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Auto-delete notifications after one day</string>
@@ -273,11 +262,9 @@
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
     <string name="settings_general_header">General</string>
-    <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
-    <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_users_title">Manage users</string>
     <string name="settings_general_users_summary">Add/remove users for protected topics</string>
     <string name="settings_general_users_prefs_title">Users</string>
@@ -287,7 +274,6 @@
     <string name="settings_general_users_prefs_user_add">Add users</string>
     <string name="settings_general_users_prefs_user_add_title">Add new user</string>
     <string name="settings_general_users_prefs_user_add_summary">Create a new user for a new server</string>
-    <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
     <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="settings_general_dark_mode_summary_system">Using the system default</string>
     <string name="settings_general_dark_mode_summary_light">Light mode on</string>
@@ -296,7 +282,6 @@
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
     <string name="settings_backup_restore_header">Backup &amp; Restore</string>
-    <string name="settings_backup_restore_backup_key" translatable="false">Backup</string>
     <string name="settings_backup_restore_backup_title">Back up to file</string>
     <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>
     <string name="settings_backup_restore_backup_entry_everything">Everything</string>
@@ -304,21 +289,17 @@
     <string name="settings_backup_restore_backup_entry_settings_only">Settings only</string>
     <string name="settings_backup_restore_backup_successful">Backup created</string>
     <string name="settings_backup_restore_backup_failed">Backup failed: %1$s</string>
-    <string name="settings_backup_restore_restore_key" translatable="false">Restore</string>
     <string name="settings_backup_restore_restore_title">Restore from file</string>
     <string name="settings_backup_restore_restore_summary">Import config, notifications and users</string>
     <string name="settings_backup_restore_restore_successful">Restore successful</string>
     <string name="settings_backup_restore_restore_failed">Restore failed: %1$s</string>
     <string name="settings_advanced_header">Advanced</string>
-    <string name="settings_advanced_broadcast_key" translatable="false">BroadcastEnabled</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
-    <string name="settings_advanced_record_logs_key" translatable="false">RecordLogs</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
     <string name="settings_advanced_record_logs_summary_disabled">Turn on logging so you can share logs later to diagnose issues.</string>
-    <string name="settings_advanced_export_logs_key" translatable="false">ExportLogs</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
     <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by the ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>
@@ -332,18 +313,15 @@
     <string name="settings_advanced_export_logs_scrub_dialog_text">These topics/hostnames were replaced with fruit names, so you can share the log without worry:\n\n%1$s\n\nPasswords are scrubbed, but not listed here.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted. Maybe you don\'t have any subscriptions?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
-    <string name="settings_advanced_clear_logs_key" translatable="false">ClearLogs</string>
     <string name="settings_advanced_clear_logs_title">Clear logs</string>
     <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs deleted</string>
-    <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This method is deprecated and will be removed in June 2022.</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This will become the default in June 2022.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>
-    <string name="settings_about_version_key" translatable="false">Version</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>

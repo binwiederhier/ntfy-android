@@ -118,7 +118,6 @@
     <string name="notification_popup_action_open">Åpne</string>
     <string name="settings_title">Innstillinger</string>
     <string name="settings_notifications_header">Merknader</string>
-    <string name="settings_notifications_muted_until_key">Forstummet til</string>
     <string name="settings_notifications_muted_until_title">Sett merknader på pause</string>
     <string name="settings_notifications_muted_until_show_all">Alle merknader vil bli vist</string>
     <string name="settings_notifications_muted_until_forever">Merknader forstummet til de blir skrudd på igjen</string>
@@ -129,7 +128,6 @@
     <string name="settings_notifications_min_priority_low">Lav prioritet og høyere</string>
     <string name="settings_notifications_min_priority_high">Høy prioritet og høyere</string>
     <string name="settings_notifications_min_priority_max">Kun maks.-prioritet</string>
-    <string name="settings_notifications_auto_download_key">Automatisk nedlasting</string>
     <string name="settings_notifications_auto_download_title">Last ned vedlegg</string>
     <string name="settings_notifications_auto_download_summary_always">Last ned alle vedlegg automatisk</string>
     <string name="settings_notifications_auto_download_summary_never">Aldri last ned vedlegg automatisk</string>
@@ -149,7 +147,6 @@
     <string name="settings_notifications_auto_delete_three_months">Etter tre måneder</string>
     <string name="settings_general_header">Generelt</string>
     <string name="settings_general_default_base_url_title">Forvalgt tjener</string>
-    <string name="settings_general_users_key">Håndter brukere</string>
     <string name="settings_general_users_title">Håndter brukere</string>
     <string name="settings_general_users_summary">Legg til/fjern brukere for beskyttede emner</string>
     <string name="settings_general_users_prefs_title">Brukere</string>
@@ -159,7 +156,6 @@
     <string name="settings_general_users_prefs_user_add">Legg til brukere</string>
     <string name="settings_general_users_prefs_user_add_title">Legg til ny bruker</string>
     <string name="settings_general_users_prefs_user_add_summary">Opprett en ny bruker for en ny tjener</string>
-    <string name="settings_general_dark_mode_key">Mørk drakt</string>
     <string name="settings_general_dark_mode_title">Mørk drakt</string>
     <string name="settings_general_dark_mode_summary_system">Ikled systemets drakt</string>
     <string name="settings_general_dark_mode_summary_light">Lys drakt iført</string>
@@ -169,12 +165,9 @@
     <string name="settings_general_dark_mode_entry_dark">Mørk drakt</string>
     <string name="settings_backup_restore_header">Sikkerhetskopiering og gjenoppretting</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Slett merknader automatisk etter én dag</string>
-    <string name="settings_general_default_base_url_key">Forvalg grunn-nettadresse</string>
     <string name="settings_general_default_base_url_message">For å bruke din egen tjener som forvalg når du abonnerer på nye emner og/eller deler til emner, kan du skrive inn tjenerens grunn-nettadresse.</string>
-    <string name="settings_backup_restore_restore_key">Gjenopprett</string>
     <string name="settings_backup_restore_restore_title">Gjenopprett fra fil</string>
     <string name="settings_advanced_header">Avansert</string>
-    <string name="settings_advanced_broadcast_key">Kringkasting påskrudd</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopier til utklippstavlen (sensurert)</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Last opp og kopier lenke (sensurert)</string>
     <string name="settings_advanced_export_logs_copied_logs">Loggføring kopiert til utklippstavlen</string>
@@ -186,11 +179,9 @@
     <string name="settings_backup_restore_backup_entry_everything_no_users">Alt, unntatt brukere</string>
     <string name="settings_advanced_broadcast_summary_enabled">Programmer kan motta innkommende merknader som kringkastinger</string>
     <string name="settings_advanced_broadcast_summary_disabled">Programmer kan motta merknader som kringkastinger</string>
-    <string name="settings_advanced_record_logs_key">Loggføring</string>
     <string name="settings_advanced_record_logs_title">Loggføring</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logger blir registrert på enheten din. Opptil 1000 oppføringer lagres.</string>
     <string name="settings_advanced_record_logs_summary_disabled">Skru på registrering av logger, slik at du kan dele dem senere. Dette er nyttig i avlusingsøyemed.</string>
-    <string name="settings_advanced_export_logs_key">Eksporter logger</string>
     <string name="settings_advanced_export_logs_title">Kopier/last opp logger</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Kopier til utklippstavlen</string>
     <string name="settings_advanced_export_logs_error_uploading">Kunne ikke laste opp logger: %1$s</string>
@@ -205,10 +196,8 @@
     <string name="settings_advanced_clear_logs_title">Tøm loggføring</string>
     <string name="settings_advanced_clear_logs_summary">Slett tidligere registrert loggføring, og start på ny</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Loggføring slettet</string>
-    <string name="settings_advanced_connection_protocol_key">Tilkoblingsprotokoll</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Bruk en JSON-strøm over HTTP for å koble til tjeneren. Dette er en godt utprøvd metode, selv om den kan bruke mer batteri.</string>
     <string name="settings_about_header">Om</string>
-    <string name="settings_about_version_key">Versjon</string>
     <string name="settings_about_version_copied_to_clipboard_message">Kopiert til utklippstavlen</string>
     <string name="user_dialog_title_add">Legg til bruker</string>
     <string name="user_dialog_title_edit">Rediger bruker</string>
@@ -271,7 +260,6 @@
     <string name="share_content_image_error">Kan ikke lese bilde: %1$s</string>
     <string name="notification_dialog_enabled_toast_message">Merknader skrudd på igjen</string>
     <string name="notification_dialog_muted_until_toast_message">Merknader satt på pause til %1$s</string>
-    <string name="settings_notifications_min_priority_key">Min.-prioritet</string>
     <string name="settings_notifications_min_priority_title">Min.-prioritet</string>
     <string name="share_content_file_error">Kan ikke lese filinfo: %1$s</string>
     <string name="notification_dialog_title">Sett merknader på pause</string>
@@ -281,7 +269,6 @@
 \nFil: %2$s, nedlasting mislyktes</string>
     <string name="user_dialog_username_hint">Brukernavn</string>
     <string name="settings_notifications_auto_download_50m">Hvis mindre enn 50 MB</string>
-    <string name="settings_notifications_auto_delete_key">Automatisk sletting</string>
     <string name="settings_notifications_auto_delete_title">Slett merknader</string>
     <string name="settings_notifications_auto_download_500k">Hvis mindre enn 500 KB</string>
     <string name="settings_backup_restore_backup_failed">Sikkerhetskopiering mislyktes: %1$s</string>
@@ -300,11 +287,9 @@
     <string name="settings_general_default_base_url_default_summary">%1$s (forvalg)</string>
     <string name="settings_backup_restore_backup_entry_settings_only">Kun innstillinger</string>
     <string name="settings_backup_restore_restore_summary">Importer oppsett, merknader og brukere</string>
-    <string name="settings_backup_restore_backup_key">Sikkerhetskopiering</string>
     <string name="detail_test_message">Dette er en testmerknad fra ntfy-Androidprogrammet. Det har %1$d-prioritet. vis du sender en ny kan det hende den ser annerledes ut.</string>
     <string name="settings_backup_restore_backup_successful">Sikkerhetskopi utført</string>
     <string name="settings_advanced_export_logs_summary">Kopier logger til utklippstavlen, eller last opp til nopaste.net (eid av ntfy-utvikleren). Vertsnavn og emner kan sensureres, men merknader vil aldri bli det.</string>
-    <string name="settings_advanced_clear_logs_key">Tøm loggføring</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Bruk Vev-socket-er for å koble til tjeneren. Dette er eksperimentelt. Si ifra hvis det bruker mindre batteri eller er ustabilt.</string>
     <string name="main_how_to_intro">Abonner på et emne ved å klikke på knappen nedenfor. Etter dette kan du sende meldinger via PUT eller POST, og du kan motta merknader på enheten din.</string>
     <string name="main_how_to_link">Mer detaljert instruks er å finne på ntfy.sh-nettsiden og i dokumentasjonen.</string>

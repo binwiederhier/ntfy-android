@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Strings in here are not translated by Hosted Weblate; it only looks at strings.xml.
+         The translatable="false" attribute is just an additional safety. -->
+
+    <!-- Main app constants -->
+    <string name="app_name" translatable="false">Ntfy</string>
+    <string name="app_base_url" translatable="false">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
+
+    <!-- Main activity -->
+    <string name="main_menu_report_bug_url" translatable="false">https://github.com/binwiederhier/ntfy/issues</string>
+    <string name="main_menu_docs_url" translatable="false">https://ntfy.sh/docs</string>
+    <string name="main_banner_json_stream_button_learn_more_url" translatable="false">https://ntfy.sh/docs/deprecations</string>
+
+    <!-- Settings constants -->
+    <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>
+    <string name="settings_notifications_min_priority_key" translatable="false">MinPriority</string>
+    <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
+    <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
+    <string name="settings_general_users_key" translatable="false">ManageUsers</string>
+    <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
+    <string name="settings_backup_restore_backup_key" translatable="false">Backup</string>
+    <string name="settings_backup_restore_restore_key" translatable="false">Restore</string>
+    <string name="settings_advanced_broadcast_key" translatable="false">BroadcastEnabled</string>
+    <string name="settings_advanced_record_logs_key" translatable="false">RecordLogs</string>
+    <string name="settings_advanced_export_logs_key" translatable="false">ExportLogs</string>
+    <string name="settings_advanced_clear_logs_key" translatable="false">ClearLogs</string>
+    <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
+    <string name="settings_about_version_key" translatable="false">Version</string>
+
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">
         <item>@string/notification_dialog_show_all</item>
