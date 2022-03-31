@@ -295,4 +295,9 @@
     <string name="channel_subscriber_notification_title">In attesa di notifiche in ingresso</string>
     <string name="detail_test_message">Questa è una notifica test dall\'app Android ntfy. Ha livello di priorità %1$d. Se ne invii un\'altra, potrebbe avere contenuti differenti.</string>
     <string name="settings_advanced_export_logs_summary">Copia i log negli appunti, o carica su nopaste.net (in possesso dell\'autore di ntfy). Hostname e topic possono essere censurati, le notifiche non lo saranno mai.</string>
+    <string name="settings_notifications_priority_default">default</string>
+    <string name="settings_notifications_priority_max">massima</string>
+    <string name="settings_notifications_priority_high">alta</string>
+    <string name="settings_notifications_priority_min">minima</string>
+    <string name="settings_notifications_priority_low">bassa</string>
 </resources>
