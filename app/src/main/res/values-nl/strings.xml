@@ -123,4 +123,15 @@
     <string name="settings_general_dark_mode_entry_dark">Donkere modus</string>
     <string name="settings_general_default_base_url_title">Standaardserver</string>
     <string name="settings_general_users_title">Gebruikers beheren</string>
+    <string name="detail_item_menu_copy_url_copied">URL gekopieerd naar klembord</string>
+    <string name="detail_item_menu_open">Bestand openen</string>
+    <string name="detail_item_menu_copy_contents_copied">Melding gekopieerd naar klembord</string>
+    <string name="detail_item_saved_successfully">Opgeslagen als \"%1$s\" in de \"Downloads\" folder</string>
+    <string name="detail_item_menu_save_file">Bestand opslaan</string>
+    <string name="detail_item_snack_undo">Ongedaan maken</string>
+    <string name="detail_item_menu_copy_url">URL kopiëren</string>
+    <string name="detail_item_menu_delete">Bestand verwijderen</string>
+    <string name="detail_item_menu_download">Bestand downloaden</string>
+    <string name="detail_item_menu_cancel">Download annuleren</string>
+    <string name="detail_item_menu_copy_contents">Melding kopiëren</string>
 </resources>
