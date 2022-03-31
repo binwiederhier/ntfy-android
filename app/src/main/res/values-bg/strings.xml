@@ -295,4 +295,9 @@
     <string name="detail_item_download_info_download_failed_expires_x">грешка при изтегляне, валидността изтича на %1$s</string>
     <string name="share_content_image_error">Изображението не може да бъде отворено: %1$s</string>
     <string name="share_content_file_error">Информацията за файла не може да бъде прочетена: %1$s</string>
+    <string name="settings_notifications_priority_min">минимален</string>
+    <string name="settings_notifications_priority_low">нисък</string>
+    <string name="settings_notifications_priority_default">подразбиран</string>
+    <string name="settings_notifications_priority_max">максимален</string>
+    <string name="settings_notifications_priority_high">висок</string>
 </resources>
