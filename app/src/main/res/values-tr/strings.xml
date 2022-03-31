@@ -296,4 +296,9 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Karşıya yükle ve bağlantıyı kopyala</string>
     <string name="settings_advanced_export_logs_error_uploading">Günlükler karşıya yüklenemedi: %1$s</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_notifications_priority_min">en düşük</string>
+    <string name="settings_notifications_priority_max">en yüksek</string>
+    <string name="settings_notifications_priority_high">yüksek</string>
+    <string name="settings_notifications_priority_low">düşük</string>
+    <string name="settings_notifications_priority_default">öntanımlı</string>
 </resources>
