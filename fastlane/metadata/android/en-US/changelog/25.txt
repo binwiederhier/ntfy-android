@@ -7,17 +7,18 @@ Bugs:
 * IllegalStateException: Failed to build unique file (#177, thanks to @Fallenbagel for reporting)
 * SQLiteConstraintException: Crash during UP registration (#185)
 * Refresh preferences screen after settings import (#183, thanks to @cmeis for reporting)
+* Add priority strings to strings.xml to make it translatable (#192, thanks to @StoyanDimitrov)
 
 Translations:
 * English language improvements (thanks to @comradekingu)
 * Bulgarian (thanks to @StoyanDimitrov)
-* Dutch (incomplete, thanks to @diony](https://hosted.weblate.org/user/diony))
-* Chinese (incomplete, thanks to @poi)
+* Chinese/Simplified (thanks to @poi and @PeterCxy)
+* Dutch (incomplete, thanks to @diony)
 * French (incomplete, thanks to @Kusoneko)
 * German (thanks to @cmeis)
 * Italian (thanks to @theTranslator)
 * Norwegian (incomplete, thanks to @comradekingu)
-* Portuguese (Brazil, thanks to @LW)
+* Portuguese/Brazil (thanks to @LW)
 * Spanish (thanks to @rogeliodh)
 * Turkish (thanks to @ersen)
 

@@ -148,6 +148,11 @@
     <string name="settings_notifications_min_priority_low">Niedrige Priorität und höher</string>
     <string name="settings_notifications_min_priority_default">Standard-Priorität und höher</string>
     <string name="settings_notifications_min_priority_high">Hohe Priorität und höher</string>
+    <string name="settings_notifications_priority_min">min</string>
+    <string name="settings_notifications_priority_low">gering</string>
+    <string name="settings_notifications_priority_default">standard</string>
+    <string name="settings_notifications_priority_high">hoch</string>
+    <string name="settings_notifications_priority_max">max</string>
     <string name="settings_notifications_auto_download_title">Anhänge herunterladen</string>
     <string name="settings_notifications_auto_download_summary_never">Anhänge nie automatisch herunterladen</string>
     <string name="settings_notifications_auto_download_1m">Kleiner 1 MB</string>

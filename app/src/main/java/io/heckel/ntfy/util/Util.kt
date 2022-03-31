@@ -84,14 +84,14 @@ fun toPriority(priority: Int?): Int {
     else return 3
 }
 
-fun toPriorityString(priority: Int): String {
+fun toPriorityString(context: Context, priority: Int): String {
     return when (priority) {
-        1 -> "min"
-        2 -> "low"
-        3 -> "default"
-        4 -> "high"
-        5 -> "max"
-        else -> "default"
+        1 -> context.getString(R.string.settings_notifications_priority_min)
+        2 -> context.getString(R.string.settings_notifications_priority_low)
+        3 -> context.getString(R.string.settings_notifications_priority_default)
+        4 -> context.getString(R.string.settings_notifications_priority_high)
+        5 -> context.getString(R.string.settings_notifications_priority_max)
+        else -> context.getString(R.string.settings_notifications_priority_default)
     }
 }
 

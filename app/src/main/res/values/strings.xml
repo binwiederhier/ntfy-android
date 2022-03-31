@@ -236,6 +236,11 @@
     <string name="settings_notifications_min_priority_default">Default priority and above</string>
     <string name="settings_notifications_min_priority_high">High priority and above</string>
     <string name="settings_notifications_min_priority_max">Only max priority</string>
+    <string name="settings_notifications_priority_min">min</string>
+    <string name="settings_notifications_priority_low">low</string>
+    <string name="settings_notifications_priority_default">default</string>
+    <string name="settings_notifications_priority_high">high</string>
+    <string name="settings_notifications_priority_max">max</string>
     <string name="settings_notifications_auto_download_title">Download attachments</string>
     <string name="settings_notifications_auto_download_summary_always">Auto-download all attachments</string>
     <string name="settings_notifications_auto_download_summary_never">Never auto-download attachments</string>

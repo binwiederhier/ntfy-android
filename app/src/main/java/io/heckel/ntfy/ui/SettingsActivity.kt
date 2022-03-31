@@ -194,7 +194,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     1 -> getString(R.string.settings_notifications_min_priority_summary_any)
                     5 -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
-                        val minPriorityString = toPriorityString(minPriorityValue)
+                        val minPriorityString = toPriorityString(requireContext(), minPriorityValue)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, minPriorityValue, minPriorityString)
                     }
                 }
