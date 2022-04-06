@@ -295,4 +295,9 @@
     <string name="main_menu_settings_title">Ajustes</string>
     <string name="main_menu_report_bug_title">Reportar un error</string>
     <string name="add_dialog_instant_delivery">Entrega instantánea en modo doze</string>
+    <string name="settings_notifications_priority_high">alta</string>
+    <string name="settings_notifications_priority_max">máxima</string>
+    <string name="settings_notifications_priority_default">default</string>
+    <string name="settings_notifications_priority_min">mínima</string>
+    <string name="settings_notifications_priority_low">baja</string>
 </resources>
