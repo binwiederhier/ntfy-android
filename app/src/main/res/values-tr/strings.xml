@@ -60,7 +60,6 @@
     <string name="add_dialog_login_password_hint">Parola</string>
     <string name="add_dialog_login_error_not_authorized">Oturum açılamadı. %1$s kullanıcısı yetkilendirilmedi.</string>
     <string name="add_dialog_login_new_user">Yeni kullanıcı</string>
-    <string name="detail_deep_link_subscribed_toast_message">%1$s konusuna abone olundu</string>
     <string name="detail_no_notifications_text">Bu konu için henüz herhangi bir bildirim almadınız.</string>
     <string name="detail_clear_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="detail_clear_dialog_cancel">İptal</string>

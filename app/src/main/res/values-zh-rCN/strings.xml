@@ -46,7 +46,6 @@
     <string name="add_dialog_login_password_hint">密码</string>
     <string name="add_dialog_login_error_not_authorized">登录失败。用户 %1$s 无权访问。</string>
     <string name="add_dialog_login_new_user">新用户</string>
-    <string name="detail_deep_link_subscribed_toast_message">主题 %1$s 已经订阅了</string>
     <string name="detail_no_notifications_text">目前还没有关于此主题的通知。</string>
     <string name="main_banner_json_stream_text">请在“链接协议”中选择 WebSockets 以保证在 2022 年 6 月之后仍能收到来自自建 Ntfy 服务器的推送。</string>
     <string name="main_banner_json_stream_button_remind_later">稍后再问</string>

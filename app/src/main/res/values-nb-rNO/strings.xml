@@ -56,7 +56,6 @@
     <string name="detail_delete_dialog_cancel">Avbryt</string>
     <string name="detail_test_title">Test: Du kan sette en tittel hvis du vil</string>
     <string name="detail_test_message_error">Kan ikke sende melding: %1$s</string>
-    <string name="detail_deep_link_subscribed_toast_message">Abonnerer på emnet «%1$s»</string>
     <string name="detail_how_to_link">Mer detaljert instruks er å finne på ntfy.sh-nettsiden og i dokumentasjonen.</string>
     <string name="detail_delete_dialog_message">Opphev abonnement på dette emnet og slett alle merknader du har mottatt\?</string>
     <string name="detail_test_message_error_unauthorized_anon">Kan ikke sende melding: Anonym publisering tillates ikke</string>

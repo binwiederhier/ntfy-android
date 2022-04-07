@@ -62,7 +62,6 @@
     <string name="add_dialog_login_description">Dieses Thema benötigt eine Anmeldung. Bitte gib Benutzernamen und Kennwort ein.</string>
     <string name="add_dialog_login_password_hint">Kennwort</string>
     <string name="add_dialog_login_new_user">Neuer Benutzer</string>
-    <string name="detail_deep_link_subscribed_toast_message">Thema %1$s abonniert</string>
     <string name="detail_no_notifications_text">Du hast für dieses Thema noch keine Benachrichtigungen erhalten.</string>
     <string name="detail_how_to_intro">Um Benachrichtigungen an dieses Thema zu senden, sende einen PUT- oder POST-Request an die Themen-URL.</string>
     <string name="detail_how_to_example">Beispiel (mit curl):<br/><tt>$ curl -d \"Hallo\" %1$s</tt></string>
