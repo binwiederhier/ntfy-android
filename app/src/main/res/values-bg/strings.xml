@@ -63,7 +63,7 @@
     <string name="main_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
     <string name="main_how_to_intro">Докоснете иконата с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
-    <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса на темата.</string>
+    <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса й.</string>
     <string name="detail_no_notifications_text">За момента в темата няма известия</string>
     <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
     <string name="notification_dialog_muted_until_toast_message">Известията са изключени до %1$s</string>
