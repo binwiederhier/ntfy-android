@@ -269,8 +269,8 @@
     <string name="settings_advanced_record_logs_summary_disabled">Включете дневника, който да споделите при диагностициране на проблем.</string>
     <string name="settings_advanced_clear_logs_title">Изчистване на дневници</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Дневниците са изчистени</string>
-    <string name="settings_advanced_export_logs_entry_upload_original">Изпращане и копиранена препратка</string>
-    <string name="settings_advanced_export_logs_entry_upload_scrubbed">Изпращане и копиранена препратка (цензурирана)</string>
+    <string name="settings_advanced_export_logs_entry_upload_original">Изпращане и копиране на препратка</string>
+    <string name="settings_advanced_export_logs_entry_upload_scrubbed">Изпращане и копиране на препратка (цензурирана)</string>
     <string name="settings_advanced_export_logs_copied_logs">Дневникът е копиран в междинната памет</string>
     <string name="settings_advanced_export_logs_uploading">Изпращане на дневник…</string>
     <string name="settings_advanced_export_logs_copied_url">Дневникът е изпратен и адресът е копиран</string>
