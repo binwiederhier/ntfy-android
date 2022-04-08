@@ -82,7 +82,7 @@
     </string>
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
-    <string name="add_dialog_use_another_server_description">Enter server URLs below to subscribe to topics from other servers.</string>
+    <string name="add_dialog_use_another_server_description">Enter service URLs below to subscribe to topics from other servers.</string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">Ensures messages are delivered immediately, even if the device is inactive.</string>
     <string name="add_dialog_foreground_description">Instant delivery is always on for hosts other than %1$s.</string>
@@ -336,7 +336,7 @@
     <string name="user_dialog_title_edit">Edit user</string>
     <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
-    <string name="user_dialog_base_url_hint">Server URL</string>
+    <string name="user_dialog_base_url_hint">Service URL</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (unchanged if left blank)</string>
