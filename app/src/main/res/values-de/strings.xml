@@ -51,7 +51,7 @@
     <string name="add_dialog_description_below">Themen sind evtl. nicht kennwort-geschützt, also wähle einen schwer zu erratenden Namen. Nach dem Abonnieren kannst Du Benachrichtigungen POSTen/PUTen.</string>
     <string name="add_dialog_topic_name_hint">Themenname, z.B. phils_alerts</string>
     <string name="add_dialog_use_another_server">Anderen Server verwenden</string>
-    <string name="add_dialog_use_another_server_description">Gib eine URL ein, um Themen von einem anderen Server zu abonnieren.</string>
+    <string name="add_dialog_use_another_server_description">Gib eine Service-URL ein, um Themen von einem anderen Server zu abonnieren.</string>
     <string name="add_dialog_error_connection_failed">Verbindung fehlgeschlagen: %1$s</string>
     <string name="add_dialog_instant_delivery">Sofortnachrichten im Schlafmodus</string>
     <string name="add_dialog_instant_delivery_description">Stellt sicher, dass Benachrichtigungen sofort zugestellt werden, auch wenn das Gerät im Schlafmodus ist.</string>
@@ -225,7 +225,7 @@
     <string name="user_dialog_title_edit">Benutzer bearbeiten</string>
     <string name="user_dialog_description_add">Du kannst hier einen Benutzer hinzufügen. Alle Themen auf dem angegebenen Server verwenden dann diesen Benutzer.</string>
     <string name="user_dialog_description_edit">Du kannst Benutzernamen/Kennwort für den gewählten Benutzer ändern oder löschen.</string>
-    <string name="user_dialog_base_url_hint">Server-URL</string>
+    <string name="user_dialog_base_url_hint">Service-URL</string>
     <string name="user_dialog_username_hint">Benutzername</string>
     <string name="user_dialog_password_hint_add">Kennwort</string>
     <string name="user_dialog_password_hint_edit">Kennwort (leer lassen für keine Änderung)</string>
