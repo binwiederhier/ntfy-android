@@ -27,7 +27,7 @@
     <string name="add_dialog_title">Абониране за тема</string>
     <string name="add_dialog_topic_name_hint">Име на темата, напр. phils_alerts</string>
     <string name="add_dialog_use_another_server">Използване на друг сървър</string>
-    <string name="add_dialog_use_another_server_description">Можете да се абонирате за теми от друг сървър. Въведете адреса на сървъра по-долу.</string>
+    <string name="add_dialog_use_another_server_description">Можете да се абонирате за теми от друг сървър. Въведете адреса на услугата по-долу.</string>
     <string name="add_dialog_login_description">Тази тема изисква да влезете. Въведете потребителско име и парола.</string>
     <string name="detail_clear_dialog_message">Наистина ли желаете да премахнете всички известия в темата\?</string>
     <string name="detail_delete_dialog_message">Наистина ли желаете да се отпишете от темата и да премахнете всички известия\?</string>
@@ -213,7 +213,7 @@
     <string name="settings_about_version_title">Издание</string>
     <string name="settings_about_header">Относно</string>
     <string name="settings_about_version_copied_to_clipboard_message">Копирано в междинната памет</string>
-    <string name="user_dialog_base_url_hint">Адрес на сървъра</string>
+    <string name="user_dialog_base_url_hint">Адрес на услугата</string>
     <string name="detail_item_cannot_open">Прикаченият файл не може да бъде отворен: %1$s</string>
     <string name="detail_item_snack_deleted">Известието е премахнато</string>
     <string name="detail_item_snack_undo">Отменяне</string>
