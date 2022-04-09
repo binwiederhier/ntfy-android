@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Notifikacje (Minimalny Priorytet)</string>
-    <string name="channel_notifications_low_name">Notifikacje (Niski priorytet)</string>
-    <string name="channel_notifications_default_name">Notifikacje (domyślny priorytet)</string>
-    <string name="channel_notifications_max_name">Notifikacje (Maksymalny priorytet)</string>
+    <string name="channel_notifications_min_name">Notyfikacje (Minimalny Priorytet)</string>
+    <string name="channel_notifications_low_name">Notyfikacje (Niski priorytet)</string>
+    <string name="channel_notifications_default_name">Notyfikacje (domyślny priorytet)</string>
+    <string name="channel_notifications_max_name">Notyfikacje (Maksymalny priorytet)</string>
     <string name="channel_subscriber_notification_title">Oczekiwanie powiadomień przychodzących</string>
     <string name="channel_subscriber_notification_instant_text">Subskrybujesz tematy z natychmiastową dostawą</string>
-    <string name="channel_notifications_high_name">Notifikacje (Wysoki Priorytet)</string>
+    <string name="channel_notifications_high_name">Notyfikacje (Wysoki Priorytet)</string>
     <string name="channel_subscriber_service_name">Usługa Subskrypcji</string>
 </resources>
