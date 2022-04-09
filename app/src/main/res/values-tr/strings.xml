@@ -46,7 +46,7 @@
     <string name="add_dialog_title">Konuya abone ol</string>
     <string name="add_dialog_topic_name_hint">Konu adı, örn. benim_uyarilarim</string>
     <string name="add_dialog_use_another_server">Başka bir sunucu kullan</string>
-    <string name="add_dialog_use_another_server_description">Diğer sunuculardan konulara abone olmak için aşağıya sunucu URL\'lerini girin.</string>
+    <string name="add_dialog_use_another_server_description">Diğer sunuculardan konulara abone olmak için aşağıya hizmet URL\'lerini girin.</string>
     <string name="add_dialog_instant_delivery">Uyku modunda anında teslimat</string>
     <string name="add_dialog_instant_delivery_description">Aygıt etkin olmasa bile mesajların anında iletilmesini sağlar.</string>
     <string name="add_dialog_foreground_description">Anında teslimat, %1$s dışındaki ana makineler için her zaman açıktır.</string>
@@ -187,7 +187,7 @@
     <string name="user_dialog_title_edit">Kullanıcıyı düzenle</string>
     <string name="user_dialog_description_add">Buraya bir kullanıcı ekleyebilirsiniz. Verilen sunucu için tüm konular bu kullanıcıyı kullanacaktır.</string>
     <string name="user_dialog_description_edit">Seçilen kullanıcı için kullanıcı adını/parolayı düzenleyebilir veya onu silebilirsiniz.</string>
-    <string name="user_dialog_base_url_hint">Sunucu URL\'si</string>
+    <string name="user_dialog_base_url_hint">Hizmet URL\'si</string>
     <string name="user_dialog_username_hint">Kullanıcı adı</string>
     <string name="user_dialog_password_hint_add">Parola</string>
     <string name="user_dialog_password_hint_edit">Parola (boş bırakılırsa değiştirilmez)</string>
