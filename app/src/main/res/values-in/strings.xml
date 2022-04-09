@@ -46,7 +46,7 @@
     <string name="add_dialog_description_below">Topik mungkin tidak dilindungi oleh kata sandi, jadi pilih sebuah nama yang susah untuk ditebak. Setelah berlangganan, Anda dapat PUT/POST notifikasi.</string>
     <string name="add_dialog_topic_name_hint">Nama topik, mis. pemberitahuan_andi</string>
     <string name="add_dialog_use_another_server">Gunakan server lain</string>
-    <string name="add_dialog_use_another_server_description">Masukkan URL server di bawah untuk berlangganan ke topik dari server lain.</string>
+    <string name="add_dialog_use_another_server_description">Masukkan URL layanan di bawah untuk berlangganan ke topik dari server lain.</string>
     <string name="add_dialog_instant_delivery">Pengiriman instan dalam mode tidur</string>
     <string name="add_dialog_login_title">Login dibutuhkan</string>
     <string name="add_dialog_login_description">Topik ini membutuhkan Anda untuk masuk. Mohon masukkan sebuah nama pengguna dan kata sandi.</string>
@@ -208,7 +208,7 @@
     <string name="user_dialog_title_edit">Edit pengguna</string>
     <string name="user_dialog_description_add">Anda dapat menambahkan sebuah pengguna di sini. Semua topik untuk server yang dicantumkan akan menggunakan pengguna ini.</string>
     <string name="user_dialog_description_edit">Anda dapat mengubah nama pengguna/kata sandi untuk pengguna yang dipilih, atau hapus pengguna itu.</string>
-    <string name="user_dialog_base_url_hint">URL Server</string>
+    <string name="user_dialog_base_url_hint">URL Layanan</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Berlangganan ke satu topik</string>
     <string name="detail_item_menu_copy_contents_copied">Notifikasi disalin ke papan klip</string>
     <string name="detail_item_cannot_open_click_url">Tidak dapat membuka URL: %1$s</string>
