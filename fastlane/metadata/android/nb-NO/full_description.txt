@@ -1,0 +1,17 @@
+Send merknader til din mobilenhet fra Bash eller PowerShell-skript, eller fra ditt eget program som bruker PUT/POST-forespørsler, f.eks. via cURL på Linux|GNU, eller Invoke-WebRequest.
+
+Ntfy er en Android-klient for https://ntfy.sh, en gratis og åpen HTTP-basert pub-sub-tjeneste. Du kan abonnere på emner i dette programmet, og kan så publisere meldinger ved et enkelt HTTP-API.
+
+Bruk:
+* Gi deg selv en merknad når en tidkrevende prosess er ferdig
+* Send ekkoforespørsel til din mobilenhet når en sikkerhetskopi har mislyktes
+* Varsler når noen logger på tjeneren din
+
+Eksempel:
+
+$ curl -d "Sikkerhetskopien din er ferdig" ntfy.sh/mytopic
+
+Flere eksempler og bruksinstruks her:
+* Nettside: https://ntfy.sh
+* GitHub (tjener): https://github.com/binwiederhier/ntfy
+* GitHub (Android-program): https://github.com/binwiederhier/ntfy-android

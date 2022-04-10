@@ -1,0 +1,1 @@
+Motta merknader til din enhet fra alle skript som bruker PUT/POST-forespørsler
