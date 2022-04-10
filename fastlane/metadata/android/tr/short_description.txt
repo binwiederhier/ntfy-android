@@ -1,0 +1,1 @@
+PUT/POST isteklerini kullanarak bir betikten telefonunuza bildirim gönderin

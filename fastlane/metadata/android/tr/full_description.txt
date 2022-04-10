@@ -1,0 +1,17 @@
+Herhangi bir Bash veya PowerShell betiğinden veya kendi uygulamanızdan PUT/POST isteklerini kullanarak telefonunuza bildirimler gönderin, örn. Linux curl ile veya Invoke-WebRequest aracılığıyla.
+
+Ntfy, özgür ve açık kaynaklı HTTP tabanlı bir yayın-abone hizmeti olan https://ntfy.sh için bir Android istemcisidir. Bu uygulamadaki konulara abone olabilir ve ardından basit bir HTTP API aracılığıyla mesajlar yayınlayabilirsiniz.
+
+Kullanım Alanları:
+* Uzun süren bir işlem bittiğinde kendinize haber verin
+* Yedekleme başarısız olduğunda telefonunuza ping atın
+* Birisi sunucunuzda oturum açtığında uyarı gönderin
+
+Örnek:
+
+$ curl -d "Yedeklemeniz tamamlandı" ntfy.sh/benim_konum
+
+Daha fazla örnek ve kullanım talimatını burada bulabilirsiniz:
+* Web sitesi: https://ntfy.sh
+* GitHub (sunucu): https://github.com/binwiederhier/ntfy
+* GitHub (Android uygulaması): https://github.com/binwiederhier/ntfy-android
