@@ -62,9 +62,9 @@
     <string name="refresh_message_error_one">Абонаментът не може да бъде обновен: %1$s</string>
     <string name="main_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
-    <string name="main_how_to_intro">Докоснете иконата с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
+    <string name="main_how_to_intro">Докоснете бутона с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
     <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса й.</string>
-    <string name="detail_no_notifications_text">За момента в темата няма известия</string>
+    <string name="detail_no_notifications_text">В момента в темата няма известия</string>
     <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
     <string name="notification_dialog_muted_until_toast_message">Известията са изключени до %1$s</string>
     <string name="settings_advanced_export_logs_summary">Дневниците се копират в междинната памет или се изпращат към nopaste.net (собственост на автора на ntfy). Имената на хостовете и темите могат да бъдат цензурирани, но съдържанието на известията никога.</string>
@@ -80,7 +80,7 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">Премахване</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_status_reconnecting">свързване…</string>
-    <string name="main_no_subscriptions_text">За момента нямате абонаменти</string>
+    <string name="main_no_subscriptions_text">В момента нямате абонаменти</string>
     <string name="main_unified_push_toast">Този абонамент се управлява от %1$s чрез UnifiedPush</string>
     <string name="main_banner_json_stream_button_learn_more">Научете повече</string>
     <string name="add_dialog_button_cancel">Отказ</string>
@@ -149,7 +149,7 @@
     <string name="settings_notifications_min_priority_default">Подразбиран приоритет и по-висок</string>
     <string name="settings_notifications_min_priority_high">Висок приоритет и по-висок</string>
     <string name="settings_notifications_min_priority_max">Само максимален приоритет</string>
-    <string name="settings_notifications_min_priority_summary_max">Показват се известия с приоритет 5 (най-висок)</string>
+    <string name="settings_notifications_min_priority_summary_max">Показват се известията с приоритет 5 (най-висок)</string>
     <string name="settings_notifications_min_priority_summary_any">Показват се всички известия</string>
     <string name="settings_notifications_auto_delete_never">Никога</string>
     <string name="settings_notifications_auto_delete_one_day">След един ден</string>
@@ -184,12 +184,12 @@
     <string name="settings_notifications_auto_delete_three_months">След три месеца</string>
     <string name="settings_notifications_auto_delete_one_month">След един месец</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Копиране в междинната памет (цензурирано)</string>
-    <string name="main_banner_json_stream_text">От юни 2022 г. за връзка със сървърите на ntfy ще се използват WebSockets. Не забравяйте да настроите собствения сървър да го поддържа. За да проверите дали поддръжката на WebSocket работи, разрешете я в Настройки в раздел Протокол за връзка.</string>
+    <string name="main_banner_json_stream_text">От юни 2022 г. за връзка със сървърите на ntfy ще се използва WebSockets. Не забравяйте да настроите собствения сървър да го поддържа. За да проверите дали поддръжката на WebSocket работи, разрешете я в Настройки, в раздел Протокол за връзка.</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">За свързване със сървъра се използва поток от JSON през HTTP. Методът е остарял и ще бъде премахнат през месец юни 2022 год.</string>
     <string name="detail_test_message">Това е пробно известие от приложението Ntfy за Android. То е с приоритет %1$d. Ако изпратите друго, то може да изглежда по различен начин.</string>
     <string name="detail_test_title">Проба: Ако желаете можете да сложите заглавие</string>
     <string name="detail_test_message_error_unauthorized_user">Грешка при изпращане: Потребителят „%1$s“ няма достъп.</string>
-    <string name="settings_notifications_min_priority_summary_x_or_higher">Показват се известия с приоритет %1$d (%2$s) или по-висок</string>
+    <string name="settings_notifications_min_priority_summary_x_or_higher">Показват се известията с приоритет %1$d (%2$s) или по-висок</string>
     <string name="settings_backup_restore_restore_title">Възстановяване от файл</string>
     <string name="detail_menu_enable_instant">Включване на незабавното доставяне</string>
     <string name="detail_instant_delivery_disabled">Незабавното доставяне е изключено</string>
