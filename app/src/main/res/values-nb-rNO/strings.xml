@@ -295,4 +295,9 @@
     <string name="main_unified_push_toast">Dette abonnementet håndteres av %1$s via UnifiedPush</string>
     <string name="add_dialog_foreground_description">Umiddelbar levering er alltid påskrudd for andre verter enn %1$s.</string>
     <string name="main_banner_json_stream_text">Fra Juni 2022 vil Vev-socketer bli brukt til å kommunisere med ntfy-tjenerne. Forsikre deg om at du har satt opp din selvtjente tjener for å støtte det. For å sjekke om vev-socket-støtte fungerer, kan du skru det på i innstillingene under «Tilkoblingsprotokoll».</string>
+    <string name="settings_notifications_priority_min">min</string>
+    <string name="settings_notifications_priority_low">lav</string>
+    <string name="settings_notifications_priority_default">forvalg</string>
+    <string name="settings_notifications_priority_high">høy</string>
+    <string name="settings_notifications_priority_max">maks.</string>
 </resources>
