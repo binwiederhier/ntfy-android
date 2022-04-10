@@ -225,7 +225,7 @@
     <string name="channel_notifications_high_name">Notificaciones (prioridad alta)</string>
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
-    <string name="add_dialog_use_another_server_description">Introduzca las URL de los servidores para suscribirse a los tópicos de otros servidores.</string>
+    <string name="add_dialog_use_another_server_description">Introduzca las URL de servicio para suscribirse a los tópicos de otros servidores.</string>
     <string name="detail_item_menu_copy_url_copied">URL copiada al portapapeles</string>
     <string name="settings_notifications_min_priority_summary_any">Se mostrarán todas las notificaciones</string>
     <string name="settings_notifications_auto_delete_one_month">Después de un mes</string>
@@ -285,7 +285,7 @@
     <string name="settings_general_users_prefs_user_add_summary">Crear un nuevo usuario para un nuevo servidor</string>
     <string name="settings_general_dark_mode_summary_system">Usando el determinado por el sistema</string>
     <string name="settings_about_header">Acerca de</string>
-    <string name="user_dialog_base_url_hint">URL del servidor</string>
+    <string name="user_dialog_base_url_hint">URL de servicio</string>
     <string name="main_menu_rate_title">Califica la aplicación ⭐</string>
     <string name="main_unified_push_toast">Esta suscripción es gestionada por %1$s a través de UnifiedPush</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
