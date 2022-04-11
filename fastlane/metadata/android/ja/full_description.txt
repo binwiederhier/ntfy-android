@@ -1,0 +1,17 @@
+スマホに通知を送信します。BashやPowerShellスクリプト、あなたの独自アプリから、例えばLinuxのcurlやInvoke-WebRequestを介したPUT/POSTリクエストで送信させることができます。
+
+Ntfyは無料でオープンソースなHTTPベースのpub-subサービス ( https://ntfy.sh ) のアンドロイドクライアントです。アプリでトピックを購読して、シンプルなHTTP APIでメッセージを送信する事ができます。
+
+用途：
+* 長時間処理のプロセス完了時に自分に通知
+* バックアップ失敗時にスマホに通知
+* 誰かが自分のサーバーにログインした時に警告
+
+使用例：
+
+$ curl -d "バックアップ完了しました" ntfy.sh/mytopic
+
+使用例や解説は以下を参照してください：
+* ウェブサイト: https://ntfy.sh
+* GitHub (サーバー側): https://github.com/binwiederhier/ntfy
+* GitHub (Androidアプリ): https://github.com/binwiederhier/ntfy-android
