@@ -126,6 +126,7 @@
     <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery on</string>
     <string name="detail_instant_delivery_disabled">Instant delivery off</string>
+    <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notification deleted</string>
     <string name="detail_item_snack_undo">Undo</string>

@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
@@ -28,6 +29,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
@@ -70,7 +72,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        Log.d(MainActivity.TAG, "Create $this")
+        Log.d(TAG, "Create $this")
 
         // Dependencies that depend on Context
         notifier = NotificationService(this)
@@ -79,7 +81,75 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        loadView()
+        // Handle direct deep links to topic "ntfy://..."
+        val url = intent?.data
+        if (intent?.action == ACTION_VIEW && url != null) {
+            maybeSubscribeAndLoadView(url)
+        } else {
+            loadView()
+        }
+    }
+
+    private fun maybeSubscribeAndLoadView(url: Uri) {
+        if (url.pathSegments.size != 1) {
+            Log.w(TAG, "Invalid link $url. Aborting.")
+            finish()
+            return
+        }
+        val secure = url.getBooleanQueryParameter("secure", true)
+        val baseUrl = if (secure) "https://${url.host}" else "http://${url.host}"
+        val topic = url.pathSegments.first()
+        title = topicShortUrl(baseUrl, topic)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            var subscription = repository.getSubscription(baseUrl, topic)
+            if (subscription == null) {
+                val instant = baseUrl != appBaseUrl
+                subscription = Subscription(
+                    id = Random.nextLong(),
+                    baseUrl = baseUrl,
+                    topic = topic,
+                    instant = instant,
+                    mutedUntil = 0,
+                    upAppId = null,
+                    upConnectorToken = null,
+                    totalCount = 0,
+                    newCount = 0,
+                    lastActive = Date().time/1000
+                )
+                repository.addSubscription(subscription)
+
+                // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
+                if (baseUrl == appBaseUrl) {
+                    Log.d(TAG, "Subscribing to Firebase topic $topic")
+                    messenger.subscribe(topic)
+                }
+
+                // Fetch cached messages
+                try {
+                    val user = repository.getUser(subscription.baseUrl) // May be null
+                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                    notifications.forEach { notification -> repository.addNotification(notification) }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
+                }
+
+                runOnUiThread {
+                    val message = getString(R.string.detail_deep_link_subscribed_toast_message, topicShortUrl(baseUrl, topic))
+                    Toast.makeText(this@DetailActivity, message, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+
+            runOnUiThread {
+                loadView()
+            }
+        }
     }
 
     private fun loadView() {
@@ -487,7 +557,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val dialog = builder
             .setMessage(R.string.detail_delete_dialog_message)
             .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
-                Log.d(MainActivity.TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
+                Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
                 GlobalScope.launch(Dispatchers.IO) {
                     repository.removeAllNotifications(subscriptionId)
                     repository.removeSubscription(subscriptionId)
