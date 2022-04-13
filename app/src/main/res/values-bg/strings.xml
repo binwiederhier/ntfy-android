@@ -300,4 +300,5 @@
     <string name="settings_notifications_priority_default">подразбиран</string>
     <string name="settings_notifications_priority_max">максимален</string>
     <string name="settings_notifications_priority_high">висок</string>
+    <string name="detail_deep_link_subscribed_toast_message">Абонирани сте за темата %1$s</string>
 </resources>
