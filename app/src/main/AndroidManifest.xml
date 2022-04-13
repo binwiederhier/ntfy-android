@@ -37,10 +37,19 @@
         <!-- Detail activity -->
         <activity
                 android:name=".ui.DetailActivity"
-                android:parentActivityName=".ui.MainActivity">
+                android:parentActivityName=".ui.MainActivity"
+                android:exported="true">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".ui.MainActivity"/>
+
+            <!-- Open ntfy:// links with the app -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ntfy" />
+            </intent-filter>
         </activity>
 
         <!-- Settings activity -->
