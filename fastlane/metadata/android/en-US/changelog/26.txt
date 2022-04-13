@@ -1,2 +1,5 @@
+Features:
+* Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
+
 Translations:
 * Japanese (thanks to @shak)
