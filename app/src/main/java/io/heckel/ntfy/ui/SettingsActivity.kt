@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.Manifest
 import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -120,6 +121,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     class SettingsFragment : PreferenceFragmentCompat() {
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
+        private lateinit var notificationManager: NotificationManager
         private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -129,6 +131,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository = Repository.getInstance(requireActivity())
             serviceManager = SubscriberServiceManager(requireActivity())
             autoDownloadSelection = repository.getAutoDownloadMaxSize() // Only used for <= Android P, due to permissions request
+            notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             // Important note: We do not use the default shared prefs to store settings. Every
             // preferenceDataStore is overridden to use the repository. This is convenient, because
@@ -196,6 +199,33 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     else -> {
                         val minPriorityString = toPriorityString(requireContext(), minPriorityValue)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, minPriorityValue, minPriorityString)
+                    }
+                }
+            }
+
+            // DND override priority
+            val dndOverrideEnabled =  Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && notificationManager.isNotificationPolicyAccessGranted
+            val dndOverridePriorityPrefId = context?.getString(R.string.settings_notifications_dnd_override_priority_key) ?: return
+            val dndOverridePriority: ListPreference? = findPreference(minPriorityPrefId)
+            dndOverridePriority?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            dndOverridePriority?.value = repository.getDnsOverridePriority().toString()
+            dndOverridePriority?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val dndOverridePriorityValue = value?.toIntOrNull() ?:return
+                    //repository.setMinPriority(minPriorityValue)
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getDnsOverridePriority().toString()
+                }
+            }
+            dndOverridePriority?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                val priorityValue = pref.value.toIntOrNull() ?: 1 // 1/low means all priorities
+                when (priorityValue) {
+                    1 -> getString(R.string.settings_notifications_min_priority_summary_any)
+                    5 -> getString(R.string.settings_notifications_min_priority_summary_max)
+                    else -> {
+                        val minPriorityString = toPriorityString(requireContext(), priorityValue)
+                        getString(R.string.settings_notifications_min_priority_summary_x_or_higher, priorityValue, minPriorityString)
                     }
                 }
             }

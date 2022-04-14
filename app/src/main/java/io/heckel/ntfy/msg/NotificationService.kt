@@ -1,7 +1,11 @@
 package io.heckel.ntfy.msg
 
-import android.app.*
-import android.content.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
@@ -10,15 +14,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
 
+
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val repository = Repository.getInstance(context)
 
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
@@ -218,6 +222,7 @@ class NotificationService(val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
+            val dndOverridePriority = repository.getDnsOverridePriority()
             val pause = 300L
             val channel = when (priority) {
                 1 -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
@@ -225,6 +230,7 @@ class NotificationService(val context: Context) {
                 4 -> {
                     val channel = NotificationChannel(CHANNEL_ID_HIGH, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
                     channel.enableVibration(true)
+                    channel.setBypassDnd(dndOverridePriority >= 4)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
                         pause, 2000
@@ -235,6 +241,7 @@ class NotificationService(val context: Context) {
                     val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
+                    channel.setBypassDnd(dndOverridePriority >= 4)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
                         pause, 2000,

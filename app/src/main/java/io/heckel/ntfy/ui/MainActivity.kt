@@ -30,7 +30,6 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
@@ -376,7 +375,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 true
             }
             R.id.main_menu_docs -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_docs_url))))
+                //startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_docs_url))))
+                val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)

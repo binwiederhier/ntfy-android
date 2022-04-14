@@ -218,6 +218,11 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
     }
 
+
+    fun getDnsOverridePriority(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_DND_OVERRIDE_PRIORITY, 5)
+    }
+
     fun getAutoDownloadMaxSize(): Long {
         val defaultValue = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
             AUTO_DOWNLOAD_NEVER // Need to request permission on older versions
@@ -435,6 +440,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
+        const val SHARED_PREFS_DND_OVERRIDE_PRIORITY = "DndOverridePriority"
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
         const val SHARED_PREFS_AUTO_DELETE_SECONDS = "AutoDelete"
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
