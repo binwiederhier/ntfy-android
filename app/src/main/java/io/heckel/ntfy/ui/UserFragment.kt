@@ -16,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.util.validUrl
 
 class UserFragment : DialogFragment() {
     private var user: User? = null
@@ -167,7 +168,7 @@ class UserFragment : DialogFragment() {
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
         if (user == null) {
-            positiveButton.isEnabled = (baseUrl.startsWith("http://") || baseUrl.startsWith("https://"))
+            positiveButton.isEnabled = validUrl(baseUrl)
                     && !baseUrlsInUse.contains(baseUrl)
                     && username.isNotEmpty() && password.isNotEmpty()
         } else {

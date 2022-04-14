@@ -1,7 +1,6 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
@@ -296,6 +296,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 override fun getString(key: String, defValue: String?): String? {
                     return repository.getDefaultBaseUrl()
                 }
+            }
+            defaultBaseUrl?.setOnBindEditTextListener { editText ->
+                editText.addTextChangedListener(AfterChangedTextWatcher {
+                    val okayButton: Button = editText.rootView.findViewById(android.R.id.button1)
+                    val value = editText.text.toString()
+                    okayButton.isEnabled = value.isEmpty() || validUrl(value)
+                })
             }
             defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
                 if (TextUtils.isEmpty(pref.text)) {

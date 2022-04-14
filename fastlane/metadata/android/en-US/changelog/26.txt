@@ -1,5 +1,8 @@
 Features:
 * Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
 
+Bugs:
+* Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov)
+
 Translations:
 * Japanese (thanks to @shak)

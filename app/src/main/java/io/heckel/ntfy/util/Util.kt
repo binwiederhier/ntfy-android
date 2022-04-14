@@ -71,7 +71,7 @@ fun validTopic(topic: String): Boolean {
 }
 
 fun validUrl(url: String): Boolean {
-    return "^https?://.+".toRegex().matches(url)
+    return "^https?://\\S+".toRegex().matches(url)
 }
 
 fun formatDateShort(timestampSecs: Long): String {
