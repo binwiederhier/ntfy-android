@@ -134,4 +134,35 @@
     <string name="settings_general_users_prefs_user_add_summary">Создать нового пользователя для нового сервера</string>
     <string name="settings_backup_restore_restore_title">Восстановить из файла</string>
     <string name="settings_general_users_prefs_user_add_title">Добавить нового пользователя</string>
+    <string name="main_menu_notifications_disabled_until">Уведомления приостановлены до %1$s</string>
+    <string name="refresh_message_error">Не получилось обновить %1$d подписок
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Не получилось обновить подписки: %1$s</string>
+    <string name="main_action_bar_title">Темы подписок</string>
+    <string name="main_how_to_intro">Нажмите + чтобы создать или подписаться на тему. Вы получите уведомления на вашем устройстве при отправлении сообщений через PUT или POST.</string>
+    <string name="channel_subscriber_notification_instant_text">Подписан на темы с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_instant_text_two">Подписан на две темы с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_instant_text_one">Подписан на одну тему с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_instant_text_more">Подписан на %1$d тем с мгновенной доставкой</string>
+    <string name="refresh_message_result">%1$d уведомлений получено</string>
+    <string name="channel_subscriber_notification_title">Ожидаются входящие уведомления</string>
+    <string name="channel_subscriber_notification_instant_text_three">Подписан на три темы с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_instant_text_four">Подписан на четыре темы с мгновенной доставкой</string>
+    <string name="main_how_to_link">Подробные инструкции можно найти на ntfy.sh или в документации.</string>
+    <string name="refresh_message_no_results">Всё обновлено</string>
+    <string name="add_dialog_instant_delivery">Мгновенная доставка в спящем режиме</string>
+    <string name="main_banner_battery_text">Оптимизация батареи должна быть выключена, чтобы избежать проблем с доставкой уведомлений.</string>
+    <string name="main_banner_json_stream_text">Переключитесь на WebSockets в Настройках / \"Connection protocol\" сейчас, чтобы вы могли пользоваться своим собственным ntfy сервером после июня 2022.</string>
+    <string name="add_dialog_error_connection_failed">Ошибка связи: %1$s</string>
+    <string name="add_dialog_login_title">Требуется вход в аккаунт</string>
+    <string name="add_dialog_login_description">Эта тема требует авторизации. Пожалуйста, введите имя пользователя и пароль.</string>
+    <string name="add_dialog_description_below">Темы не могут быть защищены паролем. Используйте название которое сложно угадать. После подписки вы сможете отправлять уведомления через PUT/POST.</string>
+    <string name="detail_test_message">Это тестовое уведомление от Android-приложения ntfy. Уровень приоритета уведомления: %1$d. Если вы отправите ещё одно, оно может выглядеть по-другому.</string>
+    <string name="add_dialog_login_error_not_authorized">Вход не удался. Пользователь %1$s не авторизован.</string>
+    <string name="detail_how_to_intro">Чтобы отправить уведомления на данную тему, просто отправьте PUT or POST на URL-адрес темы.</string>
+    <string name="detail_how_to_link">Подробные инструкции на сайте ntfy.sh и в документации.</string>
+    <string name="add_dialog_instant_delivery_description">Гарантирует мгновенную доставку сообщений, даже если устройство неактивно.</string>
+    <string name="add_dialog_foreground_description">Мгновенная доставка включена для хостов кроме %1$s.</string>
+    <string name="add_dialog_use_another_server_description">Введите URL-адрес сервиса чтобы подписаться на темы с других серверов.</string>
 </resources>
