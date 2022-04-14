@@ -190,7 +190,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    class DownloadBroadcastReceiver : android.content.BroadcastReceiver() {
+    class DownloadBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val id = intent.getStringExtra("id") ?: return
             val action = intent.getStringExtra("action") ?: return

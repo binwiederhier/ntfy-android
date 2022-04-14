@@ -5,9 +5,11 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.Toast
@@ -198,6 +200,20 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, minPriorityValue, minPriorityString)
                     }
                 }
+            }
+
+            // Channel settings
+            val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
+            val channelPrefs: Preference? = findPreference(channelPrefsPrefId)
+            channelPrefs?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            channelPrefs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            channelPrefs?.onPreferenceClickListener = OnPreferenceClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                        putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                    })
+                }
+                false
             }
 
             // Auto download

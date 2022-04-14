@@ -25,6 +25,10 @@
                 app:entries="@array/settings_notifications_auto_delete_entries"
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
+        <Preference
+                app:key="@string/settings_notifications_channel_prefs_key"
+                app:title="@string/settings_notifications_channel_prefs_title"
+                app:summary="@string/settings_notifications_channel_prefs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_general_header">
         <EditTextPreference

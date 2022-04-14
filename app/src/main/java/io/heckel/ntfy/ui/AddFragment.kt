@@ -358,7 +358,7 @@ class AddFragment : DialogFragment() {
         activity.runOnUiThread {
             val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
-            val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl
+            val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
             subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()
         }

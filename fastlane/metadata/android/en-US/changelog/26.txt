@@ -1,10 +1,12 @@
 Features:
 * Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
 * Fastlane metadata can now be translated too (#198, thanks to @StoyanDimitrov for reporting)
+* Channel settings option to configure DND override, sounds, etc. (#91)
 
 Bugs:
 * Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov for reporting)
 * Error in sending test notification in different languages (#209, thanks to @StoyanDimitrov for reporting)
+* "[x] Instant delivery in doze mode" checkbox does not work properly (#211)
 
 Additional translations:
 * Japanese (thanks to @shak)
