@@ -301,4 +301,6 @@
     <string name="settings_notifications_priority_low">düşük</string>
     <string name="settings_notifications_priority_default">öntanımlı</string>
     <string name="detail_deep_link_subscribed_toast_message">%1$s konusuna abone olundu</string>
+    <string name="settings_notifications_channel_prefs_title">Kanal ayarları</string>
+    <string name="settings_notifications_channel_prefs_summary">Rahatsız Etmeyin (DND) özelliğini geçersiz kılmayı, özel sesleri vb. yönetin.</string>
 </resources>
