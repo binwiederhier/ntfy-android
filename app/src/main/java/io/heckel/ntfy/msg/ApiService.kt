@@ -1,5 +1,6 @@
 package io.heckel.ntfy.msg
 
+import android.net.Uri
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
@@ -8,6 +9,8 @@ import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import java.net.URL
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -43,33 +46,34 @@ class ApiService {
         filename: String = ""
     ) {
         val url = topicUrl(baseUrl, topic)
-        Log.d(TAG, "Publishing to $url")
-
-        val builder = requestBuilder(url, user)
+        val query = mutableListOf<String>()
         if (priority in 1..5) {
-            builder.addHeader("X-Priority", priority.toString())
+            query.add("priority=$priority")
         }
         if (tags.isNotEmpty()) {
-            builder.addHeader("X-Tags", tags.joinToString(","))
+            query.add("tags=${URLEncoder.encode(tags.joinToString(","), "UTF-8")}")
         }
         if (title.isNotEmpty()) {
-            builder.addHeader("X-Title", title)
+            query.add("title=${URLEncoder.encode(title, "UTF-8")}")
         }
         if (delay.isNotEmpty()) {
-            builder.addHeader("X-Delay", delay)
+            query.add("delay=${URLEncoder.encode(delay, "UTF-8")}")
         }
         if (filename.isNotEmpty()) {
-            builder.addHeader("X-Filename", filename)
+            query.add("filename=${URLEncoder.encode(filename, "UTF-8")}")
         }
         if (body != null) {
-            builder
-                .addHeader("X-Message", message.replace("\n", "\\n"))
-                .put(body)
-        } else {
-            builder.put(message.toRequestBody())
+            query.add("message=${URLEncoder.encode(message.replace("\n", "\\n"), "UTF-8")}")
         }
-        val request = builder.build()
-        Log.d(TAG, request.toString())
+        val urlWithQuery = if (query.isNotEmpty()) {
+            url + "?" + query.joinToString("&")
+        } else {
+            url
+        }
+        val request = requestBuilder(urlWithQuery, user)
+            .put(body ?: message.toRequestBody())
+            .build()
+        Log.d(TAG, "Publishing to $request")
         publishClient.newCall(request).execute().use { response ->
             if (response.code == 401 || response.code == 403) {
                 throw UnauthorizedException(user)

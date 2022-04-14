@@ -1,8 +1,10 @@
 Features:
 * Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
+* Fastlane metadata can now be translated too (#198, thanks to @StoyanDimitrov for reporting)
 
 Bugs:
-* Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov)
+* Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov for reporting)
+* Error in sending test notification in different languages (#209, thanks to @StoyanDimitrov for reporting)
 
-Translations:
+Additional translations:
 * Japanese (thanks to @shak)
