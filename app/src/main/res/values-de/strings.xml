@@ -301,4 +301,6 @@
 \n
 \nKennwörter werden immer ersetzt, aber nicht hier aufgelistet.</string>
     <string name="detail_deep_link_subscribed_toast_message">Thema %1$s abonniert</string>
+    <string name="settings_notifications_channel_prefs_title">Kanal-Einstellungen</string>
+    <string name="settings_notifications_channel_prefs_summary">Konfiguriere Übersteuerung von DND (nicht stören), eigene Sounds etc.</string>
 </resources>
