@@ -13,30 +13,27 @@ import io.heckel.ntfy.util.Log
  * The indirection via WorkManager is required since this code may be executed
  * in a doze state and Internet may not be available. It's also best practice apparently.
  */
-class DownloadManager {
-    companion object {
-        private const val TAG = "NtfyDownloadManager"
-        private const val DOWNLOAD_WORK_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
+object DownloadManager {
+    private const val TAG = "NtfyDownloadManager"
+    private const val DOWNLOAD_WORK_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
 
-        fun enqueue(context: Context, notificationId: String, userAction: Boolean) {
-            val workManager = WorkManager.getInstance(context)
-            val workName = DOWNLOAD_WORK_NAME_PREFIX + notificationId
-            Log.d(TAG,"Enqueuing work to download attachment for notification $notificationId, work: $workName")
-            val workRequest = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
-                .setInputData(workDataOf(
-                    DownloadWorker.INPUT_DATA_ID to notificationId,
-                    DownloadWorker.INPUT_DATA_USER_ACTION to userAction
-                ))
-                .build()
-            workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
-        }
+    fun enqueue(context: Context, notificationId: String, userAction: Boolean) {
+        val workManager = WorkManager.getInstance(context)
+        val workName = DOWNLOAD_WORK_NAME_PREFIX + notificationId
+        Log.d(TAG,"Enqueuing work to download attachment for notification $notificationId, work: $workName")
+        val workRequest = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
+            .setInputData(workDataOf(
+                DownloadWorker.INPUT_DATA_ID to notificationId,
+                DownloadWorker.INPUT_DATA_USER_ACTION to userAction
+            ))
+            .build()
+        workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
+    }
 
-        fun cancel(context: Context, id: String) {
-            val workManager = WorkManager.getInstance(context)
-            val workName = DOWNLOAD_WORK_NAME_PREFIX + id
-            Log.d(TAG, "Cancelling download for notification $id, work: $workName")
-            workManager.cancelUniqueWork(workName)
-        }
-
+    fun cancel(context: Context, id: String) {
+        val workManager = WorkManager.getInstance(context)
+        val workName = DOWNLOAD_WORK_NAME_PREFIX + id
+        Log.d(TAG, "Cancelling download for notification $id, work: $workName")
+        workManager.cancelUniqueWork(workName)
     }
 }

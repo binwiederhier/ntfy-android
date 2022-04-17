@@ -1,6 +1,5 @@
 package io.heckel.ntfy.msg
 
-import android.net.Uri
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
@@ -9,7 +8,6 @@ import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
-import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit

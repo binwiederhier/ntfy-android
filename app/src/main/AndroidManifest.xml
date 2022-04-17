@@ -123,7 +123,7 @@
 
         <!-- Broadcast receiver for the "Download"/"Cancel" attachment action in the notification popup -->
         <receiver
-                android:name=".msg.NotificationService$DownloadBroadcastReceiver"
+                android:name=".msg.NotificationService$UserActionBroadcastReceiver"
                 android:enabled="true"
                 android:exported="false">
         </receiver>
