@@ -302,4 +302,5 @@
     <string name="add_dialog_topic_name_hint">トピック名, 例) phils_alerts</string>
     <string name="detail_deep_link_subscribed_toast_message">トピック %1$s を購読しました</string>
     <string name="settings_notifications_channel_prefs_title">チャネル設定</string>
+    <string name="settings_notifications_channel_prefs_summary">おやすみモード時の動作やカスタムサウンド等を設定します。</string>
 </resources>
