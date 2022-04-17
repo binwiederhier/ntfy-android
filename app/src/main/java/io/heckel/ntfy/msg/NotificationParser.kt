@@ -6,6 +6,7 @@ import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.joinTags
+import io.heckel.ntfy.util.randomString
 import io.heckel.ntfy.util.toPriority
 
 class NotificationParser {
@@ -31,8 +32,8 @@ class NotificationParser {
             )
         } else null
         val actions = if (message.actions != null) {
-            message.actions.map { action ->
-                Action(action.action, action.label, action.url)
+            message.actions.map { a ->
+                Action(a.id, a.action, a.label, a.url, a.method, a.headers, a.body)
             }
         } else null
         val notification = Notification(

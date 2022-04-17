@@ -16,6 +16,7 @@ import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
+import java.util.*
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -197,9 +198,9 @@ class NotificationService(val context: Context) {
 
     private fun maybeAddCustomActions(builder: NotificationCompat.Builder, notification: Notification) {
         notification.actions?.forEach { action ->
-            when (action.action) {
-                "view" -> maybeAddViewUserAction(builder, action)
-                "http-post" -> maybeAddHttpPostUserAction(builder, notification, action)
+            when (action.action.lowercase(Locale.getDefault())) {
+                ACTION_VIEW -> maybeAddViewUserAction(builder, action)
+                ACTION_HTTP -> maybeAddHttpUserAction(builder, notification, action)
             }
         }
     }
@@ -218,12 +219,11 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeAddHttpPostUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+    private fun maybeAddHttpUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
         val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
+            putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_USER_ACTION)
             putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
-            putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_HTTP)
-            putExtra(BROADCAST_EXTRA_ACTION, action.action)
-            putExtra(BROADCAST_EXTRA_URL, action.url)
+            putExtra(BROADCAST_EXTRA_ACTION_ID, action.id)
         }
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
@@ -231,27 +231,16 @@ class NotificationService(val context: Context) {
 
     class UserActionBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "Received $intent")
+            Log.d(TAG, "Notification user action intent received: $intent")
             val type = intent.getStringExtra(BROADCAST_EXTRA_TYPE) ?: return
             val notificationId = intent.getStringExtra(BROADCAST_EXTRA_NOTIFICATION_ID) ?: return
             when (type) {
-                BROADCAST_TYPE_DOWNLOAD_START, BROADCAST_TYPE_DOWNLOAD_CANCEL -> handleDownloadAction(context, type, notificationId)
-                BROADCAST_TYPE_HTTP -> handleCustomUserAction(context, intent, type, notificationId)
-            }
-        }
-
-        private fun handleDownloadAction(context: Context, type: String, notificationId: String) {
-            when (type) {
                 BROADCAST_TYPE_DOWNLOAD_START -> DownloadManager.enqueue(context, notificationId, userAction = true)
                 BROADCAST_TYPE_DOWNLOAD_CANCEL -> DownloadManager.cancel(context, notificationId)
-            }
-        }
-
-        private fun handleCustomUserAction(context: Context, intent: Intent, type: String, notificationId: String) {
-            val action = intent.getStringExtra(BROADCAST_EXTRA_ACTION) ?: return
-            val url = intent.getStringExtra(BROADCAST_EXTRA_URL) ?: return
-            when (type) {
-                BROADCAST_TYPE_HTTP -> UserActionManager.enqueue(context, notificationId, action, url)
+                BROADCAST_TYPE_USER_ACTION -> {
+                    val actionId = intent.getStringExtra(BROADCAST_EXTRA_ACTION_ID) ?: return
+                    UserActionManager.enqueue(context, notificationId, actionId)
+                }
             }
         }
     }
@@ -321,12 +310,15 @@ class NotificationService(val context: Context) {
 
         private const val BROADCAST_EXTRA_TYPE = "type"
         private const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"
-        private const val BROADCAST_EXTRA_ACTION = "action"
-        private const val BROADCAST_EXTRA_URL = "url"
+        private const val BROADCAST_EXTRA_ACTION_ID = "action"
+        private const val BROADCAST_EXTRA_ACTION_JSON = "actionJson"
 
         private const val BROADCAST_TYPE_DOWNLOAD_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
         private const val BROADCAST_TYPE_DOWNLOAD_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
-        private const val BROADCAST_TYPE_HTTP = "io.heckel.ntfy.USER_ACTION_HTTP"
+        private const val BROADCAST_TYPE_USER_ACTION = "io.heckel.ntfy.USER_ACTION"
+
+        private const val ACTION_VIEW = "view"
+        private const val ACTION_HTTP = "http"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

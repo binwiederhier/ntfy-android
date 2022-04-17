@@ -78,9 +78,13 @@ data class Attachment(
 
 @Entity
 data class Action(
+    @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
     @ColumnInfo(name = "action") val action: String,
     @ColumnInfo(name = "label") val label: String,
-    @ColumnInfo(name = "url") val url: String?,
+    @ColumnInfo(name = "url") val url: String?, // used in "view" and "http"
+    @ColumnInfo(name = "method") val method: String?, // used in "http"
+    @ColumnInfo(name = "headers") val headers: Map<String,String>?, // used in "http"
+    @ColumnInfo(name = "body") val body: String?, // used in "http"
 )
 
 class Converters {
@@ -126,7 +130,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 9)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 10)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
