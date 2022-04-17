@@ -131,6 +131,7 @@ class FirebaseService : FirebaseMessagingService() {
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
+                actions = null, // FIXME
                 attachment = attachment,
                 notificationId = Random.nextInt(),
                 deleted = false

@@ -133,6 +133,7 @@ class Backuper(val context: Context) {
                     priority = n.priority,
                     tags = n.tags,
                     click = n.click,
+                    actions = null, // FIXME
                     attachment = attachment,
                     deleted = n.deleted
                 ))

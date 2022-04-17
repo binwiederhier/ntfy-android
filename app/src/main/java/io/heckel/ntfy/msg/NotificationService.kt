@@ -65,6 +65,7 @@ class NotificationService(val context: Context) {
         maybeAddBrowseAction(builder, notification)
         maybeAddDownloadAction(builder, notification)
         maybeAddCancelAction(builder, notification)
+        maybeAddCustomActions(builder, notification)
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
@@ -187,6 +188,29 @@ class NotificationService(val context: Context) {
             intent.putExtra("id", notification.id)
             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_cancel), pendingIntent).build())
+        }
+    }
+
+    private fun maybeAddCustomActions(builder: NotificationCompat.Builder, notification: Notification) {
+        notification.actions?.forEach { action ->
+            when (action.action) {
+                "view" -> maybeAddOpenUserAction(builder, notification, action)
+            }
+        }
+    }
+
+    private fun maybeAddOpenUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+        Log.d(TAG, "Adding user action $action")
+
+        val url = action.url ?: return
+        try {
+            val uri = Uri.parse(url)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+        } catch (e: Exception) {
+            Log.w(TAG, "Unable to add open user action", e)
         }
     }
 

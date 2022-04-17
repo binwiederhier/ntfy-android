@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import io.heckel.ntfy.util.shortUrl
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
+import java.lang.reflect.Type
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -55,6 +57,7 @@ data class Notification(
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
     @ColumnInfo(name = "click") val click: String, // URL/intent to open on notification click
+    @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
@@ -71,6 +74,28 @@ data class Attachment(
 ) {
     constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
             this(name, type, size, expires, url, null, PROGRESS_NONE)
+}
+
+@Entity
+data class Action(
+    @ColumnInfo(name = "action") val action: String,
+    @ColumnInfo(name = "label") val label: String,
+    @ColumnInfo(name = "url") val url: String?,
+)
+
+class Converters {
+    private val gson = Gson()
+
+    @TypeConverter
+    fun toActionList(value: String?): List<Action>? {
+        val listType: Type = object : TypeToken<List<Action>?>() {}.type
+        return gson.fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromActionList(list: List<Action>?): String {
+        return gson.toJson(list)
+    }
 }
 
 const val PROGRESS_NONE = -1
@@ -102,6 +127,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 9)
+@TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao

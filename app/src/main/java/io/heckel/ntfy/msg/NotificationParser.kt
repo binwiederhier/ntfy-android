@@ -2,6 +2,7 @@ package io.heckel.ntfy.msg
 
 import android.util.Base64
 import com.google.gson.Gson
+import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.joinTags
@@ -29,6 +30,11 @@ class NotificationParser {
                 url = message.attachment.url,
             )
         } else null
+        val actions = if (message.actions != null) {
+            message.actions.map { action ->
+                Action(action.action, action.label, action.url)
+            }
+        } else null
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,
@@ -39,6 +45,7 @@ class NotificationParser {
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
             click = message.click ?: "",
+            actions = actions,
             attachment = attachment,
             notificationId = notificationId,
             deleted = false
