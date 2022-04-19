@@ -10,3 +10,4 @@ Bugs:
 
 Additional translations:
 * Japanese (thanks to @shak)
+* Russian (thanks to @flamey and @ilya.mikheev.coder)
