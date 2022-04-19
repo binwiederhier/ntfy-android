@@ -34,17 +34,17 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("muted", muted)
         intent.putExtra("muted_str", muted.toString())
 
-        Log.d(TAG, "Sending message intent broadcast: $intent")
+        Log.d(TAG, "Sending message intent broadcast: ${intent.action} with extras ${intent.extras}")
         ctx.sendBroadcast(intent)
     }
 
     fun sendUserAction(action: Action) {
         val intent = Intent()
-        intent.action = USER_ACTION_ACTION
+        intent.action = action.intent ?: USER_ACTION_ACTION
         action.extras?.forEach { (key, value) ->
             intent.putExtra(key, value)
         }
-        Log.d(TAG, "Sending user action intent broadcast: $intent")
+        Log.d(TAG, "Sending user action intent broadcast: ${intent.action} with extras ${intent.extras}")
         ctx.sendBroadcast(intent)
     }
 

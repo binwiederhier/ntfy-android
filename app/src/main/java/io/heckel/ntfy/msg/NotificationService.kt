@@ -129,18 +129,6 @@ class NotificationService(val context: Context) {
         return context.getString(R.string.notification_popup_file, message, attachmentInfos)
     }
 
-    private fun maybeAppendActionErrors(message: String, notification: Notification): String {
-        val actionErrors = notification.actions
-            .orEmpty()
-            .mapNotNull { action -> action.error }
-            .joinToString("\n")
-        if (actionErrors.isEmpty()) {
-            return message
-        } else {
-            return "${message}\n\n${actionErrors}"
-        }
-    }
-
     private fun setClickAction(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
         if (notification.click == "") {
             builder.setContentIntent(detailActivityIntent(subscription))
@@ -218,6 +206,10 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeAddViewUserAction(builder: NotificationCompat.Builder, action: Action) {
+        // Note that this function is (almost) duplicated in DetailAdapter, since we need to be able
+        // to open a link from the detail activity as well. We can't do this in the UserActionWorker,
+        // because the behavior is kind of weird in Android.
+
         try {
             val url = action.url ?: return
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
@@ -237,12 +229,7 @@ class NotificationService(val context: Context) {
             putExtra(BROADCAST_EXTRA_ACTION_ID, action.id)
         }
         val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val label = when (action.progress) {
-            ACTION_PROGRESS_ONGOING -> action.label + " …"
-            ACTION_PROGRESS_SUCCESS -> action.label + " ✔️"
-            ACTION_PROGRESS_FAILED -> action.label + " ❌️"
-            else -> action.label
-        }
+        val label = formatActionLabel(action)
         builder.addAction(NotificationCompat.Action.Builder(0, label, pendingIntent).build())
     }
 
@@ -322,19 +309,19 @@ class NotificationService(val context: Context) {
     }
 
     companion object {
-        val ACTION_VIEW = "view"
-        val ACTION_HTTP = "http"
-        val ACTION_BROADCAST = "broadcast"
+        const val ACTION_VIEW = "view"
+        const val ACTION_HTTP = "http"
+        const val ACTION_BROADCAST = "broadcast"
+
+        const val BROADCAST_EXTRA_TYPE = "type"
+        const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"
+        const val BROADCAST_EXTRA_ACTION_ID = "action"
+
+        const val BROADCAST_TYPE_DOWNLOAD_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
+        const val BROADCAST_TYPE_DOWNLOAD_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
+        const val BROADCAST_TYPE_USER_ACTION = "io.heckel.ntfy.USER_ACTION_RUN"
 
         private const val TAG = "NtfyNotifService"
-
-        private const val BROADCAST_EXTRA_TYPE = "type"
-        private const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"
-        private const val BROADCAST_EXTRA_ACTION_ID = "action"
-
-        private const val BROADCAST_TYPE_DOWNLOAD_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
-        private const val BROADCAST_TYPE_DOWNLOAD_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
-        private const val BROADCAST_TYPE_USER_ACTION = "io.heckel.ntfy.USER_ACTION_RUN"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

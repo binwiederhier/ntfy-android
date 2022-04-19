@@ -1,6 +1,8 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
@@ -8,6 +10,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -43,8 +46,11 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         Log.d(TAG, "Executing action $action for notification $notification")
         try {
             when (action.action) {
-                ACTION_HTTP -> performHttpAction(action)
+                // ACTION_VIEW is not handled here. It has to be handled in the foreground to avoid
+                // weird Android behavior.
+
                 ACTION_BROADCAST -> performBroadcastAction(action)
+                ACTION_HTTP -> performHttpAction(action)
             }
         } catch (e: Exception) {
             Log.w(TAG, "Error executing action: ${e.message}", e)
@@ -54,6 +60,11 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
             ))
         }
         return Result.success()
+    }
+
+    private fun performBroadcastAction(action: Action) {
+        broadcaster.sendUserAction(action)
+        save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
     }
 
     private fun performHttpAction(action: Action) {
@@ -79,11 +90,6 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
             }
             throw Exception("HTTP ${response.code}")
         }
-    }
-
-    private fun performBroadcastAction(action: Action) {
-        broadcaster.sendUserAction(action)
-        save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
     }
 
     private fun save(newAction: Action) {

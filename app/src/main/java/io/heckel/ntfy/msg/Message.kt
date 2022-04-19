@@ -35,11 +35,12 @@ data class MessageAction(
     val id: String,
     val action: String,
     val label: String, // "view", "broadcast" or "http"
-    val url: String?, // used in "view" and "http"
-    val method: String?, // used in "http", default is POST (!)
-    val headers: Map<String,String>?, // used in "http"
-    val body: String?, // used in "http"
-    val extras: Map<String,String>?, // used in "broadcast"
+    val url: String?, // used in "view" and "http" actions
+    val method: String?, // used in "http" action, default is POST (!)
+    val headers: Map<String,String>?, // used in "http" action
+    val body: String?, // used in "http" action
+    val intent: String?, // used in "broadcast" action
+    val extras: Map<String,String>?, // used in "broadcast" action
 )
 
 const val MESSAGE_ENCODING_BASE64 = "base64"

@@ -23,9 +23,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -182,6 +180,27 @@ fun formatTitle(notification: Notification): String {
         notification.title
     } else {
         emojis.joinToString("") + " " + notification.title
+    }
+}
+
+fun formatActionLabel(action: Action): String {
+    return when (action.progress) {
+        ACTION_PROGRESS_ONGOING -> action.label + " …"
+        ACTION_PROGRESS_SUCCESS -> action.label + " ✔️"
+        ACTION_PROGRESS_FAILED -> action.label + " ❌️"
+        else -> action.label
+    }
+}
+
+fun maybeAppendActionErrors(message: String, notification: Notification): String {
+    val actionErrors = notification.actions
+        .orEmpty()
+        .mapNotNull { action -> action.error }
+        .joinToString("\n")
+    if (actionErrors.isEmpty()) {
+        return message
+    } else {
+        return "${message}\n\n${actionErrors}"
     }
 }
 
