@@ -217,10 +217,10 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
 
         private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
             val name = attachment.name
-            val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
+            val notYetDownloaded = !exists && attachment.progress == ATTACHMENT_PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
-            val deleted = !exists && (attachment.progress == PROGRESS_DONE || attachment.progress == PROGRESS_DELETED)
-            val failed = !exists && attachment.progress == PROGRESS_FAILED
+            val deleted = !exists && (attachment.progress == ATTACHMENT_PROGRESS_DONE || attachment.progress == ATTACHMENT_PROGRESS_DELETED)
+            val failed = !exists && attachment.progress == ATTACHMENT_PROGRESS_FAILED
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
             val expires = attachment.expires != null && attachment.expires > System.currentTimeMillis()/1000
             val infos = mutableListOf<String>()
@@ -357,7 +357,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 if (!deleted) throw Exception("no rows deleted")
                 val newAttachment = attachment.copy(
                     contentUri = null,
-                    progress = PROGRESS_DELETED
+                    progress = ATTACHMENT_PROGRESS_DELETED
                 )
                 val newNotification = notification.copy(attachment = newAttachment)
                 GlobalScope.launch(Dispatchers.IO) {

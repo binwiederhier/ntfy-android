@@ -2,8 +2,8 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.content.Intent
-import android.util.Base64
 import io.heckel.ntfy.R
+import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * in order to facilitate tasks app integrations.
  */
 class BroadcastService(private val ctx: Context) {
-    fun send(subscription: Subscription, notification: Notification, muted: Boolean) {
+    fun sendMessage(subscription: Subscription, notification: Notification, muted: Boolean) {
         val intent = Intent()
         intent.action = MESSAGE_RECEIVED_ACTION
         intent.putExtra("id", notification.id)
@@ -34,7 +34,17 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("muted", muted)
         intent.putExtra("muted_str", muted.toString())
 
-        Log.d(TAG, "Sending intent broadcast: $intent")
+        Log.d(TAG, "Sending message intent broadcast: $intent")
+        ctx.sendBroadcast(intent)
+    }
+
+    fun sendUserAction(action: Action) {
+        val intent = Intent()
+        intent.action = USER_ACTION_ACTION
+        action.extras?.forEach { (key, value) ->
+            intent.putExtra(key, value)
+        }
+        Log.d(TAG, "Sending user action intent broadcast: $intent")
         ctx.sendBroadcast(intent)
     }
 
@@ -109,5 +119,6 @@ class BroadcastService(private val ctx: Context) {
         // These constants cannot be changed without breaking the contract; also see manifest
         private const val MESSAGE_RECEIVED_ACTION = "io.heckel.ntfy.MESSAGE_RECEIVED"
         private const val MESSAGE_SEND_ACTION = "io.heckel.ntfy.SEND_MESSAGE"
+        private const val USER_ACTION_ACTION = "io.heckel.ntfy.USER_ACTION"
     }
 }

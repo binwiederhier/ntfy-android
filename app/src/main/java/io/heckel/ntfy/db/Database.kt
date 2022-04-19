@@ -73,19 +73,32 @@ data class Attachment(
     @ColumnInfo(name = "progress") val progress: Int, // Progress during download, -1 if not downloaded
 ) {
     constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
-            this(name, type, size, expires, url, null, PROGRESS_NONE)
+            this(name, type, size, expires, url, null, ATTACHMENT_PROGRESS_NONE)
 }
+
+const val ATTACHMENT_PROGRESS_NONE = -1
+const val ATTACHMENT_PROGRESS_INDETERMINATE = -2
+const val ATTACHMENT_PROGRESS_FAILED = -3
+const val ATTACHMENT_PROGRESS_DELETED = -4
+const val ATTACHMENT_PROGRESS_DONE = 100
 
 @Entity
 data class Action(
     @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
-    @ColumnInfo(name = "action") val action: String,
+    @ColumnInfo(name = "action") val action: String, // "view", "http" or "broadcast"
     @ColumnInfo(name = "label") val label: String,
-    @ColumnInfo(name = "url") val url: String?, // used in "view" and "http"
-    @ColumnInfo(name = "method") val method: String?, // used in "http"
-    @ColumnInfo(name = "headers") val headers: Map<String,String>?, // used in "http"
-    @ColumnInfo(name = "body") val body: String?, // used in "http"
+    @ColumnInfo(name = "url") val url: String?, // used in "view" and "http" actions
+    @ColumnInfo(name = "method") val method: String?, // used in "http" action
+    @ColumnInfo(name = "headers") val headers: Map<String,String>?, // used in "http" action
+    @ColumnInfo(name = "body") val body: String?, // used in "http" action
+    @ColumnInfo(name = "extras") val extras: Map<String,String>?, // used in "broadcast" action
+    @ColumnInfo(name = "progress") val progress: Int?, // used to indicate progress in popup
+    @ColumnInfo(name = "error") val error: String?, // used to indicate errors in popup
 )
+
+const val ACTION_PROGRESS_ONGOING = 1
+const val ACTION_PROGRESS_SUCCESS = 2
+const val ACTION_PROGRESS_FAILED = 3
 
 class Converters {
     private val gson = Gson()
@@ -101,12 +114,6 @@ class Converters {
         return gson.toJson(list)
     }
 }
-
-const val PROGRESS_NONE = -1
-const val PROGRESS_INDETERMINATE = -2
-const val PROGRESS_FAILED = -3
-const val PROGRESS_DELETED = -4
-const val PROGRESS_DONE = 100
 
 @Entity
 data class User(

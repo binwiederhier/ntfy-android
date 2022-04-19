@@ -34,11 +34,12 @@ data class MessageAttachment(
 data class MessageAction(
     val id: String,
     val action: String,
-    val label: String,
+    val label: String, // "view", "broadcast" or "http"
     val url: String?, // used in "view" and "http"
-    val method: String?, // used in "http"
+    val method: String?, // used in "http", default is POST (!)
     val headers: Map<String,String>?, // used in "http"
     val body: String?, // used in "http"
+    val extras: Map<String,String>?, // used in "broadcast"
 )
 
 const val MESSAGE_ENCODING_BASE64 = "base64"

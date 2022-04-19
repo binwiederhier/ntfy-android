@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.db.PROGRESS_DELETED
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DELETED
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
@@ -48,7 +48,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
                 }
                 val newAttachment = attachment.copy(
                     contentUri = null,
-                    progress = PROGRESS_DELETED
+                    progress = ATTACHMENT_PROGRESS_DELETED
                 )
                 val newNotification = notification.copy(attachment = newAttachment)
                 repository.updateNotification(newNotification)

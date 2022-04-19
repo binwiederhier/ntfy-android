@@ -91,13 +91,13 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                     while (bytes >= 0) {
                         if (System.currentTimeMillis() - lastProgress > NOTIFICATION_UPDATE_INTERVAL_MILLIS) {
                             if (isStopped) { // Canceled by user
-                                save(attachment.copy(progress = PROGRESS_NONE))
+                                save(attachment.copy(progress = ATTACHMENT_PROGRESS_NONE))
                                 return // File will be deleted in onStopped()
                             }
                             val progress = if (attachment.size != null && attachment.size!! > 0) {
                                 (bytesCopied.toFloat()/attachment.size!!.toFloat()*100).toInt()
                             } else {
-                                PROGRESS_INDETERMINATE
+                                ATTACHMENT_PROGRESS_INDETERMINATE
                             }
                             save(attachment.copy(progress = progress))
                             lastProgress = System.currentTimeMillis()
@@ -114,7 +114,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                 save(attachment.copy(
                     size = bytesCopied,
                     contentUri = uri.toString(),
-                    progress = PROGRESS_DONE
+                    progress = ATTACHMENT_PROGRESS_DONE
                 ))
             }
         } catch (e: Exception) {
@@ -155,7 +155,7 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
 
     private fun failed(e: Exception) {
         Log.w(TAG, "Attachment download failed", e)
-        save(attachment.copy(progress = PROGRESS_FAILED))
+        save(attachment.copy(progress = ATTACHMENT_PROGRESS_FAILED))
         maybeDeleteFile()
     }
 

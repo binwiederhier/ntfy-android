@@ -33,7 +33,7 @@ class NotificationParser {
         } else null
         val actions = if (message.actions != null) {
             message.actions.map { a ->
-                Action(a.id, a.action, a.label, a.url, a.method, a.headers, a.body)
+                Action(a.id, a.action, a.label, a.url, a.method, a.headers, a.body, a.extras, null, null)
             }
         } else null
         val notification = Notification(
