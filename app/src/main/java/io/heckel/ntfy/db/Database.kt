@@ -162,6 +162,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_6_7)
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
+                    .addMigrations(MIGRATION_9_10)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -235,6 +236,12 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN encoding TEXT NOT NULL DEFAULT('')")
+            }
+        }
+
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN actions TEXT NOT NULL DEFAULT('')")
             }
         }
     }

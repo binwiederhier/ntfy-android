@@ -1,8 +1,6 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
@@ -10,7 +8,6 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
-import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -64,7 +61,6 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
 
     private fun performBroadcastAction(action: Action) {
         broadcaster.sendUserAction(action)
-        save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
     }
 
     private fun performHttpAction(action: Action) {
