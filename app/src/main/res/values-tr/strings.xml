@@ -303,4 +303,5 @@
     <string name="detail_deep_link_subscribed_toast_message">%1$s konusuna abone olundu</string>
     <string name="settings_notifications_channel_prefs_title">Kanal ayarları</string>
     <string name="settings_notifications_channel_prefs_summary">Rahatsız Etmeyin (DND) özelliğini geçersiz kılmayı, özel sesleri vb. yönetin.</string>
+    <string name="notification_popup_user_action_failed">%1$s başarısız oldu: %2$s</string>
 </resources>
