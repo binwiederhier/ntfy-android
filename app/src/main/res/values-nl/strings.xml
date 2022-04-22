@@ -134,4 +134,21 @@
     <string name="detail_item_menu_download">Bestand downloaden</string>
     <string name="detail_item_menu_cancel">Download annuleren</string>
     <string name="detail_item_menu_copy_contents">Melding kopiëren</string>
+    <string name="channel_subscriber_notification_title">Aan het luisteren voor binnenkomende notificaties</string>
+    <string name="add_dialog_foreground_description">Directe levering staat altijd aan voor andere hosts dan %1$s.</string>
+    <string name="add_dialog_button_subscribe">Abonneer</string>
+    <string name="add_dialog_error_connection_failed">Verbinding mislukt: %1$s</string>
+    <string name="add_dialog_login_description">Dit onderwerp vereist dat je inlogt. Gelieve een gebruikersnaam en wachtwoord in te vullen.</string>
+    <string name="detail_clear_dialog_message">Verwijder alle notificaties in dit onderwerp\?</string>
+    <string name="add_dialog_instant_delivery">Onmiddellijke levering in \"doze\" modus</string>
+    <string name="main_banner_json_stream_text">Schakel nu over naar WebSockets in de Settings / \"Connectie protocol\" om te verzekeren dat je kan communiceren met je zelf gehoste ntfy server na Juni 2022.</string>
+    <string name="add_dialog_description_below">Onderwerpen kunnen niet beveiligd worden met een wachtwoord, dus kies een naam dat je moeilijk kan raden. Eenmalig geabboneerd, kan je notficaties PUT/POST.</string>
+    <string name="add_dialog_use_another_server_description">Geef de service URLs hieronder om te abboneren aan onderwerpen van andere servers.</string>
+    <string name="main_banner_json_stream_button_learn_more">Leer meer</string>
+    <string name="add_dialog_instant_delivery_description">Zorgt ervoor dat berichten onmiddellijk worden afgeleverd, zelfs als het toestel inactief is.</string>
+    <string name="add_dialog_login_error_not_authorized">Login gefaald. Gebruiker %1$s is niet geauthoriseerd.</string>
+    <string name="detail_no_notifications_text">Je hebt nog geen notificaties voor dit onderwerp ontvangen.</string>
+    <string name="detail_how_to_intro">Om een notificatie naar dit onderwerp te sturen, verstuur een simpele PUT of POST naar de URL van dit onderwerp.</string>
+    <string name="detail_how_to_example">Voorbeeld (door gebruik van curl): <br/><tt> curl -d \"Hallo\"%1$s</tt></string>
+    <string name="detail_how_to_link">Gedetaileerde instructies zijn ter beschikking op ntfy.sh en in de documentatie.</string>
 </resources>
