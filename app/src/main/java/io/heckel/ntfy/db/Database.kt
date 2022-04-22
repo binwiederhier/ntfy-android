@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import io.heckel.ntfy.util.shortUrl
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
+import java.lang.reflect.Type
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -55,6 +57,7 @@ data class Notification(
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
     @ColumnInfo(name = "click") val click: String, // URL/intent to open on notification click
+    @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
@@ -70,14 +73,48 @@ data class Attachment(
     @ColumnInfo(name = "progress") val progress: Int, // Progress during download, -1 if not downloaded
 ) {
     constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
-            this(name, type, size, expires, url, null, PROGRESS_NONE)
+            this(name, type, size, expires, url, null, ATTACHMENT_PROGRESS_NONE)
 }
 
-const val PROGRESS_NONE = -1
-const val PROGRESS_INDETERMINATE = -2
-const val PROGRESS_FAILED = -3
-const val PROGRESS_DELETED = -4
-const val PROGRESS_DONE = 100
+const val ATTACHMENT_PROGRESS_NONE = -1
+const val ATTACHMENT_PROGRESS_INDETERMINATE = -2
+const val ATTACHMENT_PROGRESS_FAILED = -3
+const val ATTACHMENT_PROGRESS_DELETED = -4
+const val ATTACHMENT_PROGRESS_DONE = 100
+
+@Entity
+data class Action(
+    @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
+    @ColumnInfo(name = "action") val action: String, // "view", "http" or "broadcast"
+    @ColumnInfo(name = "label") val label: String,
+    @ColumnInfo(name = "url") val url: String?, // used in "view" and "http" actions
+    @ColumnInfo(name = "method") val method: String?, // used in "http" action
+    @ColumnInfo(name = "headers") val headers: Map<String,String>?, // used in "http" action
+    @ColumnInfo(name = "body") val body: String?, // used in "http" action
+    @ColumnInfo(name = "intent") val intent: String?, // used in "broadcast" action
+    @ColumnInfo(name = "extras") val extras: Map<String,String>?, // used in "broadcast" action
+    @ColumnInfo(name = "progress") val progress: Int?, // used to indicate progress in popup
+    @ColumnInfo(name = "error") val error: String?, // used to indicate errors in popup
+)
+
+const val ACTION_PROGRESS_ONGOING = 1
+const val ACTION_PROGRESS_SUCCESS = 2
+const val ACTION_PROGRESS_FAILED = 3
+
+class Converters {
+    private val gson = Gson()
+
+    @TypeConverter
+    fun toActionList(value: String?): List<Action>? {
+        val listType: Type = object : TypeToken<List<Action>?>() {}.type
+        return gson.fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromActionList(list: List<Action>?): String {
+        return gson.toJson(list)
+    }
+}
 
 @Entity
 data class User(
@@ -101,7 +138,8 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 9)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 10)
+@TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
@@ -124,6 +162,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_6_7)
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
+                    .addMigrations(MIGRATION_9_10)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -197,6 +236,12 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN encoding TEXT NOT NULL DEFAULT('')")
+            }
+        }
+
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN actions TEXT")
             }
         }
     }

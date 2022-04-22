@@ -47,7 +47,7 @@
     <string name="add_dialog_login_error_not_authorized">登录失败。用户 %1$s 无权访问。</string>
     <string name="add_dialog_login_new_user">新用户</string>
     <string name="detail_no_notifications_text">目前还没有关于此主题的通知。</string>
-    <string name="main_banner_json_stream_text">请在“链接协议”中选择 WebSockets 以保证在 2022 年 6 月之后仍能收到来自自建 Ntfy 服务器的推送。</string>
+    <string name="main_banner_json_stream_text">请在“链接协议”中选择 WebSockets 以保证在 2022 年 6 月之后仍能收到来自自建 ntfy 服务器的推送。</string>
     <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
     <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
     <string name="main_banner_json_stream_button_learn_more">详情</string>
@@ -56,7 +56,7 @@
     <string name="add_dialog_topic_name_hint">主题名称，比如：phils_alerts</string>
     <string name="detail_how_to_link">详细的说明请见 ntfy.sh 和帮助文档。</string>
     <string name="detail_clear_dialog_message">您确认要删除这个主题下的所有通知吗？</string>
-    <string name="detail_test_message">这是 Ntfy 安卓应用发来的测试通知。此通知优先级为 %1$d。如果再发送一条通知，通知的样式可能有变化。</string>
+    <string name="detail_test_message">这是 ntfy 安卓应用发来的测试通知。此通知优先级为 %1$d。如果再发送一条通知，通知的样式可能有变化。</string>
     <string name="detail_test_message_error_unauthorized_user">无法发送消息：用户 %1$s 无权发布。</string>
     <string name="detail_item_menu_download">下载文件</string>
     <string name="detail_item_menu_save_file">保存文件</string>

@@ -1,7 +1,12 @@
 package io.heckel.ntfy.msg
 
-import android.app.*
-import android.content.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
@@ -10,12 +15,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
+import java.util.*
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -65,6 +69,7 @@ class NotificationService(val context: Context) {
         maybeAddBrowseAction(builder, notification)
         maybeAddDownloadAction(builder, notification)
         maybeAddCancelAction(builder, notification)
+        maybeAddUserActions(builder, notification)
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
@@ -88,43 +93,43 @@ class NotificationService(val context: Context) {
                 val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
                 val bitmap = BitmapFactory.decodeStream(bitmapStream)
                 builder
-                    .setContentText(formatMessage(notification))
+                    .setContentText(maybeAppendActionErrors(formatMessage(notification), notification))
                     .setLargeIcon(bitmap)
                     .setStyle(NotificationCompat.BigPictureStyle()
                         .bigPicture(bitmap)
                         .bigLargeIcon(null))
             } catch (_: Exception) {
-                val message = formatMessageMaybeWithAttachmentInfo(notification)
+                val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
                 builder
                     .setContentText(message)
                     .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             }
         } else {
-            val message = formatMessageMaybeWithAttachmentInfo(notification)
+            val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
             builder
                 .setContentText(message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
         }
     }
 
-    private fun formatMessageMaybeWithAttachmentInfo(notification: Notification): String {
+    private fun formatMessageMaybeWithAttachmentInfos(notification: Notification): String {
         val message = formatMessage(notification)
         val attachment = notification.attachment ?: return message
-        val infos = if (attachment.size != null) {
+        val attachmentInfos = if (attachment.size != null) {
             "${attachment.name}, ${formatBytes(attachment.size)}"
         } else {
             attachment.name
         }
         if (attachment.progress in 0..99) {
-            return context.getString(R.string.notification_popup_file_downloading, infos, attachment.progress, message)
+            return context.getString(R.string.notification_popup_file_downloading, attachmentInfos, attachment.progress, message)
         }
-        if (attachment.progress == PROGRESS_DONE) {
-            return context.getString(R.string.notification_popup_file_download_successful, message, infos)
+        if (attachment.progress == ATTACHMENT_PROGRESS_DONE) {
+            return context.getString(R.string.notification_popup_file_download_successful, message, attachmentInfos)
         }
-        if (attachment.progress == PROGRESS_FAILED) {
-            return context.getString(R.string.notification_popup_file_download_failed, message, infos)
+        if (attachment.progress == ATTACHMENT_PROGRESS_FAILED) {
+            return context.getString(R.string.notification_popup_file_download_failed, message, attachmentInfos)
         }
-        return context.getString(R.string.notification_popup_file, message, infos)
+        return context.getString(R.string.notification_popup_file, message, attachmentInfos)
     }
 
     private fun setClickAction(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
@@ -133,7 +138,7 @@ class NotificationService(val context: Context) {
         } else {
             try {
                 val uri = Uri.parse(notification.click)
-                val viewIntent = PendingIntent.getActivity(context, 0, Intent(Intent.ACTION_VIEW, uri), PendingIntent.FLAG_IMMUTABLE)
+                val viewIntent = PendingIntent.getActivity(context, Random().nextInt(), Intent(Intent.ACTION_VIEW, uri), PendingIntent.FLAG_IMMUTABLE)
                 builder.setContentIntent(viewIntent)
             } catch (e: Exception) {
                 builder.setContentIntent(detailActivityIntent(subscription))
@@ -153,50 +158,95 @@ class NotificationService(val context: Context) {
     private fun maybeAddOpenAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri != null) {
             val contentUri = Uri.parse(notification.attachment.contentUri)
-            val intent = Intent(Intent.ACTION_VIEW, contentUri)
-            intent.setDataAndType(contentUri, notification.attachment.type ?: "application/octet-stream") // Required for Android <= P
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(Intent.ACTION_VIEW, contentUri).apply {
+                setDataAndType(contentUri, notification.attachment.type ?: "application/octet-stream") // Required for Android <= P
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_open), pendingIntent).build())
         }
     }
 
     private fun maybeAddBrowseAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri != null) {
-            val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(android.app.DownloadManager.ACTION_VIEW_DOWNLOADS).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_browse), pendingIntent).build())
         }
     }
 
     private fun maybeAddDownloadAction(builder: NotificationCompat.Builder, notification: Notification) {
-        if (notification.attachment?.contentUri == null && listOf(PROGRESS_NONE, PROGRESS_FAILED).contains(notification.attachment?.progress)) {
-            val intent = Intent(context, DownloadBroadcastReceiver::class.java)
-            intent.putExtra("action", DOWNLOAD_ACTION_START)
-            intent.putExtra("id", notification.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        if (notification.attachment?.contentUri == null && listOf(ATTACHMENT_PROGRESS_NONE, ATTACHMENT_PROGRESS_FAILED).contains(notification.attachment?.progress)) {
+            val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
+                putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_DOWNLOAD_START)
+                putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_download), pendingIntent).build())
         }
     }
 
     private fun maybeAddCancelAction(builder: NotificationCompat.Builder, notification: Notification) {
         if (notification.attachment?.contentUri == null && notification.attachment?.progress in 0..99) {
-            val intent = Intent(context, DownloadBroadcastReceiver::class.java)
-            intent.putExtra("action", DOWNLOAD_ACTION_CANCEL)
-            intent.putExtra("id", notification.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
+                putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_DOWNLOAD_CANCEL)
+                putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, context.getString(R.string.notification_popup_action_cancel), pendingIntent).build())
         }
     }
 
-    class DownloadBroadcastReceiver : BroadcastReceiver() {
+    private fun maybeAddUserActions(builder: NotificationCompat.Builder, notification: Notification) {
+        notification.actions?.forEach { action ->
+            when (action.action.lowercase(Locale.getDefault())) {
+                ACTION_VIEW -> maybeAddViewUserAction(builder, action)
+                ACTION_HTTP, ACTION_BROADCAST -> maybeAddHttpOrBroadcastUserAction(builder, notification, action)
+            }
+        }
+    }
+
+    private fun maybeAddViewUserAction(builder: NotificationCompat.Builder, action: Action) {
+        // Note that this function is (almost) duplicated in DetailAdapter, since we need to be able
+        // to open a link from the detail activity as well. We can't do this in the UserActionWorker,
+        // because the behavior is kind of weird in Android.
+
+        try {
+            val url = action.url ?: return
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+            builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+        } catch (e: Exception) {
+            Log.w(TAG, "Unable to add open user action", e)
+        }
+    }
+
+    private fun maybeAddHttpOrBroadcastUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+        val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
+            putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_USER_ACTION)
+            putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
+            putExtra(BROADCAST_EXTRA_ACTION_ID, action.id)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val label = formatActionLabel(action)
+        builder.addAction(NotificationCompat.Action.Builder(0, label, pendingIntent).build())
+    }
+
+    class UserActionBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val id = intent.getStringExtra("id") ?: return
-            val action = intent.getStringExtra("action") ?: return
-            when (action) {
-                DOWNLOAD_ACTION_START -> DownloadManager.enqueue(context, id, userAction = true)
-                DOWNLOAD_ACTION_CANCEL -> DownloadManager.cancel(context, id)
+            val type = intent.getStringExtra(BROADCAST_EXTRA_TYPE) ?: return
+            val notificationId = intent.getStringExtra(BROADCAST_EXTRA_NOTIFICATION_ID) ?: return
+            when (type) {
+                BROADCAST_TYPE_DOWNLOAD_START -> DownloadManager.enqueue(context, notificationId, userAction = true)
+                BROADCAST_TYPE_DOWNLOAD_CANCEL -> DownloadManager.cancel(context, notificationId)
+                BROADCAST_TYPE_USER_ACTION -> {
+                    val actionId = intent.getStringExtra(BROADCAST_EXTRA_ACTION_ID) ?: return
+                    UserActionManager.enqueue(context, notificationId, actionId)
+                }
             }
         }
     }
@@ -262,9 +312,19 @@ class NotificationService(val context: Context) {
     }
 
     companion object {
+        const val ACTION_VIEW = "view"
+        const val ACTION_HTTP = "http"
+        const val ACTION_BROADCAST = "broadcast"
+
+        const val BROADCAST_EXTRA_TYPE = "type"
+        const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"
+        const val BROADCAST_EXTRA_ACTION_ID = "action"
+
+        const val BROADCAST_TYPE_DOWNLOAD_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
+        const val BROADCAST_TYPE_DOWNLOAD_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
+        const val BROADCAST_TYPE_USER_ACTION = "io.heckel.ntfy.USER_ACTION_RUN"
+
         private const val TAG = "NtfyNotifService"
-        private const val DOWNLOAD_ACTION_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
-        private const val DOWNLOAD_ACTION_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"
 
         private const val CHANNEL_ID_MIN = "ntfy-min"
         private const val CHANNEL_ID_LOW = "ntfy-low"

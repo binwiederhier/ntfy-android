@@ -1,6 +1,6 @@
 Herhangi bir Bash veya PowerShell betiğinden veya kendi uygulamanızdan PUT/POST isteklerini kullanarak telefonunuza bildirimler gönderin, örn. Linux curl ile veya Invoke-WebRequest aracılığıyla.
 
-Ntfy, özgür ve açık kaynaklı HTTP tabanlı bir yayın-abone hizmeti olan https://ntfy.sh için bir Android istemcisidir. Bu uygulamadaki konulara abone olabilir ve ardından basit bir HTTP API aracılığıyla mesajlar yayınlayabilirsiniz.
+ntfy, özgür ve açık kaynaklı HTTP tabanlı bir yayın-abone hizmeti olan https://ntfy.sh için bir Android istemcisidir. Bu uygulamadaki konulara abone olabilir ve ardından basit bir HTTP API aracılığıyla mesajlar yayınlayabilirsiniz.
 
 Kullanım Alanları:
 * Uzun süren bir işlem bittiğinde kendinize haber verin

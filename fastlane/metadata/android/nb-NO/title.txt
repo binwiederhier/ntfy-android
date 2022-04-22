@@ -1,1 +1,1 @@
-Ntfy — PUT/POST til din mobil
+ntfy — PUT/POST til din mobil

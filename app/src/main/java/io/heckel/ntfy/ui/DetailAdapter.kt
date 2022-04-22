@@ -25,6 +25,8 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadWorker
+import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,7 +83,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
 
             dateView.text = formatDateShort(notification.timestamp)
-            messageView.text = formatMessage(notification)
+            messageView.text = maybeAppendActionErrors(formatMessage(notification), notification)
             newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             itemView.setOnClickListener { onClick(notification) }
             itemView.setOnLongClickListener { onLongClick(notification); true }
@@ -179,6 +181,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             val attachment = notification.attachment // May be null
             val hasAttachment = attachment != null
             val hasClickLink = notification.click != ""
+            val hasUserActions = notification.actions?.isNotEmpty() ?: false
             val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
             val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
             val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
@@ -199,6 +202,12 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             if (hasClickLink) {
                 copyContentsItem.setOnMenuItemClickListener { copyContents(context, notification) }
             }
+            if (notification.actions != null && notification.actions.isNotEmpty()) {
+                notification.actions.forEach { action ->
+                    val actionItem = popup.menu.add(formatActionLabel(action))
+                    actionItem.setOnMenuItemClickListener { runAction(context, notification, action) }
+                }
+            }
             openItem.isVisible = hasAttachment && exists
             downloadItem.isVisible = hasAttachment && !exists && !expired && !inProgress
             deleteItem.isVisible = hasAttachment && exists
@@ -208,7 +217,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             copyContentsItem.isVisible = notification.click != ""
             val noOptions = !openItem.isVisible && !saveFileItem.isVisible && !downloadItem.isVisible
                     && !copyUrlItem.isVisible && !cancelItem.isVisible && !deleteItem.isVisible
-                    && !copyContentsItem.isVisible
+                    && !copyContentsItem.isVisible && !hasUserActions
             if (noOptions) {
                 return null
             }
@@ -217,10 +226,10 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
 
         private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
             val name = attachment.name
-            val notYetDownloaded = !exists && attachment.progress == PROGRESS_NONE
+            val notYetDownloaded = !exists && attachment.progress == ATTACHMENT_PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
-            val deleted = !exists && (attachment.progress == PROGRESS_DONE || attachment.progress == PROGRESS_DELETED)
-            val failed = !exists && attachment.progress == PROGRESS_FAILED
+            val deleted = !exists && (attachment.progress == ATTACHMENT_PROGRESS_DONE || attachment.progress == ATTACHMENT_PROGRESS_DELETED)
+            val failed = !exists && attachment.progress == ATTACHMENT_PROGRESS_FAILED
             val expired = attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000
             val expires = attachment.expires != null && attachment.expires > System.currentTimeMillis()/1000
             val infos = mutableListOf<String>()
@@ -357,7 +366,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 if (!deleted) throw Exception("no rows deleted")
                 val newAttachment = attachment.copy(
                     contentUri = null,
-                    progress = PROGRESS_DELETED
+                    progress = ATTACHMENT_PROGRESS_DELETED
                 )
                 val newNotification = notification.copy(attachment = newAttachment)
                 GlobalScope.launch(Dispatchers.IO) {
@@ -400,6 +409,31 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
         private fun copyContents(context: Context, notification: Notification): Boolean {
             copyToClipboard(context, notification)
             return true
+        }
+
+        private fun runAction(context: Context, notification: Notification, action: Action): Boolean {
+            when (action.action) {
+                ACTION_VIEW -> runViewAction(context, action)
+                else -> runOtherUserAction(context, notification, action)
+            }
+            return true
+        }
+
+        private fun runViewAction(context: Context, action: Action) {
+            val url = action.url ?: return
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            context.startActivity(intent)
+        }
+
+        private fun runOtherUserAction(context: Context, notification: Notification, action: Action) {
+            val intent = Intent(context, NotificationService.UserActionBroadcastReceiver::class.java).apply {
+                putExtra(NotificationService.BROADCAST_EXTRA_TYPE, NotificationService.BROADCAST_TYPE_USER_ACTION)
+                putExtra(NotificationService.BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
+                putExtra(NotificationService.BROADCAST_EXTRA_ACTION_ID, action.id)
+            }
+            context.sendBroadcast(intent)
         }
     }
 

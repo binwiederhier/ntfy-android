@@ -1,1 +1,1 @@
-Ntfy - PUT/POST към телефон
+ntfy - PUT/POST към телефон

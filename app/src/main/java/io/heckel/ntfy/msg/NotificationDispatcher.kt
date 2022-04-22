@@ -1,7 +1,6 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.util.Base64
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -35,7 +34,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             notifier.display(subscription, notification)
         }
         if (broadcast) {
-            broadcaster.send(subscription, notification, muted)
+            broadcaster.sendMessage(subscription, notification, muted)
         }
         if (distribute) {
             safeLet(subscription.upAppId, subscription.upConnectorToken) { appId, connectorToken ->

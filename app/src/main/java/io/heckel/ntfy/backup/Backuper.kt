@@ -2,6 +2,7 @@ package io.heckel.ntfy.backup
 
 import android.content.Context
 import android.net.Uri
+import androidx.room.ColumnInfo
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -109,6 +110,25 @@ class Backuper(val context: Context) {
         }
         notifications.forEach { n ->
             try {
+                val actions = if (n.actions != null) {
+                    n.actions.map { a ->
+                        io.heckel.ntfy.db.Action(
+                            id = a.id,
+                            action = a.action,
+                            label = a.label,
+                            url = a.url,
+                            method = a.method,
+                            headers = a.headers,
+                            body = a.body,
+                            intent = a.intent,
+                            extras = a.extras,
+                            progress = a.progress,
+                            error = a.error
+                        )
+                    }
+                } else {
+                    null
+                }
                 val attachment = if (n.attachment != null) {
                     io.heckel.ntfy.db.Attachment(
                         name = n.attachment.name,
@@ -133,6 +153,7 @@ class Backuper(val context: Context) {
                     priority = n.priority,
                     tags = n.tags,
                     click = n.click,
+                    actions = actions,
                     attachment = attachment,
                     deleted = n.deleted
                 ))
@@ -201,6 +222,25 @@ class Backuper(val context: Context) {
 
     private suspend fun createNotificationList(): List<Notification> {
         return repository.getNotifications().map { n ->
+            val actions = if (n.actions != null) {
+                n.actions.map { a ->
+                    Action(
+                        id = a.id,
+                        action = a.action,
+                        label = a.label,
+                        url = a.url,
+                        method = a.method,
+                        headers = a.headers,
+                        body = a.body,
+                        intent = a.intent,
+                        extras = a.extras,
+                        progress = a.progress,
+                        error = a.error
+                    )
+                }
+            } else {
+                null
+            }
             val attachment = if (n.attachment != null) {
                 Attachment(
                     name = n.attachment.name,
@@ -224,6 +264,7 @@ class Backuper(val context: Context) {
                 priority = n.priority,
                 tags = n.tags,
                 click = n.click,
+                actions = actions,
                 attachment = attachment,
                 deleted = n.deleted
             )
@@ -290,8 +331,23 @@ data class Notification(
     val priority: Int, // 1=min, 3=default, 5=max
     val tags: String,
     val click: String, // URL/intent to open on notification click
+    val actions: List<Action>?,
     val attachment: Attachment?,
     val deleted: Boolean
+)
+
+data class Action(
+    val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
+    val action: String, // "view", "http" or "broadcast"
+    val label: String,
+    val url: String?, // used in "view" and "http" actions
+    val method: String?, // used in "http" action
+    val headers: Map<String,String>?, // used in "http" action
+    val body: String?, // used in "http" action
+    val intent: String?, // used in "broadcast" action
+    val extras: Map<String,String>?, // used in "broadcast" action
+    val progress: Int?, // used to indicate progress in popup
+    val error: String? // used to indicate errors in popup
 )
 
 data class Attachment(
@@ -303,7 +359,6 @@ data class Attachment(
     val contentUri: String?, // After it's downloaded, the content:// location
     val progress: Int, // Progress during download, -1 if not downloaded
 )
-
 
 data class User(
     val baseUrl: String,

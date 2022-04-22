@@ -13,6 +13,7 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.util.toPriority
 import io.heckel.ntfy.util.topicShortUrl
@@ -27,6 +28,7 @@ class FirebaseService : FirebaseMessagingService() {
     private val dispatcher by lazy { NotificationDispatcher(this, repository) }
     private val job = SupervisorJob()
     private val messenger = FirebaseMessenger()
+    private val parser = NotificationParser()
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // Init log (this is done in all entrypoints)
@@ -88,6 +90,7 @@ class FirebaseService : FirebaseMessagingService() {
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
         val click = data["click"]
+        val actions = data["actions"] // JSON array as string, sigh ...
         val encoding = data["encoding"]
         val attachmentName = data["attachment_name"] ?: "attachment.bin"
         val attachmentType = data["attachment_type"]
@@ -131,12 +134,13 @@ class FirebaseService : FirebaseMessagingService() {
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
+                actions = parser.parseActions(actions),
                 attachment = attachment,
                 notificationId = Random.nextInt(),
                 deleted = false
             )
             if (repository.addNotification(notification)) {
-                Log.d(TAG, "Dispatching notification for message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)
             }
         }
