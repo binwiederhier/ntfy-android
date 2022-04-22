@@ -1,4 +1,5 @@
 Features:
+* Custom notification action buttons (#134, thanks to @mrherman for reporting)
 * Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
 * Fastlane metadata can now be translated too (#198, thanks to @StoyanDimitrov for reporting)
 * Channel settings option to configure DND override, sounds, etc. (#91)
@@ -11,3 +12,6 @@ Bugs:
 Additional translations:
 * Japanese (thanks to @shak)
 * Russian (thanks to @flamey and @ilya.mikheev.coder)
+
+Thanks for testing:
+* Thanks to @RasHas (aka @Shard), @Fallenbagel, @cmeis, @poblabs, and everyone I forgot for testing.
