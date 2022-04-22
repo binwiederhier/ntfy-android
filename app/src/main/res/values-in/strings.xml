@@ -303,4 +303,5 @@
     <string name="detail_deep_link_subscribed_toast_message">Berlangganan ke topik %1$s</string>
     <string name="settings_notifications_channel_prefs_summary">Kelola timpaan Jangan Ganggu (DND), suara kustom, dll.</string>
     <string name="settings_notifications_channel_prefs_title">Pengaturan saluran</string>
+    <string name="notification_popup_user_action_failed">%1$s gagal: %2$s</string>
 </resources>
