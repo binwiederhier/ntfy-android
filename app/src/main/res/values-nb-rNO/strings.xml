@@ -205,7 +205,7 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON-strøm over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">Vev-sockets</string>
     <string name="user_dialog_description_add">Du kan legge til en bruker her som du kan tilknytte et gitt emne senere.</string>
-    <string name="settings_about_version_format">Ntfy %1$s (%2$s)</string>
+    <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_password_hint_edit">Passord (uendret hvis tomt)</string>
     <string name="user_dialog_button_add">Legg til bruker</string>
     <string name="user_dialog_button_cancel">Avbryt</string>

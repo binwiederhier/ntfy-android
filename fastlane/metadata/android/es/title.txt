@@ -1,1 +1,1 @@
-Ntfy - PUT/POST a su teléfono
+ntfy - PUT/POST a su teléfono

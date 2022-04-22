@@ -1,1 +1,1 @@
-Ntfy - スマホにPUT/POST通知しよう
+ntfy - スマホにPUT/POST通知しよう
