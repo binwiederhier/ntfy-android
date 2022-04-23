@@ -33,7 +33,20 @@ class NotificationParser {
         } else null
         val actions = if (message.actions != null) {
             message.actions.map { a ->
-                Action(a.id, a.action, a.label, a.url, a.method, a.headers, a.body, a.intent, a.extras, null, null)
+                Action(
+                    id = a.id,
+                    action = a.action,
+                    label = a.label,
+                    clear = a.clear,
+                    url = a.url,
+                    method = a.method,
+                    headers = a.headers,
+                    body = a.body,
+                    intent = a.intent,
+                    extras = a.extras,
+                    progress = null,
+                    error = null
+                )
             }
         } else null
         val notification = Notification(
@@ -62,7 +75,20 @@ class NotificationParser {
         val listType: Type = object : TypeToken<List<MessageAction>?>() {}.type
         val messageActions: List<MessageAction>? = gson.fromJson(s, listType)
         return messageActions?.map { a ->
-            Action(a.id, a.action, a.label, a.url, a.method, a.headers, a.body, a.intent, a.extras, null, null)
+            Action(
+                id = a.id,
+                action = a.action,
+                label = a.label,
+                clear = a.clear,
+                url = a.url,
+                method = a.method,
+                headers = a.headers,
+                body = a.body,
+                intent = a.intent,
+                extras = a.extras,
+                progress = null,
+                error = null
+            )
         }
     }
 

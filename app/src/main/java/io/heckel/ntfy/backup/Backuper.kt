@@ -2,7 +2,6 @@ package io.heckel.ntfy.backup
 
 import android.content.Context
 import android.net.Uri
-import androidx.room.ColumnInfo
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -116,6 +115,7 @@ class Backuper(val context: Context) {
                             id = a.id,
                             action = a.action,
                             label = a.label,
+                            clear = a.clear,
                             url = a.url,
                             method = a.method,
                             headers = a.headers,
@@ -228,6 +228,7 @@ class Backuper(val context: Context) {
                         id = a.id,
                         action = a.action,
                         label = a.label,
+                        clear = a.clear,
                         url = a.url,
                         method = a.method,
                         headers = a.headers,
@@ -340,6 +341,7 @@ data class Action(
     val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
     val action: String, // "view", "http" or "broadcast"
     val label: String,
+    val clear: Boolean?, // clear notification after successful execution
     val url: String?, // used in "view" and "http" actions
     val method: String?, // used in "http" action
     val headers: Map<String,String>?, // used in "http" action

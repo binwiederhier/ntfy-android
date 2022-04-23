@@ -1,6 +1,8 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
@@ -8,6 +10,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -46,6 +49,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
                 // ACTION_VIEW is not handled here. It has to be handled in the foreground to avoid
                 // weird Android behavior.
 
+                ACTION_VIEW -> performViewAction(action)
                 ACTION_BROADCAST -> performBroadcastAction(action)
                 ACTION_HTTP -> performHttpAction(action)
             }
@@ -59,8 +63,31 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         return Result.success()
     }
 
+    private fun performViewAction(action: Action) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(action.url)).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+        if (action.clear == true) {
+            notifier.cancel(notification)
+        }
+
+        // Close notification drawer. This seems to be a bug in Android that when a new activity is started from
+        // a receiver or worker, the drawer does not close. Using this deprecated intent is the only option I have found.
+        //
+        // See https://stackoverflow.com/questions/18261969/clicking-android-notification-actions-does-not-close-notification-drawer
+        try {
+            context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        } catch (e: Exception) {
+            Log.w(TAG, "Cannot close system dialogs", e)
+        }
+    }
+
     private fun performBroadcastAction(action: Action) {
         broadcaster.sendUserAction(action)
+        if (action.clear == true) {
+            notifier.cancel(notification)
+        }
     }
 
     private fun performHttpAction(action: Action) {
@@ -90,12 +117,17 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
 
     private fun save(newAction: Action) {
         Log.d(TAG, "Updating action: $newAction")
+        val clear = newAction.progress == ACTION_PROGRESS_SUCCESS && action.clear == true
         val newActions = notification.actions?.map { a -> if (a.id == newAction.id) newAction else a }
         val newNotification = notification.copy(actions = newActions)
         action = newAction
         notification = newNotification
-        notifier.update(subscription, notification)
         repository.updateNotification(notification)
+        if (clear) {
+            notifier.cancel(notification)
+        } else {
+            notifier.update(subscription, notification)
+        }
     }
 
     companion object {

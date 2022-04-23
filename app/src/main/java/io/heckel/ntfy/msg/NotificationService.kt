@@ -201,18 +201,27 @@ class NotificationService(val context: Context) {
 
     private fun maybeAddUserActions(builder: NotificationCompat.Builder, notification: Notification) {
         notification.actions?.forEach { action ->
-            when (action.action.lowercase(Locale.getDefault())) {
-                ACTION_VIEW -> maybeAddViewUserAction(builder, action)
-                ACTION_HTTP, ACTION_BROADCAST -> maybeAddHttpOrBroadcastUserAction(builder, notification, action)
+            // ACTION_VIEW weirdness:
+            //   It's apparently impossible to start an activity from PendingIntent.getActivity() and also close
+            //   the notification. To clear it, we have to actually run our own code, which we do via the UserActionWorker.
+            //   However, Android has a weird bug that does not allow a BroadcastReceiver or Worker to start an activity
+            //   in the foreground and also close the notification drawer, without sending a deprecated Intent. So to not
+            //   have to use this deprecated code in the majority case, we do this weird viewActionWithoutClear below.
+            //
+            //   See https://stackoverflow.com/questions/18261969/clicking-android-notification-actions-does-not-close-notification-drawer
+
+            val actionType = action.action.lowercase(Locale.getDefault())
+            val viewActionWithoutClear = actionType == ACTION_VIEW && action.clear != true
+            if (viewActionWithoutClear) {
+                addViewUserActionWithoutClear(builder, action)
+            } else {
+                addHttpOrBroadcastUserAction(builder, notification, action)
             }
         }
     }
 
-    private fun maybeAddViewUserAction(builder: NotificationCompat.Builder, action: Action) {
-        // Note that this function is (almost) duplicated in DetailAdapter, since we need to be able
-        // to open a link from the detail activity as well. We can't do this in the UserActionWorker,
-        // because the behavior is kind of weird in Android.
-
+    private fun addViewUserActionWithoutClear(builder: NotificationCompat.Builder, action: Action) {
+        Log.d(TAG, "Adding view action (no clear) for ${action.url}")
         try {
             val url = action.url ?: return
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
@@ -225,7 +234,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeAddHttpOrBroadcastUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+    private fun addHttpOrBroadcastUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
         val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
             putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_USER_ACTION)
             putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
@@ -318,7 +327,7 @@ class NotificationService(val context: Context) {
 
         const val BROADCAST_EXTRA_TYPE = "type"
         const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"
-        const val BROADCAST_EXTRA_ACTION_ID = "action"
+        const val BROADCAST_EXTRA_ACTION_ID = "actionId"
 
         const val BROADCAST_TYPE_DOWNLOAD_START = "io.heckel.ntfy.DOWNLOAD_ACTION_START"
         const val BROADCAST_TYPE_DOWNLOAD_CANCEL = "io.heckel.ntfy.DOWNLOAD_ACTION_CANCEL"

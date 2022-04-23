@@ -1,7 +1,6 @@
 package io.heckel.ntfy.msg
 
 import androidx.annotation.Keep
-import io.heckel.ntfy.db.Action
 
 /* This annotation ensures that proguard still works in production builds,
  * see https://stackoverflow.com/a/62753300/1440785 */
@@ -35,6 +34,7 @@ data class MessageAction(
     val id: String,
     val action: String,
     val label: String, // "view", "broadcast" or "http"
+    val clear: Boolean?, // clear notification after successful execution
     val url: String?, // used in "view" and "http" actions
     val method: String?, // used in "http" action, default is POST (!)
     val headers: Map<String,String>?, // used in "http" action

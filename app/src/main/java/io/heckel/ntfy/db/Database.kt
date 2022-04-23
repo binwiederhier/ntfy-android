@@ -87,6 +87,7 @@ data class Action(
     @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
     @ColumnInfo(name = "action") val action: String, // "view", "http" or "broadcast"
     @ColumnInfo(name = "label") val label: String,
+    @ColumnInfo(name = "clear") val clear: Boolean?, // clear notification after successful execution
     @ColumnInfo(name = "url") val url: String?, // used in "view" and "http" actions
     @ColumnInfo(name = "method") val method: String?, // used in "http" action
     @ColumnInfo(name = "headers") val headers: Map<String,String>?, // used in "http" action
