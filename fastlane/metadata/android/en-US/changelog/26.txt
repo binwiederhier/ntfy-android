@@ -8,6 +8,7 @@ Bugs:
 * Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov for reporting)
 * Error in sending test notification in different languages (#209, thanks to @StoyanDimitrov for reporting)
 * "[x] Instant delivery in doze mode" checkbox does not work properly (#211)
+* Disallow "http" GET/HEAD actions with body (#221, thanks to @cmeis for reporting)
 
 Additional translations:
 * Japanese (thanks to @shak)

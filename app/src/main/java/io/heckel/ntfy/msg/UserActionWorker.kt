@@ -94,11 +94,12 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         save(action.copy(progress = ACTION_PROGRESS_ONGOING, error = null))
 
         val url = action.url ?: return
-        val method = action.method ?: "POST" // (not GET, because POST as a default makes more sense!)
-        val body = action.body ?: ""
+        val method = action.method ?: DEFAULT_HTTP_ACTION_METHOD
+        val defaultBody = if (listOf("GET", "HEAD").contains(method)) null else ""
+        val body = action.body ?: defaultBody
         val builder = Request.Builder()
             .url(url)
-            .method(method, body.toRequestBody())
+            .method(method, body?.toRequestBody())
             .addHeader("User-Agent", ApiService.USER_AGENT)
         action.headers?.forEach { (key, value) ->
             builder.addHeader(key, value)
@@ -134,6 +135,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         const val INPUT_DATA_NOTIFICATION_ID = "notificationId"
         const val INPUT_DATA_ACTION_ID = "actionId"
 
+        private const val DEFAULT_HTTP_ACTION_METHOD = "POST" // Cannot be changed without changing the contract
         private const val TAG = "NtfyUserActWrk"
     }
 }
