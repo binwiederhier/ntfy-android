@@ -16,4 +16,4 @@ Additional translations:
 * Russian (thanks to @flamey and @ilya.mikheev.coder)
 
 Thanks for testing:
-* Thanks to @RasHas (aka @Shard), @Fallenbagel, @cmeis, @poblabs, and everyone I forgot for testing.
+* Thanks to @RasHas (aka @Shard), @cmeis, @poblabs, and everyone I forgot for testing.
