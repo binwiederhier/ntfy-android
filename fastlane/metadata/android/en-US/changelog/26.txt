@@ -9,6 +9,7 @@ Bugs:
 * Error in sending test notification in different languages (#209, thanks to @StoyanDimitrov for reporting)
 * "[x] Instant delivery in doze mode" checkbox does not work properly (#211)
 * Disallow "http" GET/HEAD actions with body (#221, thanks to @cmeis for reporting)
+* Action "view" with "clear=true" does not work on some phones (#220, thanks to @cmeis for reporting)
 
 Additional translations:
 * Japanese (thanks to @shak)

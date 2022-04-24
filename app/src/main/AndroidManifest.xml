@@ -30,7 +30,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -79,6 +78,12 @@
                 <data android:mimeType="video/*" />
                 <data android:mimeType="application/*" />
             </intent-filter>
+        </activity>
+
+        <!-- Hack: Activity used for "view" action button with "clear=true" (to be able to cancel notifications and show a URL) -->
+        <activity
+                android:name=".msg.NotificationService$ViewActionWithClearActivity"
+                android:exported="false">
         </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->

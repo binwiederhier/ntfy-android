@@ -1,9 +1,6 @@
 package io.heckel.ntfy.msg
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,15 +8,18 @@ import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
 import java.util.*
+
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -45,6 +45,13 @@ class NotificationService(val context: Context) {
         if (notification.notificationId != 0) {
             Log.d(TAG, "Cancelling notification ${notification.id}: ${decodeMessage(notification)}")
             notificationManager.cancel(notification.notificationId)
+        }
+    }
+
+    fun cancel(notificationId: Int) {
+        if (notificationId != 0) {
+            Log.d(TAG, "Cancelling notification ${notificationId}")
+            notificationManager.cancel(notificationId)
         }
     }
 
@@ -201,34 +208,55 @@ class NotificationService(val context: Context) {
 
     private fun maybeAddUserActions(builder: NotificationCompat.Builder, notification: Notification) {
         notification.actions?.forEach { action ->
-            // ACTION_VIEW weirdness:
-            //   It's apparently impossible to start an activity from PendingIntent.getActivity() and also close
-            //   the notification. To clear it, we have to actually run our own code, which we do via the UserActionWorker.
-            //   However, Android has a weird bug that does not allow a BroadcastReceiver or Worker to start an activity
-            //   in the foreground and also close the notification drawer, without sending a deprecated Intent. So to not
-            //   have to use this deprecated code in the majority case, we do this weird viewActionWithoutClear below.
-            //
-            //   See https://stackoverflow.com/questions/18261969/clicking-android-notification-actions-does-not-close-notification-drawer
-
             val actionType = action.action.lowercase(Locale.getDefault())
-            val viewActionWithoutClear = actionType == ACTION_VIEW && action.clear != true
-            if (viewActionWithoutClear) {
-                addViewUserActionWithoutClear(builder, action)
+            if (actionType == ACTION_VIEW) {
+                // Hack: Action "view" with "clear=true" is a special case, because it's apparently impossible to start a
+                // URL activity from PendingIntent.getActivity() and also close the notification. To clear it, we
+                // launch our own Activity (ViewActionWithClearActivity) which then calls the actual activity
+
+                if (action.clear == true) {
+                    addViewUserActionWithClear(builder, notification, action)
+                } else {
+                    addViewUserActionWithoutClear(builder, action)
+                }
             } else {
                 addHttpOrBroadcastUserAction(builder, notification, action)
             }
         }
     }
 
+    /**
+     * Open the URL and do NOT cancel the notification (clear=false). This uses a normal Intent with the given URL.
+     * The other case is much more interesting.
+     */
     private fun addViewUserActionWithoutClear(builder: NotificationCompat.Builder, action: Action) {
-        Log.d(TAG, "Adding view action (no clear) for ${action.url}")
         try {
             val url = action.url ?: return
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             }
             val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+        } catch (e: Exception) {
+            Log.w(TAG, "Unable to add open user action", e)
+        }
+    }
+
+    /**
+     * HACK: Open the URL and CANCEL the notification (clear=true). This is a SPECIAL case with a horrible workaround.
+     * We call our own activity ViewActionWithClearActivity and open the URL from there.
+     */
+    private fun addViewUserActionWithClear(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+        try {
+            val url = action.url ?: return
+            val intent = Intent(context, ViewActionWithClearActivity::class.java).apply {
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                putExtra(VIEW_ACTION_EXTRA_URL, url)
+                putExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, notification.notificationId)
+            }
+            val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+            builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+
         } catch (e: Exception) {
             Log.w(TAG, "Unable to add open user action", e)
         }
@@ -245,6 +273,13 @@ class NotificationService(val context: Context) {
         builder.addAction(NotificationCompat.Action.Builder(0, label, pendingIntent).build())
     }
 
+    /**
+     * Receives the broadcast from
+     * - the "http" and "broadcast" action button (the "view" actio is handled differently)
+     * - the "download"/"cancel" action button
+     *
+     * Then queues a Worker via WorkManager to execute the action in the background
+     */
     class UserActionBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val type = intent.getStringExtra(BROADCAST_EXTRA_TYPE) ?: return
@@ -261,12 +296,13 @@ class NotificationService(val context: Context) {
     }
 
     private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
-        val intent = Intent(context, DetailActivity::class.java)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
-        intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        val intent = Intent(context, DetailActivity::class.java).apply {
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        }
         return TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(intent) // Add the intent, which inflates the back stack
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE) // Get the PendingIntent containing the entire back stack
@@ -320,6 +356,43 @@ class NotificationService(val context: Context) {
         }
     }
 
+    /**
+     * Activity used to launch a URL.
+     * .
+     * Horrible hack: Action "view" with "clear=true" is a special case, because it's apparently impossible to start a
+     * URL activity from PendingIntent.getActivity() and also close the notification. To clear it, we
+     * launch this activity which then calls the actual activity.
+     */
+    class ViewActionWithClearActivity : Activity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            Log.d(TAG, "Creating $this")
+            val url = intent.getStringExtra(VIEW_ACTION_EXTRA_URL)
+            val notificationId = intent.getIntExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, 0)
+            if (url == null) {
+                finish()
+                return
+            }
+
+            // Immediately start the actual activity
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to start activity from URL $url", e)
+            }
+
+            // Cancel notification
+            val notifier = NotificationService(this)
+            notifier.cancel(notificationId)
+
+            // Close this activity
+            finish()
+        }
+    }
+
     companion object {
         const val ACTION_VIEW = "view"
         const val ACTION_HTTP = "http"
@@ -340,5 +413,8 @@ class NotificationService(val context: Context) {
         private const val CHANNEL_ID_DEFAULT = "ntfy"
         private const val CHANNEL_ID_HIGH = "ntfy-high"
         private const val CHANNEL_ID_MAX = "ntfy-max"
+
+        private const val VIEW_ACTION_EXTRA_URL = "url"
+        private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"
     }
 }
