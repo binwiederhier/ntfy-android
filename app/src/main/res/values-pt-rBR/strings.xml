@@ -295,4 +295,13 @@
     <string name="settings_advanced_header">Avançado</string>
     <string name="settings_advanced_broadcast_summary_disabled">Aplicativos não podem receber notificações como transmissão</string>
     <string name="settings_advanced_record_logs_summary_enabled">Registrando (até 1000 registros) para o dispositivo …</string>
+    <string name="detail_deep_link_subscribed_toast_message">Inscrito no tópico %1$s</string>
+    <string name="settings_notifications_priority_high">alta</string>
+    <string name="notification_popup_user_action_failed">%1$s falhou: %2$s</string>
+    <string name="settings_notifications_channel_prefs_title">Configurações do canal</string>
+    <string name="settings_notifications_priority_max">máxima</string>
+    <string name="settings_notifications_priority_min">mínimo</string>
+    <string name="settings_notifications_priority_default">padrão</string>
+    <string name="settings_notifications_priority_low">baixa</string>
+    <string name="settings_notifications_channel_prefs_summary">Gerenciar Modo Não Perturbe, sons customizados, etc.</string>
 </resources>
