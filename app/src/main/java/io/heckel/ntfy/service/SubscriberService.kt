@@ -299,6 +299,7 @@ class SubscriberService : Service() {
             .setContentIntent(pendingIntent)
             .setSound(null)
             .setShowWhen(false) // Don't show date/time
+            .setGroup(NOTIFICATION_GROUP_ID) // Do not group with other notifications
             .build()
     }
 
@@ -353,6 +354,7 @@ class SubscriberService : Service() {
 
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
+        private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
         private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
         private const val SHARED_PREFS_ID = "SubscriberService"
