@@ -244,7 +244,7 @@
     <string name="settings_notifications_priority_high">high</string>
     <string name="settings_notifications_priority_max">max</string>
     <string name="settings_notifications_channel_prefs_title">Channel settings</string>
-    <string name="settings_notifications_channel_prefs_summary">Manage Do Not Disturb (DND) override, custom sounds, etc.</string>
+    <string name="settings_notifications_channel_prefs_summary">Do Not Disturb (DND) override, sounds, etc.</string>
     <string name="settings_notifications_auto_download_title">Download attachments</string>
     <string name="settings_notifications_auto_download_summary_always">Auto-download all attachments</string>
     <string name="settings_notifications_auto_download_summary_never">Never auto-download attachments</string>

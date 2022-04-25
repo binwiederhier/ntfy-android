@@ -101,6 +101,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val topic = url.pathSegments.first()
         title = topicShortUrl(baseUrl, topic)
 
+        // Subscribe to topic if it doesn't already exist
         lifecycleScope.launch(Dispatchers.IO) {
             var subscription = repository.getSubscription(baseUrl, topic)
             if (subscription == null) {
@@ -140,6 +141,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 }
             }
 
+            // Add extras needed in loadView(); normally these are added in MainActivity
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
