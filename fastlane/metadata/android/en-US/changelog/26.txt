@@ -13,6 +13,7 @@ Bugs:
 * Do not group foreground service notification with others (#219, thanks to @s-h-a-r-d for reporting)
 
 Additional translations:
+* Czech (thanks to @waclaw66)
 * Japanese (thanks to @shak)
 * Russian (thanks to @flamey and @ilya.mikheev.coder)
 
