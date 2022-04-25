@@ -303,4 +303,5 @@
     <string name="user_dialog_button_add">Добавить пользователя</string>
     <string name="user_dialog_button_cancel">Отмена</string>
     <string name="user_dialog_button_delete">Удалить пользователя</string>
+    <string name="notification_popup_user_action_failed">%1$s не удалась: %2$s</string>
 </resources>
