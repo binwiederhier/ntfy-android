@@ -29,8 +29,8 @@
     <!-- Main activity: Action bar -->
     <string name="main_action_bar_title">Subscribed topics</string>
     <string name="main_menu_notifications_enabled">Notifications on</string>
-    <string name="main_menu_notifications_disabled_forever">Notifications paused</string>
-    <string name="main_menu_notifications_disabled_until">Notifications paused until %1$s</string>
+    <string name="main_menu_notifications_disabled_forever">Notifications muted</string>
+    <string name="main_menu_notifications_disabled_until">Notifications muted until %1$s</string>
     <string name="main_menu_settings_title">Settings</string>
     <string name="main_menu_report_bug_title">Report a bug</string>
     <string name="main_menu_docs_title">Read the docs</string>
@@ -160,8 +160,8 @@
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications on</string>
-    <string name="detail_menu_notifications_disabled_forever">Notifications paused</string>
-    <string name="detail_menu_notifications_disabled_until">Notifications paused until %1$s</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifications muted</string>
+    <string name="detail_menu_notifications_disabled_until">Notifications muted until %1$s</string>
     <string name="detail_menu_enable_instant">Enable instant delivery</string>
     <string name="detail_menu_disable_instant">Turn off instant delivery</string>
     <string name="detail_menu_test">Send test notification</string>
@@ -197,12 +197,12 @@
     <string name="share_successful">Message published</string>
 
     <!-- Notification dialog -->
-    <string name="notification_dialog_title">Pause notifications</string>
+    <string name="notification_dialog_title">Mute notifications</string>
     <string name="notification_dialog_cancel">Cancel</string>
     <string name="notification_dialog_save">Save</string>
     <string name="notification_dialog_enabled_toast_message">Notifications resumed</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notifications paused</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifications paused until %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifications muted</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications muted until %1$s</string>
     <string name="notification_dialog_show_all">Show all notifications</string>
     <string name="notification_dialog_30min">30 minutes</string>
     <string name="notification_dialog_1h">1 hour</string>
@@ -225,10 +225,10 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_notifications_header">Notifications</string>
-    <string name="settings_notifications_muted_until_title">Pause notifications</string>
+    <string name="settings_notifications_muted_until_title">Mute notifications</string>
     <string name="settings_notifications_muted_until_show_all">Showing all notifications</string>
-    <string name="settings_notifications_muted_until_forever">Notifications paused until resumed</string>
-    <string name="settings_notifications_muted_until_x">Notifications paused until %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Notifications muted until resumed</string>
+    <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
     <string name="settings_notifications_min_priority_title">Minimum priority</string>
     <string name="settings_notifications_min_priority_summary_any">Showing all notifications</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or above</string>
