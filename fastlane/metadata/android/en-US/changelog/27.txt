@@ -1,0 +1,2 @@
+Bugs:
+* Accurate naming of "mute notifications" from "pause notifications" (#224, thanks to @shadow00 for reporting)
