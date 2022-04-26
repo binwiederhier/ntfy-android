@@ -152,7 +152,7 @@
     <string name="settings_notifications_priority_high">vysoká</string>
     <string name="settings_notifications_priority_max">nejvyšší</string>
     <string name="settings_notifications_channel_prefs_title">Nastavení kanálu</string>
-    <string name="settings_notifications_channel_prefs_summary">Správa vlastního režimu Nerušit (DND), zvuků atd.</string>
+    <string name="settings_notifications_channel_prefs_summary">Vlastní režim Nerušit (DND), zvuky atd.</string>
     <string name="settings_notifications_auto_download_summary_never">Nikdy nestahovat přílohy automaticky</string>
     <string name="settings_notifications_auto_download_summary_smaller_than_x">Automaticky stahovat přílohy až do velikosti %1$s</string>
     <string name="settings_notifications_auto_download_never">Nikdy nic automaticky nestahovat</string>
