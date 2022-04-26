@@ -1,0 +1,1 @@
+Odesílejte oznámení do telefonu z libovolného skriptu pomocí PUT/POST požadavků
