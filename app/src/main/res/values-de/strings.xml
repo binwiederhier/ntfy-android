@@ -26,7 +26,7 @@
     <string name="refresh_message_error_one">Abo konnte nicht aktualisiert werden: %1$s</string>
     <string name="main_action_bar_title">Abonnierte Themen</string>
     <string name="main_menu_notifications_enabled">Benachrichtigungen aktiviert</string>
-    <string name="main_menu_notifications_disabled_forever">Benachrichtigungen pausiert</string>
+    <string name="main_menu_notifications_disabled_forever">Benachrichtigungen stummgeschaltet</string>
     <string name="channel_subscriber_notification_instant_text">Sofortnachrichten-Themen abonniert</string>
     <string name="main_menu_report_bug_title">Fehler melden</string>
     <string name="main_menu_docs_title">Dokumentation lesen</string>
@@ -110,12 +110,12 @@
     <string name="share_topic_title">Teilen mit</string>
     <string name="share_suggested_topics">Vorgeschlagene Themen</string>
     <string name="share_successful">Nachricht veröffentlicht</string>
-    <string name="notification_dialog_title">Benachrichtigungen pausieren</string>
+    <string name="notification_dialog_title">Benachrichtigungen stummschalten</string>
     <string name="notification_dialog_cancel">Abbrechen</string>
     <string name="notification_dialog_save">Speichern</string>
     <string name="notification_dialog_enabled_toast_message">Benachrichtigungen aktiviert</string>
-    <string name="notification_dialog_muted_forever_toast_message">Benachrichtigungen pausiert</string>
-    <string name="notification_dialog_muted_until_toast_message">Benachrichtigungen pausiert bis %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Benachrichtigungen stummgeschaltet</string>
+    <string name="notification_dialog_muted_until_toast_message">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="notification_dialog_show_all">Alle Benachrichtigungen anzeigen</string>
     <string name="notification_dialog_30min">30 Minuten</string>
     <string name="notification_dialog_1h">1 Stunde</string>
@@ -136,9 +136,9 @@
 \nDatei: %2$s, Herunterladen fehlgeschlagen</string>
     <string name="settings_title">Einstellungen</string>
     <string name="settings_notifications_header">Benachrichtigungen</string>
-    <string name="settings_notifications_muted_until_title">Benachrichtigungen pausieren</string>
-    <string name="settings_notifications_muted_until_forever">Benachrichtigungen pausiert bis sie erneut aktiviert werden</string>
-    <string name="settings_notifications_muted_until_x">Benachrichtigungen pausiert bis %1$s</string>
+    <string name="settings_notifications_muted_until_title">Benachrichtigungen stummschalten</string>
+    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stummgeschaltet bis sie erneut aktiviert werden</string>
+    <string name="settings_notifications_muted_until_x">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="settings_notifications_min_priority_title">Minimale Priorität</string>
     <string name="settings_notifications_min_priority_summary_any">Zeigt alle Benachrichtigungen</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Zeige Benachrichtigungen mit Priorität %1$d (%2$s) oder höher</string>
@@ -233,7 +233,7 @@
     <string name="user_dialog_button_cancel">Abbrechen</string>
     <string name="user_dialog_button_delete">Benutzer löschen</string>
     <string name="user_dialog_button_save">Speichern</string>
-    <string name="main_menu_notifications_disabled_until">Benachrichtigungen pausiert bis %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltetbis %1$s</string>
     <string name="main_menu_settings_title">Einstellungen</string>
     <string name="main_banner_battery_button_remind_later">Später fragen</string>
     <string name="main_action_mode_delete_dialog_message">Vom gewählten Thema abmelden und alle Benachrichtigungen endgültig löschen\?</string>
@@ -259,7 +259,7 @@
     <string name="detail_item_download_info_not_downloaded_expired">nicht heruntergeladen, Link abgelaufen</string>
     <string name="detail_item_download_info_deleted_expired">gelöscht, Link abgelaufen</string>
     <string name="detail_menu_notifications_enabled">Benachrichtigungen aktiviert</string>
-    <string name="detail_menu_notifications_disabled_forever">Benachrichtigungen pausiert</string>
+    <string name="detail_menu_notifications_disabled_forever">Benachrichtigungen stummgeschaltet</string>
     <string name="detail_menu_enable_instant">Sofortnachrichten aktivieren</string>
     <string name="detail_menu_disable_instant">Sofortnachrichten deaktivieren</string>
     <string name="detail_instant_delivery_enabled">Sofortnachrichten aktiviert</string>
@@ -269,7 +269,7 @@
     <string name="detail_item_download_info_download_failed_expired">Herunterladen fehlgeschlagen, Link ist abgelaufen</string>
     <string name="detail_item_download_info_download_failed">Herunterladen fehlgeschlagen</string>
     <string name="detail_item_download_info_download_failed_expires_x">Herunterladen fehlgeschlagen, Link läuft ab am/um %1$s</string>
-    <string name="detail_menu_notifications_disabled_until">Benachrichtigungen pausiert bis %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="detail_menu_settings">Abo-Einstellungen</string>
     <string name="detail_menu_unsubscribe">Abmelden</string>
     <string name="detail_action_mode_delete_dialog_message">Die gewählte(n) Benachrichtigung(en) endgültig löschen\?</string>
