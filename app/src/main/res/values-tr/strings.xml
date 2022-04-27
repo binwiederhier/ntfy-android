@@ -17,7 +17,7 @@
     <string name="channel_subscriber_notification_instant_text_four">Dört anında teslimat konusuna abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Dört konuya abone olundu</string>
     <string name="refresh_message_no_results">Her şey güncel</string>
-    <string name="main_menu_notifications_disabled_until">Bildirimler şu zamana kadar duraklatıldı: %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="channel_subscriber_notification_noinstant_text_more">%1$d konuya abone olundu</string>
     <string name="refresh_message_error">%1$d abonelik yenilenemedi
 \n
@@ -25,7 +25,7 @@
     <string name="refresh_message_error_one">Abonelik yenilenemedi: %1$s</string>
     <string name="main_action_bar_title">Abone olunan konular</string>
     <string name="main_menu_notifications_enabled">Bildirimler açık</string>
-    <string name="main_menu_notifications_disabled_forever">Bildirimler duraklatıldı</string>
+    <string name="main_menu_notifications_disabled_forever">Bildirimler sessize alındı</string>
     <string name="main_menu_settings_title">Ayarlar</string>
     <string name="main_menu_report_bug_title">Hata bildir</string>
     <string name="main_menu_docs_title">Belgeleri oku</string>
@@ -104,8 +104,8 @@
     <string name="share_successful">Mesaj yayınlandı</string>
     <string name="notification_dialog_save">Kaydet</string>
     <string name="notification_dialog_enabled_toast_message">Bildirimler devam ettirildi</string>
-    <string name="notification_dialog_muted_forever_toast_message">Bildirimler duraklatıldı</string>
-    <string name="notification_dialog_muted_until_toast_message">Bildirimler şu zamana kadar duraklatıldı: %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Bildirimler sessize alındı</string>
+    <string name="notification_dialog_muted_until_toast_message">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="notification_dialog_show_all">Tüm bildirimleri göster</string>
     <string name="notification_dialog_30min">30 dakika</string>
     <string name="notification_dialog_1h">1 saat</string>
@@ -125,9 +125,9 @@
 \nDosya: %2$s, indirildi</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nDosya: %2$s, indirme başarısız oldu</string>
-    <string name="settings_notifications_muted_until_title">Bildirimleri duraklat</string>
-    <string name="settings_notifications_muted_until_forever">Bildirimler, devam ettirilene kadar duraklatıldı</string>
-    <string name="settings_notifications_muted_until_x">Bildirimler şu zamana kadar duraklatıldı: %1$s</string>
+    <string name="settings_notifications_muted_until_title">Bildirimleri sessize al</string>
+    <string name="settings_notifications_muted_until_forever">Bildirimler, devam ettirilene kadar sessize alındı</string>
+    <string name="settings_notifications_muted_until_x">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="settings_notifications_min_priority_title">En düşük öncelik</string>
     <string name="settings_notifications_min_priority_summary_any">Tüm bildirimler gösteriliyor</string>
     <string name="settings_notifications_min_priority_min">Herhangi bir öncelik</string>
@@ -224,7 +224,7 @@
     <string name="detail_item_menu_copy_contents_copied">Bildirim panoya kopyalandı</string>
     <string name="detail_item_cannot_open_not_found">Ek açılamıyor: Dosya silinmiş olabilir veya dosyayı açacak kurulu uygulama yok.</string>
     <string name="detail_item_saved_successfully">İndirilenler klasöründe \"%1$s\" olarak kaydedildi</string>
-    <string name="detail_menu_notifications_disabled_forever">Bildirimler duraklatıldı</string>
+    <string name="detail_menu_notifications_disabled_forever">Bildirimler sessize alındı</string>
     <string name="settings_notifications_min_priority_low">Düşük öncelik ve üstü</string>
     <string name="settings_notifications_auto_delete_three_months">3 ay sonra</string>
     <string name="detail_menu_test">Test bildirimi gönder</string>
@@ -236,14 +236,14 @@
     <string name="notification_dialog_cancel">İptal</string>
     <string name="settings_notifications_auto_download_1m">1 MB\'ın altındaysa</string>
     <string name="detail_item_download_info_download_failed_expires_x">indirme başarısız oldu, bağlantının süresi doluyor: %1$s</string>
-    <string name="detail_menu_notifications_disabled_until">Bildirimler şu zamana kadar duraklatıldı: %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="detail_menu_disable_instant">Anında teslimatı kapat</string>
     <string name="share_content_title">Mesaj ön izleme</string>
     <string name="settings_notifications_min_priority_summary_max">Öncelik 5 (en fazla) ise bildirimleri göster</string>
     <string name="detail_action_mode_menu_delete">Sil</string>
     <string name="share_content_image_error">Resim okunamıyor: %1$s</string>
     <string name="share_content_file_text">Sizinle bir dosya paylaşıldı</string>
-    <string name="notification_dialog_title">Bildirimleri duraklat</string>
+    <string name="notification_dialog_title">Bildirimleri sessize al</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Öncelik %1$d (%2$s) veya üstüyse bildirimleri göster</string>
     <string name="settings_notifications_min_priority_high">Yüksek öncelik ve üstü</string>
     <string name="settings_notifications_auto_download_summary_smaller_than_x">%1$s boyutuna kadar ekleri otomatik olarak indir</string>
