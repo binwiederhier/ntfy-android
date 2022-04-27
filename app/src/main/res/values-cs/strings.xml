@@ -24,7 +24,7 @@
     <string name="main_menu_notifications_enabled">Oznámení zapnuta</string>
     <string name="channel_notifications_default_name">Oznámení (výchozí priorita)</string>
     <string name="channel_notifications_high_name">Oznámení (vysoká priorita)</string>
-    <string name="main_menu_notifications_disabled_until">Oznámení pozastavena do %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Oznámení ztlumena do %1$s</string>
     <string name="main_menu_settings_title">Nastavení</string>
     <string name="main_menu_docs_title">Přečíst dokumentaci</string>
     <string name="main_menu_rate_title">Ohodnotit aplikaci ⭐</string>
@@ -98,8 +98,8 @@
     <string name="detail_item_download_info_deleted_expires_x">smazáno, platnost odkazu vypršela %1$s</string>
     <string name="detail_item_download_info_download_failed">stažení se nezdařilo</string>
     <string name="detail_menu_notifications_enabled">Oznámení zapnuta</string>
-    <string name="detail_menu_notifications_disabled_forever">Oznámení pozastavena</string>
-    <string name="detail_menu_notifications_disabled_until">Oznámení pozastavena do %1$s</string>
+    <string name="detail_menu_notifications_disabled_forever">Oznámení ztlumena</string>
+    <string name="detail_menu_notifications_disabled_until">Oznámení ztlumena do %1$s</string>
     <string name="detail_menu_enable_instant">Povolit okamžité doručení</string>
     <string name="detail_menu_disable_instant">Vypnout okamžité doručení</string>
     <string name="detail_menu_settings">Nastavení odběru</string>
@@ -117,11 +117,11 @@
     <string name="share_topic_title">Sdílet s</string>
     <string name="share_suggested_topics">Navrhovaná témata</string>
     <string name="share_successful">Zpráva zveřejněna</string>
-    <string name="notification_dialog_title">Pozastavit oznámení</string>
+    <string name="notification_dialog_title">Ztlumit oznámení</string>
     <string name="notification_dialog_cancel">Zrušit</string>
     <string name="notification_dialog_save">Uložit</string>
     <string name="notification_dialog_enabled_toast_message">Oznámení byla obnovena</string>
-    <string name="notification_dialog_muted_forever_toast_message">Oznámení pozastavena</string>
+    <string name="notification_dialog_muted_forever_toast_message">Oznámení ztlumena</string>
     <string name="notification_dialog_show_all">Zobrazit všechna oznámení</string>
     <string name="notification_dialog_30min">30 minut</string>
     <string name="notification_dialog_1h">1 hodina</string>
@@ -140,9 +140,9 @@
     <string name="notification_popup_user_action_failed">%1$s selhalo: %2$s</string>
     <string name="settings_title">Nastavení</string>
     <string name="settings_notifications_header">Oznámení</string>
-    <string name="settings_notifications_muted_until_title">Pozastavit oznámení</string>
+    <string name="settings_notifications_muted_until_title">Ztlumit oznámení</string>
     <string name="settings_notifications_muted_until_show_all">Zobrazení všech upozornění</string>
-    <string name="settings_notifications_muted_until_x">Oznámení pozastavena do %1$s</string>
+    <string name="settings_notifications_muted_until_x">Oznámení ztlumena do %1$s</string>
     <string name="settings_notifications_min_priority_title">Nejnižší priorita</string>
     <string name="settings_notifications_min_priority_low">Nízká priorita a vyšší</string>
     <string name="settings_notifications_min_priority_max">Pouze nejvyšší priorita</string>
@@ -234,7 +234,7 @@
     <string name="channel_subscriber_notification_instant_text_four">Přihlášeno k odběru čtyř témat okamžitého doručení</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Odběr tří témat</string>
     <string name="main_banner_json_stream_button_learn_more">Zjistit více</string>
-    <string name="main_menu_notifications_disabled_forever">Oznámení pozastavena</string>
+    <string name="main_menu_notifications_disabled_forever">Oznámení ztlumena</string>
     <string name="main_how_to_intro">Kliknutím na tlačítko + vytvoříte téma nebo se k němu přihlásíte. Poté obdržíte na svém zařízení oznámení při odesílání zpráv prostřednictvím PUT nebo POST.</string>
     <string name="main_banner_battery_button_dismiss">Zavřít</string>
     <string name="main_banner_battery_button_fix_now">Opravit nyní</string>
@@ -256,7 +256,7 @@
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% staženo</string>
     <string name="detail_menu_test">Odeslat testovací oznámení</string>
     <string name="detail_menu_clear">Vymazat všechna oznámení</string>
-    <string name="settings_notifications_muted_until_forever">Oznámení pozastavena až do obnovení</string>
+    <string name="settings_notifications_muted_until_forever">Oznámení ztlumena až do obnovení</string>
     <string name="channel_notifications_low_name">Oznámení (malá priorita)</string>
     <string name="channel_notifications_min_name">Oznámení (nejnižší priorita)</string>
     <string name="channel_notifications_max_name">Oznámení (nejvyšší priorita)</string>
@@ -270,7 +270,7 @@
     <string name="notification_popup_action_download">Stáhnout</string>
     <string name="notification_dialog_tomorrow">Do zítra</string>
     <string name="notification_popup_action_open">Otevřít</string>
-    <string name="notification_dialog_muted_until_toast_message">Oznámení pozastavena do %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Oznámení ztlumena do %1$s</string>
     <string name="notification_popup_action_browse">Procházet</string>
     <string name="settings_notifications_min_priority_summary_max">Zobrazit oznámení, pokud je priorita 5 (nevyšší)</string>
     <string name="settings_notifications_min_priority_summary_any">Zobrazení všech oznámení</string>
