@@ -89,7 +89,7 @@
     <string name="detail_item_menu_cancel">Cancelar descarga</string>
     <string name="detail_item_download_info_download_failed">descarga fallida</string>
     <string name="detail_menu_notifications_enabled">Notificaciones habilitadas</string>
-    <string name="detail_menu_notifications_disabled_until">Notificaciones deshabilitadas hasta %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Notificaciones silenciadas hasta %1$s</string>
     <string name="detail_menu_enable_instant">Habilitar la entrega instantánea</string>
     <string name="detail_menu_disable_instant">Deshabilitar la entrega instantánea</string>
     <string name="detail_menu_copy_url">Copiar la dirección del tópico</string>
@@ -107,10 +107,10 @@
     <string name="share_content_file_text">Se ha compartido un archivo contigo</string>
     <string name="share_content_file_error">No se pudo leer la información del archivo: %1$s</string>
     <string name="share_successful">Mensaje publicado</string>
-    <string name="notification_dialog_title">Pausar notificaciones</string>
+    <string name="notification_dialog_title">Silenciar notificaciones</string>
     <string name="notification_dialog_cancel">Cancelar</string>
     <string name="notification_dialog_save">Guardar</string>
-    <string name="notification_dialog_muted_until_toast_message">Notificaciones pausadas hasta %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Notificaciones silenciadas hasta %1$s</string>
     <string name="notification_dialog_show_all">Mostrar todas las notificaciones</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_dialog_1h">1 hora</string>
@@ -129,10 +129,10 @@
 \nArchivo: %2$s, descarga fallida</string>
     <string name="settings_title">Ajustes</string>
     <string name="settings_notifications_header">Notificaciones</string>
-    <string name="settings_notifications_muted_until_title">Pausar notificaciones</string>
+    <string name="settings_notifications_muted_until_title">Silenciar notificaciones</string>
     <string name="settings_notifications_muted_until_show_all">Se mostrarán todas las notificaciones</string>
-    <string name="settings_notifications_muted_until_forever">Notificaciones deshabilitadas hasta que se re-habiliten</string>
-    <string name="settings_notifications_muted_until_x">Notificaciones deshabilitadas hasta %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Notificaciones silenciadas hasta que se re-habiliten</string>
+    <string name="settings_notifications_muted_until_x">Notificaciones silenciadas hasta %1$s</string>
     <string name="settings_notifications_min_priority_title">Prioridad mínima</string>
     <string name="settings_notifications_min_priority_summary_max">Mostrar notificaciones si la prioridad es 5 (máximo)</string>
     <string name="settings_notifications_min_priority_min">Cualquier prioridad</string>
@@ -232,7 +232,7 @@
     <string name="channel_subscriber_notification_instant_text_three">Suscrito a tres tópicos de entrega instantánea</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Suscrito a un tópico</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Suscrito a tres tópicos</string>
-    <string name="main_menu_notifications_disabled_until">Notificaciones deshabilitadas hasta %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Notificaciones silenciadas hasta %1$s</string>
     <string name="add_dialog_error_connection_failed">Error de conexión: %1$s</string>
     <string name="detail_item_menu_save_file">Guardar archivo</string>
     <string name="detail_menu_settings">Ajustes de la suscripción</string>
@@ -251,7 +251,7 @@
     <string name="notification_dialog_enabled_toast_message">Notificaciones re-habilitadas</string>
     <string name="settings_notifications_auto_delete_summary_three_months">Eliminar automáticamente las notificaciones después de 3 meses</string>
     <string name="detail_item_cannot_open_not_found">No se puede abrir el archivo adjunto: El archivo puede haber sido borrado, o ninguna aplicación instalada puede abrir el archivo.</string>
-    <string name="detail_menu_notifications_disabled_forever">Notificaciones deshabilitadas</string>
+    <string name="detail_menu_notifications_disabled_forever">Notificaciones silenciadas</string>
     <string name="notification_dialog_2h">2 horas</string>
     <string name="settings_general_dark_mode_summary_dark">Modo oscuro activado. ¿Eres un vampiro\?</string>
     <string name="settings_general_default_base_url_message">Introduzca la URL base de su servidor para utilizarlo como predeterminado cuando se suscriba a nuevos tópicos y/o se comparta a ellos.</string>
@@ -262,7 +262,7 @@
     <string name="detail_menu_unsubscribe">Cancelar la suscripción</string>
     <string name="detail_item_menu_copy_contents">Copiar notificación</string>
     <string name="detail_settings_title">Ajustes de la suscripción</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notificaciones pausadas</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notificaciones silenciadas</string>
     <string name="notification_dialog_tomorrow">Hasta mañana</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Mostrar notificaciones si la prioridad es %1$d (%2$s) o superior</string>
     <string name="settings_notifications_auto_download_title">Descargar archivos adjuntos</string>
@@ -270,7 +270,7 @@
     <string name="settings_notifications_auto_delete_one_day">Después de un día</string>
     <string name="settings_general_users_prefs_user_add_title">Añadir nuevo usuario</string>
     <string name="user_dialog_button_delete">Eliminar usuario</string>
-    <string name="main_menu_notifications_disabled_forever">Notificaciones deshabilitadas</string>
+    <string name="main_menu_notifications_disabled_forever">Notificaciones silenciadas</string>
     <string name="settings_notifications_min_priority_max">Sólo prioridad máxima</string>
     <string name="settings_notifications_auto_download_50m">Si es más pequeño que 50 MB</string>
     <string name="settings_notifications_auto_delete_one_week">Después de una semana</string>
@@ -300,4 +300,8 @@
     <string name="settings_notifications_priority_default">default</string>
     <string name="settings_notifications_priority_min">mínima</string>
     <string name="settings_notifications_priority_low">baja</string>
+    <string name="detail_deep_link_subscribed_toast_message">Suscrito al tópico %1$s</string>
+    <string name="settings_notifications_channel_prefs_title">Ajustes del canal</string>
+    <string name="settings_notifications_channel_prefs_summary">Ignorar No Molestar (DND), sonidos, etc.</string>
+    <string name="notification_popup_user_action_failed">%1$s ha fallado: %2$s</string>
 </resources>
