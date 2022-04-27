@@ -21,7 +21,7 @@
 \n
 \n%2$s</string>
     <string name="main_menu_notifications_enabled">Известията са включени</string>
-    <string name="main_menu_notifications_disabled_forever">Известията са изключени</string>
+    <string name="main_menu_notifications_disabled_forever">Известията са заглушени</string>
     <string name="main_menu_settings_title">Настройки</string>
     <string name="main_action_mode_delete_dialog_message">Желаете ли да се отпишете от избраните теми и безвъзвратно да премахнете известия\?</string>
     <string name="add_dialog_title">Абониране за тема</string>
@@ -31,15 +31,15 @@
     <string name="add_dialog_login_description">Тази тема изисква да влезете. Въведете потребителско име и парола.</string>
     <string name="detail_clear_dialog_message">Наистина ли желаете да премахнете всички известия в темата\?</string>
     <string name="detail_delete_dialog_message">Наистина ли желаете да се отпишете от темата и да премахнете всички известия\?</string>
-    <string name="settings_notifications_muted_until_title">Изключване на известията</string>
+    <string name="settings_notifications_muted_until_title">Заглушаване на известия</string>
     <string name="notification_dialog_tomorrow">До утре</string>
     <string name="detail_menu_copy_url">Копиране адреса на темата</string>
     <string name="share_topic_title">Споделяне с</string>
     <string name="share_suggested_topics">Предложени теми</string>
     <string name="settings_notifications_muted_until_show_all">Показват се всички известия</string>
     <string name="notification_dialog_forever">До включване</string>
-    <string name="settings_notifications_muted_until_forever">Известията са изключени до включването им</string>
-    <string name="settings_notifications_muted_until_x">Известията са изключени до %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Известията са заглушени до включването им</string>
+    <string name="settings_notifications_muted_until_x">Известията са заглушени до %1$s</string>
     <string name="settings_general_users_summary">Добавяне и премахване на потребители за защитени теми</string>
     <string name="settings_general_users_prefs_user_not_used">Не се използва от никоя тема</string>
     <string name="settings_general_users_prefs_user_used_by_one">Използва се от %1$s</string>
@@ -53,20 +53,20 @@
     <string name="user_dialog_description_add">Тук можете да добавите потребител. Всички теми на сървъра ще използват този потребител.</string>
     <string name="channel_notifications_min_name">Известия (минимален приоритет)</string>
     <string name="channel_subscriber_notification_instant_text_one">Има абонамент за тема с незабавно доставяне</string>
-    <string name="notification_dialog_muted_forever_toast_message">Известията са изключени</string>
+    <string name="notification_dialog_muted_forever_toast_message">Известията са заглушени</string>
     <string name="channel_subscriber_notification_title">Очаква входящи известия</string>
     <string name="channel_subscriber_notification_instant_text_two">Има абонамент за две теми с незабавно доставяне</string>
     <string name="add_dialog_description_below">Възможно е темите да не са защитени с парола, затова изберете име, което е трудно за отгатване. След като се абонирате, можете да изпращате известия по PUT или POST.</string>
-    <string name="notification_dialog_title">Изключване на известията</string>
+    <string name="notification_dialog_title">Заглушаване на известия</string>
     <string name="channel_subscriber_notification_instant_text_more">Има абонамент за %1$d теми с незабавно доставяне</string>
     <string name="refresh_message_error_one">Абонаментът не може да бъде обновен: %1$s</string>
-    <string name="main_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
-    <string name="detail_menu_notifications_disabled_until">Известията са изключени до %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Известията са заглушени до %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Известията са заглушени до %1$s</string>
     <string name="main_how_to_intro">Докоснете бутона с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
     <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса й.</string>
     <string name="detail_no_notifications_text">В момента в темата няма известия</string>
     <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
-    <string name="notification_dialog_muted_until_toast_message">Известията са изключени до %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Известията са заглушени до %1$s</string>
     <string name="settings_advanced_export_logs_summary">Дневниците се копират в междинната памет или се изпращат към nopaste.net (собственост на автора на ntfy). Имената на хостовете и темите могат да бъдат цензурирани, но съдържанието на известията никога.</string>
     <string name="main_menu_report_bug_title">Доклад за дефект</string>
     <string name="main_menu_docs_title">Документация</string>
@@ -80,7 +80,7 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">Премахване</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_status_reconnecting">свързване…</string>
-    <string name="main_no_subscriptions_text">В момента нямате абонаменти</string>
+    <string name="main_no_subscriptions_text">В момента няма абонаменти</string>
     <string name="main_unified_push_toast">Този абонамент се управлява от %1$s чрез UnifiedPush</string>
     <string name="main_banner_json_stream_button_learn_more">Научете повече</string>
     <string name="add_dialog_button_cancel">Отказ</string>
@@ -287,7 +287,7 @@
     <string name="detail_item_download_info_deleted_expired">премахнат, препратката е с изтекла валидност</string>
     <string name="detail_item_download_info_deleted_expires_x">премахнат, валидността изтича на %1$s</string>
     <string name="detail_item_download_info_download_failed_expired">грешка при изтегляне, препратката е с изтекла валидност</string>
-    <string name="detail_menu_notifications_disabled_forever">Известията са изключени</string>
+    <string name="detail_menu_notifications_disabled_forever">Известията са заглушени</string>
     <string name="detail_menu_notifications_enabled">Известията са включени</string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не е изтеглен, валидността изтича на %1$s</string>
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% изтеглен</string>
