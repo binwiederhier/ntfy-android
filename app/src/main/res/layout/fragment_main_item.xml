@@ -1,75 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="wrap_content"
-                                                   android:background="?android:attr/selectableItemBackground"
-                                                   android:orientation="horizontal" android:clickable="true"
-                                                   android:focusable="true" android:paddingEnd="15dp"
-                                                   android:paddingStart="15dp">
-    <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp" app:srcCompat="@drawable/ic_sms_gray_24dp"
-            android:id="@+id/main_item_image" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="13dp"/>
-    <TextView
-            android:text="ntfy.sh/example"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" android:id="@+id/main_item_text"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/main_item_status"
-            android:layout_marginStart="10dp" app:layout_constraintStart_toEndOf="@+id/main_item_image"
-            app:layout_constraintVertical_bias="0.0" android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="?android:attr/textColorPrimary" android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image"/>
-    <TextView
-            android:text="89 notifications, reconnecting ... This may wrap in the case of UnifiedPush"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" android:id="@+id/main_item_status"
-            app:layout_constraintStart_toStartOf="@+id/main_item_text"
-            app:layout_constraintTop_toBottomOf="@+id/main_item_text" app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="10dp" app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@id/main_item_new" android:layout_marginEnd="10dp"/>
-    <ImageView
-            android:layout_width="20dp"
-            android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_time_gray_outline_24dp"
-            android:id="@+id/main_item_notification_disabled_until_image"
-            app:layout_constraintTop_toTopOf="@+id/main_item_text"
-            app:layout_constraintEnd_toStartOf="@+id/main_item_notification_disabled_forever_image"
-            android:paddingTop="3dp" android:layout_marginEnd="3dp"/>
-    <ImageView
-            android:layout_width="20dp"
-            android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_gray_outline_24dp"
-            android:id="@+id/main_item_notification_disabled_forever_image"
-            app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_until_image"
-            app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image" android:paddingTop="3dp"
-            android:layout_marginEnd="3dp"/>
-    <ImageView
-            android:layout_width="20dp"
-            android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_gray_24dp"
-            android:id="@+id/main_item_instant_image"
-            app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_forever_image"
-            app:layout_constraintEnd_toStartOf="@+id/main_item_date" android:paddingTop="3dp"/>
-    <TextView
-            android:text="10:13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:id="@+id/main_item_date"
-            app:layout_constraintTop_toTopOf="@+id/main_item_instant_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:paddingTop="2dp"/>
-    <TextView
-            android:text="99+"
-            android:layout_width="24dp"
-            android:layout_height="24dp" android:id="@+id/main_item_new"
-            android:layout_marginTop="3dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_circle"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@+id/main_item_date"
-            app:layout_constraintEnd_toEndOf="@+id/main_item_date"
-            app:layout_constraintStart_toEndOf="@+id/main_item_instant_image"
-            android:textSize="10sp" android:textStyle="bold"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_item_card"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="0dp"
+        android:padding="0dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="2dp"
+        app:cardMaxElevation="2dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:focusable="true"
+            android:paddingBottom="3dp">
+        <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp" app:srcCompat="@drawable/ic_sms_gray_24dp"
+                android:id="@+id/main_item_image" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="13dp"/>
+        <TextView
+                android:text="ntfy.sh/example"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/main_item_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/main_item_status"
+                android:layout_marginStart="10dp" app:layout_constraintStart_toEndOf="@+id/main_item_image"
+                app:layout_constraintVertical_bias="0.0" android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="?android:attr/textColorPrimary" android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image"/>
+        <TextView
+                android:text="89 notifications, reconnecting ... This may wrap in the case of UnifiedPush"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/main_item_status"
+                app:layout_constraintStart_toStartOf="@+id/main_item_text"
+                app:layout_constraintTop_toBottomOf="@+id/main_item_text" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="10dp" app:layout_constrainedWidth="true"
+                app:layout_constraintEnd_toStartOf="@id/main_item_new" android:layout_marginEnd="10dp"/>
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_time_gray_outline_24dp"
+                android:id="@+id/main_item_notification_disabled_until_image"
+                app:layout_constraintTop_toTopOf="@+id/main_item_text"
+                app:layout_constraintEnd_toStartOf="@+id/main_item_notification_disabled_forever_image"
+                android:paddingTop="3dp" android:layout_marginEnd="3dp"/>
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="24dp" app:srcCompat="@drawable/ic_notifications_off_gray_outline_24dp"
+                android:id="@+id/main_item_notification_disabled_forever_image"
+                app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_until_image"
+                app:layout_constraintEnd_toStartOf="@+id/main_item_instant_image" android:paddingTop="3dp"
+                android:layout_marginEnd="3dp"/>
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_gray_24dp"
+                android:id="@+id/main_item_instant_image"
+                app:layout_constraintTop_toTopOf="@+id/main_item_notification_disabled_forever_image"
+                app:layout_constraintEnd_toStartOf="@+id/main_item_date" android:paddingTop="3dp"/>
+        <TextView
+                android:text="10:13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/main_item_date"
+                app:layout_constraintTop_toTopOf="@+id/main_item_instant_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingTop="2dp"/>
+        <TextView
+                android:text="99+"
+                android:layout_width="24dp"
+                android:layout_height="24dp" android:id="@+id/main_item_new"
+                android:layout_marginTop="3dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_circle"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toBottomOf="@+id/main_item_date"
+                app:layout_constraintEnd_toEndOf="@+id/main_item_date"
+                app:layout_constraintStart_toEndOf="@+id/main_item_instant_image"
+                android:textSize="10sp" android:textStyle="bold"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

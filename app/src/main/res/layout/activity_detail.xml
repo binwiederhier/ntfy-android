@@ -5,13 +5,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.DetailActivity">
-
+        tools:context=".ui.DetailActivity"
+>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
             android:visibility="gone">
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_notification_list"
@@ -19,7 +18,9 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_marginTop="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:clipToPadding="false"
                 android:background="?android:attr/selectableItemBackground"
                 app:layoutManager="LinearLayoutManager"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

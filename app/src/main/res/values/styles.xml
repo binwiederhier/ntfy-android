@@ -1,11 +1,12 @@
 <resources>
     <!-- Main app theme; dark theme styles see values-night/styles.xml -->
-    <style name="AppTheme"  parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/teal</item>
         <item name="colorAccent">@color/teal</item> <!-- checkboxes, text fields -->
-        <item name="android:colorBackground">@color/white</item> <!-- background -->
+        <item name="android:colorBackground">@color/gray_light</item> <!-- background -->
         <item name="android:statusBarColor">@color/teal</item>
         <item name="actionModeBackground">@color/teal_dark</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
     </style>
 
     <!-- Danger buttons & text -->
@@ -23,5 +24,9 @@
     <style name="roundedCornersImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>
+    </style>
+
+    <style name="PopupMenu" parent="@style/Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@color/white</item>
     </style>
 </resources>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                                                   android:layout_height="match_parent">
-
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+>
     <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +136,6 @@
                     android:text="@string/main_banner_json_stream_button_dismiss"
                     tools:layout_editor_absoluteX="260dp" tools:layout_editor_absoluteY="83dp"/>
 
-
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/main_banner_json_stream_learn_mode"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -149,7 +150,6 @@
             android:id="@+id/main_subscriptions_list_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -158,6 +158,9 @@
                 android:id="@+id/main_subscriptions_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:clipToPadding="false"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?android:attr/selectableItemBackground"

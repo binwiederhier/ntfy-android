@@ -1,6 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
+import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.util.isDarkThemeOn
 
@@ -11,6 +12,10 @@ class Colors {
 
         fun itemSelectedBackground(context: Context): Int {
             return if (isDarkThemeOn(context)) R.color.gray_dark else R.color.gray_light
+        }
+
+        fun itemSelectedBackgroundColor(context: Context): Int {
+            return ContextCompat.getColor(context, itemSelectedBackground(context))
         }
 
         fun statusBarNormal(context: Context): Int {

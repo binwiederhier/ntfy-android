@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -64,6 +65,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
     class DetailViewHolder(private val activity: Activity, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
+        private val cardView: CardView = itemView.findViewById(R.id.detail_item_card)
         private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
         private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
@@ -85,8 +87,8 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
             dateView.text = formatDateShort(notification.timestamp)
             messageView.text = maybeAppendActionErrors(formatMessage(notification), notification)
             newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
-            itemView.setOnClickListener { onClick(notification) }
-            itemView.setOnLongClickListener { onLongClick(notification); true }
+            cardView.setOnClickListener { onClick(notification) }
+            cardView.setOnLongClickListener { onLongClick(notification); true }
             if (notification.title != "") {
                 titleView.visibility = View.VISIBLE
                 titleView.text = formatTitle(notification)
@@ -100,7 +102,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
                 tagsView.visibility = View.GONE
             }
             if (selected.contains(notification.id)) {
-                itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
+                cardView.setCardBackgroundColor(Colors.itemSelectedBackgroundColor(context))
             }
             val attachment = notification.attachment
             val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
