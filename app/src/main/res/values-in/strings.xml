@@ -20,8 +20,8 @@
     <string name="refresh_message_error_one">Tidak dapat memuat ulang langganan: %1$s</string>
     <string name="main_action_bar_title">Topik berlangganan</string>
     <string name="main_menu_notifications_enabled">Notifikasi nyala</string>
-    <string name="main_menu_notifications_disabled_forever">Notifikasi dijeda</string>
-    <string name="main_menu_notifications_disabled_until">Notifikasi dijeda sampai %1$s</string>
+    <string name="main_menu_notifications_disabled_forever">Notifikasi dibisukan</string>
+    <string name="main_menu_notifications_disabled_until">Notifikasi dibisukan sampai %1$s</string>
     <string name="main_menu_settings_title">Pengaturan</string>
     <string name="main_menu_report_bug_title">Laporkan sebuah kutu</string>
     <string name="main_menu_docs_title">Baca dokumentasi</string>
@@ -92,7 +92,7 @@
     <string name="detail_item_download_info_deleted_expired">terhapus, tautan kadaluwarsa</string>
     <string name="detail_item_download_info_download_failed">unduhan gagal</string>
     <string name="detail_item_download_info_download_failed_expired">unduhan gagal, tautan kadaluwarsa</string>
-    <string name="detail_menu_notifications_disabled_until">Notifikasi dijeda sampai %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Notifikasi dibisukan sampai %1$s</string>
     <string name="detail_menu_enable_instant">Aktifkan pengiriman instan</string>
     <string name="detail_menu_disable_instant">Matikan pengiriman instan</string>
     <string name="detail_menu_test">Kirim notifikasi uji coba</string>
@@ -114,7 +114,7 @@
     <string name="share_topic_title">Bagikan ke</string>
     <string name="share_suggested_topics">Topik yang disarankan</string>
     <string name="share_successful">Pesan dipublikasikan</string>
-    <string name="notification_dialog_title">Jeda notifikasi</string>
+    <string name="notification_dialog_title">Bisukan notifikasi</string>
     <string name="notification_dialog_cancel">Batal</string>
     <string name="notification_dialog_save">Simpan</string>
     <string name="notification_dialog_show_all">Tampilkan semua notifikasi</string>
@@ -123,10 +123,10 @@
     <string name="notification_dialog_2h">2 jam</string>
     <string name="settings_title">Pengaturan</string>
     <string name="settings_notifications_header">Notifikasi</string>
-    <string name="settings_notifications_muted_until_title">Jeda notifikasi</string>
+    <string name="settings_notifications_muted_until_title">Bisukan notifikasi</string>
     <string name="settings_notifications_muted_until_show_all">Menampilkan semua notifikasi</string>
-    <string name="settings_notifications_muted_until_forever">Notifikasi dijeda sampai dilanjutkan</string>
-    <string name="settings_notifications_muted_until_x">Notifikasi dijeda sampai %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Notifikasi dibisukan sampai dilanjutkan</string>
+    <string name="settings_notifications_muted_until_x">Notifikasi dibisukan sampai %1$s</string>
     <string name="settings_notifications_min_priority_title">Prioritas minimum</string>
     <string name="settings_notifications_min_priority_summary_max">Tampilkan notifikasi jika prioritas adalah 5 (maks)</string>
     <string name="settings_notifications_min_priority_min">Prioritas apa pun</string>
@@ -250,7 +250,7 @@
     <string name="share_menu_send">Bagikan</string>
     <string name="detail_item_download_failed">Tidak dapat mengunduh lampiran: %1$s</string>
     <string name="share_content_text_hint">Tambahkan konten di sini untuk dibagikan</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notifikasi dijeda</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifikasi dibisukan</string>
     <string name="notification_dialog_8h">8 jam</string>
     <string name="notification_dialog_forever">Sampai dilanjutkan</string>
     <string name="notification_popup_action_open">Buka</string>
@@ -265,7 +265,7 @@
 \n
 \nKata sandi dihilangkan, tetapi tidak didaftarkan di sini.</string>
     <string name="detail_item_download_info_deleted_expires_x">terhapus, tautan kadaluwarsa %1$s</string>
-    <string name="detail_menu_notifications_disabled_forever">Notifikasi dijeda</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifikasi dibisukan</string>
     <string name="notification_dialog_enabled_toast_message">Notifikasi dilanjutkan</string>
     <string name="notification_dialog_tomorrow">Sampai besok</string>
     <string name="notification_popup_action_browse">Telusuri</string>
@@ -277,7 +277,7 @@
 \n%3$s</string>
     <string name="settings_notifications_min_priority_low">Prioritas rendah dan di atas</string>
     <string name="settings_notifications_priority_max">maks</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifikasi dijeda sampai %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifikasi dibisukan sampai %1$s</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nFile: %2$s, unduhan gagal</string>
     <string name="user_dialog_title_add">Tambahkan pengguna</string>
