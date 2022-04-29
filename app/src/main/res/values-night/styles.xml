@@ -32,7 +32,7 @@
     </style>
 
     <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/gray_darker</item>
+        <item name="cardBackgroundColor">@color/gray_dark</item>
     </style>
 
     <style name="SwipeRefreshLayoutWithCards">
