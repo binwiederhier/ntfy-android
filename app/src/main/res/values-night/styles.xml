@@ -13,12 +13,12 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/teal_light</item>
         <item name="colorAccent">@color/teal_light</item> <!-- checkboxes, text fields -->
-        <item name="android:colorBackground">@color/black_light</item> <!-- background -->
-        <item name="android:statusBarColor">@color/black_light</item>
-        <item name="actionModeBackground">@color/black_light</item>
+        <item name="android:colorBackground">@color/black_900</item> <!-- background -->
+        <item name="android:statusBarColor">@color/black_900</item>
+        <item name="actionModeBackground">@color/black_900</item>
 
         <!-- Action bar background & text color -->
-        <item name="colorSurface">@color/gray_dark</item>
+        <item name="colorSurface">@color/black_800b</item>
         <item name="colorOnSurface">@color/white</item>
     </style>
 
@@ -27,15 +27,15 @@
     </style>
 
     <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
-        <item name="tint">@color/black_light</item>
+        <item name="tint">@color/black_900</item>
         <item name="backgroundTint">@color/teal_light</item>
     </style>
 
     <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/gray_dark</item>
+        <item name="cardBackgroundColor">@color/black_800b</item>
     </style>
 
-    <style name="SwipeRefreshLayoutWithCards">
-        <item name="android:background">@color/black_light</item>
+    <style name="CardViewBackground">
+        <item name="android:background">@color/black_900</item>
     </style>
 </resources>

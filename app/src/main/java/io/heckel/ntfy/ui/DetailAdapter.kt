@@ -6,11 +6,9 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.os.Handler
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -115,7 +113,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 tagsView.visibility = View.GONE
             }
             if (selected.contains(notification.id)) {
-                cardView.setCardBackgroundColor(Colors.itemSelectedBackgroundColor(context))
+                cardView.setCardBackgroundColor(Colors.cardSelectedBackgroundColor(context))
             }
             val attachment = notification.attachment
             val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false

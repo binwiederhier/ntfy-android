@@ -11,19 +11,23 @@ class Colors {
         const val notificationIcon = R.color.teal
 
         fun itemSelectedBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.gray_dark else R.color.gray_light
+            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.gray_400
         }
 
-        fun itemSelectedBackgroundColor(context: Context): Int {
-            return ContextCompat.getColor(context, itemSelectedBackground(context))
+        fun cardSelectedBackground(context: Context): Int {
+            return if (isDarkThemeOn(context)) R.color.black_700b else R.color.gray_500
+        }
+
+        fun cardSelectedBackgroundColor(context: Context): Int {
+            return ContextCompat.getColor(context, cardSelectedBackground(context))
         }
 
         fun statusBarNormal(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_light else R.color.teal
+            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal
         }
 
         fun statusBarActionMode(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_light else R.color.teal_dark
+            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal_dark
         }
 
         fun dangerText(context: Context): Int {

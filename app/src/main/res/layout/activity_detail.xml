@@ -8,7 +8,7 @@
         tools:context=".ui.DetailActivity"
 >
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            style="@style/SwipeRefreshLayoutWithCards"
+            style="@style/CardViewBackground"
             android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

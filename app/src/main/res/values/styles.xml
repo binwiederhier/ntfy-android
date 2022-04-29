@@ -21,8 +21,8 @@
         <item name="cardBackgroundColor">@color/white</item>
     </style>
 
-    <style name="SwipeRefreshLayoutWithCards">
-        <item name="android:background">@color/gray_light</item>
+    <style name="CardViewBackground">
+        <item name="android:background">@color/gray_400</item>
     </style>
 
     <!-- Rounded corners in images, see https://stackoverflow.com/a/61960983/1440785 -->
