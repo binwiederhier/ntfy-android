@@ -6,9 +6,11 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -29,11 +31,10 @@ import io.heckel.ntfy.msg.DownloadWorker
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class DetailAdapter(private val activity: Activity, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
+
+class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<String>() // Notification IDs
 
@@ -41,7 +42,7 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, repository, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, lifecycleScope, repository, view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -62,9 +63,10 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(private val activity: Activity, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
+    class DetailViewHolder(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
+        private val layout: View = itemView.findViewById(R.id.detail_item_layout)
         private val cardView: CardView = itemView.findViewById(R.id.detail_item_card)
         private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
@@ -86,6 +88,17 @@ class DetailAdapter(private val activity: Activity, private val repository: Repo
 
             dateView.text = formatDateShort(notification.timestamp)
             messageView.text = maybeAppendActionErrors(formatMessage(notification), notification)
+            messageView.setOnClickListener {
+                // Click & Long-click listeners on the text as well, because "autoLink=web" makes them
+                // clickable, and so we cannot rely on the underlying card to perform the action.
+                // It's weird because "layout" is the ripple-able, but the card is clickable.
+                // See https://github.com/binwiederhier/ntfy/issues/226
+                layout.ripple(lifecycleScope)
+                onClick(notification)
+            }
+            messageView.setOnLongClickListener {
+                onLongClick(notification); true
+            }
             newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
             cardView.setOnClickListener { onClick(notification) }
             cardView.setOnLongClickListener { onLongClick(notification); true }

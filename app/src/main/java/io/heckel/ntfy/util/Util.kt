@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.content.res.Resources
+import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -25,6 +26,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -366,6 +371,29 @@ fun View.makeEndIconSmaller(resources: Resources) {
     endIconImageView.minimumHeight = dimension.toInt()
     endIconImageView.minimumWidth = dimension.toInt()
     requestLayout()
+}
+
+// Shows the ripple effect on the view, if it is ripple-able, see https://stackoverflow.com/a/56314062/1440785
+fun View.showRipple() {
+    if (background is RippleDrawable) {
+        background.state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+    }
+}
+
+// Hides the ripple effect on the view, if it is ripple-able, see https://stackoverflow.com/a/56314062/1440785
+fun View.hideRipple() {
+    if (background is RippleDrawable) {
+        background.state = intArrayOf()
+    }
+}
+
+// Toggles the ripple effect on the view, if it is ripple-able
+fun View.ripple(scope: CoroutineScope) {
+    showRipple()
+    scope.launch(Dispatchers.Main) {
+        delay(200)
+        hideRipple()
+    }
 }
 
 // TextWatcher that only implements the afterTextChanged method

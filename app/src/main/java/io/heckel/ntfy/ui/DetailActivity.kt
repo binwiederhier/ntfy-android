@@ -188,7 +188,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val onNotificationClick = { n: Notification -> onNotificationClick(n) }
         val onNotificationLongClick = { n: Notification -> onNotificationLongClick(n) }
 
-        adapter = DetailAdapter(this, repository, onNotificationClick, onNotificationLongClick)
+        adapter = DetailAdapter(this, lifecycleScope, repository, onNotificationClick, onNotificationLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
 
