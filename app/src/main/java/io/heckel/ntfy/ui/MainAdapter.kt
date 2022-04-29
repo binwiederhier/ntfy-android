@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -48,7 +47,6 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
-        private val cardView: CardView = itemView.findViewById(R.id.main_item_card)
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
@@ -99,10 +97,10 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
                 newItemsView.visibility = View.VISIBLE
                 newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
             }
-            cardView.setOnClickListener { onClick(subscription) }
-            cardView.setOnLongClickListener { onLongClick(subscription); true }
+            itemView.setOnClickListener { onClick(subscription) }
+            itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
-                cardView.setCardBackgroundColor(Colors.itemSelectedBackgroundColor(context))
+                itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
             }
         }
     }

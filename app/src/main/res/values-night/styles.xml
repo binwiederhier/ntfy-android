@@ -30,4 +30,12 @@
         <item name="tint">@color/black_light</item>
         <item name="backgroundTint">@color/teal_light</item>
     </style>
+
+    <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/gray_darker</item>
+    </style>
+
+    <style name="SwipeRefreshLayoutWithCards">
+        <item name="android:background">@color/black_light</item>
+    </style>
 </resources>
