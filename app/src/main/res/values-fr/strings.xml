@@ -61,7 +61,7 @@
     <string name="channel_subscriber_notification_instant_text">Abonné aux sujets de livraison instantanée</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonné à trois sujets de livraison instantanée</string>
     <string name="refresh_message_no_results">Tout est à jour</string>
-    <string name="main_menu_notifications_disabled_forever">Notifications interrompues</string>
+    <string name="main_menu_notifications_disabled_forever">Notifications en sourdine</string>
     <string name="channel_subscriber_notification_noinstant_text_two">Abonné à deux sujets</string>
     <string name="main_menu_notifications_enabled">Notifications activées</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Abonné à trois sujets</string>
@@ -70,7 +70,7 @@
 \n
 \n%2$s</string>
     <string name="main_action_bar_title">Sujets abonnés</string>
-    <string name="main_menu_notifications_disabled_until">Notifications interrompues jusqu\'à %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Notifications en sourdine jusqu\'à %1$s</string>
     <string name="main_menu_settings_title">Paramètres</string>
     <string name="main_menu_rate_title">Évaluer l\'application ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Désabonner</string>
@@ -90,7 +90,7 @@
     <string name="detail_no_notifications_text">Vous n\'avez pas encore reçu de notifications pour ce sujet.</string>
     <string name="share_content_file_text">Un fichier a été partagé avec vous</string>
     <string name="add_dialog_use_another_server">Utiliser un serveur différent</string>
-    <string name="add_dialog_use_another_server_description">Entrez les URLs de serveurs ci-dessous pour vous abonner aux sujets de serveurs différents.</string>
+    <string name="add_dialog_use_another_server_description">Entrez les URLs de service ci-dessous pour vous abonner aux sujets de serveurs différents.</string>
     <string name="add_dialog_instant_delivery_description">S\'assure que les messages sont envoyés immédiatement, même si l\'appareil est inactif.</string>
     <string name="add_dialog_foreground_description">La livraison instantanée est toujours active pour les serveurs autres que %1$s.</string>
     <string name="add_dialog_button_login">Se connecter</string>
@@ -127,10 +127,10 @@
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% téléchargé</string>
     <string name="detail_item_download_info_deleted_expired">supprimé, lien expiré</string>
     <string name="detail_item_download_info_deleted_expires_x">supprimé, expire le %1$s</string>
-    <string name="detail_menu_notifications_disabled_until">Notifications interrompues jusqu\'à %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Notifications en sourdine jusqu\'à %1$s</string>
     <string name="detail_item_download_info_download_failed_expires_x">échec du téléchargement, expire le %1$s</string>
     <string name="share_content_image_error">Incapable de lire l\'image : %1$s</string>
-    <string name="detail_menu_notifications_disabled_forever">Notifications interrompues</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifications en sourdine</string>
     <string name="detail_menu_disable_instant">Désactiver la livraison instantanée</string>
     <string name="detail_menu_notifications_enabled">Notifications activées</string>
     <string name="detail_menu_enable_instant">Activer la livraison instantanée</string>
@@ -154,11 +154,11 @@
     <string name="share_topic_title">Partager</string>
     <string name="share_suggested_topics">Sujets suggérés</string>
     <string name="share_successful">Message publié</string>
-    <string name="notification_dialog_title">Mettre en pause les notifications</string>
+    <string name="notification_dialog_title">Mettre en sourdine les notifications</string>
     <string name="notification_dialog_cancel">Annuler</string>
     <string name="notification_dialog_save">Enregistrer</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notifications en pause</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifications en pause jusqu\'à %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifications en sourdine</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications en sourdine jusqu\'à %1$s</string>
     <string name="notification_dialog_show_all">Afficher toutes les notifications</string>
     <string name="notification_dialog_30min">30 minutes</string>
     <string name="notification_dialog_1h">1 heure</string>
@@ -178,12 +178,12 @@
 \nFichier : %2$s, échec du téléchargement</string>
     <string name="settings_title">Paramètres</string>
     <string name="settings_notifications_header">Notifications</string>
-    <string name="settings_notifications_muted_until_forever">Notifications en pause jusqu\'à réactivation</string>
-    <string name="settings_notifications_muted_until_x">Notifications en pause jusqu\'à %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Notifications en sourdine jusqu\'à réactivation</string>
+    <string name="settings_notifications_muted_until_x">Notifications en sourdine jusqu\'à %1$s</string>
     <string name="settings_notifications_min_priority_title">Priorité minimale</string>
     <string name="notification_popup_file_downloading">Téléchargement de %1$s, %2$d%%
 \n%3$s</string>
-    <string name="settings_notifications_muted_until_title">Mettre en pause les notifications</string>
+    <string name="settings_notifications_muted_until_title">Mettre en sourdine les notifications</string>
     <string name="settings_notifications_muted_until_show_all">Affiche toutes les notifications</string>
     <string name="settings_notifications_min_priority_low">Priorité faible ou supérieure</string>
     <string name="settings_notifications_auto_download_summary_never">Ne jamais télécharger automatiquement les pièces jointes</string>
@@ -257,7 +257,7 @@
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_title_add">Ajouter utilisateur</string>
     <string name="user_dialog_title_edit">Éditer utilisateur</string>
-    <string name="user_dialog_base_url_hint">URL du serveur</string>
+    <string name="user_dialog_base_url_hint">URL du service</string>
     <string name="user_dialog_username_hint">Nom d\'utilisateur</string>
     <string name="user_dialog_button_add">Ajouter utilisateur</string>
     <string name="user_dialog_button_cancel">Annuler</string>
@@ -300,4 +300,8 @@
 \n%1$s
 \n
 \nLes mots de passe sont nettoyés, mais ne sont pas listés ici.</string>
+    <string name="detail_deep_link_subscribed_toast_message">Abonné au sujet %1$s</string>
+    <string name="settings_notifications_channel_prefs_summary">Ignorer Ne pas déranger (DND), sons, etc.</string>
+    <string name="notification_popup_user_action_failed">%1$s a échoué : %2$s</string>
+    <string name="settings_notifications_channel_prefs_title">Paramètres du canal</string>
 </resources>
