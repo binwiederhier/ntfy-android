@@ -283,7 +283,6 @@ class Backuper(val context: Context) {
     }
 
     companion object {
-        const val MIME_TYPE = "application/json"
         private const val FILE_MAGIC = "ntfy2586"
         private const val FILE_VERSION = 1
         private const val TAG = "NtfyExporter"

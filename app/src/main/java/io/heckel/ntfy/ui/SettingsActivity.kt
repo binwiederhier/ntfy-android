@@ -481,7 +481,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
             restore?.onPreferenceClickListener = OnPreferenceClickListener {
-                restoreResultLauncher.launch(Backuper.MIME_TYPE)
+                // Overly open mime type filter (because of https://github.com/binwiederhier/ntfy/issues/223).
+                // This filter could likely be stricter if we'd write the mime type properly in Backuper.backup(),
+                // but just in case we want to restore from a file we didn't write outselves, we'll keep this "*/*".
+                restoreResultLauncher.launch("*/*")
                 true
             }
 
