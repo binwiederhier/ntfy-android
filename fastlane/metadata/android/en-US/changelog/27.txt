@@ -7,6 +7,7 @@ Bugs:
 * Restoring topics or settings from backup doesn't work (#223, thanks to @shadow00 for reporting)
 * Fix app icon on old Android versions (#120, thanks to @shadow00 for reporting)
 * Fix races in UnifiedPush registration (#230, thanks to @Jakob for reporting)
+* Prevent view action from crashing the app (#233)
 
 **Thanks for testing:**
 

@@ -433,11 +433,15 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun runViewAction(context: Context, action: Action) {
-            val url = action.url ?: return
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            try {
+                val url = action.url ?: return
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to start activity from URL ${action.url}", e)
             }
-            context.startActivity(intent)
         }
 
         private fun runOtherUserAction(context: Context, notification: Notification, action: Action) {
