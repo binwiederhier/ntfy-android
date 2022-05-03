@@ -77,7 +77,7 @@
     <string name="detail_item_menu_copy_contents_copied">Notificação copiada para área de transferência</string>
     <string name="detail_item_saved_successfully">\"%1$s\" salvo na pasta \"Downloads\"</string>
     <string name="detail_item_cannot_download">Não foi possível abrir ou baixar o anexo. O link expirou e nenhum arquivo local foi encontrado.</string>
-    <string name="detail_item_cannot_open_click_url">Não foi possível abrir a URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">Não foi possível abrir a URL: %1$s</string>
     <string name="detail_item_cannot_save">Não foi possível salvar o anexo: %1$s</string>
     <string name="detail_item_cannot_delete">Não foi possível remover o anexo: %1$s</string>
     <string name="detail_item_download_failed">Não foi possível baixar o anexo: %1$s</string>

@@ -71,7 +71,7 @@
     <string name="detail_item_menu_copy_contents_copied">Notificación copiada al portapapeles</string>
     <string name="detail_item_saved_successfully">Guardado como %1$s en la carpeta de Descargas</string>
     <string name="detail_item_cannot_open">No se puede abrir el archivo adjunto: %1$s</string>
-    <string name="detail_item_cannot_open_click_url">No se pudo abrir la URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">No se pudo abrir la URL: %1$s</string>
     <string name="detail_item_cannot_save">No se puede guardar el archivo adjunto: %1$s</string>
     <string name="detail_item_cannot_delete">No se puede eliminar el archivo adjunto: %1$s</string>
     <string name="detail_item_download_failed">No se pudo descargar el archivo adjunto: %1$s</string>

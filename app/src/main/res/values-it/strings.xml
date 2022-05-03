@@ -73,7 +73,7 @@
     <string name="detail_item_menu_copy_contents_copied">Notifica copiata negli appunti</string>
     <string name="detail_item_cannot_download">Impossibile aprire o scaricare l\'allegato. Il link è scaduto e nessun file locale è stato trovato.</string>
     <string name="detail_item_cannot_open">Impossibile aprire l\'allegato: %1$s</string>
-    <string name="detail_item_cannot_open_click_url">Impossibile aprire URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">Impossibile aprire URL: %1$s</string>
     <string name="detail_item_cannot_delete">Impossibile eliminare l\'allegato: %1$s</string>
     <string name="detail_item_download_failed">Impossibile scaricare l\'allegato: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">non scaricato</string>

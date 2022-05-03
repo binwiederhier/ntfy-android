@@ -43,7 +43,7 @@
     <string name="detail_item_menu_download">Télécharger un fichier</string>
     <string name="detail_item_menu_cancel">Annuler le téléchargement</string>
     <string name="detail_item_menu_copy_url">Copier l\'URL</string>
-    <string name="detail_item_cannot_open_click_url">Incapable d\'ouvrir l\'URL : %1$s</string>
+    <string name="detail_item_cannot_open_url">Incapable d\'ouvrir l\'URL : %1$s</string>
     <string name="detail_item_download_info_not_downloaded">pas téléchargé</string>
     <string name="detail_item_download_info_deleted">supprimé</string>
     <string name="detail_item_download_info_download_failed">échec du téléchargement</string>

@@ -441,6 +441,10 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 context.startActivity(intent)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to start activity from URL ${action.url}", e)
+                val message = if (e is ActivityNotFoundException) action.url else e.message
+                Toast
+                    .makeText(context, context.getString(R.string.detail_item_cannot_open_url, message), Toast.LENGTH_LONG)
+                    .show()
             }
         }
 

@@ -79,7 +79,7 @@
     <string name="detail_item_menu_copy_url_copied">URL panoya kopyalandı</string>
     <string name="detail_item_menu_copy_contents">Bildirimi kopyala</string>
     <string name="detail_item_cannot_download">Ek açılamıyor veya indirilemiyor. Bağlantının süresi doldu ve yerel dosya bulunamadı.</string>
-    <string name="detail_item_cannot_open_click_url">URL açılamıyor: %1$s</string>
+    <string name="detail_item_cannot_open_url">URL açılamıyor: %1$s</string>
     <string name="detail_item_cannot_save">Ek kaydedilemiyor: %1$s</string>
     <string name="detail_item_cannot_delete">Ek silinemiyor: %1$s</string>
     <string name="detail_item_download_failed">Ek indirilemedi: %1$s</string>

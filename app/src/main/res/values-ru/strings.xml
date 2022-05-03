@@ -89,7 +89,7 @@
     <string name="detail_item_menu_delete">Удалить файл</string>
     <string name="detail_item_menu_download">Скачать файл</string>
     <string name="detail_item_menu_cancel">Отменить скачивание</string>
-    <string name="detail_item_cannot_open_click_url">URL-адрес не открывается: %1$s</string>
+    <string name="detail_item_cannot_open_url">URL-адрес не открывается: %1$s</string>
     <string name="notification_popup_action_browse">Выбрать</string>
     <string name="notification_popup_action_cancel">Отмена</string>
     <string name="settings_notifications_header">Уведомления</string>

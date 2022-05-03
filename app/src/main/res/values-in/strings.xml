@@ -211,7 +211,7 @@
     <string name="user_dialog_base_url_hint">URL Layanan</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Berlangganan ke satu topik</string>
     <string name="detail_item_menu_copy_contents_copied">Notifikasi disalin ke papan klip</string>
-    <string name="detail_item_cannot_open_click_url">Tidak dapat membuka URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">Tidak dapat membuka URL: %1$s</string>
     <string name="settings_notifications_min_priority_summary_any">Menampilkan semua notifikasi</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>

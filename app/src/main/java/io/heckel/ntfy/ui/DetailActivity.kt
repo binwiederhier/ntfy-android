@@ -589,7 +589,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {
                     Toast
-                        .makeText(this@DetailActivity, getString(R.string.detail_item_cannot_open_click_url, e.message), Toast.LENGTH_LONG)
+                        .makeText(this@DetailActivity, getString(R.string.detail_item_cannot_open_url, e.message), Toast.LENGTH_LONG)
                         .show()
                 }
             }

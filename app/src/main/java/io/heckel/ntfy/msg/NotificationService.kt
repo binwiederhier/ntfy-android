@@ -1,6 +1,7 @@
 package io.heckel.ntfy.msg
 
 import android.app.*
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,6 +10,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
@@ -256,7 +258,6 @@ class NotificationService(val context: Context) {
             }
             val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
-
         } catch (e: Exception) {
             Log.w(TAG, "Unable to add open user action", e)
         }
@@ -366,7 +367,7 @@ class NotificationService(val context: Context) {
     class ViewActionWithClearActivity : Activity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            Log.d(TAG, "Creating $this")
+            Log.d(TAG, "Created $this")
             val url = intent.getStringExtra(VIEW_ACTION_EXTRA_URL)
             val notificationId = intent.getIntExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, 0)
             if (url == null) {
@@ -382,6 +383,10 @@ class NotificationService(val context: Context) {
                 startActivity(intent)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to start activity from URL $url", e)
+                val message = if (e is ActivityNotFoundException) url else e.message
+                Toast
+                    .makeText(this, getString(R.string.detail_item_cannot_open_url, message), Toast.LENGTH_LONG)
+                    .show()
             }
 
             // Cancel notification

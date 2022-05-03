@@ -164,7 +164,7 @@
     <string name="detail_item_menu_copy_contents_copied">通知已复制到剪贴板</string>
     <string name="detail_item_cannot_open">无法打开附件：%1$s</string>
     <string name="detail_item_cannot_open_not_found">无法打开附件：此文件已被删除或无可用打开方式。</string>
-    <string name="detail_item_cannot_open_click_url">无法打开 URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">无法打开 URL: %1$s</string>
     <string name="detail_item_cannot_save">无法保存附件：%1$s</string>
     <string name="detail_item_cannot_delete">无法删除附件：%1$s</string>
     <string name="notification_popup_file">%1$s

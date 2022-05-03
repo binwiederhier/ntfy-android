@@ -143,7 +143,7 @@
     <string name="detail_item_cannot_download">Cannot open or download attachment. The link expired and no local file could be found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Cannot open attachment: The file may have been deleted, or no installed app can open the file.</string>
-    <string name="detail_item_cannot_open_click_url">Cannot open URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">Cannot open URL: %1$s</string>
     <string name="detail_item_cannot_save">Cannot save attachment: %1$s</string>
     <string name="detail_item_cannot_delete">Cannot delete attachment: %1$s</string>
     <string name="detail_item_download_failed">Could not download attachment: %1$s</string>

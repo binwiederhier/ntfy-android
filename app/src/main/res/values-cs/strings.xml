@@ -88,7 +88,7 @@
     <string name="detail_item_saved_successfully">Uloženo jako \"%1$s\" do složky \"Stažené\"</string>
     <string name="detail_item_cannot_open">Nelze otevřít přílohu: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Nelze otevřít přílohu: Soubor mohl být smazán nebo jej nemůže otevřít žádná nainstalovaná aplikace.</string>
-    <string name="detail_item_cannot_open_click_url">Nelze otevřít URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">Nelze otevřít URL: %1$s</string>
     <string name="detail_item_cannot_save">Nelze uložit přílohu: %1$s</string>
     <string name="detail_item_cannot_delete">Nelze smazat přílohu: %1$s</string>
     <string name="detail_item_download_failed">Nepodařilo se stáhnout přílohu: %1$s</string>

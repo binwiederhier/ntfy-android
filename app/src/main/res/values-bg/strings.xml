@@ -279,7 +279,7 @@
     <string name="detail_item_cannot_open_not_found">Прикаченият файл не може да бъде отворен: Или е премахнат, или липсва приложение, с което да бъде отворен.</string>
     <string name="detail_item_cannot_save">Прикаченият файл не може да бъде запазен: %1$s</string>
     <string name="detail_item_cannot_delete">Прикаченият файл не може да бъде премахнат: %1$s</string>
-    <string name="detail_item_cannot_open_click_url">Адресът не може да бъде посетен: %1$s</string>
+    <string name="detail_item_cannot_open_url">Адресът не може да бъде посетен: %1$s</string>
     <string name="detail_item_download_failed">Прикаченият файл не може да бъде изтеглен: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">не е изтеглен</string>
     <string name="detail_item_download_info_not_downloaded_expired">не е изтеглен, препратката е с изтекла валидност</string>

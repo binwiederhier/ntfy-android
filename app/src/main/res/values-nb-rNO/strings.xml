@@ -72,7 +72,7 @@
     <string name="detail_item_cannot_download">Kan ikke åpne eller laste ned vedlegg. Lenken utløp og ingen lokal fil ble funnet.</string>
     <string name="detail_item_cannot_open">Kan ikke åpne vedlegg: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Kan ikke åpne vedlegg: Filen kan ha blitt slettet, eller så mangler det et program til å åpne filen.</string>
-    <string name="detail_item_cannot_open_click_url">Kan ikke åpne klikkbar nettadresse: %1$s</string>
+    <string name="detail_item_cannot_open_url">Kan ikke åpne klikkbar nettadresse: %1$s</string>
     <string name="detail_item_cannot_delete">Kan ikke slette vedlegg: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">ikke nedlastet</string>
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% nedlastet</string>

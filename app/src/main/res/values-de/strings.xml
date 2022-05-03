@@ -90,7 +90,7 @@
     <string name="detail_item_saved_successfully">Wurde als \"%1$s\" im Downloads-Ordner gespeichert</string>
     <string name="detail_item_cannot_download">Anhang kann nicht geöffnet oder heruntergeladen werden. Link ist abgelaufen und keine lokale Datei gefunden.</string>
     <string name="detail_item_cannot_open">Anhang kann nicht geöffnet werden: %1$s</string>
-    <string name="detail_item_cannot_open_click_url">URL kann nicht geöffnet werden: %1$s</string>
+    <string name="detail_item_cannot_open_url">URL kann nicht geöffnet werden: %1$s</string>
     <string name="detail_item_cannot_save">Anhang kann nicht gespeichert werden: %1$s</string>
     <string name="detail_item_cannot_delete">Anhang kann nicht gelöscht werden: %1$s</string>
     <string name="detail_item_download_failed">Herunterladen des Anhangs fehlgeschlagen: %1$s</string>

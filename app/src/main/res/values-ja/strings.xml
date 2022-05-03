@@ -121,7 +121,7 @@
     <string name="detail_item_menu_save_file">ファイルを保存</string>
     <string name="detail_item_menu_copy_url">URLをコピー</string>
     <string name="detail_item_cannot_open_not_found">添付ファイルを開けません: ファイルが削除されているか、ファイルを開けるアプリがインストールされていません。</string>
-    <string name="detail_item_cannot_open_click_url">URLを開けません: %1$s</string>
+    <string name="detail_item_cannot_open_url">URLを開けません: %1$s</string>
     <string name="detail_item_cannot_save">添付ファイルを保存できません: %1$s</string>
     <string name="detail_item_download_failed">添付ファイルをダウンロードできません: %1$s</string>
     <string name="detail_item_download_info_deleted">削除済</string>
