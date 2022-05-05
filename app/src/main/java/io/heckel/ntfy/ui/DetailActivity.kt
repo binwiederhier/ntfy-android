@@ -112,6 +112,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     topic = topic,
                     instant = instant,
                     mutedUntil = 0,
+                    minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
+                    autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
                     upAppId = null,
                     upConnectorToken = null,
                     totalCount = 0,
@@ -348,10 +350,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 onClearClick()
                 true
             }
-            /*R.id.detail_menu_settings -> {
+            R.id.detail_menu_settings -> {
                 onSettingsClick()
                 true
-            }*/
+            }
             R.id.detail_menu_unsubscribe -> {
                 onDeleteClick()
                 true
@@ -549,6 +551,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         val intent = Intent(this, DetailSettingsActivity::class.java)
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscriptionId)
+        intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscriptionBaseUrl)
+        intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscriptionTopic)
         startActivity(intent)
     }
 
@@ -729,5 +733,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     companion object {
         const val TAG = "NtfyDetailActivity"
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
+        const val EXTRA_SUBSCRIPTION_BASE_URL = "baseUrl"
+        const val EXTRA_SUBSCRIPTION_TOPIC = "topic"
     }
 }

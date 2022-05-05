@@ -9,6 +9,7 @@ import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DELETED
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -53,29 +54,38 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
                 val newNotification = notification.copy(attachment = newAttachment)
                 repository.updateNotification(newNotification)
             } catch (e: Exception) {
-                Log.w(DetailAdapter.TAG, "Failed to delete attachment for notification: ${e.message}", e)
+                Log.w(TAG, "Failed to delete attachment for notification: ${e.message}", e)
             }
         }
     }
 
-    private fun deleteExpiredNotifications() {
+    private suspend fun deleteExpiredNotifications() {
         Log.d(TAG, "Deleting expired notifications")
         val repository = Repository.getInstance(applicationContext)
-        val deleteAfterSeconds = repository.getAutoDeleteSeconds()
-        if (deleteAfterSeconds == Repository.AUTO_DELETE_NEVER) {
-            Log.d(TAG, "Not deleting any notifications; global setting set to NEVER")
-            return
+        val subscriptions = repository.getSubscriptions()
+        subscriptions.forEach { subscription ->
+            val logId = topicShortUrl(subscription.baseUrl, subscription.topic)
+            val deleteAfterSeconds = if (subscription.autoDelete == Repository.AUTO_DELETE_USE_GLOBAL) {
+                repository.getAutoDeleteSeconds()
+            } else {
+                subscription.autoDelete
+            }
+            if (deleteAfterSeconds == Repository.AUTO_DELETE_NEVER) {
+                Log.d(TAG, "[$logId] Not deleting any notifications; global setting set to NEVER")
+                return@forEach
+            }
+
+            // Mark as deleted
+            val markDeletedOlderThanTimestamp = (System.currentTimeMillis()/1000) - deleteAfterSeconds
+            Log.d(TAG, "[$logId] Marking notifications older than $markDeletedOlderThanTimestamp as deleted")
+            repository.markAsDeletedIfOlderThan(subscription.id, markDeletedOlderThanTimestamp)
+
+            // Hard delete
+            val deleteOlderThanTimestamp = (System.currentTimeMillis()/1000) - HARD_DELETE_AFTER_SECONDS
+            Log.d(TAG, "[$logId] Hard deleting notifications older than $markDeletedOlderThanTimestamp")
+            repository.removeNotificationsIfOlderThan(subscription.id, deleteOlderThanTimestamp)
+
         }
-
-        // Mark as deleted
-        val markDeletedOlderThanTimestamp = (System.currentTimeMillis()/1000) - deleteAfterSeconds
-        Log.d(TAG, "Marking notifications older than $markDeletedOlderThanTimestamp as deleted")
-        repository.markAsDeletedIfOlderThan(markDeletedOlderThanTimestamp)
-
-        // Hard delete
-        val deleteOlderThanTimestamp = (System.currentTimeMillis()/1000) - HARD_DELETE_AFTER_SECONDS
-        Log.d(TAG, "Hard deleting notifications older than $markDeletedOlderThanTimestamp")
-        repository.removeNotificationsIfOlderThan(deleteOlderThanTimestamp)
     }
 
     companion object {

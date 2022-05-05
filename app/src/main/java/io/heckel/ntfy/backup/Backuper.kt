@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -94,6 +95,8 @@ class Backuper(val context: Context) {
                     topic = s.topic,
                     instant = s.instant,
                     mutedUntil = s.mutedUntil,
+                    minPriority = s.minPriority ?: Repository.MIN_PRIORITY_USE_GLOBAL,
+                    autoDelete = s.autoDelete ?: Repository.AUTO_DELETE_USE_GLOBAL,
                     upAppId = s.upAppId,
                     upConnectorToken = s.upConnectorToken
                 ))
@@ -214,6 +217,8 @@ class Backuper(val context: Context) {
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
+                minPriority = s.minPriority,
+                autoDelete = s.autoDelete,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken
             )
@@ -317,6 +322,8 @@ data class Subscription(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
+    val minPriority: Int?,
+    val autoDelete: Long?,
     val upAppId: String?,
     val upConnectorToken: String?
 )

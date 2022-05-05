@@ -334,6 +334,8 @@
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
+    <string name="settings_global_setting_title">Use global setting</string>
+    <string name="settings_global_setting_suffix">global</string>
 
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>

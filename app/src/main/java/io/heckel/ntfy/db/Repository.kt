@@ -136,12 +136,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         notificationDao.markAllAsDeleted(subscriptionId)
     }
 
-    fun markAsDeletedIfOlderThan(olderThanTimestamp: Long) {
-        notificationDao.markAsDeletedIfOlderThan(olderThanTimestamp)
+    fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {
+        notificationDao.markAsDeletedIfOlderThan(subscriptionId, olderThanTimestamp)
     }
 
-    fun removeNotificationsIfOlderThan(olderThanTimestamp: Long) {
-        notificationDao.removeIfOlderThan(olderThanTimestamp)
+    fun removeNotificationsIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {
+        notificationDao.removeIfOlderThan(subscriptionId, olderThanTimestamp)
     }
 
     fun removeAllNotifications(subscriptionId: Long) {
@@ -203,7 +203,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setMinPriority(minPriority: Int) {
-        if (minPriority <= 1) {
+        if (minPriority <= MIN_PRIORITY_ANY) {
             sharedPrefs.edit()
                 .remove(SHARED_PREFS_MIN_PRIORITY)
                 .apply()
@@ -215,7 +215,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun getMinPriority(): Int {
-        return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, 1) // 1/low means all priorities
+        return sharedPrefs.getInt(SHARED_PREFS_MIN_PRIORITY, MIN_PRIORITY_ANY)
     }
 
     fun getAutoDownloadMaxSize(): Long {
@@ -377,6 +377,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 topic = s.topic,
                 instant = s.instant,
                 mutedUntil = s.mutedUntil,
+                minPriority = s.minPriority,
+                autoDelete = s.autoDelete,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
                 totalCount = s.totalCount,
@@ -397,6 +399,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             topic = s.topic,
             instant = s.instant,
             mutedUntil = s.mutedUntil,
+            minPriority = s.minPriority,
+            autoDelete = s.autoDelete,
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,
             totalCount = s.totalCount,
@@ -449,6 +453,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
         private const val LAST_TOPICS_COUNT = 3
 
+        const val MIN_PRIORITY_USE_GLOBAL = 0
+        const val MIN_PRIORITY_ANY = 1
+
         const val MUTED_UNTIL_SHOW_ALL = 0L
         const val MUTED_UNTIL_FOREVER = 1L
         const val MUTED_UNTIL_TOMORROW = 2L
@@ -459,7 +466,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val AUTO_DOWNLOAD_DEFAULT = ONE_MB
 
         private const val ONE_DAY_SECONDS = 24 * 60 * 60L
-        const val AUTO_DELETE_NEVER = 0L // Values must match values.xml
+        const val AUTO_DELETE_USE_GLOBAL = -1L // Values must match values.xml
+        const val AUTO_DELETE_NEVER = 0L
         const val AUTO_DELETE_ONE_DAY_SECONDS = ONE_DAY_SECONDS
         const val AUTO_DELETE_THREE_DAYS_SECONDS = 3 * ONE_DAY_SECONDS
         const val AUTO_DELETE_ONE_WEEK_SECONDS = 7 * ONE_DAY_SECONDS

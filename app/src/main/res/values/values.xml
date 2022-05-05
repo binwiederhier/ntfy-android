@@ -30,6 +30,11 @@
     <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
     <string name="settings_about_version_key" translatable="false">Version</string>
 
+    <!-- Detail settings constants -->
+    <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
+    <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
+    <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
+
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">
         <item>@string/notification_dialog_show_all</item>
@@ -57,6 +62,22 @@
         <item>@string/settings_notifications_min_priority_max</item>
     </string-array>
     <string-array name="settings_notifications_min_priority_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_min_priority_entries">
+        <item>@string/settings_global_setting_title</item>
+        <item>@string/settings_notifications_min_priority_min</item>
+        <item>@string/settings_notifications_min_priority_low</item>
+        <item>@string/settings_notifications_min_priority_default</item>
+        <item>@string/settings_notifications_min_priority_high</item>
+        <item>@string/settings_notifications_min_priority_max</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_min_priority_values">
+        <item>0</item> <!-- Same as Repository.MIN_PRIORITY_USE_GLOBAL -->
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -92,6 +113,24 @@
         <item>@string/settings_notifications_auto_delete_three_months</item>
     </string-array>
     <string-array name="settings_notifications_auto_delete_values">
+        <item>0</item>
+        <item>86400</item>
+        <item>259200</item>
+        <item>604800</item>
+        <item>2592000</item>
+        <item>7776000</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_auto_delete_entries">
+        <item>@string/settings_global_setting_title</item>
+        <item>@string/settings_notifications_auto_delete_never</item>
+        <item>@string/settings_notifications_auto_delete_one_day</item>
+        <item>@string/settings_notifications_auto_delete_three_days</item>
+        <item>@string/settings_notifications_auto_delete_one_week</item>
+        <item>@string/settings_notifications_auto_delete_one_month</item>
+        <item>@string/settings_notifications_auto_delete_three_months</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_auto_delete_values">
+        <item>-1</item> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
         <item>0</item>
         <item>86400</item>
         <item>259200</item>

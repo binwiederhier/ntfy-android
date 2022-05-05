@@ -15,17 +15,18 @@ data class Subscription(
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "topic") val topic: String,
     @ColumnInfo(name = "instant") val instant: Boolean,
-    @ColumnInfo(name = "mutedUntil") val mutedUntil: Long, // TODO notificationSound, notificationSchedule
+    @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
+    @ColumnInfo(name = "minPriority") val minPriority: Int,
+    @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
-    // TODO autoDownloadAttachments, minPriority
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, upAppId: String, upConnectorToken: String) :
-            this(id, baseUrl, topic, instant, mutedUntil, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -38,6 +39,8 @@ data class SubscriptionWithMetadata(
     val topic: String,
     val instant: Boolean,
     val mutedUntil: Long,
+    val autoDelete: Long,
+    val minPriority: Int,
     val upAppId: String?,
     val upConnectorToken: String?,
     val totalCount: Int,
@@ -139,7 +142,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 10)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 11)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -164,6 +167,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_7_8)
                     .addMigrations(MIGRATION_8_9)
                     .addMigrations(MIGRATION_9_10)
+                    .addMigrations(MIGRATION_10_11)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -245,6 +249,13 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN actions TEXT")
             }
         }
+
+        private val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN minPriority INT NOT NULL DEFAULT (0)") // 0 = use global setting
+                db.execSQL("ALTER TABLE Notification ADD COLUMN autoDelete INT NOT NULL DEFAULT (0)")
+            }
+        }
     }
 }
 
@@ -252,7 +263,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -265,7 +276,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -278,7 +289,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -291,7 +302,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -304,7 +315,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -357,14 +368,14 @@ interface NotificationDao {
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)
 
-    @Query("UPDATE notification SET deleted = 1 WHERE timestamp < :olderThanTimestamp")
-    fun markAsDeletedIfOlderThan(olderThanTimestamp: Long)
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND timestamp < :olderThanTimestamp")
+    fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long)
 
     @Query("UPDATE notification SET deleted = 0 WHERE id = :notificationId")
     fun undelete(notificationId: String)
 
-    @Query("DELETE FROM notification WHERE timestamp < :olderThanTimestamp")
-    fun removeIfOlderThan(olderThanTimestamp: Long)
+    @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId AND timestamp < :olderThanTimestamp")
+    fun removeIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long)
 
     @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId")
     fun removeAll(subscriptionId: Long)

@@ -73,7 +73,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             return false
         }
         val priority = if (notification.priority > 0) notification.priority else 3
-        if (priority < repository.getMinPriority()) {
+        val minPriority = if (subscription.minPriority > 0) subscription.minPriority else repository.getMinPriority()
+        if (priority < minPriority) {
             return false
         }
         val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId

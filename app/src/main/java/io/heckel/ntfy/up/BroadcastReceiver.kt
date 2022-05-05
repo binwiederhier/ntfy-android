@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
@@ -74,6 +75,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     topic = topic,
                     instant = true, // No Firebase, always instant!
                     mutedUntil = 0,
+                    minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
+                    autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
                     upAppId = appId,
                     upConnectorToken = connectorToken,
                     totalCount = 0,
