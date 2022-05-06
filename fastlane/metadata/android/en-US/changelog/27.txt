@@ -10,6 +10,8 @@ Bugs:
 * Prevent view action from crashing the app (#233)
 * Prevent long topic names and icons from overlappng (#240, thanks to @cmeis)
 
-**Thanks for testing:**
+Additional translations:
+* Dutch (incomplete, thanks to @diony)
 
-Thanks to @cmeis, @StoyanDimitrov, @Fallenbagel for testing, and to @Joeharrison94 for the input.
+Thanks for testing:
+Many thanks to @cmeis, @StoyanDimitrov, @Fallenbagel for testing, and to @Joeharrison94 for the input.
