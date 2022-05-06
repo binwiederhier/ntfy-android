@@ -8,6 +8,7 @@ Bugs:
 * Fix app icon on old Android versions (#120, thanks to @shadow00 for reporting)
 * Fix races in UnifiedPush registration (#230, thanks to @Jakob for reporting)
 * Prevent view action from crashing the app (#233)
+* Prevent long topic names and icons from overlappng (#240, thanks to @cmeis)
 
 **Thanks for testing:**
 
