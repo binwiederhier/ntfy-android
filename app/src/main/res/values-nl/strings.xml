@@ -55,13 +55,13 @@
     <string name="refresh_message_error">Kon %1$d abonnementen niet vernieuwen
 \n
 \n%2$s</string>
-    <string name="main_menu_notifications_disabled_forever">Meldingen gepauzeerd</string>
+    <string name="main_menu_notifications_disabled_forever">Meldingen gedempt</string>
     <string name="main_action_bar_title">Geabonneerde onderwerpen</string>
     <string name="main_action_mode_delete_dialog_cancel">Annuleren</string>
     <string name="main_item_status_text_not_one">%1$d meldingen</string>
     <string name="main_item_status_reconnecting">opnieuw verbinden …</string>
     <string name="main_menu_notifications_enabled">Meldingen aan</string>
-    <string name="main_menu_notifications_disabled_until">Meldingen gepauzeerd tot %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Meldingen gedempt tot %1$s</string>
     <string name="main_menu_rate_title">Beoordeel de app ⭐</string>
     <string name="main_item_status_text_one">%1$d melding</string>
     <string name="main_action_mode_delete_dialog_message">Afmelden van de geselecteerde onderwerp(en) en alle meldingen definitief verwijderen\?</string>
@@ -86,8 +86,8 @@
     <string name="user_dialog_title_add">Gebruiker toevoegen</string>
     <string name="settings_advanced_export_logs_uploading">Log uploaden …</string>
     <string name="settings_about_version_copied_to_clipboard_message">Gekopieerd naar het klembord</string>
-    <string name="detail_menu_notifications_disabled_forever">Meldingen gepauzeerd</string>
-    <string name="detail_menu_notifications_disabled_until">Meldingen gepauzeerd tot %1$s</string>
+    <string name="detail_menu_notifications_disabled_forever">Meldingen gedempt</string>
+    <string name="detail_menu_notifications_disabled_until">Meldingen gedempt tot %1$s</string>
     <string name="detail_menu_test">Testmelding verzenden</string>
     <string name="detail_menu_clear">Alle meldingen wissen</string>
     <string name="detail_menu_settings">Abonnementsinstellingen</string>
@@ -142,7 +142,7 @@
     <string name="detail_clear_dialog_message">Verwijder alle notificaties in dit onderwerp\?</string>
     <string name="add_dialog_instant_delivery">Onmiddellijke levering in \"doze\" modus</string>
     <string name="main_banner_json_stream_text">Schakel nu over naar WebSockets in de Settings / \"Connectie protocol\" om te verzekeren dat je kan communiceren met je zelf gehoste ntfy server na Juni 2022.</string>
-    <string name="add_dialog_description_below">Onderwerpen kunnen niet beveiligd worden met een wachtwoord, dus kies een naam dat je moeilijk kan raden. Eenmalig geabboneerd, kan je notficaties PUT/POST.</string>
+    <string name="add_dialog_description_below">Onderwerpen zijn mogelijk niet beveiligd met een wachtwoord, dus kies een naam die moeilijk te raden is. Eenmaal geabonneerd, kunt u PUT/POST-meldingen plaatsen.</string>
     <string name="add_dialog_use_another_server_description">Geef de service URLs hieronder om te abboneren aan onderwerpen van andere servers.</string>
     <string name="main_banner_json_stream_button_learn_more">Leer meer</string>
     <string name="add_dialog_instant_delivery_description">Zorgt ervoor dat berichten onmiddellijk worden afgeleverd, zelfs als het toestel inactief is.</string>
@@ -151,4 +151,83 @@
     <string name="detail_how_to_intro">Om een notificatie naar dit onderwerp te sturen, verstuur een simpele PUT of POST naar de URL van dit onderwerp.</string>
     <string name="detail_how_to_example">Voorbeeld (door gebruik van curl): <br/><tt> curl -d \"Hallo\"%1$s</tt></string>
     <string name="detail_how_to_link">Gedetaileerde instructies zijn ter beschikking op ntfy.sh en in de documentatie.</string>
+    <string name="detail_delete_dialog_message">Afmelden voor dit onderwerp en alle ontvangen meldingen verwijderen\?</string>
+    <string name="detail_test_title">Test: Je kunt desgewenst een titel instellen.</string>
+    <string name="detail_instant_delivery_disabled">Directe levering uit</string>
+    <string name="detail_menu_enable_instant">Directe bezorging inschakelen</string>
+    <string name="detail_menu_disable_instant">Directe bezorging uitschakelen</string>
+    <string name="notification_popup_action_open">Openen</string>
+    <string name="notification_popup_action_browse">Bladeren</string>
+    <string name="notification_popup_action_download">Downloaden</string>
+    <string name="settings_backup_restore_backup_entry_everything_no_users">Alles, behalve gebruikers</string>
+    <string name="settings_backup_restore_restore_successful">Herstel succesvol</string>
+    <string name="settings_backup_restore_restore_failed">Herstel mislukt: %1$s</string>
+    <string name="settings_advanced_export_logs_summary">Kopieer logs naar het klembord of upload naar nopaste.net (eigendom van de ntfy auteur). Hostnamen en onderwerpen kunnen worden gecensureerd, meldingen zullen dat nooit zijn.</string>
+    <string name="settings_advanced_clear_logs_title">Logs verwijderen</string>
+    <string name="settings_advanced_clear_logs_deleted_toast">Logs verwijderd</string>
+    <string name="user_dialog_description_add">Je kunt hier een gebruiker toevoegen. Alle onderwerpen voor de opgegeven server zullen deze gebruiker gebruiken.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Gebruik WebSockets om verbinding te maken met de server. Dit wordt de standaard in juni 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Gebruik een JSON stream via HTTP om verbinding te maken met de server. Deze methode is verouderd en wordt in juni 2022 verwijderd.</string>
+    <string name="settings_advanced_export_logs_entry_upload_scrubbed">Upload en kopieer link (gecensureerd)</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">Deze onderwerpen/hostnamen zijn vervangen met fruitnamen zodat je het log kunt delen zonder zorgen:
+\n
+\n%1$s
+\n
+\nWachtwoorden worden verwijderd, maar worden hier niet vermeld.</string>
+    <string name="share_topic_title">Delen naar</string>
+    <string name="settings_notifications_muted_until_forever">Meldingen gedempt totdat ze worden hervat</string>
+    <string name="settings_notifications_muted_until_x">Meldingen gedempt tot %1$s</string>
+    <string name="detail_deep_link_subscribed_toast_message">Geabonneerd op onderwerp %1$s</string>
+    <string name="share_suggested_topics">Voorgestelde onderwerpen</string>
+    <string name="share_successful">Bericht gepubliceerd</string>
+    <string name="notification_dialog_title">Meldingen dempen</string>
+    <string name="notification_dialog_cancel">Annuleren</string>
+    <string name="notification_dialog_enabled_toast_message">Meldingen hervat</string>
+    <string name="notification_dialog_muted_forever_toast_message">Meldingen gedempt</string>
+    <string name="notification_dialog_muted_until_toast_message">Meldingen gedempt tot %1$s</string>
+    <string name="notification_dialog_show_all">Toon alle meldingen</string>
+    <string name="notification_popup_file_download_successful">%1$s
+\nBestand: %2$s, gedownload</string>
+    <string name="notification_popup_file_download_failed">%1$s
+\nBestand: %2$s, download mislukt</string>
+    <string name="notification_popup_user_action_failed">%1$s mislukt: %2$s</string>
+    <string name="settings_notifications_muted_until_title">Meldingen dempen</string>
+    <string name="settings_notifications_muted_until_show_all">Alle meldingen weergeven</string>
+    <string name="settings_backup_restore_backup_failed">Back-up mislukt: %1$s</string>
+    <string name="settings_backup_restore_restore_title">Herstellen vanuit bestand</string>
+    <string name="settings_advanced_broadcast_summary_enabled">Apps kunnen inkomende meldingen ontvangen als broadcasts</string>
+    <string name="settings_backup_restore_backup_entry_settings_only">Alleen instellingen</string>
+    <string name="settings_backup_restore_backup_successful">Back-up aangemaakt</string>
+    <string name="settings_advanced_broadcast_title">Berichten broadcasten</string>
+    <string name="settings_advanced_broadcast_summary_disabled">Apps kunnen geen meldingen ontvangen als broadcasts</string>
+    <string name="settings_backup_restore_backup_entry_everything">Alles</string>
+    <string name="settings_advanced_export_logs_title">Kopieer/upload logs</string>
+    <string name="settings_advanced_export_logs_entry_copy_original">Kopieer naar klembord</string>
+    <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopiëren naar klembord (gecensureerd)</string>
+    <string name="settings_advanced_export_logs_entry_upload_original">Upload en kopieer link</string>
+    <string name="settings_advanced_export_logs_copied_logs">Logs gekopieerd naar klembord</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_button_ok">Oké</string>
+    <string name="settings_advanced_clear_logs_summary">Verwijder eerder opgenomen logs en begin opnieuw</string>
+    <string name="user_dialog_description_edit">Je kunt de gebruikersnaam/wachtwoord voor de geselecteerde gebruiker bewerken of verwijderen.</string>
+    <string name="detail_test_message">Dit is een testmelding van de ntfy Android app. Het heeft een %1$d prioriteitsniveau. Als je een andere stuurt kan deze er anders uitzien.</string>
+    <string name="detail_test_message_error">Kan bericht niet verzenden: %1$s</string>
+    <string name="detail_test_message_error_unauthorized_anon">Kan bericht niet verzenden: Anoniem publiceren niet toegestaan.</string>
+    <string name="detail_test_message_error_unauthorized_user">Kan bericht niet verzenden: De gebruiker \"%1$s\" is niet geautoriseerd.</string>
+    <string name="detail_test_message_error_too_large">Kan bericht niet verzenden: De bijlage is te groot.</string>
+    <string name="detail_copied_to_clipboard_message">Gekopieerd naar het klembord</string>
+    <string name="detail_instant_delivery_enabled">Directe levering aan</string>
+    <string name="detail_item_tags">Tags: %1$s</string>
+    <string name="detail_item_snack_deleted">Melding verwijderd</string>
+    <string name="notification_dialog_save">Opslaan</string>
+    <string name="notification_popup_action_cancel">Annuleren</string>
+    <string name="notification_popup_file">%1$s
+\nBestand: %2$s</string>
+    <string name="notification_popup_file_downloading">Downloaden %1$s, %2$d%%
+\n%3$s</string>
+    <string name="settings_backup_restore_restore_summary">Configuratie, meldingen en gebruikers importeren</string>
+    <string name="settings_advanced_header">Geavanceerd</string>
+    <string name="settings_advanced_record_logs_title">Logs opnemen</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Loggen (tot 1,000 vermeldingen) naar apparaat …</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Schakel loggen in zodat je logs later kunt delen om problemen te diagnosticeren.</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">Er zijn geen onderwerpen/hostnamen gecensureerd. Misschien heb je geen abonnementen\?</string>
 </resources>
