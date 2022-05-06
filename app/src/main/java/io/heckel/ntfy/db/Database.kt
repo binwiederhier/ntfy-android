@@ -252,8 +252,8 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_10_11 = object : Migration(10, 11) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE Notification ADD COLUMN minPriority INT NOT NULL DEFAULT (0)") // 0 = use global setting
-                db.execSQL("ALTER TABLE Notification ADD COLUMN autoDelete INT NOT NULL DEFAULT (0)")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN minPriority INT NOT NULL DEFAULT (0)") // = Repository.MIN_PRIORITY_USE_GLOBAL
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN autoDelete INT NOT NULL DEFAULT (-1)") // = Repository.AUTO_DELETE_USE_GLOBAL
             }
         }
     }
