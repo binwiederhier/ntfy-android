@@ -9,7 +9,6 @@ import android.content.Intent.ACTION_VIEW
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.util.Base64
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -33,7 +32,6 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
@@ -249,15 +247,24 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
 
         // Mark this subscription as "open" so we don't receive notifications for it
-        Log.d(TAG, "onCreate hook: Marking subscription $subscriptionId as 'open'")
         repository.detailViewSubscriptionId.set(subscriptionId)
     }
 
     override fun onResume() {
         super.onResume()
 
-        Log.d(TAG, "onResume hook: Marking subscription $subscriptionId as 'open'")
-        repository.detailViewSubscriptionId.set(subscriptionId) // Mark as "open" so we don't send notifications while this is open
+        // Mark as "open" so we don't send notifications while this is open
+        repository.detailViewSubscriptionId.set(subscriptionId)
+
+        // Update buttons (this is for when we return from the preferences screen)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+            subscriptionInstant = subscription.instant
+            subscriptionMutedUntil = subscription.mutedUntil
+
+            showHideInstantMenuItems(subscriptionInstant)
+            showHideMutedUntilMenuItems(subscriptionMutedUntil)
+        }
     }
 
     override fun onPause() {
@@ -290,7 +297,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
-        showHideNotificationMenuItems(subscriptionMutedUntil)
+        showHideMutedUntilMenuItems(subscriptionMutedUntil)
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -300,6 +307,8 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     }
 
     private fun startNotificationMutedChecker() {
+        // FIXME This is awful and has to go.
+
         lifecycleScope.launch(Dispatchers.IO) {
             delay(1000) // Just to be sure we've initialized all the things, we wait a bit ...
             while (isActive) {
@@ -309,7 +318,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 if (mutedUntilExpired) {
                     val newSubscription = subscription.copy(mutedUntil = 0L)
                     repository.updateSubscription(newSubscription)
-                    showHideNotificationMenuItems(0L)
+                    showHideMutedUntilMenuItems(0L)
                 }
                 delay(60_000)
             }
@@ -414,7 +423,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val newSubscription = subscription?.copy(mutedUntil = mutedUntilTimestamp)
             newSubscription?.let { repository.updateSubscription(newSubscription) }
             subscriptionMutedUntil = mutedUntilTimestamp
-            showHideNotificationMenuItems(mutedUntilTimestamp)
+            showHideMutedUntilMenuItems(mutedUntilTimestamp)
             runOnUiThread {
                 when (mutedUntilTimestamp) {
                     0L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
@@ -493,6 +502,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     }
 
     private fun showHideInstantMenuItems(enable: Boolean) {
+        if (!this::menu.isInitialized) {
+            return
+        }
         subscriptionInstant = enable
         runOnUiThread {
             val appBaseUrl = getString(R.string.app_base_url)
@@ -509,7 +521,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
-    private fun showHideNotificationMenuItems(mutedUntilTimestamp: Long) {
+    private fun showHideMutedUntilMenuItems(mutedUntilTimestamp: Long) {
+        if (!this::menu.isInitialized) {
+            return
+        }
         subscriptionMutedUntil = mutedUntilTimestamp
         runOnUiThread {
             val notificationsEnabledItem = menu.findItem(R.id.detail_menu_notifications_enabled)

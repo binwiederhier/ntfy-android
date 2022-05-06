@@ -9,6 +9,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.randomString
+import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicUrlUp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -95,6 +96,10 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     Log.w(TAG, "Failed to add subscription", e)
                     distributor.sendRegistrationFailed(appId, connectorToken, e.message)
                 }
+
+                // Add to log scrubber
+                Log.addScrubTerm(shortUrl(baseUrl), Log.TermType.Domain)
+                Log.addScrubTerm(topic)
             }
         }
     }

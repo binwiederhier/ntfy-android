@@ -31,6 +31,7 @@
     <string name="settings_about_version_key" translatable="false">Version</string>
 
     <!-- Detail settings constants -->
+    <string name="detail_settings_notifications_instant_key" translatable="false">SubscriptionInstant</string>
     <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
@@ -69,7 +70,7 @@
         <item>5</item>
     </string-array>
     <string-array name="detail_settings_notifications_min_priority_entries">
-        <item>@string/settings_global_setting_title</item>
+        <item>@string/detail_settings_global_setting_title</item>
         <item>@string/settings_notifications_min_priority_min</item>
         <item>@string/settings_notifications_min_priority_low</item>
         <item>@string/settings_notifications_min_priority_default</item>
@@ -121,7 +122,7 @@
         <item>7776000</item>
     </string-array>
     <string-array name="detail_settings_notifications_auto_delete_entries">
-        <item>@string/settings_global_setting_title</item>
+        <item>@string/detail_settings_global_setting_title</item>
         <item>@string/settings_notifications_auto_delete_never</item>
         <item>@string/settings_notifications_auto_delete_one_day</item>
         <item>@string/settings_notifications_auto_delete_three_days</item>

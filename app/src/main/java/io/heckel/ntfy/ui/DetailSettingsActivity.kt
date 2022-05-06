@@ -3,20 +3,14 @@ package io.heckel.ntfy.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceDataStore
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.*
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.formatDateShort
-import io.heckel.ntfy.util.toPriorityString
-import io.heckel.ntfy.util.topicShortUrl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import io.heckel.ntfy.util.*
+import kotlinx.coroutines.*
 import java.util.*
 
 /**
@@ -77,18 +71,43 @@ class DetailSettingsActivity : AppCompatActivity() {
 
             // Load subscription and users
             val subscriptionId = arguments?.getLong(DetailActivity.EXTRA_SUBSCRIPTION_ID) ?: return
-            lifecycleScope.launch(Dispatchers.IO) {
-                subscription = repository.getSubscription(subscriptionId) ?: return@launch
-                activity?.runOnUiThread {
-                    loadView()
+            runBlocking {
+                withContext(Dispatchers.IO) {
+                    subscription = repository.getSubscription(subscriptionId) ?: return@withContext
+                    activity?.runOnUiThread {
+                        loadView()
+                    }
                 }
             }
         }
 
         private fun loadView() {
+            // Instant delivery
+            val appBaseUrl = getString(R.string.app_base_url)
+            val instantEnabledPrefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
+            val instantEnabled: SwitchPreference? = findPreference(instantEnabledPrefId)
+            instantEnabled?.isVisible = BuildConfig.FIREBASE_AVAILABLE && subscription.baseUrl == appBaseUrl
+            instantEnabled?.isChecked = subscription.instant
+            instantEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    save(subscription.copy(instant = value), refresh = true)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return subscription.instant
+                }
+            }
+            instantEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.detail_settings_notifications_instant_summary_on)
+                } else {
+                    getString(R.string.detail_settings_notifications_instant_summary_off)
+                }
+            }
+
             // Notifications muted until
             val mutedUntilPrefId = context?.getString(R.string.detail_settings_notifications_muted_until_key) ?: return
             val mutedUntil: ListPreference? = findPreference(mutedUntilPrefId)
+            mutedUntil?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
             mutedUntil?.value = subscription.mutedUntil.toString()
             mutedUntil?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
@@ -130,6 +149,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             // Minimum priority
             val minPriorityPrefId = context?.getString(R.string.detail_settings_notifications_min_priority_key) ?: return
             val minPriority: ListPreference? = findPreference(minPriorityPrefId)
+            minPriority?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
             minPriority?.value = subscription.minPriority.toString()
             minPriority?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
@@ -160,6 +180,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             // Auto delete
             val autoDeletePrefId = context?.getString(R.string.detail_settings_notifications_auto_delete_key) ?: return
             val autoDelete: ListPreference? = findPreference(autoDeletePrefId)
+            autoDelete?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
             autoDelete?.value = subscription.autoDelete.toString()
             autoDelete?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
@@ -189,16 +210,19 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun save(newSubscription: Subscription) {
+        private fun save(newSubscription: Subscription, refresh: Boolean = false) {
             subscription = newSubscription
             lifecycleScope.launch(Dispatchers.IO) {
                 repository.updateSubscription(newSubscription)
+                if (refresh) {
+                    SubscriberServiceManager.refresh(requireContext())
+                }
             }
         }
 
         private fun maybeAppendGlobal(summary: String, global: Boolean): String {
             return if (global) {
-                summary + " (" + getString(R.string.settings_global_setting_suffix) + ")"
+                summary + " (" + getString(R.string.detail_settings_global_setting_suffix) + ")"
             } else {
                 summary
             }
