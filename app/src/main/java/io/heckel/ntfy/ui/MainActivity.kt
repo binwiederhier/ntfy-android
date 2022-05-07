@@ -427,6 +427,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             mutedUntil = 0,
             minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
             autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+            icon = null,
             upAppId = null,
             upConnectorToken = null,
             totalCount = 0,

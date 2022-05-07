@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 11,
-    "identityHash": "9a26b356f0d51f2c63fd3e4570b7e645",
+    "identityHash": "31f8e6a2032d1d404fad4307abf23e1b",
     "entities": [
       {
         "tableName": "Subscription",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `upAppId` TEXT, `upConnectorToken` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `icon` TEXT, `upAppId` TEXT, `upConnectorToken` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,12 @@
             "columnName": "autoDelete",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "upAppId",
@@ -308,7 +314,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9a26b356f0d51f2c63fd3e4570b7e645')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '31f8e6a2032d1d404fad4307abf23e1b')"
     ]
   }
 }

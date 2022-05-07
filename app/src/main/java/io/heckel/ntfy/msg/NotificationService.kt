@@ -72,6 +72,7 @@ class NotificationService(val context: Context) {
             .setAutoCancel(true) // Cancel when notification is clicked
         setStyleAndText(builder, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
+        maybeSetIcon(builder, subscription)
         maybeSetSound(builder, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
@@ -82,6 +83,18 @@ class NotificationService(val context: Context) {
 
         maybeCreateNotificationChannel(notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
+    }
+
+    private fun maybeSetIcon(builder: NotificationCompat.Builder, subscription: Subscription) {
+        val icon = subscription.icon ?: return
+        try {
+            val resolver = context.applicationContext.contentResolver
+            val bitmapStream = resolver.openInputStream(Uri.parse(icon))
+            val bitmap = BitmapFactory.decodeStream(bitmapStream)
+            builder.setLargeIcon(bitmap)
+        } catch (e: Exception) {
+            Log.w(TAG, "Cannot load subscription icon", e)
+        }
     }
 
     private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {

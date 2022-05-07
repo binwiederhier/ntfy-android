@@ -18,6 +18,7 @@ data class Subscription(
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
     @ColumnInfo(name = "minPriority") val minPriority: Int,
     @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
+    @ColumnInfo(name = "icon") val icon: String?, // content://-URI (or later other identifier)
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     @Ignore val totalCount: Int = 0, // Total notifications
@@ -25,8 +26,8 @@ data class Subscription(
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, upAppId: String, upConnectorToken: String) :
-            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, icon: String, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, icon, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -41,6 +42,7 @@ data class SubscriptionWithMetadata(
     val mutedUntil: Long,
     val autoDelete: Long,
     val minPriority: Int,
+    val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?,
     val totalCount: Int,
@@ -254,6 +256,7 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN minPriority INT NOT NULL DEFAULT (0)") // = Repository.MIN_PRIORITY_USE_GLOBAL
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN autoDelete INT NOT NULL DEFAULT (-1)") // = Repository.AUTO_DELETE_USE_GLOBAL
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN icon TEXT")
             }
         }
     }
@@ -263,7 +266,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -276,7 +279,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -289,7 +292,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -302,7 +305,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -315,7 +318,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

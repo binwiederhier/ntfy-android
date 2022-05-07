@@ -97,6 +97,7 @@ class Backuper(val context: Context) {
                     mutedUntil = s.mutedUntil,
                     minPriority = s.minPriority ?: Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = s.autoDelete ?: Repository.AUTO_DELETE_USE_GLOBAL,
+                    icon = s.icon,
                     upAppId = s.upAppId,
                     upConnectorToken = s.upConnectorToken
                 ))
@@ -219,6 +220,7 @@ class Backuper(val context: Context) {
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
+                icon = s.icon,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken
             )
@@ -324,6 +326,7 @@ data class Subscription(
     val mutedUntil: Long,
     val minPriority: Int?,
     val autoDelete: Long?,
+    val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?
 )

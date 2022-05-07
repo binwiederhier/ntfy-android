@@ -78,6 +78,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+                    icon = null,
                     upAppId = appId,
                     upConnectorToken = connectorToken,
                     totalCount = 0,
