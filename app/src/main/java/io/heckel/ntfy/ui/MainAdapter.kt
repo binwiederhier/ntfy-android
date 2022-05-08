@@ -1,9 +1,12 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +16,8 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
@@ -47,6 +52,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
+        private val imageView: ImageView = itemView.findViewById(R.id.main_item_image)
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
@@ -84,6 +90,16 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             val globalMutedUntil = repository.getGlobalMutedUntil()
             val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && !isUnifiedPush
             val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
+            if (subscription.icon != null) {
+                try {
+                    val resolver = context.applicationContext.contentResolver
+                    val bitmapStream = resolver.openInputStream(Uri.parse(subscription.icon))
+                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                    imageView.setImageBitmap(bitmap)
+                } catch (e: Exception) {
+                    Log.w(TAG, "Cannot load subscription icon", e)
+                }
+            }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
             dateView.text = dateText
@@ -113,5 +129,9 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
         override fun areContentsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        const val TAG = "NtfyMainAdapter"
     }
 }

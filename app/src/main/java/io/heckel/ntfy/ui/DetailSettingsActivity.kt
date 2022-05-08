@@ -1,23 +1,23 @@
 package io.heckel.ntfy.ui
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.DownloadWorker
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
-import okio.source
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -70,7 +70,10 @@ class DetailSettingsActivity : AppCompatActivity() {
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
         private lateinit var subscription: Subscription
-        private lateinit var pickIconLauncher: ActivityResultLauncher<String>
+
+        private lateinit var iconSetPref: Preference
+        private lateinit var iconSetLauncher: ActivityResultLauncher<String>
+        private lateinit var iconRemovePref: Preference
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.detail_preferences, rootKey)
@@ -80,7 +83,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             serviceManager = SubscriberServiceManager(requireActivity())
 
             // Create result launcher for custom icon (must be created in onCreatePreferences() directly)
-            pickIconLauncher = createCustomIconPickLauncher()
+            iconSetLauncher = createIconPickLauncher()
 
             // Load subscription and users
             val subscriptionId = arguments?.getLong(DetailActivity.EXTRA_SUBSCRIPTION_ID) ?: return
@@ -99,7 +102,8 @@ class DetailSettingsActivity : AppCompatActivity() {
             loadMutedUntilPref()
             loadMinPriorityPref()
             loadAutoDeletePref()
-            loadCustomIconsPref()
+            loadIconSetPref()
+            loadIconRemovePref()
         }
 
         private fun loadInstantPref() {
@@ -233,40 +237,77 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun loadCustomIconsPref() {
-            val prefId = context?.getString(R.string.detail_settings_general_icon_key) ?: return
-            val pref: Preference? = findPreference(prefId)
-            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
-            pref?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            pref?.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
-                pickIconLauncher.launch("image/*")
-                false
+        private fun loadIconSetPref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_icon_set_key) ?: return
+            iconSetPref = findPreference(prefId) ?: return
+            iconSetPref.isVisible = subscription.icon == null
+            iconSetPref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            iconSetPref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+                iconSetLauncher.launch("image/*")
+                true
             }
         }
 
-        private fun createCustomIconPickLauncher(): ActivityResultLauncher<String> {
+        private fun loadIconRemovePref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_icon_remove_key) ?: return
+            iconRemovePref = findPreference(prefId) ?: return
+
+            // FIXME
+
+            if (subscription.icon != null) {
+                try {
+                    val resolver = requireContext().applicationContext.contentResolver
+                    val bitmapStream = resolver.openInputStream(Uri.parse(subscription.icon))
+                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                    iconRemovePref.icon = bitmap.toDrawable(resources)
+                } catch (e: Exception) {
+                    // FIXME
+
+                }
+            }
+            iconRemovePref.isVisible = subscription.icon != null
+            iconRemovePref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            iconRemovePref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+                save(subscription.copy(icon = null))
+                iconRemovePref.isVisible = false
+                iconSetPref.isVisible = true
+                true
+            }
+        }
+
+        private fun createIconPickLauncher(): ActivityResultLauncher<String> {
             return registerForActivityResult(ActivityResultContracts.GetContent()) { inputUri ->
                 if (inputUri == null) {
                     return@registerForActivityResult
                 }
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
+                        // Write to cache storage
                         val resolver = requireContext().applicationContext.contentResolver
                         val inputStream = resolver.openInputStream(inputUri) ?: throw IOException("Couldn't open content URI for reading")
                         val outputUri = createUri()
                         val outputStream = resolver.openOutputStream(outputUri) ?: throw IOException("Couldn't open content URI for writing")
                         inputStream.copyTo(outputStream)
                         save(subscription.copy(icon = outputUri.toString()))
+
+                        // FIXME
+                        // FIXME
+
+                        iconSetPref.isVisible = false
+
+                        val bitmapStream = resolver.openInputStream(Uri.parse(outputUri.toString()))
+                        val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                        iconRemovePref.icon = bitmap.toDrawable(resources)
+                        iconRemovePref.isVisible = true
                     } catch (e: Exception) {
                         Log.w(TAG, "Saving icon failed", e)
                         requireActivity().runOnUiThread {
-                            // FIXME
+                            // FIXME TOAST
                         }
                     }
                 }
             }
         }
-
 
         private fun createUri(): Uri {
             val dir = File(requireContext().cacheDir, SUBSCRIPTION_ICONS)
@@ -275,6 +316,10 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
             val file =  File(dir, subscription.id.toString())
             return FileProvider.getUriForFile(requireContext(), DownloadWorker.FILE_PROVIDER_AUTHORITY, file)
+        }
+
+        private fun loadBitmap() {
+            // FIXME
         }
 
         private fun save(newSubscription: Subscription, refresh: Boolean = false) {

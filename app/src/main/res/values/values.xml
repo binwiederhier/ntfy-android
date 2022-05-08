@@ -35,7 +35,8 @@
     <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
-    <string name="detail_settings_general_icon_key" translatable="false">SubscriptionIcon</string>
+    <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
+    <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
 
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">

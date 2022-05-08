@@ -27,10 +27,16 @@
                 app:defaultValue="-1"
                 app:isPreferenceVisible="false"/> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
     </PreferenceCategory>
-    <PreferenceCategory app:title="@string/settings_general_header">
+    <PreferenceCategory app:title="@string/detail_settings_appearance_header">
         <Preference
-                app:key="@string/detail_settings_general_icon_key"
-                app:title="@string/detail_settings_general_icon_title"
+                app:key="@string/detail_settings_appearance_icon_set_key"
+                app:title="@string/detail_settings_appearance_icon_title"
+                app:summary="@string/detail_settings_appearance_icon_set_summary_no_set"
+                app:isPreferenceVisible="false"/>
+        <Preference
+                app:key="@string/detail_settings_appearance_icon_remove_key"
+                app:title="@string/detail_settings_appearance_icon_title"
+                app:summary="@string/detail_settings_appearance_icon_set_summary_set"
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 </PreferenceScreen>
