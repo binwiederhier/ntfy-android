@@ -23,7 +23,7 @@
     <string name="channel_subscriber_notification_instant_text">即時配信トピックを購読しています</string>
     <string name="channel_subscriber_service_name">購読サービス</string>
     <string name="channel_subscriber_notification_instant_text_three">即時配信トピックを３件購読しています</string>
-    <string name="main_menu_notifications_disabled_until">通知を%1$sまで停止</string>
+    <string name="main_menu_notifications_disabled_until">通知を%1$sまでミュート</string>
     <string name="main_menu_rate_title">アプリを評価⭐</string>
     <string name="main_item_status_text_not_one">通知 %1$d件</string>
     <string name="add_dialog_button_cancel">キャンセル</string>
@@ -130,9 +130,9 @@
     <string name="detail_item_download_info_not_downloaded_expires_x">未ダウンロード、リンク失効期限 %1$s</string>
     <string name="detail_item_download_info_download_failed_expired">ダウンロード失敗、リンク失効後</string>
     <string name="detail_item_download_info_download_failed_expires_x">ダウンロード失敗、リンク失効期限 %1$s</string>
-    <string name="detail_menu_notifications_disabled_forever">通知一時停止</string>
+    <string name="detail_menu_notifications_disabled_forever">通知をミュート</string>
     <string name="detail_menu_disable_instant">即時配信をオフにする</string>
-    <string name="detail_menu_notifications_disabled_until">通知 %1$s まで停止</string>
+    <string name="detail_menu_notifications_disabled_until">通知 %1$s までミュート</string>
     <string name="detail_menu_enable_instant">即時配信をオンにする</string>
     <string name="detail_menu_clear">全ての通知を消去</string>
     <string name="share_menu_send">共有</string>
@@ -165,9 +165,9 @@
     <string name="share_successful">メッセージが送信されました</string>
     <string name="notification_dialog_cancel">キャンセル</string>
     <string name="notification_dialog_save">保存</string>
-    <string name="notification_dialog_title">通知を停止</string>
+    <string name="notification_dialog_title">通知をミュート</string>
     <string name="share_suggested_topics">提案されたトピック</string>
-    <string name="notification_dialog_muted_forever_toast_message">通知を停止しました</string>
+    <string name="notification_dialog_muted_forever_toast_message">通知をミュートしました</string>
     <string name="notification_dialog_30min">30分</string>
     <string name="notification_dialog_8h">8時間</string>
     <string name="notification_dialog_tomorrow">明日まで</string>
@@ -175,13 +175,13 @@
     <string name="notification_dialog_enabled_toast_message">通知を再開しました</string>
     <string name="notification_dialog_show_all">全ての通知を表示</string>
     <string name="notification_popup_action_browse">ブラウズ</string>
-    <string name="notification_dialog_muted_until_toast_message">通知を %1$s まで停止します</string>
+    <string name="notification_dialog_muted_until_toast_message">通知を %1$s までミュートします</string>
     <string name="notification_dialog_2h">2時間</string>
     <string name="notification_popup_action_cancel">キャンセル</string>
     <string name="notification_popup_file_downloading">%1$sをダウンロード中、%2$d%%
 \n%3$s</string>
-    <string name="main_menu_notifications_disabled_forever">通知を停止</string>
-    <string name="settings_notifications_muted_until_forever">再開されるまで通知は停止中</string>
+    <string name="main_menu_notifications_disabled_forever">通知をミュート</string>
+    <string name="settings_notifications_muted_until_forever">再開されるまで通知はミュート中</string>
     <string name="notification_popup_file">%1$s
 \nファイル: %2$s</string>
     <string name="notification_popup_file_download_successful">%1$s
@@ -189,9 +189,9 @@
     <string name="notification_popup_file_download_failed">%1$s
 \nファイル: %2$s ダウンロード失敗</string>
     <string name="settings_title">設定</string>
-    <string name="settings_notifications_muted_until_title">通知を停止</string>
+    <string name="settings_notifications_muted_until_title">通知をミュート</string>
     <string name="settings_notifications_muted_until_show_all">全ての通知を表示します</string>
-    <string name="settings_notifications_muted_until_x">%1$s まで通知を停止中</string>
+    <string name="settings_notifications_muted_until_x">%1$s まで通知をミュート中</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">優先度が %1$d (%2$s) 以上の場合のみ通知を表示します</string>
     <string name="settings_notifications_min_priority_min">全ての優先度</string>
     <string name="settings_notifications_priority_max">最高</string>
@@ -302,5 +302,6 @@
     <string name="add_dialog_topic_name_hint">トピック名, 例) phils_alerts</string>
     <string name="detail_deep_link_subscribed_toast_message">トピック %1$s を購読しました</string>
     <string name="settings_notifications_channel_prefs_title">チャネル設定</string>
-    <string name="settings_notifications_channel_prefs_summary">おやすみモード時の動作やカスタムサウンド等を設定します。</string>
+    <string name="settings_notifications_channel_prefs_summary">おやすみモード時の動作やサウンド等を設定します。</string>
+    <string name="notification_popup_user_action_failed">%1$s 失敗: %2$s</string>
 </resources>
