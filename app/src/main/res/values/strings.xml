@@ -350,7 +350,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Icon displayed in notifications for this topic</string>
     <string name="detail_settings_appearance_icon_error_saving">Unable to save icon: %1$s</string>
     <string name="detail_settings_global_setting_title">Use global setting</string>
-    <string name="detail_settings_global_setting_suffix">global</string>
+    <string name="detail_settings_global_setting_suffix">using global setting</string>
 
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>

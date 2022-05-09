@@ -284,6 +284,16 @@ class DetailSettingsActivity : AppCompatActivity() {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val outputUri = createUri() ?: return@launch
                     try {
+                        // Early size & mime type check
+                        val mimeType = resolver.getType(inputUri)
+                        if (!supportedImage(mimeType)) {
+                            throw IOException("unknown image type or not supported")
+                        }
+                        val stat = fileStat(requireContext(), inputUri) // May throw
+                        if (stat.size > SUBSCRIPTION_ICON_MAX_SIZE_BYTES) {
+                            throw IOException("image too large, max supported is ${SUBSCRIPTION_ICON_MAX_SIZE_BYTES/1024/1024}MB")
+                        }
+
                         // Write to cache storage
                         val inputStream = resolver.openInputStream(inputUri) ?: throw IOException("Couldn't open content URI for reading")
                         val outputStream = resolver.openOutputStream(outputUri) ?: throw IOException("Couldn't open content URI for writing")
@@ -291,8 +301,13 @@ class DetailSettingsActivity : AppCompatActivity() {
                             it.copyTo(outputStream)
                         }
 
-                        // Read image & display "remove" preference
+                        // Read image, check dimensions
                         val bitmap = outputUri.readBitmapFromUri(requireContext())
+                        if (bitmap.width > SUBSCRIPTION_ICON_MAX_WIDTH || bitmap.height > SUBSCRIPTION_ICON_MAX_HEIGHT) {
+                            throw IOException("image exceeds max dimensions of ${SUBSCRIPTION_ICON_MAX_WIDTH}x${SUBSCRIPTION_ICON_MAX_HEIGHT}")
+                        }
+
+                        // Display "remove" preference
                         iconRemovePref.icon = bitmap.toDrawable(resources)
                         iconRemovePref.isVisible = true
                         iconSetPref.isVisible = false
@@ -351,5 +366,8 @@ class DetailSettingsActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "NtfyDetailSettingsActiv"
         private const val SUBSCRIPTION_ICONS = "subscriptionIcons"
+        private const val SUBSCRIPTION_ICON_MAX_SIZE_BYTES = 4194304
+        private const val SUBSCRIPTION_ICON_MAX_WIDTH = 2048
+        private const val SUBSCRIPTION_ICON_MAX_HEIGHT = 2048
     }
 }
