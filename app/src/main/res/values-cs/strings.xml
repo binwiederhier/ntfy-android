@@ -315,7 +315,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ikona k tomuto tématu zobrazená v oznámeních</string>
     <string name="detail_settings_appearance_icon_error_saving">Nelze uložit ikonu: %1$s</string>
     <string name="detail_settings_global_setting_title">Použít globální nastavení</string>
-    <string name="detail_settings_global_setting_suffix">globální</string>
+    <string name="detail_settings_global_setting_suffix">používá se globální nastavení</string>
     <string name="channel_subscriber_notification_instant_text_six">Přihlášeno k odběru šesti témat okamžitého doručení</string>
     <string name="detail_settings_notifications_instant_summary_off">Oznámení jsou doručena pomocí služby Firebase. Doručování může být zpožděné, ale spotřebovává méně baterie.</string>
     <string name="detail_settings_notifications_instant_title">Okamžité doručení</string>
