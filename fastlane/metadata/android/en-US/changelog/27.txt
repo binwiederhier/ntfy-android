@@ -1,4 +1,5 @@
 Features:
+* Per-subscription settings, custom subscription icons (#155, thanks to @mztiq for reporting)
 * Cards in notification detail view (#175, thanks to @cmeis for reporting)
 
 Bugs:
