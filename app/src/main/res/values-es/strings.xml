@@ -304,4 +304,19 @@
     <string name="settings_notifications_channel_prefs_title">Ajustes del canal</string>
     <string name="settings_notifications_channel_prefs_summary">Ignorar No Molestar (DND), sonidos, etc.</string>
     <string name="notification_popup_user_action_failed">%1$s ha fallado: %2$s</string>
+    <string name="channel_subscriber_notification_instant_text_five">Suscrito a cinco tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_instant_text_six">Suscrito a seis tópicos de entrega instantánea</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Suscrito a cinco tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Suscrito a seis tópicos</string>
+    <string name="detail_settings_notifications_instant_summary_on">Las notificaciones se entregan al instante. Requiere un servicio en primer plano y consume más batería.</string>
+    <string name="detail_settings_appearance_header">Apariencia</string>
+    <string name="detail_settings_appearance_icon_set_title">Icono de suscripción</string>
+    <string name="detail_settings_appearance_icon_remove_title">Icono de suscripción (toque para eliminar)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">El icono mostrado en notificaciones para este tópico</string>
+    <string name="detail_settings_appearance_icon_error_saving">No se puede guardar el icono: %1$s</string>
+    <string name="detail_settings_global_setting_title">Usar la configuración global</string>
+    <string name="detail_settings_global_setting_suffix">usando la configuración global</string>
+    <string name="detail_settings_notifications_instant_summary_off">Las notificaciones se entregan usando Firebase. La entrega puede retrasarse, pero consume menos batería.</string>
+    <string name="detail_settings_notifications_instant_title">Entrega instantánea</string>
+    <string name="detail_settings_appearance_icon_set_summary">Establecer un icono para que aparezca en las notificaciones</string>
 </resources>
