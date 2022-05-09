@@ -30,7 +30,7 @@
 \n
 \n%2$s</string>
     <string name="main_action_bar_title">Temas inscritos</string>
-    <string name="main_menu_notifications_disabled_until">Notificações pausadas até %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Notificações silenciadas até %1$s</string>
     <string name="main_menu_rate_title">Avalie o aplicativo ⭐</string>
     <string name="main_action_mode_delete_dialog_message">Cancelar inscrição dos temas selecionados e remover permanentemente todas notificações\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Remover permanentemente</string>
@@ -86,8 +86,8 @@
     <string name="detail_item_download_info_not_downloaded_expires_x">não baixado, expira em %1$s</string>
     <string name="detail_item_download_info_deleted_expired">apagado, link expirou</string>
     <string name="detail_item_download_info_download_failed_expired">download falhou, link expirou</string>
-    <string name="detail_menu_notifications_disabled_forever">Notificações pausadas</string>
-    <string name="detail_menu_notifications_disabled_until">Notificações pausadas até %1$s</string>
+    <string name="detail_menu_notifications_disabled_forever">Notificações silenciadas</string>
+    <string name="detail_menu_notifications_disabled_until">Notificações silenciadas até %1$s</string>
     <string name="detail_menu_enable_instant">Habilitar entrega instantânea</string>
     <string name="detail_menu_clear">Limpar todas notificações</string>
     <string name="detail_menu_settings">Configurações de inscrição</string>
@@ -111,7 +111,7 @@
     <string name="share_successful">Mensagem publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
     <string name="notification_dialog_save">Salvar</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notificações pausadas</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notificações silenciadas</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_dialog_1h">1 hora</string>
     <string name="notification_dialog_2h">2 horas</string>
@@ -125,7 +125,7 @@
 \n%3$s</string>
     <string name="settings_title">Configurações</string>
     <string name="settings_notifications_header">Notificações</string>
-    <string name="settings_notifications_muted_until_forever">Notificações pausadas até serem retomadas</string>
+    <string name="settings_notifications_muted_until_forever">Notificações silenciadas até serem retomadas</string>
     <string name="settings_notifications_min_priority_title">Prioridade mínima</string>
     <string name="settings_notifications_min_priority_summary_any">Mostrando todas notificações</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Mostrando notificações se a prioridade for %1$d (%2$s) ou maior</string>
@@ -204,7 +204,7 @@
     <string name="user_dialog_button_save">Salvar</string>
     <string name="main_item_status_text_one">%1$d notificação</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tema</string>
-    <string name="main_menu_notifications_disabled_forever">Notificações pausadas</string>
+    <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>
     <string name="refresh_message_error_one">Não foi possível atualizar a inscrição: %1$s</string>
     <string name="main_menu_docs_title">Leia a documentação</string>
     <string name="main_action_mode_menu_unsubscribe">Cancelar inscrição</string>
@@ -253,20 +253,20 @@
     <string name="user_dialog_username_hint">Nome de usuário</string>
     <string name="user_dialog_password_hint_edit">Senha (não será modificado se deixado em branco)</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
-    <string name="notification_dialog_title">Pausar notificações</string>
+    <string name="notification_dialog_title">Silenciar notificações</string>
     <string name="notification_dialog_enabled_toast_message">Notificações retomadas</string>
-    <string name="notification_dialog_muted_until_toast_message">Notificações pausadas até %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Notificações silenciadas até %1$s</string>
     <string name="notification_dialog_8h">8 horas</string>
     <string name="notification_dialog_tomorrow">Até amanhã</string>
     <string name="notification_popup_action_cancel">Cancelar</string>
     <string name="notification_popup_file_download_successful">%1$s
 \nArquivo: %2$s, baixado</string>
-    <string name="settings_notifications_muted_until_x">Notificações pausadas até %1$s</string>
+    <string name="settings_notifications_muted_until_x">Notificações silenciadas até %1$s</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nArquivo: %2$s, download falhou</string>
     <string name="settings_notifications_muted_until_show_all">Mostrando todas notificações</string>
     <string name="settings_notifications_min_priority_summary_max">Mostrando notificações se a prioridade for 5 (máximo)</string>
-    <string name="settings_notifications_muted_until_title">Pausar notificações</string>
+    <string name="settings_notifications_muted_until_title">Silenciar notificações</string>
     <string name="settings_notifications_min_priority_min">Qualquer prioridade</string>
     <string name="settings_notifications_min_priority_high">Prioridade alta ou maior</string>
     <string name="settings_notifications_min_priority_max">Somente prioridade máxima</string>
@@ -303,5 +303,20 @@
     <string name="settings_notifications_priority_min">mínimo</string>
     <string name="settings_notifications_priority_default">padrão</string>
     <string name="settings_notifications_priority_low">baixa</string>
-    <string name="settings_notifications_channel_prefs_summary">Gerenciar Modo Não Perturbe, sons customizados, etc.</string>
+    <string name="settings_notifications_channel_prefs_summary">Modo Não Perturbe, sons, etc.</string>
+    <string name="detail_settings_notifications_instant_title">Entrega instantânea</string>
+    <string name="detail_settings_notifications_instant_summary_on">Notificações são entregues instantaneamente. Requer um serviço em primeiro plano e consome mais bateria.</string>
+    <string name="detail_settings_notifications_instant_summary_off">Notificações são entregues usando Firebase. A entrega pode demorar, mas consome menos bateria.</string>
+    <string name="detail_settings_appearance_header">Aparência</string>
+    <string name="detail_settings_appearance_icon_set_title">Ícone de inscrição</string>
+    <string name="detail_settings_appearance_icon_set_summary">Definir um ícone a ser exibido nas notificações</string>
+    <string name="detail_settings_appearance_icon_remove_title">Ícone de inscrição (toque para remover)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Ícone exibido em notificações para este tópico</string>
+    <string name="detail_settings_global_setting_title">Usar configurações globais</string>
+    <string name="channel_subscriber_notification_instant_text_five">Inscrito em cinco tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Inscrito em seis tópicos</string>
+    <string name="detail_settings_appearance_icon_error_saving">Não foi possível salvar o ícone: %1$s</string>
+    <string name="channel_subscriber_notification_instant_text_six">Inscrito em seis tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Inscrito em cinco tópicos</string>
+    <string name="detail_settings_global_setting_suffix">usando configurações globais</string>
 </resources>
