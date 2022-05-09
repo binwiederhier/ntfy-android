@@ -304,4 +304,18 @@
     <string name="settings_notifications_channel_prefs_summary">Отмяна на „Не безпокойте“, звуци и т.н.</string>
     <string name="settings_notifications_channel_prefs_title">Настройки на категорията</string>
     <string name="notification_popup_user_action_failed">%1$s е неуспешно: %2$s</string>
+    <string name="channel_subscriber_notification_instant_text_five">Има абонамент за пет теми с незабавно доставяне</string>
+    <string name="channel_subscriber_notification_instant_text_six">Има абонамент за шест теми с незабавно доставяне</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Има абонамент за пет теми</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Има абонамент за шест теми</string>
+    <string name="detail_settings_notifications_instant_title">Незабавно доставяне</string>
+    <string name="detail_settings_notifications_instant_summary_on">Известията се доставят незабавно. Изисква услуга на преден план и изразходва повече батерия.</string>
+    <string name="detail_settings_appearance_header">Външен вид</string>
+    <string name="detail_settings_appearance_icon_set_title">Значка за абонамент</string>
+    <string name="detail_settings_appearance_icon_set_summary">Задаване на значка, която да бъде показвана в известията</string>
+    <string name="detail_settings_appearance_icon_remove_title">Значка за абонамент (докоснете, за да премахнете)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Значка, показвана в известията на тази тема</string>
+    <string name="detail_settings_global_setting_title">Използване на общите настройки</string>
+    <string name="detail_settings_notifications_instant_summary_off">Известията се доставят с помощта на Firebase. Доставката може да се забави, но изразходва по-малко батерия.</string>
+    <string name="detail_settings_appearance_icon_error_saving">Значката не може да бъде запазена: %1$s</string>
 </resources>
