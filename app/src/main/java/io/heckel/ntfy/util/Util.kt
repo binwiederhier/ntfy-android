@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
@@ -391,6 +393,25 @@ fun View.ripple(scope: CoroutineScope) {
     scope.launch(Dispatchers.Main) {
         delay(200)
         hideRipple()
+    }
+}
+
+
+fun Uri.readBitmapFromUri(context: Context): Bitmap {
+    val resolver = context.applicationContext.contentResolver
+    val bitmapStream = resolver.openInputStream(this)
+    return BitmapFactory.decodeStream(bitmapStream)
+}
+
+fun String.readBitmapFromUri(context: Context): Bitmap {
+    return Uri.parse(this).readBitmapFromUri(context)
+}
+
+fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
+    return try {
+        this.readBitmapFromUri(context)
+    } catch (_: Exception) {
+        null
     }
 }
 

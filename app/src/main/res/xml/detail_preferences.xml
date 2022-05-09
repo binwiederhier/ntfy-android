@@ -30,13 +30,13 @@
     <PreferenceCategory app:title="@string/detail_settings_appearance_header">
         <Preference
                 app:key="@string/detail_settings_appearance_icon_set_key"
-                app:title="@string/detail_settings_appearance_icon_title"
-                app:summary="@string/detail_settings_appearance_icon_set_summary_no_set"
+                app:title="@string/detail_settings_appearance_icon_set_title"
+                app:summary="@string/detail_settings_appearance_icon_set_summary"
                 app:isPreferenceVisible="false"/>
         <Preference
                 app:key="@string/detail_settings_appearance_icon_remove_key"
-                app:title="@string/detail_settings_appearance_icon_title"
-                app:summary="@string/detail_settings_appearance_icon_set_summary_set"
+                app:title="@string/detail_settings_appearance_icon_remove_title"
+                app:summary="@string/detail_settings_appearance_icon_remove_summary"
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

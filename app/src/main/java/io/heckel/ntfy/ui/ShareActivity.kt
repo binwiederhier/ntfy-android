@@ -193,10 +193,7 @@ class ShareActivity : AppCompatActivity() {
             return
         }
         try {
-            val resolver = applicationContext.contentResolver
-            val bitmapStream = resolver.openInputStream(fileUri!!)
-            val bitmap = BitmapFactory.decodeStream(bitmapStream)
-            contentImage.setImageBitmap(bitmap)
+            contentImage.setImageBitmap(fileUri!!.readBitmapFromUri(applicationContext))
             contentText.text = getString(R.string.share_content_image_text)
             show(image = true)
         } catch (e: Exception) {

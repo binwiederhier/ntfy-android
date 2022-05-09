@@ -289,9 +289,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 return
             }
             try {
-                val resolver = context.applicationContext.contentResolver
-                val bitmapStream = resolver.openInputStream(Uri.parse(attachment.contentUri))
-                val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                val bitmap = attachment.contentUri?.readBitmapFromUri(context) ?: throw Exception("uri empty")
                 attachmentImageView.setImageBitmap(bitmap)
                 attachmentImageView.setOnClickListener {
                     val loadImage = { view: ImageView, image: Bitmap -> view.setImageBitmap(image) }

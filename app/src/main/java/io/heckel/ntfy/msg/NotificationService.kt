@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -70,9 +69,8 @@ class NotificationService(val context: Context) {
             .setContentTitle(title)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-        setStyleAndText(builder, notification) // Preview picture or big text style
+        setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
-        maybeSetIcon(builder, subscription)
         maybeSetSound(builder, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
@@ -85,18 +83,6 @@ class NotificationService(val context: Context) {
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
-    private fun maybeSetIcon(builder: NotificationCompat.Builder, subscription: Subscription) {
-        val icon = subscription.icon ?: return
-        try {
-            val resolver = context.applicationContext.contentResolver
-            val bitmapStream = resolver.openInputStream(Uri.parse(icon))
-            val bitmap = BitmapFactory.decodeStream(bitmapStream)
-            builder.setLargeIcon(bitmap)
-        } catch (e: Exception) {
-            Log.w(TAG, "Cannot load subscription icon", e)
-        }
-    }
-
     private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
         if (!update) {
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -106,20 +92,19 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun setStyleAndText(builder: NotificationCompat.Builder, notification: Notification) {
+    private fun setStyleAndText(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
         val contentUri = notification.attachment?.contentUri
         val isSupportedImage = supportedImage(notification.attachment?.type)
+        val subscriptionIcon = if (subscription.icon != null) subscription.icon.readBitmapFromUriOrNull(context) else null
         if (contentUri != null && isSupportedImage) {
             try {
-                val resolver = context.applicationContext.contentResolver
-                val bitmapStream = resolver.openInputStream(Uri.parse(contentUri))
-                val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                val attachmentBitmap = contentUri.readBitmapFromUri(context)
                 builder
                     .setContentText(maybeAppendActionErrors(formatMessage(notification), notification))
-                    .setLargeIcon(bitmap)
+                    .setLargeIcon(attachmentBitmap)
                     .setStyle(NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap)
-                        .bigLargeIcon(null))
+                        .bigPicture(attachmentBitmap)
+                        .bigLargeIcon(subscriptionIcon)) // May be null
             } catch (_: Exception) {
                 val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
                 builder
@@ -131,6 +116,7 @@ class NotificationService(val context: Context) {
             builder
                 .setContentText(message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+                .setLargeIcon(subscriptionIcon) // May be null
         }
     }
 

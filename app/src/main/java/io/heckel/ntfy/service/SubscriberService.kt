@@ -233,6 +233,8 @@ class SubscriberService : Service() {
                     2 -> getString(R.string.channel_subscriber_notification_instant_text_two)
                     3 -> getString(R.string.channel_subscriber_notification_instant_text_three)
                     4 -> getString(R.string.channel_subscriber_notification_instant_text_four)
+                    5 -> getString(R.string.channel_subscriber_notification_instant_text_five)
+                    6 -> getString(R.string.channel_subscriber_notification_instant_text_six)
                     else -> getString(R.string.channel_subscriber_notification_instant_text_more, instantSubscriptions.size)
                 }
             } else {
@@ -241,6 +243,8 @@ class SubscriberService : Service() {
                     2 -> getString(R.string.channel_subscriber_notification_noinstant_text_two)
                     3 -> getString(R.string.channel_subscriber_notification_noinstant_text_three)
                     4 -> getString(R.string.channel_subscriber_notification_noinstant_text_four)
+                    5 -> getString(R.string.channel_subscriber_notification_noinstant_text_five)
+                    6 -> getString(R.string.channel_subscriber_notification_noinstant_text_six)
                     else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
                 }
             }

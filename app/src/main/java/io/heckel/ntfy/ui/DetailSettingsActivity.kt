@@ -268,8 +268,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             // Set icon (if it exists)
             if (subscription.icon != null) {
                 try {
-                    val bitmapStream = resolver.openInputStream(Uri.parse(subscription.icon))
-                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
+                    val bitmap = subscription.icon!!.readBitmapFromUri(requireContext())
                     iconRemovePref.icon = bitmap.toDrawable(resources)
                 } catch (e: Exception) {
                     Log.w(TAG, "Unable to set icon ${subscription.icon}", e)
@@ -292,11 +291,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                             it.copyTo(outputStream)
                         }
 
-                        // Read image and set as preference icon
-                        val bitmapStream = resolver.openInputStream(Uri.parse(outputUri.toString()))
-                        val bitmap = BitmapFactory.decodeStream(bitmapStream)
-
-                        // Display "remove" preference
+                        // Read image & display "remove" preference
+                        val bitmap = outputUri.readBitmapFromUri(requireContext())
                         iconRemovePref.icon = bitmap.toDrawable(resources)
                         iconRemovePref.isVisible = true
                         iconSetPref.isVisible = false

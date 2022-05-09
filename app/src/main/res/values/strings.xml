@@ -12,12 +12,16 @@
     <string name="channel_subscriber_notification_instant_text_two">Subscribed to two instant delivery topics</string>
     <string name="channel_subscriber_notification_instant_text_three">Subscribed to three instant delivery topics</string>
     <string name="channel_subscriber_notification_instant_text_four">Subscribed to four instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_five">Subscribed to five instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_six">Subscribed to six instant delivery topics</string>
     <string name="channel_subscriber_notification_instant_text_more">Subscribed to %1$d instant delivery topics</string>
     <string name="channel_subscriber_notification_noinstant_text">Subscribed to topics</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Subscribed to one topic</string>
     <string name="channel_subscriber_notification_noinstant_text_two">Subscribed to two topics</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Subscribed to three topics</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Subscribed to four topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Subscribed to five topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Subscribed to six topics</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Subscribed to %1$d topics</string>
 
     <!-- Common refresh toasts -->
@@ -340,9 +344,10 @@
     <string name="detail_settings_notifications_instant_summary_on">Notifications are delivered instantly. Requires a foreground service and consumes more battery.</string>
     <string name="detail_settings_notifications_instant_summary_off">Notifications are delivered using Firebase. Delivery may be delayed, but consumes less battery.</string>
     <string name="detail_settings_appearance_header">Appearance</string>
-    <string name="detail_settings_appearance_icon_title">Subscription icon</string>
-    <string name="detail_settings_appearance_icon_set_summary_set">This icon is displayed in notifications to this topic. Tap to remove it.</string>
-    <string name="detail_settings_appearance_icon_set_summary_no_set">Set an icon to be displayed in notifications</string>
+    <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
+    <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>
+    <string name="detail_settings_appearance_icon_remove_title">Subscription icon (tap to remove)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Icon displayed in notifications for this topic</string>
     <string name="detail_settings_appearance_icon_error_saving">Unable to save icon: %1$s</string>
     <string name="detail_settings_global_setting_title">Use global setting</string>
     <string name="detail_settings_global_setting_suffix">global</string>

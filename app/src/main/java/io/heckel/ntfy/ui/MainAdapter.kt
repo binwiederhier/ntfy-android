@@ -18,6 +18,7 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.readBitmapFromUriOrNull
 import io.heckel.ntfy.util.topicShortUrl
 import java.text.DateFormat
 import java.util.*
@@ -91,14 +92,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && !isUnifiedPush
             val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
             if (subscription.icon != null) {
-                try {
-                    val resolver = context.applicationContext.contentResolver
-                    val bitmapStream = resolver.openInputStream(Uri.parse(subscription.icon))
-                    val bitmap = BitmapFactory.decodeStream(bitmapStream)
-                    imageView.setImageBitmap(bitmap)
-                } catch (e: Exception) {
-                    Log.w(TAG, "Cannot load subscription icon", e)
-                }
+                imageView.setImageBitmap(subscription.icon.readBitmapFromUriOrNull(context))
             }
             nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
             statusView.text = statusMessage
