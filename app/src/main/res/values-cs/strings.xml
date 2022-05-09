@@ -304,4 +304,19 @@
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Pro připojení k serveru použít JSON přes protokol HTTP. Tato metoda je zastaralá a bude odstraněna v červnu 2022.</string>
     <string name="user_dialog_description_add">Zde můžete přidat uživatele. Tento uživatel bude používán ve všech tématech pro daný server.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON přes HTTP</string>
+    <string name="channel_subscriber_notification_instant_text_five">Přihlášeno k odběru pěti témat okamžitého doručení</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Odběr pěti témat</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Odběr šesti témat</string>
+    <string name="detail_settings_notifications_instant_summary_on">Oznámení jsou doručena okamžitě. Vyžaduje službu v popředí a spotřebovává více baterie.</string>
+    <string name="detail_settings_appearance_header">Vzhled</string>
+    <string name="detail_settings_appearance_icon_set_title">Ikona odběru</string>
+    <string name="detail_settings_appearance_icon_set_summary">Nastavení ikony, která se má zobrazovat v oznámeních</string>
+    <string name="detail_settings_appearance_icon_remove_title">Ikona odběru (klepnutím ji odeberete)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Ikona k tomuto tématu zobrazená v oznámeních</string>
+    <string name="detail_settings_appearance_icon_error_saving">Nelze uložit ikonu: %1$s</string>
+    <string name="detail_settings_global_setting_title">Použít globální nastavení</string>
+    <string name="detail_settings_global_setting_suffix">globální</string>
+    <string name="channel_subscriber_notification_instant_text_six">Přihlášeno k odběru šesti témat okamžitého doručení</string>
+    <string name="detail_settings_notifications_instant_summary_off">Oznámení jsou doručena pomocí služby Firebase. Doručování může být zpožděné, ale spotřebovává méně baterie.</string>
+    <string name="detail_settings_notifications_instant_title">Okamžité doručení</string>
 </resources>
