@@ -1,8 +1,10 @@
 package io.heckel.ntfy.ui
 
+import android.content.ContentResolver
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -67,6 +69,7 @@ class DetailSettingsActivity : AppCompatActivity() {
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
+        private lateinit var resolver: ContentResolver
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
         private lateinit var subscription: Subscription
@@ -81,6 +84,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             // Dependencies (Fragments need a default constructor)
             repository = Repository.getInstance(requireActivity())
             serviceManager = SubscriberServiceManager(requireActivity())
+            resolver = requireContext().applicationContext.contentResolver
 
             // Create result launcher for custom icon (must be created in onCreatePreferences() directly)
             iconSetLauncher = createIconPickLauncher()
@@ -251,27 +255,25 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadIconRemovePref() {
             val prefId = context?.getString(R.string.detail_settings_appearance_icon_remove_key) ?: return
             iconRemovePref = findPreference(prefId) ?: return
+            iconRemovePref.isVisible = subscription.icon != null
+            iconRemovePref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            iconRemovePref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+                iconRemovePref.isVisible = false
+                iconSetPref.isVisible = true
+                deleteIcon(subscription.icon)
+                save(subscription.copy(icon = null))
+                true
+            }
 
-            // FIXME
-
+            // Set icon (if it exists)
             if (subscription.icon != null) {
                 try {
-                    val resolver = requireContext().applicationContext.contentResolver
                     val bitmapStream = resolver.openInputStream(Uri.parse(subscription.icon))
                     val bitmap = BitmapFactory.decodeStream(bitmapStream)
                     iconRemovePref.icon = bitmap.toDrawable(resources)
                 } catch (e: Exception) {
-                    // FIXME
-
+                    Log.w(TAG, "Unable to set icon ${subscription.icon}", e)
                 }
-            }
-            iconRemovePref.isVisible = subscription.icon != null
-            iconRemovePref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            iconRemovePref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
-                save(subscription.copy(icon = null))
-                iconRemovePref.isVisible = false
-                iconSetPref.isVisible = true
-                true
             }
         }
 
@@ -281,45 +283,54 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return@registerForActivityResult
                 }
                 lifecycleScope.launch(Dispatchers.IO) {
+                    val outputUri = createUri() ?: return@launch
                     try {
                         // Write to cache storage
-                        val resolver = requireContext().applicationContext.contentResolver
                         val inputStream = resolver.openInputStream(inputUri) ?: throw IOException("Couldn't open content URI for reading")
-                        val outputUri = createUri()
                         val outputStream = resolver.openOutputStream(outputUri) ?: throw IOException("Couldn't open content URI for writing")
-                        inputStream.copyTo(outputStream)
-                        save(subscription.copy(icon = outputUri.toString()))
+                        inputStream.use {
+                            it.copyTo(outputStream)
+                        }
 
-                        // FIXME
-                        // FIXME
-
-                        iconSetPref.isVisible = false
-
+                        // Read image and set as preference icon
                         val bitmapStream = resolver.openInputStream(Uri.parse(outputUri.toString()))
                         val bitmap = BitmapFactory.decodeStream(bitmapStream)
+
+                        // Display "remove" preference
                         iconRemovePref.icon = bitmap.toDrawable(resources)
                         iconRemovePref.isVisible = true
+                        iconSetPref.isVisible = false
+
+                        // Finally, save (this is last!)
+                        save(subscription.copy(icon = outputUri.toString()))
                     } catch (e: Exception) {
                         Log.w(TAG, "Saving icon failed", e)
                         requireActivity().runOnUiThread {
-                            // FIXME TOAST
+                            Toast.makeText(context, getString(R.string.detail_settings_appearance_icon_error_saving, e.message), Toast.LENGTH_LONG).show()
                         }
                     }
                 }
             }
         }
 
-        private fun createUri(): Uri {
+        private fun createUri(): Uri? {
             val dir = File(requireContext().cacheDir, SUBSCRIPTION_ICONS)
             if (!dir.exists() && !dir.mkdirs()) {
-                throw Exception("Cannot create cache directory for attachments: $dir")
+                return null
             }
             val file =  File(dir, subscription.id.toString())
             return FileProvider.getUriForFile(requireContext(), DownloadWorker.FILE_PROVIDER_AUTHORITY, file)
         }
 
-        private fun loadBitmap() {
-            // FIXME
+        private fun deleteIcon(uri: String?) {
+            if (uri == null) {
+                return
+            }
+            try {
+                resolver.delete(Uri.parse(uri), null, null)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to delete $uri", e)
+            }
         }
 
         private fun save(newSubscription: Subscription, refresh: Boolean = false) {

@@ -1,12 +1,14 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.up.Distributor
+import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.List
@@ -32,6 +34,14 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         }
         repository.removeAllNotifications(subscriptionId)
         repository.removeSubscription(subscriptionId)
+        if (subscription.icon != null) {
+            val resolver = context.applicationContext.contentResolver
+            try {
+                resolver.delete(Uri.parse(subscription.icon), null, null)
+            } catch (_: Exception) {
+                // Don't care
+            }
+        }
     }
 
     suspend fun get(baseUrl: String, topic: String): Subscription? {
