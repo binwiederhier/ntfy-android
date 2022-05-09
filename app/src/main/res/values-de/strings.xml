@@ -304,4 +304,19 @@
     <string name="settings_notifications_channel_prefs_title">Kanal-Einstellungen</string>
     <string name="settings_notifications_channel_prefs_summary">Übersteuerung von DND (nicht stören), Sounds etc.</string>
     <string name="notification_popup_user_action_failed">%1$s fehlgeschlagen: %2$s</string>
+    <string name="channel_subscriber_notification_instant_text_five">Fünf Sofortnachrichten-Themen abonniert</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Fünf Themen abonniert</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Sechs Themen abonniert</string>
+    <string name="detail_settings_notifications_instant_summary_off">Benachrichtigungen werden über Firebase zugestellt. Die Zustellung kann verzögert werden, aber der Akkuverbrauch ist niedriger.</string>
+    <string name="detail_settings_appearance_header">Darstellung</string>
+    <string name="detail_settings_appearance_icon_set_title">Abo-Icon</string>
+    <string name="detail_settings_appearance_icon_set_summary">Ein Icon zur Darstellung in Benachrichtigungen auswählen</string>
+    <string name="detail_settings_appearance_icon_remove_title">Abo-Icon (entfernen durch antippen)</string>
+    <string name="detail_settings_appearance_icon_error_saving">Kann Icon nicht speichern: %1$s</string>
+    <string name="detail_settings_global_setting_title">Globale Einstellung verwenden</string>
+    <string name="detail_settings_global_setting_suffix">global</string>
+    <string name="channel_subscriber_notification_instant_text_six">Sechs Sofortnachrichten-Themen abonniert</string>
+    <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Icon, das in Benachrichtigungen zu diesem Thema angezeigt wird</string>
+    <string name="detail_settings_notifications_instant_summary_on">Benachrichtigungen werden sofort zugestellt. Benötigt einen Vordergrund-Dienst und verbraucht mehr Akku.</string>
 </resources>
