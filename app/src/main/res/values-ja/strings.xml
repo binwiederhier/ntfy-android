@@ -304,4 +304,19 @@
     <string name="settings_notifications_channel_prefs_title">チャネル設定</string>
     <string name="settings_notifications_channel_prefs_summary">おやすみモード時の動作やサウンド等を設定します。</string>
     <string name="notification_popup_user_action_failed">%1$s 失敗: %2$s</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">トピックを6件購読しています</string>
+    <string name="detail_settings_appearance_header">外観</string>
+    <string name="detail_settings_appearance_icon_set_title">購読アイコン</string>
+    <string name="detail_settings_appearance_icon_error_saving">アイコンを保存できませんでした: %1$s</string>
+    <string name="detail_settings_global_setting_suffix">グローバル設定を使用中</string>
+    <string name="detail_settings_global_setting_title">グローバル設定を使用する</string>
+    <string name="detail_settings_appearance_icon_remove_title">購読アイコン (タップして削除)</string>
+    <string name="channel_subscriber_notification_instant_text_five">即時配信トピックを5件購読しています</string>
+    <string name="channel_subscriber_notification_instant_text_six">即時配信トピックを6件購読しています</string>
+    <string name="detail_settings_notifications_instant_title">即時配信</string>
+    <string name="detail_settings_appearance_icon_remove_summary">このトピックの通知で表示されるアイコン</string>
+    <string name="detail_settings_notifications_instant_summary_on">通知は即時配信されます。フォアグラウンドサービスの実行が必要で、バッテリーを多く消費します。</string>
+    <string name="detail_settings_notifications_instant_summary_off">通知はFirebaseを用いて配信されます。配信が遅延する事がありますが、バッテリーの消費は抑えられます。</string>
+    <string name="detail_settings_appearance_icon_set_summary">通知に表示されるアイコンを指定します</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">トピックを5件購読しています</string>
 </resources>
