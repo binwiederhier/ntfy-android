@@ -14,5 +14,6 @@ Bugs:
 Additional translations:
 * Dutch (incomplete, thanks to @diony)
 
-Thanks for testing:
+Thank you:
 Many thanks to @cmeis, @StoyanDimitrov, @Fallenbagel for testing, and to @Joeharrison94 for the input.
+And thank you very much to all the translators for catching up so quickly.
