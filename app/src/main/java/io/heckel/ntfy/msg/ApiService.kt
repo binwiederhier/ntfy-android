@@ -116,7 +116,9 @@ class ApiService {
         val sinceVal = if (since == 0L) "all" else since.toString()
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = requestBuilder(url, user).build()
+        val request = requestBuilder(url, user)
+                .addHeader("Connection", "keep-alive")
+                .build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
