@@ -20,8 +20,8 @@
 \n%2$s</string>
     <string name="refresh_message_error_one">Impossibile aggiornare l\'iscrizione: %1$s</string>
     <string name="main_menu_notifications_enabled">Notifiche ON</string>
-    <string name="main_menu_notifications_disabled_forever">Notifiche in pausa</string>
-    <string name="main_menu_notifications_disabled_until">Notiche in pausa fino a %1$s</string>
+    <string name="main_menu_notifications_disabled_forever">Notifiche disattivate</string>
+    <string name="main_menu_notifications_disabled_until">Notiche disattivate fino a %1$s</string>
     <string name="main_menu_settings_title">Impostazioni</string>
     <string name="main_action_bar_title">Topic iscritti</string>
     <string name="main_action_mode_delete_dialog_message">Disiscriversi dai topic selezionati ed eliminare definitivamente tutte le notifiche\?</string>
@@ -42,7 +42,7 @@
     <string name="add_dialog_title">Iscriviti al topic</string>
     <string name="add_dialog_topic_name_hint">Nome del topic, es. phils_alerts</string>
     <string name="add_dialog_use_another_server">Usa un altro server</string>
-    <string name="add_dialog_use_another_server_description">Inserisci qui sotto l\'URL del server per iscriverti ai topic da altri server.</string>
+    <string name="add_dialog_use_another_server_description">Immettere gli URL dei servizi qui sotto per iscriversi ai topic di altri server.</string>
     <string name="add_dialog_instant_delivery">Consegna istantanea in modalità doze</string>
     <string name="add_dialog_foreground_description">La consegna istantanea è sempre attiva per gli host diversi da %1$s.</string>
     <string name="add_dialog_button_cancel">Cancella</string>
@@ -85,8 +85,8 @@
     <string name="detail_item_download_info_deleted_expires_x">eliminato, scadenza link %1$s</string>
     <string name="detail_item_download_info_download_failed">download fallito</string>
     <string name="detail_item_download_info_download_failed_expired">download fallito, link scaduto</string>
-    <string name="detail_menu_notifications_disabled_forever">Notifiche in pausa</string>
-    <string name="detail_menu_notifications_disabled_until">Notifiche in pausa fino a %1$s</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifiche disattivate</string>
+    <string name="detail_menu_notifications_disabled_until">Notifiche disattivate fino a %1$s</string>
     <string name="detail_menu_enable_instant">Abilita consegna istantanea</string>
     <string name="detail_menu_disable_instant">Disabilita consegna istantanea</string>
     <string name="detail_menu_test">Invia notifica di test</string>
@@ -119,9 +119,9 @@
     <string name="notification_popup_file_download_failed">%1$s
 \nFile: %2$s, download fallito</string>
     <string name="settings_title">Impostazioni</string>
-    <string name="settings_notifications_muted_until_title">Metti in pausa le notifiche</string>
+    <string name="settings_notifications_muted_until_title">Disattiva le notifiche</string>
     <string name="settings_notifications_muted_until_show_all">Mostra tutte le notifiche</string>
-    <string name="settings_notifications_muted_until_x">Notifiche in pausa fino a %1$s</string>
+    <string name="settings_notifications_muted_until_x">Notifiche disattivate fino a %1$s</string>
     <string name="settings_notifications_min_priority_title">Priorità minima</string>
     <string name="settings_notifications_min_priority_summary_any">Mostra tutte le notifiche</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Mostra notifiche se la priorità è %1$d (%2$s) o superiore</string>
@@ -171,7 +171,7 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Stream JSON over HTTP</string>
     <string name="user_dialog_description_add">Puoi aggiungere un utente qui. Tutti i topic per il dato server utilizzeranno questo utente.</string>
     <string name="user_dialog_description_edit">Puoi modificare username/password per l\'utente selezionato, oppure eliminarlo.</string>
-    <string name="user_dialog_base_url_hint">Server URL</string>
+    <string name="user_dialog_base_url_hint">URL del servizio</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (non modificata se il campo viene lasciato vuoto)</string>
@@ -243,15 +243,15 @@
     <string name="settings_notifications_header">Notifiche</string>
     <string name="share_content_file_error">Impossibile leggere le informazioni del file: %1$s</string>
     <string name="notification_popup_action_open">Apri</string>
-    <string name="settings_notifications_muted_until_forever">Notiche in pausa fino al ripristino</string>
+    <string name="settings_notifications_muted_until_forever">Notifiche disattivate fino al ripristino</string>
     <string name="settings_notifications_auto_download_5m">Se sotto 5 MB</string>
     <string name="share_content_file_text">Un file è stato condiviso con te</string>
     <string name="share_suggested_topics">Topic suggeriti</string>
-    <string name="notification_dialog_title">Metti in pausa le notifiche</string>
+    <string name="notification_dialog_title">Disattivare le notifiche</string>
     <string name="notification_dialog_save">Salva</string>
     <string name="notification_dialog_enabled_toast_message">Notifiche ripristinate</string>
-    <string name="notification_dialog_muted_forever_toast_message">Notifiche in pausa</string>
-    <string name="notification_dialog_muted_until_toast_message">Notifiche in pausa fino a %1$s</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifiche disattivate</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifiche disattivate fino a %1$s</string>
     <string name="notification_dialog_30min">30 minuti</string>
     <string name="notification_dialog_2h">2 ore</string>
     <string name="notification_dialog_8h">8 ore</string>
@@ -300,4 +300,23 @@
     <string name="settings_notifications_priority_high">alta</string>
     <string name="settings_notifications_priority_min">minima</string>
     <string name="settings_notifications_priority_low">bassa</string>
+    <string name="detail_deep_link_subscribed_toast_message">Iscritto al topic %1$s</string>
+    <string name="detail_settings_global_setting_title">Utilizzare l\'impostazione globale</string>
+    <string name="settings_notifications_channel_prefs_summary">Esclusione del DND (Do Not Disturb), suoni, ecc.</string>
+    <string name="channel_subscriber_notification_instant_text_five">Iscritto a cinque topic a consegna istantanea</string>
+    <string name="channel_subscriber_notification_instant_text_six">Iscritto a sei topic a consegna istantanea</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Iscritto a cinque topic</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Iscritto a sei topic</string>
+    <string name="notification_popup_user_action_failed">%1$s fallito: %2$s</string>
+    <string name="settings_notifications_channel_prefs_title">Impostazioni del canale</string>
+    <string name="detail_settings_notifications_instant_title">Consegna istantanea</string>
+    <string name="detail_settings_notifications_instant_summary_on">Le notifiche vengono consegnate istantaneamente. Richiede un servizio in primo piano e consuma più batteria.</string>
+    <string name="detail_settings_notifications_instant_summary_off">Le notifiche vengono inviate utilizzando Firebase. La consegna può essere ritardata, ma consuma meno batteria.</string>
+    <string name="detail_settings_appearance_header">Aspetto</string>
+    <string name="detail_settings_appearance_icon_set_title">Icona della sottoscrizione</string>
+    <string name="detail_settings_appearance_icon_set_summary">Impostare un\'icona da visualizzare nelle notifiche</string>
+    <string name="detail_settings_appearance_icon_remove_title">Icona della sottoscrizione (toccare per rimuovere)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Icona visualizzata nelle notifiche di questo topic</string>
+    <string name="detail_settings_appearance_icon_error_saving">Impossibile salvare l\'icona: %1$s</string>
+    <string name="detail_settings_global_setting_suffix">utilizzando l\'impostazione globale</string>
 </resources>
