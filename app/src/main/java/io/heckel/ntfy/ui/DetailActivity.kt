@@ -101,7 +101,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val url2 = urlWithoutProto[:lastSlashIndex]
         
         val baseUrl = if (secure) "https://${url2}" else "http://${url2}"
-        val topic = url.pathSegments.first()
+        val topic = urlWithoutProto[lastSlashIndex:]
         title = topicShortUrl(baseUrl, topic)
 
         // Subscribe to topic if it doesn't already exist
