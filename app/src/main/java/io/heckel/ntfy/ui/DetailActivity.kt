@@ -95,7 +95,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             return
         }
         val secure = url.getBooleanQueryParameter("secure", true)
-        val baseUrl = if (secure) "https://${url.host}" else "http://${url.host}"
+        
+        val urlWithoutProto = url.fullURL[7:]
+        val lastSlashIndex = urlWithoutProto.lastIndexOf("/")
+        val url2 = urlWithoutProto[:lastSlashIndex]
+        
+        val baseUrl = if (secure) "https://${url2}" else "http://${url2}"
         val topic = url.pathSegments.first()
         title = topicShortUrl(baseUrl, topic)
 
