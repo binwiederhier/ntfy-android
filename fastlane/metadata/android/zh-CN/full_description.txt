@@ -1,0 +1,17 @@
+从任何 Bash/PowerShell 脚本，或从你自己的应用程序使用 PUT/POST 请求，例如通过 Linux 上的 curl 或 Invoke-WebRequest，向你的设备发送通知。
+
+ntfy 是 https://ntfy.sh 的 Android 客户端，这是一个基于 HTTP 的免费开源 pub-sub 服务。您可以订阅此应用程序中的主题，然后通过简单的 HTTP API 发布消息。
+
+用途：
+* 当一个长期运行的进程完成时通知自己
+* 当备份失败时通知你的手机
+* 当有人登录到你的服务器时发出警报
+
+例如：
+
+$ curl -d "Your backup is done" ntfy.sh/mytopic
+
+在此处查找更多示例和使用说明：
+* 主页：https://ntfy.sh
+* GitHub（服务端）：https://github.com/binwiederhier/ntfy
+* GitHub（安卓端）：https://github.com/binwiederhier/ntfy-android

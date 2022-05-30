@@ -1,0 +1,1 @@
+ntfy - PUT/POST 至您的设备
