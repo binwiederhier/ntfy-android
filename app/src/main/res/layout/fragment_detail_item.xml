@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        style="@style/CardView"
-        android:id="@+id/detail_item_card"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="1dp"
-        android:padding="3dp"
-        app:cardCornerRadius="3dp"
-        app:cardElevation="2dp"
-        app:cardMaxElevation="2dp"
-        app:cardPreventCornerOverlap="true"
-        app:cardUseCompatPadding="true">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CardView"
+    android:id="@+id/detail_item_card"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="0dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginBottom="1dp"
+    android:padding="3dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="2dp"
+    app:cardMaxElevation="2dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detail_item_layout"
             android:layout_width="match_parent"
@@ -140,7 +139,52 @@
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="5dp" android:id="@+id/detail_item_padding_bottom"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/detail_item_actions_wrapper" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_file_box"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@id/detail_item_padding_bottom"
+            android:id="@+id/detail_item_actions_wrapper" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="10dp" android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone" android:layout_marginTop="2dp"
+            android:padding="4dp">
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:constraint_referenced_ids="detail_item_action_1,detail_item_action_2,detail_item_action_3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:flow_wrapMode="chain"
+                app:flow_horizontalStyle="packed"
+                android:id="@+id/detail_item_actions_flow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:flow_horizontalBias="0"
+                app:flow_verticalGap="0dp" app:flow_horizontalGap="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/detail_item_action_1"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View" android:visibility="gone"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/detail_item_action_2"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Broadcast" android:visibility="gone"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/detail_item_action_3"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HTTP" android:visibility="gone"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

@@ -21,6 +21,7 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
@@ -30,6 +31,7 @@ import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
+import java.lang.Integer.min
 
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -77,6 +79,11 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val attachmentBoxView: View = itemView.findViewById(R.id.detail_item_attachment_file_box)
         private val attachmentIconView: ImageView = itemView.findViewById(R.id.detail_item_attachment_file_icon)
         private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_file_info)
+        private val actionsWrapperView: View = itemView.findViewById(R.id.detail_item_actions_wrapper)
+        private val action1Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_1)
+        private val action2Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_2)
+        private val action3Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_3)
+        private val actionButtons: List<MaterialButton> = listOf(action1Button, action2Button, action3Button)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -120,6 +127,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             renderPriority(context, notification)
             maybeRenderMenu(context, notification, exists)
             maybeRenderAttachment(context, notification, exists)
+            maybeRenderActions(context, notification)
         }
 
         private fun renderPriority(context: Context, notification: Notification) {
@@ -168,6 +176,26 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
+        private fun maybeRenderActions(context: Context, notification: Notification) {
+            if (notification.actions != null && notification.actions.isNotEmpty()) {
+                actionsWrapperView.visibility = View.VISIBLE
+                val actionsCount = min(notification.actions.size, 3) // per documentation, only 3 actions are available
+                for (i in 0 until actionsCount) {
+                    val action = notification.actions[i]
+                    val actionButton = actionButtons[i]
+                    actionButton.visibility = View.VISIBLE
+                    actionButton.text = formatActionLabel(action)
+                    actionButton.setOnClickListener { runAction(context, notification, action) }
+                }
+                for (i in actionsCount until 3) {
+                    val actionButton = actionButtons[i]
+                    actionButton.visibility = View.GONE
+                }
+            } else {
+                actionsWrapperView.visibility = View.GONE
+            }
+        }
+
         private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean, image: Boolean) {
             if (image) {
                 attachmentBoxView.visibility = View.GONE
@@ -194,7 +222,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val attachment = notification.attachment // May be null
             val hasAttachment = attachment != null
             val hasClickLink = notification.click != ""
-            val hasUserActions = notification.actions?.isNotEmpty() ?: false
             val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
             val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
             val openItem = popup.menu.findItem(R.id.detail_item_menu_open)
@@ -215,12 +242,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             if (hasClickLink) {
                 copyContentsItem.setOnMenuItemClickListener { copyContents(context, notification) }
             }
-            if (notification.actions != null && notification.actions.isNotEmpty()) {
-                notification.actions.forEach { action ->
-                    val actionItem = popup.menu.add(formatActionLabel(action))
-                    actionItem.setOnMenuItemClickListener { runAction(context, notification, action) }
-                }
-            }
             openItem.isVisible = hasAttachment && exists
             downloadItem.isVisible = hasAttachment && !exists && !expired && !inProgress
             deleteItem.isVisible = hasAttachment && exists
@@ -230,7 +251,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             copyContentsItem.isVisible = notification.click != ""
             val noOptions = !openItem.isVisible && !saveFileItem.isVisible && !downloadItem.isVisible
                     && !copyUrlItem.isVisible && !cancelItem.isVisible && !deleteItem.isVisible
-                    && !copyContentsItem.isVisible && !hasUserActions
+                    && !copyContentsItem.isVisible
             if (noOptions) {
                 return null
             }
