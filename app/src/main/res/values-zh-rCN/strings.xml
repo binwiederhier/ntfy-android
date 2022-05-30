@@ -6,7 +6,7 @@
     <string name="refresh_message_no_results">已全部同步</string>
     <string name="refresh_message_error_one">订阅刷新失败：%1$s</string>
     <string name="main_menu_notifications_enabled">通知已开启</string>
-    <string name="main_menu_notifications_disabled_forever">通知已关闭</string>
+    <string name="main_menu_notifications_disabled_forever">通知已暂停</string>
     <string name="main_menu_notifications_disabled_until">暂停通知到 %1$s</string>
     <string name="main_menu_settings_title">设置</string>
     <string name="main_menu_report_bug_title">Bug 报告</string>
@@ -18,7 +18,7 @@
     <string name="main_action_mode_delete_dialog_cancel">取消</string>
     <string name="main_item_status_reconnecting">正在重新连接……</string>
     <string name="main_item_date_yesterday">昨天</string>
-    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_status_unified_push">%1$s（统一推送）</string>
     <string name="main_how_to_link">详细的说明请见 ntfy.sh 和帮助文档。</string>
     <string name="main_unified_push_toast">此通知由 %1$s 通过 UnifiedPush 管理</string>
     <string name="main_banner_battery_text">请关闭对本应用的电量优化以避免通知推送问题。</string>
@@ -174,7 +174,7 @@
     <string name="settings_title">设置</string>
     <string name="settings_notifications_muted_until_title">暂停通知</string>
     <string name="settings_notifications_muted_until_show_all">显示所有通知</string>
-    <string name="settings_notifications_muted_until_forever">已暂停通知至手动恢复</string>
+    <string name="settings_notifications_muted_until_forever">已暂停通知直至手动恢复</string>
     <string name="settings_notifications_muted_until_x">已暂停通知至 %1$s</string>
     <string name="settings_notifications_min_priority_title">最低优先级</string>
     <string name="settings_notifications_min_priority_summary_any">显示所有通知</string>
@@ -299,4 +299,24 @@
     <string name="detail_deep_link_subscribed_toast_message">订阅%1$s 主题</string>
     <string name="settings_notifications_priority_min">分钟</string>
     <string name="settings_notifications_priority_default">默认</string>
+    <string name="channel_subscriber_notification_instant_text_five">已订阅 5 个实时推送主题</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">已订阅 6 个主题</string>
+    <string name="settings_notifications_channel_prefs_summary">覆盖请勿打扰（DND）、声音等。</string>
+    <string name="notification_popup_user_action_failed">%1$s 失败：%2$s</string>
+    <string name="settings_notifications_priority_low">低</string>
+    <string name="settings_notifications_priority_high">高</string>
+    <string name="settings_notifications_priority_max">最高</string>
+    <string name="channel_subscriber_notification_instant_text_six">已订阅 6 个实时推送主题</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">已订阅 5 个主题</string>
+    <string name="detail_settings_notifications_instant_title">即时交付</string>
+    <string name="detail_settings_notifications_instant_summary_on">通知会立即发送。需要前台服务，并消耗更多电池。</string>
+    <string name="detail_settings_notifications_instant_summary_off">通知使用Firebase发送。交付可能会延迟，但消耗的电池更少。</string>
+    <string name="detail_settings_appearance_header">外观</string>
+    <string name="detail_settings_appearance_icon_set_title">订阅图标</string>
+    <string name="detail_settings_appearance_icon_set_summary">设置要在通知中显示的图标</string>
+    <string name="detail_settings_appearance_icon_remove_title">订阅图标（点击可删除）</string>
+    <string name="detail_settings_appearance_icon_remove_summary">此主题的通知中显示的图标</string>
+    <string name="detail_settings_appearance_icon_error_saving">无法保存图标：%1$s</string>
+    <string name="detail_settings_global_setting_title">使用全局设置</string>
+    <string name="detail_settings_global_setting_suffix">使用全局设置</string>
 </resources>
