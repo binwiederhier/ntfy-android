@@ -1,0 +1,1 @@
+Stuur notificaties naar je telefoon vanaf ieder script m.b.v PUT/POST verzoeken
