@@ -732,7 +732,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun endActionModeAndRedraw() {
         actionMode = null
         adapter.selected.clear()
-        adapter.notifyItemRangeChanged(0, adapter.currentList.size-1)
+        adapter.notifyItemRangeChanged(0, adapter.currentList.size)
 
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
