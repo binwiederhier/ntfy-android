@@ -155,7 +155,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:constraint_referenced_ids="detail_item_action_1,detail_item_action_2,detail_item_action_3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:flow_wrapMode="chain"
                 app:flow_horizontalStyle="packed"
@@ -163,27 +162,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:flow_horizontalBias="0"
                 app:flow_verticalGap="0dp" app:flow_horizontalGap="0dp"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/detail_item_action_1"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View" android:visibility="gone"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/detail_item_action_2"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Broadcast" android:visibility="gone"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/detail_item_action_3"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="HTTP" android:visibility="gone"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

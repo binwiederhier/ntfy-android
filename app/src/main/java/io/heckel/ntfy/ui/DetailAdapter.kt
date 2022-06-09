@@ -15,9 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.helper.widget.Flow
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintProperties.WRAP_CONTENT
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.allViews
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -79,11 +83,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val attachmentBoxView: View = itemView.findViewById(R.id.detail_item_attachment_file_box)
         private val attachmentIconView: ImageView = itemView.findViewById(R.id.detail_item_attachment_file_icon)
         private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_file_info)
-        private val actionsWrapperView: View = itemView.findViewById(R.id.detail_item_actions_wrapper)
-        private val action1Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_1)
-        private val action2Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_2)
-        private val action3Button: MaterialButton = itemView.findViewById(R.id.detail_item_action_3)
-        private val actionButtons: List<MaterialButton> = listOf(action1Button, action2Button, action3Button)
+        private val actionsWrapperView: ConstraintLayout = itemView.findViewById(R.id.detail_item_actions_wrapper)
+        private val actionsFlow: Flow = itemView.findViewById(R.id.detail_item_actions_flow)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -125,6 +126,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val attachment = notification.attachment
             val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
             renderPriority(context, notification)
+            resetCardButtons()
             maybeRenderMenu(context, notification, exists)
             maybeRenderAttachment(context, notification, exists)
             maybeRenderActions(context, notification)
@@ -182,18 +184,34 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 val actionsCount = min(notification.actions.size, 3) // per documentation, only 3 actions are available
                 for (i in 0 until actionsCount) {
                     val action = notification.actions[i]
-                    val actionButton = actionButtons[i]
-                    actionButton.visibility = View.VISIBLE
-                    actionButton.text = formatActionLabel(action)
-                    actionButton.setOnClickListener { runAction(context, notification, action) }
-                }
-                for (i in actionsCount until 3) {
-                    val actionButton = actionButtons[i]
-                    actionButton.visibility = View.GONE
+                    val label = formatActionLabel(action)
+                    val actionButton = createCardButton(context, label) { runAction(context, notification, action) }
+                    addButtonToCard(actionButton)
                 }
             } else {
                 actionsWrapperView.visibility = View.GONE
             }
+        }
+
+        private fun resetCardButtons() {
+            // clear any previously created dynamic buttons
+            actionsFlow.allViews.forEach { it -> actionsFlow.removeView(it) }
+            actionsWrapperView.removeAllViews()
+            actionsWrapperView.addView(actionsFlow)
+        }
+
+        private fun addButtonToCard(button: MaterialButton) {
+            actionsWrapperView.addView(button)
+            actionsFlow.addView(button)
+        }
+
+        private fun createCardButton(context: Context, label: String, onClick: () -> Boolean): MaterialButton {
+            val button = MaterialButton(context, null, R.attr.borderlessButtonStyle)
+            button.id = View.generateViewId()
+            button.layoutParams = ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            button.text = label
+            button.setOnClickListener { onClick() }
+            return button
         }
 
         private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean, image: Boolean) {
