@@ -33,6 +33,8 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("priority", notification.priority)
         intent.putExtra("muted", muted)
         intent.putExtra("muted_str", muted.toString())
+        intent.putExtra("attachment_name", notification.attachment?.name)
+        intent.putExtra("attachment_url", notification.attachment?.url)
 
         Log.d(TAG, "Sending message intent broadcast: ${intent.action} with extras ${intent.extras}")
         ctx.sendBroadcast(intent)
