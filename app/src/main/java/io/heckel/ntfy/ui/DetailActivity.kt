@@ -636,7 +636,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             finishActionMode()
         } else {
             actionMode!!.title = adapter.selected.size.toString()
-            redrawList()
         }
     }
 
@@ -717,8 +716,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun beginActionMode(notification: Notification) {
         actionMode = startActionMode(this)
-        adapter.selected.add(notification.id)
-        redrawList()
+        adapter.toggleSelection(notification.id)
 
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
@@ -734,16 +732,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun endActionModeAndRedraw() {
         actionMode = null
         adapter.selected.clear()
-        redrawList()
+        adapter.notifyItemRangeChanged(0, adapter.currentList.size)
 
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
         val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
         fadeStatusBarColor(window, fromColor, toColor)
-    }
-
-    private fun redrawList() {
-        mainList.adapter = adapter // Oh, what a hack ...
     }
 
     companion object {
