@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.allViews
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -189,7 +191,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private fun maybeRenderActions(context: Context, notification: Notification) {
             if (notification.actions != null && notification.actions.isNotEmpty()) {
                 actionsWrapperView.visibility = View.VISIBLE
-                val actionsCount = min(notification.actions.size, 3) // per documentation, only 3 actions are available
+                val actionsCount = Math.min(notification.actions.size, 3) // per documentation, only 3 actions are available
                 for (i in 0 until actionsCount) {
                     val action = notification.actions[i]
                     val label = formatActionLabel(action)
