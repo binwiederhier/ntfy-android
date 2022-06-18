@@ -304,4 +304,8 @@
     <string name="user_dialog_button_cancel">Отмена</string>
     <string name="user_dialog_button_delete">Удалить пользователя</string>
     <string name="notification_popup_user_action_failed">%1$s не удалась: %2$s</string>
+    <string name="channel_subscriber_notification_instant_text_five">Подписан на пять тем с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_instant_text_six">Подписан на шесть тем с мгновенной доставкой</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Подписан на пять тем</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Подписан на шесть тем</string>
 </resources>

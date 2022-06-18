@@ -538,7 +538,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             finishActionMode()
         } else {
             actionMode!!.title = adapter.selected.size.toString()
-            redrawList()
         }
     }
 
@@ -593,8 +592,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun beginActionMode(subscription: Subscription) {
         actionMode = startActionMode(this)
-        adapter.selected.add(subscription.id)
-        redrawList()
+        adapter.toggleSelection(subscription.id)
 
         // Fade out FAB
         fab.alpha = 1f
@@ -647,9 +645,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         if (!this::mainList.isInitialized) {
             return
         }
-        runOnUiThread {
-            mainList.adapter = adapter // Oh, what a hack ...
-        }
+        adapter.notifyItemRangeChanged(0, adapter.currentList.size)
     }
 
     companion object {
