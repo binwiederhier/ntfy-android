@@ -14,8 +14,16 @@ class Colors {
             return if (isDarkThemeOn(context)) R.color.black_800b else R.color.gray_400
         }
 
+        fun cardBackground(context: Context): Int {
+            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.white
+        }
+
         fun cardSelectedBackground(context: Context): Int {
             return if (isDarkThemeOn(context)) R.color.black_700b else R.color.gray_500
+        }
+
+        fun cardBackgroundColor(context: Context): Int {
+            return ContextCompat.getColor(context, cardBackground(context))
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {

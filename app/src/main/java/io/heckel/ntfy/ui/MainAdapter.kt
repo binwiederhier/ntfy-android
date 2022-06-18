@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,12 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             selected.remove(subscriptionId)
         } else {
             selected.add(subscriptionId)
+        }
+
+        if (selected.size != 0) {
+            val listIds = currentList.map { subscription -> subscription.id }
+            val subscriptionPosition = listIds.indexOf(subscriptionId)
+            notifyItemChanged(subscriptionPosition)
         }
     }
 
@@ -111,6 +118,8 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
                 itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
+            } else {
+                itemView.setBackgroundColor(Color.TRANSPARENT);
             }
         }
     }

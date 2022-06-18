@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_subscriber_notification_noinstant_text_more">רשום ל-%1$d נושאים</string>
+    <string name="refresh_message_result">%1$d התראות התקבלו</string>
+    <string name="refresh_message_no_results">הכל מעודכן</string>
+    <string name="refresh_message_error_one">הרענון של הרישום הבא נכשל: %1$s</string>
+    <string name="main_action_bar_title">רישומים לנושאים</string>
+    <string name="main_menu_notifications_enabled">התראות פועלות</string>
+    <string name="main_menu_notifications_disabled_until">ההתראות מושתקות עד %1$s</string>
+    <string name="main_menu_settings_title">הגדרות</string>
+    <string name="main_menu_report_bug_title">דווח/י על באג</string>
+    <string name="main_menu_docs_title">קרא/י את הדוקומנטציה</string>
+    <string name="main_menu_rate_title">דרג/י את האפליקציה ⭐</string>
+    <string name="main_action_mode_menu_unsubscribe">הסר/י רישום</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">מחק/י לצמיתות</string>
+    <string name="main_action_mode_delete_dialog_cancel">ביטול</string>
+    <string name="main_item_status_text_one">התראת %1$d</string>
+    <string name="main_item_status_text_not_one">התראות %1$d</string>
+    <string name="main_item_date_yesterday">אתמול</string>
+    <string name="main_add_button_description">הוספת רישום</string>
+    <string name="main_no_subscriptions_text">נראה שלא נרשמת לאף נושא עדיין.</string>
+    <string name="main_banner_battery_text">מיטוב סוללה צריך להיות כבוי עבור האפליקציה כדי להימנע מבעיות בשליחת וקבלת התראות.</string>
+    <string name="main_banner_battery_button_remind_later">שאל אחר כך</string>
+    <string name="main_banner_battery_button_dismiss">הסר</string>
+    <string name="main_banner_battery_button_fix_now">תקן עכשיו</string>
+    <string name="main_banner_json_stream_button_remind_later">שאל אחר כך</string>
+    <string name="channel_notifications_min_name">התראות (עדיפות מינימאלית)</string>
+    <string name="channel_subscriber_service_name">שירות רישום</string>
+    <string name="channel_subscriber_notification_title">מאזין להתראות נכנסות</string>
+    <string name="channel_notifications_low_name">התראות (עדיפות נמוכה)</string>
+    <string name="channel_notifications_default_name">התראות (עדיפות ברירת מחדל)</string>
+    <string name="channel_notifications_high_name">התראות (עדיפות גבוהה)</string>
+    <string name="channel_notifications_max_name">התראות (עדיפות מקסימאלית)</string>
+    <string name="refresh_message_error">הרענון של %1$d רישומים נכשל
+\n
+\n%2$s</string>
+    <string name="main_menu_notifications_disabled_forever">התראות מושתקות</string>
+    <string name="main_action_mode_delete_dialog_message">להסיר את הרישום מהנושא(ים) הנבחר(ים) ולמחוק את כל ההתראות לצמיתות\?</string>
+    <string name="main_item_status_reconnecting">מתחבר מחדש…</string>
+    <string name="main_how_to_intro">לחצ\\י על + על מנת ליצור או להירשם אל מול נושא מסוים. לאחר מכן תקבל\\י התראות במכשירך כשתשלח\\י התראות דרך PUT או POST.</string>
+    <string name="main_how_to_link">הוראות מפורטות זמינות ב-ntfy.sh, ובדוקומנטציה.</string>
+    <string name="main_banner_json_stream_text">החלפ\\י ל-WebSockets תחת הגדרות \\ ״פרוטוקול חיבור״ עכשיו על מנת לוודא שאת\\ה יכול\\ה לתקשר עם שרת ה-ntfy באחסון עצמי שלך גם לאחר יוני 2022.</string>
+</resources>

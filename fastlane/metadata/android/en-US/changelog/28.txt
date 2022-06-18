@@ -1,0 +1,9 @@
+Bugs:
+* Fixed: Long-click selecting of notifications scrolls to the top (#235, thanks to @wunter8)
+* Add attachment and click URL extras to MESSAGE_RECEIVED broadcast (#329, thanks to @wunter8)
+
+Additional translations:
+* Italian (thanks to @Genio2003)
+* Dutch (thanks to @SchoNie)
+
+Thank you to @wunter8 for proactively picking up some Android tickets, and fixing them! You rock!

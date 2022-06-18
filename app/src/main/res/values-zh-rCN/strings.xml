@@ -6,7 +6,7 @@
     <string name="refresh_message_no_results">已全部同步</string>
     <string name="refresh_message_error_one">订阅刷新失败：%1$s</string>
     <string name="main_menu_notifications_enabled">通知已开启</string>
-    <string name="main_menu_notifications_disabled_forever">通知已关闭</string>
+    <string name="main_menu_notifications_disabled_forever">通知已暂停</string>
     <string name="main_menu_notifications_disabled_until">暂停通知到 %1$s</string>
     <string name="main_menu_settings_title">设置</string>
     <string name="main_menu_report_bug_title">Bug 报告</string>
@@ -18,7 +18,7 @@
     <string name="main_action_mode_delete_dialog_cancel">取消</string>
     <string name="main_item_status_reconnecting">正在重新连接……</string>
     <string name="main_item_date_yesterday">昨天</string>
-    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_status_unified_push">%1$s（统一推送）</string>
     <string name="main_how_to_link">详细的说明请见 ntfy.sh 和帮助文档。</string>
     <string name="main_unified_push_toast">此通知由 %1$s 通过 UnifiedPush 管理</string>
     <string name="main_banner_battery_text">请关闭对本应用的电量优化以避免通知推送问题。</string>
@@ -31,7 +31,7 @@
 \n
 \n%2$s</string>
     <string name="main_action_mode_menu_unsubscribe">删除订阅</string>
-    <string name="main_no_subscriptions_text">您目前还没有订阅。</string>
+    <string name="main_no_subscriptions_text">您当前还没有订阅。</string>
     <string name="add_dialog_instant_delivery">低功耗模式下仍实时推送</string>
     <string name="add_dialog_instant_delivery_description">确保在用户未使用设备时，消息也能实时送达。</string>
     <string name="add_dialog_foreground_description">低功耗模式下仍在除 %1$s 之外的服务器上使用实时推送。</string>
@@ -44,23 +44,23 @@
     <string name="add_dialog_login_description">此主题需要您登录。请输入用户名和密码。</string>
     <string name="add_dialog_login_username_hint">用户名</string>
     <string name="add_dialog_login_password_hint">密码</string>
-    <string name="add_dialog_login_error_not_authorized">登录失败。用户 %1$s 无权访问。</string>
+    <string name="add_dialog_login_error_not_authorized">登录失败。 %1$s用户无权访问。</string>
     <string name="add_dialog_login_new_user">新用户</string>
-    <string name="detail_no_notifications_text">目前还没有关于此主题的通知。</string>
+    <string name="detail_no_notifications_text">当前还没有关于此主题的通知。</string>
     <string name="main_banner_json_stream_text">请在“链接协议”中选择 WebSockets 以保证在 2022 年 6 月之后仍能收到来自自建 ntfy 服务器的推送。</string>
     <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
     <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
     <string name="main_banner_json_stream_button_learn_more">详情</string>
     <string name="add_dialog_title">订阅主题</string>
     <string name="add_dialog_description_below">主题未必有密码保护，因此请选择难以猜测的名称。订阅之后，您可以通知 PUT/POST 请求发送通知。</string>
-    <string name="add_dialog_topic_name_hint">主题名称，比如：phils_alerts</string>
+    <string name="add_dialog_topic_name_hint">主题名称，例如：phils_alerts</string>
     <string name="detail_how_to_link">详细的说明请见 ntfy.sh 和帮助文档。</string>
     <string name="detail_clear_dialog_message">您确认要删除这个主题下的所有通知吗？</string>
     <string name="detail_test_message">这是 ntfy 安卓应用发来的测试通知。此通知优先级为 %1$d。如果再发送一条通知，通知的样式可能有变化。</string>
-    <string name="detail_test_message_error_unauthorized_user">无法发送消息：用户 %1$s 无权发布。</string>
+    <string name="detail_test_message_error_unauthorized_user">无法发送消息： %1$s用户无权发布。</string>
     <string name="detail_item_menu_download">下载文件</string>
     <string name="detail_item_menu_save_file">保存文件</string>
-    <string name="detail_how_to_intro">向此主题的 URL 发送 PUT 或者 POST 请求即可发送通知。</string>
+    <string name="detail_how_to_intro">向此主题的链接地址发送 PUT 或者 POST 请求即可发送通知。</string>
     <string name="detail_how_to_example">例子（使用 curl）：<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_clear_dialog_permanently_delete">永久删除</string>
     <string name="detail_clear_dialog_cancel">取消</string>
@@ -80,8 +80,8 @@
     <string name="detail_item_menu_open">打开文件</string>
     <string name="detail_item_menu_delete">删除文件</string>
     <string name="detail_item_menu_cancel">不再下载</string>
-    <string name="detail_item_menu_copy_url">复制 URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL 已复制到剪贴板</string>
+    <string name="detail_item_menu_copy_url">复制链接地址</string>
+    <string name="detail_item_menu_copy_url_copied">链接地址已复制到剪贴板</string>
     <string name="detail_item_menu_copy_contents">复制通知</string>
     <string name="detail_item_saved_successfully">已保存为“下载”目录中的 %1$s</string>
     <string name="detail_item_cannot_download">无法打开或下载附件。此链接已过期且未保存到本地。</string>
@@ -157,24 +157,24 @@
     <string name="channel_subscriber_notification_instant_text_four">已订阅 4 个实时推送主题</string>
     <string name="channel_subscriber_notification_instant_text_more">已订阅 %1$d 个实时推送主题</string>
     <string name="add_dialog_use_another_server">使用其他服务器</string>
-    <string name="add_dialog_use_another_server_description">在下方输入服务 URL 以订阅主题。</string>
+    <string name="add_dialog_use_another_server_description">在下方输入服务链接地址以订阅主题。</string>
     <string name="detail_item_download_failed">无法下载附件：%1$s</string>
     <string name="detail_item_download_info_not_downloaded">未下载</string>
     <string name="detail_item_download_info_not_downloaded_expired">未下载，链接已失效</string>
     <string name="detail_item_menu_copy_contents_copied">通知已复制到剪贴板</string>
     <string name="detail_item_cannot_open">无法打开附件：%1$s</string>
     <string name="detail_item_cannot_open_not_found">无法打开附件：此文件已被删除或无可用打开方式。</string>
-    <string name="detail_item_cannot_open_url">无法打开 URL: %1$s</string>
+    <string name="detail_item_cannot_open_url">无法打开链接：%1$s</string>
     <string name="detail_item_cannot_save">无法保存附件：%1$s</string>
     <string name="detail_item_cannot_delete">无法删除附件：%1$s</string>
     <string name="notification_popup_file">%1$s
 \n文件: %2$s</string>
     <string name="notification_popup_file_download_successful">%1$s
-\n文件: %2$s, 已下载</string>
+\n文件：已下载%2$s</string>
     <string name="settings_title">设置</string>
     <string name="settings_notifications_muted_until_title">暂停通知</string>
     <string name="settings_notifications_muted_until_show_all">显示所有通知</string>
-    <string name="settings_notifications_muted_until_forever">已暂停通知至手动恢复</string>
+    <string name="settings_notifications_muted_until_forever">已暂停通知直至手动恢复</string>
     <string name="settings_notifications_muted_until_x">已暂停通知至 %1$s</string>
     <string name="settings_notifications_min_priority_title">最低优先级</string>
     <string name="settings_notifications_min_priority_summary_any">显示所有通知</string>
@@ -251,7 +251,7 @@
 \n%3$s</string>
     <string name="settings_notifications_header">通知</string>
     <string name="notification_popup_file_download_failed">%1$s
-\n文件: %2$s, 下载失败</string>
+\n文件：下载%2$s失败</string>
     <string name="settings_backup_restore_backup_failed">备份失败：%1$s</string>
     <string name="settings_advanced_export_logs_copied_logs">日志已复制到剪贴板</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">上传并复制链接 (屏蔽敏感信息)</string>
@@ -259,7 +259,7 @@
     <string name="settings_general_users_prefs_user_not_used">未在任何主题使用</string>
     <string name="settings_general_dark_mode_entry_light">亮色模式</string>
     <string name="settings_general_users_prefs_user_used_by_one">在主题 %1$s 使用</string>
-    <string name="settings_general_dark_mode_summary_dark">暗色模式已启用。你是吸血鬼吗？</string>
+    <string name="settings_general_dark_mode_summary_dark">暗色模式已启用。您是吸血鬼吗？</string>
     <string name="settings_general_dark_mode_entry_system">跟随系统默认</string>
     <string name="settings_advanced_clear_logs_summary">删除以前的日志并重新来过</string>
     <string name="user_dialog_title_add">添加用户</string>
@@ -299,4 +299,24 @@
     <string name="detail_deep_link_subscribed_toast_message">订阅%1$s 主题</string>
     <string name="settings_notifications_priority_min">分钟</string>
     <string name="settings_notifications_priority_default">默认</string>
+    <string name="channel_subscriber_notification_instant_text_five">已订阅 5 个实时推送主题</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">已订阅 6 个主题</string>
+    <string name="settings_notifications_channel_prefs_summary">覆盖请勿打扰（DND）、声音等。</string>
+    <string name="notification_popup_user_action_failed">%1$s 失败：%2$s</string>
+    <string name="settings_notifications_priority_low">低</string>
+    <string name="settings_notifications_priority_high">高</string>
+    <string name="settings_notifications_priority_max">最高</string>
+    <string name="channel_subscriber_notification_instant_text_six">已订阅 6 个实时推送主题</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">已订阅 5 个主题</string>
+    <string name="detail_settings_notifications_instant_title">即时交付</string>
+    <string name="detail_settings_notifications_instant_summary_on">通知会立即发送。需要前台服务，并消耗更多电池。</string>
+    <string name="detail_settings_notifications_instant_summary_off">通知使用 Firebase 发送。投递可能会延迟，但消耗的电池更少。</string>
+    <string name="detail_settings_appearance_header">外观</string>
+    <string name="detail_settings_appearance_icon_set_title">订阅图标</string>
+    <string name="detail_settings_appearance_icon_set_summary">设置要在通知中显示的图标</string>
+    <string name="detail_settings_appearance_icon_remove_title">订阅图标（点击可删除）</string>
+    <string name="detail_settings_appearance_icon_remove_summary">此主题的通知中显示的图标</string>
+    <string name="detail_settings_appearance_icon_error_saving">无法保存图标：%1$s</string>
+    <string name="detail_settings_global_setting_title">使用全局设置</string>
+    <string name="detail_settings_global_setting_suffix">使用全局设置</string>
 </resources>

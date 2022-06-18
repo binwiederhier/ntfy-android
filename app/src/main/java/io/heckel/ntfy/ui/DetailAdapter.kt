@@ -64,6 +64,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         } else {
             selected.add(notificationId)
         }
+
+        if (selected.size != 0) {
+            val listIds = currentList.map { notification -> notification.id }
+            val notificationPosition = listIds.indexOf(notificationId)
+            notifyItemChanged(notificationPosition)
+        }
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
@@ -122,6 +128,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
             if (selected.contains(notification.id)) {
                 cardView.setCardBackgroundColor(Colors.cardSelectedBackgroundColor(context))
+            } else {
+                cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
             }
             val attachment = notification.attachment
             val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
