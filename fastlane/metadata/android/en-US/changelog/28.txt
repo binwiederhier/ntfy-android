@@ -1,5 +1,6 @@
 Bugs:
 * Fixed: Long-click selecting of notifications scrolls to the top (#235, thanks to @wunter8)
+* Add attachment and click URL extras to MESSAGE_RECEIVED broadcast (#330, thanks to @wunter8)
 
 Additional translations:
 * Italian (thanks to @Genio2003)
