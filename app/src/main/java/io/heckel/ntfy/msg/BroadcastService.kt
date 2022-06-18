@@ -37,9 +37,7 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("attachment_name", notification.attachment?.name ?: "")
         intent.putExtra("attachment_type", notification.attachment?.type ?: "")
         intent.putExtra("attachment_size", notification.attachment?.size ?: 0L)
-        intent.putExtra("attachment_size_str", notification.attachment?.size?.toString() ?: "")
         intent.putExtra("attachment_expires", notification.attachment?.expires ?: 0L)
-        intent.putExtra("attachment_expires_str", notification.attachment?.expires?.toString() ?: "")
         intent.putExtra("attachment_url", notification.attachment?.url ?: "")
 
         Log.d(TAG, "Sending message intent broadcast: ${intent.action} with extras ${intent.extras}")
