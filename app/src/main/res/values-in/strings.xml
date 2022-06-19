@@ -320,4 +320,6 @@
     <string name="detail_settings_notifications_instant_title">Pengiriman instan</string>
     <string name="detail_settings_notifications_instant_summary_off">Notifikasi dikirim menggunakan Firebase. Pengiriman mungkin telat, tetapi mengkonsumsi lebih sedikit baterai.</string>
     <string name="detail_settings_appearance_icon_set_title">Ikon langganan</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Pilih URL layanan</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Hapus URL layanan</string>
 </resources>
