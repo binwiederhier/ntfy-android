@@ -317,4 +317,6 @@
     <string name="detail_settings_appearance_icon_remove_title">Abonelik simgesi (kaldırmak için dokunun)</string>
     <string name="detail_settings_appearance_icon_remove_summary">Bu konu için bildirimlerde görüntülenen simge</string>
     <string name="detail_settings_global_setting_title">Genel ayarı kullan</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Hizmet URL\'sini temizle</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Hizmet URL\'sini seç</string>
 </resources>
