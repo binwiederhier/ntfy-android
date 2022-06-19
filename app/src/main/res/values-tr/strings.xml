@@ -41,8 +41,8 @@
     <string name="main_how_to_link">Ayrıntılı talimatlar ntfy.sh adrsimde ve belgelerde bulunabilir.</string>
     <string name="main_unified_push_toast">Bu abonelik, %1$s tarafından UnifiedPush aracılığıyla yönetiliyor</string>
     <string name="main_banner_battery_text">Bildirim teslim sorunlarından kaçınmak için uygulama için pil iyileştirmesi kapalı olmalıdır.</string>
-    <string name="main_banner_json_stream_button_remind_later">Daha sonra sor</string>
-    <string name="main_banner_json_stream_button_dismiss">Kapat</string>
+    <string name="main_banner_websocket_button_remind_later">Daha sonra sor</string>
+    <string name="main_banner_websocket_button_dismiss">Kapat</string>
     <string name="add_dialog_title">Konuya abone ol</string>
     <string name="add_dialog_topic_name_hint">Konu adı, örn. benim_uyarilarim</string>
     <string name="add_dialog_use_another_server">Başka bir sunucu kullan</string>
@@ -209,8 +209,6 @@
     <string name="main_item_date_yesterday">dün</string>
     <string name="main_banner_battery_button_dismiss">Kapat</string>
     <string name="main_banner_battery_button_fix_now">Şimdi düzelt</string>
-    <string name="main_banner_json_stream_text">Haziran 2022\'den sonra kendi barındırdığınız ntfy sunucunuzla iletişim kurabildiğinizden emin olmak için şimdi Ayarlar / \"Bağlantı protokolü\" bölümünde WebSockets\'e geçin.</string>
-    <string name="main_banner_json_stream_button_learn_more">Daha fazla bilgi edin</string>
     <string name="detail_how_to_example">Örnek (curl kullanarak):<br/><tt>$ curl -d \"Merhaba\" %1$s</tt></string>
     <string name="detail_delete_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="detail_test_message_error_unauthorized_user">Mesaj gönderilemiyor: \"%1$s\" kullanıcısı yetkilendirilmedi.</string>

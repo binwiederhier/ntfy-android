@@ -10,7 +10,6 @@
     <!-- Main activity -->
     <string name="main_menu_report_bug_url" translatable="false">https://github.com/binwiederhier/ntfy/issues</string>
     <string name="main_menu_docs_url" translatable="false">https://ntfy.sh/docs</string>
-    <string name="main_banner_json_stream_button_learn_more_url" translatable="false">https://ntfy.sh/docs/deprecations</string>
 
     <!-- Settings constants -->
     <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>

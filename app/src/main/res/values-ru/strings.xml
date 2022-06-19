@@ -70,15 +70,14 @@
     <string name="main_banner_battery_button_remind_later">Спросить позже</string>
     <string name="main_banner_battery_button_fix_now">Исправить</string>
     <string name="main_banner_battery_button_dismiss">Закрыть</string>
-    <string name="main_banner_json_stream_button_dismiss">Закрыть</string>
+    <string name="main_banner_websocket_button_dismiss">Закрыть</string>
     <string name="main_add_button_description">Добавить подписку</string>
     <string name="main_action_mode_menu_unsubscribe">Отписаться</string>
     <string name="main_item_status_text_one">%1$d уведомление</string>
     <string name="main_item_status_reconnecting">повторное подключение …</string>
     <string name="main_no_subscriptions_text">Похоже, у вас ещё нет подписок.</string>
     <string name="main_action_mode_delete_dialog_message">Отписаться от выбранных тем, и навсегда удалить все уведомления\?</string>
-    <string name="main_banner_json_stream_button_remind_later">Спросить позже</string>
-    <string name="main_banner_json_stream_button_learn_more">Узнать больше</string>
+    <string name="main_banner_websocket_button_remind_later">Спросить позже</string>
     <string name="add_dialog_title">Подписаться на тему</string>
     <string name="add_dialog_button_cancel">Отмена</string>
     <string name="main_unified_push_toast">Эта подписка управляется %1$s через UnifiedPush</string>
@@ -153,7 +152,6 @@
     <string name="refresh_message_no_results">Всё обновлено</string>
     <string name="add_dialog_instant_delivery">Мгновенная доставка в спящем режиме</string>
     <string name="main_banner_battery_text">Оптимизация батареи должна быть выключена, чтобы избежать проблем с доставкой уведомлений.</string>
-    <string name="main_banner_json_stream_text">Переключитесь на WebSockets в Настройках / \"Connection protocol\" сейчас, чтобы вы могли пользоваться своим собственным ntfy сервером после июня 2022.</string>
     <string name="add_dialog_error_connection_failed">Ошибка связи: %1$s</string>
     <string name="add_dialog_login_title">Требуется вход в аккаунт</string>
     <string name="add_dialog_login_description">Эта тема требует авторизации. Пожалуйста, введите имя пользователя и пароль.</string>

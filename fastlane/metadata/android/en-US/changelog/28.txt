@@ -1,5 +1,6 @@
 Features:
 * Polling is now done with since=<id> API, which makes deduping easier (#165)
+* Turned JSON stream deprecation banner into "Use WebSockets" banner (no ticket)
 
 Bugs:
 * Long-click selecting of notifications doesn't scoll to the top anymore (#235, thanks to @wunter8)

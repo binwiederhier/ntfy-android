@@ -23,7 +23,7 @@
     <string name="main_banner_battery_button_remind_later">שאל אחר כך</string>
     <string name="main_banner_battery_button_dismiss">הסר</string>
     <string name="main_banner_battery_button_fix_now">תקן עכשיו</string>
-    <string name="main_banner_json_stream_button_remind_later">שאל אחר כך</string>
+    <string name="main_banner_websocket_button_remind_later">שאל אחר כך</string>
     <string name="channel_notifications_min_name">התראות (עדיפות מינימאלית)</string>
     <string name="channel_subscriber_service_name">שירות רישום</string>
     <string name="channel_subscriber_notification_title">מאזין להתראות נכנסות</string>
@@ -39,5 +39,4 @@
     <string name="main_item_status_reconnecting">מתחבר מחדש…</string>
     <string name="main_how_to_intro">לחצ\\י על + על מנת ליצור או להירשם אל מול נושא מסוים. לאחר מכן תקבל\\י התראות במכשירך כשתשלח\\י התראות דרך PUT או POST.</string>
     <string name="main_how_to_link">הוראות מפורטות זמינות ב-ntfy.sh, ובדוקומנטציה.</string>
-    <string name="main_banner_json_stream_text">החלפ\\י ל-WebSockets תחת הגדרות \\ ״פרוטוקול חיבור״ עכשיו על מנת לוודא שאת\\ה יכול\\ה לתקשר עם שרת ה-ntfy באחסון עצמי שלך גם לאחר יוני 2022.</string>
 </resources>

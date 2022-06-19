@@ -9,11 +9,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.method.LinkMovementMethod
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -119,9 +121,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     Log.addScrubTerm(s.topic)
                 }
 
-                // Update banner + JSON stream banner
+                // Update banner + WebSocket banner
                 showHideBatteryBanner(subscriptions)
-                showHideJsonStreamBanner(subscriptions)
+                showHideWebSocketBanner(subscriptions)
             }
         }
 
@@ -169,21 +171,25 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             }
         }
 
-        // JSON stream banner
-        val jsonStreamBanner = findViewById<View>(R.id.main_banner_json_stream) // Banner visibility is toggled in onResume()
-        val jsonStreamDismissButton = findViewById<Button>(R.id.main_banner_json_stream_dontaskagain)
-        val jsonStreamRemindButton = findViewById<Button>(R.id.main_banner_json_stream_remind_later)
-        val jsonStreamLearnMoreButton = findViewById<Button>(R.id.main_banner_json_stream_learn_mode)
-        jsonStreamDismissButton.setOnClickListener {
-            jsonStreamBanner.visibility = View.GONE
-            repository.setJsonStreamRemindTime(Repository.JSON_STREAM_REMIND_TIME_NEVER)
+        // WebSocket banner
+        val wsBanner = findViewById<View>(R.id.main_banner_websocket) // Banner visibility is toggled in onResume()
+        val wsText = findViewById<TextView>(R.id.main_banner_websocket_text)
+        val wsDismissButton = findViewById<Button>(R.id.main_banner_websocket_dontaskagain)
+        val wsRemindButton = findViewById<Button>(R.id.main_banner_websocket_remind_later)
+        val wsEnableButton = findViewById<Button>(R.id.main_banner_websocket_enable)
+        wsText.movementMethod = LinkMovementMethod.getInstance() // Make links clickable
+        wsDismissButton.setOnClickListener {
+            wsBanner.visibility = View.GONE
+            repository.setWebSocketRemindTime(Repository.WEBSOCKET_REMIND_TIME_NEVER)
         }
-        jsonStreamRemindButton.setOnClickListener {
-            jsonStreamBanner.visibility = View.GONE
-            repository.setJsonStreamRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
+        wsRemindButton.setOnClickListener {
+            wsBanner.visibility = View.GONE
+            repository.setWebSocketRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
         }
-        jsonStreamLearnMoreButton.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_banner_json_stream_button_learn_more_url))))
+        wsEnableButton.setOnClickListener {
+            repository.setConnectionProtocol(Repository.CONNECTION_PROTOCOL_WS)
+            SubscriberServiceManager(this).restart()
+            wsBanner.visibility = View.GONE
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
@@ -217,13 +223,13 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
     }
 
-    private fun showHideJsonStreamBanner(subscriptions: List<Subscription>) {
-        val hasSelfhostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
+    private fun showHideWebSocketBanner(subscriptions: List<Subscription>) {
+        val hasSelfHostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
         val usingWebSockets = repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
-        val jsonStreamRemindTimeReached = repository.getJsonStreamRemindTime() < System.currentTimeMillis()
-        val showBanner = hasSelfhostedSubscriptions && jsonStreamRemindTimeReached && !usingWebSockets
-        val jsonStreamBanner = findViewById<View>(R.id.main_banner_json_stream)
-        jsonStreamBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
+        val wsRemindTimeReached = repository.getWebSocketRemindTime() < System.currentTimeMillis()
+        val showBanner = hasSelfHostedSubscriptions && wsRemindTimeReached && !usingWebSockets
+        val wsBanner = findViewById<View>(R.id.main_banner_websocket)
+        wsBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
     }
 
     private fun schedulePeriodicPollWorker() {
