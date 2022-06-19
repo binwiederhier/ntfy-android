@@ -3,7 +3,7 @@ package io.heckel.ntfy.service
 interface Connection {
     fun start()
     fun close()
-    fun since(): Long
+    fun since(): String?
 }
 
 data class ConnectionId(

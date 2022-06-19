@@ -108,12 +108,12 @@ class ApiService {
     fun subscribe(
         baseUrl: String,
         topics: String,
-        since: Long,
+        since: String?,
         user: User?,
         notify: (topic: String, Notification) -> Unit,
         fail: (Exception) -> Unit
     ): Call {
-        val sinceVal = if (since == 0L) "all" else since.toString()
+        val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val request = requestBuilder(url, user).build()

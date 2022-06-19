@@ -5,15 +5,19 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicReference
 import kotlin.random.Random
 
 /**
@@ -30,7 +34,7 @@ class WsConnection(
     private val connectionId: ConnectionId,
     private val repository: Repository,
     private val user: User?,
-    private val sinceTime: Long,
+    private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
@@ -49,7 +53,7 @@ class WsConnection(
     private val globalId = GLOBAL_ID.incrementAndGet()
     private val listenerId = AtomicLong(0)
 
-    private val since = AtomicLong(sinceTime)
+    private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val subscriptionIds = topicsToSubscriptionIds.values
@@ -71,7 +75,8 @@ class WsConnection(
         }
         state = State.Connecting
         val nextListenerId = listenerId.incrementAndGet()
-        val sinceVal = if (since.get() == 0L) "all" else since.get().toString()
+        val sinceId = since.get()
+        val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
         val request = requestBuilder(urlWithSince, user).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
@@ -92,7 +97,7 @@ class WsConnection(
     }
 
     @Synchronized
-    override fun since(): Long {
+    override fun since(): String? {
         return since.get()
     }
 
@@ -141,7 +146,7 @@ class WsConnection(
                 val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
                 val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
                 notificationListener(subscription, notificationWithSubscriptionId)
-                since.set(notification.timestamp)
+                since.set(notification.id)
             }
         }
 
