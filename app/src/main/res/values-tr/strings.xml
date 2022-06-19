@@ -172,8 +172,8 @@
     <string name="settings_advanced_clear_logs_summary">Önceden kaydedilen günlükleri silin ve baştan başlayın</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Günlükler silindi</string>
     <string name="settings_advanced_connection_protocol_title">Bağlantı protokolü</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Sunucuya bağlanmak için HTTP üzerinden bir JSON akışı kullanın. Bu yöntem kullanım dışıdır ve Haziran 2022\'de kaldırılacaktır.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Sunucuya bağlanmak için WebSockets kullanın. Bu, Haziran 2022\'de öntanımlı olacaktır.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Sunucuya bağlanmak için HTTP üzerinden bir JSON akışı kullanın. Bu yöntem iyi test edilmiştir, ancak daha fazla pil tüketebilir.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Sunucuya bağlanmak için WebSockets kullanın. Bu tavsiye edilen yöntemdir, ancak vekilinizde ek yapılandırma gerektirebilir.</string>
     <string name="channel_notifications_max_name">Bildirimler (en yüksek öncelik)</string>
     <string name="channel_subscriber_notification_noinstant_text_two">İki konuya abone olundu</string>
     <string name="main_add_button_description">Abonelik ekle</string>
@@ -319,4 +319,6 @@
     <string name="detail_settings_global_setting_title">Genel ayarı kullan</string>
     <string name="add_dialog_base_urls_dropdown_clear">Hizmet URL\'sini temizle</string>
     <string name="add_dialog_base_urls_dropdown_choose">Hizmet URL\'sini seç</string>
+    <string name="main_banner_websocket_button_enable_now">Şimdi etkinleştir</string>
+    <string name="main_banner_websocket_text">WebSockets\'e geçmek sunucunuza bağlanmak için tavsiye edilen yoldur ve pil ömrünü artırabilir, ancak <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">vekilinizde ek yapılandırma</a> gerektirebilir. Bu, ayarlardan değiştirilebilir.</string>
 </resources>
