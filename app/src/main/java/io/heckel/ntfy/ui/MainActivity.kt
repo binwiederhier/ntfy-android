@@ -43,6 +43,7 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -426,7 +427,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Add subscription to database
         val subscription = Subscription(
-            id = Random.nextLong(),
+            id = randomSubscriptionId(),
             baseUrl = baseUrl,
             topic = topic,
             instant = instant,
@@ -495,6 +496,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             var errorMessage = "" // First error
             var newNotificationsCount = 0
             repository.getSubscriptions().forEach { subscription ->
+                Log.d(TAG, "subscription: ${subscription}")
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)

@@ -7,10 +7,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.randomString
-import io.heckel.ntfy.util.shortUrl
-import io.heckel.ntfy.util.topicUrlUp
+import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -71,7 +68,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 val topic = UP_PREFIX + randomString(TOPIC_RANDOM_ID_LENGTH)
                 val endpoint = topicUrlUp(baseUrl, topic)
                 val subscription = Subscription(
-                    id = Random.nextLong(),
+                    id = randomSubscriptionId(),
                     baseUrl = baseUrl,
                     topic = topic,
                     instant = true, // No Firebase, always instant!

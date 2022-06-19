@@ -105,7 +105,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             if (subscription == null) {
                 val instant = baseUrl != appBaseUrl
                 subscription = Subscription(
-                    id = Random.nextLong(),
+                    id = randomSubscriptionId(),
                     baseUrl = baseUrl,
                     topic = topic,
                     instant = instant,
