@@ -84,8 +84,8 @@ class ApiService {
         }
     }
 
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: Long = 0L): List<Notification> {
-        val sinceVal = if (since == 0L) "all" else since.toString()
+    fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
+        val sinceVal = since ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 

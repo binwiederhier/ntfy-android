@@ -112,6 +112,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+                    lastNotificationId = null,
                     icon = null,
                     upAppId = null,
                     upConnectorToken = null,
@@ -457,8 +458,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val user = repository.getUser(subscriptionBaseUrl) // May be null
-                val notifications = api.poll(subscriptionId, subscriptionBaseUrl, subscriptionTopic, user)
+                val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+                val user = repository.getUser(subscription.baseUrl) // May be null
+                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
                 val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
                 val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)

@@ -45,7 +45,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                         baseUrl = subscription.baseUrl,
                         topic = subscription.topic,
                         user = user,
-                        since = subscription.lastActive
+                        since = subscription.lastNotificationId
                     )
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)

@@ -116,6 +116,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         if (maybeExistingNotification != null) {
             return false
         }
+        subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
         return true
     }
@@ -379,6 +380,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
+                lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
@@ -402,6 +404,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             mutedUntil = s.mutedUntil,
             minPriority = s.minPriority,
             autoDelete = s.autoDelete,
+            lastNotificationId = s.lastNotificationId,
             icon = s.icon,
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,

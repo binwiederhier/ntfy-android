@@ -427,6 +427,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             mutedUntil = 0,
             minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
             autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+            lastNotificationId = null,
             icon = null,
             upAppId = null,
             upConnectorToken = null,
@@ -490,7 +491,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             repository.getSubscriptions().forEach { subscription ->
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
                         newNotificationsCount++

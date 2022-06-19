@@ -1,3 +1,6 @@
+Features:
+* Polling is now done with since=<id> API, which makes deduping easier (#165)
+
 Bugs:
 * Long-click selecting of notifications doesn't scoll to the top anymore (#235, thanks to @wunter8)
 * Add attachment and click URL extras to MESSAGE_RECEIVED broadcast (#329, thanks to @wunter8)
