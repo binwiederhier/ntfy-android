@@ -9,13 +9,17 @@ import io.heckel.ntfy.R
 
 fun initBaseUrlDropdown(baseUrls: List<String>, textView: AutoCompleteTextView, layout: TextInputLayout) {
     // Base URL dropdown behavior; Oh my, why is this so complicated?!
+    val context = layout.context
     val toggleEndIcon = {
         if (textView.text.isNotEmpty()) {
             layout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
+            layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_clear)
         } else if (baseUrls.isEmpty()) {
             layout.setEndIconDrawable(0)
+            layout.endIconContentDescription = ""
         } else {
             layout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+            layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_choose)
         }
     }
     layout.setEndIconOnClickListener {
@@ -23,11 +27,14 @@ fun initBaseUrlDropdown(baseUrls: List<String>, textView: AutoCompleteTextView, 
             textView.text.clear()
             if (baseUrls.isEmpty()) {
                 layout.setEndIconDrawable(0)
+                layout.endIconContentDescription = ""
             } else {
                 layout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+                layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_choose)
             }
         } else if (textView.text.isEmpty() && baseUrls.isNotEmpty()) {
             layout.setEndIconDrawable(R.drawable.ic_drop_up_gray_24dp)
+            layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_choose)
             textView.showDropDown()
         }
     }
@@ -49,10 +56,13 @@ fun initBaseUrlDropdown(baseUrls: List<String>, textView: AutoCompleteTextView, 
     textView.setAdapter(adapter)
     if (baseUrls.count() == 1) {
         layout.setEndIconDrawable(R.drawable.ic_cancel_gray_24dp)
+        layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_clear)
         textView.setText(baseUrls.first())
     } else if (baseUrls.count() > 1) {
         layout.setEndIconDrawable(R.drawable.ic_drop_down_gray_24dp)
+        layout.endIconContentDescription = context.getString(R.string.add_dialog_base_urls_dropdown_choose)
     } else {
         layout.setEndIconDrawable(0)
+        layout.endIconContentDescription = ""
     }
 }
