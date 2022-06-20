@@ -211,9 +211,9 @@
     <string name="settings_advanced_clear_logs_summary">Vorhandene Logs löschen und neu beginnen</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs gelöscht</string>
     <string name="settings_advanced_connection_protocol_title">Verbindungs-Protokoll</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">JSON-over-HTTP-Stream für die Serververbindung nutzen. Diese Methode ist veraltet und wird im Juni 2022 entfernt.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">JSON-over-HTTP-Stream für die Serververbindung nutzen. Diese Methode ist bewährt, benötigt aber evtl. mehr Akku.</string>
     <string name="settings_advanced_broadcast_title">Nachrichten broadcasten</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">WebSockets für die Server-Verbindung nutzen. Diese Methode wird im Juni 2022 der Standard.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">WebSockets für die Server-Verbindung nutzen. Diese Methode wird empfohlen, benötigt aber evtl. zusätzliche Konfiguration in Deinem Proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON-over-HTTP-Stream</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">Über</string>
@@ -317,4 +317,8 @@
     <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
     <string name="detail_settings_appearance_icon_remove_summary">Icon, das in Benachrichtigungen zu diesem Thema angezeigt wird</string>
     <string name="detail_settings_notifications_instant_summary_on">Benachrichtigungen werden sofort zugestellt. Benötigt einen Vordergrund-Dienst und verbraucht mehr Akku.</string>
+    <string name="main_banner_websocket_text">Der Umstieg auf WebSockets ist die empfohlene Verbindungsweise zu Deinem Server und benötigt möglicherweise weniger Akkuleistung. Es könnte aber eine <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">zusätzliche Konfiguration im Proxy</a> nötig sein. Die Verbindungmethode kann in den Einstellungen gewählt werden.</string>
+    <string name="main_banner_websocket_button_enable_now">Jetzt aktivieren</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Service-URL wählen</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Service-URL löschen</string>
 </resources>
