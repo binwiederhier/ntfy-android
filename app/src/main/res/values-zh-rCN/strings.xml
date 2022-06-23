@@ -317,4 +317,5 @@
     <string name="detail_settings_appearance_icon_error_saving">无法保存图标：%1$s</string>
     <string name="detail_settings_global_setting_title">使用全局设置</string>
     <string name="detail_settings_global_setting_suffix">使用全局设置</string>
+    <string name="add_dialog_base_urls_dropdown_choose">选择服务 URL</string>
 </resources>
