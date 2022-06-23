@@ -47,10 +47,8 @@
     <string name="add_dialog_login_error_not_authorized">登录失败。 %1$s用户无权访问。</string>
     <string name="add_dialog_login_new_user">新用户</string>
     <string name="detail_no_notifications_text">当前还没有关于此主题的通知。</string>
-    <string name="main_banner_json_stream_text">请在“链接协议”中选择 WebSockets 以保证在 2022 年 6 月之后仍能收到来自自建 ntfy 服务器的推送。</string>
-    <string name="main_banner_json_stream_button_remind_later">稍后再问</string>
-    <string name="main_banner_json_stream_button_dismiss">暂时不管</string>
-    <string name="main_banner_json_stream_button_learn_more">详情</string>
+    <string name="main_banner_websocket_button_remind_later">稍后再问</string>
+    <string name="main_banner_websocket_button_dismiss">暂时不管</string>
     <string name="add_dialog_title">订阅主题</string>
     <string name="add_dialog_description_below">主题未必有密码保护，因此请选择难以猜测的名称。订阅之后，您可以通知 PUT/POST 请求发送通知。</string>
     <string name="add_dialog_topic_name_hint">主题名称，例如：phils_alerts</string>

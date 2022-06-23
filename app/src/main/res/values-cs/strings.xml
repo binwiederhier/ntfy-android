@@ -42,9 +42,8 @@
     <string name="main_unified_push_toast">Tento odběr spravuje %1$s prostřednictvím UnifiedPush</string>
     <string name="main_banner_battery_text">Optimalizace baterie by měla být pro aplikaci vypnutá, aby se předešlo problémům s doručováním oznámení.</string>
     <string name="main_banner_battery_button_remind_later">Zeptat se později</string>
-    <string name="main_banner_json_stream_text">Přepněte na WebSockets v Nastavení / \"Protokol připojení\" na , abyste zajistili, že budete moci komunikovat s vlastním serverem ntfy i po červnu 2022.</string>
-    <string name="main_banner_json_stream_button_remind_later">Zeptat se později</string>
-    <string name="main_banner_json_stream_button_dismiss">Zavřít</string>
+    <string name="main_banner_websocket_button_remind_later">Zeptat se později</string>
+    <string name="main_banner_websocket_button_dismiss">Zavřít</string>
     <string name="add_dialog_topic_name_hint">Název tématu, např. phils_alerts</string>
     <string name="add_dialog_use_another_server_description">Zadejte URL služby a přihlaste se k odběru témat z jiných serverů.</string>
     <string name="add_dialog_instant_delivery">Okamžité doručení v režimu spánku</string>
@@ -233,7 +232,6 @@
     <string name="refresh_message_error_one">Nepodařilo se obnovit odběr: %1$s</string>
     <string name="channel_subscriber_notification_instant_text_four">Přihlášeno k odběru čtyř témat okamžitého doručení</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Odběr tří témat</string>
-    <string name="main_banner_json_stream_button_learn_more">Zjistit více</string>
     <string name="main_menu_notifications_disabled_forever">Oznámení ztlumena</string>
     <string name="main_how_to_intro">Kliknutím na tlačítko + vytvoříte téma nebo se k němu přihlásíte. Poté obdržíte na svém zařízení oznámení při odesílání zpráv prostřednictvím PUT nebo POST.</string>
     <string name="main_banner_battery_button_dismiss">Zavřít</string>

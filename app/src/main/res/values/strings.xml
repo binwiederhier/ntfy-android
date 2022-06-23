@@ -1,4 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="MissingTranslation">
+
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Notifications (min priority)</string>
     <string name="channel_notifications_low_name">Notifications (low priority)</string>
@@ -72,11 +74,11 @@
     <string name="main_banner_battery_button_dismiss">Dismiss</string>
     <string name="main_banner_battery_button_fix_now">Fix now</string>
 
-    <!-- Main activity: JSON stream banner -->
-    <string name="main_banner_json_stream_text">Switch to WebSockets in Settings / \"Connection protocol\" now to ensure you can communicate with your selfhosted ntfy server after June 2022.</string>
-    <string name="main_banner_json_stream_button_remind_later">Ask later</string>
-    <string name="main_banner_json_stream_button_dismiss">Dismiss</string>
-    <string name="main_banner_json_stream_button_learn_more">Learn more</string>
+    <!-- Main activity: WebSocket banner -->
+    <string name="main_banner_websocket_text">Switching to WebSockets is the recommended way to connect to your server, and could improve battery life, but may require <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">additional config in your proxy</a>. This can be toggled in the Settings.</string>
+    <string name="main_banner_websocket_button_remind_later">Ask later</string>
+    <string name="main_banner_websocket_button_dismiss">Dismiss</string>
+    <string name="main_banner_websocket_button_enable_now">Enable now</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -101,6 +103,8 @@
     <string name="add_dialog_login_password_hint">Password</string>
     <string name="add_dialog_login_error_not_authorized">Login failed. User %1$s not authorized.</string>
     <string name="add_dialog_login_new_user">New user</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Choose service URL</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Clear service URL</string>
 
     <!-- Detail activity -->
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
@@ -330,8 +334,8 @@
     <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs deleted</string>
     <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This method is deprecated and will be removed in June 2022.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This will become the default in June 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This method is battle-tested, but may consume more battery.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This is the recommended method, but may require additional config in your proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>

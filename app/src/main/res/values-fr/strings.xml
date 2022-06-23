@@ -20,9 +20,8 @@
     <string name="main_add_button_description">Ajout d\'abonnement</string>
     <string name="main_how_to_link">Des instructions détaillées sont disponible sur ntfy.sh et dans la documentation.</string>
     <string name="main_banner_battery_text">L\'optimisation de la pile devrait être désactivée pour l\'application afin d\'éviter des problèmes de réception de notifications.</string>
-    <string name="main_banner_json_stream_button_remind_later">Demander plus tard</string>
-    <string name="main_banner_json_stream_button_dismiss">Ignorer</string>
-    <string name="main_banner_json_stream_button_learn_more">En apprendre plus</string>
+    <string name="main_banner_websocket_button_remind_later">Demander plus tard</string>
+    <string name="main_banner_websocket_button_dismiss">Ignorer</string>
     <string name="add_dialog_topic_name_hint">Nom de sujet, ex. : phils_alerts</string>
     <string name="add_dialog_instant_delivery">Livraison instantanée en mode somnolence</string>
     <string name="add_dialog_button_cancel">Annuler</string>
@@ -83,7 +82,6 @@
     <string name="main_how_to_intro">Cliquez le + pour créer ou vous abonner à un sujet. Ensuite, vous recevrez des notifications sur votre appareil lors de l\'envoi de messages par PUT ou POST.</string>
     <string name="main_unified_push_toast">Cet abonnement est géré par %1$s à l\'aide de UnifiedPush</string>
     <string name="main_banner_battery_button_remind_later">Demander plus tard</string>
-    <string name="main_banner_json_stream_text">Changez pour les WebSockets dans Paramètres / «Protocole de connexion» maintenant pour assurer que vous puissiez communiquer avec votre serveur ntfy hébergé par vous-même après le mois de juin 2022.</string>
     <string name="add_dialog_description_below">Les sujets ne peuvent pas être protégés par mot de passe, choisissez donc un nom difficile à deviner. Une fois abonné, vous pourrez PUT/POST des notifcations.</string>
     <string name="add_dialog_title">Abonner au sujet</string>
     <string name="add_dialog_error_connection_failed">La connexion a échouée : %1$s</string>

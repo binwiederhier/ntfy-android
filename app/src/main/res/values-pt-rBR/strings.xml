@@ -41,9 +41,8 @@
     <string name="main_how_to_link">Instruções detalhadas disponíveis em ntfy.sh, e na documentação.</string>
     <string name="main_banner_battery_text">Otimização de bateria deve estar desligada para evitar problemas de entrega de notificação no aplicativo.</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
-    <string name="main_banner_json_stream_button_remind_later">Perguntar depois</string>
-    <string name="main_banner_json_stream_button_dismiss">Dispensar</string>
-    <string name="main_banner_json_stream_button_learn_more">Saiba mais</string>
+    <string name="main_banner_websocket_button_remind_later">Perguntar depois</string>
+    <string name="main_banner_websocket_button_dismiss">Dispensar</string>
     <string name="add_dialog_title">Inscrever-se no tema</string>
     <string name="add_dialog_description_below">Temas podem não ser protegidos por senha, escolha um nome difícil de adivinhar. Uma vez inscrito, você pode usar as notificações PUT/POST.</string>
     <string name="add_dialog_topic_name_hint">Nome do tema, ex: alertas_jose</string>
@@ -209,7 +208,6 @@
     <string name="main_menu_docs_title">Leia a documentação</string>
     <string name="main_action_mode_menu_unsubscribe">Cancelar inscrição</string>
     <string name="main_unified_push_toast">Essa inscrição é gerenciada por %1$s via UnifiedPush</string>
-    <string name="main_banner_json_stream_text">Altere para WebSockets em Configurações / \"Protocolo de conexão\" para garantir a comunicação com seu servidor hospedado ntfy após Junho de 2022.</string>
     <string name="main_item_status_text_not_one">%1$d notificações</string>
     <string name="main_how_to_intro">Clique no + para criar ou inscrever-se em um tema. Você receberá notificações no seu dispositivo ao enviar mensagens via PUT ou POST.</string>
     <string name="main_banner_battery_button_remind_later">Perguntar depois</string>

@@ -43,6 +43,7 @@ import java.text.DateFormat
 import java.text.StringCharacterIterator
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
@@ -274,6 +275,13 @@ fun randomString(len: Int): String {
     val random = SecureRandom()
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray()
     return (1..len).map { chars[random.nextInt(chars.size)] }.joinToString("")
+}
+
+// Generates a random, positive subscription ID between 0-10M. This ensures that it doesn't have issues
+// when exported to JSON. It uses SecureRandom, because Random causes issues in the emulator (generating the
+// same value again and again), sometimes.
+fun randomSubscriptionId(): Long {
+    return SecureRandom().nextLong().absoluteValue % 100_000_000
 }
 
 // Allows letting multiple variables at once, see https://stackoverflow.com/a/35522422/1440785

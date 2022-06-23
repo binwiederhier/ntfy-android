@@ -18,6 +18,7 @@ data class Subscription(
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
     @ColumnInfo(name = "minPriority") val minPriority: Int,
     @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
+    @ColumnInfo(name = "lastNotificationId") val lastNotificationId: String?, // Used for polling, with since=<id>
     @ColumnInfo(name = "icon") val icon: String?, // content://-URI (or later other identifier)
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
@@ -26,8 +27,8 @@ data class Subscription(
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, icon: String, upAppId: String, upConnectorToken: String) :
-            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, icon, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String) :
+            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -42,6 +43,7 @@ data class SubscriptionWithMetadata(
     val mutedUntil: Long,
     val autoDelete: Long,
     val minPriority: Int,
+    val lastNotificationId: String?,
     val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?,
@@ -144,7 +146,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 11)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 12)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -170,6 +172,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_8_9)
                     .addMigrations(MIGRATION_9_10)
                     .addMigrations(MIGRATION_10_11)
+                    .addMigrations(MIGRATION_11_12)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -259,6 +262,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN icon TEXT")
             }
         }
+
+        private val MIGRATION_11_12 = object : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN lastNotificationId TEXT")
+            }
+        }
     }
 }
 
@@ -266,7 +275,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -279,7 +288,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -292,7 +301,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -305,7 +314,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -318,7 +327,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.icon, s.upAppId, s.upConnectorToken,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -334,6 +343,9 @@ interface SubscriptionDao {
 
     @Update
     fun update(subscription: Subscription)
+
+    @Query("UPDATE subscription SET lastNotificationId = :lastNotificationId WHERE id = :subscriptionId")
+    fun updateLastNotificationId(subscriptionId: Long, lastNotificationId: String)
 
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)

@@ -39,9 +39,8 @@
     <string name="main_banner_battery_button_remind_later">Tanya nanti</string>
     <string name="main_banner_battery_button_dismiss">Abaikan</string>
     <string name="main_banner_battery_button_fix_now">Perbaiki sekarang</string>
-    <string name="main_banner_json_stream_text">Ubah ke WebSockets dalam Pengaturan / \"Protokol koneksi\" sekarang untuk memastikan Anda dapat berkomunikasi dengan server ntfy Anda setelah Juni 2022.</string>
-    <string name="main_banner_json_stream_button_remind_later">Tanya nanti</string>
-    <string name="main_banner_json_stream_button_dismiss">Abaikan</string>
+    <string name="main_banner_websocket_button_remind_later">Tanya nanti</string>
+    <string name="main_banner_websocket_button_dismiss">Abaikan</string>
     <string name="add_dialog_title">Berlangganan ke sebuah topik</string>
     <string name="add_dialog_description_below">Topik mungkin tidak dilindungi oleh kata sandi, jadi pilih sebuah nama yang susah untuk ditebak. Setelah berlangganan, Anda dapat PUT/POST notifikasi.</string>
     <string name="add_dialog_topic_name_hint">Nama topik, mis. pemberitahuan_andi</string>
@@ -223,7 +222,6 @@
     <string name="channel_subscriber_notification_instant_text_more">Berlangganan ke %1$d topik pengiriman instan</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Berlangganan ke empat topik</string>
     <string name="refresh_message_result">%1$d notifikasi diterima</string>
-    <string name="main_banner_json_stream_button_learn_more">Pelajari lebih lanjut</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Berlangganan ke tiga topik</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Berlangganan ke %1$d topik</string>
     <string name="add_dialog_instant_delivery_description">Memastikan pesan dikirim dengan segera, bahkan jika perangkatnya tidak aktif.</string>
@@ -320,4 +318,6 @@
     <string name="detail_settings_notifications_instant_title">Pengiriman instan</string>
     <string name="detail_settings_notifications_instant_summary_off">Notifikasi dikirim menggunakan Firebase. Pengiriman mungkin telat, tetapi mengkonsumsi lebih sedikit baterai.</string>
     <string name="detail_settings_appearance_icon_set_title">Ikon langganan</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Pilih URL layanan</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Hapus URL layanan</string>
 </resources>

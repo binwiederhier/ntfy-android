@@ -14,7 +14,7 @@ class JsonConnection(
     private val repository: Repository,
     private val api: ApiService,
     private val user: User?,
-    private val sinceTime: Long,
+    private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
@@ -25,7 +25,7 @@ class JsonConnection(
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
 
-    private var since: Long = sinceTime
+    private var since: String? = sinceId
     private lateinit var call: Call
     private lateinit var job: Job
 
@@ -39,7 +39,7 @@ class JsonConnection(
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
                 val startTime = System.currentTimeMillis()
                 val notify = notify@ { topic: String, notification: Notification ->
-                    since = notification.timestamp
+                    since = notification.id
                     val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
                     val subscription = repository.getSubscription(subscriptionId) ?: return@notify
                     val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
@@ -81,7 +81,7 @@ class JsonConnection(
         }
     }
 
-    override fun since(): Long {
+    override fun since(): String? {
         return since
     }
 

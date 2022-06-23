@@ -116,6 +116,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         if (maybeExistingNotification != null) {
             return false
         }
+        subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
         return true
     }
@@ -299,13 +300,13 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
-    fun getJsonStreamRemindTime(): Long {
-        return sharedPrefs.getLong(SHARED_PREFS_JSON_STREAM_REMIND_TIME, JSON_STREAM_REMIND_TIME_ALWAYS)
+    fun getWebSocketRemindTime(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_WEBSOCKET_REMIND_TIME, WEBSOCKET_REMIND_TIME_ALWAYS)
     }
 
-    fun setJsonStreamRemindTime(timeMillis: Long) {
+    fun setWebSocketRemindTime(timeMillis: Long) {
         sharedPrefs.edit()
-            .putLong(SHARED_PREFS_JSON_STREAM_REMIND_TIME, timeMillis)
+            .putLong(SHARED_PREFS_WEBSOCKET_REMIND_TIME, timeMillis)
             .apply()
     }
 
@@ -379,6 +380,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
+                lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
@@ -402,6 +404,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             mutedUntil = s.mutedUntil,
             minPriority = s.minPriority,
             autoDelete = s.autoDelete,
+            lastNotificationId = s.lastNotificationId,
             icon = s.icon,
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,
@@ -448,7 +451,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
-        const val SHARED_PREFS_JSON_STREAM_REMIND_TIME = "JsonStreamRemindTime" // Deprecation of JSON stream
+        const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
@@ -483,8 +486,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS = 1L
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER = Long.MAX_VALUE
 
-        const val JSON_STREAM_REMIND_TIME_ALWAYS = 1L
-        const val JSON_STREAM_REMIND_TIME_NEVER = Long.MAX_VALUE
+        const val WEBSOCKET_REMIND_TIME_ALWAYS = 1L
+        const val WEBSOCKET_REMIND_TIME_NEVER = Long.MAX_VALUE
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

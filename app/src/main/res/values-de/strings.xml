@@ -45,8 +45,7 @@
     <string name="main_unified_push_toast">Dieses Abo wird von %1$s per UnifiedPush verwaltet</string>
     <string name="main_banner_battery_text">Batterieoptimierungen sollten für die App deaktiviert sein, um Zustellungsprobleme bei Benachrichtigungen zu vermeiden.</string>
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
-    <string name="main_banner_json_stream_button_remind_later">Später fragen</string>
-    <string name="main_banner_json_stream_button_learn_more">Mehr erfahren</string>
+    <string name="main_banner_websocket_button_remind_later">Später fragen</string>
     <string name="add_dialog_title">Thema abonnieren</string>
     <string name="add_dialog_description_below">Themen sind evtl. nicht kennwort-geschützt, also wähle einen schwer zu erratenden Namen. Nach dem Abonnieren kannst Du Benachrichtigungen POSTen/PUTen.</string>
     <string name="add_dialog_topic_name_hint">Themenname, z.B. phils_alerts</string>
@@ -57,7 +56,7 @@
     <string name="add_dialog_instant_delivery_description">Stellt sicher, dass Benachrichtigungen sofort zugestellt werden, auch wenn das Gerät im Schlafmodus ist.</string>
     <string name="add_dialog_button_cancel">Abbrechen</string>
     <string name="main_banner_battery_button_dismiss">Verwerfen</string>
-    <string name="main_banner_json_stream_button_dismiss">Verwerfen</string>
+    <string name="main_banner_websocket_button_dismiss">Verwerfen</string>
     <string name="add_dialog_login_title">Anmeldung erforderlich</string>
     <string name="add_dialog_login_description">Dieses Thema benötigt eine Anmeldung. Bitte gib Benutzernamen und Kennwort ein.</string>
     <string name="add_dialog_login_password_hint">Kennwort</string>
@@ -238,7 +237,6 @@
     <string name="main_banner_battery_button_remind_later">Später fragen</string>
     <string name="main_action_mode_delete_dialog_message">Vom gewählten Thema abmelden und alle Benachrichtigungen endgültig löschen\?</string>
     <string name="main_how_to_intro">Klicke den + Button zum Erstellen oder Abonnieren eines Themas. Dann erhältst Du Benachrichtigungen auf dem Gerät, wenn Nachrichten per PUT oder POST veröffentlicht werden.</string>
-    <string name="main_banner_json_stream_text">Stelle in Einstellungen das Verbindungsprotokoll auf WebSockets um, damit die App sich auch nach Juni 2022 mit Deinem selbst betriebenen Server verbinden kann.</string>
     <string name="add_dialog_login_error_not_authorized">Anmeldung fehlgeschlagen. Keine Berechtigung für Benutzer %1$s.</string>
     <string name="add_dialog_login_username_hint">Benutzername</string>
     <string name="add_dialog_foreground_description">Sofortnachrichten sind für andere Server als %1$s immer aktiviert.</string>

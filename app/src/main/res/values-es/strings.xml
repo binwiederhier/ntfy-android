@@ -18,7 +18,7 @@
     <string name="channel_subscriber_notification_noinstant_text_more">Suscrito a %1$d tópicos</string>
     <string name="refresh_message_result">%1$d notificación(es) recibida(s)</string>
     <string name="refresh_message_no_results">Todo está actualizado</string>
-    <string name="refresh_message_error">No se pudieron actualizar %1$d suscripciones 
+    <string name="refresh_message_error">No se pudieron actualizar %1$d suscripciones
 \n
 \n%2$s</string>
     <string name="refresh_message_error_one">No se pudo actualizar la suscripción: %1$s</string>
@@ -36,8 +36,7 @@
     <string name="main_banner_battery_text">La optimización de batería debe deshabilitarse para esta app para evitar problemas con la entrega de notificaciones.</string>
     <string name="main_banner_battery_button_remind_later">Preguntar más tarde</string>
     <string name="main_banner_battery_button_fix_now">Corregir ahora</string>
-    <string name="main_banner_json_stream_button_dismiss">Descartar</string>
-    <string name="main_banner_json_stream_button_learn_more">Más información</string>
+    <string name="main_banner_websocket_button_dismiss">Descartar</string>
     <string name="add_dialog_title">Suscribirse al tópico</string>
     <string name="add_dialog_description_below">Los tópicos podrían no estar protegidos por contraseña, así que elija un nombre que sea difícil de adivinar. Una vez suscrito, puede enviar notificaciones con PUT/POST.</string>
     <string name="add_dialog_topic_name_hint">Nombre del tópico, p. ej. phils_alerts</string>
@@ -277,7 +276,7 @@
     <string name="settings_general_dark_mode_summary_light">Modo claro activado</string>
     <string name="settings_backup_restore_restore_summary">Importar configuración, notificaciones y usuarios</string>
     <string name="user_dialog_description_edit">Puede editar el nombre de usuario / contraseña para el usuario seleccionado o eliminarlo.</string>
-    <string name="main_banner_json_stream_button_remind_later">Preguntar más tarde</string>
+    <string name="main_banner_websocket_button_remind_later">Preguntar más tarde</string>
     <string name="add_dialog_foreground_description">La entrega instantánea siempre está habilitada para los hosts que no sean %1$s.</string>
     <string name="add_dialog_login_title">Se requiere inicio de sesión</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Eliminar permanentemente</string>
@@ -289,7 +288,6 @@
     <string name="main_menu_rate_title">Califica la aplicación ⭐</string>
     <string name="main_unified_push_toast">Esta suscripción es gestionada por %1$s a través de UnifiedPush</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
-    <string name="main_banner_json_stream_text">Cambie a WebSockets en Ajustes / \"Protocolo de conexión\" ahora para asegurarse de que puede comunicarse con su servidor autoalojado ntfy después de junio de 2022.</string>
     <string name="add_dialog_use_another_server">Usar otro servidor</string>
     <string name="detail_how_to_link">Instrucciones detalladas están disponibles en ntfy.sh y en la documentación.</string>
     <string name="main_menu_settings_title">Ajustes</string>

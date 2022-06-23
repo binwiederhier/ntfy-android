@@ -16,7 +16,7 @@
     <string name="main_banner_battery_button_remind_later">Vraag later</string>
     <string name="main_banner_battery_button_dismiss">Afwijzen</string>
     <string name="main_banner_battery_button_fix_now">Nu oplossen</string>
-    <string name="main_banner_json_stream_button_remind_later">Vraag later</string>
+    <string name="main_banner_websocket_button_remind_later">Vraag later</string>
     <string name="add_dialog_title">Abonneren op onderwerp</string>
     <string name="add_dialog_login_title">Aanmelden vereist</string>
     <string name="add_dialog_button_back">Terug</string>
@@ -70,7 +70,7 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">Permanent verwijderen</string>
     <string name="main_unified_push_toast">Dit abonnement wordt beheerd door %1$s via UnifiedPush</string>
     <string name="main_banner_battery_text">Batterij optimalisatie zou uitgeschakeld moeten zijn voor deze app om problemen met de bezorging van meldingen te voorkomen.</string>
-    <string name="main_banner_json_stream_button_dismiss">Afwijzen</string>
+    <string name="main_banner_websocket_button_dismiss">Afwijzen</string>
     <string name="user_dialog_button_delete">Gebruiker verwijderen</string>
     <string name="user_dialog_button_cancel">Annuleren</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
@@ -141,10 +141,8 @@
     <string name="add_dialog_login_description">Dit onderwerp vereist dat je inlogt. Gelieve een gebruikersnaam en wachtwoord in te vullen.</string>
     <string name="detail_clear_dialog_message">Verwijder alle notificaties in dit onderwerp\?</string>
     <string name="add_dialog_instant_delivery">Onmiddellijke levering in \"doze\" modus</string>
-    <string name="main_banner_json_stream_text">Schakel nu over naar WebSockets in Instellingen / \"Verbindingsprotocol\" om er zeker van te zijn dat je kunt communiceren met je zelf gehoste ntfy server na juni 2022.</string>
     <string name="add_dialog_description_below">Onderwerpen zijn mogelijk niet beveiligd met een wachtwoord, dus kies een naam die moeilijk te raden is. Eenmaal geabonneerd, kunt u berichten PUT/POST\'en.</string>
     <string name="add_dialog_use_another_server_description">Vul server URLS hieronder in om te abonneren op onderwerpen van andere servers.</string>
-    <string name="main_banner_json_stream_button_learn_more">Leer meer</string>
     <string name="add_dialog_instant_delivery_description">Zorgt ervoor dat berichten onmiddellijk worden afgeleverd, zelfs als het toestel inactief is.</string>
     <string name="add_dialog_login_error_not_authorized">Login gefaald. Gebruiker %1$s is niet geauthoriseerd.</string>
     <string name="detail_no_notifications_text">Je hebt nog geen notificaties voor dit onderwerp ontvangen.</string>

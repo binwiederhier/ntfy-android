@@ -29,8 +29,7 @@
     <string name="main_item_status_reconnecting">kobler til igjen …</string>
     <string name="main_item_date_yesterday">i går</string>
     <string name="main_add_button_description">Legg til abonnement</string>
-    <string name="main_banner_json_stream_button_remind_later">Spør senere</string>
-    <string name="main_banner_json_stream_button_learn_more">Lær mer</string>
+    <string name="main_banner_websocket_button_remind_later">Spør senere</string>
     <string name="add_dialog_title">Abonner på emnet</string>
     <string name="add_dialog_topic_name_hint">Emnenavn, f.eks. halgeirs_varsler</string>
     <string name="add_dialog_use_another_server">Bruk en annen tjener</string>
@@ -41,7 +40,7 @@
     <string name="main_no_subscriptions_text">Abonner på noe først</string>
     <string name="main_banner_battery_text">Batterioptimalisering bør skrus av for å unngå problemer med merknadsleveringen.</string>
     <string name="main_banner_battery_button_dismiss">Avfei</string>
-    <string name="main_banner_json_stream_button_dismiss">Avfei</string>
+    <string name="main_banner_websocket_button_dismiss">Avfei</string>
     <string name="add_dialog_description_below">Det kan hende emner ikke er passordsbeskyttet, så velg et navn som ikke er enkelt å gjette. Når du har abonnert kan du utføre PUT/POST av merknader.</string>
     <string name="add_dialog_use_another_server_description">Du kan abonnere på emner fra en annen tjener. Skriv inn tjener-nettadressen nedenfor.</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
@@ -294,7 +293,6 @@
     <string name="main_how_to_link">Mer detaljert instruks er å finne på ntfy.sh-nettsiden og i dokumentasjonen.</string>
     <string name="main_unified_push_toast">Dette abonnementet håndteres av %1$s via UnifiedPush</string>
     <string name="add_dialog_foreground_description">Umiddelbar levering er alltid påskrudd for andre verter enn %1$s.</string>
-    <string name="main_banner_json_stream_text">Fra Juni 2022 vil Vev-socketer bli brukt til å kommunisere med ntfy-tjenerne. Forsikre deg om at du har satt opp din selvtjente tjener for å støtte det. For å sjekke om vev-socket-støtte fungerer, kan du skru det på i innstillingene under «Tilkoblingsprotokoll».</string>
     <string name="settings_notifications_priority_min">min</string>
     <string name="settings_notifications_priority_low">lav</string>
     <string name="settings_notifications_priority_default">forvalg</string>

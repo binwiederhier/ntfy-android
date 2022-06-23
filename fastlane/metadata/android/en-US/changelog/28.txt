@@ -1,6 +1,11 @@
+Features:
+* Polling is now done with since=<id> API, which makes deduping easier (#165)
+* Turned JSON stream deprecation banner into "Use WebSockets" banner (no ticket)
+
 Bugs:
-* Fixed: Long-click selecting of notifications scrolls to the top (#235, thanks to @wunter8)
+* Long-click selecting of notifications doesn't scoll to the top anymore (#235, thanks to @wunter8)
 * Add attachment and click URL extras to MESSAGE_RECEIVED broadcast (#329, thanks to @wunter8)
+* Accessibility: Clear/choose service URL button in base URL dropdown now has a label (#292, thanks to @mhameed for reporting)
 
 Additional translations:
 * Italian (thanks to @Genio2003)

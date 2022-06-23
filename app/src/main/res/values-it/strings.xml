@@ -36,9 +36,8 @@
     <string name="main_banner_battery_button_remind_later">Chiedi in seguito</string>
     <string name="main_banner_battery_button_dismiss">Abbandona</string>
     <string name="main_banner_battery_button_fix_now">Correggi ora</string>
-    <string name="main_banner_json_stream_text">Passa ora a WebSockets in Impostazioni/\"Protocollo di connessione\" per poter comunicare con il tuo server ntfy selfhosted dopo giugno 2022.</string>
-    <string name="main_banner_json_stream_button_remind_later">Chiedi in seguito</string>
-    <string name="main_banner_json_stream_button_dismiss">Abbandona</string>
+    <string name="main_banner_websocket_button_remind_later">Chiedi in seguito</string>
+    <string name="main_banner_websocket_button_dismiss">Abbandona</string>
     <string name="add_dialog_title">Iscriviti al topic</string>
     <string name="add_dialog_topic_name_hint">Nome del topic, es. phils_alerts</string>
     <string name="add_dialog_use_another_server">Usa un altro server</string>
@@ -193,7 +192,6 @@
     <string name="main_no_subscriptions_text">Sembra che non ci sia nessuna iscrizione al momento.</string>
     <string name="main_menu_report_bug_title">Segnala un bug</string>
     <string name="main_menu_rate_title">Valuta l\'app ⭐</string>
-    <string name="main_banner_json_stream_button_learn_more">Scopri di più</string>
     <string name="add_dialog_description_below">I topic possono essere non protetti da password, per cui scegli un nome che è difficile da indovinare. Una volta iscritti, è possibile effettuare notifiche PUT/POST.</string>
     <string name="add_dialog_instant_delivery_description">Assicura che i messaggi siano consegnati immediatamente, anche se il device non è attivo.</string>
     <string name="add_dialog_login_description">Questo topic richiede il login. Per favore, inserire username e password.</string>

@@ -178,14 +178,8 @@ class SubscriberService : Service() {
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
         val match = activeConnectionIds == desiredConnectionIds
-        val newSinceByBaseUrl = connections
-            .map { e ->
-                // Get last message timestamp to determine new ?since= param; set to $last+1 if it
-                // is defined to avoid retrieving old messages. See comment below too.
-                val lastMessage = e.value.since()
-                val newSince = if (lastMessage > 0) lastMessage+1 else 0
-                e.key.baseUrl to newSince
-            }
+        val sinceByBaseUrl = connections
+            .map { e -> e.key.baseUrl to e.value.since() } // Use since=<id>, avoid retrieving old messages (see comment below)
             .toMap()
 
         Log.d(TAG, "Refreshing subscriptions")
@@ -205,7 +199,7 @@ class SubscriberService : Service() {
             // IMPORTANT: Do NOT request old messages for new connections; we call poll() in MainActivity to
             // retrieve old messages. This is important, so we don't download attachments from old messages.
 
-            val since = newSinceByBaseUrl[connectionId.baseUrl] ?: (System.currentTimeMillis() / 1000)
+            val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { -> isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {

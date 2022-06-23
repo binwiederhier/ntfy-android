@@ -67,10 +67,8 @@
     <string name="add_dialog_title">トピックを購読</string>
     <string name="add_dialog_button_login">ログイン</string>
     <string name="add_dialog_login_error_not_authorized">ログインに失敗しました。ユーザー名 %1$s は許可されていません。</string>
-    <string name="main_banner_json_stream_button_remind_later">後で通知</string>
-    <string name="main_banner_json_stream_button_dismiss">無視</string>
-    <string name="main_banner_json_stream_button_learn_more">詳しく</string>
-    <string name="main_banner_json_stream_text">2022年6月以降もセルフホストのntfyサーバーと通信できるように、設定の「接続プロトコル」をWebSocketsに変更してください。</string>
+    <string name="main_banner_websocket_button_remind_later">後で通知</string>
+    <string name="main_banner_websocket_button_dismiss">無視</string>
     <string name="add_dialog_description_below">トピックはパスワード保護されないので、推測されにくい名前にしてください。購読した後、PUT/POSTで通知を送信できます。</string>
     <string name="add_dialog_instant_delivery">Dozeモードでの即時配信</string>
     <string name="add_dialog_instant_delivery_description">デバイスが非アクティブの状態でもメッセージが即時配信されるようにします。</string>

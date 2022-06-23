@@ -82,7 +82,6 @@
     <string name="main_item_status_reconnecting">свързване…</string>
     <string name="main_no_subscriptions_text">В момента няма абонаменти</string>
     <string name="main_unified_push_toast">Този абонамент се управлява от %1$s чрез UnifiedPush</string>
-    <string name="main_banner_json_stream_button_learn_more">Научете повече</string>
     <string name="add_dialog_button_cancel">Отказ</string>
     <string name="add_dialog_button_subscribe">Абониране</string>
     <string name="add_dialog_button_back">Назад</string>
@@ -99,9 +98,9 @@
     <string name="detail_clear_dialog_permanently_delete">Премахване</string>
     <string name="detail_clear_dialog_cancel">Отказ</string>
     <string name="main_banner_battery_button_remind_later">По-късно</string>
-    <string name="main_banner_json_stream_button_remind_later">По-късно</string>
+    <string name="main_banner_websocket_button_remind_later">По-късно</string>
     <string name="main_banner_battery_button_dismiss">Отхвърляне</string>
-    <string name="main_banner_json_stream_button_dismiss">Отхвърляне</string>
+    <string name="main_banner_websocket_button_dismiss">Отхвърляне</string>
     <string name="main_banner_battery_text">Оптимизирането на батерията трябва да е изключено, за да бъдат избегнати забавяния при получаване на известията.</string>
     <string name="main_banner_battery_button_fix_now">Настройки</string>
     <string name="add_dialog_instant_delivery">Незабавно доставяне в режим на сън</string>
@@ -184,7 +183,6 @@
     <string name="settings_notifications_auto_delete_three_months">След три месеца</string>
     <string name="settings_notifications_auto_delete_one_month">След един месец</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Копиране в междинната памет (цензурирано)</string>
-    <string name="main_banner_json_stream_text">От юни 2022 г. за връзка със сървърите на ntfy ще се използва WebSockets. Не забравяйте да настроите собствения сървър да го поддържа. За да проверите дали поддръжката на WebSocket работи, разрешете я в Настройки, в раздел Протокол за връзка.</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">За свързване със сървъра се използва поток от JSON през HTTP. Методът е остарял и ще бъде премахнат през месец юни 2022 год.</string>
     <string name="detail_test_message">Това е пробно известие от приложението ntfy за Android. То е с приоритет %1$d. Ако изпратите друго, то може да изглежда по различен начин.</string>
     <string name="detail_test_title">Проба: Ако желаете можете да сложите заглавие</string>
@@ -319,4 +317,6 @@
     <string name="detail_settings_notifications_instant_summary_off">Известията се доставят с помощта на Firebase. Доставката може да се забави, но изразходва по-малко батерия.</string>
     <string name="detail_settings_appearance_icon_error_saving">Значката не може да бъде запазена: %1$s</string>
     <string name="detail_settings_global_setting_suffix">от общите настройки</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Изберете адрес на услугата</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Изчистване на адреса на услугата</string>
 </resources>
