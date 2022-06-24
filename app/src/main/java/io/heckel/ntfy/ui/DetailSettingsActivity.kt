@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -298,8 +299,15 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.displayName ?: ""
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { _ ->
-                getString(R.string.detail_settings_appearance_display_name_summary, displayName(subscription), topicShortUrl(subscription.baseUrl, subscription.topic))
+            pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { provider ->
+                if (TextUtils.isEmpty(provider.text)) {
+                    getString(
+                        R.string.detail_settings_appearance_display_name_default_summary,
+                        displayName(subscription)
+                    )
+                } else {
+                    provider.text
+                }
             }
         }
 

@@ -41,7 +41,8 @@
         <EditTextPreference
                 app:key="@string/detail_settings_appearance_display_name_key"
                 app:title="@string/detail_settings_appearance_display_name_title"
-                app:summary="@string/detail_settings_appearance_display_name_summary"
+                app:dialogLayout="@layout/preference_dialog_edittext_edited"
+                app:dialogMessage="@string/detail_settings_appearance_display_name_message"
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 </PreferenceScreen>
