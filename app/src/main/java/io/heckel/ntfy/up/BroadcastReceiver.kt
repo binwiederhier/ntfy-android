@@ -79,6 +79,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     icon = null,
                     upAppId = appId,
                     upConnectorToken = connectorToken,
+                    displayName = null,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000

@@ -55,9 +55,8 @@ class DetailSettingsActivity : AppCompatActivity() {
         }
 
         // Title
-        val baseUrl = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
-        val topic = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
-        title = topicShortUrl(baseUrl, topic)
+        val displayName = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
+        title = displayName
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -108,6 +107,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             loadAutoDeletePref()
             loadIconSetPref()
             loadIconRemovePref()
+            loadDisplayNamePref()
         }
 
         private fun loadInstantPref() {
@@ -273,6 +273,33 @@ class DetailSettingsActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     Log.w(TAG, "Unable to set icon ${subscription.icon}", e)
                 }
+            }
+        }
+
+        private fun loadDisplayNamePref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_display_name_key) ?: return
+            val pref: EditTextPreference? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.text = subscription.displayName
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val displayName: String? = if (value == "") {
+                        null
+                    } else {
+                        value
+                    }
+                    val newSubscription = subscription.copy(displayName = displayName)
+                    save(newSubscription) // TODO: does this need refresh=true?
+                    activity?.runOnUiThread {
+                        activity?.title = displayName(newSubscription)
+                    }
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.displayName ?: ""
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { _ ->
+                getString(R.string.detail_settings_appearance_display_name_summary, displayName(subscription), topicShortUrl(subscription.baseUrl, subscription.topic))
             }
         }
 

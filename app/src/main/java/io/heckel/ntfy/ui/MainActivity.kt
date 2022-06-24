@@ -438,6 +438,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             icon = null,
             upAppId = null,
             upConnectorToken = null,
+            displayName = null,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -509,7 +510,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                         }
                     }
                 } catch (e: Exception) {
-                    val topic = topicShortUrl(subscription.baseUrl, subscription.topic)
+                    val topic = displayName(subscription)
                     if (errorMessage == "") errorMessage = "$topic: ${e.message}"
                     errors++
                 }
@@ -536,6 +537,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscription.id)
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+        intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
         intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
         intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         startActivity(intent)
@@ -662,6 +664,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         const val EXTRA_SUBSCRIPTION_BASE_URL = "subscriptionBaseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "subscriptionTopic"
+        const val EXTRA_SUBSCRIPTION_DISPLAY_NAME = "subscriptionDisplayName"
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
         const val ANIMATION_DURATION = 80L

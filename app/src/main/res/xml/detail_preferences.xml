@@ -38,5 +38,10 @@
                 app:title="@string/detail_settings_appearance_icon_remove_title"
                 app:summary="@string/detail_settings_appearance_icon_remove_summary"
                 app:isPreferenceVisible="false"/>
+        <EditTextPreference
+                app:key="@string/detail_settings_appearance_display_name_key"
+                app:title="@string/detail_settings_appearance_display_name_title"
+                app:summary="@string/detail_settings_appearance_display_name_summary"
+                app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

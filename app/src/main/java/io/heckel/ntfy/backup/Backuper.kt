@@ -100,7 +100,8 @@ class Backuper(val context: Context) {
                     lastNotificationId = s.lastNotificationId,
                     icon = s.icon,
                     upAppId = s.upAppId,
-                    upConnectorToken = s.upConnectorToken
+                    upConnectorToken = s.upConnectorToken,
+                    displayName = s.displayName,
                 ))
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore subscription ${s.id} (${topicUrl(s.baseUrl, s.topic)}): ${e.message}. Ignoring.", e)
@@ -224,7 +225,8 @@ class Backuper(val context: Context) {
                 lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
-                upConnectorToken = s.upConnectorToken
+                upConnectorToken = s.upConnectorToken,
+                displayName = s.displayName
             )
         }
     }
@@ -331,7 +333,8 @@ data class Subscription(
     val lastNotificationId: String?,
     val icon: String?,
     val upAppId: String?,
-    val upConnectorToken: String?
+    val upConnectorToken: String?,
+    val displayName: String?
 )
 
 data class Notification(
