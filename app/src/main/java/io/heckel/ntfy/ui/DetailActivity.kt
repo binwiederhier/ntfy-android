@@ -98,6 +98,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val secure = url.getBooleanQueryParameter("secure", true)
         val baseUrl = if (secure) "https://${url.host}" else "http://${url.host}"
         val topic = url.pathSegments.first()
+        title = topicShortUrl(baseUrl, topic)
 
         // Subscribe to topic if it doesn't already exist
         lifecycleScope.launch(Dispatchers.IO) {
@@ -143,8 +144,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     Toast.makeText(this@DetailActivity, message, Toast.LENGTH_LONG).show()
                 }
             }
-
-            title = displayName(subscription)
 
             // Add extras needed in loadView(); normally these are added in MainActivity
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
