@@ -53,6 +53,10 @@ fun topicUrlAuth(baseUrl: String, topic: String) = "${topicUrl(baseUrl, topic)}/
 fun topicUrlJsonPoll(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?poll=1&since=$since"
 fun topicShortUrl(baseUrl: String, topic: String) = shortUrl(topicUrl(baseUrl, topic))
 
+fun displayName(subscription: Subscription) : String {
+    return subscription.displayName ?: topicShortUrl(subscription.baseUrl, subscription.topic)
+}
+
 fun shortUrl(url: String) = url
     .replace("http://", "")
     .replace("https://", "")
@@ -176,7 +180,7 @@ fun formatTitle(subscription: Subscription, notification: Notification): String 
     return if (notification.title != "") {
         formatTitle(notification)
     } else {
-        topicShortUrl(subscription.baseUrl, subscription.topic)
+        displayName(subscription)
     }
 }
 

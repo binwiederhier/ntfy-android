@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_subscriber_notification_noinstant_text_six">已訂閱6個主題</string>
+    <string name="channel_notifications_default_name">通知(預設優先)</string>
+    <string name="main_menu_report_bug_title">回報bug</string>
+    <string name="channel_subscriber_notification_title">監聽傳入通知</string>
+    <string name="channel_subscriber_notification_instant_text">已訂閱即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_one">已訂閱1個即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_two">已訂閱2個即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_four">已訂閱4個即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_five">已訂閱5個即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_six">已訂閱6個即時推送主題</string>
+    <string name="channel_subscriber_notification_instant_text_more">已訂閱%1$d個即時推送主題</string>
+    <string name="channel_subscriber_notification_noinstant_text">已訂閱主題</string>
+    <string name="refresh_message_result">收到%1$d個通知</string>
+    <string name="refresh_message_no_results">已同步到最新</string>
+    <string name="refresh_message_error">有%1$d個訂閱無法更新
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">訂閱無法更新:%1$s</string>
+    <string name="main_action_bar_title">已訂閱主題</string>
+    <string name="main_menu_notifications_enabled">通知已開啟</string>
+    <string name="main_menu_notifications_disabled_forever">通知已靜音</string>
+    <string name="main_menu_settings_title">設定</string>
+    <string name="main_menu_rate_title">幫我們評個分⭐</string>
+    <string name="main_action_mode_menu_unsubscribe">取消訂閱</string>
+    <string name="main_action_mode_delete_dialog_message">取消訂閱已選取的主題且永久刪除所有通知？</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">永久刪除</string>
+    <string name="main_action_mode_delete_dialog_cancel">取消</string>
+    <string name="main_item_status_text_one">%1$d個通知</string>
+    <string name="main_item_status_text_not_one">%1$d個通知</string>
+    <string name="main_item_date_yesterday">昨天</string>
+    <string name="main_add_button_description">新增訂閱</string>
+    <string name="main_no_subscriptions_text">看來你還沒有訂閱任何主題。</string>
+    <string name="main_how_to_intro">點擊 + 來新增或訂閱一個主題。當透過 PUT 或 POST 來發送訊息你將會接收到通知。</string>
+    <string name="main_how_to_link">更多資訊請上 ntfy.sh，docs會有更多說明。</string>
+    <string name="main_unified_push_toast">此訂閱已由 %1$s 透過 UnifiedPush 管理</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_banner_battery_text">為了避免通知傳送問題，電池最佳化必須關閉。</string>
+    <string name="main_banner_battery_button_remind_later">稍後詢問我</string>
+    <string name="main_banner_battery_button_dismiss">略過</string>
+    <string name="main_banner_battery_button_fix_now">立即修正</string>
+    <string name="main_banner_websocket_button_remind_later">稍後詢問我</string>
+    <string name="main_banner_websocket_button_dismiss">略過</string>
+    <string name="main_banner_websocket_button_enable_now">立即啟用</string>
+    <string name="add_dialog_title">訂閱主題</string>
+    <string name="add_dialog_description_below">因為主題不能受密碼保護，請盡量取一個難以猜測的主題名稱。在訂閱之後你就可以使用 PUT/POST 來發送通知。</string>
+    <string name="add_dialog_use_another_server">使用其他伺服器</string>
+    <string name="add_dialog_use_another_server_description">在下方輸入自訂的網址來訂閱主題。</string>
+    <string name="channel_notifications_min_name">通知(最低優先)</string>
+    <string name="channel_notifications_low_name">通知(低優先)</string>
+    <string name="channel_notifications_high_name">通知(高優先)</string>
+    <string name="channel_notifications_max_name">通知(最高優先)</string>
+    <string name="channel_subscriber_service_name">訂閱服務</string>
+    <string name="channel_subscriber_notification_instant_text_three">已訂閱3個即時推送主題</string>
+    <string name="main_menu_docs_title">閱讀文件</string>
+    <string name="main_banner_websocket_text">建議使用 WebSockets 來連線你的伺服器，此動作可以有效增加電池續航，但需要<a href="https://ntfy.sh/docs/config/#nginxapache2caddy">對proxy進行更多設定</a>。這個動作可以在設定中進行。</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">已訂閱3個主題</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">已訂閱%1$d個主題</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">已訂閱1個主題</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">已訂閱2個主題</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">已訂閱4個主題</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">已訂閱5個主題</string>
+    <string name="main_item_status_reconnecting">重新連線中 …</string>
+    <string name="main_menu_notifications_disabled_until">通知靜音到%1$s</string>
+    <string name="add_dialog_topic_name_hint">主題名稱(例如:phils_alerts)</string>
+</resources>

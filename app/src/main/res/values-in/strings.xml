@@ -198,8 +198,8 @@
     <string name="settings_advanced_clear_logs_summary">Hapus catatan yang direkam sebelumnya, dan mulai ulang</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Catatan dihapus</string>
     <string name="settings_advanced_connection_protocol_title">Protokol koneksi</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Gunakan aliran JSON melalui HTTP untuk menghubungkan ke server. Mode ini usang dan akan dihilangkan di Juni 2022.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Gunakan WebSockets untuk menghubungkan ke server. Ini adalah sebagai bawaan di Juni 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Gunakan aliran JSON melalui HTTP untuk menyambung ke server. Metode ini sudah teruji, tetapi mungkin menghabiskan lebih banyak baterai.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Gunakan WebSockets untuk menyambung ke server. Ini adalah metode yang disarankan, tetapi mungkin memerlukan konfigurasi tambahan dalam proksi Anda.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Aliran JSON melalui HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">Tentang</string>
@@ -306,8 +306,7 @@
     <string name="channel_subscriber_notification_instant_text_six">Berlangganan ke enam topik pengiriman instan</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Berlangganan ke lima topik</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Berlangganan ke enam topik</string>
-    <string name="detail_settings_notifications_instant_summary_on">Notifikasi dikirim secara instan.
-\nMembutuhkan sebuah layanan latar depan dan mengkonsumsi lebih banyak baterai.</string>
+    <string name="detail_settings_notifications_instant_summary_on">Notifikasi dikirim secara instan. Membutuhkan sebuah layanan latar depan dan mengkonsumsi lebih banyak baterai.</string>
     <string name="detail_settings_appearance_header">Tampilan</string>
     <string name="detail_settings_appearance_icon_set_summary">Tetapkan sebuah ikon untuk ditampilkan di notifikasi</string>
     <string name="detail_settings_appearance_icon_remove_title">Ikon langganan (ketuk untuk menghapus)</string>
@@ -320,4 +319,6 @@
     <string name="detail_settings_appearance_icon_set_title">Ikon langganan</string>
     <string name="add_dialog_base_urls_dropdown_choose">Pilih URL layanan</string>
     <string name="add_dialog_base_urls_dropdown_clear">Hapus URL layanan</string>
+    <string name="main_banner_websocket_text">Beralih ke WebSockets adalah cara yang disarankan untuk terhubung ke server Anda, dan dapat meningkatkan masa pakai baterai, tetapi mungkin memerlukan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">konfigurasi tambahan di proksi Anda</a>. Ini dapat diubah di Pengaturan.</string>
+    <string name="main_banner_websocket_button_enable_now">Aktifkan sekarang</string>
 </resources>

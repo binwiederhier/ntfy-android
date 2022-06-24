@@ -241,8 +241,8 @@
     <string name="settings_advanced_export_logs_copied_url">日志已上传，URL 已复制到剪贴板</string>
     <string name="settings_advanced_export_logs_error_uploading">无法上传日志：%1$s</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">确认</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">使用通过 HTTP 传输的 JSON 数据流。该方式已废弃并将在 2022 年 6 月移除。</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">使用 WebSockets 连接到服务器。该方式将在 2022 年 6 月成为默认选项。</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">使用通过 HTTP 传输的 JSON 数据流来连接至服务器。该方式经过实战检验但可能消耗更多电量。</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">使用 WebSockets 连接到服务器。这是推荐的方法，但可能需要在你的代理中进行额外配置。</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">HTTP 传输的 JSON 数据流</string>
     <string name="settings_about_header">关于</string>
     <string name="notification_popup_file_downloading">下载中 %1$s, %2$d%%
@@ -317,4 +317,5 @@
     <string name="detail_settings_appearance_icon_error_saving">无法保存图标：%1$s</string>
     <string name="detail_settings_global_setting_title">使用全局设置</string>
     <string name="detail_settings_global_setting_suffix">使用全局设置</string>
+    <string name="add_dialog_base_urls_dropdown_choose">选择服务 URL</string>
 </resources>
