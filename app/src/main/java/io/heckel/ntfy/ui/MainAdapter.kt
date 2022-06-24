@@ -20,7 +20,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.readBitmapFromUriOrNull
-import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.util.displayName
 import java.text.DateFormat
 import java.util.*
 
@@ -101,7 +101,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             if (subscription.icon != null) {
                 imageView.setImageBitmap(subscription.icon.readBitmapFromUriOrNull(context))
             }
-            nameView.text = topicShortUrl(subscription.baseUrl, subscription.topic)
+            nameView.text = displayName(subscription)
             statusView.text = statusMessage
             dateView.text = dateText
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE

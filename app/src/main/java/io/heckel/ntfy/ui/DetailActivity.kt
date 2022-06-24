@@ -54,6 +54,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private var subscriptionId: Long = 0L // Set in onCreate()
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
+    private var subscriptionDisplayName: String = "" // Set in onCreate() & updated by options menu!
     private var subscriptionInstant: Boolean = false // Set in onCreate() & updated by options menu!
     private var subscriptionMutedUntil: Long = 0L // Set in onCreate() & updated by options menu!
 
@@ -116,6 +117,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     icon = null,
                     upAppId = null,
                     upConnectorToken = null,
+                    displayName = null,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
@@ -147,6 +149,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
 
@@ -161,13 +164,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         subscriptionId = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, 0)
         subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         subscriptionTopic = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
+        subscriptionDisplayName = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
         subscriptionInstant = intent.getBooleanExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, false)
         subscriptionMutedUntil = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, 0L)
 
         // Set title
         val subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         val topicUrl = topicShortUrl(subscriptionBaseUrl, subscriptionTopic)
-        title = topicUrl
+        title = subscriptionDisplayName
 
         // Set "how to instructions"
         val howToExample: TextView = findViewById(R.id.detail_how_to_example)
@@ -263,9 +267,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
             subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
+            subscriptionDisplayName = displayName(subscription)
 
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
+            updateTitle(subscriptionDisplayName)
         }
     }
 
@@ -543,6 +549,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
+    private fun updateTitle(subscriptionDisplayName: String) {
+        runOnUiThread {
+            title = subscriptionDisplayName
+        }
+    }
+
     private fun onClearClick() {
         Log.d(TAG, "Clearing all notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
@@ -571,6 +583,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscriptionId)
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscriptionBaseUrl)
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscriptionTopic)
+        intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, subscriptionDisplayName)
         startActivity(intent)
     }
 
@@ -747,5 +760,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         const val EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         const val EXTRA_SUBSCRIPTION_BASE_URL = "baseUrl"
         const val EXTRA_SUBSCRIPTION_TOPIC = "topic"
+        const val EXTRA_SUBSCRIPTION_DISPLAY_NAME = "displayName"
     }
 }

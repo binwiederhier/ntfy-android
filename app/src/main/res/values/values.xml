@@ -36,6 +36,7 @@
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
     <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
     <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
+    <string name="detail_settings_appearance_display_name_key" translatable="false">SubscriptionDisplayName</string>
 
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">
