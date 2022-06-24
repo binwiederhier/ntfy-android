@@ -1,0 +1,17 @@
+Kirim notifikasi ke ponsel Anda dari skrip Bash atau PowerShell, atau dari aplikasi Anda sendiri menggunakan permintaan PUT/POST, misalnya melalui curl di Linux atau Invoke-WebRequest.
+
+ntfy adalah klien Android untuk https://ntfy.sh, sebuah layanan pub-sub berbasis HTTP bebas dan sumber terbuka. Anda dapat berlangganan topik di aplikasi ini, dan kemudian mempublikasikan pesan melalui HTTP API sederhana.
+
+Kegunaan:
+* Memberitahu diri Anda sendiri saat proses yang berjalan lama selesai
+* Ping ponsel Anda ketika pencadangan gagal
+* Memberi peringatan ketika seseorang masuk ke server Anda
+
+Contoh:
+
+$ curl -d "Pencadangan Anda telah selesai" ntfy.sh/topiksaya
+
+Temukan lebih banyak contoh dan instruksi penggunaan di sini:
+* Situs web: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (aplikasi Android): https://github.com/binwiederhier/ntfy-android

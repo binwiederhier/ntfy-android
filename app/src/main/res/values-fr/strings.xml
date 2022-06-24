@@ -286,8 +286,8 @@
     <string name="settings_advanced_export_logs_copied_logs">Journaux copiés dans le presse-papier</string>
     <string name="settings_advanced_export_logs_summary">Copier les journaux dans le presse-papier ou les télécharger sur nopaste.net (détenu par l\'auteur de ntfy). Les noms d\'hôtes et les sujets peuvent être censurés, les notifications ne le seront jamais.</string>
     <string name="settings_advanced_export_logs_copied_url">Journaux téléchargés et URL copiée</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Utiliser un flux JSON en HTTP pour se connecter au serveur. Cette méthode est dépréciée et sera retirée en juin 2022.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Utiliser des WebSockets pour se connecter au serveur. Cela deviendra la valeur par défaut en juin 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Utiliser un flux JSON en HTTP pour se connecter au serveur. Cette méthode est éprouvée, mais peut consommer plus de batterie.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Utiliser des WebSockets pour se connecter au serveur. Il s\'agit de la méthode recommandée, mais peut requérir une configuration supplémentaire de votre proxy.</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copié dans le presse-papier</string>
     <string name="settings_advanced_record_logs_title">Enregistrer les journaux</string>
     <string name="user_dialog_description_add">Vous pouvez ajouter un utilisateur ici. Tous les sujets du serveur sélectionné utiliseront cet utilisateur.</string>
@@ -317,4 +317,8 @@
     <string name="detail_settings_appearance_icon_set_summary">Choisir une icône à afficher pour les notifications</string>
     <string name="detail_settings_global_setting_title">Utiliser le paramètre global</string>
     <string name="detail_settings_global_setting_suffix">utilisation du paramètre global</string>
+    <string name="main_banner_websocket_text">Il est recommandé d\'utiliser les WebSockets pour vous connecter à votre serveur, ce qui peut également économiser la batterie, mais peut requérir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">une configuration additionnelle de votre proxy</a>. Cela peut être changé dans les paramètres.</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Choisir l\'URL du service</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Supprimer l\'URL du service</string>
+    <string name="main_banner_websocket_button_enable_now">Activer maintenant</string>
 </resources>

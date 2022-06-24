@@ -174,7 +174,7 @@
     <string name="settings_general_users_prefs_user_add_title">Добавяне на потребител</string>
     <string name="settings_advanced_header">Разширени</string>
     <string name="user_dialog_button_cancel">Отказ</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Използвайте WebSockets за свързване със сървъра. Това е експериментална възможност. Дайте ни обратна връзка дали се изразходва по-малко батерия или е нестабилна.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Използва се WebSockets за свързване със сървъра. Това е препоръчителния метод, но могат да се наложат настройки на сървъра за прокси.</string>
     <string name="settings_advanced_export_logs_title">Копиране или изпращане на дневник</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Копиране в междинната памет</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">Добре</string>
@@ -183,7 +183,7 @@
     <string name="settings_notifications_auto_delete_three_months">След три месеца</string>
     <string name="settings_notifications_auto_delete_one_month">След един месец</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Копиране в междинната памет (цензурирано)</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">За свързване със сървъра се използва поток от JSON през HTTP. Методът е остарял и ще бъде премахнат през месец юни 2022 год.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">За свързване със сървъра се използва поток от JSON през HTTP. Методът е изпитан, но може да използва повече батерия.</string>
     <string name="detail_test_message">Това е пробно известие от приложението ntfy за Android. То е с приоритет %1$d. Ако изпратите друго, то може да изглежда по различен начин.</string>
     <string name="detail_test_title">Проба: Ако желаете можете да сложите заглавие</string>
     <string name="detail_test_message_error_unauthorized_user">Грешка при изпращане: Потребителят „%1$s“ няма достъп.</string>
@@ -319,4 +319,6 @@
     <string name="detail_settings_global_setting_suffix">от общите настройки</string>
     <string name="add_dialog_base_urls_dropdown_choose">Изберете адрес на услугата</string>
     <string name="add_dialog_base_urls_dropdown_clear">Изчистване на адреса на услугата</string>
+    <string name="main_banner_websocket_text">WebSockets е препоръчителния начин за свързване с услугата и може да подобри използването на батерията, но могат да се наложат <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">допълнителни настройки на сървъра за прокси</a>. Промяната може да бъде направена в настройките.</string>
+    <string name="main_banner_websocket_button_enable_now">Включване</string>
 </resources>
