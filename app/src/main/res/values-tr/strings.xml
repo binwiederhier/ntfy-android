@@ -321,4 +321,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">Hizmet URL\'sini seç</string>
     <string name="main_banner_websocket_button_enable_now">Şimdi etkinleştir</string>
     <string name="main_banner_websocket_text">WebSockets\'e geçmek sunucunuza bağlanmak için tavsiye edilen yoldur ve pil ömrünü artırabilir, ancak <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">vekilinizde ek yapılandırma</a> gerektirebilir. Bu, ayarlardan değiştirilebilir.</string>
+    <string name="detail_settings_appearance_display_name_title">Görünen ad</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (öntanımlı)</string>
+    <string name="detail_settings_appearance_display_name_message">Bu abonelik için özel bir görünen ad belirleyin. Öntanımlı değer için boş bırakın.</string>
 </resources>
