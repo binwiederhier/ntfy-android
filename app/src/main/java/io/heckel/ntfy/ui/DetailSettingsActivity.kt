@@ -282,6 +282,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             val pref: EditTextPreference? = findPreference(prefId)
             pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
             pref?.text = subscription.displayName
+            pref?.dialogMessage = getString(R.string.detail_settings_appearance_display_name_message, topicShortUrl(subscription.baseUrl, subscription.topic))
             pref?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
                     val displayName: String? = if (value == "") {
