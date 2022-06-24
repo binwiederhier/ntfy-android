@@ -290,7 +290,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                         value
                     }
                     val newSubscription = subscription.copy(displayName = displayName)
-                    save(newSubscription) // TODO: does this need refresh=true?
+                    save(newSubscription)
                     activity?.runOnUiThread {
                         activity?.title = displayName(newSubscription)
                     }
