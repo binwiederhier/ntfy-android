@@ -321,4 +321,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Hapus URL layanan</string>
     <string name="main_banner_websocket_text">Beralih ke WebSockets adalah cara yang disarankan untuk terhubung ke server Anda, dan dapat meningkatkan masa pakai baterai, tetapi mungkin memerlukan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">konfigurasi tambahan di proksi Anda</a>. Ini dapat diubah di Pengaturan.</string>
     <string name="main_banner_websocket_button_enable_now">Aktifkan sekarang</string>
+    <string name="detail_settings_appearance_display_name_title">Nama tampilan</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (bawaan)</string>
+    <string name="detail_settings_appearance_display_name_message">Tetapkan sebuah nama tampilan kustom untuk langganan ini. Tinggalkan kosong untuk bawaan (%1$s).</string>
 </resources>
