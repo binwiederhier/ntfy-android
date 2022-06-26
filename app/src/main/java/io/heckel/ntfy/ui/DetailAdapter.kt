@@ -5,12 +5,10 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.allViews
-import androidx.core.view.marginLeft
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +34,6 @@ import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
-import java.lang.Integer.min
 
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
@@ -217,14 +212,10 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun createCardButton(context: Context, label: String, onClick: () -> Boolean): View {
-            val layoutParams = ConstraintLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            layoutParams.setMargins(0, 0, 0, 0)
-
-            val button = MaterialButton(context, null, R.attr.materialButtonOutlinedStyle)
+            // See https://stackoverflow.com/a/41139179/1440785
+            val button = LayoutInflater.from(context).inflate(R.layout.button_action, null) as MaterialButton
             button.id = View.generateViewId()
-            button.layoutParams = layoutParams
             button.text = label
-            button.setPadding(0, 0,0,0)
             button.setOnClickListener { onClick() }
             return button
         }

@@ -25,7 +25,7 @@
             android:orientation="horizontal"
             android:background="?android:attr/selectableItemBackground"
             android:focusable="true"
-            android:paddingBottom="7dp" android:paddingTop="7dp">
+            android:paddingBottom="6dp" android:paddingTop="6dp">
         <TextView
                 android:text="Sun, October 31, 2021, 10:43:12"
                 android:layout_width="wrap_content"
@@ -112,7 +112,6 @@
                 android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@id/detail_item_tags_text"
                 android:id="@+id/detail_item_attachment_file_box" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="12dp" android:layout_marginEnd="12dp"
-                app:layout_constraintBottom_toTopOf="@id/detail_item_padding_bottom"
                 android:visibility="visible" android:layout_marginTop="2dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true" android:focusable="true" android:padding="4dp" android:paddingStart="0dp">
@@ -136,54 +135,63 @@
                     app:layout_constraintTop_toTopOf="@+id/detail_item_attachment_file_icon"
                     app:layout_constraintBottom_toBottomOf="@+id/detail_item_attachment_file_icon"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="5dp" android:id="@+id/detail_item_padding_bottom"
-                app:layout_constraintBottom_toTopOf="@+id/detail_item_actions_wrapper" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_file_box"/>
-
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@id/detail_item_padding_bottom"
-                android:id="@+id/detail_item_actions_wrapper" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/detail_item_attachment_file_box"
+                android:id="@+id/detail_item_actions_wrapper"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="4dp"
                 android:visibility="gone"
-                android:padding="0dp" android:layout_marginStart="12dp">
+                android:padding="0dp" android:layout_marginStart="4dp" android:layout_marginTop="4dp">
 
-            <Button
-                    android:text="Open Bing"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/button2" tools:layout_editor_absoluteY="4dp" tools:layout_editor_absoluteX="171dp" android:textSize="14sp" android:padding="0dp" android:layout_margin="0dp" tools:visibility="visible"/>
             <com.google.android.material.button.MaterialButton
-                    android:text="Show me Google"
+                    android:text="Bing it"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/button2" tools:layout_editor_absoluteY="4dp" tools:layout_editor_absoluteX="171dp" android:textSize="14sp" tools:visibility="visible"/>
+            <com.google.android.material.button.MaterialButton
+                    android:text="Google it"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/button3" tools:visibility="visible" tools:layout_editor_absoluteY="52dp" tools:layout_editor_absoluteX="4dp" android:textSize="14sp"/>
             <com.google.android.material.button.MaterialButton
-                    android:text="Open DuckDuckGo"
+                    android:text="DuckDuckGo it"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/button1" tools:visibility="visible" tools:layout_editor_absoluteY="4dp" tools:layout_editor_absoluteX="4dp" android:textSize="14sp" android:padding="0dp" android:layout_margin="0dp"/>
+                    android:layout_height="wrap_content" android:id="@+id/button1" tools:visibility="visible" tools:layout_editor_absoluteY="4dp" tools:layout_editor_absoluteX="4dp" android:textSize="14sp" android:layout_margin="0dp"/>
             <androidx.constraintlayout.helper.widget.Flow
+                    android:id="@+id/detail_item_actions_flow"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:id="@+id/detail_item_actions_flow"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:flow_wrapMode="chain"
+                    app:flow_wrapMode="chain2"
                     app:flow_horizontalStyle="packed"
-                    app:flow_horizontalBias="0"
                     app:flow_verticalBias="0"
                     app:flow_verticalGap="0dp"
-                    app:flow_horizontalGap="0dp"
                     app:flow_verticalStyle="packed"
+                    app:flow_verticalAlign="top"
+                    app:flow_horizontalBias="0"
+                    app:flow_horizontalGap="0dp"
+                    app:flow_horizontalAlign="start"
+                    app:flow_firstHorizontalBias="0"
+                    app:flow_firstVerticalBias="0"
+                    app:flow_firstHorizontalStyle="packed"
+                    app:flow_firstVerticalStyle="packed"
+                    app:flow_maxElementsWrap="1"
                     android:layout_margin="0dp"
                     android:padding="0dp"
                     app:constraint_referenced_ids="button1,button2,button3"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:id="@+id/detail_item_padding_bottom"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detail_item_actions_wrapper" app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

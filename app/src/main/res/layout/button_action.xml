@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        style="?attr/borderlessButtonStyle"
+        android:id="@+id/button"
+        android:text="Button"
+        android:layout_margin="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:insetBottom="0dp"
+        android:insetTop="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textSize="14sp"
+/>
