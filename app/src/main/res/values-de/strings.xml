@@ -321,4 +321,7 @@
     <string name="main_banner_websocket_button_enable_now">Jetzt aktivieren</string>
     <string name="add_dialog_base_urls_dropdown_choose">Service-URL wählen</string>
     <string name="add_dialog_base_urls_dropdown_clear">Service-URL löschen</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (Standard)</string>
+    <string name="detail_settings_appearance_display_name_title">Anzeigename</string>
+    <string name="detail_settings_appearance_display_name_message">Gib einen eigenen Anzeigenamen für diese Abo an. Leer lassen für den Standardwert (%1$s).</string>
 </resources>
