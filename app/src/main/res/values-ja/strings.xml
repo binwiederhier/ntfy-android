@@ -5,8 +5,8 @@
     <string name="detail_menu_notifications_enabled">通知オン</string>
     <string name="settings_notifications_auto_download_summary_never">添付ファイルは自動的にダウンロードしない</string>
     <string name="settings_notifications_auto_download_never">自動ダウンロードしない</string>
-    <string name="settings_notifications_auto_download_5m">5MB未満の場合</string>
-    <string name="settings_notifications_auto_download_10m">10MB未満の場合</string>
+    <string name="settings_notifications_auto_download_5m">5MB未満はダウンロード</string>
+    <string name="settings_notifications_auto_download_10m">10MB未満はダウンロード</string>
     <string name="settings_notifications_auto_delete_one_day">1日後</string>
     <string name="settings_notifications_auto_delete_three_days">3日後</string>
     <string name="settings_notifications_auto_delete_one_week">1週間後</string>
@@ -37,7 +37,7 @@
     <string name="refresh_message_error">%1$d件の購読を更新できませんでした
 \n
 \n%2$s</string>
-    <string name="main_action_bar_title">トピックを購読しました</string>
+    <string name="main_action_bar_title">購読したトピック</string>
     <string name="channel_subscriber_notification_instant_text_four">即時配信トピックを4件購読しています</string>
     <string name="channel_subscriber_notification_noinstant_text_one">トピックを1件購読しています</string>
     <string name="main_menu_notifications_enabled">通知オン</string>
@@ -83,7 +83,7 @@
     <string name="add_dialog_login_description">このトピックはログインする必要があります。ユーザー名とパスワードを入力してください。</string>
     <string name="detail_test_message_error">メッセージを送信できませんでした: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">メッセージを送信できませんでした: 匿名送信は許可されていません。</string>
-    <string name="detail_no_notifications_text">このトピックの通知はまだ受信していません。</string>
+    <string name="detail_no_notifications_text">このトピックの通知をまだ受信していません。</string>
     <string name="detail_how_to_link">詳細な説明は ntfy.sh またはドキュメントを参照してください。</string>
     <string name="detail_clear_dialog_permanently_delete">完全に削除</string>
     <string name="detail_delete_dialog_message">このトピックの購読を解除して受信した通知をすべて削除しますか？</string>
@@ -166,7 +166,7 @@
     <string name="notification_dialog_title">通知をミュート</string>
     <string name="share_suggested_topics">提案されたトピック</string>
     <string name="notification_dialog_muted_forever_toast_message">通知をミュートしました</string>
-    <string name="notification_dialog_30min">30分</string>
+    <string name="notification_dialog_30min">30分間</string>
     <string name="notification_dialog_8h">8時間</string>
     <string name="notification_dialog_tomorrow">明日まで</string>
     <string name="notification_popup_action_download">ダウンロード</string>
@@ -179,7 +179,7 @@
     <string name="notification_popup_file_downloading">%1$sをダウンロード中、%2$d%%
 \n%3$s</string>
     <string name="main_menu_notifications_disabled_forever">通知をミュート</string>
-    <string name="settings_notifications_muted_until_forever">再開されるまで通知はミュート中</string>
+    <string name="settings_notifications_muted_until_forever">再開されるまで通知ミュート中</string>
     <string name="notification_popup_file">%1$s
 \nファイル: %2$s</string>
     <string name="notification_popup_file_download_successful">%1$s
@@ -195,17 +195,17 @@
     <string name="settings_notifications_priority_max">最高</string>
     <string name="settings_notifications_auto_download_summary_always">全ての添付ファイルを自動的にダウンロード</string>
     <string name="settings_notifications_min_priority_max">優先度最高のみ</string>
-    <string name="settings_notifications_auto_download_summary_smaller_than_x">最大%1$s件まで自動的にダウンロード</string>
-    <string name="settings_notifications_auto_download_100k">100kB未満の場合</string>
-    <string name="settings_notifications_auto_download_500k">500kB未満の場合</string>
-    <string name="settings_notifications_auto_download_1m">1MB未満の場合</string>
+    <string name="settings_notifications_auto_download_summary_smaller_than_x">最大%1$sまで自動的にダウンロード</string>
+    <string name="settings_notifications_auto_download_100k">100kB未満はダウンロード</string>
+    <string name="settings_notifications_auto_download_500k">500kB未満はダウンロード</string>
+    <string name="settings_notifications_auto_download_1m">1MB未満はダウンロード</string>
     <string name="settings_notifications_min_priority_default">優先度通常 およびそれ以上</string>
     <string name="settings_general_users_prefs_user_not_used">どのトピックにも使用されていません</string>
     <string name="settings_notifications_auto_delete_three_months">3か月後</string>
-    <string name="settings_general_dark_mode_summary_dark">ダークモード有効。もしかして吸血鬼？</string>
+    <string name="settings_general_dark_mode_summary_dark">ダークモード有効。もしかして吸血鬼ですか？</string>
     <string name="settings_notifications_auto_download_title">添付ファイルのダウンロード</string>
     <string name="settings_notifications_auto_download_always">全てを自動ダウンロードする</string>
-    <string name="settings_notifications_auto_download_50m">50MB未満の場合</string>
+    <string name="settings_notifications_auto_download_50m">50MB未満はダウンロード</string>
     <string name="settings_notifications_auto_delete_summary_never">通知を自動的に削除しない</string>
     <string name="settings_notifications_auto_delete_title">通知を削除</string>
     <string name="settings_notifications_auto_delete_summary_one_month">1か月後に通知を自動削除する</string>
@@ -269,7 +269,7 @@
     <string name="settings_advanced_export_logs_copied_logs">ログをクリップボードにコピーしました</string>
     <string name="settings_advanced_export_logs_error_uploading">ログをアップロードできませんでした: %1$s</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">トピック名/ホスト名は編集されていません。ひとつも購読していませんか？</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">サーバーへの接続にWebSocketsを使用します。2022年6月からはデフォルト設定になります。</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">サーバーへの接続にWebSocketsを使用します。推奨されるメソッドですが、プロキシに追加設定を必要とします。</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_title_edit">ユーザーを編集</string>
@@ -282,7 +282,7 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_clear_logs_summary">これまで記録されたログを消去し、再開します</string>
     <string name="settings_advanced_clear_logs_deleted_toast">ログが削除されました</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">サーバーへの接続に JSON stream over HTTP を使用します。このメソッドは非推奨で、2022年6月に削除されます。</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">サーバーへの接続に JSON stream over HTTP を使用します。このメソッドは様々な場面で使われていますが、バッテリーをより多く消費します。</string>
     <string name="settings_about_version_copied_to_clipboard_message">クリップボードにコピーしました</string>
     <string name="user_dialog_title_add">ユーザーを追加</string>
     <string name="user_dialog_description_edit">選択されたユーザーのユーザー名/パスワードを変更または削除できます。</string>
@@ -317,4 +317,11 @@
     <string name="detail_settings_notifications_instant_summary_off">通知はFirebaseを用いて配信されます。配信が遅延する事がありますが、バッテリーの消費は抑えられます。</string>
     <string name="detail_settings_appearance_icon_set_summary">通知に表示されるアイコンを指定します</string>
     <string name="channel_subscriber_notification_noinstant_text_five">トピックを5件購読しています</string>
+    <string name="detail_settings_appearance_display_name_title">表示名</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (デフォルト)</string>
+    <string name="detail_settings_appearance_display_name_message">この購読のカスタム表示名を設定します。空欄でデフォルト (%1$s) が表示されます。</string>
+    <string name="add_dialog_base_urls_dropdown_choose">サービスURLを選択</string>
+    <string name="add_dialog_base_urls_dropdown_clear">サービスURLをクリア</string>
+    <string name="main_banner_websocket_text">WebSocketへの切り替えはサーバーへの接続方法として推奨され、バッテリー寿命を改善できる可能性がありますが、<a href="https://ntfy.sh/docs/config/#nginxapache2caddy">プロクシへの追加設定</a>が必要となります。設定から切り替えることができます。</string>
+    <string name="main_banner_websocket_button_enable_now">今すぐ有効化</string>
 </resources>
