@@ -30,13 +30,17 @@
     <string name="settings_about_version_key" translatable="false">Version</string>
 
     <!-- Detail settings constants -->
+    <string name="detail_settings_notifications_header_key" translatable="false">SubscriptionNotifications</string>
     <string name="detail_settings_notifications_instant_key" translatable="false">SubscriptionInstant</string>
     <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
+    <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
     <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
     <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
     <string name="detail_settings_appearance_display_name_key" translatable="false">SubscriptionDisplayName</string>
+    <string name="detail_settings_about_header_key" translatable="false">SubscriptionAbout</string>
+    <string name="detail_settings_about_topic_url_key" translatable="false">SubscriptionTopicURL</string>
 
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">

@@ -358,6 +358,9 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (default)</string>
     <string name="detail_settings_global_setting_title">Use global setting</string>
     <string name="detail_settings_global_setting_suffix">using global setting</string>
+    <string name="detail_settings_about_header">About</string>
+    <string name="detail_settings_about_topic_url_title">Topic URL</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>
