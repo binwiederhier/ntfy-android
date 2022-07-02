@@ -469,7 +469,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private fun onSubscriptionItemClick(subscription: Subscription) {
         if (actionMode != null) {
             handleActionModeClick(subscription)
-        } else if (subscription.upAppId != null) { // Not UnifiedPush
+        } else if (subscription.upAppId != null) { // UnifiedPush
             startDetailSettingsView(subscription)
         } else {
             startDetailView(subscription)
