@@ -1,5 +1,6 @@
 Features:
 * Subscriptions can now have a display name (#313, thanks to @wunter8)
+* Display name for UnifiedPush subscriptions (#355, thanks to @wunter8)
 * Polling is now done with since=<id> API, which makes deduping easier (#165)
 * Turned JSON stream deprecation banner into "Use WebSockets" banner (no ticket)
 * Move action buttons in notification cards (#236, thanks to @wunter8)
