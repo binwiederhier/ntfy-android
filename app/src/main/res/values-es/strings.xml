@@ -205,8 +205,8 @@
     <string name="settings_advanced_clear_logs_summary">Borrar los registros anteriores y empezar de nuevo</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Registros eliminados</string>
     <string name="settings_advanced_connection_protocol_title">Protocolo de conexión</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar un JSON stream sobre HTTP para conectarse al servidor. Este método es obsoleto y será removido en junio de 2022.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Usar WebSockets para conectarse al servidor. Esta opción será la predeterminada en junio de 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar un JSON stream sobre HTTP para conectarse al servidor. Este método está probado en batalla pero puede consumir más batería.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Usar WebSockets para conectarse al servidor. Este es el método recomendado, pero puede requerir configuración adicional en su proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream sobre HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_version_title">Versión</string>
@@ -317,4 +317,14 @@
     <string name="detail_settings_notifications_instant_summary_off">Las notificaciones se entregan usando Firebase. La entrega puede retrasarse, pero consume menos batería.</string>
     <string name="detail_settings_notifications_instant_title">Entrega instantánea</string>
     <string name="detail_settings_appearance_icon_set_summary">Establecer un icono para que aparezca en las notificaciones</string>
+    <string name="detail_settings_appearance_display_name_title">Nombre a mostrar</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (predeterminado)</string>
+    <string name="detail_settings_appearance_display_name_message">Establezca un nombre a mostrar para esta suscripción. Deje en blanco para usar el valor predeterminado (%1$s).</string>
+    <string name="detail_settings_about_header">Acerca de</string>
+    <string name="detail_settings_about_topic_url_title">URL del tópico</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado a portapapeles</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Elija la URL del servicio</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Borrar la URL del servicio</string>
+    <string name="main_banner_websocket_text">Cambiar a WebSockets es la forma recomendada para conectarse a su servidor, y podría mejorar la vida de la batería, pero puede requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional en su proxy</a>. Esto se puede cambiar en la Configuración.</string>
+    <string name="main_banner_websocket_button_enable_now">Habilitar ahora</string>
 </resources>
