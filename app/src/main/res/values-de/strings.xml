@@ -324,4 +324,7 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (Standard)</string>
     <string name="detail_settings_appearance_display_name_title">Anzeigename</string>
     <string name="detail_settings_appearance_display_name_message">Gib einen eigenen Anzeigenamen für diese Abo an. Leer lassen für den Standardwert (%1$s).</string>
+    <string name="detail_settings_about_topic_url_title">Themen-URL</string>
+    <string name="detail_settings_about_header">Über</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">In Zwischenablage kopiert</string>
 </resources>
