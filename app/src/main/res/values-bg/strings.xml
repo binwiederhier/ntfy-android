@@ -324,4 +324,7 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (по подразбиране)</string>
     <string name="detail_settings_appearance_display_name_title">Наименование</string>
     <string name="detail_settings_appearance_display_name_message">Задайте име на абонамента. За да върнете името по подразбиране (%1$s) оставете празно.</string>
+    <string name="detail_settings_about_header">Относно</string>
+    <string name="detail_settings_about_topic_url_title">Адрес на темата</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Копирано в междинната памет</string>
 </resources>
