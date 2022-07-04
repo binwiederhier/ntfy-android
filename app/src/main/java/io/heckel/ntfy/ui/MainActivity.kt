@@ -469,18 +469,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private fun onSubscriptionItemClick(subscription: Subscription) {
         if (actionMode != null) {
             handleActionModeClick(subscription)
-        } else if (subscription.upAppId != null) { // Not UnifiedPush
-            displayUnifiedPushToast(subscription)
+        } else if (subscription.upAppId != null) { // UnifiedPush
+            startDetailSettingsView(subscription)
         } else {
             startDetailView(subscription)
-        }
-    }
-
-    private fun displayUnifiedPushToast(subscription: Subscription) {
-        runOnUiThread {
-            val appId = subscription.upAppId ?: return@runOnUiThread
-            val toastMessage = getString(R.string.main_unified_push_toast, appId)
-            Toast.makeText(this@MainActivity, toastMessage, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -542,6 +534,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         startActivity(intent)
     }
+
+    private fun startDetailSettingsView(subscription: Subscription) {
+        Log.d(TAG, "Opening subscription settings for ${topicShortUrl(subscription.baseUrl, subscription.topic)}")
+
+        val intent = Intent(this, DetailSettingsActivity::class.java)
+        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
+        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+        startActivity(intent)
+    }
+
 
     private fun handleActionModeClick(subscription: Subscription) {
         adapter.toggleSelection(subscription.id)

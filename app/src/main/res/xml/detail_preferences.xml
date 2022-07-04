@@ -1,6 +1,8 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
                   app:title="@string/detail_settings_title">
-    <PreferenceCategory app:title="@string/settings_notifications_header">
+    <PreferenceCategory
+        app:key="@string/detail_settings_notifications_header_key"
+        app:title="@string/settings_notifications_header">
         <SwitchPreference
                 app:key="@string/detail_settings_notifications_instant_key"
                 app:title="@string/detail_settings_notifications_instant_title"
@@ -27,7 +29,9 @@
                 app:defaultValue="-1"
                 app:isPreferenceVisible="false"/> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
     </PreferenceCategory>
-    <PreferenceCategory app:title="@string/detail_settings_appearance_header">
+    <PreferenceCategory
+        app:key="@string/detail_settings_appearance_header_key"
+        app:title="@string/detail_settings_appearance_header">
         <Preference
                 app:key="@string/detail_settings_appearance_icon_set_key"
                 app:title="@string/detail_settings_appearance_icon_set_title"
@@ -44,5 +48,12 @@
                 app:dialogLayout="@layout/preference_dialog_edittext_edited"
                 app:dialogMessage="@string/detail_settings_appearance_display_name_message"
                 app:isPreferenceVisible="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:key="@string/detail_settings_about_header_key"
+        app:title="@string/detail_settings_about_header">
+        <Preference
+            app:key="@string/detail_settings_about_topic_url_key"
+            app:title="@string/detail_settings_about_topic_url_title"/>
     </PreferenceCategory>
 </PreferenceScreen>

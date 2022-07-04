@@ -1,6 +1,9 @@
 package io.heckel.ntfy.ui
 
 import android.content.ContentResolver
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -13,6 +16,7 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
+import androidx.preference.Preference.OnPreferenceClickListener
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -102,13 +106,21 @@ class DetailSettingsActivity : AppCompatActivity() {
         }
 
         private fun loadView() {
-            loadInstantPref()
-            loadMutedUntilPref()
-            loadMinPriorityPref()
-            loadAutoDeletePref()
-            loadIconSetPref()
-            loadIconRemovePref()
+            if (subscription.upAppId == null) {
+                loadInstantPref()
+                loadMutedUntilPref()
+                loadMinPriorityPref()
+                loadAutoDeletePref()
+                loadIconSetPref()
+                loadIconRemovePref()
+            } else {
+                val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
+                val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
+                notificationsHeader?.isVisible = false
+            }
+
             loadDisplayNamePref()
+            loadTopicUrlPref()
         }
 
         private fun loadInstantPref() {
@@ -309,6 +321,24 @@ class DetailSettingsActivity : AppCompatActivity() {
                 } else {
                     provider.text
                 }
+            }
+        }
+
+        private fun loadTopicUrlPref() {
+            // Topic URL
+            val topicUrlPrefId = context?.getString(R.string.detail_settings_about_topic_url_key) ?: return
+            val topicUrlPref: Preference? = findPreference(topicUrlPrefId)
+            val topicUrl = topicShortUrl(subscription.baseUrl, subscription.topic)
+            topicUrlPref?.summary = topicUrl
+            topicUrlPref?.onPreferenceClickListener = OnPreferenceClickListener {
+                val context = context ?: return@OnPreferenceClickListener false
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("topic url", topicUrl)
+                clipboard.setPrimaryClip(clip)
+                Toast
+                        .makeText(context, getString(R.string.detail_settings_about_topic_url_copied_to_clipboard_message), Toast.LENGTH_LONG)
+                        .show()
+                true
             }
         }
 
