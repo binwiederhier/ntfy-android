@@ -52,4 +52,7 @@
     <string name="main_how_to_intro">Κάντε κλικ στο + για να δημιουργήσετε ή να εγγραφείτε σε ένα θέμα. Στη συνέχεια, λαμβάνετε ειδοποιήσεις στη συσκευή σας κατά την αποστολή μηνυμάτων μέσω PUT ή POST.</string>
     <string name="main_banner_battery_text">Η βελτιστοποίηση μπαταρίας θα πρέπει να είναι απενεργοποιημένη για την εφαρμογή ώστε αποφευχθούν προβλήματα κατά την παράδοσης ειδοποιήσεων.</string>
     <string name="main_how_to_link">Λεπτομερείς οδηγίες που διατίθενται στο ntfy.sh, και στα έγγραφα.</string>
+    <string name="main_banner_battery_button_remind_later">Ερώτηση αργότερα</string>
+    <string name="main_banner_battery_button_dismiss">Απόρριψη</string>
+    <string name="main_banner_battery_button_fix_now">Διορθώστε τώρα</string>
 </resources>
