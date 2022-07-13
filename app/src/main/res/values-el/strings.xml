@@ -47,4 +47,9 @@
     <string name="main_menu_docs_title">Διαβάστε τα έγγραφα</string>
     <string name="main_action_mode_menu_unsubscribe">Κατάργηση συνδρομής</string>
     <string name="main_action_mode_delete_dialog_cancel">Ακύρωση</string>
+    <string name="main_no_subscriptions_text">Φαίνεται ότι δεν έχετε ακόμη συνδρομές.</string>
+    <string name="main_unified_push_toast">Αυτή η συνδρομή διαχειρίζεται από %1$s μέσω του UnifiedPush</string>
+    <string name="main_how_to_intro">Κάντε κλικ στο + για να δημιουργήσετε ή να εγγραφείτε σε ένα θέμα. Στη συνέχεια, λαμβάνετε ειδοποιήσεις στη συσκευή σας κατά την αποστολή μηνυμάτων μέσω PUT ή POST.</string>
+    <string name="main_banner_battery_text">Η βελτιστοποίηση μπαταρίας θα πρέπει να είναι απενεργοποιημένη για την εφαρμογή ώστε αποφευχθούν προβλήματα κατά την παράδοσης ειδοποιήσεων.</string>
+    <string name="main_how_to_link">Λεπτομερείς οδηγίες που διατίθενται στο ntfy.sh, και στα έγγραφα.</string>
 </resources>
