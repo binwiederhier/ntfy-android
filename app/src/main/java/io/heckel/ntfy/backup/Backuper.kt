@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
@@ -148,6 +149,16 @@ class Backuper(val context: Context) {
                 } else {
                     null
                 }
+                val icon = if (n.icon != null) {
+                    io.heckel.ntfy.db.Icon(
+                        url = n.icon.url,
+                        type = n.icon.type,
+                        size = n.icon.size,
+                        contentUri = n.icon.contentUri,
+                    )
+                } else {
+                    null
+                }
                 repository.addNotification(io.heckel.ntfy.db.Notification(
                     id = n.id,
                     subscriptionId = n.subscriptionId,
@@ -159,6 +170,7 @@ class Backuper(val context: Context) {
                     priority = n.priority,
                     tags = n.tags,
                     click = n.click,
+                    icon = icon,
                     actions = actions,
                     attachment = attachment,
                     deleted = n.deleted
@@ -266,6 +278,16 @@ class Backuper(val context: Context) {
             } else {
                 null
             }
+            val icon = if (n.icon != null) {
+                Icon(
+                    url = n.icon.url,
+                    type = n.icon.type,
+                    size = n.icon.size,
+                    contentUri = n.icon.contentUri,
+                )
+            } else {
+                null
+            }
             Notification(
                 id = n.id,
                 subscriptionId = n.subscriptionId,
@@ -276,6 +298,7 @@ class Backuper(val context: Context) {
                 priority = n.priority,
                 tags = n.tags,
                 click = n.click,
+                icon = icon,
                 actions = actions,
                 attachment = attachment,
                 deleted = n.deleted
@@ -347,6 +370,7 @@ data class Notification(
     val priority: Int, // 1=min, 3=default, 5=max
     val tags: String,
     val click: String, // URL/intent to open on notification click
+    val icon: Icon?,
     val actions: List<Action>?,
     val attachment: Attachment?,
     val deleted: Boolean
@@ -373,6 +397,14 @@ data class Attachment(
     val size: Long?, // Size in bytes
     val expires: Long?, // Unix timestamp
     val url: String, // URL (mandatory, see ntfy server)
+    val contentUri: String?, // After it's downloaded, the content:// location
+    val progress: Int, // Progress during download, -1 if not downloaded
+)
+
+data class Icon(
+    val url: String, // URL (mandatory, see ntfy server)
+    val type: String?, // MIME type
+    val size: Long?, // Size in bytes
     val contentUri: String?, // After it's downloaded, the content:// location
     val progress: Int, // Progress during download, -1 if not downloaded
 )
