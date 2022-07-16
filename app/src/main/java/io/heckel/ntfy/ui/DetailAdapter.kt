@@ -16,7 +16,6 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.helper.widget.Flow
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintProperties.WRAP_CONTENT
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -29,7 +28,8 @@ import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.DownloadManager
-import io.heckel.ntfy.msg.DownloadWorker
+import io.heckel.ntfy.msg.DownloadAttachmentWorker
+import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
@@ -389,7 +389,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 val inFile = resolver.openInputStream(inUri) ?: throw Exception("Cannot open input stream")
                 val outUri = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     val file = ensureSafeNewFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), attachment.name)
-                    FileProvider.getUriForFile(context, DownloadWorker.FILE_PROVIDER_AUTHORITY, file)
+                    FileProvider.getUriForFile(context, DownloadAttachmentWorker.FILE_PROVIDER_AUTHORITY, file)
                 } else {
                     val contentUri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
                     resolver.insert(contentUri, values) ?: throw Exception("Cannot insert content")
@@ -443,7 +443,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD)
                 return true
             }
-            DownloadManager.enqueue(context, notification.id, userAction = true)
+            DownloadManager.enqueue(context, notification.id, userAction = true, DownloadType.ATTACHMENT)
             return true
         }
 
