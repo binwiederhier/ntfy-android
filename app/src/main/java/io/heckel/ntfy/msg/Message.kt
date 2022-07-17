@@ -13,7 +13,7 @@ data class Message(
     val priority: Int?,
     val tags: List<String>?,
     val click: String?,
-    val icon: MessageIcon?,
+    val icon: String?,
     val actions: List<MessageAction>?,
     val title: String?,
     val message: String,
@@ -42,13 +42,6 @@ data class MessageAction(
     val body: String?, // used in "http" action
     val intent: String?, // used in "broadcast" action
     val extras: Map<String,String>?, // used in "broadcast" action
-)
-
-@Keep
-data class MessageIcon(
-    val url: String,
-    val type: String?,
-    val size: Long?,
 )
 
 const val MESSAGE_ENCODING_BASE64 = "base64"
