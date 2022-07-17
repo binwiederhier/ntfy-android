@@ -27,6 +27,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            deleteExpiredIcons() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredAttachments() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredNotifications()
             return@withContext Result.success()
@@ -55,6 +56,31 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
                 repository.updateNotification(newNotification)
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to delete attachment for notification: ${e.message}", e)
+            }
+        }
+    }
+
+    private fun deleteExpiredIcons() {
+        Log.d(TAG, "Deleting icons for deleted notifications")
+        val resolver = applicationContext.contentResolver
+        val repository = Repository.getInstance(applicationContext)
+        val notifications = repository.getDeletedNotificationsWithIcons()
+        notifications.forEach { notification ->
+            try {
+                val icon = notification.icon ?: return
+                val contentUri = Uri.parse(icon.contentUri ?: return)
+                Log.d(TAG, "Deleting icon for notification ${notification.id}: ${icon.contentUri} (${icon.url})")
+                val deleted = resolver.delete(contentUri, null, null) > 0
+                if (!deleted) {
+                    Log.w(TAG, "Unable to delete icon for notification ${notification.id}")
+                }
+                val newIcon = icon.copy(
+                    contentUri = null,
+                )
+                val newNotification = notification.copy(icon = newIcon)
+                repository.updateNotification(newNotification)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete icon for notification: ${e.message}", e)
             }
         }
     }

@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -21,7 +20,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.msg.DownloadWorker
+import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
@@ -396,7 +395,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 return null
             }
             val file =  File(dir, subscription.id.toString())
-            return FileProvider.getUriForFile(requireContext(), DownloadWorker.FILE_PROVIDER_AUTHORITY, file)
+            return FileProvider.getUriForFile(requireContext(), DownloadAttachmentWorker.FILE_PROVIDER_AUTHORITY, file)
         }
 
         private fun deleteIcon(uri: String?) {

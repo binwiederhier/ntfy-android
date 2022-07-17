@@ -165,6 +165,7 @@
     <string name="detail_item_download_info_download_failed">download failed</string>
     <string name="detail_item_download_info_download_failed_expired">download failed, link expired</string>
     <string name="detail_item_download_info_download_failed_expires_x">download failed, link expires %1$s</string>
+    <string name="detail_item_icon_download_failed">Could not download icon: %1$s</string>
 
     <!-- Detail activity: Action bar -->
     <string name="detail_menu_notifications_enabled">Notifications on</string>

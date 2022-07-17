@@ -15,25 +15,74 @@ import io.heckel.ntfy.util.Log
  */
 object DownloadManager {
     private const val TAG = "NtfyDownloadManager"
-    private const val DOWNLOAD_WORK_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
+    private const val DOWNLOAD_WORK_ATTACHMENT_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
+    private const val DOWNLOAD_WORK_ICON_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_ICON_"
+    private const val DOWNLOAD_WORK_BOTH_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_BOTH_"
 
-    fun enqueue(context: Context, notificationId: String, userAction: Boolean) {
+    fun enqueue(context: Context, notificationId: String, userAction: Boolean, type: DownloadType) {
+        when (type) {
+            DownloadType.ATTACHMENT -> enqueueAttachment(context, notificationId, userAction)
+            DownloadType.ICON -> enqueueIcon(context, notificationId)
+            DownloadType.BOTH -> enqueueAttachmentAndIcon(context, notificationId, userAction)
+            else -> Log.w(DownloadManager.TAG, "This should never happen. No download type given")
+        }
+    }
+
+    private fun enqueueAttachment(context: Context, notificationId: String, userAction: Boolean) {
         val workManager = WorkManager.getInstance(context)
-        val workName = DOWNLOAD_WORK_NAME_PREFIX + notificationId
+        val workName = DOWNLOAD_WORK_ATTACHMENT_NAME_PREFIX + notificationId
         Log.d(TAG,"Enqueuing work to download attachment for notification $notificationId, work: $workName")
-        val workRequest = OneTimeWorkRequest.Builder(DownloadWorker::class.java)
+        val workRequest = OneTimeWorkRequest.Builder(DownloadAttachmentWorker::class.java)
             .setInputData(workDataOf(
-                DownloadWorker.INPUT_DATA_ID to notificationId,
-                DownloadWorker.INPUT_DATA_USER_ACTION to userAction
+                DownloadAttachmentWorker.INPUT_DATA_ID to notificationId,
+                DownloadAttachmentWorker.INPUT_DATA_USER_ACTION to userAction
             ))
             .build()
         workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
     }
 
+    private fun enqueueIcon(context: Context, notificationId: String) {
+        val workManager = WorkManager.getInstance(context)
+        val workName = DOWNLOAD_WORK_ICON_NAME_PREFIX + notificationId
+        Log.d(TAG,"Enqueuing work to download icon for notification $notificationId, work: $workName")
+        val workRequest = OneTimeWorkRequest.Builder(DownloadIconWorker::class.java)
+            .setInputData(workDataOf(
+                DownloadAttachmentWorker.INPUT_DATA_ID to notificationId
+            ))
+            .build()
+        workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
+    }
+
+    private fun enqueueAttachmentAndIcon(context: Context, notificationId: String, userAction: Boolean) {
+        val workManager = WorkManager.getInstance(context)
+        val workName = DOWNLOAD_WORK_BOTH_NAME_PREFIX + notificationId
+        val attachmentWorkRequest = OneTimeWorkRequest.Builder(DownloadAttachmentWorker::class.java)
+            .setInputData(workDataOf(
+                DownloadAttachmentWorker.INPUT_DATA_ID to notificationId,
+                DownloadAttachmentWorker.INPUT_DATA_USER_ACTION to userAction
+            ))
+            .build()
+        val iconWorkRequest = OneTimeWorkRequest.Builder(DownloadIconWorker::class.java)
+            .setInputData(workDataOf(
+                DownloadAttachmentWorker.INPUT_DATA_ID to notificationId
+            ))
+            .build()
+        Log.d(TAG,"Enqueuing work to download both attachment and icon for notification $notificationId, work: $workName")
+        workManager.beginUniqueWork(workName, ExistingWorkPolicy.KEEP, attachmentWorkRequest)
+            .then(iconWorkRequest)
+            .enqueue()
+    }
+
     fun cancel(context: Context, id: String) {
         val workManager = WorkManager.getInstance(context)
-        val workName = DOWNLOAD_WORK_NAME_PREFIX + id
-        Log.d(TAG, "Cancelling download for notification $id, work: $workName")
+        val workName = DOWNLOAD_WORK_ATTACHMENT_NAME_PREFIX + id
+        Log.d(TAG, "Cancelling attachment download for notification $id, work: $workName")
         workManager.cancelUniqueWork(workName)
     }
+}
+
+enum class DownloadType {
+    ATTACHMENT,
+    ICON,
+    BOTH
 }
