@@ -321,4 +321,10 @@
     <string name="add_dialog_base_urls_dropdown_choose">Choisir l\'URL du service</string>
     <string name="add_dialog_base_urls_dropdown_clear">Supprimer l\'URL du service</string>
     <string name="main_banner_websocket_button_enable_now">Activer maintenant</string>
+    <string name="detail_settings_appearance_display_name_title">Nom d\'affichage</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s</string>
+    <string name="detail_settings_appearance_display_name_message">Mettre un nom d\'affichage personnalisé pour cette souscription. Laisse ce champ vide pour mettre la valeur par défaut (%1$s).</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copié au Presse-papier</string>
+    <string name="detail_settings_about_header">À propos</string>
+    <string name="detail_settings_about_topic_url_title">URL du sujet</string>
 </resources>
