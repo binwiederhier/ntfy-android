@@ -23,13 +23,14 @@ data class Subscription(
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     @ColumnInfo(name = "displayName") val displayName: String?,
+    @ColumnInfo(name = "encryptionKey") val encryptionKey: ByteArray?,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String, displayName: String?) :
-            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, displayName, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String, displayName: String?, encryptionKey: ByteArray?) :
+            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, displayName, encryptionKey, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -49,6 +50,7 @@ data class SubscriptionWithMetadata(
     val upAppId: String?,
     val upConnectorToken: String?,
     val displayName: String?,
+    val encryptionKey: ByteArray?,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
@@ -61,7 +63,7 @@ data class Notification(
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
-    @ColumnInfo(name = "encoding") val encoding: String, // "base64" or ""
+    @ColumnInfo(name = "encoding") val encoding: String, // "" (raw UTF-8), "base64", or "jwe" (encryption)
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
@@ -269,6 +271,8 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN lastNotificationId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN displayName TEXT")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN encryptionKey BLOB")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN encryption TEXT NOT NULL DEFAULT('')")
             }
         }
     }
@@ -278,7 +282,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.encryptionKey,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -291,7 +295,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.encryptionKey,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -304,7 +308,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.encryptionKey,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -317,7 +321,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.encryptionKey,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -330,7 +334,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.encryptionKey,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

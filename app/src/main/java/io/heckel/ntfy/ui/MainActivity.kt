@@ -43,7 +43,6 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -206,6 +205,20 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         schedulePeriodicPollWorker()
         schedulePeriodicServiceRestartWorker()
         schedulePeriodicDeleteWorker()
+
+        testenc()
+    }
+
+    fun testenc() {
+        try {
+            val key = Encryption.deriveKey("secr3t password", "https://ntfy.sh/mysecret")
+            Log.d("encryption", "key ${key.toHex()}")
+            val ciphertext = "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..vbe1Qv_-mKYbUgce.EfmOUIUi7lxXZG_o4bqXZ9pmpr1Rzs4Y5QLE2XD2_aw_SQ.y2hadrN5b2LEw7_PJHhbcA"
+            val plaintext = Encryption.decrypt(ciphertext, key)
+            Log.d("encryption", "decryptString: $plaintext")
+        } catch (e: Exception) {
+            Log.e("encryption", "failed", e)
+        }
     }
 
     override fun onResume() {
@@ -439,6 +452,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             upAppId = null,
             upConnectorToken = null,
             displayName = null,
+            encryptionKey = null,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -455,7 +469,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                val notifications = api
+                    .poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                    .map { n -> Encryption.maybeDecrypt(subscription, n) }
                 notifications.forEach { notification -> repository.addNotification(notification) }
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
@@ -492,7 +508,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 Log.d(TAG, "subscription: ${subscription}")
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
+                    val notifications = api
+                        .poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
+                        .map { n -> Encryption.maybeDecrypt(subscription, n) }
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
                         newNotificationsCount++

@@ -3,6 +3,7 @@ package io.heckel.ntfy.service
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.util.Encryption
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import okhttp3.Call
@@ -42,7 +43,8 @@ class JsonConnection(
                     since = notification.id
                     val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
                     val subscription = repository.getSubscription(subscriptionId) ?: return@notify
-                    val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
+                    val notificationDecrypted = Encryption.maybeDecrypt(subscription, notification)
+                    val notificationWithSubscriptionId = notificationDecrypted.copy(subscriptionId = subscription.id)
                     notificationListener(subscription, notificationWithSubscriptionId)
                 }
                 val failed = AtomicBoolean(false)

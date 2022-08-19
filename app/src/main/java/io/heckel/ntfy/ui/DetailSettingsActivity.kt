@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -111,6 +110,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
+                loadPasswordPref()
                 loadIconSetPref()
                 loadIconRemovePref()
             } else {
@@ -251,6 +251,30 @@ class DetailSettingsActivity : AppCompatActivity() {
                     else -> getString(R.string.settings_notifications_auto_delete_summary_one_month) // Must match default const
                 }
                 maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadPasswordPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_password_key) ?: return
+            val pref: EditTextPreference? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.text = ""
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val newPassword = value ?: return
+                    val encryptionKey = if (newPassword.trim().isEmpty()) null else Encryption.deriveKey(newPassword, topicUrl(subscription))
+                    save(subscription.copy(encryptionKey = encryptionKey))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return ""
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
+                if (TextUtils.isEmpty(pref.text)) {
+                    "No password set"
+                } else {
+                    "Password saved"
+                }
             }
         }
 

@@ -347,6 +347,8 @@
     <string name="detail_settings_notifications_instant_title">Instant delivery</string>
     <string name="detail_settings_notifications_instant_summary_on">Notifications are delivered instantly. Requires a foreground service and consumes more battery.</string>
     <string name="detail_settings_notifications_instant_summary_off">Notifications are delivered using Firebase. Delivery may be delayed, but consumes less battery.</string>
+    <string name="detail_settings_notifications_password_title">Password</string>
+    <string name="detail_settings_notifications_password_dialog_summary">Choose a password to use to decrypt incoming end-to-end encrypted notifications. The derived key will be stored locally. If the password is incorrect, messages will not decrypt correctly.</string>
     <string name="detail_settings_appearance_header">Appearance</string>
     <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>
