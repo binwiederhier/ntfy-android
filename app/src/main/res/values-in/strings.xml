@@ -19,11 +19,11 @@
 \n%2$s</string>
     <string name="refresh_message_error_one">Tidak dapat memuat ulang langganan: %1$s</string>
     <string name="main_action_bar_title">Topik berlangganan</string>
-    <string name="main_menu_notifications_enabled">Notifikasi nyala</string>
+    <string name="main_menu_notifications_enabled">Notifikasi menyala</string>
     <string name="main_menu_notifications_disabled_forever">Notifikasi dibisukan</string>
     <string name="main_menu_notifications_disabled_until">Notifikasi dibisukan sampai %1$s</string>
     <string name="main_menu_settings_title">Pengaturan</string>
-    <string name="main_menu_report_bug_title">Laporkan sebuah kutu</string>
+    <string name="main_menu_report_bug_title">Laporkan sebuah bug</string>
     <string name="main_menu_docs_title">Baca dokumentasi</string>
     <string name="main_menu_rate_title">Beri nilai aplikasi ⭐</string>
     <string name="main_action_mode_menu_unsubscribe">Batalkan langganan</string>
@@ -35,7 +35,7 @@
     <string name="main_how_to_intro">Tekan + untuk membuat atau berlangganan ke sebuah topik. Setelah itu Anda menerima notifikasi pada perangkat Anda saat mengirim pesan via PUT atau POST.</string>
     <string name="main_how_to_link">Instruksi rinci tersedia di ntfy.sh, dan dalam dokumentasi.</string>
     <string name="main_unified_push_toast">Langganan ini dikelola oleh %1$s melalui UnifiedPush</string>
-    <string name="main_banner_battery_text">Pengoptimalan baterai untuk aplikasi seharusnya mati supaya masalah pengiriman notifikasi dapat dihindari.</string>
+    <string name="main_banner_battery_text">Pengoptimalan baterai untuk aplikasi sebaiknya dimatikan supaya masalah pengiriman notifikasi dapat dihindari.</string>
     <string name="main_banner_battery_button_remind_later">Tanya nanti</string>
     <string name="main_banner_battery_button_dismiss">Abaikan</string>
     <string name="main_banner_battery_button_fix_now">Perbaiki sekarang</string>
@@ -54,7 +54,7 @@
     <string name="add_dialog_login_error_not_authorized">Login gagal. Pengguna %1$s tidak diizinkan.</string>
     <string name="add_dialog_login_new_user">Pengguna baru</string>
     <string name="detail_no_notifications_text">Anda belum menerima notifikasi apa pun.</string>
-    <string name="detail_how_to_intro">Untuk mengirimkan notifikasi ke topik ini, tinggal PUT atau POST ke URL topik.</string>
+    <string name="detail_how_to_intro">Untuk mengirimkan notifikasi ke topik ini, lakukan PUT atau POST ke URL topik.</string>
     <string name="detail_how_to_example">Contoh (menggunakan curl):<br/><tt>$ curl -d \"Hai\" %1$s</tt></string>
     <string name="detail_how_to_link">Instruksi rinci tersedia di ntfy.sh, dan dalam dokumentasi.</string>
     <string name="detail_clear_dialog_message">Hapus semua notifikasi di topik ini\?</string>
@@ -68,7 +68,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Tidak dapat mengirimkan pesan: Penerbitan anonim tidak diizinkan.</string>
     <string name="detail_test_message_error_too_large">Tidak dapat mengirimkan pesan: Lampiran terlalu besar.</string>
     <string name="detail_copied_to_clipboard_message">Disalin ke papan klip</string>
-    <string name="detail_instant_delivery_enabled">Pengiriman instan nyala</string>
+    <string name="detail_instant_delivery_enabled">Pengiriman instan menyala</string>
     <string name="detail_instant_delivery_disabled">Pengiriman instan mati</string>
     <string name="detail_item_tags">Tanda: %1$s</string>
     <string name="detail_item_snack_deleted">Notifikasi dihapus</string>
@@ -165,8 +165,8 @@
     <string name="settings_general_users_prefs_user_used_by_many">Digunakan oleh topik %1$s</string>
     <string name="settings_general_users_prefs_user_add_title">Tambahkan pengguna baru</string>
     <string name="settings_general_dark_mode_title">Mode gelap</string>
-    <string name="settings_general_dark_mode_summary_light">Mode terang nyala</string>
-    <string name="settings_general_dark_mode_summary_dark">Mode gelap nyala. Apakah Anda seorang vampir\?</string>
+    <string name="settings_general_dark_mode_summary_light">Mode terang menyala</string>
+    <string name="settings_general_dark_mode_summary_dark">Mode gelap menyala. Apakah Anda seorang vampir\?</string>
     <string name="settings_general_dark_mode_entry_system">Gunakan bawaan sistem</string>
     <string name="settings_general_dark_mode_entry_light">Mode terang</string>
     <string name="settings_general_dark_mode_entry_dark">Mode gelap</string>
@@ -236,7 +236,7 @@
     <string name="main_item_status_text_not_one">%1$d notifikasi</string>
     <string name="detail_test_message">Ini adalah notifikasi uji coba dari aplikasi Android ntfy. Ini memiliki tingkat prioritas %1$d. Jika Anda kirim yang lain, itu mungkin kelihatan berbeda.</string>
     <string name="detail_test_message_error_unauthorized_user">Tidak dapat mengirimkan pesan: Pengguna \"%1$s\" tidak diizinkan.</string>
-    <string name="detail_menu_notifications_enabled">Notifikasi nyala</string>
+    <string name="detail_menu_notifications_enabled">Notifikasi menyala</string>
     <string name="notification_popup_file_download_successful">%1$s
 \nFile: %2$s, terunduh</string>
     <string name="detail_item_saved_successfully">Disimpan sebagai \"%1$s\" dalam folder \"Downloads\"</string>
@@ -289,7 +289,7 @@
     <string name="settings_backup_restore_restore_failed">Pemulihan gagal: %1$s</string>
     <string name="settings_advanced_header">Tingkat lanjut</string>
     <string name="settings_advanced_broadcast_summary_enabled">Aplikasi dapat menerima notifikasi yang datang sebagai siaran</string>
-    <string name="settings_advanced_export_logs_summary">Salin catatan ke papn klip, atau unggah ke nopaste.net (dimiliki oleh penulis ntfy). Nama host dan topik dapat disensor, notifikasi tidak akan disensor.</string>
+    <string name="settings_advanced_export_logs_summary">Salin catatan ke papan klip, atau unggah ke nopaste.net (dimiliki oleh penulis ntfy). Nama host dan topik dapat disensor, notifikasi tidak akan disensor.</string>
     <string name="settings_about_version_copied_to_clipboard_message">Disalin ke papan klip</string>
     <string name="user_dialog_password_hint_add">Kata Sandi</string>
     <string name="user_dialog_button_delete">Hapus pengguna</string>
