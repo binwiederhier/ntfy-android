@@ -118,6 +118,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     upAppId = null,
                     upConnectorToken = null,
                     displayName = null,
+                    encryptionKey = null,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
@@ -133,7 +134,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 // Fetch cached messages
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                    val notifications = api
+                        .poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                        .map { n -> Encryption.maybeDecrypt(subscription, n) }
                     notifications.forEach { notification -> repository.addNotification(notification) }
                 } catch (e: Exception) {
                     Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
@@ -466,7 +469,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             try {
                 val subscription = repository.getSubscription(subscriptionId) ?: return@launch
                 val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
+                val notifications = api
+                    .poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
+                    .map { n -> Encryption.maybeDecrypt(subscription, n) }
                 val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
                 val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)

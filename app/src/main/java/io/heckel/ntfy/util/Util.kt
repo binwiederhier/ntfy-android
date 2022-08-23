@@ -46,6 +46,7 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
+fun topicUrl(subscription: Subscription) = topicUrl(subscription.baseUrl, subscription.topic)
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
 fun topicUrlWs(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/ws?since=$since"

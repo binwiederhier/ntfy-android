@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 12,
-    "identityHash": "9363ad5196e88862acceb1bb9ee91124",
+    "identityHash": "250db1985385d64d880124071eab96fc",
     "entities": [
       {
         "tableName": "Subscription",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `lastNotificationId` TEXT, `icon` TEXT, `upAppId` TEXT, `upConnectorToken` TEXT, `displayName` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `lastNotificationId` TEXT, `icon` TEXT, `upAppId` TEXT, `upConnectorToken` TEXT, `displayName` TEXT, `encryptionKey` BLOB, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -78,6 +78,12 @@
             "fieldPath": "displayName",
             "columnName": "displayName",
             "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "encryptionKey",
+            "columnName": "encryptionKey",
+            "affinity": "BLOB",
             "notNull": false
           }
         ],
@@ -326,7 +332,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9363ad5196e88862acceb1bb9ee91124')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '250db1985385d64d880124071eab96fc')"
     ]
   }
 }

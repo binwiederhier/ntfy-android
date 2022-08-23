@@ -2,6 +2,7 @@ package io.heckel.ntfy.backup
 
 import android.content.Context
 import android.net.Uri
+import android.util.Base64
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
@@ -102,6 +103,7 @@ class Backuper(val context: Context) {
                     upAppId = s.upAppId,
                     upConnectorToken = s.upConnectorToken,
                     displayName = s.displayName,
+                    encryptionKey = Base64.decode(s.encryptionKey, Base64.DEFAULT)
                 ))
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore subscription ${s.id} (${topicUrl(s.baseUrl, s.topic)}): ${e.message}. Ignoring.", e)
@@ -226,7 +228,8 @@ class Backuper(val context: Context) {
                 icon = s.icon,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
-                displayName = s.displayName
+                displayName = s.displayName,
+                encryptionKey = if (s.encryptionKey != null) Base64.encodeToString(s.encryptionKey, Base64.DEFAULT) else null
             )
         }
     }
@@ -334,7 +337,8 @@ data class Subscription(
     val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?,
-    val displayName: String?
+    val displayName: String?,
+    val encryptionKey: String? // as base64
 )
 
 data class Notification(
@@ -343,7 +347,7 @@ data class Notification(
     val timestamp: Long,
     val title: String,
     val message: String,
-    val encoding: String, // "base64" or ""
+    val encoding: String, // "base64", "jwe", or ""
     val priority: Int, // 1=min, 3=default, 5=max
     val tags: String,
     val click: String, // URL/intent to open on notification click

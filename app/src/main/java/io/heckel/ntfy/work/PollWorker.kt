@@ -7,6 +7,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.util.Encryption
 import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -40,13 +41,15 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             subscriptions.forEach{ subscription ->
                 try {
                     val user = repository.getUser(subscription.baseUrl)
-                    val notifications = api.poll(
-                        subscriptionId = subscription.id,
-                        baseUrl = subscription.baseUrl,
-                        topic = subscription.topic,
-                        user = user,
-                        since = subscription.lastNotificationId
-                    )
+                    val notifications = api
+                        .poll(
+                            subscriptionId = subscription.id,
+                            baseUrl = subscription.baseUrl,
+                            topic = subscription.topic,
+                            user = user,
+                            since = subscription.lastNotificationId
+                        )
+                        .map { n -> Encryption.maybeDecrypt(subscription, n) }
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)
                         .map { it.copy(notificationId = Random.nextInt()) }

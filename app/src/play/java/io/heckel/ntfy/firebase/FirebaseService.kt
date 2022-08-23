@@ -1,7 +1,6 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import android.util.Base64
 import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -11,10 +10,10 @@ import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.util.Encryption
 import io.heckel.ntfy.util.toPriority
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.PollWorker
@@ -124,7 +123,7 @@ class FirebaseService : FirebaseMessagingService() {
                     url = attachmentUrl,
                 )
             } else null
-            val notification = Notification(
+            val notificationOriginal = Notification(
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
@@ -139,6 +138,7 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationId = Random.nextInt(),
                 deleted = false
             )
+            val notification = Encryption.maybeDecrypt(subscription, notificationOriginal)
             if (repository.addNotification(notification)) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)

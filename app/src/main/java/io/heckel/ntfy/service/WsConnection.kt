@@ -7,6 +7,7 @@ import android.os.Looper
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.util.Encryption
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -144,7 +145,8 @@ class WsConnection(
                 val notification = notificationWithTopic.notification
                 val subscriptionId = topicsToSubscriptionIds[topic] ?: return@synchronize
                 val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
-                val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
+                val notificationDecrypted = Encryption.maybeDecrypt(subscription, notification)
+                val notificationWithSubscriptionId = notificationDecrypted.copy(subscriptionId = subscription.id)
                 notificationListener(subscription, notificationWithSubscriptionId)
                 since.set(notification.id)
             }

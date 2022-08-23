@@ -80,6 +80,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     upAppId = appId,
                     upConnectorToken = connectorToken,
                     displayName = null,
+                    encryptionKey = null,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
