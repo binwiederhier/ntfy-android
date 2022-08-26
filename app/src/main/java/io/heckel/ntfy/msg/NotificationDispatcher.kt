@@ -60,8 +60,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             Log.d(TAG, "Attachment already expired at ${attachment.expires}, not downloading")
             return false
         }
-        val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()
-        when (maxAutoDownloadSize) {
+        when (val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()) {
             Repository.AUTO_DOWNLOAD_ALWAYS -> return true
             Repository.AUTO_DOWNLOAD_NEVER -> return false
             else -> {
@@ -73,15 +72,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
     }
     private fun shouldDownloadIcon(notification: Notification): Boolean {
-        if (notification.icon == null) {
-            return false
-        }
-        val icon = notification.icon
-        val maxIconDownloadSize = DownloadIconWorker.MAX_ICON_DOWNLOAD_SIZE
-        if (icon.size == null) {
-            return true // DownloadWorker will bail out if attachment is too large!
-        }
-        return icon.size <= maxIconDownloadSize
+        return notification.icon != null
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {

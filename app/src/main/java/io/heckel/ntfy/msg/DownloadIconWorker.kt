@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.MINUTES) // Total timeout for entire request
+        .callTimeout(1, TimeUnit.MINUTES) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
@@ -69,8 +69,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                 if (!response.isSuccessful || response.body == null) {
                     throw Exception("Unexpected response: ${response.code}")
                 }
-                save(updateIconFromResponse(response))
-                if (shouldAbortDownload()) {
+                if (shouldAbortDownload(response)) {
                     Log.d(TAG, "Aborting download: Content-Length is larger than auto-download setting")
                     return
                 }
@@ -85,7 +84,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                 val downloadLimit = if (repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_NEVER && repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_ALWAYS) {
                     repository.getAutoDownloadMaxSize()
                 } else {
-                    null
+                    MAX_ICON_DOWNLOAD_SIZE.toLong()
                 }
                 outFile.use { fileOut ->
                     val fileIn = response.body!!.byteStream()
@@ -102,46 +101,12 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                 }
                 Log.d(TAG, "Icon download: successful response, proceeding with download")
                 save(icon.copy(
-                    size = bytesCopied,
                     contentUri = uri.toString()
                 ))
             }
         } catch (e: Exception) {
             failed(e)
-
-            // Toast in a Worker: https://stackoverflow.com/a/56428145/1440785
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                Toast
-                    .makeText(context, context.getString(R.string.detail_item_icon_download_failed, e.message), Toast.LENGTH_LONG)
-                    .show()
-            }, 200)
         }
-    }
-
-    private fun updateIconFromResponse(response: Response): Icon {
-        val size = if (response.headers["Content-Length"]?.toLongOrNull() != null) {
-            Log.d(TAG, "We got the long! icon here")
-            response.headers["Content-Length"]?.toLong()
-        } else {
-            icon.size // May be null!
-        }
-        val mimeType = if (response.headers["Content-Type"] != null) {
-            response.headers["Content-Type"]
-        } else {
-            val ext = MimeTypeMap.getFileExtensionFromUrl(icon.url)
-            if (ext != null) {
-                val typeFromExt = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
-                typeFromExt ?: icon.type // May be null!
-            } else {
-                icon.type // May be null!
-            }
-        }
-        Log.d(TAG, "New icon size: $size, type: $mimeType")
-        return icon.copy(
-            size = size,
-            type = mimeType
-        )
     }
 
     private fun failed(e: Exception) {
@@ -166,9 +131,9 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         repository.updateNotification(notification)
     }
 
-    private fun shouldAbortDownload(): Boolean {
+    private fun shouldAbortDownload(response: Response): Boolean {
         val maxAutoDownloadSize = MAX_ICON_DOWNLOAD_SIZE
-        val size = icon.size ?: return false // Don't abort if size unknown
+        val size = response.headers["Content-Length"]?.toLongOrNull() ?: return false // Don't abort here if size unknown
         return size > maxAutoDownloadSize
     }
 
