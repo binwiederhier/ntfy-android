@@ -7,11 +7,14 @@ import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DELETED
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.msg.DownloadIconWorker
 import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.util.*
 
 /**
  * Deletes notifications marked for deletion and attachments for deleted notifications.
@@ -30,6 +33,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             deleteExpiredIcons() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredAttachments() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredNotifications()
+            cleanIconCache()
             return@withContext Result.success()
         }
     }
@@ -81,6 +85,23 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
                 repository.updateNotification(newNotification)
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to delete icon for notification: ${e.message}", e)
+            }
+        }
+    }
+
+    private fun cleanIconCache() {
+        Log.d(DeleteWorker.TAG, "Cleaning icons older than 24 hours from cache")
+        val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
+        if (iconDir.exists()) {
+            for (f: File in iconDir.listFiles()) {
+                var lastModified = f.lastModified()
+                var today = Date()
+
+                var diffInHours = ((today.time - lastModified) / (1000 * 60 * 60))
+                if (diffInHours > 24) {
+                    Log.d(DeleteWorker.TAG, "Deleting cached icon: ${f.name}")
+                    f.delete()
+                }
             }
         }
     }

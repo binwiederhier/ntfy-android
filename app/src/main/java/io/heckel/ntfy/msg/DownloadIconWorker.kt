@@ -14,7 +14,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.ensureSafeNewFile
+import io.heckel.ntfy.util.stringToHash
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -44,7 +44,17 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
         icon = notification.icon ?: return Result.failure()
         try {
-            downloadIcon()
+            val iconFile = createIconFile(icon)
+            if (!iconFile.exists()) {
+                downloadIcon(iconFile)
+            } else {
+                Log.d(TAG, "Loading icon from cache: ${icon.url}")
+                val iconUri = createIconUri(iconFile)
+                this.uri = iconUri // Required for cleanup in onStopped()
+                save(icon.copy(
+                    contentUri = iconUri.toString()
+                ))
+            }
         } catch (e: Exception) {
             failed(e)
         }
@@ -56,7 +66,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         maybeDeleteFile()
     }
 
-    private fun downloadIcon() {
+    private fun downloadIcon(iconFile: File) {
         Log.d(TAG, "Downloading icon from ${icon.url}")
 
         try {
@@ -74,7 +84,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                     return
                 }
                 val resolver = applicationContext.contentResolver
-                val uri = createUri(notification)
+                val uri = createIconUri(iconFile)
                 this.uri = uri // Required for cleanup in onStopped()
 
                 Log.d(TAG, "Starting download to content URI: $uri")
@@ -137,13 +147,17 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         return size > maxAutoDownloadSize
     }
 
-    private fun createUri(notification: Notification): Uri {
+    private fun createIconFile(icon: Icon): File {
         val iconDir = File(context.cacheDir, ICON_CACHE_DIR)
         if (!iconDir.exists() && !iconDir.mkdirs()) {
             throw Exception("Cannot create cache directory for icons: $iconDir")
         }
-        val file = ensureSafeNewFile(iconDir, notification.id)
-        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file)
+        val hash = stringToHash(icon.url)
+        return File(iconDir, hash)
+    }
+
+    private fun createIconUri(iconFile: File): Uri {
+        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, iconFile)
     }
 
     companion object {
@@ -152,7 +166,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         const val MAX_ICON_DOWNLOAD_SIZE = 300000
 
         private const val TAG = "NtfyIconDownload"
-        private const val ICON_CACHE_DIR = "icons"
+        const val ICON_CACHE_DIR = "icons"
         private const val BUFFER_SIZE = 8 * 1024
     }
 }

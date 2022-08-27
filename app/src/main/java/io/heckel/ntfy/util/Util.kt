@@ -38,6 +38,7 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
 import java.io.*
+import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
@@ -468,4 +469,11 @@ fun copyToClipboard(context: Context, notification: Notification) {
     Toast
         .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
         .show()
+}
+
+fun stringToHash(s: String): String {
+    val bytes = s.toByteArray();
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(bytes)
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
