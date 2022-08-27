@@ -324,4 +324,7 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s （默认）</string>
     <string name="add_dialog_base_urls_dropdown_clear">清除服务 URL</string>
     <string name="main_banner_websocket_button_enable_now">马上开启</string>
+    <string name="detail_settings_about_header">关于</string>
+    <string name="detail_settings_about_topic_url_title">话题 URL</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已复制到剪贴板</string>
 </resources>

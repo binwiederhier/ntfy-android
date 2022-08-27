@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_menu_settings_title">Ρυθμίσεις</string>
+    <string name="channel_notifications_max_name">Ειδοποιήσεις (μέγιστη προτεραιότητα)</string>
+    <string name="channel_subscriber_notification_title">Ακρόαση για εισερχόμενες ειδοποιήσεις</string>
+    <string name="main_menu_report_bug_title">Αναφέρετε ένα σφάλμα</string>
+    <string name="main_menu_rate_title">Βαθμολογήστε την εφαρμογή ⭐</string>
+    <string name="main_action_mode_delete_dialog_message">Κατάργηση συνδρομής στο επιλεγμένο θέμα και μόνιμη διαγραφή όλων των ειδοποιήσεων;</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Μόνιμη διαγραφή</string>
+    <string name="main_item_status_text_one">%1$d ειδοποίηση</string>
+    <string name="main_item_status_text_not_one">%1$d ειδοποιήσεις</string>
+    <string name="main_item_status_reconnecting">επανασύνδεση…</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">εχθές</string>
+    <string name="main_add_button_description">Προσθήκη συνδρομής</string>
+    <string name="channel_notifications_min_name">Ειδοποιήσεις (χαμηλότερη προτεραιότητα)</string>
+    <string name="channel_notifications_low_name">Ειδοποιήσεις (χαμηλή προτεραιότητα)</string>
+    <string name="channel_subscriber_notification_instant_text">Έχει γίνει εγγραφή σε θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_instant_text_two">Έχει γίνει εγγραφή σε δύο θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_instant_text_more">Έχει γίνει εγγραφή σε %1$d θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Έχει γίνει εγγραφή σε δύο θέματα</string>
+    <string name="channel_notifications_high_name">Ειδοποιήσεις (υψηλή προτεραιότητα)</string>
+    <string name="channel_subscriber_notification_instant_text_four">Έχει γίνει εγγραφή σε τέσσερα θέματα άμεσης παράδοσης</string>
+    <string name="channel_notifications_default_name">Ειδοποιήσεις (προκαθορισμένη προτεραιότητα)</string>
+    <string name="channel_subscriber_notification_instant_text_five">Έχει γίνει εγγραφή σε πέντε θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_service_name">Συνδρομητική υπηρεσία</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Έχει γίνει εγγραφή σε τρία θέματα</string>
+    <string name="channel_subscriber_notification_instant_text_one">Έχει γίνει εγγραφή σε ένα θέμα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_instant_text_three">Έχει γίνει εγγραφή σε τρία θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_noinstant_text">Έχει γίνει εγγραφεί σε θέματα</string>
+    <string name="channel_subscriber_notification_instant_text_six">Έχει γίνει εγγραφή σε έξι θέματα άμεσης παράδοσης</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Έχει γίνει εγγραφή σε ένα θέμα</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Έχει γίνει εγγραφή σε τέσσερα θέματα</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Έχει γίνει εγγραφή σε πέντε θέματα</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Έχει γίνει εγγραφή σε έξι θέματα</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Έχει γίνει εγγραφή σε %1$d θέματα</string>
+    <string name="refresh_message_no_results">Όλα είναι ενημερωμένα</string>
+    <string name="refresh_message_result">Λήφθηκαν %1$d ειδοποίηση/ειδοποιήσεις</string>
+    <string name="refresh_message_error">Δεν ήταν δυνατή η ανανέωση %1$d συνδρομών 
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Δεν ήταν δυνατή η ανανέωση της συνδρομής: %1$s</string>
+    <string name="main_action_bar_title">Θέματα με συνδρομή</string>
+    <string name="main_menu_notifications_enabled">Ειδοποιήσεις ενεργοποιημένες</string>
+    <string name="main_menu_notifications_disabled_forever">Ειδοποιήσεις σιωπήθηκαν</string>
+    <string name="main_menu_notifications_disabled_until">Ειδοποιήσεις σε σιωπή μέχρι %1$s</string>
+    <string name="main_menu_docs_title">Διαβάστε τα έγγραφα</string>
+    <string name="main_action_mode_menu_unsubscribe">Κατάργηση συνδρομής</string>
+    <string name="main_action_mode_delete_dialog_cancel">Ακύρωση</string>
+    <string name="main_no_subscriptions_text">Φαίνεται ότι δεν έχετε ακόμη συνδρομές.</string>
+    <string name="main_unified_push_toast">Αυτή η συνδρομή διαχειρίζεται από %1$s μέσω του UnifiedPush</string>
+    <string name="main_how_to_intro">Κάντε κλικ στο + για να δημιουργήσετε ή να εγγραφείτε σε ένα θέμα. Στη συνέχεια, λαμβάνετε ειδοποιήσεις στη συσκευή σας κατά την αποστολή μηνυμάτων μέσω PUT ή POST.</string>
+    <string name="main_banner_battery_text">Η βελτιστοποίηση μπαταρίας θα πρέπει να είναι απενεργοποιημένη για την εφαρμογή ώστε αποφευχθούν προβλήματα κατά την παράδοσης ειδοποιήσεων.</string>
+    <string name="main_how_to_link">Λεπτομερείς οδηγίες που διατίθενται στο ntfy.sh, και στα έγγραφα.</string>
+    <string name="main_banner_battery_button_remind_later">Ερώτηση αργότερα</string>
+    <string name="main_banner_battery_button_dismiss">Απόρριψη</string>
+    <string name="main_banner_battery_button_fix_now">Διορθώστε τώρα</string>
+</resources>
