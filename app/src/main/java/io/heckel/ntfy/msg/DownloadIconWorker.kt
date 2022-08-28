@@ -14,11 +14,12 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.stringToHash
+import io.heckel.ntfy.util.sha256
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -45,7 +46,8 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         icon = notification.icon ?: return Result.failure()
         try {
             val iconFile = createIconFile(icon)
-            if (!iconFile.exists()) {
+            val yesterdayTimestamp = Date().time - 1000*60*60*24 // now Unix timestamp - 24 hours
+            if (!iconFile.exists() || iconFile.lastModified() < yesterdayTimestamp) {
                 downloadIcon(iconFile)
             } else {
                 Log.d(TAG, "Loading icon from cache: ${icon.url}")
@@ -152,7 +154,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         if (!iconDir.exists() && !iconDir.mkdirs()) {
             throw Exception("Cannot create cache directory for icons: $iconDir")
         }
-        val hash = stringToHash(icon.url)
+        val hash = icon.url.sha256()
         return File(iconDir, hash)
     }
 

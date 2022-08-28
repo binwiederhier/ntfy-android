@@ -380,8 +380,14 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
-    @Query("SELECT * FROM notification WHERE deleted = 1 AND icon_contentUri <> ''")
-    fun listDeletedWithIcons(): List<Notification>
+    @Query("SELECT DISTINCT icon_contentUri FROM notification WHERE deleted != 1 AND icon_contentUri <> ''")
+    fun listActiveIconUris(): List<String>
+
+    @Query("SELECT DISTINCT icon_contentUri FROM notification WHERE deleted = 1 AND icon_contentUri <> ''")
+    fun listDeletedIconUris(): List<String>
+
+    @Query("UPDATE notification SET icon_contentUri = null WHERE icon_contentUri = :uri")
+    fun clearIconUri(uri: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)

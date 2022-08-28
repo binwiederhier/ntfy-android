@@ -471,9 +471,8 @@ fun copyToClipboard(context: Context, notification: Notification) {
         .show()
 }
 
-fun stringToHash(s: String): String {
-    val bytes = s.toByteArray();
+fun String.sha256(): String {
     val md = MessageDigest.getInstance("SHA-256")
-    val digest = md.digest(bytes)
+    val digest = md.digest(this.toByteArray())
     return digest.fold("") { str, it -> str + "%02x".format(it) }
 }

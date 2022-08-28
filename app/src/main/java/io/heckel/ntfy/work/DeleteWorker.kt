@@ -33,7 +33,6 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             deleteExpiredIcons() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredAttachments() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredNotifications()
-            cleanIconCache()
             return@withContext Result.success()
         }
     }
@@ -68,40 +67,19 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         Log.d(TAG, "Deleting icons for deleted notifications")
         val resolver = applicationContext.contentResolver
         val repository = Repository.getInstance(applicationContext)
-        val notifications = repository.getDeletedNotificationsWithIcons()
-        notifications.forEach { notification ->
+        val activeIconUris = repository.getActiveIconUris()
+        val expiredIconUris = repository.getDeletedIconUris()
+        val urisToDelete = expiredIconUris.minus(activeIconUris)
+        urisToDelete.forEach { uri ->
             try {
-                val icon = notification.icon ?: return
-                val contentUri = Uri.parse(icon.contentUri ?: return)
-                Log.d(TAG, "Deleting icon for notification ${notification.id}: ${icon.contentUri} (${icon.url})")
-                val deleted = resolver.delete(contentUri, null, null) > 0
+                val deleted = resolver.delete(Uri.parse(uri), null, null) > 0
                 if (!deleted) {
-                    Log.w(TAG, "Unable to delete icon for notification ${notification.id}")
+                    Log.w(TAG, "Unable to delete icon at $uri")
                 }
-                val newIcon = icon.copy(
-                    contentUri = null,
-                )
-                val newNotification = notification.copy(icon = newIcon)
-                repository.updateNotification(newNotification)
+
+                repository.clearIconUri(uri)
             } catch (e: Exception) {
-                Log.w(TAG, "Failed to delete icon for notification: ${e.message}", e)
-            }
-        }
-    }
-
-    private fun cleanIconCache() {
-        Log.d(DeleteWorker.TAG, "Cleaning icons older than 24 hours from cache")
-        val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
-        if (iconDir.exists()) {
-            for (f: File in iconDir.listFiles()) {
-                var lastModified = f.lastModified()
-                var today = Date()
-
-                var diffInHours = ((today.time - lastModified) / (1000 * 60 * 60))
-                if (diffInHours > 24) {
-                    Log.d(DeleteWorker.TAG, "Deleting cached icon: ${f.name}")
-                    f.delete()
-                }
+                Log.w(TAG, "Failed to delete icon: ${e.message}", e)
             }
         }
     }

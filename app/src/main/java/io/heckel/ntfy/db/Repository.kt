@@ -92,8 +92,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return notificationDao.listDeletedWithAttachments()
     }
 
-    fun getDeletedNotificationsWithIcons(): List<Notification> {
-        return notificationDao.listDeletedWithIcons()
+    fun getActiveIconUris(): Set<String> {
+        return notificationDao.listActiveIconUris().toSet()
+    }
+
+    fun getDeletedIconUris(): Set<String> {
+        return notificationDao.listDeletedIconUris().toSet()
+    }
+
+    fun clearIconUri(uri: String) {
+        notificationDao.clearIconUri(uri)
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
