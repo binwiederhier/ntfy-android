@@ -2,6 +2,7 @@ package io.heckel.ntfy.work
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
@@ -10,6 +11,7 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.DownloadIconWorker
 import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.fileStat
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,18 +67,22 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
 
     private fun deleteExpiredIcons() {
         Log.d(TAG, "Deleting icons for deleted notifications")
-        val resolver = applicationContext.contentResolver
         val repository = Repository.getInstance(applicationContext)
         val activeIconUris = repository.getActiveIconUris()
-        val expiredIconUris = repository.getDeletedIconUris()
-        val urisToDelete = expiredIconUris.minus(activeIconUris)
-        urisToDelete.forEach { uri ->
+        val activeIconFilenames = activeIconUris.map{ fileStat(applicationContext, Uri.parse(it)).filename }.toSet()
+        val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
+        val allIconFilenames = iconDir.listFiles().map{ file -> file.name }
+        val filenamesToDelete = allIconFilenames.minus(activeIconFilenames)
+        filenamesToDelete.forEach { filename ->
             try {
-                val deleted = resolver.delete(Uri.parse(uri), null, null) > 0
+                val file = File(iconDir, filename)
+                val deleted = file.delete()
                 if (!deleted) {
-                    Log.w(TAG, "Unable to delete icon at $uri")
+                    Log.w(TAG, "Unable to delete icon: $filename")
                 }
 
+                val uri = FileProvider.getUriForFile(applicationContext,
+                    DownloadIconWorker.FILE_PROVIDER_AUTHORITY, file).toString()
                 repository.clearIconUri(uri)
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to delete icon: ${e.message}", e)
