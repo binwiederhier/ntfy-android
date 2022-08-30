@@ -65,7 +65,7 @@
     <string name="main_menu_rate_title">Beoordeel de app ⭐</string>
     <string name="main_item_status_text_one">%1$d melding</string>
     <string name="main_action_mode_delete_dialog_message">Afmelden van de geselecteerde onderwerp(en) en alle meldingen definitief verwijderen\?</string>
-    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_status_unified_push">%1$s (Unified Push)</string>
     <string name="main_no_subscriptions_text">Het lijkt erop dat u nog geen abonnementen heeft.</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Permanent verwijderen</string>
     <string name="main_unified_push_toast">Dit abonnement wordt beheerd door %1$s via UnifiedPush</string>
@@ -73,7 +73,7 @@
     <string name="main_banner_websocket_button_dismiss">Afwijzen</string>
     <string name="user_dialog_button_delete">Gebruiker verwijderen</string>
     <string name="user_dialog_button_cancel">Annuleren</string>
-    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSocket</string>
     <string name="settings_about_version_title">Versie</string>
     <string name="settings_about_header">Over</string>
     <string name="settings_advanced_connection_protocol_title">Verbindingsprotocol</string>
@@ -164,8 +164,8 @@
     <string name="settings_advanced_clear_logs_title">Logs verwijderen</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs verwijderd</string>
     <string name="user_dialog_description_add">Je kunt hier een gebruiker toevoegen. Alle onderwerpen voor de opgegeven server zullen deze gebruiker gebruiken.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Gebruik WebSockets om verbinding te maken met de server. Dit wordt de standaard in juni 2022.</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Gebruik een JSON stream via HTTP om verbinding te maken met de server. Deze methode is verouderd en wordt in juni 2022 verwijderd.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Gebruik WebSockets om verbinding te maken met de server. Dit is de aangeraden methode, maar deze kan extra configuratie in uw proxy vereisen.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Gebruik een JSON stream via HTTP om verbinding te maken met de server. Deze methode is getest maar kan meer batterij verbruiken.</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Upload en kopieer link (gecensureerd)</string>
     <string name="settings_advanced_export_logs_scrub_dialog_text">Deze onderwerpen/hostnamen zijn vervangen met fruitnamen zodat je het log kunt delen zonder zorgen:
 \n
@@ -317,4 +317,14 @@
     <string name="detail_settings_appearance_icon_set_summary">Stel een icoon in wat zal worden weergegeven in notificaties</string>
     <string name="detail_settings_appearance_icon_remove_title">Abonnementen icoon (tap om te verwijderen)</string>
     <string name="detail_settings_global_setting_suffix">Gebruikt globale instelling</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (standaard)</string>
+    <string name="detail_settings_appearance_display_name_title">Schermnaam</string>
+    <string name="detail_settings_appearance_display_name_message">Zet een schermnaam voor dit abonnement. Laat het veld leeg om de standaard naam te kiezen (%1$s).</string>
+    <string name="detail_settings_about_header">Over</string>
+    <string name="detail_settings_about_topic_url_title">Onderwerp URL</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Gekopieerd naar klembord</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Kies service URL</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Service URL verwijderen</string>
+    <string name="main_banner_websocket_button_enable_now">Nu inschakelen</string>
+    <string name="main_banner_websocket_text">WebSockets is de aangeraden manier om te verbinden met uw server en kan batterij verbruik verminderen. Het kan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy"> extra configuratie in uw proxy</a> vereisen. Dit kan omgeschakeld worden in de instellingen.</string>
 </resources>
