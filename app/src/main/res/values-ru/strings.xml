@@ -194,7 +194,7 @@
     <string name="notification_popup_file_downloading">Скачивается %1$s, %2$d%%
 \n%3$s</string>
     <string name="notification_popup_file_download_successful">%1$s
-\nФайл: %2$s, скачен</string>
+\nФайл: %2$s, скачан</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nФайл: %2$s, не удалось скачать</string>
     <string name="settings_notifications_muted_until_title">Приостановить уведомления</string>
@@ -306,4 +306,5 @@
     <string name="channel_subscriber_notification_instant_text_six">Подписан на шесть тем с мгновенной доставкой</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Подписан на пять тем</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Подписан на шесть тем</string>
+    <string name="main_banner_websocket_button_enable_now">Включить сейчас</string>
 </resources>
