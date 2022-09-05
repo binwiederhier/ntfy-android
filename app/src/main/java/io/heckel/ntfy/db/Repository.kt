@@ -96,10 +96,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return notificationDao.listActiveIconUris().toSet()
     }
 
-    fun getDeletedIconUris(): Set<String> {
-        return notificationDao.listDeletedIconUris().toSet()
-    }
-
     fun clearIconUri(uri: String) {
         notificationDao.clearIconUri(uri)
     }

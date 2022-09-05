@@ -90,14 +90,9 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                 this.uri = uri // Required for cleanup in onStopped()
 
                 Log.d(TAG, "Starting download to content URI: $uri")
-                val contentLength = response.headers["Content-Length"]?.toLongOrNull()
                 var bytesCopied: Long = 0
                 val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
-                val downloadLimit = if (repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_NEVER && repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_ALWAYS) {
-                    repository.getAutoDownloadMaxSize()
-                } else {
-                    MAX_ICON_DOWNLOAD_SIZE.toLong()
-                }
+                val downloadLimit = getDownloadLimit()
                 outFile.use { fileOut ->
                     val fileIn = response.body!!.byteStream()
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -144,9 +139,17 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     }
 
     private fun shouldAbortDownload(response: Response): Boolean {
-        val maxAutoDownloadSize = MAX_ICON_DOWNLOAD_SIZE
+        val maxAutoDownloadSize = getDownloadLimit()
         val size = response.headers["Content-Length"]?.toLongOrNull() ?: return false // Don't abort here if size unknown
         return size > maxAutoDownloadSize
+    }
+
+    private fun getDownloadLimit(): Long {
+        return if (repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_NEVER && repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_ALWAYS) {
+            repository.getAutoDownloadMaxSize()
+        } else {
+            MAX_ICON_DOWNLOAD_SIZE.toLong()
+        }
     }
 
     private fun createIconFile(icon: Icon): File {
