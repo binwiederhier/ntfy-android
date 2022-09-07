@@ -1,17 +1,16 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import android.util.Base64
 import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
@@ -90,6 +89,7 @@ class FirebaseService : FirebaseMessagingService() {
         val priority = data["priority"]?.toIntOrNull()
         val tags = data["tags"]
         val click = data["click"]
+        val iconUrl = data["icon"]
         val actions = data["actions"] // JSON array as string, sigh ...
         val encoding = data["encoding"]
         val attachmentName = data["attachment_name"] ?: "attachment.bin"
@@ -124,6 +124,7 @@ class FirebaseService : FirebaseMessagingService() {
                     url = attachmentUrl,
                 )
             } else null
+            val icon: Icon? = iconUrl?.let { Icon(url = it) }
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
@@ -134,6 +135,7 @@ class FirebaseService : FirebaseMessagingService() {
                 priority = toPriority(priority),
                 tags = tags ?: "",
                 click = click ?: "",
+                icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
                 notificationId = Random.nextInt(),
