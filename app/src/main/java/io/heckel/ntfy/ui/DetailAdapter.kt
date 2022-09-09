@@ -80,6 +80,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val dateView: TextView = itemView.findViewById(R.id.detail_item_date_text)
         private val titleView: TextView = itemView.findViewById(R.id.detail_item_title_text)
         private val messageView: TextView = itemView.findViewById(R.id.detail_item_message_text)
+        private val iconView: ImageView = itemView.findViewById(R.id.detail_item_icon)
         private val newDotImageView: View = itemView.findViewById(R.id.detail_item_new_dot)
         private val tagsView: TextView = itemView.findViewById(R.id.detail_item_tags_text)
         private val menuButton: ImageButton = itemView.findViewById(R.id.detail_item_menu_button)
@@ -130,11 +131,13 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
             }
             val attachment = notification.attachment
-            val exists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
+            val attachmentExists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
+            val iconExists = if (notification.icon?.contentUri != null) fileExists(context, notification.icon.contentUri) else false
             renderPriority(context, notification)
             resetCardButtons()
-            maybeRenderMenu(context, notification, exists)
-            maybeRenderAttachment(context, notification, exists)
+            maybeRenderMenu(context, notification, attachmentExists)
+            maybeRenderAttachment(context, notification, attachmentExists)
+            maybeRenderIcon(context, notification, iconExists)
             maybeRenderActions(context, notification)
         }
 
@@ -162,20 +165,35 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
-        private fun maybeRenderAttachment(context: Context, notification: Notification, exists: Boolean) {
+        private fun maybeRenderAttachment(context: Context, notification: Notification, attachmentExists: Boolean) {
             if (notification.attachment == null) {
                 attachmentImageView.visibility = View.GONE
                 attachmentBoxView.visibility = View.GONE
                 return
             }
             val attachment = notification.attachment
-            val image = attachment.contentUri != null && exists && supportedImage(attachment.type)
+            val image = attachment.contentUri != null && attachmentExists && supportedImage(attachment.type)
             maybeRenderAttachmentImage(context, attachment, image)
-            maybeRenderAttachmentBox(context, notification, attachment, exists, image)
+            maybeRenderAttachmentBox(context, notification, attachment, attachmentExists, image)
         }
 
-        private fun maybeRenderMenu(context: Context, notification: Notification, exists: Boolean) {
-            val menuButtonPopupMenu = maybeCreateMenuPopup(context, menuButton, notification, exists) // Heavy lifting not during on-click
+        private fun maybeRenderIcon(context: Context, notification: Notification, iconExists: Boolean) {
+            if (notification.icon == null || !iconExists) {
+                iconView.visibility = View.GONE
+                return
+            }
+            try {
+                val icon = notification.icon
+                val bitmap = icon.contentUri?.readBitmapFromUri(context) ?: throw Exception("uri empty")
+                iconView.setImageBitmap(bitmap)
+                iconView.visibility = View.VISIBLE
+            } catch (_: Exception) {
+                iconView.visibility = View.GONE
+            }
+        }
+
+        private fun maybeRenderMenu(context: Context, notification: Notification, attachmentExists: Boolean) {
+            val menuButtonPopupMenu = maybeCreateMenuPopup(context, menuButton, notification, attachmentExists) // Heavy lifting not during on-click
             if (menuButtonPopupMenu != null) {
                 menuButton.setOnClickListener { menuButtonPopupMenu.show() }
                 menuButton.visibility = View.VISIBLE
@@ -240,7 +258,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             attachmentBoxView.visibility = View.VISIBLE
         }
 
-        private fun maybeCreateMenuPopup(context: Context, anchor: View?, notification: Notification, exists: Boolean): PopupMenu? {
+        private fun maybeCreateMenuPopup(context: Context, anchor: View?, notification: Notification, attachmentExists: Boolean): PopupMenu? {
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
             val attachment = notification.attachment // May be null
@@ -266,10 +284,10 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             if (hasClickLink) {
                 copyContentsItem.setOnMenuItemClickListener { copyContents(context, notification) }
             }
-            openItem.isVisible = hasAttachment && exists
-            downloadItem.isVisible = hasAttachment && !exists && !expired && !inProgress
-            deleteItem.isVisible = hasAttachment && exists
-            saveFileItem.isVisible = hasAttachment && exists
+            openItem.isVisible = hasAttachment && attachmentExists
+            downloadItem.isVisible = hasAttachment && !attachmentExists && !expired && !inProgress
+            deleteItem.isVisible = hasAttachment && attachmentExists
+            saveFileItem.isVisible = hasAttachment && attachmentExists
             copyUrlItem.isVisible = hasAttachment && !expired
             cancelItem.isVisible = hasAttachment && inProgress
             copyContentsItem.isVisible = notification.click != ""
