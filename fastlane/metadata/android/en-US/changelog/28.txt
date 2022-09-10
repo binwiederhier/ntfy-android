@@ -4,11 +4,13 @@ Features:
 * Polling is now done with since=<id> API, which makes deduping easier (#165)
 * Turned JSON stream deprecation banner into "Use WebSockets" banner (no ticket)
 * Move action buttons in notification cards (#236, thanks to @wunter8)
+* Icons can be set for each individual notification (#126, thanks to @wunter8)
 
 Bugs:
 * Long-click selecting of notifications doesn't scoll to the top anymore (#235, thanks to @wunter8)
 * Add attachment and click URL extras to MESSAGE_RECEIVED broadcast (#329, thanks to @wunter8)
 * Accessibility: Clear/choose service URL button in base URL dropdown now has a label (#292, thanks to @mhameed for reporting)
+* Do not crash app if preview image too large (no ticket)
 
 Additional translations:
 * Italian (thanks to @Genio2003)

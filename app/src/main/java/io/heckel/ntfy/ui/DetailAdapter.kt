@@ -131,13 +131,13 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
             }
             val attachment = notification.attachment
-            val attachmentExists = if (attachment?.contentUri != null) fileExists(context, attachment.contentUri) else false
-            val iconExists = if (notification.icon?.contentUri != null) fileExists(context, notification.icon.contentUri) else false
+            val attachmentFileStat = maybeFileStat(context, attachment?.contentUri)
+            val iconFileStat = maybeFileStat(context, notification.icon?.contentUri)
             renderPriority(context, notification)
             resetCardButtons()
-            maybeRenderMenu(context, notification, attachmentExists)
-            maybeRenderAttachment(context, notification, attachmentExists)
-            maybeRenderIcon(context, notification, iconExists)
+            maybeRenderMenu(context, notification, attachmentFileStat)
+            maybeRenderAttachment(context, notification, attachmentFileStat)
+            maybeRenderIcon(context, notification, iconFileStat)
             maybeRenderActions(context, notification)
         }
 
@@ -165,20 +165,20 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
-        private fun maybeRenderAttachment(context: Context, notification: Notification, attachmentExists: Boolean) {
+        private fun maybeRenderAttachment(context: Context, notification: Notification, attachmentFileStat: FileInfo?) {
             if (notification.attachment == null) {
                 attachmentImageView.visibility = View.GONE
                 attachmentBoxView.visibility = View.GONE
                 return
             }
             val attachment = notification.attachment
-            val image = attachment.contentUri != null && attachmentExists && supportedImage(attachment.type)
+            val image = attachment.contentUri != null && supportedImage(attachment.type) && previewableImage(attachmentFileStat)
             maybeRenderAttachmentImage(context, attachment, image)
-            maybeRenderAttachmentBox(context, notification, attachment, attachmentExists, image)
+            maybeRenderAttachmentBox(context, notification, attachment, attachmentFileStat, image)
         }
 
-        private fun maybeRenderIcon(context: Context, notification: Notification, iconExists: Boolean) {
-            if (notification.icon == null || !iconExists) {
+        private fun maybeRenderIcon(context: Context, notification: Notification, iconStat: FileInfo?) {
+            if (notification.icon == null || !previewableImage(iconStat)) {
                 iconView.visibility = View.GONE
                 return
             }
@@ -192,8 +192,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
-        private fun maybeRenderMenu(context: Context, notification: Notification, attachmentExists: Boolean) {
-            val menuButtonPopupMenu = maybeCreateMenuPopup(context, menuButton, notification, attachmentExists) // Heavy lifting not during on-click
+        private fun maybeRenderMenu(context: Context, notification: Notification, attachmentFileStat: FileInfo?) {
+            val menuButtonPopupMenu = maybeCreateMenuPopup(context, menuButton, notification, attachmentFileStat) // Heavy lifting not during on-click
             if (menuButtonPopupMenu != null) {
                 menuButton.setOnClickListener { menuButtonPopupMenu.show() }
                 menuButton.visibility = View.VISIBLE
@@ -238,14 +238,14 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             return button
         }
 
-        private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, exists: Boolean, image: Boolean) {
+        private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, attachmentFileStat: FileInfo?, image: Boolean) {
             if (image) {
                 attachmentBoxView.visibility = View.GONE
                 return
             }
-            attachmentInfoView.text = formatAttachmentDetails(context, attachment, exists)
+            attachmentInfoView.text = formatAttachmentDetails(context, attachment, attachmentFileStat)
             attachmentIconView.setImageResource(mimeTypeToIconResource(attachment.type))
-            val attachmentBoxPopupMenu = maybeCreateMenuPopup(context, attachmentBoxView, notification, exists) // Heavy lifting not during on-click
+            val attachmentBoxPopupMenu = maybeCreateMenuPopup(context, attachmentBoxView, notification, attachmentFileStat) // Heavy lifting not during on-click
             if (attachmentBoxPopupMenu != null) {
                 attachmentBoxView.setOnClickListener { attachmentBoxPopupMenu.show() }
             } else {
@@ -258,11 +258,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             attachmentBoxView.visibility = View.VISIBLE
         }
 
-        private fun maybeCreateMenuPopup(context: Context, anchor: View?, notification: Notification, attachmentExists: Boolean): PopupMenu? {
+        private fun maybeCreateMenuPopup(context: Context, anchor: View?, notification: Notification, attachmentFileStat: FileInfo?): PopupMenu? {
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.menu_detail_attachment, popup.menu)
             val attachment = notification.attachment // May be null
             val hasAttachment = attachment != null
+            val attachmentExists = attachmentFileStat != null
             val hasClickLink = notification.click != ""
             val downloadItem = popup.menu.findItem(R.id.detail_item_menu_download)
             val cancelItem = popup.menu.findItem(R.id.detail_item_menu_cancel)
@@ -300,8 +301,9 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             return popup
         }
 
-        private fun formatAttachmentDetails(context: Context, attachment: Attachment, exists: Boolean): String {
+        private fun formatAttachmentDetails(context: Context, attachment: Attachment, attachmentFileStat: FileInfo?): String {
             val name = attachment.name
+            val exists = attachmentFileStat != null
             val notYetDownloaded = !exists && attachment.progress == ATTACHMENT_PROGRESS_NONE
             val downloading = !exists && attachment.progress in 0..99
             val deleted = !exists && (attachment.progress == ATTACHMENT_PROGRESS_DONE || attachment.progress == ATTACHMENT_PROGRESS_DELETED)
@@ -517,6 +519,10 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
             context.sendBroadcast(intent)
         }
+
+        private fun previewableImage(fileStat: FileInfo?): Boolean {
+            return if (fileStat != null) fileStat.size <= IMAGE_PREVIEW_MAX_BYTES else false
+        }
     }
 
     object TopicDiffCallback : DiffUtil.ItemCallback<Notification>() {
@@ -532,5 +538,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     companion object {
         const val TAG = "NtfyDetailAdapter"
         const val REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD = 9876
+        const val IMAGE_PREVIEW_MAX_BYTES = 5 * 1024 * 1024 // Too large images crash the app with "Canvas: trying to draw too large(233280000bytes) bitmap."
     }
 }

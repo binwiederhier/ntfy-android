@@ -37,7 +37,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
@@ -257,6 +259,14 @@ fun fileStat(context: Context, contentUri: Uri?): FileInfo {
             filename = c.getString(nameIndex),
             size = c.getLong(sizeIndex)
         )
+    }
+}
+
+fun maybeFileStat(context: Context, contentUri: String?): FileInfo? {
+    return try {
+        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
+    } catch (_: Exception) {
+        null
     }
 }
 

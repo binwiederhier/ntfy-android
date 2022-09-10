@@ -71,7 +71,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         val activeIconUris = repository.getActiveIconUris()
         val activeIconFilenames = activeIconUris.map{ fileStat(applicationContext, Uri.parse(it)).filename }.toSet()
         val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
-        val allIconFilenames = iconDir.listFiles().map{ file -> file.name }
+        val allIconFilenames = iconDir.listFiles()?.map{ file -> file.name }.orEmpty()
         val filenamesToDelete = allIconFilenames.minus(activeIconFilenames)
         filenamesToDelete.forEach { filename ->
             try {
@@ -80,7 +80,6 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
                 if (!deleted) {
                     Log.w(TAG, "Unable to delete icon: $filename")
                 }
-
                 val uri = FileProvider.getUriForFile(applicationContext,
                     DownloadIconWorker.FILE_PROVIDER_AUTHORITY, file).toString()
                 repository.clearIconUri(uri)
@@ -115,7 +114,6 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             val deleteOlderThanTimestamp = (System.currentTimeMillis()/1000) - HARD_DELETE_AFTER_SECONDS
             Log.d(TAG, "[$logId] Hard deleting notifications older than $markDeletedOlderThanTimestamp")
             repository.removeNotificationsIfOlderThan(subscription.id, deleteOlderThanTimestamp)
-
         }
     }
 

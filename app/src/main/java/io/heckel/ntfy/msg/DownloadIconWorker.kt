@@ -98,7 +98,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                     val buffer = ByteArray(BUFFER_SIZE)
                     var bytes = fileIn.read(buffer)
                     while (bytes >= 0) {
-                        if (downloadLimit != null && bytesCopied > downloadLimit) {
+                        if (bytesCopied > downloadLimit) {
                             throw Exception("Icon is longer than max download size.")
                         }
                         fileOut.write(buffer, 0, bytes)
@@ -106,10 +106,9 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                         bytes = fileIn.read(buffer)
                     }
                 }
+                // TODO: Resize icon if >5MB, so it can be previewed. Right now it'll just not be shown.
                 Log.d(TAG, "Icon download: successful response, proceeding with download")
-                save(icon.copy(
-                    contentUri = uri.toString()
-                ))
+                save(icon.copy(contentUri = uri.toString()))
             }
         } catch (e: Exception) {
             failed(e)
