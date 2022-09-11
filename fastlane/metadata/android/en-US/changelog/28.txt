@@ -15,5 +15,6 @@ Bugs:
 Additional translations:
 * Italian (thanks to @Genio2003)
 * Dutch (thanks to @SchoNie)
+* Ukranian (thanks to @v.kopitsa)
 
 Thank you to @wunter8 for proactively picking up some Android tickets, and fixing them! You rock!
