@@ -96,6 +96,8 @@ class NotificationService(val context: Context) {
         val contentUri = notification.attachment?.contentUri
         val isSupportedImage = supportedImage(notification.attachment?.type)
         val subscriptionIcon = if (subscription.icon != null) subscription.icon.readBitmapFromUriOrNull(context) else null
+        val notificationIcon = if (notification.icon != null) notification.icon.contentUri?.readBitmapFromUriOrNull(context) else null
+        val largeIcon = notificationIcon ?: subscriptionIcon
         if (contentUri != null && isSupportedImage) {
             try {
                 val attachmentBitmap = contentUri.readBitmapFromUri(context)
@@ -104,7 +106,7 @@ class NotificationService(val context: Context) {
                     .setLargeIcon(attachmentBitmap)
                     .setStyle(NotificationCompat.BigPictureStyle()
                         .bigPicture(attachmentBitmap)
-                        .bigLargeIcon(subscriptionIcon)) // May be null
+                        .bigLargeIcon(largeIcon)) // May be null
             } catch (_: Exception) {
                 val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
                 builder
@@ -116,7 +118,7 @@ class NotificationService(val context: Context) {
             builder
                 .setContentText(message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-                .setLargeIcon(subscriptionIcon) // May be null
+                .setLargeIcon(largeIcon) // May be null
         }
     }
 
@@ -275,7 +277,7 @@ class NotificationService(val context: Context) {
 
     /**
      * Receives the broadcast from
-     * - the "http" and "broadcast" action button (the "view" actio is handled differently)
+     * - the "http" and "broadcast" action button (the "view" action is handled differently)
      * - the "download"/"cancel" action button
      *
      * Then queues a Worker via WorkManager to execute the action in the background
@@ -285,7 +287,7 @@ class NotificationService(val context: Context) {
             val type = intent.getStringExtra(BROADCAST_EXTRA_TYPE) ?: return
             val notificationId = intent.getStringExtra(BROADCAST_EXTRA_NOTIFICATION_ID) ?: return
             when (type) {
-                BROADCAST_TYPE_DOWNLOAD_START -> DownloadManager.enqueue(context, notificationId, userAction = true)
+                BROADCAST_TYPE_DOWNLOAD_START -> DownloadManager.enqueue(context, notificationId, userAction = true, DownloadType.ATTACHMENT)
                 BROADCAST_TYPE_DOWNLOAD_CANCEL -> DownloadManager.cancel(context, notificationId)
                 BROADCAST_TYPE_USER_ACTION -> {
                     val actionId = intent.getStringExtra(BROADCAST_EXTRA_ACTION_ID) ?: return

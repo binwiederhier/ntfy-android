@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.util.joinTags
 import io.heckel.ntfy.util.toPriority
@@ -49,6 +50,7 @@ class NotificationParser {
                 )
             }
         } else null
+        val icon: Icon? = if (message.icon != null) Icon(url = message.icon) else null
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,
@@ -59,6 +61,7 @@ class NotificationParser {
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
             click = message.click ?: "",
+            icon = icon,
             actions = actions,
             attachment = attachment,
             notificationId = notificationId,

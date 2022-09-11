@@ -29,7 +29,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         val notify = shouldNotify(subscription, notification, muted)
         val broadcast = shouldBroadcast(subscription)
         val distribute = shouldDistribute(subscription)
-        val download = shouldDownload(notification)
+        val downloadAttachment = shouldDownloadAttachment(notification)
+        val downloadIcon = shouldDownloadIcon(notification)
         if (notify) {
             notifier.display(subscription, notification)
         }
@@ -41,12 +42,16 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
                 distributor.sendMessage(appId, connectorToken, decodeBytesMessage(notification))
             }
         }
-        if (download) {
-            DownloadManager.enqueue(context, notification.id, userAction = false)
+        if (downloadAttachment && downloadIcon) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.BOTH)
+        } else if (downloadAttachment) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.ATTACHMENT)
+        } else if (downloadIcon) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.ICON)
         }
     }
 
-    private fun shouldDownload(notification: Notification): Boolean {
+    private fun shouldDownloadAttachment(notification: Notification): Boolean {
         if (notification.attachment == null) {
             return false
         }
@@ -55,8 +60,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
             Log.d(TAG, "Attachment already expired at ${attachment.expires}, not downloading")
             return false
         }
-        val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()
-        when (maxAutoDownloadSize) {
+        when (val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()) {
             Repository.AUTO_DOWNLOAD_ALWAYS -> return true
             Repository.AUTO_DOWNLOAD_NEVER -> return false
             else -> {
@@ -66,6 +70,9 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
                 return attachment.size <= maxAutoDownloadSize
             }
         }
+    }
+    private fun shouldDownloadIcon(notification: Notification): Boolean {
+        return notification.icon != null
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {

@@ -21,7 +21,7 @@ import okhttp3.Response
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-class DownloadWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.MINUTES) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -80,9 +80,9 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                 this.uri = uri // Required for cleanup in onStopped()
 
                 Log.d(TAG, "Starting download to content URI: $uri")
-                val contentLength = response.headers["Content-Length"]?.toLongOrNull()
                 var bytesCopied: Long = 0
                 val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
+                val downloadLimit = getDownloadLimit(userAction)
                 outFile.use { fileOut ->
                     val fileIn = response.body!!.byteStream()
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -102,8 +102,8 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
                             save(attachment.copy(progress = progress))
                             lastProgress = System.currentTimeMillis()
                         }
-                        if (contentLength != null && bytesCopied > contentLength) {
-                            throw Exception("Attachment is longer than response headers said.")
+                        if (downloadLimit != null && bytesCopied > downloadLimit) {
+                            throw Exception("Attachment is longer than max download size.")
                         }
                         fileOut.write(buffer, 0, bytes)
                         bytesCopied += bytes
@@ -182,9 +182,17 @@ class DownloadWorker(private val context: Context, params: WorkerParameters) : W
             Repository.AUTO_DOWNLOAD_NEVER -> return true
             Repository.AUTO_DOWNLOAD_ALWAYS -> return false
             else -> {
-                val size = attachment.size ?: return true // Abort if size unknown
+                val size = attachment.size ?: return false // Don't abort if size unknown
                 return size > maxAutoDownloadSize
             }
+        }
+    }
+
+    private fun getDownloadLimit(userAction: Boolean): Long? {
+        return if (userAction || repository.getAutoDownloadMaxSize() == Repository.AUTO_DOWNLOAD_ALWAYS) {
+            null
+        } else {
+            repository.getAutoDownloadMaxSize()
         }
     }
 

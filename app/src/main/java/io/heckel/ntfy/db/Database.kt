@@ -66,6 +66,7 @@ data class Notification(
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
     @ColumnInfo(name = "tags") val tags: String,
     @ColumnInfo(name = "click") val click: String, // URL/intent to open on notification click
+    @Embedded(prefix = "icon_") val icon: Icon?,
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
@@ -90,6 +91,15 @@ const val ATTACHMENT_PROGRESS_INDETERMINATE = -2
 const val ATTACHMENT_PROGRESS_FAILED = -3
 const val ATTACHMENT_PROGRESS_DELETED = -4
 const val ATTACHMENT_PROGRESS_DONE = 100
+
+@Entity
+data class Icon(
+    @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
+    @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
+) {
+    constructor(url:String) :
+            this(url, null)
+}
 
 @Entity
 data class Action(
@@ -269,6 +279,8 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN lastNotificationId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN displayName TEXT")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN icon_url TEXT") // Room limitation: Has to be nullable for @Embedded
+                db.execSQL("ALTER TABLE Notification ADD COLUMN icon_contentUri TEXT")
             }
         }
     }
@@ -367,6 +379,12 @@ interface NotificationDao {
 
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
+
+    @Query("SELECT DISTINCT icon_contentUri FROM notification WHERE deleted != 1 AND icon_contentUri <> ''")
+    fun listActiveIconUris(): List<String>
+
+    @Query("UPDATE notification SET icon_contentUri = null WHERE icon_contentUri = :uri")
+    fun clearIconUri(uri: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)

@@ -2,16 +2,21 @@ package io.heckel.ntfy.work
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DELETED
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.msg.DownloadIconWorker
 import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.fileStat
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.util.*
 
 /**
  * Deletes notifications marked for deletion and attachments for deleted notifications.
@@ -27,6 +32,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
+            deleteExpiredIcons() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredAttachments() // Before notifications, so we will also catch manually deleted notifications
             deleteExpiredNotifications()
             return@withContext Result.success()
@@ -59,6 +65,30 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         }
     }
 
+    private fun deleteExpiredIcons() {
+        Log.d(TAG, "Deleting icons for deleted notifications")
+        val repository = Repository.getInstance(applicationContext)
+        val activeIconUris = repository.getActiveIconUris()
+        val activeIconFilenames = activeIconUris.map{ fileStat(applicationContext, Uri.parse(it)).filename }.toSet()
+        val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
+        val allIconFilenames = iconDir.listFiles()?.map{ file -> file.name }.orEmpty()
+        val filenamesToDelete = allIconFilenames.minus(activeIconFilenames)
+        filenamesToDelete.forEach { filename ->
+            try {
+                val file = File(iconDir, filename)
+                val deleted = file.delete()
+                if (!deleted) {
+                    Log.w(TAG, "Unable to delete icon: $filename")
+                }
+                val uri = FileProvider.getUriForFile(applicationContext,
+                    DownloadIconWorker.FILE_PROVIDER_AUTHORITY, file).toString()
+                repository.clearIconUri(uri)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete icon: ${e.message}", e)
+            }
+        }
+    }
+
     private suspend fun deleteExpiredNotifications() {
         Log.d(TAG, "Deleting expired notifications")
         val repository = Repository.getInstance(applicationContext)
@@ -84,7 +114,6 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
             val deleteOlderThanTimestamp = (System.currentTimeMillis()/1000) - HARD_DELETE_AFTER_SECONDS
             Log.d(TAG, "[$logId] Hard deleting notifications older than $markDeletedOlderThanTimestamp")
             repository.removeNotificationsIfOlderThan(subscription.id, deleteOlderThanTimestamp)
-
         }
     }
 
