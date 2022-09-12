@@ -34,6 +34,8 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.DownloadManager
+import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
@@ -456,7 +458,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             try {
                 val user = repository.getUser(subscription.baseUrl) // May be null
                 val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
-                notifications.forEach { notification -> repository.addNotification(notification) }
+                notifications.forEach { notification ->
+                    repository.addNotification(notification)
+                    if (notification.icon != null) {
+                        DownloadManager.enqueue(this@MainActivity, notification.id, userAction = false, DownloadType.ICON)
+                    }
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
             }

@@ -37,7 +37,10 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
@@ -259,6 +262,14 @@ fun fileStat(context: Context, contentUri: Uri?): FileInfo {
     }
 }
 
+fun maybeFileStat(context: Context, contentUri: String?): FileInfo? {
+    return try {
+        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
+    } catch (_: Exception) {
+        null
+    }
+}
+
 data class FileInfo(
     val filename: String,
     val size: Long,
@@ -468,4 +479,10 @@ fun copyToClipboard(context: Context, notification: Notification) {
     Toast
         .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
         .show()
+}
+
+fun String.sha256(): String {
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(this.toByteArray())
+    return digest.fold("") { str, it -> str + "%02x".format(it) }
 }

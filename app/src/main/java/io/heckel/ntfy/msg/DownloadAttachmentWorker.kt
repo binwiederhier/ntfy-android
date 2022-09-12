@@ -82,11 +82,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 Log.d(TAG, "Starting download to content URI: $uri")
                 var bytesCopied: Long = 0
                 val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
-                val downloadLimit = if (repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_NEVER && repository.getAutoDownloadMaxSize() != Repository.AUTO_DOWNLOAD_ALWAYS) {
-                    repository.getAutoDownloadMaxSize()
-                } else {
-                    null
-                }
+                val downloadLimit = getDownloadLimit(userAction)
                 outFile.use { fileOut ->
                     val fileIn = response.body!!.byteStream()
                     val buffer = ByteArray(BUFFER_SIZE)
@@ -189,6 +185,14 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 val size = attachment.size ?: return false // Don't abort if size unknown
                 return size > maxAutoDownloadSize
             }
+        }
+    }
+
+    private fun getDownloadLimit(userAction: Boolean): Long? {
+        return if (userAction || repository.getAutoDownloadMaxSize() == Repository.AUTO_DOWNLOAD_ALWAYS) {
+            null
+        } else {
+            repository.getAutoDownloadMaxSize()
         }
     }
 

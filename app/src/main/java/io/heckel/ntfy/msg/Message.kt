@@ -13,7 +13,7 @@ data class Message(
     val priority: Int?,
     val tags: List<String>?,
     val click: String?,
-    val icon: MessageIcon?,
+    val icon: String?,
     val actions: List<MessageAction>?,
     val title: String?,
     val message: String,

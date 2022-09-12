@@ -152,8 +152,6 @@ class Backuper(val context: Context) {
                 val icon = if (n.icon != null) {
                     io.heckel.ntfy.db.Icon(
                         url = n.icon.url,
-                        type = n.icon.type,
-                        size = n.icon.size,
                         contentUri = n.icon.contentUri,
                     )
                 } else {
@@ -281,8 +279,6 @@ class Backuper(val context: Context) {
             val icon = if (n.icon != null) {
                 Icon(
                     url = n.icon.url,
-                    type = n.icon.type,
-                    size = n.icon.size,
                     contentUri = n.icon.contentUri,
                 )
             } else {
@@ -403,10 +399,7 @@ data class Attachment(
 
 data class Icon(
     val url: String, // URL (mandatory, see ntfy server)
-    val type: String?, // MIME type
-    val size: Long?, // Size in bytes
     val contentUri: String?, // After it's downloaded, the content:// location
-    val progress: Int, // Progress during download, -1 if not downloaded
 )
 
 data class User(

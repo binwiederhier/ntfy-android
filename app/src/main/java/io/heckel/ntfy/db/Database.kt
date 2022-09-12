@@ -95,12 +95,10 @@ const val ATTACHMENT_PROGRESS_DONE = 100
 @Entity
 data class Icon(
     @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
-    @ColumnInfo(name = "type") val type: String?, // MIME type
-    @ColumnInfo(name = "size") val size: Long?, // Size in bytes
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
 ) {
-    constructor(url:String, type: String?, size: Long?) :
-            this(url, type, size, null)
+    constructor(url:String) :
+            this(url, null)
 }
 
 @Entity
@@ -282,8 +280,6 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN lastNotificationId TEXT")
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN displayName TEXT")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN icon_url TEXT") // Room limitation: Has to be nullable for @Embedded
-                db.execSQL("ALTER TABLE Notification ADD COLUMN icon_type TEXT")
-                db.execSQL("ALTER TABLE Notification ADD COLUMN icon_size INT")
                 db.execSQL("ALTER TABLE Notification ADD COLUMN icon_contentUri TEXT")
             }
         }
@@ -384,8 +380,11 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
-    @Query("SELECT * FROM notification WHERE deleted = 1 AND icon_contentUri <> ''")
-    fun listDeletedWithIcons(): List<Notification>
+    @Query("SELECT DISTINCT icon_contentUri FROM notification WHERE deleted != 1 AND icon_contentUri <> ''")
+    fun listActiveIconUris(): List<String>
+
+    @Query("UPDATE notification SET icon_contentUri = null WHERE icon_contentUri = :uri")
+    fun clearIconUri(uri: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(notification: Notification)

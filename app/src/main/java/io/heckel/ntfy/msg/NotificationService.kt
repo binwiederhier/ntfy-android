@@ -96,7 +96,7 @@ class NotificationService(val context: Context) {
         val contentUri = notification.attachment?.contentUri
         val isSupportedImage = supportedImage(notification.attachment?.type)
         val subscriptionIcon = if (subscription.icon != null) subscription.icon.readBitmapFromUriOrNull(context) else null
-        val notificationIcon = if (notification.icon != null && supportedImage(notification.icon.type)) notification.icon.contentUri?.readBitmapFromUriOrNull(context) else null
+        val notificationIcon = if (notification.icon != null) notification.icon.contentUri?.readBitmapFromUriOrNull(context) else null
         val largeIcon = notificationIcon ?: subscriptionIcon
         if (contentUri != null && isSupportedImage) {
             try {
