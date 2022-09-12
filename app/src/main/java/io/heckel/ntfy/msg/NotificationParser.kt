@@ -32,13 +32,6 @@ class NotificationParser {
                 url = message.attachment.url,
             )
         } else null
-        val icon = if (message.icon?.url != null) {
-            Icon(
-                url = message.icon.url,
-                type = message.icon.type,
-                size = message.icon.size,
-            )
-        } else null
         val actions = if (message.actions != null) {
             message.actions.map { a ->
                 Action(

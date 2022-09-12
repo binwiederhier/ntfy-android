@@ -44,11 +44,4 @@ data class MessageAction(
     val extras: Map<String,String>?, // used in "broadcast" action
 )
 
-@Keep
-data class MessageIcon(
-    val url: String,
-    val type: String?,
-    val size: Long?,
-)
-
 const val MESSAGE_ENCODING_BASE64 = "base64"
