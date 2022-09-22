@@ -298,4 +298,8 @@
     <string name="settings_notifications_priority_default">forvalg</string>
     <string name="settings_notifications_priority_high">høy</string>
     <string name="settings_notifications_priority_max">maks.</string>
+    <string name="channel_subscriber_notification_instant_text_six">Du abonnerer på seks emner med umiddelbar levering</string>
+    <string name="channel_subscriber_notification_instant_text_five">Du abonnerer på fem emner med umiddelbar levering</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Du abonnerer på fem emner</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Du abonnerer på seks emner</string>
 </resources>
