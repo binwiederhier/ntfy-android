@@ -1,0 +1,17 @@
+핸드폰에 PUT/POST 요청을 보내서 알림을 보내세요. Bash 스크립트나 파워쉘 스크립트(예를 들면 curl이나 Invoke-WebRequest)를 이용하실수 있으며 당신의 앱에서 직접 알림을 보내실수도 있습니다.
+
+ntfy는 https://ntfy.sh의 안드로이드 클라이언트입니다. https://ntfy.sh는 무료이며 오픈 소스인 HTTP 기반 pub-sub 서비스입니다. 이 앱을 통해 주제를 구독하실수 있으며 간단한 HTTP API를 이용해 메세지를 보내실수도 있습니다.
+
+사용 예시:
+* 긴 작업이 완료되었을때 알림 보내기
+* 백업이 완료되었을때 핸드폰에 알리기
+* 누군가 당신의 서버에 침입했을때 경고하기
+
+사용법:
+
+$ curl -d "백업이 완료되었습니다" ntfy.sh/mytopic
+
+더 많은 예제와 사용 방법을 여기에서 확인하세요:
+* 웹 사이트: https://ntfy.sh
+* Github (서버): https://github.com/binwiederhier/ntfy
+* Github (안드로이드 앱): https://github.com/binwiederhier/ntfy-android
