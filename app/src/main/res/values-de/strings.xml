@@ -69,7 +69,7 @@
     <string name="detail_delete_dialog_permanently_delete">Endgültig löschen</string>
     <string name="detail_delete_dialog_cancel">Abbrechen</string>
     <string name="detail_test_title">Test: Du kannst einen Titel festlegen.</string>
-    <string name="detail_test_message">Dies ist eine Test-Benachrichtigung aus der ntfy Android-App. Sie hat die Priorität %1$d. Wenn Du eine neue Test-Benachrichtigung sendest, siehst diese vielleicht anders aus.</string>
+    <string name="detail_test_message">Dies ist eine Test-Benachrichtigung aus der ntfy Android-App. Sie hat die Priorität %1$d. Wenn Du eine neue Test-Benachrichtigung sendest, sieht diese vielleicht anders aus.</string>
     <string name="detail_test_message_error">Nachricht kann nicht gesendet werden: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Nachricht kann nicht gesendet werden: Benutzer \"%1$s\" hat keine Berechtigung.</string>
     <string name="detail_test_message_error_too_large">Nachricht kann nicht gesendet werden: Anhang zu groß.</string>
