@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_min_name">Notificacions (prioritat min)</string>
+    <string name="channel_notifications_low_name">Notificacions (prioritat min)</string>
+    <string name="channel_notifications_default_name">Notificacions (prioritat defecte)</string>
+    <string name="channel_notifications_high_name">Notificacions (alta prioritat)</string>
+    <string name="channel_notifications_max_name">Notificacions (prioritat màx)</string>
+    <string name="channel_subscriber_service_name">Servei Subscripció</string>
+</resources>
