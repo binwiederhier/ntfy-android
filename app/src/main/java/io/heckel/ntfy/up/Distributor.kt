@@ -10,7 +10,7 @@ import io.heckel.ntfy.util.Log
  */
 class Distributor(val context: Context) {
     fun sendMessage(app: String, connectorToken: String, message: ByteArray) {
-        Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): ${String(message)} (${message.size} bytes)}")
+        Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): ${message.size} bytes")
         val broadcastIntent = Intent()
         broadcastIntent.`package` = app
         broadcastIntent.action = ACTION_MESSAGE
