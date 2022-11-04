@@ -213,7 +213,7 @@
     <string name="settings_advanced_clear_logs_summary">Odstranit dříve zaznamenané protokoly a začít znovu</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Protokoly odstraněny</string>
     <string name="settings_advanced_connection_protocol_title">Protokol připojení</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Pro připojení k serveru použít WebSockets. Toto nastavení se stane výchozím v červnu 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Pro připojení k serveru použít WebSockets. Jedná se o doporučenou metodu, která však může vyžadovat další konfiguraci v proxy serveru.</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">O programu</string>
     <string name="settings_about_version_title">Verze</string>
@@ -299,7 +299,7 @@
     <string name="settings_advanced_export_logs_entry_copy_original">Kopírovat do schránky</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopírovat do schránky (cenzurované)</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Pro připojení k serveru použít JSON přes protokol HTTP. Tato metoda je zastaralá a bude odstraněna v červnu 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Pro připojení k serveru použít JSON přes protokol HTTP. Tato metoda je ověřená v praxi, ale může spotřebovávat více baterie.</string>
     <string name="user_dialog_description_add">Zde můžete přidat uživatele. Tento uživatel bude používán ve všech tématech pro daný server.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON přes HTTP</string>
     <string name="channel_subscriber_notification_instant_text_five">Přihlášeno k odběru pěti témat okamžitého doručení</string>
@@ -317,4 +317,14 @@
     <string name="channel_subscriber_notification_instant_text_six">Přihlášeno k odběru šesti témat okamžitého doručení</string>
     <string name="detail_settings_notifications_instant_summary_off">Oznámení jsou doručena pomocí služby Firebase. Doručování může být zpožděné, ale spotřebovává méně baterie.</string>
     <string name="detail_settings_notifications_instant_title">Okamžité doručení</string>
+    <string name="detail_settings_appearance_display_name_title">Zobrazit název</string>
+    <string name="detail_settings_appearance_display_name_message">Nastavit vlastní zobrazovaný název pro tento odběr. Pro výchozí hodnotu (%1$s) ponechte prázdné.</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (výchozí)</string>
+    <string name="detail_settings_about_header">O aplikaci</string>
+    <string name="detail_settings_about_topic_url_title">URL tématu</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Zkopírováno do schránky</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Vymazat URL služby</string>
+    <string name="main_banner_websocket_button_enable_now">Povolit nyní</string>
+    <string name="main_banner_websocket_text">WebSockets jsou doporučenou metodou připojení k vašemu serveru, která může zlepšit zvýšit výdrž baterie, ale může vyžadovat <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">další konfiguraci v proxy serveru</a>. Metodu připojení lze přepnout v Nastavení.</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Zvolit URL služby</string>
 </resources>
