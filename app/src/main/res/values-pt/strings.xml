@@ -1,2 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_subscriber_notification_instant_text_three">Inscrito em três tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_four">Inscrito em quatro tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_five">Inscrito em cinco tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_six">Inscrito em seis tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d tópico(s) de entrega instantânea</string>
+    <string name="channel_subscriber_notification_noinstant_text">Inscrito em tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tópico</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Inscrito em dois tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Inscrito em três tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Inscrito em seis tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Inscrito em %1$d tópico(s)</string>
+    <string name="refresh_message_result">%1$d notificação(ões) recebida(s)</string>
+    <string name="refresh_message_no_results">Tudo está atualizado</string>
+    <string name="refresh_message_error">Não foi possível atualizar %1$d inscrição(ões)
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Não foi possível atualizar a inscrição: %1$s</string>
+    <string name="main_action_bar_title">Tópicos inscritos</string>
+    <string name="main_menu_notifications_enabled">Notificações ligadas</string>
+    <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>
+    <string name="channel_notifications_min_name">Notificações (prioridade mínima)</string>
+    <string name="channel_notifications_low_name">Notificações (baixa prioridade)</string>
+    <string name="channel_subscriber_service_name">Serviço de Assinatura</string>
+    <string name="channel_subscriber_notification_title">Escutando recebimento de notificações</string>
+    <string name="channel_subscriber_notification_instant_text">Inscrito em tópicos de entrega instantânea</string>
+    <string name="main_menu_notifications_disabled_until">Notificações silenciadas até %1$s</string>
+    <string name="main_menu_settings_title">Configurações</string>
+    <string name="main_menu_report_bug_title">Reportar um problema</string>
+    <string name="main_menu_docs_title">Leia os documentos</string>
+    <string name="main_menu_rate_title">Avalie o aplicativo⭐</string>
+    <string name="main_action_mode_menu_unsubscribe">Cancelar inscrição</string>
+    <string name="main_action_mode_delete_dialog_message">Cancelar a inscrição do(s) tópico(s) selecionado(s) e excluir permanentemente todas as notificações\?</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Excluir permanentemente</string>
+    <string name="main_action_mode_delete_dialog_cancel">Cancelar</string>
+    <string name="main_item_status_text_one">%1$d notificação</string>
+    <string name="main_item_status_text_not_one">%1$d notificações</string>
+    <string name="main_item_status_reconnecting">reconectando…</string>
+    <string name="main_item_date_yesterday">ontem</string>
+    <string name="main_add_button_description">Adicionar inscrição</string>
+    <string name="main_no_subscriptions_text">Parece que você não possui inscrições ainda.</string>
+    <string name="main_how_to_link">Instruções detalhadas disponíveis em ntfy.sh, e nos documentos.</string>
+    <string name="main_unified_push_toast">Esta inscrição é controlada por %1$s via UnifiedPush</string>
+    <string name="main_banner_battery_text">Economia de Energia deve estar desligada para que o aplicativo evite problemas no envio de notificações.</string>
+    <string name="main_banner_battery_button_remind_later">Perguntar depois</string>
+    <string name="main_banner_battery_button_dismiss">Dispensar</string>
+    <string name="main_banner_battery_button_fix_now">Corrigir agora</string>
+    <string name="main_banner_websocket_button_remind_later">Perguntar depois</string>
+    <string name="add_dialog_title">Inscrever-se para o tópico</string>
+    <string name="add_dialog_topic_name_hint">Nome do tópico, ex: alertas_do_jose</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Inscrito em quatro tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Inscrito em cinco tópicos</string>
+    <string name="main_how_to_intro">Clique em + para criar uma inscrição em um tópico. Em seguida você receberá notificações no seu dispositivo quando enviar mensagens via PUT ou POST.</string>
+    <string name="channel_notifications_max_name">Notificações (prioridade máxima)</string>
+    <string name="main_banner_websocket_text">Alternar para WebSockets é o jeito recomendado de conectar no seu servidor, podendo melhorar a vida da bateria, mas requer <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais no seu proxy</a>. Isto pode ser alterado nas Configurações.</string>
+    <string name="main_banner_websocket_button_dismiss">Dispensar</string>
+    <string name="channel_notifications_default_name">Notificações (prioridade padrão)</string>
+    <string name="channel_notifications_high_name">Notificações (alta prioridade)</string>
+    <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tópico de entrega instantânea</string>
+    <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>
+    <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois tópicos de entrega instantânea</string>
+    <string name="add_dialog_description_below">Tópicos podem não ser protegidos por senha, portanto escolha um nome que seja difícil de adivinhar. Uma vez inscrito, você pode enviar notificações PUT/POST.</string>
+</resources>
