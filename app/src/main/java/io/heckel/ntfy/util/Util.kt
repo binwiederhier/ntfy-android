@@ -472,9 +472,8 @@ fun ensureSafeNewFile(dir: File, name: String): File {
 
 fun copyToClipboard(context: Context, notification: Notification) {
     val message = decodeMessage(notification)
-    val text = message + "\n\n" + formatDateShort(notification.timestamp)
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("notification message", text)
+    val clip = ClipData.newPlainText("notification message", message)
     clipboard.setPrimaryClip(clip)
     Toast
         .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
