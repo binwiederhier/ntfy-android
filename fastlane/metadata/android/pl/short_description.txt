@@ -1,0 +1,1 @@
+Wysyłanie powiadomień na telefon z dowolnego skryptu za pomocą PUT/POST
