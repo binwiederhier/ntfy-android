@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_notifications_low_name">إشعارات (أولوية منخفضة)</string>
+    <string name="channel_notifications_max_name">إشعارات (أعلى أولوية)</string>
+    <string name="channel_notifications_min_name">إشعارات (أدني أولوية)</string>
+    <string name="channel_subscriber_notification_title">الإستماع (إلتقاط) الإشعارات الواردة</string>
+    <string name="channel_notifications_default_name">إشعارات (أولوية طبيعية)</string>
+    <string name="channel_subscriber_service_name">خدمة الاشتراك</string>
+    <string name="channel_notifications_high_name">إشعارات (أولوية عالية)</string>
+</resources>
