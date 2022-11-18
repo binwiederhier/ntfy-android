@@ -326,7 +326,7 @@ class ShareActivity : AppCompatActivity() {
             contentText.text.isNotEmpty() && topicText.text.isNotEmpty()
         }
         sendItem.isEnabled = enabled
-        sendItem.icon.alpha = if (enabled) 255 else 130
+        sendItem.icon?.alpha = if (enabled) 255 else 130
     }
 
     private fun getBaseUrl(): String {

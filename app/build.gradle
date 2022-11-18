@@ -8,12 +8,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
 
         versionCode 29
         versionName "1.15.0"
@@ -65,7 +65,7 @@ android {
 dependencies {
     // AndroidX, The Basics
     implementation "androidx.appcompat:appcompat:1.4.2"
-    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "androidx.core:core-ktx:1.9.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation "androidx.fragment:fragment-ktx:1.4.1"
