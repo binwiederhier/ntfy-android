@@ -1,3 +1,6 @@
+repositories {
+    mavenCentral()
+}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -5,12 +8,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
 
         versionCode 29
         versionName "1.15.0"
@@ -70,7 +73,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
     // JSON serialization
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10'
 
     // Room (SQLite)
     def room_version = "2.4.2"

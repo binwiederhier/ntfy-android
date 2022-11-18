@@ -1,4 +1,5 @@
-Bug fixes:
+Bug fixes + maintenance:
+* Upgrade Android dependencies to SDK 32
 * Remove timestamp when copying message text (#471, thanks to @wunter8)
 
 Additional translations:
