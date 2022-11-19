@@ -1,10 +1,12 @@
 package io.heckel.ntfy.ui
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -208,6 +211,18 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         schedulePeriodicPollWorker()
         schedulePeriodicServiceRestartWorker()
         schedulePeriodicDeleteWorker()
+
+        // Permissions
+        maybeRequestNotificationPermission()
+    }
+
+    private fun maybeRequestNotificationPermission() {
+        // Android 13 (SDK 33) requires that we ask for permission to post notifications
+        // https://developer.android.com/develop/ui/views/notifications/notification-permission
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+        }
     }
 
     override fun onResume() {
