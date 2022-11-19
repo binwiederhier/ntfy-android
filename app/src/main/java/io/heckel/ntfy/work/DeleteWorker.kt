@@ -9,14 +9,12 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DELETED
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.DownloadIconWorker
-import io.heckel.ntfy.ui.DetailAdapter
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.fileStat
+import io.heckel.ntfy.util.maybeFileStat
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 
 /**
  * Deletes notifications marked for deletion and attachments for deleted notifications.
@@ -32,9 +30,23 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
-            deleteExpiredIcons() // Before notifications, so we will also catch manually deleted notifications
-            deleteExpiredAttachments() // Before notifications, so we will also catch manually deleted notifications
-            deleteExpiredNotifications()
+            // Run "expired icons" and "expired attachments" before notifications,
+            // so we will also catch manually deleted notifications
+            try {
+                deleteExpiredIcons()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete expired icons", e)
+            }
+            try {
+                deleteExpiredAttachments()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete expired attachments", e)
+            }
+            try {
+                deleteExpiredNotifications()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete expired notifications", e)
+            }
             return@withContext Result.success()
         }
     }
@@ -69,14 +81,9 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         Log.d(TAG, "Deleting icons for deleted notifications")
         val repository = Repository.getInstance(applicationContext)
         val activeIconUris = repository.getActiveIconUris()
-        val activeIconFilenames = activeIconUris.mapNotNull {
-            try {
-                fileStat(applicationContext, Uri.parse(it)).filename
-            } catch (e: Exception) {
-                Log.w(TAG, "Unable to stat file $it", e)
-                null
-            }
-        }.toSet()
+        val activeIconFilenames = activeIconUris
+            .mapNotNull { maybeFileStat(applicationContext, it)?.filename }
+            .toSet()
         val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
         val allIconFilenames = iconDir.listFiles()?.map{ file -> file.name }.orEmpty()
         val filenamesToDelete = allIconFilenames.minus(activeIconFilenames)
