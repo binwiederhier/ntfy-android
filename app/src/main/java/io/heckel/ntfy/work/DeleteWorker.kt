@@ -69,7 +69,14 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         Log.d(TAG, "Deleting icons for deleted notifications")
         val repository = Repository.getInstance(applicationContext)
         val activeIconUris = repository.getActiveIconUris()
-        val activeIconFilenames = activeIconUris.map{ fileStat(applicationContext, Uri.parse(it)).filename }.toSet()
+        val activeIconFilenames = activeIconUris.mapNotNull {
+            try {
+                fileStat(applicationContext, Uri.parse(it)).filename
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to stat file $it", e)
+                null
+            }
+        }.toSet()
         val iconDir = File(applicationContext.cacheDir, DownloadIconWorker.ICON_CACHE_DIR)
         val allIconFilenames = iconDir.listFiles()?.map{ file -> file.name }.orEmpty()
         val filenamesToDelete = allIconFilenames.minus(activeIconFilenames)
