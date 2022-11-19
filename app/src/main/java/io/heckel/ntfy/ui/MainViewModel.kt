@@ -51,7 +51,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
 
 class SubscriptionsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>) =
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
         with(modelClass){
             when {
                 isAssignableFrom(SubscriptionsViewModel::class.java) -> SubscriptionsViewModel(repository) as T
