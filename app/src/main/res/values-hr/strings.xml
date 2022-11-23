@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_notifications_min_name">Obavijesti (minimalni prioritet)</string>
+    <string name="channel_notifications_low_name">Obavijesti (niski prioritet)</string>
+    <string name="channel_notifications_default_name">Obavijesti (standardni prioritet)</string>
+    <string name="channel_notifications_high_name">Obavijesti (visoki prioritet)</string>
+    <string name="channel_notifications_max_name">Obavijesti (maksimalni prioritet)</string>
+</resources>

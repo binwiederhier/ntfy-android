@@ -64,4 +64,18 @@
     <string name="main_item_status_reconnecting">重新連線中 …</string>
     <string name="main_menu_notifications_disabled_until">通知靜音到%1$s</string>
     <string name="add_dialog_topic_name_hint">主題名稱(例如:phils_alerts)</string>
+    <string name="add_dialog_button_cancel">取消</string>
+    <string name="add_dialog_button_subscribe">訂閱</string>
+    <string name="add_dialog_button_back">退回</string>
+    <string name="add_dialog_error_connection_failed">連接失敗: %1$s</string>
+    <string name="add_dialog_login_title">需要登入</string>
+    <string name="add_dialog_login_username_hint">使用者名字</string>
+    <string name="add_dialog_login_password_hint">密碼</string>
+    <string name="add_dialog_login_error_not_authorized">登入失敗. 使用者%1$s 未獲得授權.</string>
+    <string name="add_dialog_login_new_user">新使用者</string>
+    <string name="add_dialog_base_urls_dropdown_choose">選擇服務網址</string>
+    <string name="add_dialog_base_urls_dropdown_clear">清除服務網址</string>
+    <string name="detail_copied_to_clipboard_message">複製到剪貼簿</string>
+    <string name="add_dialog_button_login">登入</string>
+    <string name="add_dialog_login_description">這篇主題要求登入. 請輸入帳號密碼.</string>
 </resources>

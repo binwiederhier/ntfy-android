@@ -10,8 +10,8 @@
     <string name="channel_notifications_min_name">Notificações (prioridade mínima)</string>
     <string name="main_menu_notifications_enabled">Notificações ativadas</string>
     <string name="main_menu_settings_title">Configurações</string>
-    <string name="channel_subscriber_notification_noinstant_text">Inscrito em temas</string>
-    <string name="channel_subscriber_notification_noinstant_text_three">Inscrito em três temas</string>
+    <string name="channel_subscriber_notification_noinstant_text">Inscrito em tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Inscrito em três tópicos</string>
     <string name="main_menu_report_bug_title">Relatar um problema</string>
     <string name="main_item_status_reconnecting">Reconectando …</string>
     <string name="channel_notifications_high_name">Notificações (prioridade alta)</string>
@@ -21,10 +21,10 @@
     <string name="channel_subscriber_notification_instant_text">Inscrito em temas de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tema de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d temas de entrega instantânea</string>
-    <string name="channel_subscriber_notification_noinstant_text_two">Inscrito em dois temas</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Inscrito em dois tópicos</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Inscrito em quatro temas</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Inscrito em %1$d temas</string>
-    <string name="refresh_message_result">%1$d notificações recebidas</string>
+    <string name="refresh_message_result">%1$d notificação(ões) recebida(s)</string>
     <string name="refresh_message_no_results">Tudo está atualizado</string>
     <string name="refresh_message_error">Não foi possível atualizar %1$d inscrições
 \n
@@ -32,15 +32,15 @@
     <string name="main_action_bar_title">Temas inscritos</string>
     <string name="main_menu_notifications_disabled_until">Notificações silenciadas até %1$s</string>
     <string name="main_menu_rate_title">Avalie o aplicativo ⭐</string>
-    <string name="main_action_mode_delete_dialog_message">Cancelar inscrição dos temas selecionados e remover permanentemente todas notificações\?</string>
+    <string name="main_action_mode_delete_dialog_message">Cancelar inscrição dos tópicos selecionados e remover permanentemente todas notificações\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Remover permanentemente</string>
     <string name="main_action_mode_delete_dialog_cancel">Cancelar</string>
     <string name="main_item_date_yesterday">ontem</string>
     <string name="main_add_button_description">Inscrever-se</string>
     <string name="main_no_subscriptions_text">Parece que você não tem nenhuma inscrição ainda.</string>
     <string name="main_how_to_link">Instruções detalhadas disponíveis em ntfy.sh, e na documentação.</string>
-    <string name="main_banner_battery_text">Otimização de bateria deve estar desligada para evitar problemas de entrega de notificação no aplicativo.</string>
-    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_banner_battery_text">O modo Economia de Energia deve estar desligado para evitar problemas de entrega de notificação no aplicativo.</string>
+    <string name="main_item_status_unified_push">%1$s(UnifiedPush)</string>
     <string name="main_banner_websocket_button_remind_later">Perguntar depois</string>
     <string name="main_banner_websocket_button_dismiss">Dispensar</string>
     <string name="add_dialog_title">Inscrever-se no tema</string>
@@ -184,9 +184,9 @@
     <string name="settings_advanced_clear_logs_title">Limpar logs</string>
     <string name="settings_advanced_clear_logs_summary">Apagar logs registrados anteriormente e recomeçar</string>
     <string name="settings_advanced_connection_protocol_title">Protocolo de conexão</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Usar WebSockets para conectar ao servidor. Isso irá se tornar o padrão em Junho de 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Usar WebSockets para se conectar ao servidor. Este é o método recomendado, mas pode exigir configurações adicionais no seu proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Stream JSON sobre HTTP</string>
-    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">Web Sockets</string>
     <string name="settings_about_header">Sobre</string>
     <string name="settings_about_version_title">Versão</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -202,14 +202,14 @@
     <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois temas de entrega instantânea</string>
     <string name="user_dialog_button_save">Salvar</string>
     <string name="main_item_status_text_one">%1$d notificação</string>
-    <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tema</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tópico</string>
     <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>
     <string name="refresh_message_error_one">Não foi possível atualizar a inscrição: %1$s</string>
     <string name="main_menu_docs_title">Leia a documentação</string>
     <string name="main_action_mode_menu_unsubscribe">Cancelar inscrição</string>
     <string name="main_unified_push_toast">Essa inscrição é gerenciada por %1$s via UnifiedPush</string>
     <string name="main_item_status_text_not_one">%1$d notificações</string>
-    <string name="main_how_to_intro">Clique no + para criar ou inscrever-se em um tema. Você receberá notificações no seu dispositivo ao enviar mensagens via PUT ou POST.</string>
+    <string name="main_how_to_intro">Clique no + para criar ou inscrever-se em um tópico. Em seguida você receberá notificações no seu dispositivo ao enviar mensagens via PUT ou POST.</string>
     <string name="main_banner_battery_button_remind_later">Perguntar depois</string>
     <string name="main_banner_battery_button_dismiss">Dispensar</string>
     <string name="add_dialog_button_subscribe">Inscrever-se</string>
@@ -246,7 +246,7 @@
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Nenhum tema/hostname foram censurados. Talvez você não tenha inscrições\?</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logs apagados</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Copiar para área de transferência</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar uma stream JSON sobre HTTP para conectar ao servidor. Esse método foi descontinuado e será removido em Junho de 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar um stream JSON via HTTP para conectar ao servidor. Esse método já funciona bem mas pode consumir mais bateria.</string>
     <string name="user_dialog_description_add">Você pode adicionar um usuário aqui. Todos os temas para esse servidor usarão esse usuário.</string>
     <string name="user_dialog_username_hint">Nome de usuário</string>
     <string name="user_dialog_password_hint_edit">Senha (não será modificado se deixado em branco)</string>
@@ -317,4 +317,14 @@
     <string name="channel_subscriber_notification_instant_text_six">Inscrito em seis tópicos de entrega instantânea</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Inscrito em cinco tópicos</string>
     <string name="detail_settings_global_setting_suffix">usando configurações globais</string>
+    <string name="detail_settings_appearance_display_name_title">Nome de exibição</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (padrão)</string>
+    <string name="detail_settings_appearance_display_name_message">Defina um nome personalizado para esta inscrição. Deixe em branco para padrão (%1$s).</string>
+    <string name="main_banner_websocket_text">Mudar para WebSockets é o modo recomendado de conectar ao seu servidor, e pode melhorar a vida da bateria, mas pode necessitar de <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais no seu proxy</a>. Isso pode ser habilitado nas Configurações.</string>
+    <string name="detail_settings_about_header">Sobre</string>
+    <string name="detail_settings_about_topic_url_title">URL do tópico</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado para área de transferência</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Escolha o URL do serviço</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Limpar o URL do serviço</string>
+    <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>
 </resources>

@@ -85,7 +85,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Save current activity title so we can set it again after a configuration change
+        // Save current activity title, so we can set it again after a configuration change
         outState.putCharSequence(TITLE_TAG, title)
     }
 
@@ -165,9 +165,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getGlobalMutedUntil().toString()
                 }
             }
-            mutedUntil?.summaryProvider = Preference.SummaryProvider<ListPreference> { _ ->
-                val mutedUntilValue = repository.getGlobalMutedUntil()
-                when (mutedUntilValue) {
+            mutedUntil?.summaryProvider = Preference.SummaryProvider<ListPreference> {
+                when (val mutedUntilValue = repository.getGlobalMutedUntil()) {
                     Repository.MUTED_UNTIL_SHOW_ALL -> getString(R.string.settings_notifications_muted_until_show_all)
                     Repository.MUTED_UNTIL_FOREVER -> getString(R.string.settings_notifications_muted_until_forever)
                     else -> {
@@ -191,8 +190,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
             minPriority?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
-                val minPriorityValue = pref.value.toIntOrNull() ?: 1 // 1/low means all priorities
-                when (minPriorityValue) {
+                when (val minPriorityValue = pref.value.toIntOrNull() ?: 1) { // 1/low means all priorities
                     1 -> getString(R.string.settings_notifications_min_priority_summary_any)
                     5 -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
@@ -230,8 +228,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
             autoDownload?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
-                val maxSize = pref.value.toLongOrNull() ?: repository.getAutoDownloadMaxSize()
-                when (maxSize) {
+                when (val maxSize = pref.value.toLongOrNull() ?: repository.getAutoDownloadMaxSize()) {
                     Repository.AUTO_DOWNLOAD_NEVER -> getString(R.string.settings_notifications_auto_download_summary_never)
                     Repository.AUTO_DOWNLOAD_ALWAYS -> getString(R.string.settings_notifications_auto_download_summary_always)
                     else -> getString(R.string.settings_notifications_auto_download_summary_smaller_than_x, formatBytes(maxSize, decimals = 0))
@@ -263,8 +260,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
             autoDelete?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
-                val seconds = pref.value.toLongOrNull() ?: repository.getAutoDeleteSeconds()
-                when (seconds) {
+                when (pref.value.toLongOrNull() ?: repository.getAutoDeleteSeconds()) {
                     Repository.AUTO_DELETE_NEVER -> getString(R.string.settings_notifications_auto_delete_summary_never)
                     Repository.AUTO_DELETE_ONE_DAY_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_one_day)
                     Repository.AUTO_DELETE_THREE_DAYS_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_three_days)
@@ -395,7 +391,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     getString(R.string.settings_advanced_record_logs_summary_disabled)
                 }
             }
-            recordLogsEnabled?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
+            recordLogsEnabled?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     repository.getSubscriptions().forEach { s ->
                         Log.addScrubTerm(shortUrl(s.baseUrl), Log.TermType.Domain)
@@ -440,7 +436,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             backup?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             backup?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, v ->
                 backupSelection = v.toString()
-                val timestamp = SimpleDateFormat("yyMMdd-HHmm").format(Date());
+                val timestamp = SimpleDateFormat("yyMMdd-HHmm").format(Date())
                 val suggestedFilename = when (backupSelection) {
                     BACKUP_EVERYTHING_NO_USERS -> "ntfy-backup-no-users-$timestamp.json"
                     BACKUP_SETTINGS_ONLY -> "ntfy-settings-$timestamp.json"
@@ -587,10 +583,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                             throw Exception("Unexpected response ${response.code}")
                         }
                         val body = response.body?.string()?.trim()
-                        if (body == null || body.isEmpty()) throw Exception("Return body is empty")
+                        if (body.isNullOrEmpty()) throw Exception("Return body is empty")
                         Log.d(TAG, "Logs uploaded successfully: $body")
                         val resp = gson.fromJson(body.toString(), NopasteResponse::class.java)
-                        val context = context ?: return@launch
                         requireActivity().runOnUiThread {
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("logs URL", resp.url)
@@ -606,7 +601,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 } catch (e: Exception) {
                     Log.w(TAG, "Error uploading logs", e)
-                    val context = context ?: return@launch
                     requireActivity().runOnUiThread {
                         Toast
                             .makeText(context, getString(R.string.settings_advanced_export_logs_error_uploading, e.message), Toast.LENGTH_LONG)

@@ -21,7 +21,7 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
 
 class DetailViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>) =
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
         with(modelClass){
             when {
                 isAssignableFrom(DetailViewModel::class.java) -> DetailViewModel(repository) as T

@@ -24,7 +24,6 @@ object DownloadManager {
             DownloadType.ATTACHMENT -> enqueueAttachment(context, notificationId, userAction)
             DownloadType.ICON -> enqueueIcon(context, notificationId)
             DownloadType.BOTH -> enqueueAttachmentAndIcon(context, notificationId, userAction)
-            else -> Log.w(DownloadManager.TAG, "This should never happen. No download type given")
         }
     }
 

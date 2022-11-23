@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Végleges törlés</string>
+    <string name="channel_subscriber_notification_instant_text_one">Feliratkozva egy azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_instant_text_five">Feliratkozva öt azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_instant_text_six">Feliratkozva hat azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_instant_text_more">Feliratkozva %1$d azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_noinstant_text">Feliratkozott témák</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Feliratkozva egy témára</string>
+    <string name="main_menu_notifications_disabled_forever">Értesítések némítva</string>
+    <string name="main_menu_notifications_disabled_until">Értesítések némítva %1$s-ig</string>
+    <string name="main_menu_settings_title">Beállítások</string>
+    <string name="main_item_status_text_not_one">%1$d értesítés</string>
+    <string name="main_item_status_reconnecting">Újra-csatlakozás …</string>
+    <string name="main_item_status_unified_push">%1$s (ÖsszesítettKüldés)</string>
+    <string name="main_add_button_description">Feliratkozás hozzáadása</string>
+    <string name="main_no_subscriptions_text">Úgy néz ki hogy még nincsen egy feliratkozás sem.</string>
+    <string name="main_how_to_intro">Kattintson a + ra hogy létrehozzon vagy feliratkozzon egy témára. Aztán mikor PUT vagy POST-al küld üzeneteket, értesítéseket kap a készülékén.</string>
+    <string name="channel_notifications_min_name">Értesítések (minimum prioritás)</string>
+    <string name="channel_notifications_low_name">Értesítések (alacsony prioritás)</string>
+    <string name="channel_notifications_default_name">Értesítések (alap prioritás)</string>
+    <string name="channel_notifications_max_name">Értesítések (maximum prioritás)</string>
+    <string name="channel_notifications_high_name">Értesítések (magas prioritás)</string>
+    <string name="channel_subscriber_service_name">Feliratkozó Szolgálat</string>
+    <string name="channel_subscriber_notification_title">Bejövő üzenetek fogadása</string>
+    <string name="channel_subscriber_notification_instant_text">Feliratkozva azonnal kézbesített témákra</string>
+    <string name="channel_subscriber_notification_instant_text_two">Feliratkozva két azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_instant_text_three">Feliratkozva három azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_instant_text_four">Feliratkozva négy azonnal kézbesített témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Feliratkozva hat témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Feliratkozva öt témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Feliratkozva négy témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Feliratkozva három témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Feliratkozva %1$d témára</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Feliratkozva két témára</string>
+    <string name="main_menu_docs_title">Dokumentáció olvasása</string>
+    <string name="main_action_mode_menu_unsubscribe">Leiratkozás</string>
+    <string name="refresh_message_result">%1$d üzenet érkezett</string>
+    <string name="refresh_message_no_results">Minden a legfrissebb verzió</string>
+    <string name="refresh_message_error">Nem lehetett %1$d feliratkozást frissíteni
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Feliratkozást frissítése nem lehetséges: %1$s</string>
+    <string name="main_menu_notifications_enabled">Értesítések bekapcsolva</string>
+    <string name="main_action_bar_title">Feliratkozott témák</string>
+    <string name="main_menu_report_bug_title">Hiba jelentése</string>
+    <string name="main_item_date_yesterday">tegnap</string>
+    <string name="main_menu_rate_title">Applikáció értékelése ⭐</string>
+    <string name="main_action_mode_delete_dialog_message">Leiratkozás a kiválasztott témá(k)-ról és végleges törlése minden üzenetnek\?</string>
+    <string name="main_item_status_text_one">%1$d értesítés</string>
+    <string name="main_action_mode_delete_dialog_cancel">Mégse</string>
+</resources>

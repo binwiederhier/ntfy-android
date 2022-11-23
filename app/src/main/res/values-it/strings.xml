@@ -166,7 +166,7 @@
 \nLe password sono state ripulite, ma non sono elencate qui.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">Ok</string>
     <string name="settings_advanced_clear_logs_title">Cancella i log</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usa stream JSON over HTTP per collegarti al server. Questo metodo è deprecato e sarà rimosso a giugno 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usa stream JSON over HTTP per collegarti al server. Questo metodo è collaudato, ma può consumare più batteria.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Stream JSON over HTTP</string>
     <string name="user_dialog_description_add">Puoi aggiungere un utente qui. Tutti i topic per il dato server utilizzeranno questo utente.</string>
     <string name="user_dialog_description_edit">Puoi modificare username/password per l\'utente selezionato, oppure eliminarlo.</string>
@@ -285,7 +285,7 @@
     <string name="settings_advanced_export_logs_uploading">Log in upload …</string>
     <string name="settings_advanced_clear_logs_summary">Elimina i log precedentemente salvati, e ricomincia</string>
     <string name="settings_advanced_connection_protocol_title">Protocollo di connessione</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Usa WebSockets per collegarti al server. Questo metodo diventerà il default a giugno 2022.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Usa WebSockets per collegarti al server. Questo è il metodo consigliato, ma potrebbe richiedere una configurazione aggiuntiva del proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="user_dialog_title_add">Aggiungi utente</string>
     <string name="settings_about_version_copied_to_clipboard_message">Copiato negli appunti</string>
@@ -317,4 +317,14 @@
     <string name="detail_settings_appearance_icon_remove_summary">Icona visualizzata nelle notifiche di questo topic</string>
     <string name="detail_settings_appearance_icon_error_saving">Impossibile salvare l\'icona: %1$s</string>
     <string name="detail_settings_global_setting_suffix">utilizzando l\'impostazione globale</string>
+    <string name="detail_settings_appearance_display_name_title">Nome visualizzato</string>
+    <string name="main_banner_websocket_text">E\' consigliato il passaggio a WebSockets per connettersi al server e potrebbe migliorare la durata della batteria, ma potrebbe richiedere <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">un\'ulteriore configurazione del proxy</a>. Questa opzione può essere selezionata nelle Impostazioni.</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (predefinito)</string>
+    <string name="detail_settings_appearance_display_name_message">Impostare un nome di visualizzazione personalizzato per questa iscrizione. Lasciare vuoto per il nome predefinito (%1$s).</string>
+    <string name="detail_settings_about_header">Informazioni</string>
+    <string name="detail_settings_about_topic_url_title">URL argomento</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiato negli appunti</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Scegli il servizio URL</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Pulisci il servizio URL</string>
+    <string name="main_banner_websocket_button_enable_now">Attiva ora</string>
 </resources>

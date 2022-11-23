@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_notifications_low_name">அறிவிப்புகள் (குறைந்த முன்னுரிமை)</string>
+    <string name="channel_notifications_high_name">அறிவிப்புகள் (உயர் முன்னுரிமை)</string>
+    <string name="channel_notifications_max_name">அறிவிப்புகள் (அதிகபட்ச முன்னுரிமை)</string>
+    <string name="detail_action_mode_menu_delete">நீக்கு</string>
+    <string name="detail_action_mode_delete_dialog_cancel">ரத்துசெய்</string>
+    <string name="share_title">பகிர்</string>
+    <string name="share_menu_send">பகிர்</string>
+    <string name="detail_item_download_info_deleted">நீக்கப்பட்டது</string>
+    <string name="channel_subscriber_service_name">சந்தா சேவை</string>
+    <string name="channel_notifications_min_name">அறிவிப்புகள் (குறைந்தபட்ச முன்னுரிமை)</string>
+    <string name="detail_action_mode_menu_copy">பிரதி</string>
+    <string name="channel_notifications_default_name">அறிவிப்புகள் (இயல்புநிலை முன்னுரிமை)</string>
+    <string name="detail_action_mode_delete_dialog_permanently_delete">நிரந்தரமாக நீக்கு</string>
+    <string name="notification_dialog_save">சேமிக்க</string>
+    <string name="notification_dialog_cancel">ரத்து செய்</string>
+    <string name="detail_clear_dialog_cancel">ரத்து செய்</string>
+    <string name="detail_item_menu_cancel">பதிவிறக்கத்தை ரத்து செய்</string>
+</resources>
