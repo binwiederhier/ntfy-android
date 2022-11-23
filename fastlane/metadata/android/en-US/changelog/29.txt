@@ -1,5 +1,6 @@
 Bug fixes + maintenance:
 * Upgrade Android dependencies and build toolchain to SDK 33 (no ticket)
+* Simplify F-Droid build: Disable tasks for Google Services (#516, thanks to @markosopcic)
 * Android 13: Ask for permission to post notifications (#508)
 * Remove timestamp when copying message text (#471, thanks to @wunter8)
 * Fix auto-delete if some icons do not exist anymore (#506)
