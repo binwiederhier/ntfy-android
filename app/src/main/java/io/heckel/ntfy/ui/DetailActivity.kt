@@ -189,9 +189,20 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         // Message bar
         val messageText: TextInputEditText = findViewById(R.id.detail_message_box)
         val messageSendButton: Button = findViewById(R.id.detail_message_send_button)
+
         messageSendButton.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
-                api.publish(subscriptionBaseUrl, subscriptionTopic, message = messageText.text.toString())
+                val message = messageText.text.toString()
+                if (message.isNotEmpty()) {
+                    api.publish(subscriptionBaseUrl, subscriptionTopic, message = message)
+                    messageText.text?.clear()
+                } else {
+                    runOnUiThread {
+                        Toast
+                            .makeText(this@DetailActivity, getString(R.string.detail_message_bar_empty_message), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
             }
         }
 
