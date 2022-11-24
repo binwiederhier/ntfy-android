@@ -13,6 +13,7 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -182,6 +184,15 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
         } else {
             howToExample.text = Html.fromHtml(howToText)
+        }
+
+        // Message bar
+        val messageText: TextInputEditText = findViewById(R.id.detail_message_box)
+        val messageSendButton: Button = findViewById(R.id.detail_message_send_button)
+        messageSendButton.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                api.publish(subscriptionBaseUrl, subscriptionTopic, message = messageText.text.toString())
+            }
         }
 
         // Swipe to refresh

@@ -11,8 +11,8 @@
             style="@style/CardViewBackground"
             android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="0dp"
+            android:visibility="visible" app:layout_constraintBottom_toTopOf="@id/detail_message_box" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_notification_list"
                 android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/detail_no_notifications" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent" android:visibility="gone">
         <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"
@@ -72,5 +72,34 @@
                 android:linksClickable="true"
                 android:autoLink="web"/>
     </LinearLayout>
+    <LinearLayout
+            style="@style/CardViewBackground"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_message_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="3dp" android:layout_marginBottom="3dp" android:layout_marginEnd="3dp">
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/detail_message_box"
+                android:layout_width="0dp"
+                android:layout_height="48dp" android:hint="Type a message here"
+                android:inputType="text|textNoSuggestions"
+                android:gravity="start|top" android:layout_weight="1"/>
+        <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:id="@+id/detail_message_send_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:cornerRadius="30dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                app:icon="@drawable/ic_send_white_24dp"/>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
