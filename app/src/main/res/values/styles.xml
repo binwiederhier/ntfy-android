@@ -31,9 +31,11 @@
         <item name="cornerSize">5dp</item>
     </style>
 
+    <style name="MessageBarBackground">
+        <item name="android:background">@color/gray_400</item>
+    </style>
+
     <style name="MessageInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxBackgroundColor">@color/white</item>
-        <item name="boxStrokeColor">@color/white</item>
         <item name="hintTextColor">@color/black_700b</item>
     </style>
 

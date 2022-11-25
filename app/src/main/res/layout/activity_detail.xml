@@ -78,44 +78,44 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
-            style="@style/CardViewBackground"
-            android:layout_height="54dp"
+            style="@style/MessageBarBackground"
+            android:layout_height="66dp"
             android:layout_width="match_parent"
             android:id="@+id/detail_message_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_weight="1" app:layout_constraintTop_toBottomOf="@+id/detail_no_notifications" app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintVertical_weight="1"
+            app:layout_constraintTop_toBottomOf="@+id/detail_no_notifications"
+            app:layout_constraintVertical_bias="1.0"
+            android:elevation="10dp"
+    >
         <com.google.android.material.textfield.TextInputLayout
                 style="@style/MessageInputLayout"
                 android:id="@+id/detail_message_box_layout"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                app:boxCornerRadiusBottomEnd="24dp"
-                app:boxCornerRadiusTopEnd="24dp"
-                app:boxCornerRadiusBottomStart="24dp"
-                app:boxCornerRadiusTopStart="24dp"
                 app:boxStrokeWidthFocused="0dp"
                 app:boxStrokeWidth="0dp"
-                app:boxBackgroundMode="filled"
+                app:boxBackgroundMode="none"
                 app:hintEnabled="false"
+                android:elevation="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/detail_message_send_button"
                 android:layout_marginStart="7dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginEnd="5dp" android:layout_marginTop="4dp">
-
+                android:layout_marginBottom="3dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="3dp">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/detail_message_box"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="text"
-                    android:textColor="#000000"
                     style="@style/MessageInputText"
-                    android:padding="2dp"
-                    android:textColorLink="#FFFFFF"
+                    android:padding="5dp"
+                    android:background="@drawable/ic_edittext_background"
                     android:hint="@string/detail_message_bar_hint"
             />
 
