@@ -79,7 +79,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/MessageBarBackground"
-            android:layout_height="66dp"
+            android:layout_height="64dp"
             android:layout_width="match_parent"
             android:id="@+id/detail_message_bar"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,36 +90,37 @@
             app:layout_constraintVertical_bias="1.0"
             android:elevation="10dp"
     >
-        <com.google.android.material.textfield.TextInputLayout
-                style="@style/MessageInputLayout"
+        <androidx.cardview.widget.CardView
+                style="@style/CardView"
                 android:id="@+id/detail_message_box_layout"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
-                app:boxStrokeWidthFocused="0dp"
-                app:boxStrokeWidth="0dp"
-                app:boxBackgroundMode="none"
-                app:hintEnabled="false"
-                android:elevation="8dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="5dp"
+                android:padding="7dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/detail_message_send_button"
-                android:layout_marginStart="7dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="3dp">
+                android:outlineAmbientShadowColor="@color/gray_600"
+                android:outlineSpotShadowColor="@color/gray_600"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1dp"
+                app:cardMaxElevation="1dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/detail_message_box"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="text"
                     style="@style/MessageInputText"
-                    android:padding="5dp"
+                    android:padding="8dp"
                     android:background="@drawable/ic_edittext_background"
                     android:hint="@string/detail_message_bar_hint"
             />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </androidx.cardview.widget.CardView>
         <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button.Icon"
                 android:id="@+id/detail_message_send_button"

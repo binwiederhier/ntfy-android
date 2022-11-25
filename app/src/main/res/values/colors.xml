@@ -4,6 +4,7 @@
     <color name="black_900">#121212</color> <!-- Main dark mode surface color, as per style guide -->
     <color name="black_800b">#1b2023</color> <!-- Action bar & item selection (dark mode); this has a touch of blue! -->
     <color name="black_700b">#282F33</color> <!-- Card selection (dark mode); this has a touch of blue! -->
+    <color name="gray_600">#aaaaaa</color> <!-- Message box drop shadow (light mode) -->
     <color name="gray_500">#dddddd</color> <!-- Card selection (light mode) -->
     <color name="gray_400">#eeeeee</color> <!-- Item selection (light mode) -->
     <color name="white">#ffffffff</color>

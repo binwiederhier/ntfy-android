@@ -40,6 +40,6 @@
     </style>
 
     <style name="MessageInputText" parent="Widget.AppCompat.EditText">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>
