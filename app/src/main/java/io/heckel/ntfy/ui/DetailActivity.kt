@@ -194,8 +194,16 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             lifecycleScope.launch(Dispatchers.IO) {
                 val message = messageText.text.toString()
                 if (message.isNotEmpty()) {
-                    api.publish(subscriptionBaseUrl, subscriptionTopic, message = message)
-                    messageText.text?.clear()
+                    try {
+                        api.publish(subscriptionBaseUrl, subscriptionTopic, message = message)
+                        messageText.text?.clear()
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            Toast
+                                .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
                 } else {
                     runOnUiThread {
                         Toast

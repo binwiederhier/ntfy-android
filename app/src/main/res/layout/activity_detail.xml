@@ -11,7 +11,7 @@
             style="@style/CardViewBackground"
             android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
-            android:visibility="visible" app:layout_constraintBottom_toTopOf="@id/detail_message_bar" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_height="0dp">
+            android:visibility="gone" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_height="0dp" app:layout_constraintBottom_toTopOf="@id/detail_message_bar" app:layout_constraintVertical_bias="0.0">
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_notification_list"
                 android:layout_width="match_parent"
@@ -25,66 +25,72 @@
                 app:layoutManager="LinearLayoutManager"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/detail_no_notifications" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:visibility="gone">
-        <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"
-                android:id="@+id/detail_no_notifications_image"/>
-        <TextView
-                android:id="@+id/detail_no_notifications_text"
-                android:text="@string/detail_no_notifications_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:padding="10dp" android:gravity="center_horizontal"
-                android:paddingStart="50dp" android:paddingEnd="50dp"/>
-        <TextView
-                android:text="@string/detail_how_to_intro"
+            android:layout_height="0dp"
+            android:id="@+id/detail_no_notifications"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:visibility="visible" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@id/detail_message_bar" app:layout_constraintVertical_bias="1.0">
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/detail_how_to_intro"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"/>
-        <TextView
-                android:text="@string/detail_how_to_example"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/detail_how_to_example"
-                android:layout_marginTop="7dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"/>
-        <TextView
-                android:text="@string/detail_how_to_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/detail_how_to_link"
-                android:layout_marginTop="7dp"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
-                android:linksClickable="true"
-                android:autoLink="web"/>
-    </LinearLayout>
+                android:id="@+id/detail_no_notifications_inner" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent">
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"
+                    android:id="@+id/detail_no_notifications_image"/>
+            <TextView
+                    android:id="@+id/detail_no_notifications_text"
+                    android:text="@string/detail_no_notifications_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:padding="10dp" android:gravity="center_horizontal"
+                    android:paddingStart="50dp" android:paddingEnd="50dp"/>
+            <TextView
+                    android:text="@string/detail_how_to_intro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_how_to_intro"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"/>
+            <TextView
+                    android:text="@string/detail_how_to_example"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_how_to_example"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"/>
+            <TextView
+                    android:text="@string/detail_how_to_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_how_to_link"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:linksClickable="true"
+                    android:autoLink="web"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/CardViewBackground"
-            android:layout_height="wrap_content"
+            android:layout_height="54dp"
             android:layout_width="match_parent"
             android:id="@+id/detail_message_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_notification_list_container">
+            app:layout_constraintVertical_weight="1" app:layout_constraintTop_toBottomOf="@+id/detail_no_notifications" app:layout_constraintVertical_bias="1.0">
         <com.google.android.material.textfield.TextInputLayout
-                style="@style/MessageInputBox"
+                style="@style/MessageInputLayout"
                 android:id="@+id/detail_message_box_layout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 app:boxCornerRadiusBottomEnd="24dp"
                 app:boxCornerRadiusTopEnd="24dp"
                 app:boxCornerRadiusBottomStart="24dp"
@@ -97,18 +103,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/detail_message_send_button"
-                app:startIconDrawable="@drawable/ic_add_black_24dp"
                 android:layout_marginStart="7dp"
-                android:layout_marginBottom="1dp"
-                android:layout_marginEnd="5dp">
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="5dp" android:layout_marginTop="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/detail_message_box"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:inputType="text"
                     android:textColor="#000000"
-                    android:padding="3dp"
+                    style="@style/MessageInputText"
+                    android:padding="2dp"
                     android:textColorLink="#FFFFFF"
                     android:hint="@string/detail_message_bar_hint"
             />

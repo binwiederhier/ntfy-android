@@ -38,6 +38,7 @@
         <activity
                 android:name=".ui.DetailActivity"
                 android:parentActivityName=".ui.MainActivity"
+                android:windowSoftInputMode="adjustResize"
                 android:exported="true">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
