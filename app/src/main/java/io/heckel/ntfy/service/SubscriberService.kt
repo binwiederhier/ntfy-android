@@ -290,18 +290,16 @@ class SubscriberService : Service() {
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
-        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
+            .setColor(ContextCompat.getColor(this, Colors.notificationIcon(this)))
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
             .setSound(null)
             .setShowWhen(false) // Don't show date/time
             .setGroup(NOTIFICATION_GROUP_ID) // Do not group with other notifications
-        if (!isDarkThemeOn(this)) {
-            builder.setColor(ContextCompat.getColor(this, Colors.notificationIcon))
-        }
-        return builder.build()
+            .build()
     }
 
     override fun onBind(intent: Intent): IBinder? {

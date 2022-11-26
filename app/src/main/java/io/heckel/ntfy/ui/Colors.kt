@@ -8,7 +8,10 @@ import io.heckel.ntfy.util.isDarkThemeOn
 class Colors {
     companion object {
         const val refreshProgressIndicator = R.color.teal
-        const val notificationIcon = R.color.teal
+
+        fun notificationIcon(context: Context): Int {
+            return if (isDarkThemeOn(context)) R.color.teal_light else R.color.teal
+        }
 
         fun itemSelectedBackground(context: Context): Int {
             return if (isDarkThemeOn(context)) R.color.black_800b else R.color.gray_400

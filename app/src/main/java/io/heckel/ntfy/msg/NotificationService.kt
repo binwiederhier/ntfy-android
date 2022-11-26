@@ -65,12 +65,10 @@ class NotificationService(val context: Context) {
         val channelId = toChannelId(notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
+            .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
             .setContentTitle(title)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-        if (!isDarkThemeOn(context)) {
-            builder.setColor(ContextCompat.getColor(context, Colors.notificationIcon))
-        }
         setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
         maybeSetSound(builder, update)
