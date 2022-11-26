@@ -21,6 +21,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -289,16 +290,18 @@ class SubscriberService : Service() {
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val builder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_instant)
-            .setColor(ContextCompat.getColor(this, Colors.notificationIcon))
             .setContentTitle(title)
             .setContentText(text)
             .setContentIntent(pendingIntent)
             .setSound(null)
             .setShowWhen(false) // Don't show date/time
             .setGroup(NOTIFICATION_GROUP_ID) // Do not group with other notifications
-            .build()
+        if (!isDarkThemeOn(this)) {
+            builder.setColor(ContextCompat.getColor(this, Colors.notificationIcon))
+        }
+        return builder.build()
     }
 
     override fun onBind(intent: Intent): IBinder? {
