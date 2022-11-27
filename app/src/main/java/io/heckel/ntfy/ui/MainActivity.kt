@@ -399,6 +399,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 }
                 true
             }
+            R.id.main_menu_donate -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_donate_url))))
+                true
+            }
             R.id.main_menu_docs -> {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_docs_url))))
                 true
