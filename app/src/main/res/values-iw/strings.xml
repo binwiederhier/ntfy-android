@@ -15,7 +15,7 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">מחק/י לצמיתות</string>
     <string name="main_action_mode_delete_dialog_cancel">ביטול</string>
     <string name="main_item_status_text_one">התראת %1$d</string>
-    <string name="main_item_status_text_not_one">התראות %1$d</string>
+    <string name="main_item_status_text_not_one">%1$d התראות</string>
     <string name="main_item_date_yesterday">אתמול</string>
     <string name="main_add_button_description">הוספת רישום</string>
     <string name="main_no_subscriptions_text">נראה שלא נרשמת לאף נושא עדיין.</string>
@@ -39,4 +39,20 @@
     <string name="main_item_status_reconnecting">מתחבר מחדש…</string>
     <string name="main_how_to_intro">לחצ\\י על + על מנת ליצור או להירשם אל מול נושא מסוים. לאחר מכן תקבל\\י התראות במכשירך כשתשלח\\י התראות דרך PUT או POST.</string>
     <string name="main_how_to_link">הוראות מפורטות זמינות ב-ntfy.sh, ובדוקומנטציה.</string>
+    <string name="main_menu_donate_title">תרום 💸</string>
+    <string name="channel_subscriber_notification_instant_text_two">רשום לשני נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_three">רשום לשלושה נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text">רשום לנושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_one">רשום לנושא אחד במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_four">רשום לארבעה נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_five">רשום לחמישה נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_six">רשום לשישה נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_more">רשום ל%1$d נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_noinstant_text">רשום לנושאים</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">רשום לנושא אחד</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">רשום לשני נושאים</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">רשום לשלושה נושאים</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">רשום לארבעה נושאים</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">רשום לחמישה נושאים</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">רשום לשישה נושאים</string>
 </resources>
