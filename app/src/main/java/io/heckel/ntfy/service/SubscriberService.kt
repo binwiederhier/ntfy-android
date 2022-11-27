@@ -16,12 +16,11 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
-import io.heckel.ntfy.util.isDarkThemeOn
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
