@@ -5,6 +5,7 @@ Bug fixes + maintenance:
 * Remove timestamp when copying message text (#471, thanks to @wunter8)
 * Fix auto-delete if some icons do not exist anymore (#506)
 * Fix notification icon color (#480, thanks to @s-h-a-r-d for reporting)
+* Fix topics do not re-subscribe to Firebase after restoring from backup (#511)
 * Add donate button (no ticket)
 
 Additional translations:

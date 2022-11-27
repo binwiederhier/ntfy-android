@@ -5,9 +5,11 @@ import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.stream.JsonReader
+import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -16,6 +18,7 @@ class Backuper(val context: Context) {
     private val gson = Gson()
     private val resolver = context.applicationContext.contentResolver
     private val repository = (context.applicationContext as Application).repository
+    private val messenger = FirebaseMessenger()
 
     suspend fun backup(uri: Uri, withSettings: Boolean = true, withSubscriptions: Boolean = true, withUsers: Boolean = true) {
         Log.d(TAG, "Backing up settings to file $uri")
@@ -88,6 +91,7 @@ class Backuper(val context: Context) {
         if (subscriptions == null) {
             return;
         }
+        val appBaseUrl = context.getString(R.string.app_base_url)
         subscriptions.forEach { s ->
             try {
                 repository.addSubscription(io.heckel.ntfy.db.Subscription(
@@ -104,6 +108,9 @@ class Backuper(val context: Context) {
                     upConnectorToken = s.upConnectorToken,
                     displayName = s.displayName,
                 ))
+                if (s.baseUrl == appBaseUrl) {
+                    messenger.subscribe(s.topic)
+                }
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore subscription ${s.id} (${topicUrl(s.baseUrl, s.topic)}): ${e.message}. Ignoring.", e)
             }
