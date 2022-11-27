@@ -419,11 +419,16 @@ fun View.ripple(scope: CoroutineScope) {
     }
 }
 
-
 fun Uri.readBitmapFromUri(context: Context): Bitmap {
     val resolver = context.applicationContext.contentResolver
     val bitmapStream = resolver.openInputStream(this)
-    return BitmapFactory.decodeStream(bitmapStream)
+    val bitmap = BitmapFactory.decodeStream(bitmapStream)
+    if (bitmap.byteCount > 100 * 1024 * 1024) {
+        // If the Bitmap is too large to be rendered (100 MB), it will throw a RuntimeException downstream.
+        // This workaround throws a catchable exception instead. See issue #474. From https://stackoverflow.com/a/53334563/1440785
+        throw Exception("Bitmap too large to draw on Canvas (${bitmap.byteCount} bytes)")
+    }
+    return bitmap
 }
 
 fun String.readBitmapFromUri(context: Context): Bitmap {

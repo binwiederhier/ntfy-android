@@ -173,8 +173,9 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
             val attachment = notification.attachment
             val image = attachment.contentUri != null && supportedImage(attachment.type) && previewableImage(attachmentFileStat)
-            maybeRenderAttachmentImage(context, attachment, image)
-            maybeRenderAttachmentBox(context, notification, attachment, attachmentFileStat, image)
+            val bitmap = if (image) attachment.contentUri?.readBitmapFromUriOrNull(context) else null
+            maybeRenderAttachmentImage(context, bitmap)
+            maybeRenderAttachmentBox(context, notification, attachment, attachmentFileStat, bitmap)
         }
 
         private fun maybeRenderIcon(context: Context, notification: Notification, iconStat: FileInfo?) {
@@ -238,8 +239,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             return button
         }
 
-        private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, attachmentFileStat: FileInfo?, image: Boolean) {
-            if (image) {
+        private fun maybeRenderAttachmentBox(context: Context, notification: Notification, attachment: Attachment, attachmentFileStat: FileInfo?, bitmap: Bitmap?) {
+            if (bitmap != null) {
                 attachmentBoxView.visibility = View.GONE
                 return
             }
@@ -348,13 +349,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
-        private fun maybeRenderAttachmentImage(context: Context, attachment: Attachment, image: Boolean) {
-            if (!image) {
+        private fun maybeRenderAttachmentImage(context: Context, bitmap: Bitmap?) {
+            if (bitmap == null) {
                 attachmentImageView.visibility = View.GONE
                 return
             }
             try {
-                val bitmap = attachment.contentUri?.readBitmapFromUri(context) ?: throw Exception("uri empty")
                 attachmentImageView.setImageBitmap(bitmap)
                 attachmentImageView.setOnClickListener {
                     val loadImage = { view: ImageView, image: Bitmap -> view.setImageBitmap(image) }
