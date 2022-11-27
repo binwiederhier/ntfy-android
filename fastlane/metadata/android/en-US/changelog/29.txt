@@ -1,3 +1,6 @@
+Features:
+* Support for thematic/adaptive icons for launcher (#513, thanks to @daedric7 for reporting)
+
 Bug fixes + maintenance:
 * Upgrade Android dependencies and build toolchain to SDK 33 (no ticket)
 * Simplify F-Droid build: Disable tasks for Google Services (#516, thanks to @markosopcic)
