@@ -50,7 +50,7 @@ class NotificationParser {
                 )
             }
         } else null
-        val icon: Icon? = if (message.icon != null) Icon(url = message.icon) else null
+        val icon: Icon? = if (message.icon != null && message.icon != "") Icon(url = message.icon) else null
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,

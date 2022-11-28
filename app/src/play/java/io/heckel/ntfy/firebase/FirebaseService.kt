@@ -124,7 +124,7 @@ class FirebaseService : FirebaseMessagingService() {
                     url = attachmentUrl,
                 )
             } else null
-            val icon: Icon? = iconUrl?.let { Icon(url = it) }
+            val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
