@@ -297,6 +297,7 @@ class SubscriberService : Service() {
             .setContentIntent(pendingIntent)
             .setSound(null)
             .setShowWhen(false) // Don't show date/time
+            .setOngoing(true) // Starting SDK 33 / Android 13, foreground notifications can be swiped away
             .setGroup(NOTIFICATION_GROUP_ID) // Do not group with other notifications
             .build()
     }
