@@ -5,6 +5,9 @@ import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -79,8 +82,61 @@ class NotificationService(val context: Context) {
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
+
+
         maybeCreateNotificationChannel(notification.priority)
-        notificationManager.notify(notification.notificationId, builder.build())
+        val systemNotification = builder.build()
+        if (channelId == CHANNEL_ID_MAX) {
+            //systemNotification.flags = systemNotification.flags or android.app.Notification.FLAG_INSISTENT
+        }
+        notificationManager.notify(notification.notificationId, systemNotification)
+
+        if (channelId == CHANNEL_ID_MAX) {
+            Log.d(TAG, "Setting alarm")
+            /*val calendar = Calendar.getInstance()
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 1111, intent, PendingIntent.FLAG_IMMUTABLE)
+            // when using setAlarmClock() it displays a notification until alarm rings and when pressed it takes us to mainActivity
+
+            alarmManager?.set(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis, pendingIntent
+            )*/
+
+            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val mMediaPlayer = MediaPlayer()
+
+            mMediaPlayer.setDataSource(context, alert)
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                mMediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
+                mMediaPlayer.isLooping = true;
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
+                mMediaPlayer.stop()
+            }
+
+        }
+    }
+
+    class AlarmReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(TAG, "AlarmReceiver.onReceive ${intent}")
+            val context = context ?: return
+
+            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val mMediaPlayer = MediaPlayer()
+
+            mMediaPlayer.setDataSource(context, alert)
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+                mMediaPlayer.setLooping(true);
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
+            }
+        }
     }
 
     private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
@@ -333,6 +389,7 @@ class NotificationService(val context: Context) {
                     val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
+                    channel.setBypassDnd(true)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
                         pause, 2000,

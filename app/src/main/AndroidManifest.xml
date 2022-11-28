@@ -134,6 +134,8 @@
                 android:exported="false">
         </receiver>
 
+        <receiver android:name=".msg.NotificationService$AlarmReceiver"/>
+
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service
                 android:name=".firebase.FirebaseService"
