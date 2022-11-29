@@ -5,11 +5,13 @@ Bug fixes + maintenance:
 * Upgrade Android dependencies and build toolchain to SDK 33 (no ticket)
 * Simplify F-Droid build: Disable tasks for Google Services (#516, thanks to @markosopcic)
 * Android 13: Ask for permission to post notifications (#508)
+* Android 13: Do not allow swiping away the foreground notification (#521, thanks to @alexhorner for reporting)
 * Remove timestamp when copying message text (#471, thanks to @wunter8)
 * Fix auto-delete if some icons do not exist anymore (#506)
 * Fix notification icon color (#480, thanks to @s-h-a-r-d for reporting)
 * Fix topics do not re-subscribe to Firebase after restoring from backup (#511)
 * Fix crashes from large images (#474, thanks to @daedric7 for reporting)
+* Fix notification click opens wrong subscription (#261, thanks to @SMAW for reporting)
 * Add donate button (no ticket)
 
 Additional translations:
