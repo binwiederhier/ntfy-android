@@ -7,6 +7,7 @@
     <string name="channel_notifications_default_name">Notifications (default priority)</string>
     <string name="channel_notifications_high_name">Notifications (high priority)</string>
     <string name="channel_notifications_max_name">Notifications (max priority)</string>
+    <string name="channel_notifications_group_default_name">Standard</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
     <string name="channel_subscriber_notification_instant_text">Subscribed to instant delivery topics</string>

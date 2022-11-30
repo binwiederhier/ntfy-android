@@ -345,8 +345,15 @@ class NotificationService(val context: Context) {
                 }
                 else -> NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
             }
+            maybeCreateNotificationChannelGroup(DEFAULT_GROUP_ID, context.getString(R.string.channel_notifications_group_default_name))
+            channel.setGroup(DEFAULT_GROUP_ID)
+
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun maybeCreateNotificationChannelGroup(id: String, name: String) {
+        notificationManager.createNotificationChannelGroup(NotificationChannelGroup(id, name))
     }
 
     private fun toChannelId(name: String, priority: Int): String {
@@ -416,6 +423,7 @@ class NotificationService(val context: Context) {
         private const val TAG = "NtfyNotifService"
 
         private const val DEFAULT_CHANNEL = "ntfy"
+        private const val DEFAULT_GROUP_ID = "ntfy"
 
         private const val PRIORITY_MIN = "-min"
         private const val PRIORITY_LOW = "-low"
