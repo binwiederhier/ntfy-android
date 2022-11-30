@@ -279,6 +279,9 @@
     <string name="settings_notifications_auto_delete_one_week">After one week</string>
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
+    <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously play the notification sound until dismissed. This overrides Do Not Disturb mode.</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications alert only once. If enabled, the notification sound will repeat and override Do Not Disturb mode.</string>
     <string name="settings_general_header">General</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>

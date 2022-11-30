@@ -200,6 +200,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Keep alerting for max priority
+            val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
+            val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
+            insistentMaxPriority?.isChecked = repository.getInsistentMaxPriorityEnabled()
+            insistentMaxPriority?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setInsistentMaxPriorityEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getInsistentMaxPriorityEnabled()
+                }
+            }
+            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
+                }
+            }
+
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)

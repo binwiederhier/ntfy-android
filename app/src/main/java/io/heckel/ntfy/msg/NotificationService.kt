@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -24,9 +23,9 @@ import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
 import java.util.*
 
-
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val repository = Repository.getInstance(context)
 
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
@@ -66,6 +65,7 @@ class NotificationService(val context: Context) {
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
         val channelId = toChannelId(notification.priority)
+        val insistent = notification.priority == 5 && repository.getInsistentMaxPriorityEnabled()
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
@@ -74,7 +74,8 @@ class NotificationService(val context: Context) {
             .setAutoCancel(true) // Cancel when notification is clicked
         setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
-        maybeSetSound(builder, update)
+        maybeSetDeleteIntent(builder, insistent)
+        maybeSetSound(builder, insistent, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
@@ -82,65 +83,24 @@ class NotificationService(val context: Context) {
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
-
-
         maybeCreateNotificationChannel(notification.priority)
-        val systemNotification = builder.build()
-        if (channelId == CHANNEL_ID_MAX) {
-            //systemNotification.flags = systemNotification.flags or android.app.Notification.FLAG_INSISTENT
-        }
-        notificationManager.notify(notification.notificationId, systemNotification)
+        maybePlayInsistentSound(insistent)
 
-        if (channelId == CHANNEL_ID_MAX) {
-            Log.d(TAG, "Setting alarm")
-            /*val calendar = Calendar.getInstance()
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-            val intent = Intent(context, AlarmReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context, 1111, intent, PendingIntent.FLAG_IMMUTABLE)
-            // when using setAlarmClock() it displays a notification until alarm rings and when pressed it takes us to mainActivity
-
-            alarmManager?.set(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis, pendingIntent
-            )*/
-
-            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val mMediaPlayer = MediaPlayer()
-
-            mMediaPlayer.setDataSource(context, alert)
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                mMediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
-                mMediaPlayer.isLooping = true;
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-                mMediaPlayer.stop()
-            }
-
-        }
+        notificationManager.notify(notification.notificationId, builder.build())
     }
 
-    class AlarmReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d(TAG, "AlarmReceiver.onReceive ${intent}")
-            val context = context ?: return
-
-            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val mMediaPlayer = MediaPlayer()
-
-            mMediaPlayer.setDataSource(context, alert)
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-                mMediaPlayer.setLooping(true);
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-            }
+    private fun maybeSetDeleteIntent(builder: NotificationCompat.Builder, insistent: Boolean) {
+        if (!insistent) {
+            return
         }
+        val intent = Intent(context, DeleteBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+        builder.setDeleteIntent(pendingIntent)
     }
 
-    private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
-        if (!update) {
+    private fun maybeSetSound(builder: NotificationCompat.Builder, insistent: Boolean, update: Boolean) {
+        val hasSound = !update && !insistent
+        if (hasSound) {
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(defaultSoundUri)
         } else {
@@ -353,6 +313,17 @@ class NotificationService(val context: Context) {
         }
     }
 
+    /**
+     * Receives a broadcast when a notification is swiped away. This is currently
+     * only called for notifications with an insistent sound.
+     */
+    class DeleteBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val mediaPlayer = Repository.getInstance(context).mediaPlayer
+            mediaPlayer.stop()
+        }
+    }
+
     private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
         val intent = Intent(context, DetailActivity::class.java).apply {
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
@@ -413,6 +384,28 @@ class NotificationService(val context: Context) {
             4 -> CHANNEL_ID_HIGH
             5 -> CHANNEL_ID_MAX
             else -> CHANNEL_ID_DEFAULT
+        }
+    }
+
+    private fun maybePlayInsistentSound(insistent: Boolean) {
+        if (!insistent) {
+            return
+        }
+        try {
+            Log.d(TAG, "Playing insistent alarm")
+            val mediaPlayer = repository.mediaPlayer
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(context, alert)
+                mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
+                mediaPlayer.isLooping = true;
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed playing insistent alarm", e)
         }
     }
 

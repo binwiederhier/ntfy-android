@@ -25,6 +25,10 @@
                 app:entries="@array/settings_notifications_auto_delete_entries"
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
+        <SwitchPreference
+                app:key="@string/settings_notifications_insistent_max_priority_key"
+                app:title="@string/settings_notifications_insistent_max_priority_title"
+                app:defaultValue="false"/>
         <Preference
                 app:key="@string/settings_notifications_channel_prefs_key"
                 app:title="@string/settings_notifications_channel_prefs_title"

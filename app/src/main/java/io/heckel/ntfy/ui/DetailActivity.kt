@@ -297,6 +297,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 }
             }
         }
+        repository.mediaPlayer.stop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
