@@ -57,12 +57,12 @@ class NotificationService(val context: Context) {
     }
 
     fun createNotificationChannels() {
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(priority) }
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(DEFAULT_CHANNEL, priority) }
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val channelId = toChannelId(notification.priority)
+        val channelId = toChannelId(DEFAULT_CHANNEL, notification.priority)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
@@ -79,7 +79,7 @@ class NotificationService(val context: Context) {
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
-        maybeCreateNotificationChannel(notification.priority)
+        maybeCreateNotificationChannel(DEFAULT_CHANNEL, notification.priority)
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
@@ -312,16 +312,16 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeCreateNotificationChannel(priority: Int) {
+    private fun maybeCreateNotificationChannel(name: String, priority: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
             val pause = 300L
             val channel = when (priority) {
-                1 -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-                2 -> NotificationChannel(CHANNEL_ID_LOW, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+                1 -> NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
+                2 -> NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
                 4 -> {
-                    val channel = NotificationChannel(CHANNEL_ID_HIGH, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
+                    val channel = NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
@@ -330,7 +330,7 @@ class NotificationService(val context: Context) {
                     channel
                 }
                 5 -> {
-                    val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
+                    val channel = NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
@@ -343,19 +343,19 @@ class NotificationService(val context: Context) {
                     )
                     channel
                 }
-                else -> NotificationChannel(CHANNEL_ID_DEFAULT, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
+                else -> NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
             }
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun toChannelId(priority: Int): String {
+    private fun toChannelId(name: String, priority: Int): String {
         return when (priority) {
-            1 -> CHANNEL_ID_MIN
-            2 -> CHANNEL_ID_LOW
-            4 -> CHANNEL_ID_HIGH
-            5 -> CHANNEL_ID_MAX
-            else -> CHANNEL_ID_DEFAULT
+            1 -> name + PRIORITY_MIN
+            2 -> name + PRIORITY_LOW
+            4 -> name + PRIORITY_HIGH
+            5 -> name + PRIORITY_MAX
+            else -> name + PRIORITY_DEFAULT
         }
     }
 
@@ -415,11 +415,13 @@ class NotificationService(val context: Context) {
 
         private const val TAG = "NtfyNotifService"
 
-        private const val CHANNEL_ID_MIN = "ntfy-min"
-        private const val CHANNEL_ID_LOW = "ntfy-low"
-        private const val CHANNEL_ID_DEFAULT = "ntfy"
-        private const val CHANNEL_ID_HIGH = "ntfy-high"
-        private const val CHANNEL_ID_MAX = "ntfy-max"
+        private const val DEFAULT_CHANNEL = "ntfy"
+
+        private const val PRIORITY_MIN = "-min"
+        private const val PRIORITY_LOW = "-low"
+        private const val PRIORITY_DEFAULT = ""
+        private const val PRIORITY_HIGH = "-high"
+        private const val PRIORITY_MAX = "-max"
 
         private const val VIEW_ACTION_EXTRA_URL = "url"
         private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"
