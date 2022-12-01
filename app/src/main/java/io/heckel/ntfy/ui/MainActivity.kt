@@ -452,6 +452,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             baseUrl = baseUrl,
             topic = topic,
             instant = instant,
+            ownNotificationChannels = false,
             mutedUntil = 0,
             minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
             autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,

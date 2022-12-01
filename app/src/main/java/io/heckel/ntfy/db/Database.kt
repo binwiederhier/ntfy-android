@@ -23,13 +23,14 @@ data class Subscription(
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     @ColumnInfo(name = "displayName") val displayName: String?,
+    @ColumnInfo(name = "ownNotificationChannels") val ownNotificationChannels: Boolean,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String, displayName: String?) :
-            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, displayName, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String, displayName: String?, ownNotificationChannels: Boolean?) :
+            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, displayName, ownNotificationChannels == true, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
 }
 
 enum class ConnectionState {
@@ -49,6 +50,7 @@ data class SubscriptionWithMetadata(
     val upAppId: String?,
     val upConnectorToken: String?,
     val displayName: String?,
+    val ownNotificationChannels: Boolean,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
@@ -158,7 +160,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 12)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 13)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -185,6 +187,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_9_10)
                     .addMigrations(MIGRATION_10_11)
                     .addMigrations(MIGRATION_11_12)
+                    .addMigrations(MIGRATION_12_13)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -283,6 +286,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN icon_contentUri TEXT")
             }
         }
+
+        private val MIGRATION_12_13 = object : Migration(12, 13) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN ownNotificationChannels INTEGER NOT NULL DEFAULT('0')")
+            }
+        }
     }
 }
 
@@ -290,7 +299,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.ownNotificationChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -303,7 +312,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.ownNotificationChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -316,7 +325,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.ownNotificationChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -329,7 +338,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.ownNotificationChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -342,7 +351,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.ownNotificationChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
