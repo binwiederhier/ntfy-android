@@ -21,6 +21,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
+import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
@@ -35,6 +36,7 @@ class DetailSettingsActivity : AppCompatActivity() {
     private lateinit var repository: Repository
     private lateinit var serviceManager: SubscriberServiceManager
     private lateinit var settingsFragment: SettingsFragment
+    private lateinit var dispatcher: NotificationDispatcher
     private var subscriptionId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +47,7 @@ class DetailSettingsActivity : AppCompatActivity() {
 
         repository = Repository.getInstance(this)
         serviceManager = SubscriberServiceManager(this)
+        dispatcher = NotificationDispatcher(this, repository)
         subscriptionId = intent.getLongExtra(DetailActivity.EXTRA_SUBSCRIPTION_ID, 0)
 
         if (savedInstanceState == null) {
@@ -75,6 +78,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private lateinit var resolver: ContentResolver
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
+        private lateinit var dispatcher: NotificationDispatcher
         private lateinit var subscription: Subscription
 
         private lateinit var iconSetPref: Preference
@@ -87,6 +91,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             // Dependencies (Fragments need a default constructor)
             repository = Repository.getInstance(requireActivity())
             serviceManager = SubscriberServiceManager(requireActivity())
+            dispatcher = NotificationDispatcher(requireActivity(), repository)
             resolver = requireContext().applicationContext.contentResolver
 
             // Create result launcher for custom icon (must be created in onCreatePreferences() directly)
@@ -107,6 +112,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadView() {
             if (subscription.upAppId == null) {
                 loadInstantPref()
+                loadOwnNotificationChannelsPref()
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
@@ -141,6 +147,34 @@ class DetailSettingsActivity : AppCompatActivity() {
                     getString(R.string.detail_settings_notifications_instant_summary_on)
                 } else {
                     getString(R.string.detail_settings_notifications_instant_summary_off)
+                }
+            }
+        }
+
+        private fun loadOwnNotificationChannelsPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_own_notification_channels_key) ?: return
+            val pref: SwitchPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.isChecked = subscription.ownNotificationChannels
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    save(subscription.copy(ownNotificationChannels = value))
+                    if(value) {
+                        dispatcher.createNotificationChannels(subscription)
+                    } else {
+                        dispatcher.deleteNotificationChannels(subscription)
+                    }
+
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return subscription.ownNotificationChannels
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+                if (preference.isChecked) {
+                    getString(R.string.detail_settings_notifications_own_notification_channels_summay_on)
+                } else {
+                    getString(R.string.detail_settings_notifications_own_notification_channels_summay_off)
                 }
             }
         }

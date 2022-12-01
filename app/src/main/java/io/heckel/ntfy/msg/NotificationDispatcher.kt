@@ -7,6 +7,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.decodeBytesMessage
+import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.safeLet
 
 /**
@@ -19,7 +20,15 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     private val distributor = Distributor(context)
 
     fun init() {
-        notifier.createNotificationChannels()
+        notifier.createDefaultNotificationChannels()
+    }
+
+    fun createNotificationChannels(subscription: Subscription) {
+        notifier.createNotificationChannels("" + subscription.id, "" + subscription.id, displayName(subscription))
+    }
+
+    fun deleteNotificationChannels(subscription: Subscription) {
+        notifier.deleteNotificationChannels("" + subscription.id, "" + subscription.id)
     }
 
     fun dispatch(subscription: Subscription, notification: Notification) {

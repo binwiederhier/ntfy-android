@@ -14,6 +14,10 @@
                 app:entryValues="@array/settings_notifications_muted_until_values"
                 app:defaultValue="0"
                 app:isPreferenceVisible="false"/>
+        <SwitchPreference
+                app:key="@string/detail_settings_notifications_own_notification_channels_key"
+                app:title="@string/detail_settings_notifications_own_notification_channels_title"
+                app:isPreferenceVisible="false"/>
         <ListPreference
                 app:key="@string/detail_settings_notifications_min_priority_key"
                 app:title="@string/settings_notifications_min_priority_title"

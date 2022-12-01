@@ -56,14 +56,23 @@ class NotificationService(val context: Context) {
         }
     }
 
-    fun createNotificationChannels() {
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(DEFAULT_CHANNEL, priority) }
+    fun createDefaultNotificationChannels() {
+        createNotificationChannels(DEFAULT_CHANNEL, DEFAULT_GROUP_ID, context.getString(R.string.channel_notifications_group_default_name))
+    }
+
+    fun createNotificationChannels(name: String, groupId: String?, groupName: String?) {
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(name, priority, groupId, groupName) }
+    }
+
+    fun deleteNotificationChannels(name: String, groupId: String?) {
+        (1..5).forEach { priority -> maybeDeleteNotificationChannel(name, priority, groupId) }
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val channelId = toChannelId(DEFAULT_CHANNEL, notification.priority)
-        val builder = NotificationCompat.Builder(context, channelId)
+        val channelName = if(subscription.ownNotificationChannels) "" + subscription.id else DEFAULT_CHANNEL
+        val groupId = if(subscription.ownNotificationChannels) "" + subscription.id else null
+        val builder = NotificationCompat.Builder(context, toChannelId(channelName, notification.priority))
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
             .setContentTitle(title)
@@ -79,7 +88,7 @@ class NotificationService(val context: Context) {
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
-        maybeCreateNotificationChannel(DEFAULT_CHANNEL, notification.priority)
+        maybeCreateNotificationChannel(channelName, notification.priority, groupId, displayName(subscription))
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
@@ -312,7 +321,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeCreateNotificationChannel(name: String, priority: Int) {
+    private fun maybeCreateNotificationChannel(name: String, priority: Int, groupId: String?, groupName: String?=null) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
@@ -345,10 +354,22 @@ class NotificationService(val context: Context) {
                 }
                 else -> NotificationChannel(toChannelId(name, priority), context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
             }
-            maybeCreateNotificationChannelGroup(DEFAULT_GROUP_ID, context.getString(R.string.channel_notifications_group_default_name))
-            channel.setGroup(DEFAULT_GROUP_ID)
+
+            if(groupId != null && groupName != null) {
+                maybeCreateNotificationChannelGroup(groupId, groupName)
+                channel.setGroup(groupId)
+            }
 
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun maybeDeleteNotificationChannel(name: String, priority: Int, groupId: String?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.deleteNotificationChannel(toChannelId(name, priority))
+            if(groupId != null) {
+                notificationManager.deleteNotificationChannelGroup(groupId)
+            }
         }
     }
 

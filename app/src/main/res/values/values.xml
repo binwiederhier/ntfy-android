@@ -34,6 +34,7 @@
     <string name="detail_settings_notifications_header_key" translatable="false">SubscriptionNotifications</string>
     <string name="detail_settings_notifications_instant_key" translatable="false">SubscriptionInstant</string>
     <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
+    <string name="detail_settings_notifications_own_notification_channels_key" translatable="false">SubscriptionOwnNotificationChannels</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
     <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
