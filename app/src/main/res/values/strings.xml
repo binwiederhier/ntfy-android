@@ -2,11 +2,11 @@
            tools:ignore="MissingTranslation">
 
     <!-- Notification channels -->
-    <string name="channel_notifications_min_name">Notifications (min priority)</string>
-    <string name="channel_notifications_low_name">Notifications (low priority)</string>
-    <string name="channel_notifications_default_name">Notifications (default priority)</string>
-    <string name="channel_notifications_high_name">Notifications (high priority)</string>
-    <string name="channel_notifications_max_name">Notifications (max priority)</string>
+    <string name="channel_notifications_min_name">Min priority</string>
+    <string name="channel_notifications_low_name">Low priority</string>
+    <string name="channel_notifications_default_name">Default priority</string>
+    <string name="channel_notifications_high_name">High priority</string>
+    <string name="channel_notifications_max_name">Max priority</string>
     <string name="channel_notifications_group_default_name">Default</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
