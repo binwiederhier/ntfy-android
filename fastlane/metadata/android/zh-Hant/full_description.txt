@@ -1,0 +1,17 @@
+不論 Bash 還是 PowerShell，或者是你自己的應用程式、curl 或者 Invoke-WebRequest 等等，都可以透過 HTTP PUT/POST 向你的裝置傳送通知。
+
+ntfy 是 https://ntfy.sh 的 Android APP，一個打造在 HTTP 標準之上的免費開源 pub-sub 服務。你可以透過訂閱主題來接收通過 HTTP API 發送的通知。
+
+當中，你可能找到千變萬化的用途，例如：
+* 在一個很長很長的程序完成後通知自己
+* 在備份失敗後通知自己
+* 當有人登入到伺服器的時候發送通知
+
+發送通知可以簡單如此：
+
+$ curl -d "備份完成了！" ntfy.sh/mytopic
+
+你也可以在下面的連結閱讀更多資訊：
+* 網站： https://ntfy.sh
+* GitHub（伺服器端）： https://github.com/binwiederhier/ntfy
+* GitHub（Android APP）： https://github.com/binwiederhier/ntfy-android
