@@ -14,6 +14,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.util.nullIfZero
 import io.heckel.ntfy.util.toPriority
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.PollWorker
@@ -94,8 +95,8 @@ class FirebaseService : FirebaseMessagingService() {
         val encoding = data["encoding"]
         val attachmentName = data["attachment_name"] ?: "attachment.bin"
         val attachmentType = data["attachment_type"]
-        val attachmentSize = data["attachment_size"]?.toLongOrNull()
-        val attachmentExpires = data["attachment_expires"]?.toLongOrNull()
+        val attachmentSize = data["attachment_size"]?.toLongOrNull()?.nullIfZero()
+        val attachmentExpires = data["attachment_expires"]?.toLongOrNull()?.nullIfZero()
         val attachmentUrl = data["attachment_url"]
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {

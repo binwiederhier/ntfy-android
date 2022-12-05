@@ -443,6 +443,10 @@ fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
     }
 }
 
+fun Long.nullIfZero(): Long? {
+    return if (this == 0L) return null else this
+}
+
 // TextWatcher that only implements the afterTextChanged method
 class AfterChangedTextWatcher(val afterTextChangedFn: (s: Editable?) -> Unit) : TextWatcher {
     override fun afterTextChanged(s: Editable?) {
