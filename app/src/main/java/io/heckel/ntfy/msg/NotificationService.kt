@@ -319,6 +319,7 @@ class NotificationService(val context: Context) {
      */
     class DeleteBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "Media player: Stopping insistent ring")
             val mediaPlayer = Repository.getInstance(context).mediaPlayer
             mediaPlayer.stop()
         }
@@ -392,20 +393,22 @@ class NotificationService(val context: Context) {
             return
         }
         try {
-            Log.d(TAG, "Playing insistent alarm")
             val mediaPlayer = repository.mediaPlayer
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                Log.d(TAG, "Media player: Playing insistent alarm on alarm channel")
                 mediaPlayer.reset()
                 mediaPlayer.setDataSource(context, alert)
                 mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
                 mediaPlayer.isLooping = true;
                 mediaPlayer.prepare()
                 mediaPlayer.start()
+            } else {
+                Log.d(TAG, "Media player: Alarm volume is 0; not playing insistent alarm")
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed playing insistent alarm", e)
+            Log.w(TAG, "Media player: Failed to play insistent alarm", e)
         }
     }
 

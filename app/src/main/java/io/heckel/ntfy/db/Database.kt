@@ -18,6 +18,7 @@ data class Subscription(
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
     @ColumnInfo(name = "minPriority") val minPriority: Int,
     @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
+    //@ColumnInfo(name = "insistent") val insistent: Boolean?, // Seconds
     @ColumnInfo(name = "lastNotificationId") val lastNotificationId: String?, // Used for polling, with since=<id>
     @ColumnInfo(name = "icon") val icon: String?, // content://-URI (or later other identifier)
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name

@@ -254,6 +254,13 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // Mark this subscription as "open" so we don't receive notifications for it
         repository.detailViewSubscriptionId.set(subscriptionId)
+
+        // Stop insistent playback (if running, otherwise it'll throw)
+        try {
+            repository.mediaPlayer.stop()
+        } catch (_: Exception) {
+            // Ignore errors
+        }
     }
 
     override fun onResume() {
@@ -297,7 +304,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 }
             }
         }
-        repository.mediaPlayer.stop()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

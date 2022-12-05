@@ -110,6 +110,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
+                //loadInsistentMaxPriority()
                 loadIconSetPref()
                 loadIconRemovePref()
             } else {
@@ -252,7 +253,30 @@ class DetailSettingsActivity : AppCompatActivity() {
                 maybeAppendGlobal(summary, global)
             }
         }
-
+/*
+        private fun loadInsistentMaxPriority() {
+            val appBaseUrl = getString(R.string.app_base_url)
+            val prefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
+            val pref: SwitchPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.isChecked = subscription.instant
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    save(subscription.copy(instant = value), refresh = true)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return subscription.instant
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+                if (preference.isChecked) {
+                    getString(R.string.detail_settings_notifications_instant_summary_on)
+                } else {
+                    getString(R.string.detail_settings_notifications_instant_summary_off)
+                }
+            }
+        }
+*/
         private fun loadIconSetPref() {
             val prefId = context?.getString(R.string.detail_settings_appearance_icon_set_key) ?: return
             iconSetPref = findPreference(prefId) ?: return
