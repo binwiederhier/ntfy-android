@@ -6,4 +6,43 @@
     <string name="channel_notifications_high_name">Notificacions (alta prioritat)</string>
     <string name="channel_notifications_max_name">Notificacions (prioritat màx)</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
+    <string name="main_menu_donate_title">Donar 💸</string>
+    <string name="main_item_status_reconnecting">reconnectant…</string>
+    <string name="channel_subscriber_notification_title">Escoltant notificacions entrants</string>
+    <string name="channel_subscriber_notification_instant_text">Subscrit per entrega instantània de temes</string>
+    <string name="channel_subscriber_notification_instant_text_one">Subscrit per entrega instantània d\'un tema</string>
+    <string name="channel_subscriber_notification_instant_text_two">Subscrit per dues entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_instant_text_three">Subscrit per tres entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_instant_text_four">Subscrit per quatre entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_instant_text_five">Subscrit per cinc entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_instant_text_six">Subscrit per sis entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_instant_text_more">Subscrit per %1$d entregues instantànies de temes</string>
+    <string name="channel_subscriber_notification_noinstant_text">Subscrit als temes</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Subscrit a un tema</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Subscrit a dos temes</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Subscrit a tres temes</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Subscrit a sis temes</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Eliminat permanentment</string>
+    <string name="main_action_mode_delete_dialog_cancel">Cancel·lar</string>
+    <string name="main_item_status_text_one">%1$d notificació</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Subscrit a %1$d temes</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Subscrit a quatre temes</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Subscrit a cinc temes</string>
+    <string name="refresh_message_result">%1$d notificacions rebudes</string>
+    <string name="refresh_message_no_results">Tot està actualitzat</string>
+    <string name="refresh_message_error">No es poden actualitzar %1$d subscripciones
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">No s\'ha pogut actualitzar la subscripció: %1$s</string>
+    <string name="main_action_bar_title">Temes subscrits</string>
+    <string name="main_menu_notifications_enabled">Notificacions activades</string>
+    <string name="main_menu_notifications_disabled_forever">Notificacions silenciades</string>
+    <string name="main_menu_notifications_disabled_until">Notificacions silenciades fins: %1$s</string>
+    <string name="main_menu_settings_title">Ajustos</string>
+    <string name="main_menu_report_bug_title">Reportar un problema</string>
+    <string name="main_menu_docs_title">Llegir la documentació</string>
+    <string name="main_menu_rate_title">Valora la aplicació ⭐</string>
+    <string name="main_action_mode_menu_unsubscribe">Donar-se de baixa</string>
+    <string name="main_action_mode_delete_dialog_message">Donar-se de baixa del tema(es) seleccionat(s) permanentment i eliminar totes les notificacions\?</string>
+    <string name="main_item_status_text_not_one">%1$d notificacions</string>
 </resources>
