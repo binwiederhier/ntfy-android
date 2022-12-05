@@ -99,6 +99,7 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeSetSound(builder: NotificationCompat.Builder, insistent: Boolean, update: Boolean) {
+        // Note that the sound setting is ignored in Android => O (26) in favor of notification channels
         val hasSound = !update && !insistent
         if (hasSound) {
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
