@@ -35,7 +35,6 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
@@ -48,7 +47,6 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.security.SecureRandom
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -622,7 +620,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextAppearance(R.style.DangerText)
+                .dangerButton(this)
         }
         dialog.show()
     }

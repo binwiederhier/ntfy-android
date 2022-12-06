@@ -1,7 +1,6 @@
 package io.heckel.ntfy.ui
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -295,7 +294,7 @@ class ShareActivity : AppCompatActivity() {
                         .show()
                 }
             } catch (e: Exception) {
-                val message = if (e is ApiService.UnauthorizedException) {
+                val errorMessage = if (e is ApiService.UnauthorizedException) {
                     if (e.user != null) {
                         getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
                     }  else {
@@ -308,7 +307,7 @@ class ShareActivity : AppCompatActivity() {
                 }
                 runOnUiThread {
                     progress.visibility = View.GONE
-                    errorText.text = message
+                    errorText.text = errorMessage
                     errorImage.visibility = View.VISIBLE
                     errorText.visibility = View.VISIBLE
                 }

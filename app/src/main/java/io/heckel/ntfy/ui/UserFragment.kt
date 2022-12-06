@@ -5,8 +5,6 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -16,6 +14,8 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.util.AfterChangedTextWatcher
+import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.validUrl
 
 class UserFragment : DialogFragment() {
@@ -98,28 +98,14 @@ class UserFragment : DialogFragment() {
 
             // Delete button should be red
             if (user != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    dialog
-                        .getButton(AlertDialog.BUTTON_NEUTRAL)
-                        .setTextAppearance(R.style.DangerText)
-                } else {
-                    dialog
-                        .getButton(AlertDialog.BUTTON_NEUTRAL)
-                        .setTextColor(ContextCompat.getColor(requireContext(), Colors.dangerText(requireContext())))
-                }
+                dialog
+                    .getButton(AlertDialog.BUTTON_NEUTRAL)
+                    .dangerButton(requireContext())
             }
 
             // Validate input when typing
-            val textWatcher = object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    validateInput()
-                }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // Nothing
-                }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // Nothing
-                }
+            val textWatcher = AfterChangedTextWatcher {
+                validateInput()
             }
             baseUrlView.addTextChangedListener(textWatcher)
             usernameView.addTextChangedListener(textWatcher)
@@ -140,7 +126,7 @@ class UserFragment : DialogFragment() {
         }
 
         // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
         return dialog
     }

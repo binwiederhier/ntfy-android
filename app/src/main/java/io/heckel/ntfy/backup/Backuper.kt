@@ -89,7 +89,7 @@ class Backuper(val context: Context) {
 
     private suspend fun applySubscriptions(subscriptions: List<Subscription>?) {
         if (subscriptions == null) {
-            return;
+            return
         }
         val appBaseUrl = context.getString(R.string.app_base_url)
         subscriptions.forEach { s ->
@@ -119,7 +119,7 @@ class Backuper(val context: Context) {
 
     private suspend fun applyNotifications(notifications: List<Notification>?) {
         if (notifications == null) {
-            return;
+            return
         }
         notifications.forEach { n ->
             try {
@@ -188,7 +188,7 @@ class Backuper(val context: Context) {
 
     private suspend fun applyUsers(users: List<User>?) {
         if (users == null) {
-            return;
+            return
         }
         users.forEach { u ->
             try {

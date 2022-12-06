@@ -1,0 +1,2 @@
+Bug fixes:
+* Android 5 (SDK 21): Fix crash on unsubscribing (#528, thanks to Roger M.)

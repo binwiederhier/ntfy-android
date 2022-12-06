@@ -119,7 +119,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             if (selected.contains(subscription.id)) {
                 itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
             } else {
-                itemView.setBackgroundColor(Color.TRANSPARENT);
+                itemView.setBackgroundColor(Color.TRANSPARENT)
             }
         }
     }

@@ -22,13 +22,16 @@ import android.util.Base64
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
+import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -215,16 +218,6 @@ fun maybeAppendActionErrors(message: String, notification: Notification): String
         return message
     } else {
         return "${message}\n\n${actionErrors}"
-    }
-}
-
-// Checks in the most horrible way if a content URI exists; I couldn't find a better way
-fun fileExists(context: Context, contentUri: String?): Boolean {
-    return try {
-        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
-        true
-    } catch (_: Exception) {
-        false
     }
 }
 
@@ -455,10 +448,6 @@ fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
     }
 }
 
-fun Long.nullIfZero(): Long? {
-    return if (this == 0L) return null else this
-}
-
 // TextWatcher that only implements the afterTextChanged method
 class AfterChangedTextWatcher(val afterTextChangedFn: (s: Editable?) -> Unit) : TextWatcher {
     override fun afterTextChanged(s: Editable?) {
@@ -505,4 +494,12 @@ fun String.sha256(): String {
     val md = MessageDigest.getInstance("SHA-256")
     val digest = md.digest(this.toByteArray())
     return digest.fold("") { str, it -> str + "%02x".format(it) }
+}
+
+fun Button.dangerButton(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        setTextAppearance(R.style.DangerText)
+    } else {
+        setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
+    }
 }
