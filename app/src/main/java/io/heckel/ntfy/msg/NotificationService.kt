@@ -65,7 +65,8 @@ class NotificationService(val context: Context) {
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
         val channelId = toChannelId(notification.priority)
-        val insistent = notification.priority == 5 && repository.getInsistentMaxPriorityEnabled()
+        val insistent = notification.priority == 5 &&
+                (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))

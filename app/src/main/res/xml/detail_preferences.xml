@@ -28,6 +28,13 @@
                 app:entryValues="@array/detail_settings_notifications_auto_delete_values"
                 app:defaultValue="-1"
                 app:isPreferenceVisible="false"/> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
+        <ListPreference
+                app:key="@string/detail_settings_notifications_insistent_max_priority_key"
+                app:title="@string/settings_notifications_insistent_max_priority_title"
+                app:entries="@array/detail_settings_notifications_insistent_max_priority_entries"
+                app:entryValues="@array/detail_settings_notifications_insistent_max_priority_values"
+                app:defaultValue="-1"
+                app:isPreferenceVisible="false"/> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
     </PreferenceCategory>
     <PreferenceCategory
         app:key="@string/detail_settings_appearance_header_key"

@@ -113,6 +113,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+                    insistent = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL,
                     lastNotificationId = null,
                     icon = null,
                     upAppId = null,
@@ -241,7 +242,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
-                    Log.d(TAG, "$itemCount item(s) inserted at $positionStart, scrolling to the top")
+                    Log.d(TAG, "$itemCount item(s) inserted at 0, scrolling to the top")
                     mainList.scrollToPosition(positionStart)
                 }
             }
@@ -626,7 +627,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             handleActionModeClick(notification)
         } else if (notification.click != "") {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(notification.click)))
+                startActivity(Intent(ACTION_VIEW, Uri.parse(notification.click)))
             } catch (e: Exception) {
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {

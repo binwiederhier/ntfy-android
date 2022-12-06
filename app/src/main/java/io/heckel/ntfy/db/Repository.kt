@@ -402,6 +402,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
+                insistent = s.insistent,
                 lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
@@ -427,6 +428,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             mutedUntil = s.mutedUntil,
             minPriority = s.minPriority,
             autoDelete = s.autoDelete,
+            insistent = s.insistent,
             lastNotificationId = s.lastNotificationId,
             icon = s.icon,
             upAppId = s.upAppId,
@@ -504,6 +506,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val AUTO_DELETE_ONE_MONTH_SECONDS = 30 * ONE_DAY_SECONDS
         const val AUTO_DELETE_THREE_MONTHS_SECONDS = 90 * ONE_DAY_SECONDS
         const val AUTO_DELETE_DEFAULT_SECONDS = AUTO_DELETE_ONE_MONTH_SECONDS
+
+        const val INSISTENT_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
+        const val INSISTENT_MAX_PRIORITY_DISABLED = 0
+        const val INSISTENT_MAX_PRIORITY_ENABLED = 1
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

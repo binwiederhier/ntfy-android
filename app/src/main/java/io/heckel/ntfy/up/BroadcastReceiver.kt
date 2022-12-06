@@ -75,6 +75,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+                    insistent = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL,
                     lastNotificationId = null,
                     icon = null,
                     upAppId = appId,

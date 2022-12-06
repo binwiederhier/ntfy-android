@@ -110,7 +110,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
-                //loadInsistentMaxPriority()
+                loadInsistentMaxPriorityPref()
                 loadIconSetPref()
                 loadIconRemovePref()
             } else {
@@ -238,7 +238,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
                 var seconds = preference.value.toLongOrNull() ?: Repository.AUTO_DELETE_USE_GLOBAL
                 val global = seconds == Repository.AUTO_DELETE_USE_GLOBAL
-                if (seconds == Repository.AUTO_DELETE_USE_GLOBAL) {
+                if (global) {
                     seconds = repository.getAutoDeleteSeconds()
                 }
                 val summary = when (seconds) {
@@ -253,30 +253,34 @@ class DetailSettingsActivity : AppCompatActivity() {
                 maybeAppendGlobal(summary, global)
             }
         }
-/*
-        private fun loadInsistentMaxPriority() {
-            val appBaseUrl = getString(R.string.app_base_url)
-            val prefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+
+        private fun loadInsistentMaxPriorityPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_insistent_max_priority_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
             pref?.isVisible = true
-            pref?.isChecked = subscription.instant
+            pref?.value = subscription.insistent.toString()
             pref?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    save(subscription.copy(instant = value), refresh = true)
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(insistent = intValue))
                 }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return subscription.instant
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.insistent.toString()
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
-                if (preference.isChecked) {
-                    getString(R.string.detail_settings_notifications_instant_summary_on)
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
+                val global = value == Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
+                val enabled = if (global) repository.getInsistentMaxPriorityEnabled() else value == Repository.INSISTENT_MAX_PRIORITY_ENABLED
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
-                    getString(R.string.detail_settings_notifications_instant_summary_off)
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
                 }
+                maybeAppendGlobal(summary, global)
             }
         }
-*/
+
         private fun loadIconSetPref() {
             val prefId = context?.getString(R.string.detail_settings_appearance_icon_set_key) ?: return
             iconSetPref = findPreference(prefId) ?: return

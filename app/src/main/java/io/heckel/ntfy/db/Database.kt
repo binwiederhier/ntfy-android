@@ -18,7 +18,7 @@ data class Subscription(
     @ColumnInfo(name = "mutedUntil") val mutedUntil: Long,
     @ColumnInfo(name = "minPriority") val minPriority: Int,
     @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
-    //@ColumnInfo(name = "insistent") val insistent: Boolean?, // Seconds
+    @ColumnInfo(name = "insistent") val insistent: Int, // Ring constantly for max priority notifications (-1 = use global, 0 = off, 1 = on)
     @ColumnInfo(name = "lastNotificationId") val lastNotificationId: String?, // Used for polling, with since=<id>
     @ColumnInfo(name = "icon") val icon: String?, // content://-URI (or later other identifier)
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
@@ -29,8 +29,40 @@ data class Subscription(
     @Ignore val lastActive: Long = 0, // Unix timestamp
     @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
 ) {
-    constructor(id: Long, baseUrl: String, topic: String, instant: Boolean, mutedUntil: Long, minPriority: Int, autoDelete: Long, lastNotificationId: String, icon: String, upAppId: String, upConnectorToken: String, displayName: String?) :
-            this(id, baseUrl, topic, instant, mutedUntil, minPriority, autoDelete, lastNotificationId, icon, upAppId, upConnectorToken, displayName, 0, 0, 0, ConnectionState.NOT_APPLICABLE)
+    constructor(
+        id: Long,
+        baseUrl: String,
+        topic: String,
+        instant: Boolean,
+        mutedUntil: Long,
+        minPriority: Int,
+        autoDelete: Long,
+        insistent: Int,
+        lastNotificationId: String,
+        icon: String,
+        upAppId: String,
+        upConnectorToken: String,
+        displayName: String?
+    ) :
+            this(
+                id,
+                baseUrl,
+                topic,
+                instant,
+                mutedUntil,
+                minPriority,
+                autoDelete,
+                insistent,
+                lastNotificationId,
+                icon,
+                upAppId,
+                upConnectorToken,
+                displayName,
+                0,
+                0,
+                0,
+                ConnectionState.NOT_APPLICABLE
+            )
 }
 
 enum class ConnectionState {
@@ -45,6 +77,7 @@ data class SubscriptionWithMetadata(
     val mutedUntil: Long,
     val autoDelete: Long,
     val minPriority: Int,
+    val insistent: Int,
     val lastNotificationId: String?,
     val icon: String?,
     val upAppId: String?,
@@ -291,7 +324,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -304,7 +337,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -317,7 +350,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -330,7 +363,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -343,7 +376,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
