@@ -210,8 +210,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                     value = repository.getMinPriority()
                 }
                 val summary = when (value) {
-                    1 -> getString(R.string.settings_notifications_min_priority_summary_any)
-                    5 -> getString(R.string.settings_notifications_min_priority_summary_max)
+                    PRIORITY_MIN -> getString(R.string.settings_notifications_min_priority_summary_any)
+                    PRIORITY_MAX -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
                         val minPriorityString = toPriorityString(requireContext(), value)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, value, minPriorityString)

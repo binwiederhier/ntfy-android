@@ -59,13 +59,13 @@ class NotificationService(val context: Context) {
     }
 
     fun createNotificationChannels() {
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(priority) }
+        ALL_PRIORITIES.forEach { priority -> maybeCreateNotificationChannel(priority) }
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
         val channelId = toChannelId(notification.priority)
-        val insistent = notification.priority == 5 &&
+        val insistent = notification.priority == PRIORITY_MAX &&
                 (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
@@ -351,9 +351,9 @@ class NotificationService(val context: Context) {
 
             val pause = 300L
             val channel = when (priority) {
-                1 -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-                2 -> NotificationChannel(CHANNEL_ID_LOW, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
-                4 -> {
+                PRIORITY_MIN -> NotificationChannel(CHANNEL_ID_MIN, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
+                PRIORITY_LOW -> NotificationChannel(CHANNEL_ID_LOW, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+                PRIORITY_HIGH -> {
                     val channel = NotificationChannel(CHANNEL_ID_HIGH, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
@@ -362,7 +362,7 @@ class NotificationService(val context: Context) {
                     )
                     channel
                 }
-                5 -> {
+                PRIORITY_MAX -> {
                     val channel = NotificationChannel(CHANNEL_ID_MAX, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
@@ -385,10 +385,10 @@ class NotificationService(val context: Context) {
 
     private fun toChannelId(priority: Int): String {
         return when (priority) {
-            1 -> CHANNEL_ID_MIN
-            2 -> CHANNEL_ID_LOW
-            4 -> CHANNEL_ID_HIGH
-            5 -> CHANNEL_ID_MAX
+            PRIORITY_MIN -> CHANNEL_ID_MIN
+            PRIORITY_LOW -> CHANNEL_ID_LOW
+            PRIORITY_HIGH -> CHANNEL_ID_HIGH
+            PRIORITY_MAX -> CHANNEL_ID_MAX
             else -> CHANNEL_ID_DEFAULT
         }
     }
@@ -400,11 +400,10 @@ class NotificationService(val context: Context) {
         try {
             val mediaPlayer = repository.mediaPlayer
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
                 Log.d(TAG, "Media player: Playing insistent alarm on alarm channel")
                 mediaPlayer.reset()
-                mediaPlayer.setDataSource(context, alert)
+                mediaPlayer.setDataSource(context, getInsistentSound())
                 mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
                 mediaPlayer.isLooping = true;
                 mediaPlayer.prepare()
@@ -414,6 +413,15 @@ class NotificationService(val context: Context) {
             }
         } catch (e: Exception) {
             Log.w(TAG, "Media player: Failed to play insistent alarm", e)
+        }
+    }
+
+    private fun getInsistentSound(): Uri {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = notificationManager.getNotificationChannel(toChannelId(PRIORITY_MAX))
+            channel.sound
+        } else {
+            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
     }
 

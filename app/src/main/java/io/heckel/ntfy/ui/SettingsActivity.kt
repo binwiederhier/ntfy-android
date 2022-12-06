@@ -191,8 +191,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
             minPriority?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
                 when (val minPriorityValue = pref.value.toIntOrNull() ?: 1) { // 1/low means all priorities
-                    1 -> getString(R.string.settings_notifications_min_priority_summary_any)
-                    5 -> getString(R.string.settings_notifications_min_priority_summary_max)
+                    PRIORITY_MIN -> getString(R.string.settings_notifications_min_priority_summary_any)
+                    PRIORITY_MAX -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
                         val minPriorityString = toPriorityString(requireContext(), minPriorityValue)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, minPriorityValue, minPriorityString)

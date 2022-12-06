@@ -143,22 +143,22 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
         private fun renderPriority(context: Context, notification: Notification) {
             when (notification.priority) {
-                1 -> {
+                PRIORITY_MIN -> {
                     priorityImageView.visibility = View.VISIBLE
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_1_24dp))
                 }
-                2 -> {
+                PRIORITY_LOW -> {
                     priorityImageView.visibility = View.VISIBLE
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_2_24dp))
                 }
-                3 -> {
+                PRIORITY_DEFAULT -> {
                     priorityImageView.visibility = View.GONE
                 }
-                4 -> {
+                PRIORITY_HIGH -> {
                     priorityImageView.visibility = View.VISIBLE
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_4_24dp))
                 }
-                5 -> {
+                PRIORITY_MAX -> {
                     priorityImageView.visibility = View.VISIBLE
                     priorityImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_priority_5_24dp))
                 }
