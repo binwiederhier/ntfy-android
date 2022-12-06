@@ -413,7 +413,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun toChannelId(scope: String, priority: Int): String {
+    fun toChannelId(scope: String, priority: Int): String {
         return when (priority) {
             1 -> scope + PRIORITY_MIN
             2 -> scope + PRIORITY_LOW

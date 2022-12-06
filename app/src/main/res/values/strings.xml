@@ -352,6 +352,7 @@
     <string name="detail_settings_notifications_dedicated_channels_title">Use dedicated channels</string>
     <string name="detail_settings_notifications_dedicated_channels_summay_on">Use dedicated notification channels for this subscription</string>
     <string name="detail_settings_notifications_dedicated_channels_summay_off">Use default notification channels</string>
+    <string name="detail_settings_notifications_open_channels_title">Configure dedicated channels</string>
     <string name="detail_settings_appearance_header">Appearance</string>
     <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>

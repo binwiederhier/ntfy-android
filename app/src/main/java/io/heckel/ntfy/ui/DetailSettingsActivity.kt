@@ -4,8 +4,10 @@ import android.content.ContentResolver
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -82,6 +84,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private lateinit var subscription: Subscription
 
         private lateinit var iconSetPref: Preference
+        private lateinit var openChannelsPref: Preference
         private lateinit var iconSetLauncher: ActivityResultLauncher<String>
         private lateinit var iconRemovePref: Preference
 
@@ -113,6 +116,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             if (subscription.upAppId == null) {
                 loadInstantPref()
                 loadDedicatedChannelsPrefs()
+                loadOpenChannelsPrefs()
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
@@ -165,6 +169,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                         notificationService.deleteSubscriptionNotificationChannels(subscription)
                     }
 
+                    openChannelsPref.isVisible = value
+
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return subscription.dedicatedChannels
@@ -176,6 +182,21 @@ class DetailSettingsActivity : AppCompatActivity() {
                 } else {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summay_off)
                 }
+            }
+        }
+
+        private fun loadOpenChannelsPrefs() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_open_channels_key) ?: return
+            openChannelsPref = findPreference(prefId) ?: return
+            openChannelsPref.isVisible = subscription.dedicatedChannels
+            openChannelsPref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            openChannelsPref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+                val channelId = notificationService.toChannelId(notificationService.dedicatedNotificationScope(subscription), 3)
+                val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().applicationContext.packageName)
+                startActivity(settingsIntent);
+                true
             }
         }
 

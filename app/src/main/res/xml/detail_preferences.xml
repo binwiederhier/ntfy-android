@@ -18,6 +18,10 @@
                 app:key="@string/detail_settings_notifications_dedicated_channels_key"
                 app:title="@string/detail_settings_notifications_dedicated_channels_title"
                 app:isPreferenceVisible="false"/>
+        <Preference
+                app:key="@string/detail_settings_notifications_open_channels_key"
+                app:title="@string/detail_settings_notifications_open_channels_title"
+                app:isPreferenceVisible="false"/>
         <ListPreference
                 app:key="@string/detail_settings_notifications_min_priority_key"
                 app:title="@string/settings_notifications_min_priority_title"
