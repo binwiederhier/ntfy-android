@@ -71,9 +71,8 @@ class NotificationService(val context: Context) {
     fun createSubscriptionNotificationChannels(subscription: Subscription) {
         val notificationScope = dedicatedNotificationScope(subscription)
         val groupId = dedicatedGroupId(subscription)
-        val displayName = displayName(subscription)
 
-        maybeCreateNotificationGroup(groupId, displayName)
+        maybeCreateNotificationGroup(groupId, subscriptionTopicShortUrl(subscription))
 
         (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationScope, priority, groupId) }
     }
@@ -116,7 +115,7 @@ class NotificationService(val context: Context) {
         maybeAddUserActions(builder, notification)
 
         if (groupId != null) {
-            maybeCreateNotificationGroup(groupId, displayName(subscription))
+            maybeCreateNotificationGroup(groupId, subscriptionTopicShortUrl(subscription))
         }
 
         maybeCreateNotificationChannel(scope, notification.priority, groupId)
