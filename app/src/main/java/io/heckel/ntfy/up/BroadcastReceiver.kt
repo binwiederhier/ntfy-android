@@ -72,7 +72,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     baseUrl = baseUrl,
                     topic = topic,
                     instant = true, // No Firebase, always instant!
-                    ownNotificationChannels = false,
+                    dedicatedChannels = false,
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,

@@ -87,7 +87,7 @@ class NotificationService(val context: Context) {
     }
 
     fun groupId(subscription: Subscription): String? {
-        if (subscription.ownNotificationChannels) {
+        if (subscription.dedicatedChannels) {
             return "" + subscription.id
         } else {
             return null
@@ -96,7 +96,7 @@ class NotificationService(val context: Context) {
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val scope = if (subscription.ownNotificationChannels) dedicatedNotificationScope(subscription) else DEFAULT_NOTIFICATION_SCOPE
+        val scope = if (subscription.dedicatedChannels) dedicatedNotificationScope(subscription) else DEFAULT_NOTIFICATION_SCOPE
         val builder = NotificationCompat.Builder(context, toChannelId(scope, notification.priority))
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))

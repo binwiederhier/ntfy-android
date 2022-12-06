@@ -112,7 +112,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadView() {
             if (subscription.upAppId == null) {
                 loadInstantPref()
-                loadOwnNotificationChannelsPref()
+                loadDedicatedChannelsPrefs()
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
@@ -151,14 +151,14 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun loadOwnNotificationChannelsPref() {
-            val prefId = context?.getString(R.string.detail_settings_notifications_own_notification_channels_key) ?: return
+        private fun loadDedicatedChannelsPrefs() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_dedicated_channels_key) ?: return
             val pref: SwitchPreference? = findPreference(prefId)
             pref?.isVisible = true
-            pref?.isChecked = subscription.ownNotificationChannels
+            pref?.isChecked = subscription.dedicatedChannels
             pref?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
-                    save(subscription.copy(ownNotificationChannels = value))
+                    save(subscription.copy(dedicatedChannels = value))
                     if(value) {
                         notificationService.createSubscriptionNotificationChannels(subscription)
                     } else {
@@ -167,14 +167,14 @@ class DetailSettingsActivity : AppCompatActivity() {
 
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return subscription.ownNotificationChannels
+                    return subscription.dedicatedChannels
                 }
             }
             pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
                 if (preference.isChecked) {
-                    getString(R.string.detail_settings_notifications_own_notification_channels_summay_on)
+                    getString(R.string.detail_settings_notifications_dedicated_channels_summay_on)
                 } else {
-                    getString(R.string.detail_settings_notifications_own_notification_channels_summay_off)
+                    getString(R.string.detail_settings_notifications_dedicated_channels_summay_off)
                 }
             }
         }
