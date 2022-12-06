@@ -191,7 +191,6 @@ class DetailSettingsActivity : AppCompatActivity() {
             openChannelsPref.isVisible = subscription.dedicatedChannels
             openChannelsPref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             openChannelsPref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
-                val channelId = notificationService.toChannelId(notificationService.dedicatedNotificationScope(subscription), 3)
                 val settingsIntent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().applicationContext.packageName)
