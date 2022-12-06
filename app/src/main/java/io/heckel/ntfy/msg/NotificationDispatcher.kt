@@ -23,14 +23,6 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         notifier.createDefaultNotificationChannels()
     }
 
-    fun createNotificationChannels(subscription: Subscription) {
-        notifier.createNotificationChannels("" + subscription.id, "" + subscription.id, displayName(subscription))
-    }
-
-    fun deleteNotificationChannels(subscription: Subscription) {
-        notifier.deleteNotificationChannels("" + subscription.id, "" + subscription.id)
-    }
-
     fun dispatch(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Dispatching $notification for subscription $subscription")
 
