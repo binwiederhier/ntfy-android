@@ -13,6 +13,7 @@ Bug fixes + maintenance:
 * Fix crashes from large images (#474, thanks to @daedric7 for reporting)
 * Fix notification click opens wrong subscription (#261, thanks to @SMAW for reporting)
 * Fix Firebase-only "link expired" issue (#529)
+* Remove "Install .apk" feature in Google Play variant due to policy change (#531)
 * Add donate button (no ticket)
 
 Additional translations:
