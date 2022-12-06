@@ -25,6 +25,7 @@ import android.view.Window
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
@@ -321,6 +322,8 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
     return java.lang.String.format("%.${decimals}f %cB", value / 1024.0, ci.current())
 }
 
+const val androidAppMimeType = "application/vnd.android.package-archive"
+
 fun mimeTypeToIconResource(mimeType: String?): Int {
     return if (mimeType?.startsWith("image/") == true) {
         R.drawable.ic_file_image_red_24dp
@@ -328,7 +331,7 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
         R.drawable.ic_file_video_orange_24dp
     } else if (mimeType?.startsWith("audio/") == true) {
         R.drawable.ic_file_audio_purple_24dp
-    } else if (mimeType == "application/vnd.android.package-archive") {
+    } else if (mimeType == androidAppMimeType) {
         R.drawable.ic_file_app_gray_24dp
     } else {
         R.drawable.ic_file_document_blue_24dp
@@ -337,6 +340,15 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 
 fun supportedImage(mimeType: String?): Boolean {
     return listOf("image/jpeg", "image/png").contains(mimeType)
+}
+
+// Google Play doesn't allow us to install received .apk files anymore.
+// See https://github.com/binwiederhier/ntfy/issues/531
+fun canOpenAttachment(attachment: Attachment?): Boolean {
+    if (attachment?.type == androidAppMimeType && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
+        return false
+    }
+    return true
 }
 
 // Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
@@ -441,6 +453,10 @@ fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
     } catch (_: Exception) {
         null
     }
+}
+
+fun Long.nullIfZero(): Long? {
+    return if (this == 0L) return null else this
 }
 
 // TextWatcher that only implements the afterTextChanged method

@@ -327,4 +327,5 @@
     <string name="add_dialog_base_urls_dropdown_clear">Borrar la URL del servicio</string>
     <string name="main_banner_websocket_text">Cambiar a WebSockets es la forma recomendada para conectarse a su servidor, y podría mejorar la vida de la batería, pero puede requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional en su proxy</a>. Esto se puede cambiar en la Configuración.</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar ahora</string>
+    <string name="main_menu_donate_title">Donar 💸</string>
 </resources>

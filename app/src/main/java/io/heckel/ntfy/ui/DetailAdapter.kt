@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.DownloadManager
@@ -34,7 +35,6 @@ import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
-
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
@@ -371,6 +371,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun openFile(context: Context, attachment: Attachment): Boolean {
+            if (!canOpenAttachment(attachment)) {
+                Toast
+                    .makeText(context, context.getString(R.string.detail_item_cannot_open_apk), Toast.LENGTH_LONG)
+                    .show()
+                return true
+            }
             Log.d(TAG, "Opening file ${attachment.contentUri}")
             try {
                 val contentUri = Uri.parse(attachment.contentUri)
