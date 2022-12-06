@@ -159,7 +159,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             pref?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     save(subscription.copy(dedicatedChannels = value))
-                    if(value) {
+                    if (value) {
                         notificationService.createSubscriptionNotificationChannels(subscription)
                     } else {
                         notificationService.deleteSubscriptionNotificationChannels(subscription)
