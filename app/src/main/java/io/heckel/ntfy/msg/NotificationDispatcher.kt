@@ -7,7 +7,6 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.decodeBytesMessage
-import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.safeLet
 
 /**
