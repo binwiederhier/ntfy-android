@@ -356,12 +356,13 @@ class NotificationService(val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
+            val channelId = toChannelId(scope, priority)
             val pause = 300L
             val channel = when (priority) {
-                1 -> NotificationChannel(toChannelId(scope, priority), context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-                2 -> NotificationChannel(toChannelId(scope, priority), context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+                1 -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
+                2 -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
                 4 -> {
-                    val channel = NotificationChannel(toChannelId(scope, priority), context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
+                    val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
@@ -370,7 +371,7 @@ class NotificationService(val context: Context) {
                     channel
                 }
                 5 -> {
-                    val channel = NotificationChannel(toChannelId(scope, priority), context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
+                    val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
@@ -383,7 +384,7 @@ class NotificationService(val context: Context) {
                     )
                     channel
                 }
-                else -> NotificationChannel(toChannelId(scope, priority), context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
+                else -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
             }
 
             if (groupId != null) {
