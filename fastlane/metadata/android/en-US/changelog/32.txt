@@ -1,2 +1,6 @@
+Features:
+* Custom per-subscription notification settings incl. sounds, DND, etc. (#6, thanks to @doits)
+* Insistent notifications that ring until dismissed (#417, thanks to @danmed for reporting)
+
 Bug fixes:
-* Android 5 (SDK 21): Fix crash on unsubscribing (#528, thanks to Roger M.)
+* Android 5 (SDK 21): Fix crash on unsubscribing (#528, thanks to Roger M. for reporting)
