@@ -1,9 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +15,8 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.readBitmapFromUriOrNull
 import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.readBitmapFromUriOrNull
 import java.text.DateFormat
 import java.util.*
 

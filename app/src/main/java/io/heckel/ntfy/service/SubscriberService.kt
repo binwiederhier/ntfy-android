@@ -200,7 +200,7 @@ class SubscriberService : Service() {
             // retrieve old messages. This is important, so we don't download attachments from old messages.
 
             val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
-            val serviceActive = { -> isServiceStarted }
+            val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager

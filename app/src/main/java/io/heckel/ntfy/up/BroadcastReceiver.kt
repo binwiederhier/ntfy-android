@@ -10,12 +10,10 @@ import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.*
-import kotlin.random.Random
 
 /**
  * This is the UnifiedPush broadcast receiver to handle the distributor actions REGISTER and UNREGISTER.

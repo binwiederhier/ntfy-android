@@ -95,7 +95,7 @@ class ApiService {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
             val body = response.body?.string()?.trim()
-            if (body == null || body.isEmpty()) return emptyList()
+            if (body.isNullOrEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
                 parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
             }
@@ -166,7 +166,7 @@ class ApiService {
     }
 
     class UnauthorizedException(val user: User?) : Exception()
-    class EntityTooLargeException() : Exception()
+    class EntityTooLargeException : Exception()
 
     companion object {
         val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"

@@ -318,7 +318,7 @@
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Turn on logging so you can share logs later to diagnose issues.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
     <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by the ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>

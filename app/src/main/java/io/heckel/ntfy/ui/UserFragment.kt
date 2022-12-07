@@ -3,13 +3,11 @@ package io.heckel.ntfy.ui
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R

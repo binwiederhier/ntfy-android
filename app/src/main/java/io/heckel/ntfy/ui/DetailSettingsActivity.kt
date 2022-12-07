@@ -175,9 +175,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.mutedUntil.toString()
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { _ ->
-                val mutedUntilValue = subscription.mutedUntil
-                when (mutedUntilValue) {
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> {
+                when (val mutedUntilValue = subscription.mutedUntil) {
                     Repository.MUTED_UNTIL_SHOW_ALL -> getString(R.string.settings_notifications_muted_until_show_all)
                     Repository.MUTED_UNTIL_FOREVER -> getString(R.string.settings_notifications_muted_until_forever)
                     else -> {
@@ -258,7 +257,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             iconSetPref = findPreference(prefId) ?: return
             iconSetPref.isVisible = subscription.icon == null
             iconSetPref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            iconSetPref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+            iconSetPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 iconSetLauncher.launch("image/*")
                 true
             }
@@ -269,7 +268,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             iconRemovePref = findPreference(prefId) ?: return
             iconRemovePref.isVisible = subscription.icon != null
             iconRemovePref.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            iconRemovePref.onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+            iconRemovePref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 iconRemovePref.isVisible = false
                 iconSetPref.isVisible = true
                 deleteIcon(subscription.icon)
