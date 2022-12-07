@@ -73,6 +73,10 @@ class NotificationService(val context: Context) {
         maybeDeleteNotificationGroup(groupId)
     }
 
+    fun channelsSupported(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    }
+
     private fun subscriptionGroupId(subscription: Subscription): String {
         return subscription.id.toString()
     }
@@ -339,7 +343,7 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeCreateNotificationChannel(group: String, priority: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (channelsSupported()) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
             val channelId = toChannelId(group, priority)
@@ -378,19 +382,19 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeDeleteNotificationChannel(group: String, priority: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (channelsSupported()) {
             notificationManager.deleteNotificationChannel(toChannelId(group, priority))
         }
     }
 
     private fun maybeCreateNotificationGroup(id: String, name: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (channelsSupported()) {
             notificationManager.createNotificationChannelGroup(NotificationChannelGroup(id, name))
         }
     }
 
     private fun maybeDeleteNotificationGroup(id: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (channelsSupported()) {
             notificationManager.deleteNotificationChannelGroup(id)
         }
     }

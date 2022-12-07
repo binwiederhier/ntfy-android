@@ -115,13 +115,15 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadView() {
             if (subscription.upAppId == null) {
                 loadInstantPref()
-                loadDedicatedChannelsPrefs()
-                loadOpenChannelsPrefs()
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
                 loadIconSetPref()
                 loadIconRemovePref()
+                if (notificationService.channelsSupported()) {
+                    loadDedicatedChannelsPrefs()
+                    loadOpenChannelsPrefs()
+                }
             } else {
                 val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
