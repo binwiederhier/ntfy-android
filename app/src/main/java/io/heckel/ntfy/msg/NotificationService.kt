@@ -5,6 +5,8 @@ import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -21,9 +23,9 @@ import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
 import java.util.*
 
-
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val repository = Repository.getInstance(context)
 
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
@@ -58,18 +60,18 @@ class NotificationService(val context: Context) {
 
     fun createDefaultNotificationChannels() {
         maybeCreateNotificationGroup(DEFAULT_GROUP, context.getString(R.string.channel_notifications_group_default_name))
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(DEFAULT_GROUP, priority) }
+        ALL_PRIORITIES.forEach { priority -> maybeCreateNotificationChannel(DEFAULT_GROUP, priority) }
     }
 
     fun createSubscriptionNotificationChannels(subscription: Subscription) {
         val groupId = subscriptionGroupId(subscription)
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(groupId, priority) }
+        ALL_PRIORITIES.forEach { priority -> maybeCreateNotificationChannel(groupId, priority) }
     }
 
     fun deleteSubscriptionNotificationChannels(subscription: Subscription) {
         val groupId = subscriptionGroupId(subscription)
-        (1..5).forEach { priority -> maybeDeleteNotificationChannel(groupId, priority) }
+        ALL_PRIORITIES.forEach { priority -> maybeDeleteNotificationChannel(groupId, priority) }
         maybeDeleteNotificationGroup(groupId)
     }
 
@@ -78,7 +80,7 @@ class NotificationService(val context: Context) {
     }
 
     private fun subscriptionGroupId(subscription: Subscription): String {
-        return subscription.id.toString()
+        return SUBSCRIPTION_GROUP_PREFIX + subscription.id.toString()
     }
 
     private fun subscriptionGroupName(subscription: Subscription): String {
@@ -88,7 +90,10 @@ class NotificationService(val context: Context) {
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
-        val builder = NotificationCompat.Builder(context, toChannelId(groupId, notification.priority))
+        val channelId = toChannelId(groupId, notification.priority)
+        val insistent = notification.priority == PRIORITY_MAX &&
+                (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
             .setContentTitle(title)
@@ -96,7 +101,8 @@ class NotificationService(val context: Context) {
             .setAutoCancel(true) // Cancel when notification is clicked
         setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
-        maybeSetSound(builder, update)
+        maybeSetDeleteIntent(builder, insistent)
+        maybeSetSound(builder, insistent, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
@@ -106,12 +112,24 @@ class NotificationService(val context: Context) {
 
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
+        maybePlayInsistentSound(groupId, insistent)
 
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
-    private fun maybeSetSound(builder: NotificationCompat.Builder, update: Boolean) {
-        if (!update) {
+    private fun maybeSetDeleteIntent(builder: NotificationCompat.Builder, insistent: Boolean) {
+        if (!insistent) {
+            return
+        }
+        val intent = Intent(context, DeleteBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+        builder.setDeleteIntent(pendingIntent)
+    }
+
+    private fun maybeSetSound(builder: NotificationCompat.Builder, insistent: Boolean, update: Boolean) {
+        // Note that the sound setting is ignored in Android => O (26) in favor of notification channels
+        val hasSound = !update && !insistent
+        if (hasSound) {
             val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(defaultSoundUri)
         } else {
@@ -327,6 +345,18 @@ class NotificationService(val context: Context) {
         }
     }
 
+    /**
+     * Receives a broadcast when a notification is swiped away. This is currently
+     * only called for notifications with an insistent sound.
+     */
+    class DeleteBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "Media player: Stopping insistent ring")
+            val mediaPlayer = Repository.getInstance(context).mediaPlayer
+            mediaPlayer.stop()
+        }
+    }
+
     private fun detailActivityIntent(subscription: Subscription): PendingIntent? {
         val intent = Intent(context, DetailActivity::class.java).apply {
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
@@ -349,9 +379,9 @@ class NotificationService(val context: Context) {
             val channelId = toChannelId(group, priority)
             val pause = 300L
             val channel = when (priority) {
-                1 -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-                2 -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
-                4 -> {
+                PRIORITY_MIN -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
+                PRIORITY_LOW -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+                PRIORITY_HIGH -> {
                     val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
                     channel.enableVibration(true)
                     channel.vibrationPattern = longArrayOf(
@@ -360,10 +390,11 @@ class NotificationService(val context: Context) {
                     )
                     channel
                 }
-                5 -> {
+                PRIORITY_MAX -> {
                     val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                     channel.enableLights(true)
                     channel.enableVibration(true)
+                    channel.setBypassDnd(true)
                     channel.vibrationPattern = longArrayOf(
                         pause, 100, pause, 100, pause, 100,
                         pause, 2000,
@@ -399,13 +430,46 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun toChannelId(group: String, priority: Int): String {
+    private fun toChannelId(groupId: String, priority: Int): String {
         return when (priority) {
-            1 -> group + GROUP_SUFFIX_PRIORITY_MIN
-            2 -> group + GROUP_SUFFIX_PRIORITY_LOW
-            4 -> group + GROUP_SUFFIX_PRIORITY_HIGH
-            5 -> group + GROUP_SUFFIX_PRIORITY_MAX
-            else -> group + GROUP_SUFFIX_PRIORITY_DEFAULT
+            PRIORITY_MIN -> groupId + GROUP_SUFFIX_PRIORITY_MIN
+            PRIORITY_LOW -> groupId + GROUP_SUFFIX_PRIORITY_LOW
+            PRIORITY_HIGH -> groupId + GROUP_SUFFIX_PRIORITY_HIGH
+            PRIORITY_MAX -> groupId + GROUP_SUFFIX_PRIORITY_MAX
+            else -> groupId + GROUP_SUFFIX_PRIORITY_DEFAULT
+        }
+    }
+
+    private fun maybePlayInsistentSound(groupId: String, insistent: Boolean) {
+        if (!insistent) {
+            return
+        }
+        try {
+            val mediaPlayer = repository.mediaPlayer
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                Log.d(TAG, "Media player: Playing insistent alarm on alarm channel")
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(context, getInsistentSound(groupId))
+                mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
+                mediaPlayer.isLooping = true
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            } else {
+                Log.d(TAG, "Media player: Alarm volume is 0; not playing insistent alarm")
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Media player: Failed to play insistent alarm", e)
+        }
+    }
+
+    private fun getInsistentSound(groupId: String): Uri {
+        return if (channelsSupported()) {
+            val channelId = toChannelId(groupId, PRIORITY_MAX)
+            val channel = notificationManager.getNotificationChannel(channelId)
+            channel.sound
+        } else {
+            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
     }
 
@@ -466,6 +530,7 @@ class NotificationService(val context: Context) {
         private const val TAG = "NtfyNotifService"
 
         private const val DEFAULT_GROUP = "ntfy"
+        private const val SUBSCRIPTION_GROUP_PREFIX = "ntfy-subscription-"
         private const val GROUP_SUFFIX_PRIORITY_MIN = "-min"
         private const val GROUP_SUFFIX_PRIORITY_LOW = "-low"
         private const val GROUP_SUFFIX_PRIORITY_DEFAULT = ""

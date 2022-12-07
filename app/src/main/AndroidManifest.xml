@@ -142,6 +142,13 @@
                 android:exported="false">
         </receiver>
 
+        <!-- Broadcast receiver for when the notification is swiped away (currently only to cancel the insistent sound) -->
+        <receiver
+                android:name=".msg.NotificationService$DeleteBroadcastReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+
         <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
         <service
                 android:name=".firebase.FirebaseService"

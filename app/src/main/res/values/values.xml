@@ -18,6 +18,7 @@
     <string name="settings_notifications_channel_prefs_key" translatable="false">ChannelPrefs</string>
     <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
@@ -38,6 +39,7 @@
     <string name="detail_settings_notifications_open_channels_key" translatable="false">SubscriptionOpenChannels</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
+    <string name="detail_settings_notifications_insistent_max_priority_key" translatable="false">SubscriptionInsistentMaxPriority</string>
     <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
     <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
     <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
@@ -147,6 +149,16 @@
         <item>604800</item>
         <item>2592000</item>
         <item>7776000</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_insistent_max_priority_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/detail_settings_notifications_insistent_max_priority_list_item_enabled</item>
+        <item>@string/detail_settings_notifications_insistent_max_priority_list_item_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_insistent_max_priority_values">
+        <item>-1</item> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
     </string-array>
     <string-array name="settings_advanced_connection_protocol_entries">
         <item>@string/settings_advanced_connection_protocol_entry_jsonhttp</item>

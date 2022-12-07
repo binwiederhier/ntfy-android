@@ -118,6 +118,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMutedUntilPref()
                 loadMinPriorityPref()
                 loadAutoDeletePref()
+                loadInsistentMaxPriorityPref()
                 loadIconSetPref()
                 loadIconRemovePref()
                 if (notificationService.channelsSupported()) {
@@ -261,8 +262,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                     value = repository.getMinPriority()
                 }
                 val summary = when (value) {
-                    1 -> getString(R.string.settings_notifications_min_priority_summary_any)
-                    5 -> getString(R.string.settings_notifications_min_priority_summary_max)
+                    PRIORITY_MIN -> getString(R.string.settings_notifications_min_priority_summary_any)
+                    PRIORITY_MAX -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
                         val minPriorityString = toPriorityString(requireContext(), value)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, value, minPriorityString)
@@ -289,7 +290,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
                 var seconds = preference.value.toLongOrNull() ?: Repository.AUTO_DELETE_USE_GLOBAL
                 val global = seconds == Repository.AUTO_DELETE_USE_GLOBAL
-                if (seconds == Repository.AUTO_DELETE_USE_GLOBAL) {
+                if (global) {
                     seconds = repository.getAutoDeleteSeconds()
                 }
                 val summary = when (seconds) {
@@ -300,6 +301,33 @@ class DetailSettingsActivity : AppCompatActivity() {
                     Repository.AUTO_DELETE_ONE_MONTH_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_one_month)
                     Repository.AUTO_DELETE_THREE_MONTHS_SECONDS -> getString(R.string.settings_notifications_auto_delete_summary_three_months)
                     else -> getString(R.string.settings_notifications_auto_delete_summary_one_month) // Must match default const
+                }
+                maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadInsistentMaxPriorityPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_insistent_max_priority_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.value = subscription.insistent.toString()
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(insistent = intValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.insistent.toString()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
+                val global = value == Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
+                val enabled = if (global) repository.getInsistentMaxPriorityEnabled() else value == Repository.INSISTENT_MAX_PRIORITY_ENABLED
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
                 }
                 maybeAppendGlobal(summary, global)
             }

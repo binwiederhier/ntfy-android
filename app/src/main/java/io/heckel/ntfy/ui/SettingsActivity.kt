@@ -191,12 +191,32 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
             minPriority?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
                 when (val minPriorityValue = pref.value.toIntOrNull() ?: 1) { // 1/low means all priorities
-                    1 -> getString(R.string.settings_notifications_min_priority_summary_any)
-                    5 -> getString(R.string.settings_notifications_min_priority_summary_max)
+                    PRIORITY_MIN -> getString(R.string.settings_notifications_min_priority_summary_any)
+                    PRIORITY_MAX -> getString(R.string.settings_notifications_min_priority_summary_max)
                     else -> {
                         val minPriorityString = toPriorityString(requireContext(), minPriorityValue)
                         getString(R.string.settings_notifications_min_priority_summary_x_or_higher, minPriorityValue, minPriorityString)
                     }
+                }
+            }
+
+            // Keep alerting for max priority
+            val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
+            val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
+            insistentMaxPriority?.isChecked = repository.getInsistentMaxPriorityEnabled()
+            insistentMaxPriority?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setInsistentMaxPriorityEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getInsistentMaxPriorityEnabled()
+                }
+            }
+            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
                 }
             }
 

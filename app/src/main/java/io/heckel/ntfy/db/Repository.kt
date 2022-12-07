@@ -2,6 +2,7 @@ package io.heckel.ntfy.db
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,7 +19,10 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
+
+    // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
+    val mediaPlayer = MediaPlayer()
 
     init {
         Log.d(TAG, "Created $this")
@@ -288,6 +292,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
+    fun getInsistentMaxPriorityEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, false) // Disabled by default
+    }
+
+    fun setInsistentMaxPriorityEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, enabled)
+            .apply()
+    }
+
     fun getRecordLogs(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, false) // Disabled by default
     }
@@ -389,6 +403,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
+                insistent = s.insistent,
                 lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
@@ -415,6 +430,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             mutedUntil = s.mutedUntil,
             minPriority = s.minPriority,
             autoDelete = s.autoDelete,
+            insistent = s.insistent,
             lastNotificationId = s.lastNotificationId,
             icon = s.icon,
             upAppId = s.upAppId,
@@ -461,6 +477,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_DARK_MODE = "DarkMode"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
+        const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)
@@ -491,6 +508,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val AUTO_DELETE_ONE_MONTH_SECONDS = 30 * ONE_DAY_SECONDS
         const val AUTO_DELETE_THREE_MONTHS_SECONDS = 90 * ONE_DAY_SECONDS
         const val AUTO_DELETE_DEFAULT_SECONDS = AUTO_DELETE_ONE_MONTH_SECONDS
+
+        const val INSISTENT_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
+        const val INSISTENT_MAX_PRIORITY_ENABLED = 1 // 0 = Disabled (but not needed in code)
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

@@ -115,6 +115,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
+                    insistent = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL,
                     lastNotificationId = null,
                     icon = null,
                     upAppId = null,
@@ -256,6 +257,13 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // Mark this subscription as "open" so we don't receive notifications for it
         repository.detailViewSubscriptionId.set(subscriptionId)
+
+        // Stop insistent playback (if running, otherwise it'll throw)
+        try {
+            repository.mediaPlayer.stop()
+        } catch (_: Exception) {
+            // Ignore errors
+        }
     }
 
     override fun onResume() {

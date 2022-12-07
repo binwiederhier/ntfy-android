@@ -37,7 +37,7 @@ class ApiService {
         user: User? = null,
         message: String,
         title: String = "",
-        priority: Int = 3,
+        priority: Int = PRIORITY_DEFAULT,
         tags: List<String> = emptyList(),
         delay: String = "",
         body: RequestBody? = null,
@@ -45,7 +45,7 @@ class ApiService {
     ) {
         val url = topicUrl(baseUrl, topic)
         val query = mutableListOf<String>()
-        if (priority in 1..5) {
+        if (priority in ALL_PRIORITIES) {
             query.add("priority=$priority")
         }
         if (tags.isNotEmpty()) {

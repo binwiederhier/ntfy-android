@@ -99,17 +99,16 @@ fun formatDateShort(timestampSecs: Long): String {
 }
 
 fun toPriority(priority: Int?): Int {
-    if (priority != null && (1..5).contains(priority)) return priority
-    else return 3
+    return if (priority != null && ALL_PRIORITIES.contains(priority)) priority else PRIORITY_DEFAULT
 }
 
 fun toPriorityString(context: Context, priority: Int): String {
     return when (priority) {
-        1 -> context.getString(R.string.settings_notifications_priority_min)
-        2 -> context.getString(R.string.settings_notifications_priority_low)
-        3 -> context.getString(R.string.settings_notifications_priority_default)
-        4 -> context.getString(R.string.settings_notifications_priority_high)
-        5 -> context.getString(R.string.settings_notifications_priority_max)
+        PRIORITY_MIN -> context.getString(R.string.settings_notifications_priority_min)
+        PRIORITY_LOW -> context.getString(R.string.settings_notifications_priority_low)
+        PRIORITY_DEFAULT -> context.getString(R.string.settings_notifications_priority_default)
+        PRIORITY_HIGH -> context.getString(R.string.settings_notifications_priority_high)
+        PRIORITY_MAX -> context.getString(R.string.settings_notifications_priority_max)
         else -> context.getString(R.string.settings_notifications_priority_default)
     }
 }
@@ -319,8 +318,6 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
     return java.lang.String.format("%.${decimals}f %cB", value / 1024.0, ci.current())
 }
 
-const val androidAppMimeType = "application/vnd.android.package-archive"
-
 fun mimeTypeToIconResource(mimeType: String?): Int {
     return if (mimeType?.startsWith("image/") == true) {
         R.drawable.ic_file_image_red_24dp
@@ -328,7 +325,7 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
         R.drawable.ic_file_video_orange_24dp
     } else if (mimeType?.startsWith("audio/") == true) {
         R.drawable.ic_file_audio_purple_24dp
-    } else if (mimeType == androidAppMimeType) {
+    } else if (mimeType == ANDROID_APP_MIME_TYPE) {
         R.drawable.ic_file_app_gray_24dp
     } else {
         R.drawable.ic_file_document_blue_24dp
@@ -342,7 +339,7 @@ fun supportedImage(mimeType: String?): Boolean {
 // Google Play doesn't allow us to install received .apk files anymore.
 // See https://github.com/binwiederhier/ntfy/issues/531
 fun canOpenAttachment(attachment: Attachment?): Boolean {
-    if (attachment?.type == androidAppMimeType && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
+    if (attachment?.type == ANDROID_APP_MIME_TYPE && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
         return false
     }
     return true

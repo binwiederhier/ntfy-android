@@ -281,6 +281,9 @@
     <string name="settings_notifications_auto_delete_one_week">After one week</string>
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
+    <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
     <string name="settings_general_header">General</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
@@ -355,6 +358,8 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Using default settings (sounds, Do Not Disturb override, etc.)</string>
     <string name="detail_settings_notifications_open_channels_title">Configure notification settings</string>
     <string name="detail_settings_notifications_open_channels_summary">Do Not Disturb (DND) override, sounds, etc.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Keep alerting</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alert only once</string>
     <string name="detail_settings_appearance_header">Appearance</string>
     <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>
