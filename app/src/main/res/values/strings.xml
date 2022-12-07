@@ -154,6 +154,7 @@
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Cannot open attachment: The file may have been deleted, or no installed app can open the file.</string>
     <string name="detail_item_cannot_open_url">Cannot open URL: %1$s</string>
+    <string name="detail_item_cannot_open_apk">Apps cannot be installed anymore. Download via browser instead. See issue #531 for details.</string>
     <string name="detail_item_cannot_save">Cannot save attachment: %1$s</string>
     <string name="detail_item_cannot_delete">Cannot delete attachment: %1$s</string>
     <string name="detail_item_download_failed">Could not download attachment: %1$s</string>
@@ -318,7 +319,7 @@
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Turn on logging so you can share logs later to diagnose issues.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>
     <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
     <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by the ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>

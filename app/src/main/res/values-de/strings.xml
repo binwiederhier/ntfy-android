@@ -309,7 +309,7 @@
     <string name="detail_settings_appearance_header">Darstellung</string>
     <string name="detail_settings_appearance_icon_set_title">Abo-Icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Ein Icon zur Darstellung in Benachrichtigungen auswählen</string>
-    <string name="detail_settings_appearance_icon_remove_title">Abo-Icon (entfernen durch antippen)</string>
+    <string name="detail_settings_appearance_icon_remove_title">Abo-Icon (entfernen durch Antippen)</string>
     <string name="detail_settings_appearance_icon_error_saving">Kann Icon nicht speichern: %1$s</string>
     <string name="detail_settings_global_setting_title">Globale Einstellung verwenden</string>
     <string name="detail_settings_global_setting_suffix">globale Einstellung</string>
@@ -323,8 +323,10 @@
     <string name="add_dialog_base_urls_dropdown_clear">Service-URL löschen</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (Standard)</string>
     <string name="detail_settings_appearance_display_name_title">Anzeigename</string>
-    <string name="detail_settings_appearance_display_name_message">Gib einen eigenen Anzeigenamen für diese Abo an. Leer lassen für den Standardwert (%1$s).</string>
+    <string name="detail_settings_appearance_display_name_message">Gib einen eigenen Anzeigenamen für dieses Abo an. Leer lassen für den Standardwert (%1$s).</string>
     <string name="detail_settings_about_topic_url_title">Themen-URL</string>
     <string name="detail_settings_about_header">Über</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">In Zwischenablage kopiert</string>
+    <string name="main_menu_donate_title">Spenden 💸</string>
+    <string name="detail_item_cannot_open_apk">Apps können nicht mehr installiert werden. Bitte stattdessen über einen Browser herunterladen. Details siehe Issue #531.</string>
 </resources>

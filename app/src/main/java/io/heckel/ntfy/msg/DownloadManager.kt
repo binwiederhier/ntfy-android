@@ -11,7 +11,7 @@ import io.heckel.ntfy.util.Log
  * Download attachment in the background via WorkManager
  *
  * The indirection via WorkManager is required since this code may be executed
- * in a doze state and Internet may not be available. It's also best practice apparently.
+ * in a doze state and Internet may not be available. It's also best practice, apparently.
  */
 object DownloadManager {
     private const val TAG = "NtfyDownloadManager"

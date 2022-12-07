@@ -27,14 +27,16 @@ import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
+import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
-import kotlinx.coroutines.*
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
@@ -204,7 +206,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun maybeRenderActions(context: Context, notification: Notification) {
-            if (notification.actions != null && notification.actions.isNotEmpty()) {
+            if (!notification.actions.isNullOrEmpty()) {
                 actionsWrapperView.visibility = View.VISIBLE
                 val actionsCount = Math.min(notification.actions.size, 3) // per documentation, only 3 actions are available
                 for (i in 0 until actionsCount) {
@@ -220,7 +222,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
         private fun resetCardButtons() {
             // clear any previously created dynamic buttons
-            actionsFlow.allViews.forEach { it -> actionsFlow.removeView(it) }
+            actionsFlow.allViews.forEach { actionsFlow.removeView(it) }
             actionsWrapperView.removeAllViews()
             actionsWrapperView.addView(actionsFlow)
         }
@@ -371,6 +373,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun openFile(context: Context, attachment: Attachment): Boolean {
+            if (!canOpenAttachment(attachment)) {
+                Toast
+                    .makeText(context, context.getString(R.string.detail_item_cannot_open_apk), Toast.LENGTH_LONG)
+                    .show()
+                return true
+            }
             Log.d(TAG, "Opening file ${attachment.contentUri}")
             try {
                 val contentUri = Uri.parse(attachment.contentUri)

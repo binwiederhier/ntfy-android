@@ -22,12 +22,16 @@ import android.util.Base64
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
+import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -221,16 +225,6 @@ fun maybeAppendActionErrors(message: String, notification: Notification): String
     }
 }
 
-// Checks in the most horrible way if a content URI exists; I couldn't find a better way
-fun fileExists(context: Context, contentUri: String?): Boolean {
-    return try {
-        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
-        true
-    } catch (_: Exception) {
-        false
-    }
-}
-
 // Queries the filename of a content URI
 fun fileName(context: Context, contentUri: String?, fallbackName: String): String {
     return try {
@@ -325,6 +319,8 @@ fun formatBytes(bytes: Long, decimals: Int = 1): String {
     return java.lang.String.format("%.${decimals}f %cB", value / 1024.0, ci.current())
 }
 
+const val androidAppMimeType = "application/vnd.android.package-archive"
+
 fun mimeTypeToIconResource(mimeType: String?): Int {
     return if (mimeType?.startsWith("image/") == true) {
         R.drawable.ic_file_image_red_24dp
@@ -332,7 +328,7 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
         R.drawable.ic_file_video_orange_24dp
     } else if (mimeType?.startsWith("audio/") == true) {
         R.drawable.ic_file_audio_purple_24dp
-    } else if (mimeType == "application/vnd.android.package-archive") {
+    } else if (mimeType == androidAppMimeType) {
         R.drawable.ic_file_app_gray_24dp
     } else {
         R.drawable.ic_file_document_blue_24dp
@@ -341,6 +337,15 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 
 fun supportedImage(mimeType: String?): Boolean {
     return listOf("image/jpeg", "image/png").contains(mimeType)
+}
+
+// Google Play doesn't allow us to install received .apk files anymore.
+// See https://github.com/binwiederhier/ntfy/issues/531
+fun canOpenAttachment(attachment: Attachment?): Boolean {
+    if (attachment?.type == androidAppMimeType && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
+        return false
+    }
+    return true
 }
 
 // Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
@@ -493,4 +498,12 @@ fun String.sha256(): String {
     val md = MessageDigest.getInstance("SHA-256")
     val digest = md.digest(this.toByteArray())
     return digest.fold("") { str, it -> str + "%02x".format(it) }
+}
+
+fun Button.dangerButton(context: Context) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        setTextAppearance(R.style.DangerText)
+    } else {
+        setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
+    }
 }

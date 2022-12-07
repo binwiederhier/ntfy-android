@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.ActionMode
@@ -179,7 +180,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         howToExample.linksClickable = true
 
         val howToText = getString(R.string.detail_how_to_example, topicUrl)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
         } else {
             howToExample.text = Html.fromHtml(howToText)
@@ -242,7 +243,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0) {
-                    Log.d(TAG, "$itemCount item(s) inserted at $positionStart, scrolling to the top")
+                    Log.d(TAG, "$itemCount item(s) inserted at 0, scrolling to the top")
                     mainList.scrollToPosition(positionStart)
                 }
             }
@@ -572,7 +573,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextAppearance(R.style.DangerText)
+                .dangerButton(this)
         }
         dialog.show()
     }
@@ -610,7 +611,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextAppearance(R.style.DangerText)
+                .dangerButton(this)
         }
         dialog.show()
     }
@@ -620,7 +621,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             handleActionModeClick(notification)
         } else if (notification.click != "") {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(notification.click)))
+                startActivity(Intent(ACTION_VIEW, Uri.parse(notification.click)))
             } catch (e: Exception) {
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {
@@ -721,7 +722,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextAppearance(R.style.DangerText)
+                .dangerButton(this)
         }
         dialog.show()
     }

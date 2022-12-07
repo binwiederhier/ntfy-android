@@ -206,6 +206,9 @@ class NotificationService(val context: Context) {
     }
 
     private fun maybeAddOpenAction(builder: NotificationCompat.Builder, notification: Notification) {
+        if (!canOpenAttachment(notification.attachment)) {
+            return
+        }
         if (notification.attachment?.contentUri != null) {
             val contentUri = Uri.parse(notification.attachment.contentUri)
             val intent = Intent(Intent.ACTION_VIEW, contentUri).apply {

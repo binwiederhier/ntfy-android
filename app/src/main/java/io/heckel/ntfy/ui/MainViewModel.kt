@@ -8,10 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.up.Distributor
-import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.collections.List
 
 class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
     fun list(): LiveData<List<Subscription>> {

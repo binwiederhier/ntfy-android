@@ -200,7 +200,7 @@ class SubscriberService : Service() {
             // retrieve old messages. This is important, so we don't download attachments from old messages.
 
             val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
-            val serviceActive = { -> isServiceStarted }
+            val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
@@ -310,11 +310,11 @@ class SubscriberService : Service() {
     override fun onTaskRemoved(rootIntent: Intent) {
         val restartServiceIntent = Intent(applicationContext, SubscriberService::class.java).also {
             it.setPackage(packageName)
-        };
-        val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE);
-        applicationContext.getSystemService(Context.ALARM_SERVICE);
-        val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager;
-        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent);
+        }
+        val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        applicationContext.getSystemService(Context.ALARM_SERVICE)
+        val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
     }
 
     /* This re-starts the service on reboot; see manifest */
