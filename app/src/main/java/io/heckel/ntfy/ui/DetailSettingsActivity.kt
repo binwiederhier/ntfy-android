@@ -127,7 +127,6 @@ class DetailSettingsActivity : AppCompatActivity() {
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
                 notificationsHeader?.isVisible = false
             }
-
             loadDisplayNamePref()
             loadTopicUrlPref()
         }
@@ -168,9 +167,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     } else {
                         notificationService.deleteSubscriptionNotificationChannels(subscription)
                     }
-
                     openChannelsPref.isVisible = value
-
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return subscription.dedicatedChannels
@@ -178,9 +175,9 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
             pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
                 if (preference.isChecked) {
-                    getString(R.string.detail_settings_notifications_dedicated_channels_summay_on)
+                    getString(R.string.detail_settings_notifications_dedicated_channels_summary_on)
                 } else {
-                    getString(R.string.detail_settings_notifications_dedicated_channels_summay_off)
+                    getString(R.string.detail_settings_notifications_dedicated_channels_summary_off)
                 }
             }
         }
@@ -349,15 +346,16 @@ class DetailSettingsActivity : AppCompatActivity() {
             pref?.dialogMessage = getString(R.string.detail_settings_appearance_display_name_message, topicShortUrl(subscription.baseUrl, subscription.topic))
             pref?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
-                    val displayName: String? = if (value == "") {
-                        null
-                    } else {
-                        value
-                    }
+                    val displayName = if (value != "") value else null
                     val newSubscription = subscription.copy(displayName = displayName)
                     save(newSubscription)
+                    // Update activity title
                     activity?.runOnUiThread {
                         activity?.title = displayName(newSubscription)
+                    }
+                    // Update dedicated notification channel
+                    if (newSubscription.dedicatedChannels) {
+                        notificationService.createSubscriptionNotificationChannels(newSubscription)
                     }
                 }
                 override fun getString(key: String?, defValue: String?): String {

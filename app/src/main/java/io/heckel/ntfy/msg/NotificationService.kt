@@ -57,39 +57,34 @@ class NotificationService(val context: Context) {
     }
 
     fun createDefaultNotificationChannels() {
-        maybeCreateNotificationGroup(DEFAULT_SCOPE, context.getString(R.string.channel_notifications_group_default_name))
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(DEFAULT_SCOPE, priority,DEFAULT_GROUP) }
+        maybeCreateNotificationGroup(DEFAULT_GROUP, context.getString(R.string.channel_notifications_group_default_name))
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(DEFAULT_GROUP, priority) }
     }
 
     fun createSubscriptionNotificationChannels(subscription: Subscription) {
-        val notificationScope = dedicatedNotificationScope(subscription)
-        val groupId = dedicatedGroupId(subscription)
-
-        maybeCreateNotificationGroup(groupId, subscriptionTopicShortUrl(subscription))
-        (1..5).forEach { priority -> maybeCreateNotificationChannel(notificationScope, priority, groupId) }
+        val groupId = subscriptionGroupId(subscription)
+        maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
+        (1..5).forEach { priority -> maybeCreateNotificationChannel(groupId, priority) }
     }
 
     fun deleteSubscriptionNotificationChannels(subscription: Subscription) {
-        val notificationScope = dedicatedNotificationScope(subscription)
-        val groupId = dedicatedGroupId(subscription)
-
-        (1..5).forEach { priority -> maybeDeleteNotificationChannel(notificationScope, priority) }
+        val groupId = subscriptionGroupId(subscription)
+        (1..5).forEach { priority -> maybeDeleteNotificationChannel(groupId, priority) }
         maybeDeleteNotificationGroup(groupId)
     }
 
-    private fun dedicatedNotificationScope(subscription: Subscription): String {
+    private fun subscriptionGroupId(subscription: Subscription): String {
         return subscription.id.toString()
     }
 
-    private fun dedicatedGroupId(subscription: Subscription): String {
-        return subscription.id.toString()
+    private fun subscriptionGroupName(subscription: Subscription): String {
+        return subscription.displayName ?: subscriptionTopicShortUrl(subscription)
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
         val title = formatTitle(subscription, notification)
-        val scope = if (subscription.dedicatedChannels) dedicatedNotificationScope(subscription) else DEFAULT_SCOPE
-        val groupId = if (subscription.dedicatedChannels) dedicatedGroupId(subscription) else null
-        val builder = NotificationCompat.Builder(context, toChannelId(scope, notification.priority))
+        val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
+        val builder = NotificationCompat.Builder(context, toChannelId(groupId, notification.priority))
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
             .setContentTitle(title)
@@ -105,10 +100,8 @@ class NotificationService(val context: Context) {
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
-        if (groupId != null) {
-            maybeCreateNotificationGroup(groupId, subscriptionTopicShortUrl(subscription))
-        }
-        maybeCreateNotificationChannel(scope, notification.priority, groupId)
+        maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
+        maybeCreateNotificationChannel(groupId, notification.priority)
 
         notificationManager.notify(notification.notificationId, builder.build())
     }
@@ -345,11 +338,11 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeCreateNotificationChannel(scope: String, priority: Int, groupId: String?) {
+    private fun maybeCreateNotificationChannel(group: String, priority: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Note: To change a notification channel, you must delete the old one and create a new one!
 
-            val channelId = toChannelId(scope, priority)
+            val channelId = toChannelId(group, priority)
             val pause = 300L
             val channel = when (priority) {
                 1 -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
@@ -379,16 +372,14 @@ class NotificationService(val context: Context) {
                 }
                 else -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
             }
-            if (groupId != null) {
-                channel.group = groupId
-            }
+            channel.group = group
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun maybeDeleteNotificationChannel(scope: String, priority: Int) {
+    private fun maybeDeleteNotificationChannel(group: String, priority: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.deleteNotificationChannel(toChannelId(scope, priority))
+            notificationManager.deleteNotificationChannel(toChannelId(group, priority))
         }
     }
 
@@ -404,13 +395,13 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun toChannelId(scope: String, priority: Int): String {
+    private fun toChannelId(group: String, priority: Int): String {
         return when (priority) {
-            1 -> scope + SCOPE_SUFFIX_PRIORITY_MIN
-            2 -> scope + SCOPE_SUFFIX_PRIORITY_LOW
-            4 -> scope + SCOPE_SUFFIX_PRIORITY_HIGH
-            5 -> scope + SCOPE_SUFFIX_PRIORITY_MAX
-            else -> scope + SCOPE_SUFFIX_PRIORITY_DEFAULT
+            1 -> group + GROUP_SUFFIX_PRIORITY_MIN
+            2 -> group + GROUP_SUFFIX_PRIORITY_LOW
+            4 -> group + GROUP_SUFFIX_PRIORITY_HIGH
+            5 -> group + GROUP_SUFFIX_PRIORITY_MAX
+            else -> group + GROUP_SUFFIX_PRIORITY_DEFAULT
         }
     }
 
@@ -470,14 +461,12 @@ class NotificationService(val context: Context) {
 
         private const val TAG = "NtfyNotifService"
 
-        private const val DEFAULT_SCOPE = "ntfy"
         private const val DEFAULT_GROUP = "ntfy"
-
-        private const val SCOPE_SUFFIX_PRIORITY_MIN = "-min"
-        private const val SCOPE_SUFFIX_PRIORITY_LOW = "-low"
-        private const val SCOPE_SUFFIX_PRIORITY_DEFAULT = ""
-        private const val SCOPE_SUFFIX_PRIORITY_HIGH = "-high"
-        private const val SCOPE_SUFFIX_PRIORITY_MAX = "-max"
+        private const val GROUP_SUFFIX_PRIORITY_MIN = "-min"
+        private const val GROUP_SUFFIX_PRIORITY_LOW = "-low"
+        private const val GROUP_SUFFIX_PRIORITY_DEFAULT = ""
+        private const val GROUP_SUFFIX_PRIORITY_HIGH = "-high"
+        private const val GROUP_SUFFIX_PRIORITY_MAX = "-max"
 
         private const val VIEW_ACTION_EXTRA_URL = "url"
         private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"

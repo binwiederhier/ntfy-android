@@ -35,6 +35,7 @@
         <Preference
                 app:key="@string/detail_settings_notifications_open_channels_key"
                 app:title="@string/detail_settings_notifications_open_channels_title"
+                app:summary="@string/detail_settings_notifications_open_channels_summary"
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory
