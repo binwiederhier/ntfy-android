@@ -97,8 +97,13 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             return
         }
         val secure = url.getBooleanQueryParameter("secure", true)
-        val baseUrl = if (secure) "https://${url.host}" else "http://${url.host}"
-        val topic = url.pathSegments.first()
+        
+        val urlWithoutProto = url.fullURL[7:]
+        val lastSlashIndex = urlWithoutProto.lastIndexOf("/")
+        val url2 = urlWithoutProto[:lastSlashIndex]
+        
+        val baseUrl = if (secure) "https://${url2}" else "http://${url2}"
+        val topic = urlWithoutProto[lastSlashIndex:]
         title = topicShortUrl(baseUrl, topic)
 
         // Subscribe to topic if it doesn't already exist
