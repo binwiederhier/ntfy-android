@@ -1,0 +1,1 @@
+Sende Benachrichtigungen von jedem Skript per PUT/POST-Request an Dein Telefon

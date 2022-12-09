@@ -255,7 +255,7 @@
     <string name="settings_notifications_min_priority_default">Prioritas default dan di atas</string>
     <string name="settings_notifications_priority_high">tinggi</string>
     <string name="settings_notifications_auto_download_1m">Jika di bawah 1 MB</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Nyalakan pencatatan supaya Anda dapat membagikan catatan nanti untuk mendiagnosa masalah.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Nyalakan pencatatan, supaya Anda dapat membagikan catatan nanti untuk mendiagnosa masalah.</string>
     <string name="settings_advanced_export_logs_error_uploading">Tidak dapat mengunggah catatan: %1$s</string>
     <string name="settings_advanced_export_logs_scrub_dialog_text">Topik/nama host diganti dengan nama-nama buah, jadi Anda dapat membagikan catatan tanpa khawatir:
 \n

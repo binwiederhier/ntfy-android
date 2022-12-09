@@ -271,7 +271,7 @@
     <string name="settings_advanced_clear_logs_title">清除日志</string>
     <string name="settings_advanced_clear_logs_deleted_toast">日志已删除</string>
     <string name="settings_advanced_header">高级</string>
-    <string name="settings_advanced_record_logs_summary_disabled">记录日志以便调试错误。</string>
+    <string name="settings_advanced_record_logs_summary_disabled">记录日志以便稍后分享调试故障。</string>
     <string name="settings_advanced_export_logs_title">复制 / 上传日志</string>
     <string name="settings_advanced_export_logs_scrub_dialog_text">以下主题/域名已被替换为水果名称，您可以放心分享日志：
 \n
