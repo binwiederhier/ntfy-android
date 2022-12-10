@@ -504,3 +504,8 @@ fun Button.dangerButton(context: Context) {
         setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
     }
 }
+
+fun Long.nullIfZero(): Long? {
+    return if (this == 0L) return null else this
+}
+

@@ -18,7 +18,7 @@
           - Google rejected the permission for ntfy, so this permission is STRIPPED OUT by the build process
             for the Google Play variant of the app.
     -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <!-- <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> -->
 
     <application
             android:name=".app.Application"
