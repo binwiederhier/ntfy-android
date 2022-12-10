@@ -139,11 +139,11 @@
     <string name="notification_dialog_title">暂停通知</string>
     <string name="notification_dialog_muted_forever_toast_message">通知已暂停</string>
     <string name="notification_popup_action_download">下载</string>
-    <string name="channel_notifications_min_name">通知 (最低优先级)</string>
-    <string name="channel_notifications_low_name">通知 (低优先级)</string>
-    <string name="channel_notifications_default_name">通知 (默认优先级)</string>
-    <string name="channel_notifications_high_name">通知 (高优先级)</string>
-    <string name="channel_notifications_max_name">通知 (最高优先级)</string>
+    <string name="channel_notifications_min_name">最低优先级</string>
+    <string name="channel_notifications_low_name">低优先级</string>
+    <string name="channel_notifications_default_name">默认优先级</string>
+    <string name="channel_notifications_high_name">高优先级</string>
+    <string name="channel_notifications_max_name">最高优先级</string>
     <string name="channel_subscriber_service_name">订阅服务</string>
     <string name="channel_subscriber_notification_title">正在监听通知</string>
     <string name="channel_subscriber_notification_noinstant_text">已订阅主题</string>
@@ -329,4 +329,15 @@
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已复制到剪贴板</string>
     <string name="main_menu_donate_title">捐赠 💸</string>
     <string name="detail_item_cannot_open_apk">无法再安装应用。 请通过浏览器下载。 有关详细信息，请参阅问题 #531。</string>
+    <string name="channel_notifications_group_default_name">默认</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">持续以最高优先级通知进行提醒，直至取消</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">对这个订阅使用自定义通知</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">使用默认设置（声音、“勿扰模式”绕过等）</string>
+    <string name="detail_settings_notifications_open_channels_summary">“勿扰模式”绕过、声音等.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">持续提醒</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">只提醒一次</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">自定义通知设置</string>
+    <string name="settings_notifications_insistent_max_priority_title">持续以最高优先级提醒</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">最高优先级通知，但只提醒一次</string>
+    <string name="detail_settings_notifications_open_channels_title">配置通知设置</string>
 </resources>
