@@ -1,6 +1,24 @@
 Features:
+* Support for thematic/adaptive icons for launcher (#513, thanks to @daedric7 for reporting)
 * Custom per-subscription notification settings incl. sounds, DND, etc. (#6, thanks to @doits)
 * Insistent notifications that ring until dismissed (#417, thanks to @danmed for reporting)
 
-Bug fixes:
+Bug fixes + maintenance:
+* Upgrade Android dependencies and build toolchain to SDK 33 (no ticket)
+* Simplify F-Droid build: Disable tasks for Google Services (#516, thanks to @markosopcic)
+* Android 13: Ask for permission to post notifications (#508)
+* Android 13: Do not allow swiping away the foreground notification (#521, thanks to @alexhorner for reporting)
 * Android 5 (SDK 21): Fix crash on unsubscribing (#528, thanks to Roger M. for reporting)
+* Remove timestamp when copying message text (#471, thanks to @wunter8)
+* Fix auto-delete if some icons do not exist anymore (#506)
+* Fix notification icon color (#480, thanks to @s-h-a-r-d for reporting)
+* Fix topics do not re-subscribe to Firebase after restoring from backup (#511)
+* Fix crashes from large images (#474, thanks to @daedric7 for reporting)
+* Fix notification click opens wrong subscription (#261, thanks to @SMAW for reporting)
+* Fix Firebase-only "link expired" issue (#529)
+* Remove "Install .apk" feature in Google Play variant due to policy change (#531)
+* Add donate button (no ticket)
+
+Additional translations:
+* Korean (thanks to @YJSofta0f97461d82447ac)
+* Portuguese (thanks to @victormagalhaess)
