@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Benachrichtigungen (niedrige Priorität)</string>
-    <string name="channel_notifications_default_name">Benachrichtigungen (normale Priorität)</string>
-    <string name="channel_notifications_high_name">Benachrichtigungen (hohe Priorität)</string>
-    <string name="channel_notifications_max_name">Benachrichtigungen (max. Priorität)</string>
+    <string name="channel_notifications_low_name">Niedrige Priorität</string>
+    <string name="channel_notifications_default_name">Normale Priorität</string>
+    <string name="channel_notifications_high_name">Hohe Priorität</string>
+    <string name="channel_notifications_max_name">Max. Priorität</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
-    <string name="channel_notifications_min_name">Benachrichtigungen (min. Priorität)</string>
+    <string name="channel_notifications_min_name">Min. Priorität</string>
     <string name="channel_subscriber_notification_title">Warte auf Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Ein Sofortnachrichten-Thema abonniert</string>
     <string name="channel_subscriber_notification_instant_text_two">Zwei Sofortnachrichten-Themen abonniert</string>
@@ -339,4 +339,5 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Benachrichtigungen mit höchster Priorität alarmieren dauerhaft bis sie bestätigt werden</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Eigene Benachrichtigungseinstellungen</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Verwende Standardeinstellungen (Töne, Übergehen von \"Nicht Stören\" etc.)</string>
+    <string name="detail_settings_notifications_open_channels_summary">„Bitte nicht stören“ unterbrechen, Töne, etc.</string>
 </resources>
