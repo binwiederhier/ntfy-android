@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_subscriber_notification_noinstant_text">Berlangganan ke topik</string>
-    <string name="channel_notifications_default_name">Notifikasi (prioritas default)</string>
-    <string name="channel_notifications_max_name">Notifikasi (prioritas maks)</string>
-    <string name="channel_notifications_min_name">Notifikasi (prioritas min)</string>
-    <string name="channel_notifications_low_name">Notifikasi (prioritas rendah)</string>
+    <string name="channel_notifications_default_name">Prioritas bawaan</string>
+    <string name="channel_notifications_max_name">Prioritas maks</string>
+    <string name="channel_notifications_min_name">Prioritas min</string>
+    <string name="channel_notifications_low_name">Prioritas rendah</string>
     <string name="channel_subscriber_service_name">Layanan Langganan</string>
     <string name="channel_subscriber_notification_title">Mendengarkan notifikasi masuk</string>
     <string name="channel_subscriber_notification_instant_text">Berlangganan ke topik pengiriman instan</string>
@@ -216,7 +216,7 @@
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>
     <string name="settings_notifications_auto_download_500k">Jika di bawah 500 kB</string>
     <string name="user_dialog_button_save">Simpan</string>
-    <string name="channel_notifications_high_name">Notifikasi (prioritas tinggi)</string>
+    <string name="channel_notifications_high_name">Prioritas tinggi</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>
     <string name="add_dialog_button_subscribe">Berlangganan</string>
     <string name="channel_subscriber_notification_instant_text_more">Berlangganan ke %1$d topik pengiriman instan</string>
@@ -329,4 +329,15 @@
     <string name="detail_settings_about_topic_url_title">URL Topik</string>
     <string name="main_menu_donate_title">Donasi 💸</string>
     <string name="detail_item_cannot_open_apk">Aplikasi tidak dapat dipasang lagi. Unduh melalui peramban. Lihat masalah #531 untuk detail lebih lanjut.</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Notifikasi prioritas maks hanya memperingati sekali</string>
+    <string name="detail_settings_notifications_open_channels_title">Atur pengaturan notifikasi</string>
+    <string name="detail_settings_notifications_open_channels_summary">Sampingan Jangan Ganggu, suara, dll.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Peringati hanya sekali</string>
+    <string name="channel_notifications_group_default_name">Bawaan</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Tetap memperingati</string>
+    <string name="settings_notifications_insistent_max_priority_title">Tetap memperingati untuk prioritas tertinggi</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Notifikasi prioritas maks memperingatkan secara berkelanjutan sampai diabaikan</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Pengaturan notifikasi kustom</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Menggunakan pengaturan kustom untuk langganan ini</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Menggunakan pengaturan bawaan (suara, sampingan Jangan Ganggu, dll.)</string>
 </resources>
