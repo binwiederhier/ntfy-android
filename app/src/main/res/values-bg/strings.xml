@@ -3,7 +3,7 @@
     <string name="channel_notifications_low_name">Нисък приоритет</string>
     <string name="channel_notifications_default_name">Подразбиран приоритет</string>
     <string name="channel_notifications_high_name">Висок приоритет</string>
-    <string name="channel_notifications_max_name">Максимален приоритет</string>
+    <string name="channel_notifications_max_name">Най-висок приоритет</string>
     <string name="channel_subscriber_service_name">Абонаментна услуга</string>
     <string name="channel_subscriber_notification_instant_text">Има абонамент за теми с незабавно доставяне</string>
     <string name="channel_subscriber_notification_instant_text_three">Има абонамент за три теми с незабавно доставяне</string>
@@ -51,7 +51,7 @@
 \nПаролите са премахнати, но не са изброени тук.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Не са променени никакви теми/имена на хостове. Абонирани ли сте\?</string>
     <string name="user_dialog_description_add">Тук можете да добавите потребител. Всички теми на сървъра ще използват този потребител.</string>
-    <string name="channel_notifications_min_name">Минимален приоритет</string>
+    <string name="channel_notifications_min_name">Най-нисък приоритет</string>
     <string name="channel_subscriber_notification_instant_text_one">Има абонамент за тема с незабавно доставяне</string>
     <string name="notification_dialog_muted_forever_toast_message">Известията са заглушени</string>
     <string name="channel_subscriber_notification_title">Очаква входящи известия</string>
@@ -63,8 +63,8 @@
     <string name="main_menu_notifications_disabled_until">Известията са заглушени до %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Известията са заглушени до %1$s</string>
     <string name="main_how_to_intro">Докоснете бутона с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
-    <string name="detail_how_to_intro">За да изпратите известия в тази тема, просто изпратете PUT или POST към адреса й.</string>
-    <string name="detail_no_notifications_text">В момента в темата няма известия</string>
+    <string name="detail_how_to_intro">За да изпратите известия в тази тема направете заявка чрез методите PUT или POST към адреса й.</string>
+    <string name="detail_no_notifications_text">Липсват известия в темата</string>
     <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
     <string name="notification_dialog_muted_until_toast_message">Известията са заглушени до %1$s</string>
     <string name="settings_advanced_export_logs_summary">Дневниците се копират в междинната памет или се изпращат към nopaste.net (собственост на автора на ntfy). Имената на хостовете и темите могат да бъдат цензурирани, но съдържанието на известията никога.</string>
@@ -80,7 +80,7 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">Премахване</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_status_reconnecting">свързване…</string>
-    <string name="main_no_subscriptions_text">В момента няма абонаменти</string>
+    <string name="main_no_subscriptions_text">Липсват абонаменти</string>
     <string name="main_unified_push_toast">Този абонамент се управлява от %1$s чрез UnifiedPush</string>
     <string name="add_dialog_button_cancel">Отказ</string>
     <string name="add_dialog_button_subscribe">Абониране</string>
@@ -142,12 +142,12 @@
 \n%3$s</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_notifications_header">Известия</string>
-    <string name="settings_notifications_min_priority_title">Mинимален приоритет</string>
+    <string name="settings_notifications_min_priority_title">Най-нисък приоритет</string>
     <string name="settings_notifications_min_priority_min">Всички</string>
     <string name="settings_notifications_min_priority_low">Нисък приоритет и по-висок</string>
     <string name="settings_notifications_min_priority_default">Подразбиран приоритет и по-висок</string>
     <string name="settings_notifications_min_priority_high">Висок приоритет и по-висок</string>
-    <string name="settings_notifications_min_priority_max">Само максимален приоритет</string>
+    <string name="settings_notifications_min_priority_max">Само най-висок приоритет</string>
     <string name="settings_notifications_min_priority_summary_max">Показват се известията с приоритет 5 (най-висок)</string>
     <string name="settings_notifications_min_priority_summary_any">Показват се всички известия</string>
     <string name="settings_notifications_auto_delete_never">Никога</string>
@@ -237,7 +237,7 @@
     <string name="notification_popup_file_download_failed">%1$s
 \nФайл: %2$s, неуспешно изтеглен</string>
     <string name="settings_notifications_auto_download_title">Изтегляне на прикачени файлове</string>
-    <string name="settings_notifications_auto_delete_title">Премахване на известия</string>
+    <string name="settings_notifications_auto_delete_title">Автоматично премахване</string>
     <string name="settings_notifications_auto_download_summary_always">Прикачените файлове се изтеглят автоматично</string>
     <string name="settings_notifications_auto_download_summary_never">Прикачените файлове не се изтеглят автоматично</string>
     <string name="settings_notifications_auto_download_summary_smaller_than_x">Прикачените файлове до %1$s се изтеглят автоматично</string>
@@ -293,10 +293,10 @@
     <string name="detail_item_download_info_download_failed_expires_x">грешка при изтегляне, валидността изтича на %1$s</string>
     <string name="share_content_image_error">Изображението не може да бъде отворено: %1$s</string>
     <string name="share_content_file_error">Информацията за файла не може да бъде прочетена: %1$s</string>
-    <string name="settings_notifications_priority_min">минимален</string>
+    <string name="settings_notifications_priority_min">най-нисък</string>
     <string name="settings_notifications_priority_low">нисък</string>
     <string name="settings_notifications_priority_default">подразбиран</string>
-    <string name="settings_notifications_priority_max">максимален</string>
+    <string name="settings_notifications_priority_max">най-висок</string>
     <string name="settings_notifications_priority_high">висок</string>
     <string name="detail_deep_link_subscribed_toast_message">Абонирани сте за темата %1$s</string>
     <string name="settings_notifications_channel_prefs_summary">Отмяна на „Не безпокойте“, звуци и т.н.</string>
@@ -332,4 +332,12 @@
     <string name="channel_notifications_group_default_name">Подразбирани</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Потребителски настройки за известия</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Използва потребителски настройки за този абонамент</string>
+    <string name="settings_notifications_insistent_max_priority_title">Продължително сигнализиране за най-високия приоритет</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Известията с най-висок приоритет сигнализират веднъж</string>
+    <string name="detail_settings_notifications_open_channels_title">Настройки на известията</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Продължително сигнализиране</string>
+    <string name="detail_settings_notifications_open_channels_summary">Отмяна на „Не безпокойте“, звуци и т.н.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Единично сигнализиране</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Подразбирани настройки (отмяна на „Не безпокойте“, звуци и т.н.)</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Известията с най-висок приоритет сигнализират, докато не бъдат затворени</string>
 </resources>
