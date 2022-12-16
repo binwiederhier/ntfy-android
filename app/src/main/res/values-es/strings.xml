@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Notificaciones (prioridad mínima)</string>
+    <string name="channel_notifications_min_name">Prioridad mínima</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
     <string name="notification_popup_action_open">Abrir</string>
-    <string name="channel_notifications_low_name">Notificaciones (prioridad baja)</string>
-    <string name="channel_notifications_default_name">Notificaciones (prioridad por defecto)</string>
-    <string name="channel_notifications_max_name">Notificaciones (prioridad máxima)</string>
+    <string name="channel_notifications_low_name">Prioridad baja</string>
+    <string name="channel_notifications_default_name">Prioridad predeterminada</string>
+    <string name="channel_notifications_max_name">Prioridad máxima</string>
     <string name="channel_subscriber_service_name">Servicio de Suscripciones</string>
     <string name="channel_subscriber_notification_title">Escuchando por notificaciones entrantes</string>
     <string name="channel_subscriber_notification_instant_text_one">Suscrito a un tópico de entrega instantánea</string>
@@ -221,7 +221,7 @@
     <string name="user_dialog_button_add">Añadir usuario</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_save">Guardar</string>
-    <string name="channel_notifications_high_name">Notificaciones (prioridad alta)</string>
+    <string name="channel_notifications_high_name">Prioridad alta</string>
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="add_dialog_use_another_server_description">Introduzca las URL de servicio para suscribirse a los tópicos de otros servidores.</string>
@@ -329,4 +329,15 @@
     <string name="main_banner_websocket_button_enable_now">Habilitar ahora</string>
     <string name="main_menu_donate_title">Donar 💸</string>
     <string name="detail_item_cannot_open_apk">Las aplicaciones ya no se pueden instalar desde ntfy. Descárguelas a través del navegador. Consulte el issue #531 para obtener más información.</string>
+    <string name="channel_notifications_group_default_name">Predeterminado</string>
+    <string name="settings_notifications_insistent_max_priority_title">Mantener alertas para la máxima prioridad</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Las notificaciones de prioridad máxima alertan continuamente hasta que se descartan</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Las notificaciones de prioridad máxima solo alertan una vez</string>
+    <string name="detail_settings_notifications_open_channels_summary">Ignorar No Molestar (DND), sonidos, etc.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Seguir alertando</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Configuración de notificaciones personalizadas</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alertar solo una vez</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Utilizando configuración personalizada para esta suscripción</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Utilizando configuración predeterminada (sonidos, no molestar, etc.)</string>
+    <string name="detail_settings_notifications_open_channels_title">Configuración de la notificación</string>
 </resources>
