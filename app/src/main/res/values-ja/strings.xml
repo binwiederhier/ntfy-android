@@ -12,11 +12,11 @@
     <string name="settings_notifications_auto_delete_one_week">1週間後</string>
     <string name="settings_notifications_auto_delete_one_month">1か月後</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="channel_notifications_high_name">通知 (優先度高)</string>
+    <string name="channel_notifications_high_name">優先度 高</string>
     <string name="channel_notifications_default_name">優先度 通常</string>
     <string name="channel_subscriber_notification_noinstant_text_two">トピックを2件購読しています</string>
     <string name="add_dialog_login_new_user">新規ユーザー</string>
-    <string name="channel_notifications_max_name">通知 (優先度最高)</string>
+    <string name="channel_notifications_max_name">優先度 最高</string>
     <string name="channel_subscriber_notification_instant_text_two">即時配信トピックを2件購読しています</string>
     <string name="channel_notifications_low_name">優先度 低</string>
     <string name="channel_subscriber_notification_title">通知の受信を待機しています</string>
@@ -329,4 +329,15 @@
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">クリップボードにコピーしました</string>
     <string name="main_menu_donate_title">寄付する💸</string>
     <string name="detail_item_cannot_open_apk">アプリはインストールできなくなりました。代替手段としてブラウザからダウンロードしてください。詳細は issue #531 をご参照ください。</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">優先度最高は非表示になるまで通知継続</string>
+    <string name="channel_notifications_group_default_name">デフォルト</string>
+    <string name="settings_notifications_insistent_max_priority_title">優先度最高は通知継続</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">優先度最高は一回のみ通知</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">カスタム通知設定</string>
+    <string name="detail_settings_notifications_open_channels_title">通知設定を編集</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">デフォルト設定を使用（サウンドやおやすみモード時の動作等）</string>
+    <string name="detail_settings_notifications_open_channels_summary">おやすみモード時の動作やサウンド等</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">この購読にカスタム設定を利用</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">通知を継続</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">一回のみ通知</string>
 </resources>
