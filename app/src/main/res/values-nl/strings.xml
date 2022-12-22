@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Meldingen (lage prioriteit)</string>
-    <string name="channel_notifications_max_name">Meldingen (max. prioriteit)</string>
+    <string name="channel_notifications_low_name">Lage prioriteit</string>
+    <string name="channel_notifications_max_name">Max prioriteit</string>
     <string name="channel_subscriber_notification_instant_text">Geabonneerd op onderwerpen voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_one">Geabonneerd op één onderwerp voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_four">Geabonneerd op vier onderwerpen voor directe levering</string>
@@ -37,8 +37,8 @@
     <string name="add_dialog_button_login">Inloggen</string>
     <string name="add_dialog_use_another_server">Gebruik een andere server</string>
     <string name="channel_notifications_min_name">Meldingen (min. prioriteit)</string>
-    <string name="channel_notifications_default_name">Meldingen (standaard prioriteit)</string>
-    <string name="channel_notifications_high_name">Meldingen (hoge prioriteit)</string>
+    <string name="channel_notifications_default_name">Standaard prioriteit</string>
+    <string name="channel_notifications_high_name">Hoge prioriteit</string>
     <string name="channel_subscriber_service_name">Abonnementenservice</string>
     <string name="main_how_to_intro">Klik op de + om een onderwerp aan te maken of erop te abonneren. Nadien ontvang je meldingen op je toestel bij het verzenden van berichten via PUT or POST.</string>
     <string name="channel_subscriber_notification_instant_text_two">Geabonneerd op twee onderwerpen voor directe levering</string>
@@ -226,7 +226,7 @@
     <string name="settings_advanced_header">Geavanceerd</string>
     <string name="settings_advanced_record_logs_title">Logs opnemen</string>
     <string name="settings_advanced_record_logs_summary_enabled">Loggen (tot 1,000 vermeldingen) naar apparaat …</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Schakel loggen in zodat je logs later kunt delen om problemen te diagnosticeren.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Loggen inschakelen, deze kan later gedeeld worden om problemen te analyseren.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Er zijn geen onderwerpen/hostnamen gecensureerd. Misschien heb je geen abonnementen\?</string>
     <string name="detail_item_download_info_deleted">verwijderd</string>
     <string name="settings_notifications_auto_download_always">Alles automatisch downloaden</string>
@@ -327,4 +327,17 @@
     <string name="add_dialog_base_urls_dropdown_clear">Service URL verwijderen</string>
     <string name="main_banner_websocket_button_enable_now">Nu inschakelen</string>
     <string name="main_banner_websocket_text">WebSockets is de aangeraden manier om te verbinden met uw server en kan batterij verbruik verminderen. Het kan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy"> extra configuratie in uw proxy</a> vereisen. Dit kan omgeschakeld worden in de instellingen.</string>
+    <string name="channel_notifications_group_default_name">Standaard</string>
+    <string name="main_menu_donate_title">Doneer 💸</string>
+    <string name="detail_item_cannot_open_apk">Apps kunnen niet meer worden geïnstalleerd. Download deze via de browser. Raadpleeg issue #531 voor meer details.</string>
+    <string name="settings_notifications_insistent_max_priority_title">Behoud meldingen voor hoogste prioriteit</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Max prioriteit berichten geven continue een melding totdat deze worden gesloten</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Max prioriteit berichten geven eenmalig een melding</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Instellingen voor aangepaste melding</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Aangepaste instellingen in gebruik voor dit abonnement</string>
+    <string name="detail_settings_notifications_open_channels_title">Aanpassen instellingen voor meldingen</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Blijven melden</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Eenmalig melden</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Standaard instellingen in gebruik (geluiden, Niet storen, etc.)</string>
+    <string name="detail_settings_notifications_open_channels_summary">Niet storen (DND) negeren, geluiden, etc.</string>
 </resources>
