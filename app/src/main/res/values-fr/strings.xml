@@ -330,10 +330,13 @@
     <string name="channel_notifications_group_default_name">Défaut</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continuer de notifier</string>
     <string name="main_menu_donate_title">Faire un don 💸</string>
-    <string name="detail_item_cannot_open_apk">Les applications ne peuvent plus être installées. Veuillez les télécharger via un navigateur. (Pour plus de détail, voir le ticket #531)</string>
-    <string name="settings_notifications_insistent_max_priority_title">Continuer à alerter avec la priorité maximale</string>
-    <string name="detail_settings_notifications_dedicated_channels_title">Configuration des notifications personnalisées</string>
+    <string name="detail_item_cannot_open_apk">Les applications ne peuvent plus être installées. Veuillez les télécharger via un navigateur. Voir le ticket #531 pour plus de détails.</string>
+    <string name="settings_notifications_insistent_max_priority_title">Conserver les notifications avec une priorité maximale</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Paramètres personnalisés de la notification</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Notifier une seule fois uniquement</string>
-    <string name="detail_settings_notifications_dedicated_channels_summary_on">Utilisation de paramètres personnalisés pour cette inscription</string>
-    <string name="detail_settings_notifications_dedicated_channels_summary_off">Utilisation des paramètres par défaut (sons, ne pas déranger, ...)</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Utilisation de paramètres personnalisés pour cet abonnement</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Utilisation des paramètres par défaut (sons, remplacement de « ne pas déranger », etc.)</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Les notifications avec une priorité maximale ne sont affichées qu\'une seule fois</string>
+    <string name="detail_settings_notifications_open_channels_title">Configurer les paramètres de la notification</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Les notifications avec une priorité maximale sont affichées jusqu\'à ce qu\'elles soient rejetées</string>
 </resources>
