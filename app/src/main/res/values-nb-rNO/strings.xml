@@ -215,7 +215,7 @@
     <string name="main_menu_settings_title">Innstillinger</string>
     <string name="channel_notifications_min_name">Minste prioritet</string>
     <string name="channel_notifications_high_name">Høy prioritet</string>
-    <string name="channel_subscriber_notification_instant_text_two">Abonneret på to emner med umiddelbar levering</string>
+    <string name="channel_subscriber_notification_instant_text_two">Abonnert på to emner med umiddelbar levering</string>
     <string name="refresh_message_error">Kunne ikke oppdatere %1$d abonnement(er)
 \n
 \n%2$s</string>
