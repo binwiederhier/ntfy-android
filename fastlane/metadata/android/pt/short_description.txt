@@ -1,0 +1,1 @@
+Envie notificações para o seu telemóvel através de pedidos PUT/POST
