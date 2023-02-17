@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_min_name">Prioridade Min</string>
+    <string name="channel_notifications_low_name">Prioridade baixa</string>
+    <string name="channel_notifications_default_name">Prioridade por defecto</string>
+    <string name="channel_notifications_high_name">Prioridade alta</string>
+    <string name="channel_notifications_max_name">Prioridade Máx</string>
+    <string name="channel_subscriber_service_name">Servizo de subscrición</string>
+    <string name="channel_notifications_group_default_name">Por defecto</string>
+    <string name="channel_subscriber_notification_title">Agardando por notificacións entrantes</string>
+</resources>
