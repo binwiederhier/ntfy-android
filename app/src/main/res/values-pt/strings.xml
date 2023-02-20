@@ -53,7 +53,7 @@
     <string name="channel_subscriber_notification_noinstant_text_five">Cinco tópicos subscritos</string>
     <string name="main_how_to_intro">Clique no + para subscrever um tópico. Depois, receberá notificações no seu dispositivo quando enviar mensagens via PUT ou POST.</string>
     <string name="channel_notifications_max_name">Prioridade máxima</string>
-    <string name="main_banner_websocket_text">Trocar para WebSockets é a forma recomendada de se ligar ao seu servidor, podendo melhorar a duração da bateria, mas pode necessitar \u0020<a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais no seu \"proxy\"</a>. Isto pode ser alterado nas Configurações.</string>
+    <string name="main_banner_websocket_text">Trocar para WebSockets é a forma recomendada de se ligar ao seu servidor, podendo melhorar a duração da bateria, mas pode necessitar <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais no seu \"proxy\"</a>. Isto pode ser alterado nas Configurações.</string>
     <string name="main_banner_websocket_button_dismiss">Dispensar</string>
     <string name="channel_notifications_default_name">Prioridade padrão</string>
     <string name="channel_notifications_high_name">Prioridade alta</string>
