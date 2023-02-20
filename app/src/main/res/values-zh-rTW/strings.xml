@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_subscriber_notification_noinstant_text_six">已訂閱 6 個主題</string>
-    <string name="channel_notifications_default_name">通知 (預設優先)</string>
+    <string name="channel_notifications_default_name">預設優先</string>
     <string name="main_menu_report_bug_title">問題回報</string>
     <string name="channel_subscriber_notification_title">正在接收通知</string>
     <string name="channel_subscriber_notification_instant_text">已訂閱即時推送主題</string>
@@ -47,10 +47,10 @@
     <string name="add_dialog_description_below">因為主題不能受密碼保護，請盡量取一個難以猜測的主題名稱。在訂閱之後你就可以使用 PUT/POST 來發送通知。</string>
     <string name="add_dialog_use_another_server">使用其他伺服器</string>
     <string name="add_dialog_use_another_server_description">在下方輸入自訂的網址來訂閱主題。</string>
-    <string name="channel_notifications_min_name">通知 (最低優先)</string>
-    <string name="channel_notifications_low_name">通知 (低優先)</string>
-    <string name="channel_notifications_high_name">通知 (高優先)</string>
-    <string name="channel_notifications_max_name">通知 (最高優先)</string>
+    <string name="channel_notifications_min_name">最低優先</string>
+    <string name="channel_notifications_low_name">較低優先</string>
+    <string name="channel_notifications_high_name">較高優先</string>
+    <string name="channel_notifications_max_name">最高優先</string>
     <string name="channel_subscriber_service_name">訂閱服務</string>
     <string name="channel_subscriber_notification_instant_text_three">已訂閱 3 個即時推送主題</string>
     <string name="main_menu_docs_title">閱讀技術文件</string>
@@ -190,4 +190,39 @@
     <string name="settings_notifications_auto_download_10m">小於 10 MB</string>
     <string name="detail_settings_about_header">關於</string>
     <string name="settings_backup_restore_backup_failed">備份失敗： %1$s</string>
+    <string name="add_dialog_foreground_description">除了 %1$s 以外伺服器有即時傳送。</string>
+    <string name="detail_item_menu_copy_contents_copied">通知複製至剪貼簿</string>
+    <string name="channel_notifications_group_default_name">預設</string>
+    <string name="detail_how_to_link">可以再說明書 (ntfy.sh) 找到詳細指示。</string>
+    <string name="detail_clear_dialog_message">確定清除主題內的全部通訊？</string>
+    <string name="detail_clear_dialog_permanently_delete">永久刪除</string>
+    <string name="detail_delete_dialog_message">確定取消訂閱這個主題，並刪除所有通訊？</string>
+    <string name="detail_delete_dialog_permanently_delete">確定永久刪除</string>
+    <string name="detail_test_title">測試：你可以選一個你喜歡的標題。</string>
+    <string name="detail_test_message">這是從 ntfy Android 應用程式發送的測試信息，優先是 %1$d。如果你傳送另一個訊息，它看起來可能會不一樣。</string>
+    <string name="detail_test_message_error_unauthorized_anon">不能夠傳送訊息：匿名發布不受批准。</string>
+    <string name="detail_test_message_error_too_large">不能夠傳送訊息：附件大小超出限制。</string>
+    <string name="detail_instant_delivery_disabled">關閉即時傳送</string>
+    <string name="detail_item_snack_deleted">已刪除通知</string>
+    <string name="detail_item_menu_open">開啟檔案</string>
+    <string name="detail_item_menu_delete">刪除檔案</string>
+    <string name="detail_item_menu_cancel">取消下載</string>
+    <string name="detail_item_menu_save_file">儲存檔案</string>
+    <string name="detail_item_menu_copy_contents">複製通知</string>
+    <string name="detail_item_cannot_open_url">無法開啟網址：%1$s</string>
+    <string name="detail_item_saved_successfully">儲存至 \"Downloads\" 中的 \"%1$s\"</string>
+    <string name="detail_test_message_error_unauthorized_user">不能夠發布信息：用戶 %1$s 不被授權。</string>
+    <string name="detail_how_to_intro">PUT 或 POST 主題網址以傳送通訊。</string>
+    <string name="detail_how_to_example">例如（使用 curl): <br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_test_message_error">不能夠傳送訊息：%1$s</string>
+    <string name="detail_item_tags">標籤：%1$s</string>
+    <string name="detail_instant_delivery_enabled">啟動即時傳送</string>
+    <string name="detail_item_menu_copy_url">複製網址</string>
+    <string name="detail_item_menu_copy_url_copied">網址複製至剪貼簿</string>
+    <string name="detail_item_cannot_open">無法開啟附件：%1$s</string>
+    <string name="detail_item_cannot_open_not_found">無法開啟附件檔案可能已被刪除，或檔案無法被任何軟件開啟。</string>
+    <string name="detail_item_cannot_download">無法開啟或下載檔案，網址無效而且找不到（本地？）檔案。</string>
+    <string name="detail_deep_link_subscribed_toast_message">訂閱主題 %1$s</string>
+    <string name="detail_no_notifications_text">你未有在這個主題收到任何通訊。</string>
+    <string name="detail_item_menu_download">下載檔案</string>
 </resources>
