@@ -8,4 +8,42 @@
     <string name="channel_subscriber_service_name">Servizo de subscrición</string>
     <string name="channel_notifications_group_default_name">Por defecto</string>
     <string name="channel_subscriber_notification_title">Agardando por notificacións entrantes</string>
+    <string name="channel_subscriber_notification_instant_text">Subscrita ao envío instantáneo de asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_one">Subscrita ao envío instantáneo dun asunto</string>
+    <string name="channel_subscriber_notification_instant_text_two">Subscrita ao envío instantáneo de dous asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_three">Subscrita ao envío instantáneo de tres asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_four">Subscrita ao envío instantáneo de catro asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_five">Subscrita ao envío instantáneo de cinco asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_six">Subscrita ao envío instantáneo de seis asuntos</string>
+    <string name="channel_subscriber_notification_instant_text_more">Subscrita ao envío instantáneo de %1$d asuntos</string>
+    <string name="channel_subscriber_notification_noinstant_text">Subscrita a asuntos</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Subscrita a seis asuntos</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Subscrita a %1$d asuntos</string>
+    <string name="refresh_message_error">Non se actualizaron %1$d subscricións
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Non se actualizou a subscrición: %1$s</string>
+    <string name="main_action_bar_title">Asuntos subscritos</string>
+    <string name="main_menu_notifications_enabled">Notificacións activadas</string>
+    <string name="main_menu_notifications_disabled_forever">Notificacións acaladas</string>
+    <string name="main_menu_notifications_disabled_until">Notificacións acaladas ata %1$s</string>
+    <string name="main_menu_settings_title">Axustes</string>
+    <string name="main_menu_report_bug_title">Informar dun fallo</string>
+    <string name="main_menu_docs_title">Ler documentación</string>
+    <string name="main_menu_rate_title">Valorar a app ⭐</string>
+    <string name="main_menu_donate_title">Doar 💸</string>
+    <string name="main_action_mode_menu_unsubscribe">Retirar subscrición</string>
+    <string name="main_action_mode_delete_dialog_message">Retirar a subscrición ao(s) asunto(s) seleccionado(s) e eliminar definitivamente tódalas notificacións\?</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Eliminar definitivamente</string>
+    <string name="main_action_mode_delete_dialog_cancel">Cancelar</string>
+    <string name="main_item_status_text_one">%1$d notificación</string>
+    <string name="main_item_status_text_not_one">%1$d notificacións</string>
+    <string name="main_item_status_reconnecting">reconectando…</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Subscrita a un asunto</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Subscrita a dous asuntos</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Subscrita a tres asuntos</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Subscrita a catro asuntos</string>
+    <string name="refresh_message_result">%1$d notificación(s) recibida(s)</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Subscrita a cinco asuntos</string>
+    <string name="refresh_message_no_results">Todo ao día</string>
 </resources>
