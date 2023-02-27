@@ -46,4 +46,9 @@
     <string name="refresh_message_result">%1$d notificación(s) recibida(s)</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Subscrita a cinco asuntos</string>
     <string name="refresh_message_no_results">Todo ao día</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">onte</string>
+    <string name="main_how_to_intro">Preme no + para crear ou subscribirte a un tema. Posteriormente recibirás notificacións no teu dispositivo cando se envían mensaxes a través de PUT ou POST.</string>
+    <string name="main_unified_push_toast">Esta subscrición está xestionada por %1$s a través de UnifiedPush</string>
+    <string name="main_how_to_link">Instruccións detalladas dispoñibles en ntfy.sh, e na documentación.</string>
 </resources>
