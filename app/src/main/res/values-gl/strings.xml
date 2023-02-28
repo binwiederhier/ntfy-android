@@ -51,4 +51,36 @@
     <string name="main_how_to_intro">Preme no + para crear ou subscribirte a un tema. Posteriormente recibirás notificacións no teu dispositivo cando se envían mensaxes a través de PUT ou POST.</string>
     <string name="main_unified_push_toast">Esta subscrición está xestionada por %1$s a través de UnifiedPush</string>
     <string name="main_how_to_link">Instruccións detalladas dispoñibles en ntfy.sh, e na documentación.</string>
+    <string name="main_add_button_description">Engadir subscrición</string>
+    <string name="main_no_subscriptions_text">Semella que aínda non tes ningunha subscrición.</string>
+    <string name="main_banner_battery_text">A optimización da batería debe estar desactivada para a app para evitar problemas coas notificacións.</string>
+    <string name="main_banner_battery_button_remind_later">Preguntar máis tarde</string>
+    <string name="main_banner_battery_button_dismiss">Desbotar</string>
+    <string name="main_banner_battery_button_fix_now">Arranxar agora</string>
+    <string name="main_banner_websocket_text">O cambio a WebSockets é o xeito recomendado para conectar co servidor, pode mellorar a vida da batería, pero pode requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional no teu proxy</a>. Pódese cambiar nos Axustes.</string>
+    <string name="main_banner_websocket_button_remind_later">Preguntar máis tarde</string>
+    <string name="main_banner_websocket_button_dismiss">Desbotar</string>
+    <string name="main_banner_websocket_button_enable_now">Activar agora</string>
+    <string name="add_dialog_title">Subscribir ao tema</string>
+    <string name="add_dialog_description_below">Os temas poden non estar protexidos con contrasinal, escolle un nome dificil de adiviñar. Unha vez subscrito, podes PUT/POST notificacións.</string>
+    <string name="add_dialog_topic_name_hint">Nome do tema, ex. alertas_xoan</string>
+    <string name="add_dialog_use_another_server">Usar outro servidor</string>
+    <string name="add_dialog_use_another_server_description">Escribe o URL do servizo para subscribirte a temas doutros servidores.</string>
+    <string name="add_dialog_instant_delivery">Entrega inmediata en modo silencioso</string>
+    <string name="add_dialog_instant_delivery_description">Asegura que as mensaxes se entregan de xeito inmediato, incluso se o dispositivo non está activo.</string>
+    <string name="add_dialog_foreground_description">A entrega inmediata sempre está activa para hóspedes diferentes a %1$s.</string>
+    <string name="add_dialog_button_cancel">Cancelar</string>
+    <string name="add_dialog_button_subscribe">Subscribir</string>
+    <string name="add_dialog_button_back">Atrás</string>
+    <string name="add_dialog_button_login">Acceder</string>
+    <string name="add_dialog_error_connection_failed">Fallou a conexión: %1$s</string>
+    <string name="add_dialog_login_title">Require iniciar sesión</string>
+    <string name="add_dialog_login_description">Este tema require que inicies sesión. Escribe as túas credenciais.</string>
+    <string name="add_dialog_login_username_hint">Identificador</string>
+    <string name="add_dialog_login_password_hint">Contrasinal</string>
+    <string name="add_dialog_login_error_not_authorized">Fallou o acceso. A usuaria %1$s non está autorizada.</string>
+    <string name="add_dialog_login_new_user">Nova usuaria</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Escribe URL do servizo</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Limpar URL do servizo</string>
+    <string name="detail_no_notifications_text">Aínda non recibiches notificacións deste tema.</string>
 </resources>
