@@ -100,6 +100,8 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
             if (subscription.icon != null) {
                 imageView.setImageBitmap(subscription.icon.readBitmapFromUriOrNull(context))
+            } else {
+                imageView.setImageResource(R.drawable.ic_sms_gray_24dp)
             }
             nameView.text = displayName(subscription)
             statusView.text = statusMessage
