@@ -340,4 +340,7 @@
     <string name="channel_notifications_group_default_name">Öntanımlı</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">En yüksek öncelikli bildirimler kapatılana kadar sürekli uyarı verir</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Öntanımlı ayarları kullan (sesler, Rahatsız Etmeyin özelliğini geçersiz kıl, vb.)</string>
+    <string name="settings_advanced_unifiedpush_title">UnifiedPush\'u etkinleştir</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy bir UnifiedPush dağıtıcısı olarak davranmayacaktır</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy bir UnifiedPush dağıtıcısı olarak davranacaktır</string>
 </resources>
