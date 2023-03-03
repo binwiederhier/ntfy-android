@@ -364,6 +364,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Enable UnifiedPush
+            val enableUPPrefId = context?.getString(R.string.settings_advanced_enable_up_key) ?: return
+            val enableUP: SwitchPreference? = findPreference(enableUPPrefId)
+            enableUP?.isChecked = repository.getEnableUP()
+            enableUP?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setEnableUP(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getEnableUP()
+                }
+            }
+            enableUP?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_advanced_enable_up_summary_enabled)
+                } else {
+                    getString(R.string.settings_advanced_enable_up_summary_disabled)
+                }
+            }
+
             // Export logs
             val exportLogsPrefId = context?.getString(R.string.settings_advanced_export_logs_key) ?: return
             val exportLogs: ListPreference? = findPreference(exportLogsPrefId)

@@ -320,6 +320,9 @@
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
+    <string name="settings_advanced_enable_up_title">Enable UnifiedPush</string>
+    <string name="settings_advanced_enable_up_summary_enabled">ntfy will act as a UnifiedPush distributor</string>
+    <string name="settings_advanced_enable_up_summary_disabled">ntfy will NOT act as a UnifiedPush distributor</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
     <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>

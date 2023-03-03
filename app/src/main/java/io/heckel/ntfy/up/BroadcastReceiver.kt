@@ -38,6 +38,11 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         val repository = app.repository
         val distributor = Distributor(app)
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
+        if (!repository.getEnableUP()) {
+            Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
+            distributor.sendRegistrationFailed(appId, connectorToken, "EnableUP setting is disabled")
+            return
+        }
         if (appId.isBlank()) {
             Log.w(TAG, "Refusing registration: Empty application")
             distributor.sendRegistrationFailed(appId, connectorToken, "Empty application string")
