@@ -292,6 +292,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
+    fun getUnifiedPushEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_UNIFIEDPUSH_ENABLED, true) // Enabled by default
+    }
+
+    fun setUnifiedPushEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_UNIFIEDPUSH_ENABLED, enabled)
+            .apply()
+    }
+
     fun getInsistentMaxPriorityEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, false) // Disabled by default
     }
@@ -477,6 +487,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
         const val SHARED_PREFS_DARK_MODE = "DarkMode"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
+        const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
