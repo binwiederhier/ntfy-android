@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_dedicated_channels_title">Eigene Benachrichtigungseinstellungen</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Verwende Standardeinstellungen (Töne, Übergehen von \"Nicht Stören\" etc.)</string>
     <string name="detail_settings_notifications_open_channels_summary">„Bitte nicht stören“ unterbrechen, Töne, etc.</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy arbeitet nicht als UnifiedPush-Distributor</string>
+    <string name="settings_advanced_unifiedpush_title">UnifiedPush aktivieren</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy arbeitet als UnifiedPush-Distributor</string>
 </resources>
