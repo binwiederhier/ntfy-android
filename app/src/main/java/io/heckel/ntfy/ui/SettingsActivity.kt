@@ -365,22 +365,22 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
 
             // Enable UnifiedPush
-            val enableUPPrefId = context?.getString(R.string.settings_advanced_enable_up_key) ?: return
-            val enableUP: SwitchPreference? = findPreference(enableUPPrefId)
-            enableUP?.isChecked = repository.getEnableUP()
-            enableUP?.preferenceDataStore = object : PreferenceDataStore() {
+            val unifiedPushEnabledPrefId = context?.getString(R.string.settings_advanced_unifiedpush_key) ?: return
+            val unifiedPushEnabled: SwitchPreference? = findPreference(unifiedPushEnabledPrefId)
+            unifiedPushEnabled?.isChecked = repository.getUnifiedPushEnabled()
+            unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
-                    repository.setEnableUP(value)
+                    repository.setUnifiedPushEnabled(value)
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return repository.getEnableUP()
+                    return repository.getUnifiedPushEnabled()
                 }
             }
-            enableUP?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            unifiedPushEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
                 if (pref.isChecked) {
-                    getString(R.string.settings_advanced_enable_up_summary_enabled)
+                    getString(R.string.settings_advanced_unifiedpush_summary_enabled)
                 } else {
-                    getString(R.string.settings_advanced_enable_up_summary_disabled)
+                    getString(R.string.settings_advanced_unifiedpush_summary_disabled)
                 }
             }
 

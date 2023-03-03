@@ -77,8 +77,8 @@
                 app:title="@string/settings_advanced_broadcast_title"
                 app:enabled="true"/>
         <SwitchPreference
-                app:key="@string/settings_advanced_enable_up_key"
-                app:title="@string/settings_advanced_enable_up_title"
+                app:key="@string/settings_advanced_unifiedpush_key"
+                app:title="@string/settings_advanced_unifiedpush_title"
                 app:enabled="true"/>
         <SwitchPreference
                 app:key="@string/settings_advanced_record_logs_key"

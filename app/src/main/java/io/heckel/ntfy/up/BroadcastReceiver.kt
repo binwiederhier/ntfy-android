@@ -38,9 +38,9 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         val repository = app.repository
         val distributor = Distributor(app)
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
-        if (!repository.getEnableUP()) {
+        if (!repository.getUnifiedPushEnabled()) {
             Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
-            distributor.sendRegistrationFailed(appId, connectorToken, "EnableUP setting is disabled")
+            distributor.sendRegistrationFailed(appId, connectorToken, "UnifiedPush is disabled in ntfy")
             return
         }
         if (appId.isBlank()) {
