@@ -1,0 +1,2 @@
+Bug fixes + maintenance:
+* Subscription icons messed up (#634, thanks to @topcaser for reporting, and @wunter8 for fixing)
