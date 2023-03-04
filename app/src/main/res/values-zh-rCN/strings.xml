@@ -340,4 +340,7 @@
     <string name="settings_notifications_insistent_max_priority_title">持续以最高优先级提醒</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">最高优先级通知，但只提醒一次</string>
     <string name="detail_settings_notifications_open_channels_title">配置通知设置</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy 不再会作为 UnifiedPush 的一个分发器</string>
+    <string name="settings_advanced_unifiedpush_title">启用 UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy 将作为 UnifiedPush 的一个分发器</string>
 </resources>
