@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_dedicated_channels_title">Pengaturan notifikasi kustom</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Menggunakan pengaturan kustom untuk langganan ini</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Menggunakan pengaturan bawaan (suara, sampingan Jangan Ganggu, dll.)</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy akan menjadi sebagai distributor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy tidak akan menjadi sebagai distributor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Aktifkan UnifiedPush</string>
 </resources>
