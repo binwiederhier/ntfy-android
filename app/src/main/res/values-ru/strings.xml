@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_action_mode_delete_dialog_cancel">Отмена</string>
-    <string name="channel_notifications_default_name">Уведомления (приоритет по умолчанию)</string>
-    <string name="channel_notifications_high_name">Уведомления (высокий приоритет)</string>
-    <string name="channel_notifications_max_name">Уведомления (макс. приоритет)</string>
+    <string name="channel_notifications_default_name">Стандартный приоритет</string>
+    <string name="channel_notifications_high_name">Высокий приоритет</string>
+    <string name="channel_notifications_max_name">Наивысший приоритет</string>
     <string name="channel_subscriber_service_name">Сервис подписки</string>
-    <string name="channel_notifications_min_name">Уведомления (мин. приоритет)</string>
-    <string name="channel_notifications_low_name">Уведомления (низкий приоритет)</string>
+    <string name="channel_notifications_min_name">Наименьший приоритет</string>
+    <string name="channel_notifications_low_name">Низкий приоритет</string>
     <string name="main_menu_notifications_disabled_forever">Уведомления приостановлены</string>
     <string name="main_menu_notifications_enabled">Уведомления включены</string>
     <string name="main_menu_report_bug_title">Сообщить об ошибке</string>
@@ -28,7 +28,7 @@
     <string name="detail_item_menu_copy_contents">Скопировать уведомление</string>
     <string name="detail_item_menu_copy_contents_copied">Уведомление скопировано</string>
     <string name="detail_item_saved_successfully">Сохранён как \"%1$s\" в папке \"Downloads\"</string>
-    <string name="detail_menu_notifications_disabled_until">Уведомления приостановлены до %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Уведомления скрыты до %1$s</string>
     <string name="detail_menu_enable_instant">Включить моментальную доставку</string>
     <string name="detail_menu_disable_instant">Выключить моментальную доставку</string>
     <string name="detail_menu_test">Отправить тестовое уведомление</string>
@@ -44,7 +44,7 @@
     <string name="detail_settings_title">Настройки подписок</string>
     <string name="share_title">Поделиться</string>
     <string name="share_menu_send">Поделиться</string>
-    <string name="notification_dialog_title">Приостановить уведомления</string>
+    <string name="notification_dialog_title">Скрывать уведомления</string>
     <string name="settings_notifications_auto_download_100k">Если меньше 100 кб</string>
     <string name="settings_notifications_auto_delete_never">Никогда</string>
     <string name="settings_notifications_auto_delete_three_days">Черед три дня</string>
@@ -110,16 +110,16 @@
     <string name="detail_item_cannot_open">Вложение не открывается: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Вложение не открывается: Возможно файл был удалёл, либо нет установленного приложения, способного открыть файл.</string>
     <string name="detail_menu_notifications_enabled">Уведомления включены</string>
-    <string name="detail_menu_notifications_disabled_forever">Уведомления приостановлены</string>
+    <string name="detail_menu_notifications_disabled_forever">Уведомления скрыты</string>
     <string name="notification_dialog_save">Сохранить</string>
-    <string name="notification_dialog_muted_until_toast_message">Уведомления приостановлены до %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Уведомления скрыты до %1$s</string>
     <string name="notification_popup_action_open">Открыть</string>
     <string name="notification_popup_action_download">Скачать</string>
     <string name="notification_popup_file">%1$s
 \nФайл: %2$s</string>
     <string name="notification_dialog_cancel">Отмена</string>
     <string name="notification_dialog_enabled_toast_message">Уведомления возобновлены</string>
-    <string name="notification_dialog_muted_forever_toast_message">Уведомления приостановлены</string>
+    <string name="notification_dialog_muted_forever_toast_message">Уведомления скрыты</string>
     <string name="notification_dialog_show_all">Показать все уведомления</string>
     <string name="notification_dialog_30min">30 минут</string>
     <string name="notification_dialog_8h">8 часов</string>
@@ -168,7 +168,7 @@
     <string name="settings_notifications_min_priority_max">Только наивысший приоритет</string>
     <string name="settings_notifications_priority_low">низкий</string>
     <string name="settings_notifications_channel_prefs_title">Настройки канала</string>
-    <string name="settings_notifications_channel_prefs_summary">Управление режимом Не беспокоить (DND), настройками звуков, и т.д.</string>
+    <string name="settings_notifications_channel_prefs_summary">Управление режимом \"не беспокоить\", звуками и прочим.</string>
     <string name="settings_notifications_auto_delete_summary_three_days">Автоматически удалять уведомления через 3 дня</string>
     <string name="settings_notifications_auto_delete_summary_one_month">Автоматически удалять уведомления через месяц</string>
     <string name="detail_item_cannot_save">Невозможно сохранить вложение: %1$s</string>
@@ -197,10 +197,10 @@
 \nФайл: %2$s, скачан</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nФайл: %2$s, не удалось скачать</string>
-    <string name="settings_notifications_muted_until_title">Приостановить уведомления</string>
+    <string name="settings_notifications_muted_until_title">Скрывать уведомления</string>
     <string name="settings_notifications_muted_until_show_all">Показываются все уведомления</string>
-    <string name="settings_notifications_muted_until_forever">Уведомления приостановлены до того, как будут возобновлены</string>
-    <string name="settings_notifications_muted_until_x">Уведомления приостановлены до %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Уведомления скрыты пока не будут возобновлены</string>
+    <string name="settings_notifications_muted_until_x">Уведомления скрыты до %1$s</string>
     <string name="settings_notifications_min_priority_title">Самый низкий приоритет</string>
     <string name="settings_notifications_min_priority_summary_any">Отображаются все уведомления</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Показывать уведомления если приоритет %1$d(%2$s) или выше</string>
@@ -255,8 +255,8 @@
     <string name="settings_advanced_clear_logs_summary">Удалить ранее записанные журналы, и начать сначала</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Журналы удалены</string>
     <string name="settings_advanced_connection_protocol_title">Протокол соединения</string>
-    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Использовать JSON поток через HTTP, чтобы подключиться к серверу. Этот метод устарел и будет удален в июле 2022-го года.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Использовать WebSockets для подключения к серверу. Этот метод будет методом по умолчанию начиная с июля 2022-го.</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Использовать JSON-поток через HTTP чтобы подключаться к серверу. Это надежный метод, но он может потреблять больше энергии.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Использовать WebSockets для подключения к серверу. Это рекомендуемый метод, но может потребовать доплонительной настройки прокси-сервера.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON поток поверх HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">О программе</string>
@@ -307,4 +307,40 @@
     <string name="channel_subscriber_notification_noinstant_text_five">Подписан на пять тем</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Подписан на шесть тем</string>
     <string name="main_banner_websocket_button_enable_now">Включить сейчас</string>
+    <string name="detail_settings_notifications_instant_summary_on">Уведомления доставляются сразу. Требует forground сервис и потребляет больше энергии.</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Уведомления с наивысшим приоритетом будут требовать внимания пока не будут прочтены</string>
+    <string name="channel_notifications_group_default_name">По умолчанию</string>
+    <string name="detail_item_cannot_open_apk">Установка приложений через уведомления больше не поддерживается. Скачайте приложение через браузер. Подробности смотрите в отчете ntfy #531.</string>
+    <string name="detail_settings_appearance_icon_set_title">Иконка подписки</string>
+    <string name="detail_settings_appearance_icon_set_summary">Использовать иконку для отображения в уведомлениях</string>
+    <string name="main_menu_donate_title">Пожертвовать 💸</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Уведомления с наивысшим приориетом будут давать о себе знать только один раз</string>
+    <string name="detail_settings_notifications_instant_summary_off">Уведомления будут доставляться с помощью Firebase. Могут быть задержки с доставкой, но потребляет меньше энергии.</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Очистить URL-адрес сервера</string>
+    <string name="detail_settings_appearance_header">Внешний вид</string>
+    <string name="detail_settings_appearance_icon_error_saving">Невозможно сохранить иконку: %1$s</string>
+    <string name="detail_settings_appearance_display_name_title">Псевдоним</string>
+    <string name="detail_settings_global_setting_suffix">испольует глобальное значение</string>
+    <string name="detail_settings_appearance_display_name_message">Выставить произвольный псевдоним для этой подписки. Оставьте пустым чтобы использовать значение по умолчанию (%1$s).</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (по умолчанию)</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Скопирован в буфер обмена</string>
+    <string name="detail_settings_notifications_instant_title">Мгновенная доставка</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Пользовательские настройки уведомлений</string>
+    <string name="detail_settings_notifications_open_channels_title">Настройки уведомлений</string>
+    <string name="settings_advanced_unifiedpush_title">Включить UnifiedPush</string>
+    <string name="detail_settings_about_header">Настройки темы</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Используются настройки по умолчанию (звуки, игнорирование режима \"не беспокоить\", и прочее)</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy будет действовать как сервис доставки UnifiedPush</string>
+    <string name="detail_settings_about_topic_url_title">URL-адрес темы</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy не будет действовать как сервис доставки UnifiedPush</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Иконка используемая в уведомлениях от этой темы</string>
+    <string name="detail_settings_global_setting_title">Использовать глобальное значение</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Продолжать уведомлять</string>
+    <string name="main_banner_websocket_text">Мы рекомендуем использовать WebSockets для подключения к Вашему серверу; это может продлить время работы от батареи, но может потребовать <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">дополнительной настройки прокси-сервера</a>. Эта опция может быть включена или выключена в Настройках.</string>
+    <string name="detail_settings_appearance_icon_remove_title">Иконка подписки (коснитесь, чтобы удалить)</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Выберите URL-адрес сервера</string>
+    <string name="detail_settings_notifications_open_channels_summary">Игнорирование режима \"не беспокоить\", звуки и прочее.</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Используются пользовательские настройки для этой подписки</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Уведомлять только один раз</string>
+    <string name="settings_notifications_insistent_max_priority_title">Продолжать уведомлять при наивысшем приоритете</string>
 </resources>
