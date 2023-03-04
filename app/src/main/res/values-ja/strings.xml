@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_on">この購読にカスタム設定を利用</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">通知を継続</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">一回のみ通知</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfyがUnifiedPushディストリビュータとして振る舞うようになります</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfyはUnifiedPushディストリビュータとして振る舞いません</string>
+    <string name="settings_advanced_unifiedpush_title">UnifiedPushを有効化する</string>
 </resources>
