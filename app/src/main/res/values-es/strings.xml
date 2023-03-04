@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Utilizando configuración personalizada para esta suscripción</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Utilizando configuración predeterminada (sonidos, no molestar, etc.)</string>
     <string name="detail_settings_notifications_open_channels_title">Configuración de la notificación</string>
+    <string name="settings_advanced_unifiedpush_title">Activar UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy actuará como distribuidor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy no actuará como distribuidor UnifiedPush</string>
 </resources>
