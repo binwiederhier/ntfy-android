@@ -12,7 +12,7 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (за умовчанням)</string>
     <string name="detail_settings_appearance_display_name_message">Встановіть спеціальну відображувану назву для цієї підписки. Залиште поле порожнім для умовчання (%1$s).</string>
     <string name="user_dialog_base_url_hint">URL служби</string>
-    <string name="add_dialog_use_another_server_description">Введіть URL-адреси служби нижче, щоб підписатися на теми з інших серверів.</string>
+    <string name="add_dialog_use_another_server_description">Введіть URL-адресу сервісу нижче, щоб підписатися на теми з інших серверів.</string>
     <string name="detail_item_cannot_open_url">Неможливо відкрити URL: %1$s</string>
     <string name="detail_item_menu_cancel">Скасувати завантаження</string>
     <string name="share_topic_title">Поділитися з</string>
@@ -67,15 +67,15 @@
     <string name="main_banner_battery_button_remind_later">Запитайте пізніше</string>
     <string name="main_banner_battery_button_dismiss">Відхилити</string>
     <string name="main_banner_battery_button_fix_now">Виправ зараз</string>
-    <string name="add_dialog_title">Підпишіться на тему</string>
+    <string name="add_dialog_title">Підписатися на тему</string>
     <string name="add_dialog_description_below">Теми можуть не бути захищені паролем, тому виберіть назву, яку важко вгадати. Після підписки ви можете PUT/POST сповіщення.</string>
     <string name="add_dialog_topic_name_hint">Назва теми, наприклад phils_alerts</string>
-    <string name="add_dialog_use_another_server">Використовуйте інший сервер</string>
+    <string name="add_dialog_use_another_server">Використовувати інший сервер</string>
     <string name="add_dialog_instant_delivery">Миттєва доставка в режимі дрімання</string>
     <string name="add_dialog_instant_delivery_description">Забезпечує миттєву доставку повідомлень, навіть якщо пристрій неактивний.</string>
     <string name="add_dialog_foreground_description">Миттєва доставка завжди ввімкнена для хостів, відмінних від %1$s.</string>
     <string name="add_dialog_button_cancel">Скасувати</string>
-    <string name="add_dialog_button_subscribe">Підпишіться</string>
+    <string name="add_dialog_button_subscribe">Підписатися</string>
     <string name="add_dialog_button_back">Назад</string>
     <string name="detail_clear_dialog_cancel">Скасувати</string>
     <string name="detail_delete_dialog_message">Скасувати підписку на цю тему та видалити всі отримані сповіщення\?</string>
@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_open_channels_title">Налаштування параметрів сповіщень</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Сповіщати лише один раз</string>
     <string name="detail_item_cannot_open_apk">Додаток більше не можна встановити. Натомість завантажуйте через браузер. Подробиці читайте у проблемі #531.</string>
+    <string name="settings_advanced_unifiedpush_title">Увімкнути UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy буде виступати в якості дистриб\'ютора UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy не буде виступати в ролі дистриб\'ютора UnifiedPush</string>
 </resources>
