@@ -8,5 +8,6 @@ interface Connection {
 
 data class ConnectionId(
     val baseUrl: String,
-    val topicsToSubscriptionIds: Map<String, Long>
+    val topicsToSubscriptionIds: Map<String, Long>,
+    val topicIsUnifiedPush: Map<String, Boolean>
 )

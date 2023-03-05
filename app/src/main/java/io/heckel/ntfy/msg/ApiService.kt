@@ -108,6 +108,7 @@ class ApiService {
     fun subscribe(
         baseUrl: String,
         topics: String,
+        unifiedPushTopics: String,
         since: String?,
         user: User?,
         notify: (topic: String, Notification) -> Unit,
@@ -116,7 +117,7 @@ class ApiService {
         val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = requestBuilder(url, user).build()
+        val request = requestBuilder(url, user, unifiedPushTopics).build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -178,12 +179,15 @@ class ApiService {
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
 
-        fun requestBuilder(url: String, user: User?): Request.Builder {
+        fun requestBuilder(url: String, user: User?, unifiedPushTopics: String? = null): Request.Builder {
             val builder = Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", USER_AGENT)
             if (user != null) {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
+            }
+            if (unifiedPushTopics != null) {
+                builder.addHeader("Rate-Topics", unifiedPushTopics)
             }
             return builder
         }
