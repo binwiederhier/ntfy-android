@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Единично сигнализиране</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Подразбирани настройки (отмяна на „Не безпокойте“, звуци и т.н.)</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Известията с най-висок приоритет сигнализират, докато не бъдат затворени</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy ще работи като дистрибутор на UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Включване на UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy няма да работи като дистрибутор на UnifiedPush</string>
 </resources>
