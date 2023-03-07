@@ -340,4 +340,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Oznámení s maximální prioritou nepřetržitě upozorňují až do odvolání</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Použití výchozího nastavení (zvuky, vlastní nastavení funkce Nerušit, atd.)</string>
     <string name="detail_settings_notifications_open_channels_summary">Vlastní nastavení funkce Nerušit (DND), zvuky, atd.</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy bude fungovat jako distributor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Povolit UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nebude fungovat jako distributor UnifiedPush</string>
 </resources>
