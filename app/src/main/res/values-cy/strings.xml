@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_high_name">Blaenoriaeth uchel</string>
+    <string name="channel_notifications_min_name">Blaenoriaeth lleiaf</string>
+    <string name="channel_notifications_low_name">Blaenoriaeth isel</string>
+</resources>
