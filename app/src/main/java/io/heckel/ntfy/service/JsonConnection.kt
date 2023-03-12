@@ -21,8 +21,10 @@ class JsonConnection(
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
+    private val topicIsUnifiedPush = connectionId.topicIsUnifiedPush
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
+    private val unifiedPushTopicsStr = topicIsUnifiedPush.filter { entry -> entry.value }.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
 
     private var since: String? = sinceId
@@ -56,7 +58,7 @@ class JsonConnection(
                 // Call /json subscribe endpoint and loop until the call fails, is canceled,
                 // or the job or service are cancelled/stopped
                 try {
-                    call = api.subscribe(baseUrl, topicsStr, since, user, notify, fail)
+                    call = api.subscribe(baseUrl, topicsStr, unifiedPushTopicsStr, since, user, notify, fail)
                     while (!failed.get() && !call.isCanceled() && isActive && serviceActive()) {
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
                         Log.d(TAG,"[$url] Connection is active (failed=$failed, callCanceled=${call.isCanceled()}, jobActive=$isActive, serviceStarted=${serviceActive()}")
