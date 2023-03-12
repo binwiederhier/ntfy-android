@@ -7,14 +7,14 @@
     <string name="channel_subscriber_service_name">Сервис подписки</string>
     <string name="channel_notifications_min_name">Наименьший приоритет</string>
     <string name="channel_notifications_low_name">Низкий приоритет</string>
-    <string name="main_menu_notifications_disabled_forever">Уведомления приостановлены</string>
+    <string name="main_menu_notifications_disabled_forever">Уведомления заглушены</string>
     <string name="main_menu_notifications_enabled">Уведомления включены</string>
     <string name="main_menu_report_bug_title">Сообщить об ошибке</string>
     <string name="main_menu_settings_title">Настройки</string>
     <string name="main_menu_docs_title">Документация</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_clear_dialog_cancel">Отмена</string>
-    <string name="detail_delete_dialog_message">Отписаться от этой темы, и удалить все полученые уведомления\?</string>
+    <string name="detail_delete_dialog_message">Отписаться от этой темы и удалить все полученные уведомления\?</string>
     <string name="detail_delete_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_delete_dialog_cancel">Отмена</string>
     <string name="detail_test_title">Тест: Вы можете установить заголовок, если хотите.</string>
@@ -28,7 +28,7 @@
     <string name="detail_item_menu_copy_contents">Скопировать уведомление</string>
     <string name="detail_item_menu_copy_contents_copied">Уведомление скопировано</string>
     <string name="detail_item_saved_successfully">Сохранён как \"%1$s\" в папке \"Downloads\"</string>
-    <string name="detail_menu_notifications_disabled_until">Уведомления скрыты до %1$s</string>
+    <string name="detail_menu_notifications_disabled_until">Уведомления заглушены до %1$s</string>
     <string name="detail_menu_enable_instant">Включить моментальную доставку</string>
     <string name="detail_menu_disable_instant">Выключить моментальную доставку</string>
     <string name="detail_menu_test">Отправить тестовое уведомление</string>
@@ -44,7 +44,7 @@
     <string name="detail_settings_title">Настройки подписок</string>
     <string name="share_title">Поделиться</string>
     <string name="share_menu_send">Поделиться</string>
-    <string name="notification_dialog_title">Скрывать уведомления</string>
+    <string name="notification_dialog_title">Заглушить уведомления</string>
     <string name="settings_notifications_auto_download_100k">Если меньше 100 кб</string>
     <string name="settings_notifications_auto_delete_never">Никогда</string>
     <string name="settings_notifications_auto_delete_three_days">Черед три дня</string>
@@ -110,36 +110,36 @@
     <string name="detail_item_cannot_open">Вложение не открывается: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Вложение не открывается: Возможно файл был удалёл, либо нет установленного приложения, способного открыть файл.</string>
     <string name="detail_menu_notifications_enabled">Уведомления включены</string>
-    <string name="detail_menu_notifications_disabled_forever">Уведомления скрыты</string>
+    <string name="detail_menu_notifications_disabled_forever">Уведомления заглушены</string>
     <string name="notification_dialog_save">Сохранить</string>
-    <string name="notification_dialog_muted_until_toast_message">Уведомления скрыты до %1$s</string>
+    <string name="notification_dialog_muted_until_toast_message">Уведомления заглушены до %1$s</string>
     <string name="notification_popup_action_open">Открыть</string>
     <string name="notification_popup_action_download">Скачать</string>
     <string name="notification_popup_file">%1$s
 \nФайл: %2$s</string>
     <string name="notification_dialog_cancel">Отмена</string>
-    <string name="notification_dialog_enabled_toast_message">Уведомления возобновлены</string>
-    <string name="notification_dialog_muted_forever_toast_message">Уведомления скрыты</string>
+    <string name="notification_dialog_enabled_toast_message">Уведомления разрешены</string>
+    <string name="notification_dialog_muted_forever_toast_message">Уведомления заглушены</string>
     <string name="notification_dialog_show_all">Показать все уведомления</string>
     <string name="notification_dialog_30min">30 минут</string>
     <string name="notification_dialog_8h">8 часов</string>
     <string name="notification_dialog_tomorrow">До завтра</string>
     <string name="notification_dialog_1h">1 час</string>
     <string name="notification_dialog_2h">2 часа</string>
-    <string name="notification_dialog_forever">До возобновления</string>
+    <string name="notification_dialog_forever">До разрешения</string>
     <string name="settings_title">Настройки</string>
     <string name="settings_notifications_min_priority_min">Любой приоритет</string>
     <string name="settings_general_users_prefs_user_add">Добавить пользователей</string>
     <string name="settings_general_users_prefs_user_add_summary">Создать нового пользователя для нового сервера</string>
     <string name="settings_backup_restore_restore_title">Восстановить из файла</string>
     <string name="settings_general_users_prefs_user_add_title">Добавить нового пользователя</string>
-    <string name="main_menu_notifications_disabled_until">Уведомления приостановлены до %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Уведомления заглушены до %1$s</string>
     <string name="refresh_message_error">Не получилось обновить %1$d подписок
 \n
 \n%2$s</string>
-    <string name="refresh_message_error_one">Не получилось обновить подписки: %1$s</string>
+    <string name="refresh_message_error_one">Не получилось обновить подписку: %1$s</string>
     <string name="main_action_bar_title">Темы подписок</string>
-    <string name="main_how_to_intro">Нажмите + чтобы создать или подписаться на тему. Вы получите уведомления на вашем устройстве при отправлении сообщений через PUT или POST.</string>
+    <string name="main_how_to_intro">Нажмите + чтобы создать или подписаться на тему. Вы будете получать уведомления на вашем устройстве при отправке сообщений через PUT или POST-запросы.</string>
     <string name="channel_subscriber_notification_instant_text">Подписан на темы с мгновенной доставкой</string>
     <string name="channel_subscriber_notification_instant_text_two">Подписан на две темы с мгновенной доставкой</string>
     <string name="channel_subscriber_notification_instant_text_one">Подписан на одну тему с мгновенной доставкой</string>
@@ -156,7 +156,7 @@
     <string name="add_dialog_login_title">Требуется вход в аккаунт</string>
     <string name="add_dialog_login_description">Эта тема требует авторизации. Пожалуйста, введите имя пользователя и пароль.</string>
     <string name="add_dialog_description_below">Темы не могут быть защищены паролем. Используйте название которое сложно угадать. После подписки вы сможете отправлять уведомления через PUT/POST.</string>
-    <string name="detail_test_message">Это тестовое уведомление от Android-приложения ntfy. Уровень приоритета уведомления: %1$d. Если вы отправите ещё одно, оно может выглядеть по-другому.</string>
+    <string name="detail_test_message">Это тестовое уведомление от Android-приложения ntfy. Оно имеет уровень приоритета %1$d. Если вы отправите ещё одно, оно может выглядеть по-другому.</string>
     <string name="add_dialog_login_error_not_authorized">Вход не удался. Пользователь %1$s не авторизован.</string>
     <string name="detail_how_to_intro">Чтобы отправить уведомления на данную тему, просто отправьте PUT or POST на URL-адрес темы.</string>
     <string name="detail_how_to_link">Подробные инструкции на сайте ntfy.sh и в документации.</string>
@@ -197,10 +197,10 @@
 \nФайл: %2$s, скачан</string>
     <string name="notification_popup_file_download_failed">%1$s
 \nФайл: %2$s, не удалось скачать</string>
-    <string name="settings_notifications_muted_until_title">Скрывать уведомления</string>
+    <string name="settings_notifications_muted_until_title">Заглушить уведомления</string>
     <string name="settings_notifications_muted_until_show_all">Показываются все уведомления</string>
-    <string name="settings_notifications_muted_until_forever">Уведомления скрыты пока не будут возобновлены</string>
-    <string name="settings_notifications_muted_until_x">Уведомления скрыты до %1$s</string>
+    <string name="settings_notifications_muted_until_forever">Уведомления заглушены пока не будут разрешены</string>
+    <string name="settings_notifications_muted_until_x">Уведомления заглушены до %1$s</string>
     <string name="settings_notifications_min_priority_title">Самый низкий приоритет</string>
     <string name="settings_notifications_min_priority_summary_any">Отображаются все уведомления</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Показывать уведомления если приоритет %1$d(%2$s) или выше</string>
