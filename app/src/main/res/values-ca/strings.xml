@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Notificacions (prioritat min)</string>
-    <string name="channel_notifications_low_name">Notificacions (prioritat min)</string>
-    <string name="channel_notifications_default_name">Notificacions (prioritat defecte)</string>
-    <string name="channel_notifications_high_name">Notificacions (alta prioritat)</string>
-    <string name="channel_notifications_max_name">Notificacions (prioritat màx)</string>
+    <string name="channel_notifications_min_name">Prioritat mínima</string>
+    <string name="channel_notifications_low_name">Prioritat baixa</string>
+    <string name="channel_notifications_default_name">Prioritat per defecte</string>
+    <string name="channel_notifications_high_name">Prioritat alta</string>
+    <string name="channel_notifications_max_name">Prioritat màxima</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
     <string name="main_menu_donate_title">Donar 💸</string>
     <string name="main_item_status_reconnecting">reconnectant…</string>
@@ -45,4 +45,9 @@
     <string name="main_action_mode_menu_unsubscribe">Donar-se de baixa</string>
     <string name="main_action_mode_delete_dialog_message">Donar-se de baixa del tema(es) seleccionat(s) permanentment i eliminar totes les notificacions\?</string>
     <string name="main_item_status_text_not_one">%1$d notificacions</string>
+    <string name="channel_notifications_group_default_name">Per defecte</string>
+    <string name="main_item_date_yesterday">ahir</string>
+    <string name="main_add_button_description">Afegir subscripció</string>
+    <string name="main_how_to_intro">Prem + per crear o subscribir-se a un tema. Després rebreu notificaciones al vostre dispositiu quan envieu missatges mitjançant PUT o POST.</string>
+    <string name="main_no_subscriptions_text">Te pinta de que encara no tens cap subscripció.</string>
 </resources>
