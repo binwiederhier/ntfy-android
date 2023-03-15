@@ -115,4 +115,26 @@
     <string name="detail_item_menu_copy_contents_copied">Notificación copiada ao portapapeis</string>
     <string name="detail_item_saved_successfully">Gardado como \"%1$s\" no cartafol \"Descargas\"</string>
     <string name="detail_how_to_intro">Enviar notificacións a este tema, simplemente envía con PUT ou POST ao URL do tema.</string>
+    <string name="detail_item_cannot_download">Non se pode abrir ou descargar o adxunto. A ligazón caducou e non se atopa un ficheiro local.</string>
+    <string name="detail_item_cannot_open">Non se pode abrir: %1$s</string>
+    <string name="detail_item_cannot_open_not_found">Non se pode abrir o adxunto: pode que fose eliminado, ou ningunha app instalada pode abrir o ficheiro.</string>
+    <string name="detail_item_cannot_open_url">Non se pode abrir URL: %1$s</string>
+    <string name="detail_item_cannot_open_apk">Xa non poden instalarse as apps. Descarga desde un navegador. Ver detalles no issue #531.</string>
+    <string name="detail_item_cannot_save">Non se pode gardar o adxunto: %1$s</string>
+    <string name="detail_item_cannot_delete">Non se pode borrar o adxunto: %1$s</string>
+    <string name="detail_item_download_failed">Non se puido descargar o adxunto: %1$s</string>
+    <string name="detail_item_download_info_not_downloaded">non descargado</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d%% descargado</string>
+    <string name="detail_item_download_info_deleted_expires_x">eliminado, a ligazón caduca o %1$s</string>
+    <string name="detail_item_download_info_download_failed">fallou a descarga</string>
+    <string name="detail_item_download_info_download_failed_expired">fallou a descarga, caducou a ligazón</string>
+    <string name="detail_item_download_info_download_failed_expires_x">fallou a descarga, a ligazón caduca %1$s</string>
+    <string name="detail_menu_notifications_enabled">Notificación activas</string>
+    <string name="detail_menu_notifications_disabled_forever">Notificacións acaladas</string>
+    <string name="detail_menu_enable_instant">Activar entrega inmediata</string>
+    <string name="detail_item_download_info_not_downloaded_expires_x">non descargado, caduca %1$s</string>
+    <string name="detail_item_download_info_not_downloaded_expired">non descargado, caducou a ligazón</string>
+    <string name="detail_item_download_info_deleted">eliminado</string>
+    <string name="detail_item_download_info_deleted_expired">eliminado, caducou a ligazón</string>
+    <string name="detail_menu_notifications_disabled_until">Notificacións acaladas ate %1$s</string>
 </resources>
