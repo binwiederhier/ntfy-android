@@ -3,9 +3,9 @@
     <string name="main_action_mode_delete_dialog_cancel">Отмена</string>
     <string name="channel_notifications_default_name">Стандартный приоритет</string>
     <string name="channel_notifications_high_name">Высокий приоритет</string>
-    <string name="channel_notifications_max_name">Наивысший приоритет</string>
+    <string name="channel_notifications_max_name">Максимальный приоритет</string>
     <string name="channel_subscriber_service_name">Сервис подписки</string>
-    <string name="channel_notifications_min_name">Наименьший приоритет</string>
+    <string name="channel_notifications_min_name">Минимальный приоритет</string>
     <string name="channel_notifications_low_name">Низкий приоритет</string>
     <string name="main_menu_notifications_disabled_forever">Уведомления заглушены</string>
     <string name="main_menu_notifications_enabled">Уведомления включены</string>
@@ -165,7 +165,7 @@
     <string name="add_dialog_use_another_server_description">Введите URL-адрес сервиса чтобы подписаться на темы с других серверов.</string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не скачано, истекает срок действия %1$s</string>
     <string name="detail_item_download_info_download_failed_expired">не удалось скачать, срок действия ссылки истёк</string>
-    <string name="settings_notifications_min_priority_max">Только наивысший приоритет</string>
+    <string name="settings_notifications_min_priority_max">Только максимальный приоритет</string>
     <string name="settings_notifications_priority_low">низкий</string>
     <string name="settings_notifications_channel_prefs_title">Настройки канала</string>
     <string name="settings_notifications_channel_prefs_summary">Управление режимом \"не беспокоить\", звуками и прочим.</string>
@@ -204,7 +204,7 @@
     <string name="settings_notifications_min_priority_title">Самый низкий приоритет</string>
     <string name="settings_notifications_min_priority_summary_any">Отображаются все уведомления</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Показывать уведомления если приоритет %1$d(%2$s) или выше</string>
-    <string name="settings_notifications_min_priority_summary_max">Показывать уведомления если приоритет 5 (наивысший)</string>
+    <string name="settings_notifications_min_priority_summary_max">Показывать уведомления если приоритет равен 5 (максимальный)</string>
     <string name="settings_notifications_min_priority_low">Низкий приоритет или выше</string>
     <string name="settings_notifications_min_priority_default">Приоритет по умолчанию и выше</string>
     <string name="settings_notifications_min_priority_high">Высокий приоритет и выше</string>
