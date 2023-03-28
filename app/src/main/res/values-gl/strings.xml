@@ -137,4 +137,6 @@
     <string name="detail_item_download_info_deleted">eliminado</string>
     <string name="detail_item_download_info_deleted_expired">eliminado, caducou a ligazón</string>
     <string name="detail_menu_notifications_disabled_until">Notificacións acaladas ate %1$s</string>
+    <string name="detail_menu_disable_instant">Desactivar o envío instantáneo</string>
+    <string name="detail_menu_test">Enviar notificación de proba</string>
 </resources>
