@@ -6,6 +6,7 @@
         <item name="android:colorBackground">@color/white</item> <!-- background -->
         <item name="android:statusBarColor">@color/teal</item>
         <item name="actionModeBackground">@color/teal_dark</item>
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
     </style>
 
     <style name="DangerText" parent="@android:style/TextAppearance">
@@ -22,5 +23,10 @@
     <style name="roundedCornersImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>
+    </style>
+
+    <!-- Material Design 3 switches in the preferences -->
+    <style name="MaterialSwitch" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/view_preference_switch</item>
     </style>
 </resources>

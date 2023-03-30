@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:hint="@string/user_dialog_password_hint_add"
             android:importantForAutofill="no"
+            android:backgroundTint="?attr/colorPrimary"
             android:maxLines="1" android:inputType="textPassword"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="6dp" app:layout_constraintTop_toBottomOf="@id/user_dialog_username"/>
