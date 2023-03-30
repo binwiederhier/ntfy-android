@@ -92,7 +92,6 @@
     <string name="add_dialog_use_another_server_description">Add meg a szolgáltatók címét alább, hogy más szerveren futó témákra is feliratkozhass.</string>
     <string name="add_dialog_button_subscribe">Feliratkozás</string>
     <string name="add_dialog_button_back">Vissza</string>
-    <string name="add_dialog_base_urls_dropdown_choose"></string>
     <string name="detail_no_notifications_text">Még nem érkezett értesítés ebben a témában.</string>
     <string name="detail_delete_dialog_permanently_delete">Végleges törlés</string>
     <string name="detail_test_message_error_unauthorized_anon">Nem sikerült az üzenetet elküldni: A névtelen publikálás nem engedélyezett.</string>
