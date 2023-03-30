@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
@@ -144,7 +145,7 @@ class AddFragment : DialogFragment() {
         loginPasswordText.addTextChangedListener(loginTextWatcher)
 
         // Build dialog
-        val dialog = AlertDialog.Builder(activity)
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(view)
             .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
                 // This will be overridden below to avoid closing the dialog immediately

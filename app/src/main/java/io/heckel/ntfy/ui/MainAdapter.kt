@@ -115,7 +115,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
-                itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
+                itemView.setBackgroundColor(Colors.itemSelectedBackground(context))
             } else {
                 itemView.setBackgroundColor(Color.TRANSPARENT)
             }

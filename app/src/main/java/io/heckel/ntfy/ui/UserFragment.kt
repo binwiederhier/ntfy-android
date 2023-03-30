@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
@@ -75,7 +76,7 @@ class UserFragment : DialogFragment() {
         }
 
         // Build dialog
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireContext())
             .setView(view)
             .setPositiveButton(positiveButtonTextResId) { _, _ ->
                 saveClicked()

@@ -1,29 +1,22 @@
 <resources>
     <!-- Main app theme; dark theme styles see values-night/styles.xml -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/teal</item>
-        <item name="colorAccent">@color/teal</item> <!-- checkboxes, text fields -->
+        <item name="colorSecondary">@color/teal</item> <!-- checkboxes, text fields -->
         <item name="android:colorBackground">@color/white</item> <!-- background -->
         <item name="android:statusBarColor">@color/teal</item>
         <item name="actionModeBackground">@color/teal_dark</item>
     </style>
 
     <style name="DangerText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/red_dark</item>
+        <item name="android:textColor">?attr/colorError</item>
     </style>
 
-    <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
-        <item name="tint">@color/white</item>
-        <item name="backgroundTint">@color/teal</item>
-    </style>
+    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary" />
 
-    <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/white</item>
-    </style>
+    <style name="CardView" parent="@style/Widget.Material3.CardView.Elevated" />
 
-    <style name="CardViewBackground">
-        <item name="android:background">@color/gray_400</item>
-    </style>
+    <style name="CardViewBackground" />
 
     <!-- Rounded corners in images, see https://stackoverflow.com/a/61960983/1440785 -->
     <style name="roundedCornersImageView" parent="">

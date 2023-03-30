@@ -36,6 +36,7 @@ android {
         debug {
             minifyEnabled false
             debuggable true
+            applicationIdSuffix '.debug'
         }
     }
 
@@ -120,7 +121,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Material design
-    implementation "com.google.android.material:material:1.6.1"
+    implementation "com.google.android.material:material:1.8.0"
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"

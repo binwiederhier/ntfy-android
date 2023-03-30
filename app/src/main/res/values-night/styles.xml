@@ -10,7 +10,7 @@
         - https://developer.android.com/guide/topics/ui/look-and-feel/themes
    -->
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/teal_light</item>
         <item name="colorAccent">@color/teal_light</item> <!-- checkboxes, text fields -->
         <item name="android:colorBackground">@color/black_900</item> <!-- background -->
@@ -26,16 +26,9 @@
         <item name="android:textColor">@color/red_light</item>
     </style>
 
-    <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
-        <item name="tint">@color/black_900</item>
-        <item name="backgroundTint">@color/teal_light</item>
-    </style>
+    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary" />
 
-    <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/black_800b</item>
-    </style>
+    <style name="CardView" parent="@style/Widget.Material3.CardView.Elevated" />
 
-    <style name="CardViewBackground">
-        <item name="android:background">@color/black_900</item>
-    </style>
+    <style name="CardViewBackground" />
 </resources>

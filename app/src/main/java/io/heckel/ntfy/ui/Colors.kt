@@ -1,48 +1,45 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
+import android.graphics.Color
 import androidx.core.content.ContextCompat
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.elevation.SurfaceColors
 import io.heckel.ntfy.R
 import io.heckel.ntfy.util.isDarkThemeOn
 
 class Colors {
     companion object {
-        const val refreshProgressIndicator = R.color.teal
-
         fun notificationIcon(context: Context): Int {
             return if (isDarkThemeOn(context)) R.color.teal_light else R.color.teal
         }
 
         fun itemSelectedBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.gray_400
-        }
-
-        fun cardBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.white
-        }
-
-        fun cardSelectedBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_700b else R.color.gray_500
+            return SurfaceColors.getColorForElevation(context, 10f)
         }
 
         fun cardBackgroundColor(context: Context): Int {
-            return ContextCompat.getColor(context, cardBackground(context))
+            return SurfaceColors.getColorForElevation(context, 5f)
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
-            return ContextCompat.getColor(context, cardSelectedBackground(context))
+            return SurfaceColors.getColorForElevation(context, 20f)
         }
 
         fun statusBarNormal(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal
+            return MaterialColors.getColor(context, R.attr.backgroundColor, Color.BLACK)
         }
 
         fun statusBarActionMode(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal_dark
+            return MaterialColors.getColor(context, R.attr.backgroundColor, Color.BLACK)
         }
 
         fun dangerText(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.red_light else R.color.red_dark
+            return MaterialColors.getColor(context, R.attr.colorError, Color.RED)
+        }
+
+        fun swipeToRefreshColor(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
     }
 }
