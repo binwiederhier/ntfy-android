@@ -1,0 +1,1 @@
+Skicka meddelanden till telefonen från valfritt skript med PUT/POST-förfrågning
