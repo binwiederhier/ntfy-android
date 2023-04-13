@@ -5,7 +5,7 @@ or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-an
 # Build
 
 ## Building without Firebase (F-Droid flavor)
-Without Firebase, you may want to still change the default `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
+Without Firebase, you may want to still change the default `app_base_url` in [values.xml](/app/src/main/res/values/values.xml)
 if you're self-hosting the server. Then run:
 ```
 # To build an unsigned .apk (app/build/outputs/apk/fdroid/*.apk)
@@ -19,7 +19,7 @@ if you're self-hosting the server. Then run:
 To build your own version with Firebase, you must:
 * Create a Firebase/FCM account
 * Place your account file at `app/google-services.json` 
-* And change `app_base_url` in [strings.xml](https://github.com/binwiederhier/ntfy-android/blob/main/app/src/main/res/values/strings.xml)
+* And change `app_base_url` in [values.xml](/app/src/main/res/values/values.xml)
 * Then run:
 ```
 # To build an unsigned .apk (app/build/outputs/apk/play/*.apk)
