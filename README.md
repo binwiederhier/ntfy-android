@@ -2,32 +2,8 @@
 This is the Android app for [ntfy](https://github.com/binwiederhier/ntfy) ([ntfy.sh](https://ntfy.sh)). You can find the app in [F-Droid](https://f-droid.org/packages/io.heckel.ntfy/) or the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
 or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
 
-# Build
-
-## Building without Firebase (F-Droid flavor)
-Without Firebase, you may want to still change the default `app_base_url` in [values.xml](/app/src/main/res/values/values.xml)
-if you're self-hosting the server. Then run:
-```
-# To build an unsigned .apk (app/build/outputs/apk/fdroid/*.apk)
-./gradlew assembleFdroidRelease
-
-# To build a bundle .aab (app/fdroid/release/*.aab)
-./gradlew bundleFdroidRelease
-```
-
-## Building with Firebase (FCM, Google Play flavor)
-To build your own version with Firebase, you must:
-* Create a Firebase/FCM account
-* Place your account file at `app/google-services.json` 
-* And change `app_base_url` in [values.xml](/app/src/main/res/values/values.xml)
-* Then run:
-```
-# To build an unsigned .apk (app/build/outputs/apk/play/*.apk)
-./gradlew assemblePlayRelease
-
-# To build a bundle .aab (app/play/release/*.aab)
-./gradlew bundlePlayRelease
-```
+## Build
+For up-to-date building instructions, please see the [official docs](https://docs.ntfy.sh/develop/#android-app).
 
 ## Translations
 We're using [Weblate](https://hosted.weblate.org/projects/ntfy/) to translate the ntfy Android app. We'd love your participation.
