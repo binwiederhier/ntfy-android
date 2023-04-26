@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Eenmalig melden</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Standaard instellingen in gebruik (geluiden, Niet storen, etc.)</string>
     <string name="detail_settings_notifications_open_channels_summary">Niet storen (DND) negeren, geluiden, etc.</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy zal optreden als UnifiedPush-distributeur</string>
+    <string name="settings_advanced_unifiedpush_title">UnifiedPush inschakelen</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy treedt niet op als UnifiedPush-distributeur</string>
 </resources>
