@@ -1,0 +1,1 @@
+Anfonwch cyhoeddiadau i'ch ffôn o unrhyw sgript drwy ceisiadau PUT/POST

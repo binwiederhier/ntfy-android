@@ -329,4 +329,5 @@
     <string name="main_banner_websocket_button_enable_now">Attiva ora</string>
     <string name="channel_notifications_group_default_name">Default</string>
     <string name="main_menu_donate_title">Dona 💸</string>
+    <string name="detail_item_cannot_open_apk">Le app non possono più essere installate: devono essere scaricate via browser. Vedi l\'issue #531 per dettagli.</string>
 </resources>

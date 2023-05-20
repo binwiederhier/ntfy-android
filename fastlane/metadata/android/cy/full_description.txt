@@ -1,0 +1,17 @@
+Anfonwch cyhoeddiadau i'ch ffôn o unrhyw sgript Bash neu PowerShell, neu o'ch ap eich hun gan ddefnyddio ceisiadau PUT/POST, e.e. trwy curl ar Linux neu Invoke-WebRequest.
+
+Mae ntfy yn gleient Android ar gyfer https://ntfy.sh, gwasanaeth pub-sub, ffynhonnell agor am ddim sy'n seiliedig ar HTTP. Gallwch danysgrifio i bynciau yn yr app hon, ac yna cyhoeddi negeseuon trwy API HTTP syml.
+
+Defnyddiau:
+* Hysbyswch eich hun pan fydd proses hir wedi'i chwblhau
+* Pingiwch eich ffôn pan fydd copi wrth gefn wedi methu
+* Rhybuddion pan fydd rhywun yn mewngofnodi i'ch gweinydd
+
+Enghraifft:
+
+$curl -d "Mae eich copi wrth gefn wedi'i wneud" ntfy.sh/fymhwnc
+
+Dewch o hyd i ragor o enghreifftiau a chyfarwyddiadau defnydd yma:
+* Gwefan: https://ntfy.sh
+* GitHub (gweinydd): https://github.com/binwiederhier/ntfy
+* GitHub (ap Android): https://github.com/binwiederhier/ntfy-android
