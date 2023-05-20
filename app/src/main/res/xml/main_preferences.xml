@@ -25,7 +25,7 @@
                 app:entries="@array/settings_notifications_auto_delete_entries"
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_notifications_insistent_max_priority_key"
                 app:title="@string/settings_notifications_insistent_max_priority_title"
                 app:defaultValue="false"/>
@@ -72,15 +72,15 @@
                 app:entries="@array/settings_advanced_connection_protocol_entries"
                 app:entryValues="@array/settings_advanced_connection_protocol_values"
                 app:defaultValue="jsonhttp"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"
                 app:enabled="true"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_unifiedpush_key"
                 app:title="@string/settings_advanced_unifiedpush_title"
                 app:enabled="true"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_record_logs_key"
                 app:title="@string/settings_advanced_record_logs_title"
                 app:enabled="true"/>

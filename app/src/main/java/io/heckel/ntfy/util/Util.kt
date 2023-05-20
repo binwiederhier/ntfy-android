@@ -501,7 +501,7 @@ fun Button.dangerButton(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         setTextAppearance(R.style.DangerText)
     } else {
-        setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
+        setTextColor(Colors.dangerText(context))
     }
 }
 
