@@ -11,7 +11,7 @@ import io.heckel.ntfy.util.isDarkThemeOn
 class Colors {
     companion object {
         fun notificationIcon(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.teal_light else R.color.teal
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
 
         fun itemSelectedBackground(context: Context): Int {

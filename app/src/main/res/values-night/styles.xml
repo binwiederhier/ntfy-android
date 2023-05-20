@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
         This file contains only overrides for the dark theme.
         Also see "ui/Colors.kt" for colors that have to be defined in code.
@@ -10,17 +10,7 @@
         - https://developer.android.com/guide/topics/ui/look-and-feel/themes
    -->
 
-    <style name="AppTheme" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">@color/teal_light</item>
-        <item name="colorSecondary">@color/teal_light</item> <!-- checkboxes, text fields -->
-        <!-- Action bar background & text color -->
-        <item name="colorSurface">@color/black_800b</item>
-        <item name="colorOnSurface">@color/white</item>
-
-        <item name="android:colorBackground">?backgroundColor</item> <!-- background -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="actionModeBackground">?backgroundColor</item>
-
-        <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
     </style>
 </resources>
