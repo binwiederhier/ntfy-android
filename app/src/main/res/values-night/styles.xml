@@ -13,24 +13,14 @@
     <style name="AppTheme" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/teal_light</item>
         <item name="colorSecondary">@color/teal_light</item> <!-- checkboxes, text fields -->
-        <item name="android:colorBackground">@color/black_900</item> <!-- background -->
-        <item name="android:statusBarColor">@color/black_900</item>
-        <item name="actionModeBackground">@color/black_900</item>
-
         <!-- Action bar background & text color -->
         <item name="colorSurface">@color/black_800b</item>
         <item name="colorOnSurface">@color/white</item>
 
+        <item name="android:colorBackground">?backgroundColor</item> <!-- background -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="actionModeBackground">?backgroundColor</item>
+
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
     </style>
-
-    <style name="DangerText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/red_light</item>
-    </style>
-
-    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary" />
-
-    <style name="CardView" parent="@style/Widget.Material3.CardView.Elevated" />
-
-    <style name="CardViewBackground" />
 </resources>

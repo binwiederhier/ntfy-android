@@ -1,11 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Main app theme; dark theme styles see values-night/styles.xml -->
     <style name="AppTheme" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/teal</item>
         <item name="colorSecondary">@color/teal</item> <!-- checkboxes, text fields -->
         <item name="android:colorBackground">@color/white</item> <!-- background -->
-        <item name="android:statusBarColor">@color/teal</item>
-        <item name="actionModeBackground">@color/teal_dark</item>
+
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="actionModeBackground">?colorSecondary</item>
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
     </style>
 
