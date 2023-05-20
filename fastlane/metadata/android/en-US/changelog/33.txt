@@ -4,6 +4,7 @@ Features:
 Bug fixes + maintenance:
 * UnifiedPush subscriptions now include the Rate-Topics header to facilitate subscriber-based billing (#652, thanks to @wunter8)
 * Subscriptions without icons no longer appear to use another subscription's icon (#634, thanks to @topcaser for reporting, and @wunter8 for fixing)
+* Bumped all dependencies to the latest versions (no ticket)
 
 Additional languages:
 * Swedish (thanks to @hellbown)
