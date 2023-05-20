@@ -42,6 +42,8 @@ data class MessageAction(
     val body: String?, // used in "http" action
     val intent: String?, // used in "broadcast" action
     val extras: Map<String,String>?, // used in "broadcast" action
+    val intent_class: String?, // used in "broadcast" action
+    val intent_package: String?, // used in "broadcast" action
 )
 
 const val MESSAGE_ENCODING_BASE64 = "base64"
