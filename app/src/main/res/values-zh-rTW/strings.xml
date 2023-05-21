@@ -35,7 +35,7 @@
     <string name="main_how_to_intro">點擊 + 來新增或訂閱一個主題。當透過 PUT 或 POST 來發送訊息你將會接收到通知。</string>
     <string name="main_how_to_link">更多資訊請上 ntfy.sh，docs會有更多說明。</string>
     <string name="main_unified_push_toast">此訂閱已由 %1$s 透過 UnifiedPush 管理</string>
-    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_status_unified_push">%1$s（統一推送）</string>
     <string name="main_banner_battery_text">為了避免通知傳送問題，請務必關閉電池最佳化功能。</string>
     <string name="main_banner_battery_button_remind_later">稍後詢問我</string>
     <string name="main_banner_battery_button_dismiss">略過</string>
@@ -272,4 +272,5 @@
     <string name="settings_notifications_channel_prefs_title">頻道設定</string>
     <string name="settings_notifications_channel_prefs_summary">請勿打擾（DND）覆寫、聲音等。</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">如果優先級為%1$d (%2$s) 或以上，顯示通知</string>
+    <string name="detail_item_download_info_not_downloaded_expires_x">已刪除，連結將於 %1$s 失效</string>
 </resources>
