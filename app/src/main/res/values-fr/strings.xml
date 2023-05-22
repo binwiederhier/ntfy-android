@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_open_channels_title">Configurer les paramètres de la notification</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Les notifications avec une priorité maximale sont affichées jusqu\'à ce qu\'elles soient rejetées</string>
     <string name="detail_settings_notifications_open_channels_summary">Ignorer « ne pas déranger », sons, etc.</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy agira comme un distributeur UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy n\'agira pas comme un distributeur UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Activer EnifiedPush</string>
 </resources>
