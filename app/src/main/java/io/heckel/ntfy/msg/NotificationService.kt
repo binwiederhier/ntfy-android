@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.db.Notification
@@ -95,7 +94,7 @@ class NotificationService(val context: Context) {
                 (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
-            .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
+            .setColor(Colors.notificationIcon(context))
             .setContentTitle(title)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked

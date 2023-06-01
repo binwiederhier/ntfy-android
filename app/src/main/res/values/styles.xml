@@ -29,8 +29,10 @@
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
 
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">?colorPrimaryInverse</item>
         <item name="actionModeBackground">?backgroundColor</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="actionBarStyle">@style/ActionBarStyle</item>
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
@@ -56,5 +58,10 @@
     <!-- Material Design 3 switches in the preferences -->
     <style name="MaterialSwitch" parent="@style/Preference.SwitchPreferenceCompat.Material">
         <item name="widgetLayout">@layout/view_preference_switch</item>
+    </style>
+
+    <!-- Action bar with custom background color -->
+    <style name="ActionBarStyle" parent="@style/Widget.Material3.ActionBar.Solid">
+        <item name="background">?colorPrimaryInverse</item>
     </style>
 </resources>
