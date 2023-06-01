@@ -1,17 +1,34 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="black">#ff000000</color>
-    <color name="black_900">#121212</color> <!-- Main dark mode surface color, as per style guide -->
-    <color name="black_800b">#1b2023</color> <!-- Action bar & item selection (dark mode); this has a touch of blue! -->
-    <color name="black_700b">#282F33</color> <!-- Card selection (dark mode); this has a touch of blue! -->
-    <color name="gray_500">#dddddd</color> <!-- Card selection (light mode) -->
-    <color name="gray_400">#eeeeee</color> <!-- Item selection (light mode) -->
-    <color name="white">#ffffffff</color>
-
-    <color name="teal">#338574</color> <!-- Primary color (light mode) -->
-    <color name="teal_light">#65b5a3</color> <!-- Primary color (dark mode) -->
-    <color name="teal_dark">#2a6e60</color> <!-- Action bar background in action mode (light mode) -->
-    <color name="red_light">#fe4d2e</color> <!-- Danger text (dark mode) -->
-    <color name="red_dark">#c30000</color> <!-- Danger text (light mode) -->
+    <color name="md_theme_primary">#006B5B</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#79F8DC</color>
+    <color name="md_theme_onPrimaryContainer">#00201A</color>
+    <color name="md_theme_secondary">#4B635C</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#CDE8DF</color>
+    <color name="md_theme_onSecondaryContainer">#06201A</color>
+    <color name="md_theme_tertiary">#436278</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#C8E6FF</color>
+    <color name="md_theme_onTertiaryContainer">#001E2E</color>
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_errorContainer">#FFDAD6</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410002</color>
+    <color name="md_theme_background">#FAFDFA</color>
+    <color name="md_theme_onBackground">#191C1B</color>
+    <color name="md_theme_surface">#FAFDFA</color>
+    <color name="md_theme_onSurface">#191C1B</color>
+    <color name="md_theme_surfaceVariant">#DBE5E0</color>
+    <color name="md_theme_onSurfaceVariant">#3F4946</color>
+    <color name="md_theme_outline">#6F7976</color>
+    <color name="md_theme_inverseOnSurface">#EFF1EF</color>
+    <color name="md_theme_inverseSurface">#2E3130</color>
+    <color name="md_theme_inversePrimary">#5ADBC0</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_surfaceTint">#006B5B</color>
+    <color name="md_theme_outlineVariant">#BFC9C4</color>
+    <color name="md_theme_scrim">#000000</color>
 </resources>
 

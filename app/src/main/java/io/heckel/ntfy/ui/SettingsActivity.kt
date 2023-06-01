@@ -23,6 +23,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -119,7 +120,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         return true
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : BasePreferenceFragment() {
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
         private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
@@ -202,7 +203,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Keep alerting for max priority
             val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
-            val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
+            val insistentMaxPriority: SwitchPreferenceCompat? = findPreference(insistentMaxPriorityPrefId)
             insistentMaxPriority?.isChecked = repository.getInsistentMaxPriorityEnabled()
             insistentMaxPriority?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -212,7 +213,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getInsistentMaxPriorityEnabled()
                 }
             }
-            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
@@ -346,7 +347,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
-            val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)
+            val broadcastEnabled: SwitchPreferenceCompat? = findPreference(broadcastEnabledPrefId)
             broadcastEnabled?.isChecked = repository.getBroadcastEnabled()
             broadcastEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -356,7 +357,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getBroadcastEnabled()
                 }
             }
-            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_broadcast_summary_enabled)
                 } else {
@@ -366,7 +367,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Enable UnifiedPush
             val unifiedPushEnabledPrefId = context?.getString(R.string.settings_advanced_unifiedpush_key) ?: return
-            val unifiedPushEnabled: SwitchPreference? = findPreference(unifiedPushEnabledPrefId)
+            val unifiedPushEnabled: SwitchPreferenceCompat? = findPreference(unifiedPushEnabledPrefId)
             unifiedPushEnabled?.isChecked = repository.getUnifiedPushEnabled()
             unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -376,7 +377,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getUnifiedPushEnabled()
                 }
             }
-            unifiedPushEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            unifiedPushEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_unifiedpush_summary_enabled)
                 } else {
@@ -411,7 +412,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Record logs
             val recordLogsPrefId = context?.getString(R.string.settings_advanced_record_logs_key) ?: return
-            val recordLogsEnabled: SwitchPreference? = findPreference(recordLogsPrefId)
+            val recordLogsEnabled: SwitchPreferenceCompat? = findPreference(recordLogsPrefId)
             recordLogsEnabled?.isChecked = Log.getRecord()
             recordLogsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -424,7 +425,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return Log.getRecord()
                 }
             }
-            recordLogsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            recordLogsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_record_logs_summary_enabled)
                 } else {
@@ -658,7 +659,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             } else {
                 getString(R.string.settings_advanced_export_logs_scrub_dialog_empty)
             }
-            val dialog = AlertDialog.Builder(activity)
+            val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(title)
                 .setMessage(scrubbedText)
                 .setPositiveButton(R.string.settings_advanced_export_logs_scrub_dialog_button_ok) { _, _ -> /* Nothing */ }
@@ -682,7 +683,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         data class NopasteResponse(val url: String)
     }
 
-    class UserSettingsFragment : PreferenceFragmentCompat() {
+    class UserSettingsFragment : BasePreferenceFragment() {
         private lateinit var repository: Repository
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
