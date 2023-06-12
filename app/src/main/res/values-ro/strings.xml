@@ -340,4 +340,7 @@
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% descărcat</string>
     <string name="detail_menu_test">Trimite notificare de probă</string>
     <string name="settings_backup_restore_restore_summary">Importă setări, notificări și utilizatori</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy va avea rol de distribuitor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Activează UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nu va avea rol de distribuitor UnifiedPush</string>
 </resources>
