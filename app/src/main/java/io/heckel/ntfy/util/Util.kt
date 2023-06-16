@@ -486,7 +486,7 @@ fun copyToClipboard(context: Context, label: String, message: String) {
     val clip = ClipData.newPlainText(label, message)
     clipboard.setPrimaryClip(clip)
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-        val copied = context.getString(R.string.detail_copied_to_clipboard_message)
+        val copied = context.getString(R.string.common_copied_to_clipboard)
         Toast.makeText(context, copied, Toast.LENGTH_LONG).show()
     }
 }

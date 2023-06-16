@@ -73,7 +73,7 @@
     <string name="detail_test_message_error">Nachricht kann nicht gesendet werden: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Nachricht kann nicht gesendet werden: Benutzer \"%1$s\" hat keine Berechtigung.</string>
     <string name="detail_test_message_error_too_large">Nachricht kann nicht gesendet werden: Anhang zu groß.</string>
-    <string name="detail_copied_to_clipboard_message">In Zwischenablage kopiert</string>
+    <string name="common_copied_to_clipboard">In Zwischenablage kopiert</string>
     <string name="detail_instant_delivery_disabled">Sofortnachrichten deaktiviert</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Benachrichtigung gelöscht</string>
@@ -83,9 +83,7 @@
     <string name="detail_item_menu_download">Datei herunterladen</string>
     <string name="detail_item_menu_cancel">Herunterladen abbrechen</string>
     <string name="detail_item_menu_save_file">Datei speichern</string>
-    <string name="detail_item_menu_copy_url_copied">URL in Zwischenablage kopiert</string>
     <string name="detail_item_menu_copy_contents">Benachrichtigung kopieren</string>
-    <string name="detail_item_menu_copy_contents_copied">Benachrichtigung in Zwischenablage kopiert</string>
     <string name="detail_item_saved_successfully">Wurde als \"%1$s\" im Downloads-Ordner gespeichert</string>
     <string name="detail_item_cannot_download">Anhang kann nicht geöffnet oder heruntergeladen werden. Link ist abgelaufen und keine lokale Datei gefunden.</string>
     <string name="detail_item_cannot_open">Anhang kann nicht geöffnet werden: %1$s</string>
@@ -219,7 +217,6 @@
     <string name="settings_about_header">Über</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">In die Zwischenablage kopiert</string>
     <string name="user_dialog_title_add">Benutzer hinzufügen</string>
     <string name="user_dialog_title_edit">Benutzer bearbeiten</string>
     <string name="user_dialog_description_add">Du kannst hier einen Benutzer hinzufügen. Alle Themen auf dem angegebenen Server verwenden dann diesen Benutzer.</string>
@@ -326,7 +323,6 @@
     <string name="detail_settings_appearance_display_name_message">Gib einen eigenen Anzeigenamen für dieses Abo an. Leer lassen für den Standardwert (%1$s).</string>
     <string name="detail_settings_about_topic_url_title">Themen-URL</string>
     <string name="detail_settings_about_header">Über</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">In Zwischenablage kopiert</string>
     <string name="main_menu_donate_title">Spenden 💸</string>
     <string name="detail_item_cannot_open_apk">Apps können nicht mehr installiert werden. Bitte stattdessen über einen Browser herunterladen. Details siehe Issue #531.</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Verwende eigene Einstellungen für dieses Thema</string>
