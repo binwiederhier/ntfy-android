@@ -1,6 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
            tools:ignore="MissingTranslation">
 
+    <!-- Common strings -->
+    <string name="common_copied_to_clipboard">Copied to clipboard</string>
+
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Min priority</string>
     <string name="channel_notifications_low_name">Low priority</string>
@@ -138,7 +141,6 @@
     <string name="detail_test_message_error_unauthorized_anon">Cannot send message: Anonymous publishing not allowed.</string>
     <string name="detail_test_message_error_unauthorized_user">Cannot send message: The user \"%1$s\" is not authorized.</string>
     <string name="detail_test_message_error_too_large">Cannot send message: The attachment is too big.</string>
-    <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery on</string>
     <string name="detail_instant_delivery_disabled">Instant delivery off</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
@@ -151,9 +153,7 @@
     <string name="detail_item_menu_cancel">Cancel download</string>
     <string name="detail_item_menu_save_file">Save file</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copied to clipboard</string>
     <string name="detail_item_menu_copy_contents">Copy notification</string>
-    <string name="detail_item_menu_copy_contents_copied">Notification copied to clipboard</string>
     <string name="detail_item_saved_successfully">Saved as \"%1$s\" in the \"Downloads\" folder</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. The link expired and no local file could be found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
@@ -420,7 +420,6 @@
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- Subscription settings (most strings are re-used from above) -->
     <string name="detail_settings_notifications_instant_title">Instant delivery</string>
@@ -446,7 +445,6 @@
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">Topic URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>
