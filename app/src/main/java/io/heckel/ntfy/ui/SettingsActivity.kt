@@ -718,12 +718,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             versionPref?.summary = version
             versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("ntfy version", version)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(context, getString(R.string.settings_about_version_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(context, "ntfy version", version)
                 true
             }
         }

@@ -310,12 +310,14 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 openItem.setOnMenuItemClickListener { openFile(context, attachment) }
                 saveFileItem.setOnMenuItemClickListener { saveFile(context, attachment) }
                 deleteItem.setOnMenuItemClickListener { deleteFile(context, notification, attachment) }
-                copyUrlItem.setOnMenuItemClickListener { copyUrl(context, attachment) }
+                copyUrlItem.setOnMenuItemClickListener { copyToClipboard(context, "attachment url", attachment.url); true }
                 downloadItem.setOnMenuItemClickListener { downloadFile(context, notification) }
                 cancelItem.setOnMenuItemClickListener { cancelDownload(context, notification) }
             }
             if (hasClickLink) {
-                copyContentsItem.setOnMenuItemClickListener { copyContents(context, notification) }
+                copyContentsItem.setOnMenuItemClickListener {
+                    copyToClipboard(context, "notification", decodeMessage(notification)); true
+                }
             }
             openItem.isVisible = hasAttachment && attachmentExists
             downloadItem.isVisible = hasAttachment && !attachmentExists && !expired && !inProgress
@@ -507,21 +509,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
         private fun cancelDownload(context: Context, notification: Notification): Boolean {
             DownloadManager.cancel(context, notification.id)
-            return true
-        }
-
-        private fun copyUrl(context: Context, attachment: Attachment): Boolean {
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("attachment url", attachment.url)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(context, context.getString(R.string.detail_item_menu_copy_url_copied), Toast.LENGTH_LONG)
-                .show()
-            return true
-        }
-
-        private fun copyContents(context: Context, notification: Notification): Boolean {
-            copyToClipboard(context, notification)
             return true
         }
 
