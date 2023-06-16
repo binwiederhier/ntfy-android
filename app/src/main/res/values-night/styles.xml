@@ -38,4 +38,8 @@
     <style name="CardViewBackground">
         <item name="android:background">@color/black_900</item>
     </style>
+
+    <style name="dividerStyle">
+        <item name="android:background">@color/teal_light</item>
+    </style>
 </resources>
