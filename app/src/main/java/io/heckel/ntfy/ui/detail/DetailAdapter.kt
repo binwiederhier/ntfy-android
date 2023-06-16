@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import kotlinx.coroutines.CoroutineScope
@@ -17,45 +16,86 @@ class DetailAdapter(
     private val repository: Repository,
     private val onClick: (Notification) -> Unit,
     private val onLongClick: (Notification) -> Unit
-) : ListAdapter<Notification, DetailViewHolder>(TopicDiffCallback) {
-    val selected = mutableSetOf<String>() // Notification IDs
+) : ListAdapter<DetailItem, DetailItemViewHolder>(TopicDiffCallback) {
 
-    /* Creates and inflates view and return TopicViewHolder. */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, lifecycleScope, repository, view, selected, onClick, onLongClick)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailItemViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            0 -> {
+                val itemView = inflater.inflate(NotificationItemViewHolder.LAYOUT, parent, false)
+                NotificationItemViewHolder(activity, lifecycleScope, repository, onClick, onLongClick, itemView)
+            }
+            1 -> {
+                val itemView = inflater.inflate(UnreadDividerItemViewHolder.LAYOUT, parent, false)
+                UnreadDividerItemViewHolder(itemView)
+            }
+            else -> throw IllegalStateException("Unknown viewType $viewType in DetailAdapter")
+        }
     }
 
-    /* Gets current topic and uses it to bind view. */
-    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DetailItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    fun get(position: Int): Notification {
-        return getItem(position)
+    // original method in ListAdapter is protected
+    public override fun getItem(position: Int): DetailItem = super.getItem(position)
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is NotificationItem -> 0
+            is UnreadDividerItem -> 1
+        }
+    }
+
+    /* Take a list of notifications, insert the unread divider if necessary,
+       and call submitList for the ListAdapter to do its diff magic */
+    fun submitNotifications(newList: List<Notification>) {
+        val selectedLocal = selectedNotificationIds
+        val detailList: MutableList<DetailItem> = newList.map { notification ->
+            NotificationItem(notification, selectedLocal.contains(notification.id))
+        }.toMutableList()
+
+        val lastUnreadIndex = newList.indexOfLast { notification -> notification.isUnread }
+        if (lastUnreadIndex != -1) {
+            detailList.add(lastUnreadIndex + 1, UnreadDividerItem)
+        }
+        submitList(detailList.toList())
+    }
+
+    val selectedNotificationIds
+        get() = currentList
+            .filterIsInstance<NotificationItem>()
+            .filter { it.isSelected }
+            .map { it.notification.id }
+
+    fun clearSelection() {
+        currentList.forEachIndexed { index, detailItem ->
+            if (detailItem is NotificationItem && detailItem.isSelected) {
+                detailItem.isSelected = false
+                notifyItemChanged(index)
+            }
+        }
     }
 
     fun toggleSelection(notificationId: String) {
-        if (selected.contains(notificationId)) {
-            selected.remove(notificationId)
-        } else {
-            selected.add(notificationId)
-        }
-
-        if (selected.size != 0) {
-            val listIds = currentList.map { notification -> notification.id }
-            val notificationPosition = listIds.indexOf(notificationId)
-            notifyItemChanged(notificationPosition)
+        currentList.forEachIndexed { index, detailItem ->
+            if (detailItem is NotificationItem && detailItem.notification.id == notificationId) {
+                detailItem.isSelected = !detailItem.isSelected
+                notifyItemChanged(index)
+            }
         }
     }
 
-    object TopicDiffCallback : DiffUtil.ItemCallback<Notification>() {
-        override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean {
-            return oldItem.id == newItem.id
+    object TopicDiffCallback : DiffUtil.ItemCallback<DetailItem>() {
+        override fun areItemsTheSame(oldItem: DetailItem, newItem: DetailItem): Boolean {
+            return if (oldItem is NotificationItem && newItem is NotificationItem) {
+                oldItem.notification.id == newItem.notification.id
+            } else {
+                oldItem is UnreadDividerItem && newItem is UnreadDividerItem
+            }
         }
 
-        override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean {
+        override fun areContentsTheSame(oldItem: DetailItem, newItem: DetailItem): Boolean {
             return oldItem == newItem
         }
     }

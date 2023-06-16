@@ -31,13 +31,10 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.ui.detail.DetailAdapter
-import io.heckel.ntfy.ui.detail.DetailViewModel
-import io.heckel.ntfy.ui.detail.DetailViewModelFactory
+import io.heckel.ntfy.ui.detail.*
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -197,17 +194,15 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
-        val onNotificationClick = { n: Notification -> onNotificationClick(n) }
-        val onNotificationLongClick = { n: Notification -> onNotificationLongClick(n) }
 
-        adapter = DetailAdapter(this, lifecycleScope, repository, onNotificationClick, onNotificationLongClick)
+        adapter = DetailAdapter(this, lifecycleScope, repository, this::onNotificationItemClick, this::onNotificationItemLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
 
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
                 // Show list view
-                adapter.submitList(it as MutableList<Notification>)
+                adapter.submitNotifications(it as MutableList<Notification>)
                 if (it.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
@@ -226,8 +221,19 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 return false
             }
+            override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                val item = adapter.getItem(viewHolder.absoluteAdapterPosition)
+                if (item is UnreadDividerItem) {
+                    return 0 // disallow swiping the unread divider
+                }
+                return super.getSwipeDirs(recyclerView, viewHolder)
+            }
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                val notification = adapter.get(viewHolder.absoluteAdapterPosition)
+                val item = adapter.getItem(viewHolder.absoluteAdapterPosition)
+                if (item !is NotificationItem) {
+                    return
+                }
+                val notification = item.notification
                 lifecycleScope.launch(Dispatchers.IO) {
                     repository.markAsDeleted(notification.id)
                 }
@@ -627,7 +633,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.show()
     }
 
-    private fun onNotificationClick(notification: Notification) {
+    private fun onNotificationItemClick(notification: Notification) {
         if (actionMode != null) {
             handleActionModeClick(notification)
         } else if (notification.click != "") {
@@ -652,7 +658,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
-    private fun onNotificationLongClick(notification: Notification) {
+    private fun onNotificationItemLongClick(notification: Notification) {
         if (actionMode == null) {
             beginActionMode(notification)
         }
@@ -660,10 +666,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun handleActionModeClick(notification: Notification) {
         adapter.toggleSelection(notification.id)
-        if (adapter.selected.size == 0) {
+        if (adapter.selectedNotificationIds.size == 0) {
             finishActionMode()
         } else {
-            actionMode!!.title = adapter.selected.size.toString()
+            actionMode!!.title = adapter.selectedNotificationIds.size.toString()
         }
     }
 
@@ -698,7 +704,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         Log.d(TAG, "Copying multiple notifications to clipboard")
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val content = adapter.selected.joinToString("\n\n") { notificationId ->
+            val content = adapter.selectedNotificationIds.joinToString("\n\n") { notificationId ->
                 val notification = repository.getNotification(notificationId)
                 notification?.let {
                     decodeMessage(it) + "\n" + Date(it.timestamp * 1000).toString()
@@ -723,7 +729,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         val dialog = builder
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { notificationId -> viewModel.markAsDeleted(notificationId) }
+                adapter.selectedNotificationIds.map { notificationId -> viewModel.markAsDeleted(notificationId) }
                 finishActionMode()
             }
             .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->
@@ -759,8 +765,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     private fun endActionModeAndRedraw() {
         actionMode = null
-        adapter.selected.clear()
-        adapter.notifyItemRangeChanged(0, adapter.currentList.size)
+        adapter.clearSelection()
 
         // Fade status bar color
         val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))

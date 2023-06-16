@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.allViews
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
@@ -36,17 +35,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-/* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-class DetailViewHolder(
+class NotificationItemViewHolder(
     private val activity: Activity,
     private val lifecycleScope: CoroutineScope,
     private val repository: Repository,
-    itemView: View,
-    private val selected: Set<String>,
     val onClick: (Notification) -> Unit,
-    val onLongClick: (Notification) -> Unit
-) : RecyclerView.ViewHolder(itemView) {
-    private var notification: Notification? = null
+    val onLongClick: (Notification) -> Unit,
+    itemView: View
+) : DetailItemViewHolder(itemView) {
+
     private val layout: View = itemView.findViewById(R.id.detail_item_layout)
     private val cardView: CardView = itemView.findViewById(R.id.detail_item_card)
     private val priorityImageView: ImageView = itemView.findViewById(R.id.detail_item_priority_image)
@@ -64,8 +61,11 @@ class DetailViewHolder(
     private val actionsWrapperView: ConstraintLayout = itemView.findViewById(R.id.detail_item_actions_wrapper)
     private val actionsFlow: Flow = itemView.findViewById(R.id.detail_item_actions_flow)
 
-    fun bind(notification: Notification) {
-        this.notification = notification
+    override fun bind(item: DetailItem) {
+        if (item !is NotificationItem) {
+            throw IllegalStateException("Wrong DetailItemType: $item")
+        }
+        val notification = item.notification
 
         val context = itemView.context
         val unmatchedTags = unmatchedTags(splitTags(notification.tags))
@@ -83,7 +83,7 @@ class DetailViewHolder(
         messageView.setOnLongClickListener {
             onLongClick(notification); true
         }
-        newDotImageView.visibility = if (notification.notificationId == 0) View.GONE else View.VISIBLE
+        newDotImageView.visibility = if (notification.isUnread) View.VISIBLE else View.GONE
         cardView.setOnClickListener { onClick(notification) }
         cardView.setOnLongClickListener { onLongClick(notification); true }
         if (notification.title != "") {
@@ -94,11 +94,12 @@ class DetailViewHolder(
         }
         if (unmatchedTags.isNotEmpty()) {
             tagsView.visibility = View.VISIBLE
-            tagsView.text = context.getString(R.string.detail_item_tags, unmatchedTags.joinToString(", "))
+            tagsView.text =
+                context.getString(R.string.detail_item_tags, unmatchedTags.joinToString(", "))
         } else {
             tagsView.visibility = View.GONE
         }
-        if (selected.contains(notification.id)) {
+        if (item.isSelected) {
             cardView.setCardBackgroundColor(Colors.cardSelectedBackgroundColor(context))
         } else {
             cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
@@ -504,9 +505,9 @@ class DetailViewHolder(
     }
 
     companion object {
-        const val TAG = "DetailViewHolder"
+        const val TAG = "NotificationItemViewHolder"
+        const val LAYOUT = R.layout.item_notification_detail
         const val REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD = 9876
         const val IMAGE_PREVIEW_MAX_BYTES = 5 * 1024 * 1024 // Too large images crash the app with "Canvas: trying to draw too large(233280000bytes) bitmap."
     }
-
 }

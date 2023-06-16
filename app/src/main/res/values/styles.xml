@@ -30,4 +30,8 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>
     </style>
+
+    <style name="dividerStyle">
+        <item name="android:background">@color/teal</item>
+    </style>
 </resources>
