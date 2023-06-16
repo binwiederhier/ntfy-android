@@ -35,6 +35,9 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
+import io.heckel.ntfy.ui.detail.DetailAdapter
+import io.heckel.ntfy.ui.detail.DetailViewModel
+import io.heckel.ntfy.ui.detail.DetailViewModelFactory
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.*
 import java.util.*

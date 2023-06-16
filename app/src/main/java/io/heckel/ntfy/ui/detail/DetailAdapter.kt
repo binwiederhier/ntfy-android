@@ -1,4 +1,4 @@
-package io.heckel.ntfy.ui
+package io.heckel.ntfy.ui.detail
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.ui.detail.DetailViewHolder
 import kotlinx.coroutines.CoroutineScope
 
 
