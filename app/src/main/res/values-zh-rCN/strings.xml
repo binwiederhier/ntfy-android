@@ -69,7 +69,7 @@
     <string name="detail_test_message_error">无法发送消息：%1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">无法发送消息：主题禁止匿名发布。</string>
     <string name="detail_test_message_error_too_large">无法发送消息：附件体积过大。</string>
-    <string name="detail_copied_to_clipboard_message">复制到剪贴板</string>
+    <string name="detail_copied_to_clipboard_message">已复制到剪贴板</string>
     <string name="detail_instant_delivery_enabled">实时推送已开启</string>
     <string name="detail_instant_delivery_disabled">实时推送已关闭</string>
     <string name="detail_item_tags">标签：%1$s</string>
@@ -219,7 +219,7 @@
     <string name="settings_general_users_prefs_user_add_title">添加新用户</string>
     <string name="settings_general_users_prefs_user_add_summary">为新服务器创建新用户</string>
     <string name="settings_general_dark_mode_title">暗色模式</string>
-    <string name="settings_general_dark_mode_summary_system">跟随系统默认</string>
+    <string name="settings_general_dark_mode_summary_system">使用系统默认</string>
     <string name="settings_general_dark_mode_entry_dark">暗色模式</string>
     <string name="settings_general_dark_mode_summary_light">亮色模式已启用</string>
     <string name="settings_backup_restore_backup_title">备份到文件</string>
@@ -258,7 +258,7 @@
     <string name="settings_general_dark_mode_entry_light">亮色模式</string>
     <string name="settings_general_users_prefs_user_used_by_one">在主题 %1$s 使用</string>
     <string name="settings_general_dark_mode_summary_dark">暗色模式已启用。您是吸血鬼吗？</string>
-    <string name="settings_general_dark_mode_entry_system">跟随系统默认</string>
+    <string name="settings_general_dark_mode_entry_system">使用系统默认值</string>
     <string name="settings_advanced_clear_logs_summary">删除以前的日志并重新来过</string>
     <string name="user_dialog_title_add">添加用户</string>
     <string name="user_dialog_title_edit">编辑用户</string>
