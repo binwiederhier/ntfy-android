@@ -269,7 +269,7 @@
     <string name="settings_notifications_priority_min">min</string>
     <string name="settings_general_users_prefs_title">Utilisateurs</string>
     <string name="settings_general_dark_mode_summary_system">Utilisé le thème système</string>
-    <string name="settings_notifications_min_priority_summary_any">Toutes les notifications</string>
+    <string name="settings_notifications_min_priority_summary_any">Affichage de toutes les notifications</string>
     <string name="settings_notifications_priority_default">défaut</string>
     <string name="settings_notifications_auto_delete_summary_three_days">Supprimer automatiquement les notifications après 3 jours</string>
     <string name="settings_notifications_auto_delete_one_day">Après un jour</string>
@@ -342,5 +342,5 @@
     <string name="detail_settings_notifications_open_channels_summary">Ignorer « ne pas déranger », sons, etc.</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy agira comme un distributeur UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy n\'agira pas comme un distributeur UnifiedPush</string>
-    <string name="settings_advanced_unifiedpush_title">Activer EnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Activer le \"UnifiedPush\"</string>
 </resources>
