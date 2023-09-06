@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_low_name">Lage prioriteit</string>
-    <string name="channel_notifications_max_name">Max prioriteit</string>
+    <string name="channel_notifications_max_name">Maximum prioriteit</string>
     <string name="channel_subscriber_notification_instant_text">Geabonneerd op onderwerpen voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_one">Geabonneerd op één onderwerp voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_four">Geabonneerd op vier onderwerpen voor directe levering</string>
