@@ -7,7 +7,7 @@
     <string name="channel_subscriber_service_name">Služba odberu</string>
     <string name="channel_subscriber_notification_title">Počúvanie prichádzajúcich oznámení</string>
     <string name="channel_subscriber_notification_instant_text">Prihlásený na okamžité doručovanie tém</string>
-    <string name="channel_notifications_group_default_name">Predvolené</string>
+    <string name="channel_notifications_group_default_name">Predvolená</string>
     <string name="refresh_message_error">Nepodarilo sa obnoviť %1$d prihlásení
 \n
 \n%2$s</string>
@@ -136,13 +136,13 @@
     <string name="settings_notifications_muted_until_show_all">Zobrazenie všetkých oznámení</string>
     <string name="settings_notifications_min_priority_summary_any">Zobrazenie všetkých oznámení</string>
     <string name="settings_notifications_muted_until_forever">Oznámenia stlmené až do obnovenia</string>
-    <string name="settings_notifications_min_priority_title">Minimálna priorita</string>
+    <string name="settings_notifications_min_priority_title">Najnižšia priorita</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Zobraziť oznámenia, ak je priorita %1$d (%2$s) alebo vyššia</string>
-    <string name="settings_notifications_min_priority_low">Nízka priorita a vyššia</string>
-    <string name="settings_notifications_min_priority_default">Predvolená priorita a vyššia</string>
-    <string name="settings_notifications_min_priority_high">Vysoká priorita a vyššia</string>
+    <string name="settings_notifications_min_priority_low">Nízka priorita a väčšia</string>
+    <string name="settings_notifications_min_priority_default">Predvolená priorita a väčšia</string>
+    <string name="settings_notifications_min_priority_high">Vysoká priorita a väčšia</string>
     <string name="settings_notifications_min_priority_max">Iba maximálna priorita</string>
-    <string name="settings_notifications_priority_min">minimálna</string>
+    <string name="settings_notifications_priority_min">najnižšia</string>
     <string name="settings_notifications_priority_low">nízka</string>
     <string name="settings_notifications_channel_prefs_summary">Vypnutie funkcie Nerušiť (DND), zvuky atď.</string>
     <string name="settings_notifications_auto_download_title">Stiahnuť prílohy</string>
@@ -308,7 +308,7 @@
     <string name="detail_item_download_info_not_downloaded_expires_x">nestiahnuté, vyprší %1$s</string>
     <string name="detail_menu_copy_url">Kopírovať adresu témy</string>
     <string name="detail_action_mode_menu_copy">Kopírovať</string>
-    <string name="settings_notifications_priority_default">predvolené</string>
+    <string name="settings_notifications_priority_default">predvolená</string>
     <string name="notification_dialog_show_all">Zobraziť všetky oznámenia</string>
     <string name="notification_popup_file_download_successful">%1$s
 \nSúbor: %2$s, stiahnutý</string>
@@ -317,7 +317,7 @@
     <string name="notification_dialog_30min">30 minút</string>
     <string name="settings_notifications_min_priority_min">Akákoľvek priorita</string>
     <string name="settings_notifications_channel_prefs_title">Nastavenia kanálu</string>
-    <string name="settings_notifications_priority_max">maximálna</string>
+    <string name="settings_notifications_priority_max">najvyššia</string>
     <string name="settings_notifications_auto_download_500k">Ak je menší ako 500 kB</string>
     <string name="settings_notifications_auto_download_1m">Ak je menší ako 1 MB</string>
     <string name="settings_notifications_auto_download_10m">Ak je menší ako 10 MB</string>
