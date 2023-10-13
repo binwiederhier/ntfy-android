@@ -63,7 +63,7 @@
     <string name="add_dialog_description_below">Tópicos podem não ser protegidos por palavra-passe, portanto escolha um nome que seja difícil de adivinhar. Uma vez inscrito, poderá enviar notificações PUT/POST.</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="add_dialog_use_another_server">Utilizar outro servidor</string>
-    <string name="add_dialog_button_login">Autenticar</string>
+    <string name="add_dialog_button_login">Entrar</string>
     <string name="add_dialog_login_title">Autenticação necessária</string>
     <string name="detail_clear_dialog_message">Deseja eliminar todas as notificações nesse tópico\?</string>
     <string name="detail_clear_dialog_permanently_delete">Eliminar permanentemente</string>
