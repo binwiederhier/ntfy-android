@@ -1,16 +1,34 @@
 package io.heckel.ntfy.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.util.SparseArray
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
@@ -21,6 +39,11 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.net.URL
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 
 class AddFragment : DialogFragment() {
     private val api = ApiService()
@@ -29,6 +52,9 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeListener: SubscribeListener
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
+
+    private lateinit var cameraExecutor: ExecutorService
+    private lateinit var subscribeCameraPreview: PreviewView
 
     private lateinit var subscribeView: View
     private lateinit var loginView: View
@@ -48,6 +74,7 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeProgress: ProgressBar
     private lateinit var subscribeErrorText: TextView
     private lateinit var subscribeErrorTextImage: View
+    private lateinit var subscribeCameraPreviewPermissionText: TextView
 
     // Login page
     private lateinit var loginUsernameText: TextInputEditText
@@ -103,6 +130,8 @@ class AddFragment : DialogFragment() {
         subscribeErrorText.visibility = View.GONE
         subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
         subscribeErrorTextImage.visibility = View.GONE
+        subscribeCameraPreview = view.findViewById(R.id.add_dialog_subscribe_camera_preview)
+        subscribeCameraPreviewPermissionText = view.findViewById(R.id.add_dialog_subscribe_camera_preview_denied_text)
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
@@ -183,9 +212,107 @@ class AddFragment : DialogFragment() {
 
             // Focus topic text (keyboard is shown too, see above)
             subscribeTopicText.requestFocus()
+
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            checkIfCameraPermissionIsGranted()
         }
 
         return dialog
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
+    private fun checkCameraPermissionsRaw(): Boolean {
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkIfCameraPermissionIsGranted() {
+        if (checkCameraPermissionsRaw()) {
+            startCamera()
+        } else {
+            subscribeCameraPreviewPermissionText.visibility = View.VISIBLE
+            val requiredPermissions = arrayOf(Manifest.permission.CAMERA)
+            requestPermissions(requiredPermissions, 0)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (checkCameraPermissionsRaw()) {
+            startCamera()
+        }
+    }
+
+    private fun vibratePhone(context: Context) {
+        // This is deprecated, but we aren't using a high enough version for the new API
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(200)
+        }
+    }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        subscribeCameraPreviewPermissionText.visibility = View.GONE
+
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(subscribeCameraPreview.surfaceProvider)
+                }
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, QrCodeAnalyzer { urlString ->
+                        var url = URL(urlString)
+                        var baseUrl = "${url.protocol}://${url.host}"
+                        var route = url.path.replaceFirst("/", "")
+
+                        subscribeUseAnotherServerCheckbox.isChecked = true
+                        subscribeBaseUrlText.setText(baseUrl)
+                        subscribeTopicText.setText(route)
+                        validateInputSubscribeView {
+                            if (positiveButton.isEnabled) {
+                                positiveButtonClick()
+                                vibratePhone(requireContext())
+                            }
+                        }
+
+                    })
+                }
+
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, imageAnalyzer
+                )
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun positiveButtonClick() {
@@ -288,7 +415,7 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun validateInputSubscribeView() {
+    private fun validateInputSubscribeView(onCompletion: () -> Unit = {}) {
         if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
 
         // Show/hide things: This logic is intentionally kept simple. Do not simplify "just because it's pretty".
@@ -333,6 +460,8 @@ class AddFragment : DialogFragment() {
                     } else {
                         positiveButton.isEnabled = validTopic(topic)
                     }
+
+                    onCompletion()
                 }
             }
         }
