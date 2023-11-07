@@ -62,4 +62,23 @@
     <string name="add_dialog_title">Εγγραφή σε ειδοποίηση</string>
     <string name="main_menu_donate_title">Κάντε δωρεά</string>
     <string name="main_banner_websocket_text">Η μετάβαση σε WebSockets είναι ο συνιστώμενος τρόπος σύνδεσης με τον διακομιστή σας και μπορεί να βελτιώσει τη διάρκεια ζωής της μπαταρίας, αλλά μπορεί να απαιτεί <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">πρόσθετες ρυθμίσεις στο διακομιστή μεσολάβησης</a>. Αυτό μπορεί να ενεργοποιηθεί στις Ρυθμίσεις.</string>
+    <string name="add_dialog_login_password_hint">Κωδικός πρόσβασης</string>
+    <string name="add_dialog_login_error_not_authorized">Η σύνδεση απέτυχε. Ο χρήστης %1$s δεν είναι εξουσιοδοτημένος.</string>
+    <string name="add_dialog_foreground_description">Η άμεση παράδοση είναι πάντα ενεργή για χρήστες εκτός από τον/την %1$s.</string>
+    <string name="add_dialog_login_new_user">Νέος χρήστης</string>
+    <string name="add_dialog_login_title">Απαιτείται σύνδεση</string>
+    <string name="main_banner_websocket_button_remind_later">Ρωτήστε αργότερα</string>
+    <string name="add_dialog_instant_delivery_description">Εξασφαλίζει την άμεση παράδοση των μηνυμάτων, ακόμη και αν η συσκευή είναι ανενεργή.</string>
+    <string name="main_banner_websocket_button_enable_now">Ενεργοποίηση τώρα</string>
+    <string name="add_dialog_use_another_server_description">Εισάγετε τις παρακάτω διευθύνσεις URL υπηρεσιών για να εγγραφείτε σε θέματα από άλλους διακομιστές.</string>
+    <string name="add_dialog_button_cancel">Ακύρωση</string>
+    <string name="add_dialog_error_connection_failed">Η σύνδεση απέτυχε: %1$s</string>
+    <string name="add_dialog_button_subscribe">Εγγραφή</string>
+    <string name="add_dialog_button_login">Σύνδεση</string>
+    <string name="add_dialog_login_username_hint">Όνομα χρήστη</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Επιλέξτε URL υπηρεσίας</string>
+    <string name="add_dialog_instant_delivery">Άμεση παράδοση σε κατάσταση doze</string>
+    <string name="add_dialog_login_description">Αυτό το θέμα απαιτεί να συνδεθείτε. Παρακαλώ πληκτρολογήστε ένα όνομα χρήστη και έναν κωδικό πρόσβασης.</string>
+    <string name="main_banner_websocket_button_dismiss">Απορρίψτε το</string>
+    <string name="add_dialog_button_back">Πίσω</string>
 </resources>
