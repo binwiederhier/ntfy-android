@@ -319,7 +319,7 @@
     <string name="settings_backup_restore_restore_successful">Palautus onnistui</string>
     <string name="settings_notifications_auto_delete_one_week">jälkeen seitsemän päivän</string>
     <string name="settings_backup_restore_restore_failed">Palautus epäonnistui: %1$s</string>
-    <string name="settings_notifications_header">Ilmoitus</string>
+    <string name="settings_notifications_header">Ilmoitukset</string>
     <string name="detail_test_message">Tämä on testi-ilmoitus ntfy Android -sovelluksesta. Sillä on prioriteettitaso %1$d. Jos lähetät toisen, se voi näyttää erilaiselta.</string>
     <string name="detail_settings_appearance_icon_remove_title">Kuvake (napauta poistaaksesi)</string>
     <string name="share_suggested_topics">Ehdotetut topikit</string>
