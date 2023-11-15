@@ -208,16 +208,71 @@
                 android:autoLink="web"/>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="24dp">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp"
             android:contentDescription="@string/main_add_button_description"
             android:src="@drawable/ic_add_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            style="@style/FloatingActionButton"
-    />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            style="@style/FloatingActionButton" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/main_add_normal_button_description"
+            android:src="@drawable/ic_add_black_24dp"
+            android:layout_above="@id/fab"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/gray_400"
+            android:tint="@color/gray_400"
+            app:fabSize="mini"
+            app:elevation="4dp"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/fab_add_normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_toLeftOf="@id/fab_add_normal"
+            android:layout_marginRight="8dp"
+            android:layout_alignTop="@id/fab_add_normal"
+            android:layout_alignBottom="@id/fab_add_normal"
+            android:text="@string/main_add_normal_button_description"
+            android:visibility="gone" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_qr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/main_add_qr_button_description"
+            android:src="@drawable/ic_qr_code_24dp"
+            android:layout_above="@id/fab_add_normal"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/gray_400"
+            android:tint="@color/gray_400"
+            app:fabSize="mini"
+            app:elevation="4dp"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/fab_add_qr_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_toLeftOf="@id/fab_add_qr"
+            android:layout_marginRight="8dp"
+            android:layout_alignTop="@id/fab_add_qr"
+            android:layout_alignBottom="@id/fab_add_qr"
+            android:text="@string/main_add_qr_button_description"
+            android:visibility="gone" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
