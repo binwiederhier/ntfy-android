@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_low_name">Thông báo (ưu tiên thấp)</string>
+    <string name="add_dialog_login_password_hint">Mật khẩu</string>
+    <string name="add_dialog_login_username_hint">Tên tài khoản</string>
+    <string name="add_dialog_login_description">Chủ đề này cần đăng nhập để truy cập. Vui lòng nhập tên tài khoản và mật khẩu.</string>
 </resources>
