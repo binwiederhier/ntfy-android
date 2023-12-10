@@ -114,8 +114,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
 
         fabAddQr.setOnClickListener {
-            //TODO: QR dialog instead
-            onSubscribeButtonClick()
+            onSubscribeQrButtonClick()
         }
 
         // Swipe to refresh
@@ -511,6 +510,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun onSubscribeButtonClick() {
         val newFragment = AddFragment()
+        newFragment.show(supportFragmentManager, AddFragment.TAG)
+    }
+
+    private fun onSubscribeQrButtonClick() {
+        val newFragment = AddQrFragment()
         newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 
