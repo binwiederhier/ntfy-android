@@ -45,7 +45,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class AddFragment : DialogFragment() {
+class AddQrFragment : DialogFragment() {
     private val api = ApiService()
 
     private lateinit var repository: Repository
@@ -53,17 +53,15 @@ class AddFragment : DialogFragment() {
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
 
+    private lateinit var cameraExecutor: ExecutorService
+    private lateinit var subscribeCameraPreview: PreviewView
+
     private lateinit var subscribeView: View
     private lateinit var loginView: View
     private lateinit var positiveButton: Button
     private lateinit var negativeButton: Button
 
     // Subscribe page
-    private lateinit var subscribeTopicText: TextInputEditText
-    private lateinit var subscribeBaseUrlLayout: TextInputLayout
-    private lateinit var subscribeBaseUrlText: AutoCompleteTextView
-    private lateinit var subscribeUseAnotherServerCheckbox: CheckBox
-    private lateinit var subscribeUseAnotherServerDescription: TextView
     private lateinit var subscribeInstantDeliveryBox: View
     private lateinit var subscribeInstantDeliveryCheckbox: CheckBox
     private lateinit var subscribeInstantDeliveryDescription: View
@@ -71,6 +69,7 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeProgress: ProgressBar
     private lateinit var subscribeErrorText: TextView
     private lateinit var subscribeErrorTextImage: View
+    private lateinit var subscribeCameraPreviewPermissionText: TextView
 
     // Login page
     private lateinit var loginUsernameText: TextInputEditText
@@ -99,7 +98,7 @@ class AddFragment : DialogFragment() {
         defaultBaseUrl = repository.getDefaultBaseUrl()
 
         // Build root view
-        val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)
+        val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_qr_dialog, null)
 
         // Main "pages"
         subscribeView = view.findViewById(R.id.add_dialog_subscribe_view)
@@ -108,24 +107,17 @@ class AddFragment : DialogFragment() {
         loginView.visibility = View.GONE
 
         // Fields for "subscribe page"
-        subscribeTopicText = view.findViewById(R.id.add_dialog_subscribe_topic_text)
-        subscribeBaseUrlLayout = view.findViewById(R.id.add_dialog_subscribe_base_url_layout)
-        subscribeBaseUrlLayout.background = view.background
-        subscribeBaseUrlLayout.makeEndIconSmaller(resources) // Hack!
-        subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
-        subscribeBaseUrlText.background = view.background
-        subscribeBaseUrlText.hint = defaultBaseUrl ?: appBaseUrl
         subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
         subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_checkbox)
         subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
-        subscribeUseAnotherServerCheckbox = view.findViewById(R.id.add_dialog_subscribe_use_another_server_checkbox)
-        subscribeUseAnotherServerDescription = view.findViewById(R.id.add_dialog_subscribe_use_another_server_description)
         subscribeForegroundDescription = view.findViewById(R.id.add_dialog_subscribe_foreground_description)
         subscribeProgress = view.findViewById(R.id.add_dialog_subscribe_progress)
         subscribeErrorText = view.findViewById(R.id.add_dialog_subscribe_error_text)
         subscribeErrorText.visibility = View.GONE
         subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
         subscribeErrorTextImage.visibility = View.GONE
+        subscribeCameraPreview = view.findViewById(R.id.add_dialog_subscribe_camera_preview)
+        subscribeCameraPreviewPermissionText = view.findViewById(R.id.add_dialog_subscribe_camera_preview_denied_text)
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
@@ -140,23 +132,6 @@ class AddFragment : DialogFragment() {
         // Show/hide based on flavor (faster shortcut for validateInputSubscribeView, which can only run onShow)
         if (!BuildConfig.FIREBASE_AVAILABLE) {
             subscribeInstantDeliveryBox.visibility = View.GONE
-        }
-
-        // Add baseUrl auto-complete behavior
-        lifecycleScope.launch(Dispatchers.IO) {
-            val baseUrlsRaw = repository.getSubscriptions()
-                .groupBy { it.baseUrl }
-                .map { it.key }
-                .filterNot { it == appBaseUrl }
-            val baseUrls = if (defaultBaseUrl != null) {
-                (baseUrlsRaw.filterNot { it == defaultBaseUrl } + appBaseUrl).sorted()
-            } else {
-                baseUrlsRaw.sorted()
-            }
-            val activity = activity ?: return@launch // We may have pressed "Cancel"
-            activity.runOnUiThread {
-                initBaseUrlDropdown(baseUrls, subscribeBaseUrlText, subscribeBaseUrlLayout)
-            }
         }
 
         // Username/password validation on type
@@ -191,24 +166,110 @@ class AddFragment : DialogFragment() {
             negativeButton.setOnClickListener {
                 negativeButtonClick()
             }
-            val subscribeTextWatcher = AfterChangedTextWatcher {
-                validateInputSubscribeView()
-            }
-            subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
-            subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
+
             subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, _ ->
                 validateInputSubscribeView()
             }
-            subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, _ ->
-                validateInputSubscribeView()
-            }
-            validateInputSubscribeView()
 
-            // Focus topic text (keyboard is shown too, see above)
-            subscribeTopicText.requestFocus()
+            cameraExecutor = Executors.newSingleThreadExecutor()
+            checkIfCameraPermissionIsGranted()
         }
 
         return dialog
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
+    private fun checkCameraPermissionsRaw(): Boolean {
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkIfCameraPermissionIsGranted() {
+        if (checkCameraPermissionsRaw()) {
+            startCamera()
+        } else {
+            subscribeCameraPreviewPermissionText.visibility = View.VISIBLE
+            val requiredPermissions = arrayOf(Manifest.permission.CAMERA)
+            requestPermissions(requiredPermissions, 0)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (checkCameraPermissionsRaw()) {
+            startCamera()
+        }
+    }
+
+    private fun vibratePhone(context: Context) {
+        // This is deprecated, but we aren't using a high enough version for the new API
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(200)
+        }
+    }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+
+        subscribeCameraPreviewPermissionText.visibility = View.GONE
+
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(subscribeCameraPreview.surfaceProvider)
+                }
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, QrCodeAnalyzer { urlString ->
+                        var url = URL(urlString)
+                        var baseUrl = "${url.protocol}://${url.host}"
+                        var route = url.path.replaceFirst("/", "")
+
+                        subscribeBaseUrlText.setText(baseUrl)
+                        subscribeTopicText.setText(route)
+                        validateInputSubscribeView {
+                            if (positiveButton.isEnabled) {
+                                positiveButtonClick()
+                                vibratePhone(requireContext())
+                            }
+                        }
+
+                    })
+                }
+
+            // Select back camera as a default
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            try {
+                // Unbind use cases before rebinding
+                cameraProvider.unbindAll()
+
+                // Bind use cases to camera
+                cameraProvider.bindToLifecycle(
+                    this, cameraSelector, preview, imageAnalyzer
+                )
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     private fun positiveButtonClick() {
@@ -315,22 +376,15 @@ class AddFragment : DialogFragment() {
         if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
 
         // Show/hide things: This logic is intentionally kept simple. Do not simplify "just because it's pretty".
+        //TODO: Phil check this
         val instantToggleAllowed = if (!BuildConfig.FIREBASE_AVAILABLE) {
             false
-        } else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
-            true
-        } else if (!subscribeUseAnotherServerCheckbox.isChecked && defaultBaseUrl == null) {
+        } else if (defaultBaseUrl == null) {
             true
         } else {
             false
         }
-        if (subscribeUseAnotherServerCheckbox.isChecked) {
-            subscribeUseAnotherServerDescription.visibility = View.VISIBLE
-            subscribeBaseUrlLayout.visibility = View.VISIBLE
-        } else {
-            subscribeUseAnotherServerDescription.visibility = View.GONE
-            subscribeBaseUrlLayout.visibility = View.GONE
-        }
+
         if (instantToggleAllowed) {
             subscribeInstantDeliveryBox.visibility = View.VISIBLE
             subscribeInstantDeliveryDescription.visibility = if (subscribeInstantDeliveryCheckbox.isChecked) View.VISIBLE else View.GONE
@@ -401,10 +455,6 @@ class AddFragment : DialogFragment() {
         negativeButton.text = getString(R.string.add_dialog_button_cancel)
         loginView.visibility = View.GONE
         subscribeView.visibility = View.VISIBLE
-        if (subscribeTopicText.requestFocus()) {
-            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_IMPLICIT)
-        }
     }
 
     private fun showLoginView(activity: Activity) {
@@ -421,10 +471,7 @@ class AddFragment : DialogFragment() {
     }
 
     private fun enableSubscribeView(enable: Boolean) {
-        subscribeTopicText.isEnabled = enable
-        subscribeBaseUrlText.isEnabled = enable
         subscribeInstantDeliveryCheckbox.isEnabled = enable
-        subscribeUseAnotherServerCheckbox.isEnabled = enable
         positiveButton.isEnabled = enable
     }
 
