@@ -3,10 +3,13 @@ package io.heckel.ntfy.service
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.Message
+import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.random.Random
 
 class JsonConnection(
     private val connectionId: ConnectionId,
@@ -15,11 +18,13 @@ class JsonConnection(
     private val api: ApiService,
     private val user: User?,
     private val sinceId: String?,
+    private val connectionOpenListener: (ConnectionId, String?) -> Unit,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
+    private val parser = NotificationParser()
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val topicIsUnifiedPush = connectionId.topicIsUnifiedPush
     private val subscriptionIds = topicsToSubscriptionIds.values
@@ -40,12 +45,24 @@ class JsonConnection(
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
                 val startTime = System.currentTimeMillis()
-                val notify = notify@ { topic: String, notification: Notification ->
-                    since = notification.id
-                    val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
-                    val subscription = repository.getSubscription(subscriptionId) ?: return@notify
-                    val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
-                    notificationListener(subscription, notificationWithSubscriptionId)
+                val notify = notify@ { message : Message ->
+                    if (message.event == ApiService.EVENT_OPEN) {
+                        connectionOpenListener(ConnectionId(baseUrl, topicsToSubscriptionIds, topicIsUnifiedPush), message.message)
+                        return@notify
+                    }
+                        val (topic, notification) = parser.parseWithTopic(
+                            message,
+                            notificationId = Random.nextInt(),
+                            subscriptionId = 0
+                        ) ?: return@notify // subscriptionId to be set downstream
+                        since = notification.id
+                        val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
+                        val subscription =
+                            repository.getSubscription(subscriptionId) ?: return@notify
+                        val notificationWithSubscriptionId =
+                            notification.copy(subscriptionId = subscription.id)
+                        notificationListener(subscription, notificationWithSubscriptionId)
+
                 }
                 val failed = AtomicBoolean(false)
                 val fail = { _: Exception ->

@@ -93,7 +93,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 try {
                     // Note, this may fail due to a SQL constraint exception, see https://github.com/binwiederhier/ntfy/issues/185
                     repository.addSubscription(subscription)
-                    distributor.sendEndpoint(appId, connectorToken, endpoint)
+                    //distributor.sendEndpoint(appId, connectorToken, endpoint)
+//lets wait to subscribe, THEN, send
 
                     // Refresh (and maybe start) foreground service
                     SubscriberServiceManager.refresh(app)
@@ -143,5 +144,25 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         private const val TOPIC_RANDOM_ID_LENGTH = 12
 
         val mutex = Mutex() // https://github.com/binwiederhier/ntfy/issues/230
+        public fun sendRegistration(context: Context, baseUrl : String, topic : String) : Boolean {
+            val app = context.applicationContext as Application
+            val repository = app.repository
+            val distributor = Distributor(app)
+            GlobalScope.launch(Dispatchers.IO) {
+                // We're doing all of this inside a critical section, because of possible races.
+                // See https://github.com/binwiederhier/ntfy/issues/230 for details.
+
+                mutex.withLock {
+                    val existingSubscription = repository.getSubscription(baseUrl, topic) ?: return@launch
+                    val appId = existingSubscription.upAppId ?: return@launch
+                    val connectorToken = existingSubscription.upConnectorToken ?: return@launch
+                    val endpoint = topicUrlUp(existingSubscription.baseUrl, existingSubscription.topic)
+                    Log.d(TAG, "Sending endpoint $endpoint to ${existingSubscription.upAppId}")
+                    distributor.sendEndpoint(appId, connectorToken, endpoint)
+                }
+            }
+            return false // todo return result async somehow
+        }
+
     }
 }

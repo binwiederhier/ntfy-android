@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
@@ -35,6 +36,7 @@ class WsConnection(
     private val repository: Repository,
     private val user: User?,
     private val sinceId: String?,
+    private val connectionOpenListener: (ConnectionId, String?) -> Unit,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
@@ -137,7 +139,12 @@ class WsConnection(
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
                 Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
-                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, notificationId = Random.nextInt())
+                val message = parser.parseMessage(text) ?: return@synchronize
+                if (message.event == ApiService.EVENT_OPEN){
+                    connectionOpenListener(ConnectionId(baseUrl, topicsToSubscriptionIds, topicIsUnifiedPush), message.message)
+                    return@synchronize
+                }
+                val notificationWithTopic = parser.parseWithTopic(message, subscriptionId = 0, notificationId = Random.nextInt())
                 if (notificationWithTopic == null) {
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                     return@synchronize

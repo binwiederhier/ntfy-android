@@ -204,9 +204,9 @@ class SubscriberService : Service() {
             val user = repository.getUser(connectionId.baseUrl)
             val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, user, since, ::onConnectionOpen, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionOpen, ::onStateChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -247,6 +247,22 @@ class SubscriberService : Service() {
         }
     }
 
+    private fun onConnectionOpen(connectionId: ConnectionId, message: String?) {
+        Log.d(TAG, "Received open from connection to ${connectionId.baseUrl} with message: $message")
+        // TODO extract constant
+        if (message?.contains(ApiService.EVENT_OPEN_PARAM_NEW_TOPIC) == true) {
+            val connectionId = connectionId.copy() // TODO does this deep copy
+            GlobalScope.launch(Dispatchers.IO) {
+                for (topic in connectionId.topicsToSubscriptionIds.keys)
+                    if (connectionId.topicIsUnifiedPush[topic] == true){
+                       io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
+                        Log.d(TAG, "Attempting to re-register ${connectionId.baseUrl}/$topic")
+                    }
+                // TODO is that the right context
+                // looks like it works???
+            }
+        }
+    }
     private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
         repository.updateState(subscriptionIds, state)
     }

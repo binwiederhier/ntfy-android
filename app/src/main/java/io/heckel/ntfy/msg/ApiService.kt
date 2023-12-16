@@ -111,7 +111,7 @@ class ApiService {
         unifiedPushTopics: String,
         since: String?,
         user: User?,
-        notify: (topic: String, Notification) -> Unit,
+        notify: (Message) -> Unit,
         fail: (Exception) -> Unit
     ): Call {
         val sinceVal = since ?: "all"
@@ -128,10 +128,8 @@ class ApiService {
                     val source = response.body?.source() ?: throw Exception("Unexpected response for $url: body is empty")
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
-                        if (notification != null) {
-                            notify(notification.topic, notification.notification)
-                        }
+                        val message = parser.parseMessage(line)
+                        if (message != null) notify(message)
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Connection to $url failed (1): ${e.message}", e)
@@ -175,6 +173,8 @@ class ApiService {
 
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"
+        const val EVENT_OPEN_PARAM_NEW_TOPIC = "new_topic"
+        const val EVENT_OPEN = "open"
         const val EVENT_MESSAGE = "message"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"

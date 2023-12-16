@@ -16,7 +16,7 @@ data class Message(
     val icon: String?,
     val actions: List<MessageAction>?,
     val title: String?,
-    val message: String,
+    val message: String?,
     val encoding: String?,
     val attachment: MessageAttachment?,
 )

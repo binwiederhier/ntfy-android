@@ -6,6 +6,7 @@ import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.joinTags
 import io.heckel.ntfy.util.toPriority
 import java.lang.reflect.Type
@@ -13,13 +14,20 @@ import java.lang.reflect.Type
 class NotificationParser {
     private val gson = Gson()
 
+    fun parseMessage(s: String) : Message? {
+
+        val message= gson.fromJson(s, Message::class.java)
+        Log.d("HITAGME", message.toString())
+        return message
+    }
+
     fun parse(s: String, subscriptionId: Long = 0, notificationId: Int = 0): Notification? {
-        val notificationWithTopic = parseWithTopic(s, subscriptionId = subscriptionId, notificationId = notificationId)
+        val message = parseMessage(s) ?: return null
+        val notificationWithTopic = parseWithTopic(message, subscriptionId = subscriptionId, notificationId = notificationId)
         return notificationWithTopic?.notification
     }
 
-    fun parseWithTopic(s: String, subscriptionId: Long = 0, notificationId: Int = 0): NotificationWithTopic? {
-        val message = gson.fromJson(s, Message::class.java)
+    fun parseWithTopic(message: Message, subscriptionId: Long = 0, notificationId: Int = 0): NotificationWithTopic? {
         if (message.event != ApiService.EVENT_MESSAGE) {
             return null
         }
@@ -56,7 +64,7 @@ class NotificationParser {
             subscriptionId = subscriptionId,
             timestamp = message.time,
             title = message.title ?: "",
-            message = message.message,
+            message = message.message?: "",
             encoding = message.encoding ?: "",
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
