@@ -93,12 +93,14 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 try {
                     // Note, this may fail due to a SQL constraint exception, see https://github.com/binwiederhier/ntfy/issues/185
                     repository.addSubscription(subscription)
-                    /* We don't send the endpoint here anymore, the foreground service will do that after
-                    registering with the push server. This avoids a race condition where the application server
+                    distributor.sendEndpoint(appId, connectorToken, endpoint)
+                    /* We need to stop sending the endpoint here once everyone has the new server,
+                    the foreground service will do that after registering with the server.
+                    That will avoid a race condition where the application server
                     is rejected before ntfy even establishes that this topic exists.
                     This is fine from an application perspective, because other distributors can't even register
                     without a connection to the push server.
-                    Unless the app sends registration twice. Then it'll get the endpoint.*/
+                    Unless the app registers twice. Then it'll get the endpoint anyway.*/
 
                     // Refresh (and maybe start) foreground service
                     SubscriberServiceManager.refresh(app)
