@@ -97,7 +97,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     registering with the push server. This avoids a race condition where the application server
                     is rejected before ntfy even establishes that this topic exists.
                     This is fine from an application perspective, because other distributors can't even register
-                    without a connection to the push server. */
+                    without a connection to the push server.
+                    Unless the app sends registration twice. Then it'll get the endpoint.*/
 
                     //Refresh (and maybe start) foreground service
                     SubscriberServiceManager.refresh(app)
@@ -164,7 +165,6 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     val appId = existingSubscription.upAppId ?: return@launch
                     val connectorToken = existingSubscription.upConnectorToken ?: return@launch
                     val endpoint = topicUrlUp(existingSubscription.baseUrl, existingSubscription.topic)
-                    Log.d(TAG, "Sending endpoint $endpoint to ${existingSubscription.upAppId}")
                     distributor.sendEndpoint(appId, connectorToken, endpoint)
                 }
             }

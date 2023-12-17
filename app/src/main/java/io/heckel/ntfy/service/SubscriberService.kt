@@ -257,10 +257,9 @@ class SubscriberService : Service() {
             GlobalScope.launch(Dispatchers.IO) {
                 for (topic in connectionId.topicsToSubscriptionIds.keys) {
                     if (connectionId.topicIsUnifiedPush[topic] == true) {
-                        io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
-                        // TODO is that the right context
-                        // looks like it works???
                         Log.d(TAG, "Attempting to re-register ${connectionId.baseUrl}/$topic")
+                        io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
+                        // TODO is that the right context - looks like it works???
                     }
                 }
             }
