@@ -100,7 +100,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     without a connection to the push server.
                     Unless the app sends registration twice. Then it'll get the endpoint.*/
 
-                    //Refresh (and maybe start) foreground service
+                    // Refresh (and maybe start) foreground service
                     SubscriberServiceManager.refresh(app)
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to add subscription", e)
