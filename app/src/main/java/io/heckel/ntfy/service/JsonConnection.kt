@@ -43,7 +43,7 @@ class JsonConnection(
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
                 val startTime = System.currentTimeMillis()
-                val notify = notify@ { message : Message ->
+                val notify = { message : Message ->
                         since = notificationListener(ConnectionId(baseUrl, topicsToSubscriptionIds, topicIsUnifiedPush), message)?: since
                 }
                 val failed = AtomicBoolean(false)

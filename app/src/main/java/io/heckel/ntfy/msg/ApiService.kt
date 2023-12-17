@@ -11,7 +11,6 @@ import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 class ApiService {
     private val client = OkHttpClient.Builder()
@@ -97,7 +96,7 @@ class ApiService {
             val body = response.body?.string()?.trim()
             if (body.isNullOrEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
+                parser.parseNotification(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
             }
 
             Log.d(TAG, "Notifications: $notifications")

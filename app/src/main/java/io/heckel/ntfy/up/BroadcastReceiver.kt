@@ -93,10 +93,13 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                 try {
                     // Note, this may fail due to a SQL constraint exception, see https://github.com/binwiederhier/ntfy/issues/185
                     repository.addSubscription(subscription)
-                    //distributor.sendEndpoint(appId, connectorToken, endpoint)
-//lets wait to subscribe, THEN, send
+                    /* We don't send the endpoint here anymore, the foreground service will do that after
+                    registering with the push server. This avoids a race condition where the application server
+                    is rejected before ntfy even establishes that this topic exists.
+                    This is fine from an application perspective, because other distributors can't even register
+                    without a connection to the push server. */
 
-                    // Refresh (and maybe start) foreground service
+                    //Refresh (and maybe start) foreground service
                     SubscriberServiceManager.refresh(app)
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to add subscription", e)
@@ -144,7 +147,11 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         private const val TOPIC_RANDOM_ID_LENGTH = 12
 
         val mutex = Mutex() // https://github.com/binwiederhier/ntfy/issues/230
-        public fun sendRegistration(context: Context, baseUrl : String, topic : String) : Boolean {
+
+        // TODO Where's the best place to put this function? This seems to be the only place
+        // with the access to the locks, but also globally accessible
+        // but also, broadcast receiver is for *receiving Android broadcasts*
+        public fun sendRegistration(context: Context, baseUrl : String, topic : String) {
             val app = context.applicationContext as Application
             val repository = app.repository
             val distributor = Distributor(app)
@@ -161,8 +168,6 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     distributor.sendEndpoint(appId, connectorToken, endpoint)
                 }
             }
-            return false // todo return result async somehow
         }
-
     }
 }

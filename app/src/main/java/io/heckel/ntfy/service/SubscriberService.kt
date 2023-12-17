@@ -15,7 +15,6 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.msg.NotificationDispatcher
@@ -252,18 +251,18 @@ class SubscriberService : Service() {
     }
 
     private fun onConnectionOpen(connectionId: ConnectionId, message: String?) {
-        Log.d(TAG, "Received open from connection to ${connectionId.baseUrl} with message: $message")
-        // TODO extract constant
+        Log.d(TAG, "Received open from connection ${connectionId.baseUrl} with message: $message")
+        // this check is sufficient for now, and the message can be upgraded to include other parameters in the future
         if (message?.contains(ApiService.EVENT_OPEN_PARAM_NEW_TOPIC) == true) {
-            val connectionId = connectionId.copy() // TODO does this deep copy
             GlobalScope.launch(Dispatchers.IO) {
-                for (topic in connectionId.topicsToSubscriptionIds.keys)
-                    if (connectionId.topicIsUnifiedPush[topic] == true){
-                       io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
+                for (topic in connectionId.topicsToSubscriptionIds.keys) {
+                    if (connectionId.topicIsUnifiedPush[topic] == true) {
+                        io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
+                        // TODO is that the right context
+                        // looks like it works???
                         Log.d(TAG, "Attempting to re-register ${connectionId.baseUrl}/$topic")
                     }
-                // TODO is that the right context
-                // looks like it works???
+                }
             }
         }
     }
@@ -271,21 +270,19 @@ class SubscriberService : Service() {
         repository.updateState(subscriptionIds, state)
     }
 
-    // return successfully processed ID, else null
+    // Process messages received from the server, and dispatch a notification if required.
+    // Return the ID of the notification if successfully processed, else null.
     private fun onNotificationReceived(connectionId: ConnectionId, message: Message) : String? {
         if (message.event == ApiService.EVENT_OPEN) {
             onConnectionOpen(connectionId, message.message)
             return null
         }
-        val notificationWithTopic = parser.parseWithTopic(message, notificationId = Random.nextInt(), subscriptionId = 0
-        )  ?: return null// subscriptionId to be set downstream
 
-        val (topic, notificationWoId) = notificationWithTopic
+        val (topic, notificationWithoutId) = parser.parseNotificationWithTopic(message, notificationId = Random.nextInt(), subscriptionId = 0)
+                                                ?: return null // subscriptionId to be set downstream
         val subscriptionId = connectionId.topicsToSubscriptionIds[topic] ?: return null
-        val subscription =
-            repository.getSubscription(subscriptionId) ?: return null
-        val notification =
-            notificationWoId.copy(subscriptionId = subscription.id)
+        val subscription = repository.getSubscription(subscriptionId) ?: return null
+        val notification = notificationWithoutId.copy(subscriptionId = subscription.id)
 
         // Wakelock while notifications are being dispatched
         // Wakelocks are reference counted by default so that should work neatly here

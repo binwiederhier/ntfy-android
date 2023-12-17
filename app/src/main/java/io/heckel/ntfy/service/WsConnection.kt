@@ -61,8 +61,8 @@ class WsConnection(
     private val topicIsUnifiedPush = connectionId.topicIsUnifiedPush
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
-    private val unifiedPushTopicsStr =
-        topicIsUnifiedPush.filter { entry -> entry.value }.keys.joinToString(separator = ",")
+    private val unifiedPushTopicsStr = topicIsUnifiedPush.filter { entry -> entry.value
+}.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
     init {
