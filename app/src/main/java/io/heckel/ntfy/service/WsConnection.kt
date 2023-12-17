@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.msg.NotificationParser
@@ -20,7 +19,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.random.Random
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with

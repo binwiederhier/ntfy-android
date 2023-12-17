@@ -96,7 +96,7 @@ class ApiService {
             val body = response.body?.string()?.trim()
             if (body.isNullOrEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parseNotification(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
+                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
             }
 
             Log.d(TAG, "Notifications: $notifications")

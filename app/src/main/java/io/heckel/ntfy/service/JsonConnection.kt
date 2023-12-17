@@ -4,12 +4,10 @@ import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.Message
-import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import okhttp3.Call
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.random.Random
 
 class JsonConnection(
     private val connectionId: ConnectionId,

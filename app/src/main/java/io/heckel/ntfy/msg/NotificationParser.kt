@@ -17,7 +17,7 @@ class NotificationParser {
         return gson.fromJson(s, Message::class.java)
     }
 
-    fun parseNotification(s: String, subscriptionId: Long = 0, notificationId: Int = 0): Notification? {
+    fun parse(s: String, subscriptionId: Long = 0, notificationId: Int = 0): Notification? {
         val message = parseMessage(s) ?: return null
         val notificationWithTopic = parseNotificationWithTopic(message, subscriptionId = subscriptionId, notificationId = notificationId)
         return notificationWithTopic?.notification
