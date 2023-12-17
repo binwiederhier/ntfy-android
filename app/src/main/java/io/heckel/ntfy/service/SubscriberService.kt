@@ -17,7 +17,9 @@ import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.Log
@@ -28,6 +30,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.random.Random
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -67,6 +70,7 @@ class SubscriberService : Service() {
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
     private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
+    private val parser = NotificationParser()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
@@ -204,9 +208,9 @@ class SubscriberService : Service() {
             val user = repository.getUser(connectionId.baseUrl)
             val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(connectionId, repository, user, since, ::onConnectionOpen, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionOpen, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -267,7 +271,22 @@ class SubscriberService : Service() {
         repository.updateState(subscriptionIds, state)
     }
 
-    private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
+    // return successfully processed ID, else null
+    private fun onNotificationReceived(connectionId: ConnectionId, message: Message) : String? {
+        if (message.event == ApiService.EVENT_OPEN) {
+            onConnectionOpen(connectionId, message.message)
+            return null
+        }
+        val notificationWithTopic = parser.parseWithTopic(message, notificationId = Random.nextInt(), subscriptionId = 0
+        )  ?: return null// subscriptionId to be set downstream
+
+        val (topic, notificationWoId) = notificationWithTopic
+        val subscriptionId = connectionId.topicsToSubscriptionIds[topic] ?: return null
+        val subscription =
+            repository.getSubscription(subscriptionId) ?: return null
+        val notification =
+            notificationWoId.copy(subscriptionId = subscription.id)
+
         // Wakelock while notifications are being dispatched
         // Wakelocks are reference counted by default so that should work neatly here
         wakeLock?.acquire(NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS)
@@ -285,6 +304,7 @@ class SubscriberService : Service() {
                 }
             }
         }
+        return notification.id
     }
 
     private fun createNotificationChannel(): NotificationManager? {
