@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Thông báo (ưu tiên thấp)</string>
+    <string name="channel_notifications_low_name">Ưu tiên thấp</string>
     <string name="add_dialog_login_password_hint">Mật khẩu</string>
     <string name="add_dialog_login_username_hint">Tên tài khoản</string>
     <string name="add_dialog_login_description">Chủ đề này cần đăng nhập để truy cập. Vui lòng nhập tên tài khoản và mật khẩu.</string>
@@ -16,4 +16,10 @@
     <string name="user_dialog_password_hint_edit">Mật khẩu (không đổi nếu để trống)</string>
     <string name="add_dialog_title">Theo dõi chủ đề</string>
     <string name="user_dialog_username_hint">Tên tài khoản</string>
+    <string name="channel_notifications_min_name">Ưu tiên thấp nhất</string>
+    <string name="channel_notifications_max_name">Ưu tiên cao nhất</string>
+    <string name="channel_notifications_group_default_name">Mặc định</string>
+    <string name="channel_subscriber_service_name">Dịch vụ thông báo</string>
+    <string name="channel_notifications_default_name">Mặc định</string>
+    <string name="channel_notifications_high_name">Ưu tiên cao</string>
 </resources>
