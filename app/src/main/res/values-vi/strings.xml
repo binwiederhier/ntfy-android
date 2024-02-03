@@ -22,4 +22,5 @@
     <string name="channel_subscriber_service_name">Dịch vụ thông báo</string>
     <string name="channel_notifications_default_name">Mặc định</string>
     <string name="channel_notifications_high_name">Ưu tiên cao</string>
+    <string name="channel_subscriber_notification_title">Chờ thông báo</string>
 </resources>
