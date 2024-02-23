@@ -1,0 +1,1 @@
+PUT/POST yordamida har qanday scriptdan telefoningga bildirishnomalarni yubor
