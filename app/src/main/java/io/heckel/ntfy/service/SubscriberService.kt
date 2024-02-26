@@ -263,11 +263,6 @@ class SubscriberService : Service() {
                 Log.d(TAG, "[$url] Dispatching notification $notification")
                 dispatcher.dispatch(subscription, notification)
             }
-            wakeLock?.let {
-                if (it.isHeld) {
-                    it.release()
-                }
-            }
         }
     }
 
@@ -355,7 +350,7 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
-        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
+        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 3*1000L /*3 seconds*/
         private const val SHARED_PREFS_ID = "SubscriberService"
         private const val SHARED_PREFS_SERVICE_STATE = "ServiceState"
 
