@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_min_name">Minimalny priorytet</string>
-    <string name="channel_notifications_low_name">Powiadomienia (niski priorytet)</string>
-    <string name="channel_notifications_default_name">Powiadomienia (domyślny priorytet)</string>
-    <string name="channel_notifications_max_name">Powiadomienia (maksymalny priorytet)</string>
+    <string name="channel_notifications_low_name">Niski priorytet</string>
+    <string name="channel_notifications_default_name">Domyślny priorytet</string>
+    <string name="channel_notifications_max_name">Maksymalny priorytet</string>
     <string name="channel_subscriber_notification_title">Oczekiwanie na przychodzące powiadomienia</string>
     <string name="channel_subscriber_notification_instant_text">Subskrybujesz tematy z natychmiastowym dostarczaniem</string>
-    <string name="channel_notifications_high_name">Powiadomienia (wysoki priorytet)</string>
+    <string name="channel_notifications_high_name">Wysoki priorytet</string>
     <string name="channel_subscriber_service_name">Usługa subskrypcji</string>
     <string name="add_dialog_login_username_hint">Nazwa użytkownika</string>
     <string name="detail_action_mode_delete_dialog_message">Usunąć wybrane powiadomienie(a) trwale\?</string>
@@ -61,10 +61,10 @@
 \n
 \nHasła zostały usunięte, ale nie są tutaj wymienione.</string>
     <string name="settings_advanced_record_logs_summary_disabled">Włącz rejestrowanie, aby móc później udostępnić logi w celu zdiagnozowania problemów.</string>
-    <string name="channel_subscriber_notification_instant_text_two">Zasubskrybowano do dwóch tematów z natychmiastowym dostarczaniem</string>
+    <string name="channel_subscriber_notification_instant_text_two">Zasubskrybowano do dwóch tematów z natychmiastową dostawą</string>
     <string name="settings_advanced_export_logs_summary">Kopiuj logi do schowka, lub prześlij na nopaste.net (własność autora ntfy). Nazwy hostów i tematy mogą być cenzurowane, powiadomienia nigdy nie będą.</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Zasubskrybowano sześć tematów</string>
-    <string name="channel_subscriber_notification_instant_text_more">Zasubskrybowano do %1$d tematów z natychmiastowym dostarczaniem</string>
+    <string name="channel_subscriber_notification_instant_text_more">Zasubskrybowano do %1$d tematów z natychmiastową dostawą</string>
     <string name="detail_settings_notifications_instant_summary_off">Powiadomienia są dostarczane za pomocą Firebase. Dostarczanie może być opóźnione, ale zużywa mniej baterii.</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Zasubskrybowano pięć tematów</string>
     <string name="add_dialog_use_another_server_description">Wpisz poniżej adresy URL serwisów, aby subskrybować tematy z innych serwerów.</string>
@@ -92,7 +92,7 @@
     <string name="settings_backup_restore_header">Kopia zapasowa &amp; Przywracanie</string>
     <string name="settings_backup_restore_backup_summary">Eksportuj konfigurację, powiadomienia i użytkowników</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Prześlij i kopiuj łącze (ocenzurowane)</string>
-    <string name="channel_subscriber_notification_noinstant_text">Subskrybowane tematy</string>
+    <string name="channel_subscriber_notification_noinstant_text">Zasubskrybowane tematy</string>
     <string name="main_how_to_link">Szczegółowe instrukcje są dostępne w ntfy.sh, oraz w dokumentacji.</string>
     <string name="main_banner_battery_text">Optymalizacja baterii powinna być wyłączona dla aplikacji, aby uniknąć problemów z dostarczaniem powiadomień.</string>
     <string name="main_menu_rate_title">Oceń aplikację ⭐</string>
@@ -186,9 +186,9 @@
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_menu_report_bug_title">Zgłoś błąd</string>
     <string name="main_action_mode_menu_unsubscribe">Zrezygnuj z subskrypcji</string>
-    <string name="channel_subscriber_notification_instant_text_one">Zasubskrybowano do jednego tematu z natychmiastowym dostarczaniem</string>
-    <string name="channel_subscriber_notification_instant_text_three">Zasubskrybowano do trzech tematów z natychmiastowym dostarczaniem</string>
-    <string name="channel_subscriber_notification_instant_text_four">Zasubskrybowano do czterech tematów z natychmiastowym dostarczaniem</string>
+    <string name="channel_subscriber_notification_instant_text_one">Zasubskrybowano jeden temat z natychmiastową dostawą</string>
+    <string name="channel_subscriber_notification_instant_text_three">Zasubskrybowano do trzech tematów z natychmiastową dostawą</string>
+    <string name="channel_subscriber_notification_instant_text_four">Zasubskrybowano do czterech tematów z natychmiastową dostawą</string>
     <string name="refresh_message_result">Otrzymano %1$d powiadomień</string>
     <string name="main_item_status_text_one">%1$d powiadomienie</string>
     <string name="main_unified_push_toast">Ta subskrypcja jest zarządzana przez %1$s poprzez UnifiedPush</string>

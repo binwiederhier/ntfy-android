@@ -4,8 +4,8 @@
     <string name="detail_menu_test">Enviar notificação de teste</string>
     <string name="detail_menu_copy_url">Copiar endereço do tema</string>
     <string name="notification_dialog_show_all">Mostrar todas notificações</string>
-    <string name="channel_subscriber_notification_instant_text_three">Inscrito em três temas de entrega instantânea</string>
-    <string name="channel_subscriber_notification_instant_text_four">Inscrito em quatro temas de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_three">Inscrito em três tópicos de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_four">Inscrito em quatro tópicos de entrega instantânea</string>
     <string name="channel_notifications_default_name">Notificações (prioridade padrão)</string>
     <string name="channel_notifications_min_name">Notificações (prioridade mínima)</string>
     <string name="main_menu_notifications_enabled">Notificações ativadas</string>
@@ -19,14 +19,14 @@
     <string name="channel_subscriber_service_name">Serviço de Assinatura</string>
     <string name="channel_subscriber_notification_title">Aguardando notificações</string>
     <string name="channel_subscriber_notification_instant_text">Inscrito em temas de entrega instantânea</string>
-    <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tema de entrega instantânea</string>
-    <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d temas de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tópico de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d tópicos de entrega instantânea</string>
     <string name="channel_subscriber_notification_noinstant_text_two">Inscrito em dois tópicos</string>
-    <string name="channel_subscriber_notification_noinstant_text_four">Inscrito em quatro temas</string>
-    <string name="channel_subscriber_notification_noinstant_text_more">Inscrito em %1$d temas</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Inscrito em quatro tópicos</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Inscrito em %1$d tópicos</string>
     <string name="refresh_message_result">%1$d notificação(ões) recebida(s)</string>
     <string name="refresh_message_no_results">Tudo está atualizado</string>
-    <string name="refresh_message_error">Não foi possível atualizar %1$d inscrições
+    <string name="refresh_message_error">Não foi possível atualizar %1$d subscrições
 \n
 \n%2$s</string>
     <string name="main_action_bar_title">Temas inscritos</string>
@@ -36,18 +36,18 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">Remover permanentemente</string>
     <string name="main_action_mode_delete_dialog_cancel">Cancelar</string>
     <string name="main_item_date_yesterday">ontem</string>
-    <string name="main_add_button_description">Inscrever-se</string>
+    <string name="main_add_button_description">Adicionar Subscrição</string>
     <string name="main_no_subscriptions_text">Parece que você não tem nenhuma inscrição ainda.</string>
     <string name="main_how_to_link">Instruções detalhadas disponíveis em ntfy.sh, e na documentação.</string>
     <string name="main_banner_battery_text">O modo Economia de Energia deve estar desligado para evitar problemas de entrega de notificação no aplicativo.</string>
     <string name="main_item_status_unified_push">%1$s(UnifiedPush)</string>
     <string name="main_banner_websocket_button_remind_later">Perguntar depois</string>
     <string name="main_banner_websocket_button_dismiss">Dispensar</string>
-    <string name="add_dialog_title">Inscrever-se no tema</string>
-    <string name="add_dialog_description_below">Temas podem não ser protegidos por senha, escolha um nome difícil de adivinhar. Uma vez inscrito, você pode usar as notificações PUT/POST.</string>
-    <string name="add_dialog_topic_name_hint">Nome do tema, ex: alertas_jose</string>
+    <string name="add_dialog_title">Inscrever-se no tópico</string>
+    <string name="add_dialog_description_below">Os tópicos podem não ser protegidos por senha, escolha um nome difícil de adivinhar. Uma vez inscrito, você pode usar as notificações PUT/POST.</string>
+    <string name="add_dialog_topic_name_hint">Nome do tópico, ex: alertas_jose</string>
     <string name="add_dialog_use_another_server">Usar outro servidor</string>
-    <string name="add_dialog_use_another_server_description">Insira as URLs do servidor abaixo para inscrever-se nos temas de outros servidores.</string>
+    <string name="add_dialog_use_another_server_description">Insira as URLs do servidor abaixo para inscrever-se nos tópicos de outros servidores.</string>
     <string name="add_dialog_foreground_description">Entrega instantânea está sempre ligada para hosts, exceto %1$s.</string>
     <string name="add_dialog_button_back">Voltar</string>
     <string name="add_dialog_error_connection_failed">Conexão falhou: %1$s</string>
@@ -55,9 +55,9 @@
     <string name="add_dialog_login_username_hint">Nome de usuário</string>
     <string name="add_dialog_login_error_not_authorized">Login falhou. Usuário %1$s não autorizado.</string>
     <string name="add_dialog_login_new_user">Novo usuário</string>
-    <string name="detail_no_notifications_text">Você não recebeu nenhuma notificação desse tema ainda.</string>
+    <string name="detail_no_notifications_text">Você não recebeu nenhuma notificação desse tópico ainda.</string>
     <string name="detail_how_to_example">Exemplo (usando curl): <br/><tt>$ curl -d \"Oi\" %1$s</tt></string>
-    <string name="detail_clear_dialog_message">Apagar todas as notificações desse tema\?</string>
+    <string name="detail_clear_dialog_message">Apagar todas as notificações desse tópico\?</string>
     <string name="detail_clear_dialog_permanently_delete">Apagar permanentemente</string>
     <string name="detail_delete_dialog_message">Cancelar inscrição desse tema e apagar todas as notificações recebidas\?</string>
     <string name="detail_delete_dialog_cancel">Cancelar</string>
@@ -199,7 +199,7 @@
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_delete">Apagar usuário</string>
     <string name="channel_notifications_low_name">Notificações (prioridade baixa)</string>
-    <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois temas de entrega instantânea</string>
+    <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois tópicos de entrega instantânea</string>
     <string name="user_dialog_button_save">Salvar</string>
     <string name="main_item_status_text_one">%1$d notificação</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tópico</string>
@@ -214,14 +214,14 @@
     <string name="main_banner_battery_button_dismiss">Dispensar</string>
     <string name="add_dialog_button_subscribe">Inscrever-se</string>
     <string name="main_banner_battery_button_fix_now">Consertar agora</string>
-    <string name="add_dialog_instant_delivery">Entrega instantânea em modo soneca</string>
+    <string name="add_dialog_instant_delivery">Entrega instantânea em modo descanso</string>
     <string name="add_dialog_button_cancel">Cancelar</string>
     <string name="add_dialog_instant_delivery_description">Garante que as mensagens são entregues imediatamente, mesmo se o dispositivo estiver inativo.</string>
     <string name="add_dialog_button_login">Entrar</string>
     <string name="add_dialog_login_password_hint">Senha</string>
-    <string name="add_dialog_login_description">Esse tema requer login. Insira um nome de usuário e senha.</string>
+    <string name="add_dialog_login_description">Este tópico requer login. Insira um nome de usuário e senha.</string>
     <string name="detail_item_snack_deleted">Notificação removida</string>
-    <string name="detail_how_to_intro">Para enviar notificações para esse tema, basta usar os métodos PUT ou POST na URL do tema.</string>
+    <string name="detail_how_to_intro">Para enviar notificações para esse tópico, basta usar os métodos PUT ou POST na URL do tema.</string>
     <string name="detail_how_to_link">Instruções detalhadas disponíveis em ntfy.sh e na documentação.</string>
     <string name="detail_clear_dialog_cancel">Cancelar</string>
     <string name="detail_delete_dialog_permanently_delete">Apagar permanentemente</string>
@@ -327,4 +327,6 @@
     <string name="add_dialog_base_urls_dropdown_choose">Escolha o URL do serviço</string>
     <string name="add_dialog_base_urls_dropdown_clear">Limpar o URL do serviço</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>
+    <string name="channel_notifications_group_default_name">Por defeito</string>
+    <string name="main_menu_donate_title">Doar 💸</string>
 </resources>

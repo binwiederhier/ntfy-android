@@ -1,0 +1,17 @@
+Lähetä ilmoituksia puhelimeesi mistä tahansa Bash- tai PowerShell-skriptistä tai omasta sovelluksestasi käyttämällä PUT/POST-pyyntöjä, esim. curlin kautta Linuxissa tai Invoke-WebRequestissä.
+
+ntfy on Android-asiakaspalvelu https://ntfy.sh:lle, joka on ilmainen ja avoimen lähdekoodin HTTP-pohjainen pub-sub-palvelu. Voit tilata topikkeja tässä sovelluksessa ja julkaista sitten viestejä yksinkertaisen HTTP-sovellusliittymän kautta.
+
+Käyttökohteet:
+* Ilmoita itsellesi, kun pitkäkestoinen prosessi on valmis
+* Ping puhelimeen, kun varmuuskopiointi epäonnistuu
+* Hälyttää, kun joku kirjautuu palvelimellesi
+
+Esimerkki:
+
+$ curl -d "Varmuuskopiosi on tehty" ntfy.sh/mytopic
+
+Lisää esimerkkejä ja käyttöohjeita löydät täältä:
+* Verkkosivusto: https://ntfy.sh
+* GitHub (palvelin): https://github.com/binwiederhier/ntfy
+* GitHub (Android-sovellus): https://github.com/binwiederhier/ntfy-android
