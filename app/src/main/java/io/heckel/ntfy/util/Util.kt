@@ -212,7 +212,7 @@ fun formatActionLabel(action: Action): String {
     }
 }
 
-fun maybeAppendActionErrors(message: String, notification: Notification): String {
+fun maybeAppendActionErrors(message: CharSequence, notification: Notification): CharSequence {
     val actionErrors = notification.actions
         .orEmpty()
         .mapNotNull { action -> action.error }
