@@ -23,6 +23,7 @@ import androidx.core.view.allViews
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
@@ -176,7 +177,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val attachment = notification.attachment
             val image = attachment.contentUri != null && supportedImage(attachment.type) && previewableImage(attachmentFileStat)
             val bitmap = if (image) attachment.contentUri?.readBitmapFromUriOrNull(context) else null
-            maybeRenderAttachmentImage(context, bitmap)
+            maybeRenderAttachmentImage(context, bitmap, attachment)
             maybeRenderAttachmentBox(context, notification, attachment, attachmentFileStat, bitmap)
         }
 
@@ -351,16 +352,17 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
         }
 
-        private fun maybeRenderAttachmentImage(context: Context, bitmap: Bitmap?) {
+        private fun maybeRenderAttachmentImage(context: Context, bitmap: Bitmap?, attachment: Attachment) {
             if (bitmap == null) {
                 attachmentImageView.visibility = View.GONE
                 return
             }
             try {
-                attachmentImageView.setImageBitmap(bitmap)
+                Glide.with(context).load(attachment.contentUri).fitCenter().into(attachmentImageView)
                 attachmentImageView.setOnClickListener {
-                    val loadImage = { view: ImageView, image: Bitmap -> view.setImageBitmap(image) }
-                    StfalconImageViewer.Builder(context, listOf(bitmap), loadImage)
+                    StfalconImageViewer.Builder<Any?>(context, listOf(bitmap)) { imageView, image ->
+                        Glide.with(context).load(attachment.contentUri).into(imageView)
+                    }
                         .allowZooming(true)
                         .withTransitionFrom(attachmentImageView)
                         .withHiddenStatusBar(false)
