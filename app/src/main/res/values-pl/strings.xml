@@ -169,7 +169,7 @@
     <string name="settings_general_users_prefs_user_used_by_one">Używane przez temat %1$s</string>
     <string name="settings_general_users_prefs_user_not_used">Nieużywane przez żadne tematy</string>
     <string name="settings_advanced_clear_logs_title">Wyczyść logi</string>
-    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSockety</string>
     <string name="detail_settings_global_setting_suffix">przy użyciu ustawienia globalnego</string>
     <string name="detail_settings_about_header">Informacje o</string>
     <string name="detail_settings_about_topic_url_title">Adres URL tematu</string>
@@ -279,7 +279,7 @@
     <string name="settings_general_default_base_url_default_summary">%1$s (domyślny)</string>
     <string name="settings_general_users_title">Zarządzaj użytkownikami</string>
     <string name="settings_general_users_summary">Dodaj/usuń użytkowników dla tematów chronionych</string>
-    <string name="settings_general_users_prefs_user_used_by_many">Używane przez tematy %1$s%1$s</string>
+    <string name="settings_general_users_prefs_user_used_by_many">Używane przez tematy %1$s</string>
     <string name="settings_general_users_prefs_user_add">Dodaj użytkowników</string>
     <string name="settings_general_users_prefs_user_add_title">Dodaj nowego użytkownika</string>
     <string name="settings_general_users_prefs_user_add_summary">Stwórz nowego użytkownika dla nowego serwera</string>
@@ -327,4 +327,20 @@
     <string name="main_banner_websocket_button_dismiss">Odrzuć</string>
     <string name="main_banner_websocket_button_enable_now">Aktywuj teraz</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Użyj strumienia JSON przez HTTP, aby połączyć się z serwerem. Ta metoda jest sprawdzona, ale może zużywać więcej baterii.</string>
+    <string name="main_menu_donate_title">Wspomóż💸</string>
+    <string name="detail_item_cannot_open_apk">Aplikacja nie może zostać zainstalowana. Pobierz ją poprzez przeglądarkę. Sprawdź problem #531 po więcej informacji.</string>
+    <string name="settings_notifications_insistent_max_priority_title">Nadal wysyłaj powiadomienia dla najwyższych priorytetów</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Własne ustawienia powiadomień</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Używa własnych ustawień dla tej subskrypcji</string>
+    <string name="detail_settings_notifications_open_channels_title">Skonfiguruj ustawienia powiadomień</string>
+    <string name="detail_settings_notifications_open_channels_summary">Nadpisanie trybu nie przeszkadzać, dźwięki, itp.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Cały czas alarmuj</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Wyślij alarm tylko raz</string>
+    <string name="channel_notifications_group_default_name">Domyślne</string>
+    <string name="settings_advanced_unifiedpush_title">Załącz</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Powiadomienia o najwyższym priorytecie wysyłają alarm do czasu ich potwierdzenia</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Powiadomienia o najwyższym priorytecie wysyłają powiadomienie tylko raz</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">Ntfy będzie działać jako dystrybutor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">Ntfy nie będzie dystrybutorem UnifiedPush</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Używa domyślnych ustawień (dźwięki, nadpisanie trybu nie przeszkadzać, itp.)</string>
 </resources>
