@@ -1,0 +1,17 @@
+Odosielanie oznámení do telefónu z Bash alebo PowerShell skriptu alebo z vlastnej aplikácie pomocou požiadaviek PUT/POST, napr. prostredníctvom curl v Linuxe alebo Invoke-WebRequest.
+
+ntfy je klient pre Android pre https://ntfy.sh, bezplatnú a open source službu pub-sub založenú na protokole HTTP. V tejto aplikácii sa môžete prihlásiť na odber tém a potom publikovať správy prostredníctvom jednoduchého rozhrania API HTTP.
+
+Použitie:
+* Oznámenie o ukončení dlhodobo prebiehajúceho procesu
+* Pingovanie telefónu, keď zlyhá zálohovanie
+* Upozornenie, keď sa niekto prihlási na váš server
+
+Príklad:
+
+$ curl -d "Vaša záloha je hotová" ntfy.sh/mytopic
+
+Ďalšie príklady a návod na použitie nájdete tu:
+* Webová lokalita: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (aplikácia pre Android): https://github.com/binwiederhier/ntfy-android
