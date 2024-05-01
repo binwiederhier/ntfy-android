@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_default_name">महत्वपूर्ण</string>
+    <string name="channel_notifications_high_name">ज्यादा महत्वपूर्ण</string>
+    <string name="channel_notifications_max_name">बहुत ज्यादा महत्वपूर्ण</string>
+    <string name="channel_notifications_group_default_name">साधारण</string>
+    <string name="channel_notifications_min_name">बहुत कम महत्त्व</string>
+    <string name="channel_notifications_low_name">कम महत्व</string>
+    <string name="channel_subscriber_service_name">सदस्यता सेवा</string>
+    <string name="channel_subscriber_notification_title">आने वाली सूचनाओं को सुनना</string>
+    <string name="channel_subscriber_notification_instant_text_two">दो त्वरित वितरण विषय का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_three">तीन त्वरित वितरण विषय का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_four">चार त्वरित वितरण विषय का जानना</string>
+    <string name="channel_subscriber_notification_instant_text">त्वरित वितरण विषय का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_one">एक त्वरित वितरण विषय का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_more">%1$d त्वरित वितरण विषयों का जानना</string>
+    <string name="channel_subscriber_notification_noinstant_text">विषयों का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_six">छह त्वरित वितरण विषयों का जानना</string>
+    <string name="channel_subscriber_notification_instant_text_five">पाँच त्वरित वितरण विषयों का जानना</string>
+</resources>
