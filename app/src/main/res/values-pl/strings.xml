@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Powiadomienia (minimalny priorytet)</string>
+    <string name="channel_notifications_min_name">Minimalny priorytet</string>
     <string name="channel_notifications_low_name">Powiadomienia (niski priorytet)</string>
     <string name="channel_notifications_default_name">Powiadomienia (domyślny priorytet)</string>
     <string name="channel_notifications_max_name">Powiadomienia (maksymalny priorytet)</string>
