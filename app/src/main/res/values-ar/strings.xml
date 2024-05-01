@@ -40,4 +40,12 @@
     <string name="detail_test_message_error">لا يمكن إرسال رسالة: %1$s</string>
     <string name="detail_no_notifications_text">لم تتلق بعد أية إشعارات حول هذا الموضوع.</string>
     <string name="detail_delete_dialog_permanently_delete">الحذف بشكل نهائي</string>
+    <string name="channel_subscriber_notification_noinstant_text">مشترك في مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">مشترك في موضوعين</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">مشترك في ثلاثة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">مشترك في ستة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">مشترك في أربعة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">مشترك في خمسة مواضيع</string>
+    <string name="main_menu_settings_title">إعدادات</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">مشترك في موضوع واحد</string>
 </resources>
