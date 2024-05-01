@@ -18,7 +18,7 @@
     <string name="main_action_mode_delete_dialog_cancel">取消</string>
     <string name="main_item_status_reconnecting">正在重新连接……</string>
     <string name="main_item_date_yesterday">昨天</string>
-    <string name="main_item_status_unified_push">%1$s（统一推送）</string>
+    <string name="main_item_status_unified_push">%1$s（統一推送）</string>
     <string name="main_how_to_link">详细的说明请见 ntfy.sh 和帮助文档。</string>
     <string name="main_unified_push_toast">此通知由 %1$s 通过 UnifiedPush 管理</string>
     <string name="main_banner_battery_text">请关闭对本应用的电量优化以避免通知推送问题。</string>
