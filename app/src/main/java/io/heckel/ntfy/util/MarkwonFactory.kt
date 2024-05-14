@@ -3,18 +3,18 @@ package io.heckel.ntfy.util
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.text.method.LinkMovementMethod
 import android.text.style.*
+import android.text.util.Linkify
 import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.noties.markwon.*
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CoreProps
 import io.noties.markwon.core.MarkwonTheme
+import io.noties.markwon.core.spans.LinkSpan
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.ext.tables.TableAwareMovementMethod
-import io.noties.markwon.ext.tables.TablePlugin
-import io.noties.markwon.ext.tables.TableTheme
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import org.commonmark.ext.gfm.tables.TableCell
@@ -30,14 +30,22 @@ internal object MarkwonFactory {
         return Markwon.builder(context)
             .usePlugin(CorePlugin.create())
             .usePlugin(MovementMethodPlugin.create(BetterLinkMovementMethod.getInstance()))
-    //        .usePlugin(PicassoImagesPlugin.create(picasso))
+            .usePlugin(ImagesPlugin.create())
+            .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(StrikethroughPlugin.create())
-            //.usePlugin(TablePlugin.create(context))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
-                    builder.linkColor(ContextCompat.getColor(context, R.color.teal))
+                    builder
+                        .linkColor(ContextCompat.getColor(context, R.color.teal))
                         .isLinkUnderlined(true)
+                        .blockMargin(0)
                 }
+
+                override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
+                    builder
+                        .linkResolver(LinkResolverDef())
+                }
+
                 override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
                     builder
                         .setFactory(Heading::class.java) { _, props: RenderProps? ->
@@ -52,7 +60,7 @@ internal object MarkwonFactory {
                         .setFactory(Code::class.java) { _, _ ->
                             arrayOf<Any>(
                                 BackgroundColorSpan(Color.LTGRAY),
-                                TypefaceSpan("monospace")
+                                //TypefaceSpan("monospace")
                             )
                         }
                         .setFactory(ListItem::class.java) { _, _ -> BulletSpan(bulletGapWidth) }

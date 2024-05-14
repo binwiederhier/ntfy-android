@@ -112,10 +112,16 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
             val context = itemView.context
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
+            val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
             dateView.text = formatDateShort(notification.timestamp)
-            messageView.text = maybeAppendActionErrors(maybeMarkdown(formatMessage(notification), notification), notification)
-            messageView.autoLinkMask = if (notification.isMarkdown()) 0 else Linkify.WEB_URLS
+            if (notification.isMarkdown()) {
+                messageView.autoLinkMask = 0
+                markwon.setMarkdown(messageView, message.toString())
+            } else {
+                messageView.autoLinkMask = Linkify.WEB_URLS
+                messageView.text = message
+            }
             messageView.movementMethod = BetterLinkMovementMethod.getInstance()
             messageView.setOnClickListener {
                 // Click & Long-click listeners on the text as well, because "autoLink=web" makes them
