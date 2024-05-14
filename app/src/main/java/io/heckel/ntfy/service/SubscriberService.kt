@@ -15,9 +15,10 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.Log
@@ -28,6 +29,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.random.Random
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -67,6 +69,7 @@ class SubscriberService : Service() {
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
     private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
+    private val parser = NotificationParser()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
@@ -247,11 +250,39 @@ class SubscriberService : Service() {
         }
     }
 
+    private fun onConnectionOpen(connectionId: ConnectionId, message: String?) {
+        Log.d(TAG, "Received open from connection ${connectionId.baseUrl} with message: $message")
+        // this check is sufficient for now, and the message can be upgraded to include other parameters in the future
+        if (message?.contains(ApiService.EVENT_OPEN_PARAM_NEW_TOPIC) == true) {
+            GlobalScope.launch(Dispatchers.IO) {
+                for (topic in connectionId.topicsToSubscriptionIds.keys) {
+                    if (connectionId.topicIsUnifiedPush[topic] == true) {
+                        Log.d(TAG, "Attempting to re-register ${connectionId.baseUrl}/$topic")
+                        io.heckel.ntfy.up.BroadcastReceiver.sendRegistration(baseContext, connectionId.baseUrl, topic)
+                        // TODO is that the right context - looks like it works???
+                    }
+                }
+            }
+        }
+    }
     private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
         repository.updateState(subscriptionIds, state)
     }
 
-    private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
+    // Process messages received from the server, and dispatch a notification if required.
+    // Return the ID of the notification if successfully processed, else null.
+    private fun onNotificationReceived(connectionId: ConnectionId, message: Message) : String? {
+        if (message.event == ApiService.EVENT_OPEN) {
+            onConnectionOpen(connectionId, message.message)
+            return null
+        }
+
+        val (topic, notificationWithoutId) = parser.parseNotificationWithTopic(message, notificationId = Random.nextInt(), subscriptionId = 0)
+                                                ?: return null // subscriptionId to be set downstream
+        val subscriptionId = connectionId.topicsToSubscriptionIds[topic] ?: return null
+        val subscription = repository.getSubscription(subscriptionId) ?: return null
+        val notification = notificationWithoutId.copy(subscriptionId = subscription.id)
+
         // Wakelock while notifications are being dispatched
         // Wakelocks are reference counted by default so that should work neatly here
         wakeLock?.acquire(NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS)
@@ -269,6 +300,7 @@ class SubscriberService : Service() {
                 }
             }
         }
+        return notification.id
     }
 
     private fun createNotificationChannel(): NotificationManager? {

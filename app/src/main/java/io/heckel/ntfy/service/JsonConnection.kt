@@ -3,6 +3,7 @@ package io.heckel.ntfy.service
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.*
 import okhttp3.Call
@@ -16,7 +17,7 @@ class JsonConnection(
     private val user: User?,
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
-    private val notificationListener: (Subscription, Notification) -> Unit,
+    private val notificationListener: (ConnectionId, Message) -> String?,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
@@ -40,12 +41,8 @@ class JsonConnection(
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
                 val startTime = System.currentTimeMillis()
-                val notify = notify@ { topic: String, notification: Notification ->
-                    since = notification.id
-                    val subscriptionId = topicsToSubscriptionIds[topic] ?: return@notify
-                    val subscription = repository.getSubscription(subscriptionId) ?: return@notify
-                    val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
-                    notificationListener(subscription, notificationWithSubscriptionId)
+                val notify = { message : Message ->
+                        since = notificationListener(ConnectionId(baseUrl, topicsToSubscriptionIds, topicIsUnifiedPush), message)?: since
                 }
                 val failed = AtomicBoolean(false)
                 val fail = { _: Exception ->

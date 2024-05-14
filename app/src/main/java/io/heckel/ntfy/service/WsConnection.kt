@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
+import io.heckel.ntfy.msg.Message
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
@@ -18,7 +19,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.random.Random
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
@@ -36,7 +36,7 @@ class WsConnection(
     private val user: User?,
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
-    private val notificationListener: (Subscription, Notification) -> Unit,
+    private val notificationListener: (ConnectionId, Message) -> String?,
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
@@ -59,7 +59,8 @@ class WsConnection(
     private val topicIsUnifiedPush = connectionId.topicIsUnifiedPush
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
-    private val unifiedPushTopicsStr = topicIsUnifiedPush.filter { entry -> entry.value }.keys.joinToString(separator = ",")
+    private val unifiedPushTopicsStr = topicIsUnifiedPush.filter { entry -> entry.value
+}.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
     init {
@@ -137,18 +138,16 @@ class WsConnection(
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
                 Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
-                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, notificationId = Random.nextInt())
-                if (notificationWithTopic == null) {
-                    Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
-                    return@synchronize
+                val message = parser.parseMessage(text) ?: return@synchronize
+                val id = notificationListener(
+                    ConnectionId(baseUrl, topicsToSubscriptionIds, topicIsUnifiedPush),
+                    message
+                )
+                if (id != null) {
+                    since.set(id)
+                } else {
+                    Log.d(WsConnection.TAG,"$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                 }
-                val topic = notificationWithTopic.topic
-                val notification = notificationWithTopic.notification
-                val subscriptionId = topicsToSubscriptionIds[topic] ?: return@synchronize
-                val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
-                val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
-                notificationListener(subscription, notificationWithSubscriptionId)
-                since.set(notification.id)
             }
         }
 

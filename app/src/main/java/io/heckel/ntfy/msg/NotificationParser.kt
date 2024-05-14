@@ -13,13 +13,17 @@ import java.lang.reflect.Type
 class NotificationParser {
     private val gson = Gson()
 
+    fun parseMessage(s: String) : Message? {
+        return gson.fromJson(s, Message::class.java)
+    }
+
     fun parse(s: String, subscriptionId: Long = 0, notificationId: Int = 0): Notification? {
-        val notificationWithTopic = parseWithTopic(s, subscriptionId = subscriptionId, notificationId = notificationId)
+        val message = parseMessage(s) ?: return null
+        val notificationWithTopic = parseNotificationWithTopic(message, subscriptionId = subscriptionId, notificationId = notificationId)
         return notificationWithTopic?.notification
     }
 
-    fun parseWithTopic(s: String, subscriptionId: Long = 0, notificationId: Int = 0): NotificationWithTopic? {
-        val message = gson.fromJson(s, Message::class.java)
+    fun parseNotificationWithTopic(message: Message, subscriptionId: Long = 0, notificationId: Int = 0): NotificationWithTopic? {
         if (message.event != ApiService.EVENT_MESSAGE) {
             return null
         }
@@ -56,7 +60,7 @@ class NotificationParser {
             subscriptionId = subscriptionId,
             timestamp = message.time,
             title = message.title ?: "",
-            message = message.message,
+            message = message.message?: "",
             encoding = message.encoding ?: "",
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),
