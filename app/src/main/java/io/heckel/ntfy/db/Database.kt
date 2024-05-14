@@ -108,7 +108,9 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-)
+) {
+    val isUnread: Boolean get() = notificationId != 0
+}
 
 @Entity
 data class Attachment(
