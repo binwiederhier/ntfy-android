@@ -99,6 +99,7 @@ data class Notification(
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
+    @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
     @ColumnInfo(name = "encoding") val encoding: String, // "base64" or ""
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
@@ -109,6 +110,10 @@ data class Notification(
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
+
+fun Notification.isMarkdown(): Boolean {
+    return contentType == "text/markdown"
+}
 
 @Entity
 data class Attachment(

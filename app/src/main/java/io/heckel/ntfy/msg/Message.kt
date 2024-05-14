@@ -1,6 +1,7 @@
 package io.heckel.ntfy.msg
 
 import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
 
 /* This annotation ensures that proguard still works in production builds,
  * see https://stackoverflow.com/a/62753300/1440785 */
@@ -17,6 +18,7 @@ data class Message(
     val actions: List<MessageAction>?,
     val title: String?,
     val message: String,
+    @SerializedName("content_type") val contentType: String?,
     val encoding: String?,
     val attachment: MessageAttachment?,
 )
