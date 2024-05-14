@@ -28,6 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Swipe to refresh
         mainListContainer = findViewById(R.id.main_subscriptions_list_container)
         mainListContainer.setOnRefreshListener { refreshAllSubscriptions() }
-        mainListContainer.setColorSchemeResources(Colors.refreshProgressIndicator)
+        mainListContainer.setColorSchemeColors(Colors.swipeToRefreshColor(this))
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntries: View = findViewById(R.id.main_no_subscriptions)
@@ -608,8 +609,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private fun onMultiDeleteClick() {
         Log.d(DetailActivity.TAG, "Showing multi-delete dialog for selected items")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.main_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
                 adapter.selected.map { subscriptionId -> viewModel.remove(this, subscriptionId) }
@@ -648,9 +648,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             })
 
         // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        fadeStatusBarColor(window, fromColor, toColor)
+        fadeStatusBarColor(window, Colors.statusBarNormal(this), Colors.statusBarActionMode(this))
     }
 
     private fun finishActionMode() {
@@ -677,9 +675,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             })
 
         // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        fadeStatusBarColor(window, fromColor, toColor)
+        fadeStatusBarColor(window, Colors.statusBarActionMode(this), Colors.statusBarNormal(this))
     }
 
     private fun redrawList() {
