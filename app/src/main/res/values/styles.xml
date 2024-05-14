@@ -1,33 +1,67 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Main app theme; dark theme styles see values-night/styles.xml -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/teal</item>
-        <item name="colorAccent">@color/teal</item> <!-- checkboxes, text fields -->
-        <item name="android:colorBackground">@color/white</item> <!-- background -->
-        <item name="android:statusBarColor">@color/teal</item>
-        <item name="actionModeBackground">@color/teal_dark</item>
+    <style name="BaseTheme" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_error</item>
+        <item name="colorErrorContainer">@color/md_theme_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_background</item>
+        <item name="colorOnBackground">@color/md_theme_onBackground</item>
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
+
+        <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
+        <item name="android:statusBarColor">?colorPrimaryInverse</item>
+        <item name="actionModeBackground">?backgroundColor</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="actionBarStyle">@style/ActionBarStyle</item>
+    </style>
+
+    <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
     <style name="DangerText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/red_dark</item>
+        <item name="android:textColor">?attr/colorError</item>
     </style>
 
-    <style name="FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
-        <item name="tint">@color/white</item>
-        <item name="backgroundTint">@color/teal</item>
-    </style>
+    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary" />
 
-    <style name="CardView" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/white</item>
-    </style>
+    <style name="CardView" parent="@style/Widget.Material3.CardView.Elevated" />
 
-    <style name="CardViewBackground">
-        <item name="android:background">@color/gray_400</item>
-    </style>
+    <style name="CardViewBackground" />
 
     <!-- Rounded corners in images, see https://stackoverflow.com/a/61960983/1440785 -->
     <style name="roundedCornersImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">5dp</item>
+    </style>
+
+    <!-- Material Design 3 switches in the preferences -->
+    <style name="MaterialSwitch" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/view_preference_switch</item>
+    </style>
+
+    <!-- Action bar with custom background color -->
+    <style name="ActionBarStyle" parent="@style/Widget.Material3.ActionBar.Solid">
+        <item name="background">?colorPrimaryInverse</item>
     </style>
 </resources>
