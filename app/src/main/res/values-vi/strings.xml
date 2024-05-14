@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Thông báo (ưu tiên thấp)</string>
+    <string name="channel_notifications_low_name">Ưu tiên thấp</string>
+    <string name="add_dialog_login_password_hint">Mật khẩu</string>
+    <string name="add_dialog_login_username_hint">Tên tài khoản</string>
+    <string name="add_dialog_login_description">Chủ đề này cần đăng nhập để truy cập. Vui lòng nhập tên tài khoản và mật khẩu.</string>
+    <string name="user_dialog_button_add">Thêm người dùng</string>
+    <string name="add_dialog_login_error_not_authorized">Đăng nhập thất bại. Không xác thực được tài khoản %1$s.</string>
+    <string name="user_dialog_description_edit">Bạn có thể chỉnh sửa tên tài khoản hoặc mật khẩu của người dùng này, hoặc xóa người dùng này khỏi hệ thống.</string>
+    <string name="user_dialog_button_save">Lưu</string>
+    <string name="user_dialog_password_hint_add">Mật khẩu</string>
+    <string name="add_dialog_topic_name_hint">Tên chủ đề, ví dụ: phils_alerts</string>
+    <string name="user_dialog_button_delete">Xóa người dùng</string>
+    <string name="user_dialog_button_cancel">Hủy</string>
+    <string name="add_dialog_use_another_server">Sử dụng máy chủ khác</string>
+    <string name="user_dialog_password_hint_edit">Mật khẩu (không đổi nếu để trống)</string>
+    <string name="add_dialog_title">Theo dõi chủ đề</string>
+    <string name="user_dialog_username_hint">Tên tài khoản</string>
+    <string name="channel_notifications_min_name">Ưu tiên thấp nhất</string>
+    <string name="channel_notifications_max_name">Ưu tiên cao nhất</string>
+    <string name="channel_notifications_group_default_name">Mặc định</string>
+    <string name="channel_subscriber_service_name">Dịch vụ thông báo</string>
+    <string name="channel_notifications_default_name">Mặc định</string>
+    <string name="channel_notifications_high_name">Ưu tiên cao</string>
+    <string name="channel_subscriber_notification_title">Chờ thông báo</string>
 </resources>
