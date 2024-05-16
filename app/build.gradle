@@ -128,4 +128,9 @@ dependencies {
 
     // Image viewer
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    kapt 'com.github.bumptech.glide:compiler:4.16.0'
+
 }
