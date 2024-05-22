@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var adapter: MainAdapter
     private lateinit var fab: FloatingActionButton
+    private lateinit var fabAddNormal: FloatingActionButton
+    private lateinit var fabAddNormalLabel: TextView
+    private lateinit var fabAddQr: FloatingActionButton
+    private lateinit var fabAddQrLabel: TextView
 
     // Other stuff
     private var actionMode: ActionMode? = null
@@ -87,10 +91,30 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         // Action bar
         title = getString(R.string.main_action_bar_title)
 
-        // Floating action button ("+")
+        // Floating action button and menu options ("+")
+        var isFabOpen = false
         fab = findViewById(R.id.fab)
+        fabAddNormal = findViewById(R.id.fab_add_normal)
+        fabAddNormalLabel = findViewById(R.id.fab_add_normal_label)
+        fabAddQr = findViewById(R.id.fab_add_qr)
+        fabAddQrLabel = findViewById(R.id.fab_add_qr_label)
+
         fab.setOnClickListener {
+            if (!isFabOpen) {
+                showFabMenu()
+                isFabOpen = true
+            } else {
+                closeFabMenu()
+                isFabOpen = false
+            }
+        }
+
+        fabAddNormal.setOnClickListener {
             onSubscribeButtonClick()
+        }
+
+        fabAddQr.setOnClickListener {
+            onSubscribeQrButtonClick()
         }
 
         // Swipe to refresh
@@ -212,6 +236,54 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
         // Permissions
         maybeRequestNotificationPermission()
+    }
+
+    private fun showFabMenu() {
+        fabAddNormal.alpha = 0f
+        fabAddNormal.visibility = View.VISIBLE
+        fabAddNormal.animate().alpha(1f).translationY(-45.0f).setDuration(300).start()
+
+        fabAddNormalLabel.visibility = View.VISIBLE
+        fabAddNormalLabel.alpha = 0f
+        fabAddNormalLabel.animate().alpha(1f).translationY(-45.0f).setDuration(300).start()
+
+        fabAddQr.alpha = 0f
+        fabAddQr.visibility = View.VISIBLE
+        fabAddQr.animate().alpha(1f).translationY(-85.0f).setDuration(300).start()
+
+        fabAddQrLabel.visibility = View.VISIBLE
+        fabAddQrLabel.alpha = 0f
+        fabAddQrLabel.animate().alpha(1f).translationY(-85.0f).setDuration(300).start()
+
+        fab.animate().rotation(45.0f).setDuration(300).start()
+    }
+
+    private fun closeFabMenu() {
+        fabAddNormal.animate()
+            .translationY(0f)
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction { fabAddNormal.visibility = View.GONE }
+
+        fabAddNormalLabel.animate()
+            .translationY(0f)
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction { fabAddNormalLabel.visibility = View.GONE }
+
+        fabAddQr.animate()
+            .translationY(0f)
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction { fabAddQr.visibility = View.GONE }
+
+        fabAddQrLabel.animate()
+            .translationY(0f)
+            .alpha(0f)
+            .setDuration(300)
+            .withEndAction { fabAddQrLabel.visibility = View.GONE }
+
+        fab.animate().rotation(0.0f).setDuration(300).start()
     }
 
     private fun maybeRequestNotificationPermission() {
@@ -438,6 +510,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
 
     private fun onSubscribeButtonClick() {
         val newFragment = AddFragment()
+        newFragment.show(supportFragmentManager, AddFragment.TAG)
+    }
+
+    private fun onSubscribeQrButtonClick() {
+        val newFragment = AddQrFragment()
         newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 

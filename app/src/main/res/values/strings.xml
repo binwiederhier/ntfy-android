@@ -60,6 +60,8 @@
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_date_yesterday">yesterday</string>
     <string name="main_add_button_description">Add subscription</string>
+    <string name="main_add_normal_button_description">Add subscription</string>
+    <string name="main_add_qr_button_description">Add subscription with QR Code</string>
     <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
     <string name="main_how_to_intro">
         Click the + to create or subscribe to a topic.
