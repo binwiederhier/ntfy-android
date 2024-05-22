@@ -149,6 +149,8 @@ class Backuper(val context: Context) {
                             body = a.body,
                             intent = a.intent,
                             extras = a.extras,
+                            intent_class = a.intent_class,
+                            intent_package = a.intent_package,
                             progress = a.progress,
                             error = a.error
                         )
@@ -278,6 +280,8 @@ class Backuper(val context: Context) {
                         body = a.body,
                         intent = a.intent,
                         extras = a.extras,
+                        intent_class = a.intent_class,
+                        intent_package = a.intent_package,
                         progress = a.progress,
                         error = a.error
                     )
@@ -407,6 +411,8 @@ data class Action(
     val body: String?, // used in "http" action
     val intent: String?, // used in "broadcast" action
     val extras: Map<String,String>?, // used in "broadcast" action
+    val intent_class: String?, // used in "broadcast" action
+    val intent_package: String?, // used in "broadcast" action
     val progress: Int?, // used to indicate progress in popup
     val error: String? // used to indicate errors in popup
 )
