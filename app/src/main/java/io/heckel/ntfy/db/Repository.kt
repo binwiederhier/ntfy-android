@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
@@ -42,6 +45,13 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .listFlow()
             .asLiveData()
             .map { list -> list.map { Pair(it.id, it.instant) }.toSet() }
+    }
+
+    suspend fun getSubscriptionByHash(topicHash: String): Subscription? {
+        return toSubscription(
+            subscriptionDao.listFlow().map { subs -> subs.first { topicHash == it.urlHash() } }
+                .first()
+        )
     }
 
     suspend fun getSubscriptions(): List<Subscription> {

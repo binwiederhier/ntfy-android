@@ -466,11 +466,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         )
         viewModel.add(subscription)
 
-        // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
-        if (baseUrl == appBaseUrl) {
-            Log.d(TAG, "Subscribing to Firebase topic $topic")
-            messenger.subscribe(topic)
-        }
+        // Subscribe to Firebase topic (even if instant, just to be sure!)
+        val firebaseTopic = if (baseUrl == appBaseUrl) topic else topicHash(baseUrl, topic)
+        Log.d(TAG, "Subscribing to Firebase topic $firebaseTopic")
+        messenger.subscribe(firebaseTopic)
 
         // Fetch cached messages
         lifecycleScope.launch(Dispatchers.IO) {
