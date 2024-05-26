@@ -6,6 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.util.topicHash
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
 
@@ -90,7 +91,9 @@ data class SubscriptionWithMetadata(
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
-)
+) {
+    fun urlHash() = topicHash(baseUrl, topic)
+}
 
 @Entity(primaryKeys = ["id", "subscriptionId"])
 data class Notification(

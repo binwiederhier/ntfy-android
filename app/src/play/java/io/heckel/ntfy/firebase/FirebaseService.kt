@@ -61,23 +61,28 @@ class FirebaseService : FirebaseMessagingService() {
     }
 
     private fun handlePollRequest(remoteMessage: RemoteMessage) {
-        val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
-        val topic = remoteMessage.data["topic"] ?: return
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val workName = "${PollWorker.WORK_NAME_ONCE_SINGE_PREFIX}_${baseUrl}_${topic}"
-        val workManager = WorkManager.getInstance(this)
-        val workRequest = OneTimeWorkRequest.Builder(PollWorker::class.java)
-            .setInputData(workDataOf(
-                PollWorker.INPUT_DATA_BASE_URL to baseUrl,
-                PollWorker.INPUT_DATA_TOPIC to topic
-            ))
-            .setConstraints(constraints)
-            .build()
-        Log.d(TAG, "Poll request for ${topicShortUrl(baseUrl, topic)} received, scheduling unique poll worker with name $workName")
+        CoroutineScope(job).launch {
+            val pollTopic = remoteMessage.data["topic"] ?: return@launch
+            val subscription = repository.getSubscriptionByHash(pollTopic)
+            val baseUrl = subscription?.baseUrl ?: getString(R.string.app_base_url)
+            val topic = subscription?.topic ?: pollTopic
 
-        workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, workRequest)
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+            val workName = "${PollWorker.WORK_NAME_ONCE_SINGE_PREFIX}_${baseUrl}_${topic}"
+            val workManager = WorkManager.getInstance(this@FirebaseService)
+            val workRequest = OneTimeWorkRequest.Builder(PollWorker::class.java)
+                .setInputData(workDataOf(
+                    PollWorker.INPUT_DATA_BASE_URL to baseUrl,
+                    PollWorker.INPUT_DATA_TOPIC to topic
+                ))
+                .setConstraints(constraints)
+                .build()
+            Log.d(TAG, "Poll request for ${topicShortUrl(baseUrl, topic)} received, scheduling unique poll worker with name $workName")
+
+            workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, workRequest)
+        }
     }
 
     private fun handleMessage(remoteMessage: RemoteMessage) {

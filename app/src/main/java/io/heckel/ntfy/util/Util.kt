@@ -59,6 +59,7 @@ fun topicUrlWs(baseUrl: String, topic: String, since: String) = "${topicUrl(base
 fun topicUrlAuth(baseUrl: String, topic: String) = "${topicUrl(baseUrl, topic)}/auth"
 fun topicUrlJsonPoll(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?poll=1&since=$since"
 fun topicShortUrl(baseUrl: String, topic: String) = shortUrl(topicUrl(baseUrl, topic))
+fun topicHash(baseUrl: String, topic: String) = topicUrl(baseUrl, topic).sha256()
 
 fun subscriptionTopicShortUrl(subscription: Subscription) : String {
     return topicShortUrl(subscription.baseUrl, subscription.topic)
