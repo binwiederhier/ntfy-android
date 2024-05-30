@@ -327,4 +327,12 @@
     <string name="settings_advanced_record_logs_summary_disabled">הפעלת תיעוד כדי לאפשר לך לשתף יומנים לאחר מכן לניתוח תקלות.</string>
     <string name="settings_advanced_export_logs_summary">העתקת יומנים ללוח הגזירים או העלאתם ל־nopaste.net (בבעלות יוצר ntfy). אפשר לצנזר שמות מארחים ונושאים, התראות לא תצונזרנה אף פעם.</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy לא יתנהג כמו מפיץ UnifiedPush</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">עדיפות מרבית להתראות חד־פעמיות</string>
+    <string name="detail_settings_global_setting_title">להשתמש בהגדרות הכלליות</string>
+    <string name="settings_advanced_record_logs_title">יומני רשומות</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">הנושאים/המארחים האלה הוחלפו בשמות של פירות, כך שאפשר לשנות את היומן הזה בלי חשש:
+\n
+\n%1$s
+\n
+\nהסיסמאות מעורבבות אבל לא מופיעות כאן.</string>
 </resources>
