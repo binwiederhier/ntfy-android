@@ -335,4 +335,12 @@
 \n%1$s
 \n
 \nהסיסמאות מעורבבות אבל לא מופיעות כאן.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">להשתמש ב־WebSockets כדי להתחבר לשרת. זאת השיטה המומלצת אבל עלולה לדרוש הגדרות נוספות במתווך שלך.</string>
+    <string name="detail_settings_notifications_open_channels_summary">עקיפת „לא להפריע”, צלילים וכו׳</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">לא השתנו נושאים/שמות מארחים. אולי אין לך מינויים?</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">להשתמש בתזרים JSON על גבי HTTP כדי להתחבר לשרת. השיטה הזאת נבדקה תחת אש אבל עלולה לצרוך יותר חשמל מהסוללה.</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">הגדרות התראה מותאמות אישית</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">נעשה שימוש בהגדרות ברירת המחדל (צלילים, עקיפת „לא להפריע” וכו׳)</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">נעשה שימוש בהגדרות מותאמות אישית למינוי הזה</string>
+    <string name="detail_settings_appearance_display_name_message">הגדרת שם תצוגה מותאם אישית למינוי הזה. להשאיר ריק לברירת המחדל (%1$s).</string>
 </resources>
