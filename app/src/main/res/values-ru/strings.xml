@@ -33,7 +33,7 @@
     <string name="detail_menu_disable_instant">Выключить моментальную доставку</string>
     <string name="detail_menu_test">Отправить тестовое уведомление</string>
     <string name="detail_menu_copy_url">Скопировать URL-адрес темы</string>
-    <string name="detail_menu_clear">Отчистить все уведомления</string>
+    <string name="detail_menu_clear">Очистить все уведомления</string>
     <string name="detail_menu_settings">Настройки подписок</string>
     <string name="detail_menu_unsubscribe">Отписаться</string>
     <string name="detail_action_mode_menu_copy">Скопировать</string>
@@ -47,7 +47,7 @@
     <string name="notification_dialog_title">Заглушить уведомления</string>
     <string name="settings_notifications_auto_download_100k">Если меньше 100 кб</string>
     <string name="settings_notifications_auto_delete_never">Никогда</string>
-    <string name="settings_notifications_auto_delete_three_days">Черед три дня</string>
+    <string name="settings_notifications_auto_delete_three_days">Через три дня</string>
     <string name="settings_notifications_auto_delete_one_day">Через один день</string>
     <string name="settings_notifications_auto_delete_one_week">Через неделю</string>
     <string name="settings_notifications_auto_delete_one_month">Через месяц</string>
@@ -320,7 +320,7 @@
     <string name="detail_settings_appearance_header">Внешний вид</string>
     <string name="detail_settings_appearance_icon_error_saving">Невозможно сохранить иконку: %1$s</string>
     <string name="detail_settings_appearance_display_name_title">Псевдоним</string>
-    <string name="detail_settings_global_setting_suffix">испольует глобальное значение</string>
+    <string name="detail_settings_global_setting_suffix">использует глобальное значение</string>
     <string name="detail_settings_appearance_display_name_message">Выставить произвольный псевдоним для этой подписки. Оставьте пустым чтобы использовать значение по умолчанию (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (по умолчанию)</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Скопирован в буфер обмена</string>
