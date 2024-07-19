@@ -1,7 +1,7 @@
 package io.heckel.ntfy.util
 
 import android.content.Context
-import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.style.*
 import android.text.util.Linkify
@@ -11,7 +11,6 @@ import io.noties.markwon.*
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CoreProps
 import io.noties.markwon.core.MarkwonTheme
-import io.noties.markwon.core.spans.LinkSpan
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
@@ -38,7 +37,6 @@ internal object MarkwonFactory {
                     builder
                         .linkColor(ContextCompat.getColor(context, R.color.teal))
                         .isLinkUnderlined(true)
-                        .blockMargin(0)
                 }
 
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
@@ -49,20 +47,13 @@ internal object MarkwonFactory {
                 override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
                     builder
                         .setFactory(Heading::class.java) { _, props: RenderProps? ->
-                            arrayOf<Any>(
+                            arrayOf(
                                 RelativeSizeSpan(headingSizes[CoreProps.HEADING_LEVEL.require(props!!) - 1]),
                                 StyleSpan(Typeface.BOLD)
                             )
                         }
                         .setFactory(Emphasis::class.java) { _, _ -> StyleSpan(Typeface.ITALIC) }
                         .setFactory(StrongEmphasis::class.java) { _, _ -> StyleSpan(Typeface.BOLD) }
-                        .setFactory(BlockQuote::class.java) { _, _ -> QuoteSpan() }
-                        .setFactory(Code::class.java) { _, _ ->
-                            arrayOf<Any>(
-                                BackgroundColorSpan(Color.LTGRAY),
-                                //TypefaceSpan("monospace")
-                            )
-                        }
                         .setFactory(ListItem::class.java) { _, _ -> BulletSpan(bulletGapWidth) }
                 }
 
@@ -76,26 +67,19 @@ internal object MarkwonFactory {
 
         return Markwon.builder(context)
             .usePlugin(CorePlugin.create())
-            //.usePlugin(PicassoImagesPlugin.create(picasso))
+            .usePlugin(ImagesPlugin.create())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
                     builder
                         .setFactory(Heading::class.java) { _, props: RenderProps? ->
-                            arrayOf<Any>(
+                            arrayOf(
                                 RelativeSizeSpan(headingSizes[CoreProps.HEADING_LEVEL.require(props!!) - 1]),
                                 StyleSpan(Typeface.BOLD)
                             )
                         }
                         .setFactory(Emphasis::class.java) { _, _ -> StyleSpan(Typeface.ITALIC) }
                         .setFactory(StrongEmphasis::class.java) { _, _ -> StyleSpan(Typeface.BOLD) }
-                        .setFactory(BlockQuote::class.java) { _, _ -> QuoteSpan() }
-                        .setFactory(Code::class.java) { _, _ ->
-                            arrayOf<Any>(
-                                BackgroundColorSpan(Color.LTGRAY),
-                                TypefaceSpan("monospace")
-                            )
-                        }
                         .setFactory(ListItem::class.java) { _, _ -> BulletSpan(bulletGapWidth) }
                         .setFactory(Link::class.java) { _, _ -> null }
                 }
