@@ -327,4 +327,5 @@
     <string name="user_dialog_password_hint_add">비밀번호</string>
     <string name="user_dialog_button_add">사용자 추가</string>
     <string name="user_dialog_button_delete">사용자 삭제</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">이 구독에 사용자 설정 사용</string>
 </resources>
