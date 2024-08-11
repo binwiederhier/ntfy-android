@@ -65,7 +65,11 @@ fun subscriptionTopicShortUrl(subscription: Subscription) : String {
 }
 
 fun displayName(subscription: Subscription) : String {
-    return subscription.displayName ?: subscriptionTopicShortUrl(subscription)
+    if (!subscription.displayName.isNullOrBlank()) return subscription.displayName
+
+    if (!subscription.clientMessage.isNullOrBlank()) return subscription.clientMessage
+
+    return subscriptionTopicShortUrl(subscription)
 }
 
 fun shortUrl(url: String) = url
@@ -508,4 +512,3 @@ fun Button.dangerButton(context: Context) {
 fun Long.nullIfZero(): Long? {
     return if (this == 0L) return null else this
 }
-

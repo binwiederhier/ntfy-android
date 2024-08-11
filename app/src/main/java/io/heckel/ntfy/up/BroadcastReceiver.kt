@@ -34,6 +34,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
     private fun register(context: Context, intent: Intent) {
         val appId = intent.getStringExtra(EXTRA_APPLICATION) ?: return
         val connectorToken = intent.getStringExtra(EXTRA_TOKEN) ?: return
+        val clientMessage = intent.getStringExtra(EXTRA_MESSAGE)
         val app = context.applicationContext as Application
         val repository = app.repository
         val distributor = Distributor(app)
@@ -85,6 +86,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     upAppId = appId,
                     upConnectorToken = connectorToken,
                     displayName = null,
+                    clientMessage = clientMessage,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
