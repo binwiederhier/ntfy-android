@@ -18,4 +18,23 @@
     <string name="main_action_mode_menu_unsubscribe">Lõpeta tellimus</string>
     <string name="main_action_mode_delete_dialog_cancel">Katkesta</string>
     <string name="main_item_status_text_one">%1$d teavitus</string>
+    <string name="channel_notifications_high_name">Oluline</string>
+    <string name="add_dialog_button_subscribe">Telli</string>
+    <string name="add_dialog_button_back">Tagasi</string>
+    <string name="add_dialog_button_login">Logi sisse</string>
+    <string name="add_dialog_login_title">Sisselogimine on vajalik</string>
+    <string name="add_dialog_login_password_hint">Salasõna</string>
+    <string name="channel_notifications_min_name">Väikseim tähtsus</string>
+    <string name="channel_notifications_low_name">Vähetähtis</string>
+    <string name="channel_notifications_default_name">Vaikimisi tähtsus</string>
+    <string name="channel_notifications_max_name">Väga oluline</string>
+    <string name="channel_notifications_group_default_name">Vaikimisi</string>
+    <string name="add_dialog_error_connection_failed">Ühenduse loomine ei õnnestunud: %1$s</string>
+    <string name="add_dialog_login_description">Selle teema jälgimine eeldab sisselogimist. Palun sisesta oma kasutajanimi ja salasõna.</string>
+    <string name="add_dialog_login_username_hint">Kasutajanimi</string>
+    <string name="add_dialog_login_error_not_authorized">Sisselogimine ei õnnestunud. Kasutajal %1$s puuduvad õigused.</string>
+    <string name="add_dialog_login_new_user">Uus kasutaja</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Vali teenuse võrguaadress</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Eemalda teenuse võrguaadress</string>
+    <string name="detail_no_notifications_text">Sa pole sellel teemal saanud veel ühtegi teavitust.</string>
 </resources>
