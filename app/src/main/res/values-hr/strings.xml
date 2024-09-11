@@ -6,4 +6,33 @@
     <string name="channel_notifications_high_name">Visoki prioritet</string>
     <string name="channel_notifications_max_name">Maksimalni prioritet</string>
     <string name="channel_notifications_group_default_name">Zadano</string>
+    <string name="channel_subscriber_notification_instant_text_two">Pretplaćeni na dvije teme trenutne isporuke</string>
+    <string name="channel_subscriber_notification_instant_text_three">Pretplaćeni na tri teme trenutne isporuke</string>
+    <string name="channel_subscriber_notification_instant_text_more">Pretplaćeni ste na %1$d tema trenutne isporuke</string>
+    <string name="channel_subscriber_notification_noinstant_text">Pretplaćeni na teme</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Pretplaćeni na jednu temu</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Pretplaćeni na pet tema</string>
+    <string name="refresh_message_result">%1$d notifikacija primljeno</string>
+    <string name="main_unified_push_toast">Ovom pretplatom upravlja %1$s kroz UnifiedPush</string>
+    <string name="main_banner_battery_text">Optimizacija baterije bi trebala biti isključena da izbjegnete probleme s primanjem notifikacija.</string>
+    <string name="main_banner_battery_button_remind_later">Pitajte kasnije</string>
+    <string name="main_banner_battery_button_dismiss">Odbaci</string>
+    <string name="main_banner_battery_button_fix_now">Ispravi sada</string>
+    <string name="channel_subscriber_service_name">Usluga pretplate</string>
+    <string name="channel_subscriber_notification_title">Slušanje dolaznih notifikacija</string>
+    <string name="channel_subscriber_notification_instant_text">Pretplaćeni na teme trenutne isporuke</string>
+    <string name="channel_subscriber_notification_instant_text_one">Pretplaćeni na jednu temu trenutne isporuke</string>
+    <string name="channel_subscriber_notification_instant_text_four">Pretplaćeni na četiri teme trenutne isporuke</string>
+    <string name="channel_subscriber_notification_instant_text_five">Pretplaćeni na pet tema za trenutnu isporuku</string>
+    <string name="channel_subscriber_notification_instant_text_six">Pretplaćeni na šest tema za trenutnu isporuku</string>
+    <string name="refresh_message_no_results">Sve je ažurirano</string>
+    <string name="refresh_message_error">Neuspješno osvježavanje %1$d pretplata
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">Neuspješno osvježavanje pretplate: %1$s</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Pretplaćeni na dvije teme</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Pretplaćeni na tri teme</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Pretplaćeni na četiri teme</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Pretplaćeni na šest tema</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Pretplaćeni na %1$d tema</string>
 </resources>
