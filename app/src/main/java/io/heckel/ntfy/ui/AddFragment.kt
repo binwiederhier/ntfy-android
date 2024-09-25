@@ -72,6 +72,8 @@ class AddFragment : DialogFragment() {
             if (url != getDefaultBaseUrl()) {
                 subscribeBaseUrlText.setText(url)
                 subscribeUseAnotherServerCheckbox.isChecked = true
+            } else {
+                subscribeUseAnotherServerCheckbox.isChecked = false
             }
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(requireContext(),"Unable to scan QR Code",Toast.LENGTH_SHORT).show()
@@ -319,11 +321,9 @@ class AddFragment : DialogFragment() {
     }
 
     private fun qrButtonClick() {
-        subscribeTopicText.setText("Qr Pressed")
         Log.d(TAG, "Entering QR scanner mode")
         val intent = Intent(this.context, QrScannerActivity::class.java)
         qrActivityResultLauncher.launch(intent)
-        subscribeUseAnotherServerCheckbox.isChecked = true
     }
 
     private fun validateInputSubscribeView() {
