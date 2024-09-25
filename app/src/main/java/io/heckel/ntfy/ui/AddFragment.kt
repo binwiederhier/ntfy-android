@@ -64,12 +64,16 @@ class AddFragment : DialogFragment() {
     private var qrActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
             val data: Intent? = result.data
             //receive data from firstActivity
-            subscribeTopicText.setText("Success!")
-        }else if (result.resultCode == Activity.RESULT_CANCELED) {
-            Log.e("Cancelled", "Cancelled")
+            val topic = data?.getStringExtra(QrScannerActivity.QR_CODE_DATA_TOPIC)
+            val url = data?.getStringExtra(QrScannerActivity.QR_CODE_DATA_SERVER_URL)
+            subscribeTopicText.setText(topic)
+            if (url != getDefaultBaseUrl()) {
+                subscribeBaseUrlText.setText(url)
+                subscribeUseAnotherServerCheckbox.isChecked = true
+            }
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
             Toast.makeText(requireContext(),"Unable to scan QR Code",Toast.LENGTH_SHORT).show()
         }
     }
@@ -400,9 +404,14 @@ class AddFragment : DialogFragment() {
         return if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeBaseUrlText.text.toString()
         } else {
-            return defaultBaseUrl ?: appBaseUrl
+            return getDefaultBaseUrl()
         }
     }
+
+    private fun getDefaultBaseUrl(): String {
+        return defaultBaseUrl ?: appBaseUrl
+    }
+
 
     private fun showSubscribeView() {
         resetSubscribeView()

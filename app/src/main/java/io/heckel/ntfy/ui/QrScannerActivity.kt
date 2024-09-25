@@ -23,6 +23,10 @@ import java.util.concurrent.Executors
 
 class QrScannerActivity : AppCompatActivity(R.layout.activity_qr_scanner) {
     private lateinit var cameraExecutor: ExecutorService
+    private final val ntfyQrDataPrefix = "ntfy://"
+    private final val ntfyQrDataTopicSeperator = ";"
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,12 +111,20 @@ class QrScannerActivity : AppCompatActivity(R.layout.activity_qr_scanner) {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also {
-                    it.setAnalyzer(cameraExecutor, QrCodeAnalyzer { urlString ->
-                        Log.d(TAG, "Found URL with value $urlString")
+                    it.setAnalyzer(cameraExecutor, QrCodeAnalyzer { data ->
+                        Log.d(TAG, "Found URL with value $data")
                         val intent = Intent()
-                        intent.putExtra("qr_code_data", urlString)
-                        setResult(Activity.RESULT_OK, intent)
+                        try {
+                            val (qrUrl, qrTopic) = parseQrCodeData(data)
+                            intent.putExtra(QR_CODE_DATA_SERVER_URL, qrUrl)
+                            intent.putExtra(QR_CODE_DATA_TOPIC, qrTopic)
+                            setResult(Activity.RESULT_OK, intent)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "QR reading failed with message ${e.message.toString()}")
+                            setResult(Activity.RESULT_CANCELED, intent)
+                        }
                         finish()
+
                     })
                 }
 
@@ -134,11 +146,27 @@ class QrScannerActivity : AppCompatActivity(R.layout.activity_qr_scanner) {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    fun parseQrCodeData() {
+    private fun parseQrCodeData(data: String?): Pair<String, String> {
+        if (data == null || !data.startsWith(ntfyQrDataPrefix)) {
+            throw Exception("Bad QR code data format")
+        }
 
+        val startIndex = ntfyQrDataPrefix.length
+        val seperatorIndex = data.indexOf(ntfyQrDataTopicSeperator)
+
+        if (seperatorIndex == -1) {
+            throw Exception("Bad QR code data format")
+        }
+
+        val url = data.substring(startIndex, seperatorIndex)
+        val topicName = data.substring(seperatorIndex + 1)
+
+        return Pair(url, topicName)
     }
 
     companion object {
         const val TAG = "NtfyQrScannerActivity"
+        const val QR_CODE_DATA_SERVER_URL = "qrServerUrls"
+        const val QR_CODE_DATA_TOPIC = "qrTopic"
     }
 }
