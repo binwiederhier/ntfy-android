@@ -4,11 +4,14 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
@@ -34,6 +37,7 @@ class AddFragment : DialogFragment() {
     private lateinit var loginView: View
     private lateinit var positiveButton: Button
     private lateinit var negativeButton: Button
+    private lateinit var qrButton: Button
 
     // Subscribe page
     private lateinit var subscribeTopicText: TextInputEditText
@@ -55,6 +59,26 @@ class AddFragment : DialogFragment() {
     private lateinit var loginProgress: ProgressBar
     private lateinit var loginErrorText: TextView
     private lateinit var loginErrorTextImage: View
+
+    // QR Codes
+    private var qrActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            //receive data from firstActivity
+            val topic = data?.getStringExtra(QrScannerActivity.QR_CODE_DATA_TOPIC)
+            val url = data?.getStringExtra(QrScannerActivity.QR_CODE_DATA_SERVER_URL)
+            subscribeTopicText.setText(topic)
+            if (url != getDefaultBaseUrl()) {
+                subscribeBaseUrlText.setText(url)
+                subscribeUseAnotherServerCheckbox.isChecked = true
+            } else {
+                subscribeUseAnotherServerCheckbox.isChecked = false
+            }
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(requireContext(),"Unable to scan QR Code",Toast.LENGTH_SHORT).show()
+        }
+    }
 
     interface SubscribeListener {
         fun onSubscribe(topic: String, baseUrl: String, instant: Boolean)
@@ -152,6 +176,9 @@ class AddFragment : DialogFragment() {
             .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
                 // This will be overridden below
             }
+            .setNeutralButton("Scan QR") {_, _ ->
+                // This will be overridden below
+            }
             .create()
 
         // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
@@ -167,6 +194,11 @@ class AddFragment : DialogFragment() {
             negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             negativeButton.setOnClickListener {
                 negativeButtonClick()
+            }
+
+            qrButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+            qrButton.setOnClickListener {
+                qrButtonClick()
             }
             val subscribeTextWatcher = AfterChangedTextWatcher {
                 validateInputSubscribeView()
@@ -288,6 +320,12 @@ class AddFragment : DialogFragment() {
         }
     }
 
+    private fun qrButtonClick() {
+        Log.d(TAG, "Entering QR scanner mode")
+        val intent = Intent(this.context, QrScannerActivity::class.java)
+        qrActivityResultLauncher.launch(intent)
+    }
+
     private fun validateInputSubscribeView() {
         if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
 
@@ -366,9 +404,14 @@ class AddFragment : DialogFragment() {
         return if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeBaseUrlText.text.toString()
         } else {
-            return defaultBaseUrl ?: appBaseUrl
+            return getDefaultBaseUrl()
         }
     }
+
+    private fun getDefaultBaseUrl(): String {
+        return defaultBaseUrl ?: appBaseUrl
+    }
+
 
     private fun showSubscribeView() {
         resetSubscribeView()
