@@ -37,4 +37,11 @@
     <string name="add_dialog_base_urls_dropdown_choose">Vali teenuse võrguaadress</string>
     <string name="add_dialog_base_urls_dropdown_clear">Eemalda teenuse võrguaadress</string>
     <string name="detail_no_notifications_text">Sa pole sellel teemal saanud veel ühtegi teavitust.</string>
+    <string name="main_banner_battery_text">Selle rakenduse jaoks peaks akukasutuse optimeerimine olema välja lülitatud. Vastasel juhul ei toimi teavituste liikumine korrektselt.</string>
+    <string name="channel_subscriber_notification_title">Kuulame saabuvaid teavitusi</string>
+    <string name="main_item_status_reconnecting">loome uuesti ühendust …</string>
+    <string name="main_banner_battery_button_fix_now">Tee korda</string>
+    <string name="channel_subscriber_service_name">Tellimuste teenus</string>
+    <string name="main_banner_battery_button_remind_later">Küsi hiljem</string>
+    <string name="main_banner_battery_button_dismiss">Katkesta</string>
 </resources>
