@@ -82,7 +82,7 @@
     <string name="main_how_to_intro">Cliquez le + pour créer ou vous abonner à un sujet. Ensuite, vous recevrez des notifications sur votre appareil lors de l\'envoi de messages par PUT ou POST.</string>
     <string name="main_unified_push_toast">Cet abonnement est géré par %1$s à l\'aide de UnifiedPush</string>
     <string name="main_banner_battery_button_remind_later">Demander plus tard</string>
-    <string name="add_dialog_description_below">Les sujets ne peuvent pas être protégés par mot de passe, choisissez donc un nom difficile à deviner. Une fois abonné, vous pourrez PUT/POST des notifcations.</string>
+    <string name="add_dialog_description_below">Les sujets ne peuvent pas être protégés par mot de passe, choisissez donc un nom difficile à deviner. Une fois abonné, vous pourrez PUT/POST des notifications.</string>
     <string name="add_dialog_title">Abonner au sujet</string>
     <string name="add_dialog_error_connection_failed">La connexion a échouée : %1$s</string>
     <string name="detail_no_notifications_text">Vous n\'avez pas encore reçu de notifications pour ce sujet.</string>
