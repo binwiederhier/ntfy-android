@@ -44,4 +44,11 @@
     <string name="channel_subscriber_service_name">Tellimuste teenus</string>
     <string name="main_banner_battery_button_remind_later">Küsi hiljem</string>
     <string name="main_banner_battery_button_dismiss">Katkesta</string>
+    <string name="refresh_message_error_one">Tellimuse andmete uuendamine ei õnnestunud: %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Teavitused on summutatud kuni %1$s</string>
+    <string name="main_action_mode_delete_dialog_message">Kas lõpetad valitud teema(de) tellimuse ja jäädavalt kustutad kõik teavitused?</string>
+    <string name="refresh_message_error">%1$d tellimuse andmete uuendamine ei õnnestunud\n\n%2$s</string>
+    <string name="main_action_bar_title">Tellitud teemad</string>
+    <string name="main_menu_notifications_enabled">Teavitused on sisselülitatud</string>
+    <string name="main_menu_notifications_disabled_forever">Teavitused on summutatud</string>
 </resources>
