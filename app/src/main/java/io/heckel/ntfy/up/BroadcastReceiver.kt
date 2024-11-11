@@ -44,12 +44,13 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
         if (!repository.getUnifiedPushEnabled()) {
             Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
-            distributor.sendRegistrationFailed(appId, connectorToken, "UnifiedPush is disabled in ntfy")
+            // Action required: tell the app to not try again before an action as be done manually
+            // by the user
+            distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.ACTION_REQUIRED)
             return
         }
         if (appId.isBlank()) {
             Log.w(TAG, "Refusing registration: Empty application")
-            distributor.sendRegistrationFailed(appId, connectorToken, "Empty application string")
             return
         }
         GlobalScope.launch(Dispatchers.IO) {
@@ -65,7 +66,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                         distributor.sendEndpoint(appId, connectorToken, endpoint)
                     } else {
                         Log.d(TAG, "Subscription with connectorToken $connectorToken exists for a different app. Refusing registration.")
-                        distributor.sendRegistrationFailed(appId, connectorToken, "Connector token already exists")
+                        // Internal_error: try again with a new token
+                        distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.INTERNAL_ERROR)
                     }
                     return@launch
                 }
@@ -103,7 +105,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     SubscriberServiceManager.refresh(app)
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to add subscription", e)
-                    distributor.sendRegistrationFailed(appId, connectorToken, e.message)
+                    // Try again when there is network
+                    distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.NETWORK)
                 }
 
                 // Add to log scrubber
