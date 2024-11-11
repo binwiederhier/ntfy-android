@@ -86,6 +86,15 @@
                 android:name=".msg.NotificationService$ViewActionWithClearActivity"
                 android:exported="false">
         </activity>
+        <activity android:name=".up.LinkActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="unifiedpush"
+                    android:host="link" />
+            </intent-filter>
+        </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
         <service
