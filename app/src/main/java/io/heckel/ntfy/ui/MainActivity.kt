@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val hasInstantSubscriptions = subscriptions.count { it.instant } > 0
         val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
         val ignoringOptimizations = isIgnoringBatteryOptimizations(this@MainActivity)
-        val showBanner = hasInstantSubscriptions && batteryRemindTimeReached && !ignoringOptimizations
+        val showBanner = batteryRemindTimeReached && !ignoringOptimizations
         val batteryBanner = findViewById<View>(R.id.main_banner_battery)
         batteryBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
