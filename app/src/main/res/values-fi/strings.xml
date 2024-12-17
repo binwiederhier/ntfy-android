@@ -34,8 +34,7 @@
     <string name="main_menu_rate_title">Äänestä aplikaatiota</string>
     <string name="detail_item_cannot_delete">Ei voida poistaa liitettä %1$s</string>
     <string name="settings_backup_restore_backup_summary">Vie asetukset, ilmoitukset ja käyttäjät</string>
-    <string name="notification_popup_file_downloading">Lataa %1$s, %2$d%%
-\n%3$s</string>
+    <string name="notification_popup_file_downloading">Ladataan %1$s, %2$d %%\n%3$s</string>
     <string name="main_item_status_text_not_one">%1$d Huomautusta</string>
     <string name="user_dialog_description_edit">Voit muokata valitun käyttäjän käyttäjätunnusta/salasanaa tai poistaa sen.</string>
     <string name="notification_dialog_show_all">Näytä kaikki ilmoitukset</string>
@@ -194,7 +193,7 @@
     <string name="detail_item_download_info_deleted">Poistettu</string>
     <string name="add_dialog_button_subscribe">Tilaa</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logit poistettu</string>
-    <string name="detail_item_download_info_downloading_x_percent">%1$d%% ladattu</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d %% ladattu</string>
     <string name="user_dialog_button_cancel">Peruuta</string>
     <string name="add_dialog_button_login">Kirjaudu</string>
     <string name="settings_backup_restore_restore_summary">Tuo asetukset, ilmoitukset ja käyttäjät</string>
