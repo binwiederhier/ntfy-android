@@ -66,7 +66,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
                 scheduledFuture = unbindExecutor.schedule(this, 5L, TimeUnit.SECONDS)
                 return true
             } else if (checkForeground()) {
-                Log.d(TAG, "Binding to $app/$TARGET_CLASS")
+                Log.d(TAG, "Binding to $app")
                 val intent = Intent().apply {
                     `package` = app
                     action = ACTION
@@ -126,8 +126,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
 
     private companion object {
         private const val TAG = "RaiseAppToForeground"
-        private const val TARGET_CLASS = "org.unifiedpush.android.connector.RaiseToForegroundService"
-        private const val ACTION = "org.unifiedpush.android.distributor.RAISE_TO_FOREGROUND"
+        private const val ACTION = "org.unifiedpush.android.connector.RAISE_TO_FOREGROUND"
         /** Executor to unbind 5 seconds later */
         private val unbindExecutor = Executors.newSingleThreadScheduledExecutor()
     }
