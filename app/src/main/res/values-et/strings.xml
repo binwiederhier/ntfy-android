@@ -51,4 +51,5 @@
     <string name="main_action_bar_title">Tellitud teemad</string>
     <string name="main_menu_notifications_enabled">Teavitused on sisselülitatud</string>
     <string name="main_menu_notifications_disabled_forever">Teavitused on summutatud</string>
+    <string name="add_dialog_use_another_server">Kasuta muud serverit</string>
 </resources>
