@@ -182,7 +182,7 @@
     <string name="detail_item_menu_delete">Șterge fișierul</string>
     <string name="detail_item_menu_cancel">Oprește descărcarea</string>
     <string name="detail_item_menu_save_file">Salvează fișierul</string>
-    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Downloads\"</string>
+    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Descarcări\"</string>
     <string name="detail_item_menu_copy_contents">Copiază notificarea</string>
     <string name="detail_item_menu_copy_contents_copied">Notificare copiată în clipboard</string>
     <string name="detail_item_cannot_open">Nu se poate deschide atașametul: %1$s</string>
