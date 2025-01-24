@@ -275,7 +275,7 @@
     <string name="settings_backup_restore_restore_successful">Ripristino riuscito</string>
     <string name="settings_advanced_broadcast_summary_disabled">Le app non possono ricevere le notifiche come broadcast</string>
     <string name="settings_advanced_export_logs_entry_upload_original">Carica e copia link</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Attiva logging per condividere file di log in seguito per diagnosticare problemi.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Attiva la trascrizione dei log per condividere file di log in seguito per diagnosticare problemi.</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Copia negli appunti (censurato)</string>
     <string name="settings_about_version_title">Versione</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -330,4 +330,17 @@
     <string name="channel_notifications_group_default_name">Default</string>
     <string name="main_menu_donate_title">Dona 💸</string>
     <string name="detail_item_cannot_open_apk">Le app non possono più essere installate: devono essere scaricate via browser. Vedi l\'issue #531 per dettagli.</string>
+    <string name="settings_notifications_insistent_max_priority_title">Mantieni l\'alert per le notifiche a priorità massima</string>
+    <string name="settings_advanced_unifiedpush_title">Attiva UnifiedPush</string>
+    <string name="detail_settings_notifications_open_channels_summary">Bypass Do-Not-Disturb, suoni, etc.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continua ad inviare notifiche</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy non si comporterà come un distributore UnifiedPus</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy si comporterà come un distributore UnifiedPush</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Impostazioni di notifica personalizzate</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Usa impostazioni personalizzate per questa iscrizione</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Impostazioni predefinite sono in uso (suoni, bypass Do-Not-Disturb, etc.)</string>
+    <string name="detail_settings_notifications_open_channels_title">Configura le impostazioni di notifica</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Invia notifiche solo una volta</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Le notifiche a massima priorità continuano ad allertare fino a che non vengono rimosse</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Le notifiche ad alta priorità vengono inviate solo una volta</string>
 </resources>
