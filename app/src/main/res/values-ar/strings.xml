@@ -82,4 +82,16 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">حذف نهائيًا</string>
     <string name="main_add_button_description">إضافة اشتراك</string>
     <string name="main_no_subscriptions_text">يبدو أنه ليس لديك أي اشتراكات حتى الآن.</string>
+    <string name="main_banner_websocket_button_dismiss">تجاهل</string>
+    <string name="detail_action_mode_delete_dialog_cancel">إلغاﺀ</string>
+    <string name="notification_dialog_cancel">إلغاﺀ</string>
+    <string name="settings_notifications_header">الإشعارات</string>
+    <string name="detail_menu_unsubscribe">الغاء الاشتراك</string>
+    <string name="detail_action_mode_menu_copy">نسخ</string>
+    <string name="detail_action_mode_menu_delete">حذف</string>
+    <string name="notification_dialog_save">حفظ</string>
+    <string name="notification_popup_action_open">فتح</string>
+    <string name="notification_popup_action_download">تنزيل</string>
+    <string name="notification_popup_action_cancel">إلغاﺀ</string>
+    <string name="detail_item_download_info_deleted">تم حذفه</string>
 </resources>
