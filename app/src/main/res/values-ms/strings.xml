@@ -40,4 +40,16 @@
     <string name="main_item_status_text_one">%1$d notifikasi</string>
     <string name="main_item_status_text_not_one">%1$d notifikasi</string>
     <string name="main_item_status_reconnecting">menyambung semula …</string>
+    <string name="main_menu_docs_title">Dokumentasi</string>
+    <string name="main_menu_rate_title">Nilai Aplikasi ⭐</string>
+    <string name="main_action_mode_menu_unsubscribe">Henti langganan</string>
+    <string name="main_action_mode_delete_dialog_message">Henti langganan dari topik yang dipilih dan padam semua notifikasi?</string>
+    <string name="main_add_button_description">Tambah langganan</string>
+    <string name="main_item_date_yesterday">semalam</string>
+    <string name="main_no_subscriptions_text">Anda tiada langganan buat masa ini.</string>
+    <string name="main_how_to_intro">Tekan + untuk buka atau langgan topik. Dan anda akan terima notifikasi pada peranti selepas menghantar mesej melalui PUT atau POST.</string>
+    <string name="main_banner_battery_button_remind_later">Abaikan</string>
+    <string name="main_banner_battery_button_dismiss">Tutup</string>
+    <string name="main_banner_battery_button_fix_now">Baiki sekarang</string>
+    <string name="main_banner_websocket_button_enable_now">Aktif sekarang</string>
 </resources>
