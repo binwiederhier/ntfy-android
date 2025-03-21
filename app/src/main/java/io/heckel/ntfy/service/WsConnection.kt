@@ -114,7 +114,27 @@ class WsConnection(
             Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
             val reconnectTime = Calendar.getInstance()
             reconnectTime.add(Calendar.SECOND, seconds)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, reconnectTime.timeInMillis, RECONNECT_TAG, { start() }, null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        reconnectTime.timeInMillis,
+                        RECONNECT_TAG,
+                        { start() },
+                        null
+                    )
+                } else {
+                    Log.d(TAG, "SCHEDULE_EXACT_ALARM permission denied: Failed to reschedule websocket connection")
+                }
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    reconnectTime.timeInMillis,
+                    RECONNECT_TAG,
+                    { start() },
+                    null
+                )
+            }
         } else {
             Log.d(TAG, "$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via handler)")
             val handler = Handler(Looper.getMainLooper())
