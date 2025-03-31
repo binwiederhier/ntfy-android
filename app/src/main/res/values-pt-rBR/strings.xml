@@ -17,7 +17,7 @@
     <string name="channel_notifications_high_name">Prioridade alta</string>
     <string name="channel_notifications_max_name">Prioridade máxima</string>
     <string name="channel_subscriber_service_name">Serviço de Inscrição</string>
-    <string name="channel_subscriber_notification_title">Aguardando por novas notificações</string>
+    <string name="channel_subscriber_notification_title">Aguardando receção de notificações</string>
     <string name="channel_subscriber_notification_instant_text">Inscrito em tópicos de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tópico de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d tópicos de entrega instantânea</string>
