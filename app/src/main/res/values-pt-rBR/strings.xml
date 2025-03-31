@@ -17,7 +17,7 @@
     <string name="channel_notifications_high_name">Prioridade alta</string>
     <string name="channel_notifications_max_name">Prioridade máxima</string>
     <string name="channel_subscriber_service_name">Serviço de Inscrição</string>
-    <string name="channel_subscriber_notification_title">Aguardando receção de notificações</string>
+    <string name="channel_subscriber_notification_title">Aguardando recepção de notificações</string>
     <string name="channel_subscriber_notification_instant_text">Inscrito em tópicos de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tópico de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_more">Inscrito em %1$d tópicos de entrega instantânea</string>
@@ -169,7 +169,7 @@
     <string name="settings_backup_restore_restore_failed">Restauração falhou: %1$s</string>
     <string name="settings_advanced_broadcast_title">Transmitir mensagens</string>
     <string name="settings_advanced_record_logs_title">Registrar logs</string>
-    <string name="settings_advanced_record_logs_summary_disabled">Ative o registro dos logs para que você possa compartilhar logs para diagnosticar problemas depois.</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Ative o registro para poder compartilhar os registros posteriormente e diagnosticar problemas.</string>
     <string name="settings_advanced_export_logs_entry_upload_original">Fazer upload e copiar link</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Fazer upload e copiar link (censurado)</string>
     <string name="settings_advanced_export_logs_copied_logs">Logs copiados para a área de transferência</string>
@@ -329,18 +329,18 @@
     <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>
     <string name="channel_notifications_group_default_name">Padrão</string>
     <string name="main_menu_donate_title">Doar 💸</string>
-    <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificações de prioridade máxima alertam apenas uma vez</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">As notificações de prioridade máxima alertam apenas uma vez</string>
     <string name="detail_settings_notifications_open_channels_title">Configurar configurações de notificação</string>
-    <string name="detail_settings_notifications_open_channels_summary">Não Perturbe (DND), sons, etc.</string>
+    <string name="detail_settings_notifications_open_channels_summary">Ignorar o Não Perturbe, sons, etc.</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy não atuará como um distribuidor UnifiedPush</string>
-    <string name="detail_settings_notifications_dedicated_channels_title">Configurações customizadas de notificação</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Configuração de notificações personalizadas</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alertar apenas uma vez</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Usando configurações personalizadas para esta inscrição</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Usando configurações padrão (sons, Não Perturbe, etc.)</string>
-    <string name="detail_item_cannot_open_apk">Apps não podem mais ser instalados. Em vez disso, baixe pelo navegador. Veja o issue #531 para detalhes.</string>
-    <string name="settings_notifications_insistent_max_priority_title">Continue alertando para a prioridade mais alta</string>
-    <string name="settings_notifications_insistent_max_priority_summary_enabled">Notificações de prioridade máxima alertam continuamente até serem dispensadas</string>
+    <string name="detail_item_cannot_open_apk">Os aplicativos não podem mais ser instalados. Em vez disso, baixe pelo navegador. Veja a issue #531 para mais detalhes.</string>
+    <string name="settings_notifications_insistent_max_priority_title">Mantenha o alerta para a prioridade mais alta</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">As notificações de prioridade máxima alertarão continuamente até serem dispensadas</string>
     <string name="settings_advanced_unifiedpush_title">Habilitar UnifiedPush</string>
-    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy vai agir como um distribuidor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy atuará como um distribuidor UnifiedPush</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continuar alertando</string>
 </resources>
