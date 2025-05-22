@@ -10,7 +10,7 @@ import android.util.Log
  * We just want to avoid tens of it.
  *
  * \* When [getInstance] returns an existing instance, that runs [remove] before
- * [RaiseAppToForeground.raise] is called.
+ * [RaiseAppToForeground.raiseAndSend] is called.
  */
 object RaiseAppToForegroundFactory {
     fun getInstance(context: Context, app: String): RaiseAppToForeground {

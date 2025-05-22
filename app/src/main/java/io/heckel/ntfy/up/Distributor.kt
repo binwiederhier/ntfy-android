@@ -11,13 +11,9 @@ import io.heckel.ntfy.util.Log
 class Distributor(val context: Context) {
     fun sendMessage(app: String, connectorToken: String, message: ByteArray) {
         Log.d(TAG, "Sending MESSAGE to $app (token=$connectorToken): ${message.size} bytes")
-        RaiseAppToForegroundFactory.getInstance(context, app).raise()
-        val broadcastIntent = Intent()
-        broadcastIntent.`package` = app
-        broadcastIntent.action = ACTION_MESSAGE
-        broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
-        broadcastIntent.putExtra(EXTRA_BYTES_MESSAGE, message)
-        context.sendBroadcast(broadcastIntent)
+        RaiseAppToForegroundFactory
+            .getInstance(context, app)
+            .raiseAndSend(connectorToken, message)
     }
 
     fun sendEndpoint(app: String, connectorToken: String, endpoint: String) {
