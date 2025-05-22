@@ -6,13 +6,17 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
 
         versionCode 33
         versionName "1.17.0"
@@ -54,12 +58,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs += [
             '-Xjvm-default=all-compatibility' // https://stackoverflow.com/a/71234042/1440785
         ]

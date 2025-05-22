@@ -5,11 +5,12 @@
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> <!-- For instant delivery foregrounds service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- To keep foreground service awake; soon not needed anymore -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!-- To restart service on reboot -->
     <uses-permission android:name="android.permission.VIBRATE"/> <!-- Incoming notifications should be able to vibrate the phone -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/> <!-- Only required on SDK <= 28 -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> <!-- To reschedule the websocket retry -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32"/> <!-- To reschedule the websocket retry -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> <!-- As of Android 13, we need to ask for permission to post notifications -->
 
     <!--
@@ -19,6 +20,12 @@
             for the Google Play variant of the app.
     -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <queries>
+        <intent>
+            <action android:name="org.unifiedpush.android.connector.RAISE_TO_FOREGROUND" />
+        </intent>
+    </queries>
 
     <application
             android:name=".app.Application"
@@ -93,9 +100,24 @@
                 android:name=".msg.NotificationService$ViewActionWithClearActivity"
                 android:exported="false">
         </activity>
+        <activity android:name=".up.LinkActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="unifiedpush"
+                    android:host="link" />
+            </intent-filter>
+        </activity>
 
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
-        <service android:name=".service.SubscriberService"/>
+        <service android:name=".service.SubscriberService"
+            android:enabled="true"
+            android:foregroundServiceType="specialUse">
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="This service needs to be constantly connected to the server with the websocket if the device don't have Play Services, or the self-hosted server doesn't support FCM."/>
+        </service>
+
 
         <!-- Subscriber service restart on reboot -->
         <receiver
