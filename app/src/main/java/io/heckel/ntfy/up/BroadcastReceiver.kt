@@ -80,6 +80,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
                     insistent = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL,
+                    overrideVolumeMaxPriority = Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL,
+                    overrideVolumeSetting = Repository.OVERRIDE_VOLUME_SETTING_DEFAULT,
                     lastNotificationId = null,
                     icon = null,
                     upAppId = appId,
