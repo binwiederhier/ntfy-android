@@ -28,14 +28,10 @@
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
         <SwitchPreference
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:defaultValue="false"
             app:key="@string/settings_notifications_override_volume_max_priority_key"
             app:title="@string/settings_notifications_override_volume_max_priority_title" />
         <SeekBarPreference
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:key="@string/settings_notifications_override_volume_setting_key"
             app:title="@string/settings_notifications_override_volume_setting_title"
             app:summary="@string/settings_notifications_override_volume_setting_summary"

@@ -368,6 +368,8 @@
     <string name="detail_settings_notifications_open_channels_summary">Do Not Disturb (DND) override, sounds, etc.</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Keep alerting</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alert only once</string>
+    <string name="detail_settings_notifications_override_volume_max_priority_list_item_enabled">Override System Volume</string>
+    <string name="detail_settings_notifications_override_volume_max_priority_list_item_disabled">Use System Volume</string>
     <string name="detail_settings_appearance_header">Appearance</string>
     <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>

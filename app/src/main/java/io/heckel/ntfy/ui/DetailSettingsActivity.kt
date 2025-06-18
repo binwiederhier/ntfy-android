@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -119,6 +120,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMinPriorityPref()
                 loadAutoDeletePref()
                 loadInsistentMaxPriorityPref()
+                loadOverrideVolumeMaxPriorityPref()
+                loadOverrideVolumeSettingPref()
                 loadIconSetPref()
                 loadIconRemovePref()
                 if (notificationService.channelsSupported()) {
@@ -332,6 +335,55 @@ class DetailSettingsActivity : AppCompatActivity() {
                 maybeAppendGlobal(summary, global)
             }
         }
+
+        private fun loadOverrideVolumeMaxPriorityPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_override_volume_max_priority_key) ?: return
+            val pref: ListPreference = findPreference(prefId) ?: return
+            pref.isVisible = true
+            pref.value = subscription.overrideVolumeMaxPriority.toString()
+            pref.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    val volumeSettingId = context?.getString(R.string.detail_settings_notifications_override_volume_setting_key)
+                    val volumeSetting: SeekBarPreference? = volumeSettingId?.let { findPreference(it) }
+                    volumeSetting?.isVisible = intValue == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED
+                    save(subscription.copy(overrideVolumeMaxPriority = intValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.overrideVolumeMaxPriority.toString()
+                }
+            }
+            pref.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL
+                val global = value == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL
+                val enabled = if (global) repository.getInsistentMaxPriorityEnabled() else value == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_override_volume_max_priority_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_override_volume_max_priority_summary_disabled)
+                }
+                maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadOverrideVolumeSettingPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_override_volume_setting_key) ?: return
+            val pref: SeekBarPreference = findPreference(prefId) ?: return
+            pref.isVisible = subscription.overrideVolumeMaxPriority == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED
+            pref.value = subscription.overrideVolumeSetting
+            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            pref.max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            pref.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putInt(key: String?, value: Int) {
+                    save(subscription.copy(overrideVolumeSetting = value))
+                }
+                override fun getInt(key: String?, defValue: Int): Int {
+                    return subscription.overrideVolumeSetting
+                }
+            }
+        }
+
+
 
         private fun loadIconSetPref() {
             val prefId = context?.getString(R.string.detail_settings_appearance_icon_set_key) ?: return

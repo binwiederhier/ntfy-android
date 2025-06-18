@@ -446,6 +446,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
                 insistent = s.insistent,
+                overrideVolumeMaxPriority = s.overrideVolumeMaxPriority,
+                overrideVolumeSetting = s.overrideVolumeSetting,
                 lastNotificationId = s.lastNotificationId,
                 icon = s.icon,
                 upAppId = s.upAppId,
@@ -473,6 +475,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             minPriority = s.minPriority,
             autoDelete = s.autoDelete,
             insistent = s.insistent,
+            overrideVolumeMaxPriority = s.overrideVolumeMaxPriority,
+            overrideVolumeSetting = s.overrideVolumeSetting,
             lastNotificationId = s.lastNotificationId,
             icon = s.icon,
             upAppId = s.upAppId,
@@ -565,6 +569,11 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
         const val INSISTENT_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
         const val INSISTENT_MAX_PRIORITY_ENABLED = 1 // 0 = Disabled (but not needed in code)
+
+        const val OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
+        const val OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED = 1 // 0 = Disabled (but not needed in code)
+
+        const val OVERRIDE_VOLUME_SETTING_DEFAULT = 7
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

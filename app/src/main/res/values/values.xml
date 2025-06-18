@@ -44,6 +44,8 @@
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
     <string name="detail_settings_notifications_insistent_max_priority_key" translatable="false">SubscriptionInsistentMaxPriority</string>
+    <string name="detail_settings_notifications_override_volume_max_priority_key" translatable="false">SubscriptionOverrideVolumeMaxPriority</string>
+    <string name="detail_settings_notifications_override_volume_setting_key" translatable="false">SubscriptionOverrideVolumeSetting</string>
     <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
     <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
     <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
@@ -161,6 +163,16 @@
     </string-array>
     <string-array name="detail_settings_notifications_insistent_max_priority_values">
         <item>-1</item> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_override_volume_max_priority_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/detail_settings_notifications_override_volume_max_priority_list_item_enabled</item>
+        <item>@string/detail_settings_notifications_override_volume_max_priority_list_item_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_override_volume_max_priority_values">
+        <item>-1</item> <!-- Same as Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL -->
         <item>1</item>
         <item>0</item>
     </string-array>

@@ -254,6 +254,16 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 getString(R.string.settings_notifications_override_volume_setting_summary)
             }
 
+            val overrideActive = repository.getOverrideVolumeMaxPriorityEnabled()
+
+            if (!overrideActive) {
+                val notificationCategoryPrefId = context?.getString(R.string.settings_notifications_category_key) ?: return
+                val notificationCategory: PreferenceCategory? = findPreference(notificationCategoryPrefId)
+                if (overrideVolumeSetting != null) {
+                    notificationCategory?.removePreference(overrideVolumeSetting)
+                }
+            }
+
             // Keep alerting for max priority
             val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
             val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
@@ -271,19 +281,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
-                }
-            }
-
-            val overrideActive = repository.getOverrideVolumeMaxPriorityEnabled()
-
-            if (!overrideActive) {
-                val notificationCategoryPrefId = context?.getString(R.string.settings_notifications_category_key) ?: return
-                val notificationCategory: PreferenceCategory? = findPreference(notificationCategoryPrefId)
-                if (overrideVolumeSetting != null) {
-                    notificationCategory?.removePreference(overrideVolumeSetting)
-                }
-                if (insistentMaxPriority != null) {
-                    notificationCategory?.removePreference(insistentMaxPriority)
                 }
             }
 
