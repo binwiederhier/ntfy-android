@@ -281,6 +281,11 @@
     <string name="settings_notifications_auto_delete_one_week">After one week</string>
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
+    <string name="settings_notifications_override_volume_setting_title">Override Volume</string>
+    <string name="settings_notifications_override_volume_setting_summary">Volume</string>
+    <string name="settings_notifications_override_volume_max_priority_title">Override Volume for highest priority</string>
+    <string name="settings_notifications_override_volume_max_priority_summary_enabled">Override system volume for max priority notifications</string>
+    <string name="settings_notifications_override_volume_max_priority_summary_disabled">Use system volume for max priority notifications</string>
     <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>

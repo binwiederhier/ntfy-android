@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
+import io.heckel.ntfy.ui.SettingsActivity
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -302,6 +303,37 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
+    fun getOverrideVolumeMaxPriorityEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED, false)
+    }
+
+    fun setOverrideVolumeMaxPriorityEnabled(enabled: Boolean) {
+        sharedPrefs.edit()
+            .putBoolean(SHARED_PREFS_OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED, enabled)
+            .apply()
+    }
+
+    fun getOverrideVolumeSetting(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_OVERRIDE_VOLUME_SETTING, 7)
+    }
+
+    fun setOverrideVolumeSetting(value: Int) {
+        sharedPrefs.edit()
+            .putInt(SHARED_PREFS_OVERRIDE_VOLUME_SETTING, value)
+            .apply()
+    }
+
+    fun getPreviousVolume(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_PREVIOUS_VOLUME, 7)
+    }
+
+    fun setPreviousVolume(previousVolume: Int) {
+        sharedPrefs.edit()
+            .putInt(SHARED_PREFS_PREVIOUS_VOLUME, previousVolume)
+            .apply()
+
+    }
+
     fun getInsistentMaxPriorityEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, false) // Disabled by default
     }
@@ -475,6 +507,14 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
 
+    fun registerOnSharedPreferenceChangeListener(settingsActivity: SettingsActivity) {
+        sharedPrefs.registerOnSharedPreferenceChangeListener(settingsActivity)
+    }
+
+    fun unregisterOnSharedPreferenceChangeListener(settingsActivity: SettingsActivity) {
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(settingsActivity)
+    }
+
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
@@ -489,6 +529,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
+        const val SHARED_PREFS_OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED = "OverrideVolumeMaxPriority"
+        const val SHARED_PREFS_OVERRIDE_VOLUME_SETTING = "OverrideVolumeSetting"
+        const val SHARED_PREFS_PREVIOUS_VOLUME = "PreviousVolume"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)

@@ -13,11 +13,14 @@
     <string name="main_menu_donate_url" translatable="false">https://github.com/sponsors/binwiederhier</string>
 
     <!-- Settings constants -->
+    <string name="settings_notifications_category_key" translatable="false">NotificationsCategory</string>
     <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>
     <string name="settings_notifications_min_priority_key" translatable="false">MinPriority</string>
     <string name="settings_notifications_channel_prefs_key" translatable="false">ChannelPrefs</string>
     <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_notifications_override_volume_max_priority_key" translatable="false">OverrideVolumeMaxPriority</string>
+    <string name="settings_notifications_override_volume_setting_key" translatable="false">OverrideVolumeSetting</string>
     <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>

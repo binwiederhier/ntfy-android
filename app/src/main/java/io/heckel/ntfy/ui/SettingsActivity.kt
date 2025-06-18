@@ -6,7 +6,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -47,7 +49,7 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener {
+    UserFragment.UserDialogListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
 
@@ -58,9 +60,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+
         Log.d(TAG, "Create $this")
 
         repository = Repository.getInstance(this)
+        repository.registerOnSharedPreferenceChangeListener(this)
         serviceManager = SubscriberServiceManager(this)
 
         if (savedInstanceState == null) {
@@ -81,6 +85,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        repository.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key.equals(Repository.SHARED_PREFS_OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED)){
+            this.recreate()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -200,6 +215,45 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Override Volume Setting for max priority
+            val overrideVolumeMaxPriorityPrefId = context?.getString(R.string.settings_notifications_override_volume_max_priority_key) ?: return
+            val overrideVolumeMaxPriority: SwitchPreference? = findPreference(overrideVolumeMaxPriorityPrefId)
+            overrideVolumeMaxPriority?.isChecked = repository.getOverrideVolumeMaxPriorityEnabled()
+            overrideVolumeMaxPriority?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setOverrideVolumeMaxPriorityEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getOverrideVolumeMaxPriorityEnabled()
+                }
+            }
+            overrideVolumeMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_override_volume_max_priority_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_override_volume_max_priority_summary_disabled)
+                }
+            }
+
+            // Override Volume Level Setting
+            val overrideVolumeSettingPrefId = context?.getString(R.string.settings_notifications_override_volume_setting_key) ?: return
+            val overrideVolumeSetting: SeekBarPreference? = findPreference(overrideVolumeSettingPrefId)
+            overrideVolumeSetting?.value = repository.getOverrideVolumeSetting()
+            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            overrideVolumeSetting?.max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            overrideVolumeSetting?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun getInt(key: String?, defValue: Int): Int {
+                    return repository.getOverrideVolumeSetting()
+                }
+
+                override fun putInt(key: String?, value: Int) {
+                    repository.setOverrideVolumeSetting(value)
+                }
+            }
+            overrideVolumeSetting?.summaryProvider = Preference.SummaryProvider<SeekBarPreference> { _ ->
+                getString(R.string.settings_notifications_override_volume_setting_summary)
+            }
+
             // Keep alerting for max priority
             val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
             val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
@@ -217,6 +271,19 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
+                }
+            }
+
+            val overrideActive = repository.getOverrideVolumeMaxPriorityEnabled()
+
+            if (!overrideActive) {
+                val notificationCategoryPrefId = context?.getString(R.string.settings_notifications_category_key) ?: return
+                val notificationCategory: PreferenceCategory? = findPreference(notificationCategoryPrefId)
+                if (overrideVolumeSetting != null) {
+                    notificationCategory?.removePreference(overrideVolumeSetting)
+                }
+                if (insistentMaxPriority != null) {
+                    notificationCategory?.removePreference(insistentMaxPriority)
                 }
             }
 

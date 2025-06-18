@@ -1,6 +1,8 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
                   app:title="@string/settings_title">
-    <PreferenceCategory app:title="@string/settings_notifications_header">
+    <PreferenceCategory app:title="@string/settings_notifications_header"
+        app:key="@string/settings_notifications_category_key">
         <ListPreference
                 app:key="@string/settings_notifications_muted_until_key"
                 app:title="@string/settings_notifications_muted_until_title"
@@ -25,6 +27,22 @@
                 app:entries="@array/settings_notifications_auto_delete_entries"
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:defaultValue="false"
+            app:key="@string/settings_notifications_override_volume_max_priority_key"
+            app:title="@string/settings_notifications_override_volume_max_priority_title" />
+        <SeekBarPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:key="@string/settings_notifications_override_volume_setting_key"
+            app:title="@string/settings_notifications_override_volume_setting_title"
+            app:summary="@string/settings_notifications_override_volume_setting_summary"
+            app:showSeekBarValue="false"
+            app:seekBarIncrement="1"
+            app:min="0"
+            app:defaultValue="7" />
         <SwitchPreference
                 app:key="@string/settings_notifications_insistent_max_priority_key"
                 app:title="@string/settings_notifications_insistent_max_priority_title"
