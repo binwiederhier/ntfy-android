@@ -9,7 +9,7 @@
     <string name="share_menu_send">பகிர்</string>
     <string name="detail_item_download_info_deleted">நீக்கப்பட்டது</string>
     <string name="channel_subscriber_service_name">சந்தா சேவை</string>
-    <string name="channel_notifications_min_name">நிமிட முன்னுரிமை</string>
+    <string name="channel_notifications_min_name">குறை முன்னுரிமை</string>
     <string name="detail_action_mode_menu_copy">பிரதி</string>
     <string name="channel_notifications_default_name">இயல்புநிலை முன்னுரிமை</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">நிரந்தரமாக நீக்கு</string>
@@ -17,7 +17,7 @@
     <string name="notification_dialog_cancel">ரத்து செய்</string>
     <string name="detail_clear_dialog_cancel">ரத்து செய்</string>
     <string name="detail_item_menu_cancel">பதிவிறக்கத்தை ரத்து செய்</string>
-    <string name="channel_subscriber_notification_instant_text">உடனடி விநியோக தலைப்புகளுக்கு குழுசேர்ந்தது</string>
+    <string name="channel_subscriber_notification_instant_text">உடனடி விநியோக தலைப்புகளுக்குக் குழுசேர்ந்தது</string>
     <string name="channel_subscriber_notification_instant_text_two">இரண்டு உடனடி விநியோக தலைப்புகளுக்கு குழுசேர்ந்தது</string>
     <string name="channel_subscriber_notification_noinstant_text_three">மூன்று தலைப்புகளுக்கு குழுசேர்ந்தது</string>
     <string name="refresh_message_error_one">சந்தாவை புதுப்பிக்க முடியவில்லை: %1$s</string>
@@ -161,7 +161,7 @@
     <string name="main_no_subscriptions_text">உங்களிடம் இன்னும் சந்தாக்கள் இல்லை என்று தெரிகிறது.</string>
     <string name="main_how_to_intro">ஒரு தலைப்பை உருவாக்க அல்லது குழுசேர + என்பதைக் சொடுக்கு செய்க. புட் அல்லது இடுகை வழியாக செய்திகளை அனுப்பும்போது உங்கள் சாதனத்தில் அறிவிப்புகளைப் பெறுவீர்கள்.</string>
     <string name="main_unified_push_toast">இந்த சந்தா UNIFIDEPUSH வழியாக %1$s ஆல் நிர்வகிக்கப்படுகிறது</string>
-    <string name="main_banner_websocket_text">வெப்சாக்கெட்டுகளுக்கு மாறுவது உங்கள் சேவையகத்துடன் இணைக்க பரிந்துரைக்கப்பட்ட வழியாகும், மேலும் இது பேட்டரி ஆயுளை மேம்படுத்தலாம், ஆனால் &lt;a href = \"https://ntfy.sh/docs/config/#nginxapache2caddy\"&gt; உங்கள் ப்ராக்சியில் கூடுதல் கட்டமைப்பு தேவைப்படலாம் &lt;/ a&gt;. இது அமைப்புகளில் மாற்றப்படலாம்.</string>
+    <string name="main_banner_websocket_text">வெப்சாக்கெட்டுகளுக்கு மாறுவது உங்கள் சேவையகத்துடன் இணைக்கப் பரிந்துரைக்கப்பட்ட வழியாகும், மேலும் இது பேட்டரி ஆயுளை மேம்படுத்தலாம், ஆனால் <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">உங்கள் ப்ராக்சியில் கூடுதல் கட்டமைப்பு தேவைப்படலாம் </a>. இது அமைப்புகளில் மாற்றப்படலாம்.</string>
     <string name="add_dialog_title">தலைப்புக்கு குழுசேரவும்</string>
     <string name="add_dialog_description_below">தலைப்புகள் கடவுச்சொல் பாதுகாக்கப்பட்டதாக இருக்காது, எனவே யூகிக்க கடினமாக இருக்கும் பெயரைத் தேர்வுசெய்க. சந்தா செலுத்தியதும், நீங்கள் அறிவிப்புகளை வைக்கலாம்/இடுகையிடலாம்.</string>
     <string name="add_dialog_topic_name_hint">தலைப்பு பெயர், எ.கா. பில்ச்_அலெர்ட்ச்</string>
