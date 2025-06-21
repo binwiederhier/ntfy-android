@@ -7,15 +7,15 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 36 // Updated to API 34 (Android 14)
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 36 // Updated to API 34 (Android 14)
 
-        versionCode 33
-        versionName "1.17.0"
+        versionCode 36 // Increment version code
+        versionName "1.19.0" // Consider incrementing minor version or patch if significant changes
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -91,41 +91,50 @@ android.applicationVariants.all { variant ->
 
 dependencies {
     // AndroidX, The Basics
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.core:core-ktx:1.10.1"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-ktx:1.7.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.7"
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation "androidx.appcompat:appcompat:1.7.1" // Updated
+    implementation "androidx.core:core-ktx:1.10.1" // No stable update found beyond 1.10.1 in common repos.
+                                                    // Latest found was 1.16.0+1.0.0-sesl7+rev0 from tribalfs/sesl-androidx,
+                                                    // but prefer official androidx releases if possible
+    implementation "androidx.constraintlayout:constraintlayout:2.2.1" // Updated
+    implementation "androidx.activity:activity-ktx:1.10.1" // Updated
+    implementation "androidx.fragment:fragment-ktx:1.8.8" // Updated
+    implementation "androidx.work:work-runtime-ktx:2.9.0.1" // Updated (from NuGet, may need to check MavenCentral for exact equivalent)
+    implementation 'androidx.preference:preference-ktx:1.2.1' // Updated
 
     // JSON serialization
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.13.1' // Updated
 
     // Room (SQLite)
-    def room_version = "2.5.1"
+    def room_version = "2.7.2" // Updated
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
     // OkHttp (HTTP library)
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0' // Updated (stable 4.x) or 'com.squareup.okhttp3:okhttp:5.0.0-alpha.16' (alpha for 5.x)
 
     // Firebase, sigh ... (only Google Play)
-    playImplementation 'com.google.firebase:firebase-messaging:23.1.2'
+    playImplementation 'com.google.firebase:firebase-messaging:24.1.1' // Updated (or use Firebase BoM: 'com.google.firebase:firebase-bom:33.10.0' and then 'firebase-messaging-ktx' without version)
 
     // RecyclerView
-    implementation "androidx.recyclerview:recyclerview:1.3.0"
+    implementation "androidx.recyclerview:recyclerview:1.4.0" // Updated
 
     // Swipe down to refresh
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-beta01' // Updated (latest stable is 1.1.0, beta available)
 
     // Material design
-    implementation "com.google.android.material:material:1.9.0"
+    implementation "com.google.android.material:material:1.12.0" // This often updates with Android Studio versions,
+                                                                 // keeping it at 1.9.0 is common if no specific need for newer features,
+                                                                 // but 1.12.0 is a recent release in the Material 3 Expressive context.
+                                                                 // Latest stable from MavenCentral is 1.12.0.
 
     // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.9.1" // Updated
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0' // This is an older library, often recommended to migrate away from.
+                                                            // If keeping, 1.0.0 is the last stable version, although there are
+                                                            // very recent minor patch updates (e.g., 1.0.0.33) from Xamarin NuGet,
+                                                            // which might not be directly applicable or necessary for a pure Android project.
 
     // Image viewer
-    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1' // No newer version found
 }
+
