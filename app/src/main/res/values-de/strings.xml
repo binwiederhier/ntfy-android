@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_low_name">Niedrige Priorität</string>
-    <string name="channel_notifications_default_name">Normale Priorität</string>
+    <string name="channel_notifications_default_name">Standard-Priorität</string>
     <string name="channel_notifications_high_name">Hohe Priorität</string>
     <string name="channel_notifications_max_name">Höchste Priorität</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
@@ -31,7 +31,7 @@
     <string name="main_menu_report_bug_title">Fehler melden</string>
     <string name="main_menu_docs_title">Dokumentation lesen</string>
     <string name="main_menu_rate_title">App bewerten ⭐</string>
-    <string name="main_action_mode_menu_unsubscribe">Abmelden</string>
+    <string name="main_action_mode_menu_unsubscribe">Deabonnieren</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Endgültig löschen</string>
     <string name="main_action_mode_delete_dialog_cancel">Abbrechen</string>
     <string name="main_item_status_text_one">%1$d Benachrichtigung</string>
@@ -112,7 +112,7 @@
     <string name="notification_dialog_title">Benachrichtigungen stummschalten</string>
     <string name="notification_dialog_cancel">Abbrechen</string>
     <string name="notification_dialog_save">Speichern</string>
-    <string name="notification_dialog_enabled_toast_message">Benachrichtigungen aktiviert</string>
+    <string name="notification_dialog_enabled_toast_message">Benachrichtigungen reaktiviert</string>
     <string name="notification_dialog_muted_forever_toast_message">Benachrichtigungen stummgeschaltet</string>
     <string name="notification_dialog_muted_until_toast_message">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="notification_dialog_show_all">Alle Benachrichtigungen anzeigen</string>
@@ -136,7 +136,7 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_notifications_header">Benachrichtigungen</string>
     <string name="settings_notifications_muted_until_title">Benachrichtigungen stummschalten</string>
-    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stummgeschaltet bis sie erneut aktiviert werden</string>
+    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stumm bis Reaktivierung</string>
     <string name="settings_notifications_muted_until_x">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="settings_notifications_min_priority_title">Minimale Priorität</string>
     <string name="settings_notifications_min_priority_summary_any">Zeigt alle Benachrichtigungen</string>
@@ -232,10 +232,10 @@
     <string name="user_dialog_button_cancel">Abbrechen</string>
     <string name="user_dialog_button_delete">Benutzer löschen</string>
     <string name="user_dialog_button_save">Speichern</string>
-    <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltetbis %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="main_menu_settings_title">Einstellungen</string>
     <string name="main_banner_battery_button_remind_later">Später fragen</string>
-    <string name="main_action_mode_delete_dialog_message">Vom gewählten Thema abmelden und alle Benachrichtigungen endgültig löschen\?</string>
+    <string name="main_action_mode_delete_dialog_message">Gewähltes Thema deabonnieren und alle Benachrichtigungen endgültig löschen?</string>
     <string name="main_how_to_intro">Klicke den + Button zum Erstellen oder Abonnieren eines Themas. Dann erhältst Du Benachrichtigungen auf dem Gerät, wenn Nachrichten per PUT oder POST veröffentlicht werden.</string>
     <string name="add_dialog_login_error_not_authorized">Anmeldung fehlgeschlagen. Keine Berechtigung für Benutzer %1$s.</string>
     <string name="add_dialog_login_username_hint">Benutzername</string>
@@ -269,7 +269,7 @@
     <string name="detail_item_download_info_download_failed_expires_x">Herunterladen fehlgeschlagen, Link läuft ab am/um %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="detail_menu_settings">Abo-Einstellungen</string>
-    <string name="detail_menu_unsubscribe">Abmelden</string>
+    <string name="detail_menu_unsubscribe">Deabonnieren</string>
     <string name="detail_action_mode_delete_dialog_message">Die gewählte(n) Benachrichtigung(en) endgültig löschen\?</string>
     <string name="notification_popup_action_browse">Durchsuchen</string>
     <string name="settings_notifications_muted_until_show_all">Zeigt alle Benachrichtigungen</string>
