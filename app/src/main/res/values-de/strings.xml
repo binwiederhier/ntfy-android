@@ -136,7 +136,7 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_notifications_header">Benachrichtigungen</string>
     <string name="settings_notifications_muted_until_title">Benachrichtigungen stummschalten</string>
-    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stumm bis Reaktivierung</string>
+    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stummgeschaltet bis Reaktivierung</string>
     <string name="settings_notifications_muted_until_x">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="settings_notifications_min_priority_title">Minimale Priorität</string>
     <string name="settings_notifications_min_priority_summary_any">Zeigt alle Benachrichtigungen</string>
