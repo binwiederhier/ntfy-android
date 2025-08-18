@@ -151,7 +151,7 @@
     <string name="add_dialog_description_below">Teemasid ei saa salasõnaga kaitsta, sega palun vali midagi, mis pole kergelt ennustatav. Peale tellimuse lisamist saad kohe alustada sõnumite saatmist PUT või POST meetoditega.</string>
     <string name="add_dialog_use_another_server_description">Teemade tellimiseks teistest serveritest sisesta soovitud teenuse võrguaadress.</string>
     <string name="detail_how_to_intro">Teavituste saatmiseks sellesse teemasse lihtsalt saadaPUT või POST päringuid sellele võrguaadressile.</string>
-    <string name="detail_how_to_example">Näide (kasutades curli):<br/><tt>$ curl -d \"Terekest\" %1$s</tt></string>
+    <string name="detail_how_to_example">Näide (kasutades curli):<br></br><tt>$ curl -d \"Terekest\" %1$s</tt></string>
     <string name="detail_how_to_link">Üksikasjalik juhend leidub ntfy.sh saidis ja meie dokumentatsioonis.</string>
     <string name="detail_item_tags">Sildid: %1$s</string>
     <string name="detail_item_snack_deleted">Teavitus on kustutatud</string>
