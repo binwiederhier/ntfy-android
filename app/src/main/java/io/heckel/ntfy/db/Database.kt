@@ -125,7 +125,7 @@ data class Attachment(
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
     @ColumnInfo(name = "progress") val progress: Int, // Progress during download, -1 if not downloaded
 ) {
-    constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
+    @Ignore constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
             this(name, type, size, expires, url, null, ATTACHMENT_PROGRESS_NONE)
 }
 
@@ -140,7 +140,7 @@ data class Icon(
     @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
 ) {
-    constructor(url:String) :
+    @Ignore constructor(url:String) :
             this(url, null)
 }
 
@@ -197,7 +197,7 @@ data class LogEntry(
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "exception") val exception: String?
 ) {
-    constructor(timestamp: Long, tag: String, level: Int, message: String, exception: String?) :
+    @Ignore constructor(timestamp: Long, tag: String, level: Int, message: String, exception: String?) :
             this(0, timestamp, tag, level, message, exception)
 }
 
