@@ -48,7 +48,7 @@
     <string name="channel_subscriber_notification_noinstant_text_five">مشترك في خمسة مواضيع</string>
     <string name="main_menu_settings_title">الإعدادات</string>
     <string name="channel_subscriber_notification_noinstant_text_one">مشترك في موضوع واحد</string>
-    <string name="main_menu_rate_title">قيم البرنامج ⭐</string>
+    <string name="main_menu_rate_title">قيّم التطبيق ⭐</string>
     <string name="channel_subscriber_notification_instant_text_two">تم الاشتراك في 2 موضوع فوري</string>
     <string name="refresh_message_result">تم استلام %1$d اشعار(ات)</string>
     <string name="channel_subscriber_notification_noinstant_text_more">مشترك في %1$d موضوع</string>
@@ -60,7 +60,7 @@
     <string name="main_menu_notifications_disabled_until">الاشعارات مكتومة حتي %1$s</string>
     <string name="channel_subscriber_notification_instant_text_more">تم الاشتراك في %1$d مواضيع فورية</string>
     <string name="main_menu_report_bug_title">التبليغ عن خطأ</string>
-    <string name="main_action_bar_title">المواضيع المسجلة</string>
+    <string name="main_action_bar_title">الموضوعات المشترك فيها</string>
     <string name="main_action_mode_menu_unsubscribe">الغاء الاشتراك</string>
     <string name="main_menu_docs_title">اقرا المراجع</string>
     <string name="refresh_message_no_results">كل شئ محدث لاخر تحديث</string>
@@ -68,4 +68,18 @@
     <string name="channel_subscriber_notification_instant_text_four">تم الاشتراك في 4 مواضيع فورية</string>
     <string name="main_menu_donate_title">تبرع 💸</string>
     <string name="settings_title">اﻹعدادات</string>
+    <string name="refresh_message_error">تعذر تحديث %1$d اشتراكات
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">تعذر تحديث الاشتراك: %1$s</string>
+    <string name="main_action_mode_delete_dialog_cancel">إلغاء</string>
+    <string name="main_item_status_text_one">إشعار %1$d</string>
+    <string name="main_item_status_text_not_one">%1$d إشعارات</string>
+    <string name="main_item_status_reconnecting">جارٍ إعادة الاتصال …</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">البارحة</string>
+    <string name="main_action_mode_delete_dialog_message">إلغاء الاشتراك من الموضوعات المحددة وحذف جميع الإشعارات نهائيًا؟</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">حذف نهائيًا</string>
+    <string name="main_add_button_description">إضافة اشتراك</string>
+    <string name="main_no_subscriptions_text">يبدو أنه ليس لديك أي اشتراكات حتى الآن.</string>
 </resources>

@@ -45,6 +45,8 @@ android {
         debug {
             minifyEnabled false
             debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
         }
     }
 
@@ -138,4 +140,15 @@ dependencies {
 
     // Image viewer
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:1.0.1'
+
+    // Better click handling for links
+    implementation 'me.saket:better-link-movement-method:2.2.0'
+
+    // Markdown
+    implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:image-picasso:4.6.2'
+    implementation 'io.noties.markwon:image:4.6.2'
+    implementation 'io.noties.markwon:linkify:4.6.2'
+    implementation 'io.noties.markwon:ext-tables:4.6.2'
+    implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
 }

@@ -40,14 +40,14 @@
     <string name="main_how_to_intro">לחיצה על + תאפשר ליצור או להירשם לנושא. לאחר מכן התראות תגענה למכשיר שלך בעת שליחת הודעות עם PUT או POST.</string>
     <string name="main_how_to_link">הוראות מפורטות זמינות ב־ntfy.sh, ובתיעוד.</string>
     <string name="main_menu_donate_title">תרומה 💸</string>
-    <string name="channel_subscriber_notification_instant_text_two">מנוי לשני נושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_three">מנוי לשלושה נושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text">מנוי לנושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_one">מנוי לנושא אחד במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_four">מנוי לארבעה נושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_five">מנוי לחמישה נושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_six">מנוי לשישה נושאים במשלוח מהיר</string>
-    <string name="channel_subscriber_notification_instant_text_more">מנוי ל־%1$d נושאים במשלוח מהיר</string>
+    <string name="channel_subscriber_notification_instant_text_two">מנוי לשני נושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_three">מנוי לשלושה נושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text">מנוי לנושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_one">מנוי לנושא אחד במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_four">מנוי לארבעה נושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_five">מנוי לחמישה נושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_six">מנוי לשישה נושאים במסירה מיידית</string>
+    <string name="channel_subscriber_notification_instant_text_more">מנוי ל־%1$d נושאים במסירה מיידית</string>
     <string name="channel_subscriber_notification_noinstant_text">מנוי לנושאים</string>
     <string name="channel_subscriber_notification_noinstant_text_one">מנוי לנושא אחד</string>
     <string name="channel_subscriber_notification_noinstant_text_two">מנוי לשני נושאים</string>
@@ -60,7 +60,7 @@
     <string name="main_banner_websocket_button_enable_now">להפעיל כעת</string>
     <string name="add_dialog_topic_name_hint">שם הנושא, למשל: shimons_alerts</string>
     <string name="add_dialog_use_another_server">להשתמש בשרת אחר</string>
-    <string name="add_dialog_instant_delivery">משלוח מיידי במצב תנומה</string>
+    <string name="add_dialog_instant_delivery">מסירה מיידית במצב תנומה</string>
     <string name="main_banner_websocket_button_dismiss">התעלמות</string>
     <string name="add_dialog_title">הרשמה לנושא</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
@@ -312,4 +312,35 @@
 \n%3$s</string>
     <string name="detail_item_cannot_open_apk">אי אפשר להתקין עוד יישומונים. יש להוריד דרך הדפדפן במקום. בתקלה #531 מופיעים פרטים נוספים.</string>
     <string name="detail_settings_global_setting_suffix">נעשה שימוש בהגדרות גלובליות</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">העדיפות המרבית שבה הודעות יתריעו במחזוריות עד שתגורשנה</string>
+    <string name="add_dialog_foreground_description">מסירה מיידית תמיד פעילה למארחים למעט %1$s.</string>
+    <string name="detail_settings_notifications_instant_summary_off">התראות נמסרות דרך Firebase. המסירה עלולה להתעכב אך צריכת הסוללה תפחת.</string>
+    <string name="detail_instant_delivery_enabled">מסירה מיידית פעילה</string>
+    <string name="detail_instant_delivery_disabled">מסירה מיידית כבויה</string>
+    <string name="settings_general_default_base_url_message">נא למלא את כתובת היסוד של השרת שלך כדי להשתמש בשרת משלך כברירת מחדל להרשמה לנושאים חדשים ו/או לשיתוף לנושאים.</string>
+    <string name="detail_menu_enable_instant">הפעלת מסירה מיידית</string>
+    <string name="detail_menu_disable_instant">כיבוי מסירה מיידית</string>
+    <string name="settings_advanced_record_logs_summary_enabled">מתבצע תיעוד (עד 10,000 רשומות) למכשיר…</string>
+    <string name="detail_settings_notifications_instant_title">מסירה מיידית</string>
+    <string name="detail_settings_notifications_instant_summary_on">הודעות נמסרות מיידית. דורש שירות חזית וצורך יותר סוללה.</string>
+    <string name="settings_advanced_clear_logs_summary">מחיקת יומנים שתועדו בעבר ולהתחיל מחדש</string>
+    <string name="settings_advanced_record_logs_summary_disabled">הפעלת תיעוד כדי לאפשר לך לשתף יומנים לאחר מכן לניתוח תקלות.</string>
+    <string name="settings_advanced_export_logs_summary">העתקת יומנים ללוח הגזירים או העלאתם ל־nopaste.net (בבעלות יוצר ntfy). אפשר לצנזר שמות מארחים ונושאים, התראות לא תצונזרנה אף פעם.</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy לא יתנהג כמו מפיץ UnifiedPush</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">עדיפות מרבית להתראות חד־פעמיות</string>
+    <string name="detail_settings_global_setting_title">להשתמש בהגדרות הכלליות</string>
+    <string name="settings_advanced_record_logs_title">יומני רשומות</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">הנושאים/המארחים האלה הוחלפו בשמות של פירות, כך שאפשר לשנות את היומן הזה בלי חשש:
+\n
+\n%1$s
+\n
+\nהסיסמאות מעורבבות אבל לא מופיעות כאן.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">להשתמש ב־WebSockets כדי להתחבר לשרת. זאת השיטה המומלצת אבל עלולה לדרוש הגדרות נוספות במתווך שלך.</string>
+    <string name="detail_settings_notifications_open_channels_summary">עקיפת „לא להפריע”, צלילים וכו׳</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">לא השתנו נושאים/שמות מארחים. אולי אין לך מינויים?</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">להשתמש בתזרים JSON על גבי HTTP כדי להתחבר לשרת. השיטה הזאת נבדקה תחת אש אבל עלולה לצרוך יותר חשמל מהסוללה.</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">הגדרות התראה מותאמות אישית</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">נעשה שימוש בהגדרות ברירת המחדל (צלילים, עקיפת „לא להפריע” וכו׳)</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">נעשה שימוש בהגדרות מותאמות אישית למינוי הזה</string>
+    <string name="detail_settings_appearance_display_name_message">הגדרת שם תצוגה מותאם אישית למינוי הזה. להשאיר ריק לברירת המחדל (%1$s).</string>
 </resources>

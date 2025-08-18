@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="channel_notifications_low_name">Lae prioriteit</string>
+    <string name="channel_notifications_default_name">Standaard prioriteit</string>
+    <string name="channel_notifications_high_name">Hoog prioriteit</string>
+    <string name="channel_notifications_max_name">Hoogste prioriteit</string>
+    <string name="channel_notifications_group_default_name">Verstek</string>
+    <string name="channel_subscriber_notification_title">Luister na inkomende kennisgewings</string>
+    <string name="channel_subscriber_notification_instant_text">Geskryf vir onmiddellike aflewering onderwerpe</string>
+    <string name="channel_subscriber_notification_instant_text_one">Geskryf vir een onderwerp vir onmiddellike aflewering</string>
+    <string name="channel_subscriber_notification_instant_text_three">Geskryf vir drie onderwerpe vir onmiddellike aflewering</string>
+    <string name="channel_subscriber_notification_instant_text_four">Geskryf vir vier onderwerpe vir onmiddellike aflewering</string>
+    <string name="settings_advanced_export_logs_entry_copy_original">Kopieer na knipbord</string>
+    <string name="settings_about_header">Oor</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
+    <string name="channel_notifications_min_name">Min prioriteit</string>
+    <string name="user_dialog_password_hint_add">Vagwoord</string>
+    <string name="user_dialog_button_add">Voeg gebruiker by</string>
+    <string name="user_dialog_button_cancel">Kanselleer</string>
+    <string name="user_dialog_button_delete">Verwyder gebruiker</string>
+    <string name="user_dialog_button_save">Bewaar</string>
+    <string name="detail_settings_about_header">Oor</string>
+    <string name="detail_settings_about_topic_url_title">Onderwerp URL</string>
+    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Gekopieer na knipbord</string>
+    <string name="user_dialog_title_edit">Wysig gebruiker</string>
+    <string name="user_dialog_description_add">Jy kan hier \'n gebruiker byvoeg. Alle onderwerpe vir die gegewe bediener sal hierdie gebruiker gebruik.</string>
+    <string name="user_dialog_description_edit">Jy kan die gebruikersnaam/wagwoord vir die gekose gebruiker wysig, of dit verwyder.</string>
+    <string name="channel_subscriber_notification_instant_text_two">Geskryf vir twee onderwerpe vir onmiddellike aflewering</string>
+    <string name="user_dialog_password_hint_edit">Wagwoord (onveranderd indien leeg gelaat)</string>
+    <string name="channel_subscriber_service_name">Subskripsiediens</string>
+    <string name="user_dialog_username_hint">Gebruikersnaam</string>
+    <string name="user_dialog_title_add">Gebruiker byvoeg</string>
+    <string name="detail_settings_appearance_display_name_title">Vertoonnaam</string>
+    <string name="settings_about_version_title">Weergawe</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopieer na knipbord (gesensuur)</string>
+</resources>
