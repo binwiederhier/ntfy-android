@@ -87,7 +87,7 @@
     <string name="detail_how_to_link">詳細な説明は ntfy.sh またはドキュメントを参照してください。</string>
     <string name="detail_clear_dialog_permanently_delete">完全に削除</string>
     <string name="detail_delete_dialog_message">このトピックの購読を解除して受信した通知をすべて削除しますか？</string>
-    <string name="detail_how_to_example">例 (curlの場合): <br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">例 (curlの場合): <br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_clear_dialog_message">このトピックの全ての通知を削除しますか？</string>
     <string name="detail_clear_dialog_cancel">キャンセル</string>
     <string name="detail_delete_dialog_permanently_delete">完全に削除</string>
