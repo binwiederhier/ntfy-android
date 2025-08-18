@@ -199,7 +199,7 @@
     <string name="add_dialog_button_back">Indietro</string>
     <string name="detail_no_notifications_text">Non hai ancora ricevuto notifiche su questo topic.</string>
     <string name="detail_item_menu_open">Apri file</string>
-    <string name="detail_how_to_example">Esempio (utilizzando curl):<br/><tt>$ curl -d \"Ciao\" %1$s</tt></string>
+    <string name="detail_how_to_example">Esempio (utilizzando curl):<br></br><tt>$ curl -d \"Ciao\" %1$s</tt></string>
     <string name="detail_instant_delivery_disabled">Consegna istantanea OFF</string>
     <string name="detail_item_menu_delete">Elimina file</string>
     <string name="detail_item_menu_save_file">Salva il file</string>
