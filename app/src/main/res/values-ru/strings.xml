@@ -18,7 +18,7 @@
     <string name="detail_delete_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_delete_dialog_cancel">Отмена</string>
     <string name="detail_test_title">Тест: Вы можете установить заголовок, если хотите.</string>
-    <string name="detail_how_to_example">Пример (используя curl):<br/><tt>$ curl -d \"Привет\" %1$s</tt></string>
+    <string name="detail_how_to_example">Пример (используя curl):<br></br><tt>$ curl -d \"Привет\" %1$s</tt></string>
     <string name="detail_clear_dialog_message">Удалить все уведомления в этой теме\?</string>
     <string name="detail_clear_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_test_message_error">Не получилось отправить сообщение: %1$s</string>
