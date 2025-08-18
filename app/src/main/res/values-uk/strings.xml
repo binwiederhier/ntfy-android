@@ -137,7 +137,7 @@
     <string name="detail_clear_dialog_message">Видалити всі сповіщення в цій темі\?</string>
     <string name="detail_item_cannot_save">Неможливо зберегти вкладення: %1$s</string>
     <string name="detail_item_download_failed">Не вдалося завантажити вкладений файл: %1$s</string>
-    <string name="detail_how_to_example">Приклад (з використанням curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Приклад (з використанням curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не завантажено, закінчується %1$s</string>
     <string name="detail_test_message_error_too_large">Не вдається надіслати повідомлення: вкладення завелике.</string>
     <string name="detail_instant_delivery_enabled">Миттєва доставка включена</string>
