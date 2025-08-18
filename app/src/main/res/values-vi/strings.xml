@@ -34,7 +34,7 @@
     <string name="add_dialog_button_back">Quay lại</string>
     <string name="add_dialog_button_login">Đăng nhập</string>
     <string name="add_dialog_login_title">Yêu cầi đăng nhập</string>
-    <string name="detail_how_to_example">Ví dụ (với curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Ví dụ (với curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="add_dialog_error_connection_failed">Kết nối không thành công: %1$s</string>
     <string name="detail_no_notifications_text">Bạn chưa nhận thông báo nào cho chủ đề này.</string>
     <string name="detail_how_to_intro">Để gửi thông báo tới chủ đề này, hãy PUT hoặc POST vào URL của chủ đề.</string>
