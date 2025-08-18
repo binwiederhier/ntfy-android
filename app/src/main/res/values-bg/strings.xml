@@ -92,7 +92,7 @@
     <string name="add_dialog_login_title">Изисква се вход</string>
     <string name="add_dialog_login_username_hint">Потребител</string>
     <string name="add_dialog_login_error_not_authorized">Неуспешен вход. Потребителят %1$s няма достъп.</string>
-    <string name="detail_how_to_example">Пример (с curl): <br></br><tt>$ curl -d \"Здравей\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Пример (curl): <br/><tt>$ curl -d "Здравейте" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="main_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="detail_clear_dialog_permanently_delete">Премахване</string>
@@ -255,7 +255,7 @@
     <string name="settings_advanced_broadcast_summary_enabled">Известията ще да бъдат излъчвани към други приложения</string>
     <string name="settings_general_users_prefs_user_add_summary">Създава се потребител за нов сървър</string>
     <string name="settings_advanced_broadcast_title">Излъчване на съобщения</string>
-    <string name="settings_general_dark_mode_title">Тема</string>
+    <string name="settings_general_dark_mode_title">Тъмна тема</string>
     <string name="settings_general_dark_mode_summary_light">Светла тема</string>
     <string name="settings_general_dark_mode_summary_dark">Тъмна тема. Вампир ли сте\?</string>
     <string name="settings_general_dark_mode_entry_light">Светла тема</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy ще работи като дистрибутор на UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Включване на UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy няма да работи като дистрибутор на UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">За да сте сигурни, че WebSockets се свързват във фонов режим дайте разрешението Будилник и напомняне на ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">По-късно</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Затваряне</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Разрешаване</string>
+    <string name="settings_advanced_exact_alarms_title">Точен будилник</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy може да насрочва точни будилници (с цел свързване на WebSockets във фонов режим)</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy НЕ МОЖЕ да насрочва точни будилници. За да разрешите докоснете</string>
 </resources>
