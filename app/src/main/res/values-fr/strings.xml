@@ -94,7 +94,7 @@
     <string name="add_dialog_button_login">Se connecter</string>
     <string name="add_dialog_login_description">Ce sujet requiert que vous soyez connecté. Veuillez entrer un nom d\'utilisateur et un mot de passe.</string>
     <string name="add_dialog_login_password_hint">Mot de passe</string>
-    <string name="detail_how_to_example">Example (utilisant curl):<br/><tt>$ curl -d \"Bonjour\" %1$s</tt></string>
+    <string name="detail_how_to_example">Example (utilisant curl):<br></br><tt>$ curl -d \"Bonjour\" %1$s</tt></string>
     <string name="detail_clear_dialog_cancel">Annuler</string>
     <string name="detail_how_to_link">Des instructions détaillées sont disponible sur ntfy.sh et dans la documentation.</string>
     <string name="detail_clear_dialog_message">Supprimer toutes les notifications de ce sujet \?</string>
