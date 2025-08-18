@@ -111,7 +111,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">נא לבחור כתובת שירות</string>
     <string name="add_dialog_base_urls_dropdown_clear">מחיקת כתובת השירות</string>
     <string name="detail_no_notifications_text">עדיין לא קיבלת התראות לנושא הזה.</string>
-    <string name="detail_how_to_example">דוגמה (עם curl):<br/><tt>$ curl -d \"Shalom\" %1$s</tt></string>
+    <string name="detail_how_to_example">דוגמה (עם curl):<br></br><tt>$ curl -d \"Shalom\" %1$s</tt></string>
     <string name="detail_how_to_link">יש הנחיות מפורטות ב־ntfy.sh ובתיעוד.</string>
     <string name="detail_clear_dialog_message">למחוק את כל ההתראות בנושא הזה?</string>
     <string name="detail_clear_dialog_permanently_delete">למחוק לצמיתות</string>
