@@ -59,7 +59,7 @@
     <string name="detail_item_menu_download">下载文件</string>
     <string name="detail_item_menu_save_file">保存文件</string>
     <string name="detail_how_to_intro">向此主题的链接地址发送 PUT 或者 POST 请求即可发送通知。</string>
-    <string name="detail_how_to_example">例子（使用 curl）：<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">例子（使用 curl）：<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_clear_dialog_permanently_delete">永久删除</string>
     <string name="detail_clear_dialog_cancel">取消</string>
     <string name="detail_delete_dialog_message">您确定不再订阅此主题，并久删除所有您收到的通知吗？</string>
