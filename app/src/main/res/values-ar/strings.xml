@@ -32,7 +32,7 @@
     <string name="add_dialog_login_username_hint">إسم المستخدم</string>
     <string name="add_dialog_login_new_user">مستخدم جديد</string>
     <string name="add_dialog_login_password_hint">كلمة المرور</string>
-    <string name="detail_how_to_example">مثال (باستخدام curl): <br/> <tt> $ curl -d \"أهلًا\" %1$s </tt></string>
+    <string name="detail_how_to_example">مثال (باستخدام curl): <br></br> <tt> $ curl -d \"أهلًا\" %1$s </tt></string>
     <string name="detail_item_snack_deleted">تم حذف الإشعار</string>
     <string name="detail_item_snack_undo">إلغاء</string>
     <string name="detail_item_menu_copy_contents">نسخ الإشعار</string>
