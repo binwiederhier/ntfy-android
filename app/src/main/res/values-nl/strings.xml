@@ -147,7 +147,7 @@
     <string name="add_dialog_login_error_not_authorized">Login gefaald. Gebruiker %1$s is niet geauthoriseerd.</string>
     <string name="detail_no_notifications_text">Je hebt nog geen notificaties voor dit onderwerp ontvangen.</string>
     <string name="detail_how_to_intro">Om een notificatie naar dit onderwerp te sturen, verstuur een simpele PUT of POST naar de URL van dit onderwerp.</string>
-    <string name="detail_how_to_example">Voorbeeld (door gebruik van curl): <br/><tt> curl -d \"Hallo\"%1$s</tt></string>
+    <string name="detail_how_to_example">Voorbeeld (door gebruik van curl): <br></br><tt> curl -d \"Hallo\"%1$s</tt></string>
     <string name="detail_how_to_link">Gedetaileerde instructies zijn ter beschikking op ntfy.sh en in de documentatie.</string>
     <string name="detail_delete_dialog_message">Afmelden voor dit onderwerp en alle notificaties verwijderen\?</string>
     <string name="detail_test_title">Test: Je kan een titel aanmaken als je wil.</string>
