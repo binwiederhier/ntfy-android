@@ -92,7 +92,7 @@
     <string name="add_dialog_login_title">Изисква се вход</string>
     <string name="add_dialog_login_username_hint">Потребител</string>
     <string name="add_dialog_login_error_not_authorized">Неуспешен вход. Потребителят %1$s няма достъп.</string>
-    <string name="detail_how_to_example">Пример (с curl): <br/><tt>$ curl -d \"Здравей\" %1$s</tt></string>
+    <string name="detail_how_to_example">Пример (с curl): <br></br><tt>$ curl -d \"Здравей\" %1$s</tt></string>
     <string name="detail_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="main_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="detail_clear_dialog_permanently_delete">Премахване</string>
