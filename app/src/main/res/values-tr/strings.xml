@@ -209,7 +209,7 @@
     <string name="main_item_date_yesterday">dün</string>
     <string name="main_banner_battery_button_dismiss">Kapat</string>
     <string name="main_banner_battery_button_fix_now">Şimdi düzelt</string>
-    <string name="detail_how_to_example">Örnek (curl kullanarak):<br/><tt>$ curl -d \"Merhaba\" %1$s</tt></string>
+    <string name="detail_how_to_example">Örnek (curl kullanarak):<br></br><tt>$ curl -d \"Merhaba\" %1$s</tt></string>
     <string name="detail_delete_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="detail_test_message_error_unauthorized_user">Mesaj gönderilemiyor: \"%1$s\" kullanıcısı yetkilendirilmedi.</string>
     <string name="detail_how_to_link">Ayrıntılı talimatlar ntfy.sh adrsimde ve belgelerde bulunabilir.</string>
