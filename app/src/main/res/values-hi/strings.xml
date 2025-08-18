@@ -86,7 +86,7 @@
     <string name="detail_how_to_link">विस्तृत निर्देश ntfy.sh पर और डॉक्स में उपलब्ध हैं।</string>
     <string name="detail_clear_dialog_permanently_delete">स्थायी रूप से हटाएं</string>
     <string name="detail_how_to_intro">इस विषय पर सूचनाएं भेजने के लिए, बस विषय URL पर PUT या POST करें।</string>
-    <string name="detail_how_to_example">उदाहरण (curl का उपयोग करके):<br/><tt>$curl -d \"नमस्कार\"%1$s</tt></string>
+    <string name="detail_how_to_example">उदाहरण (curl का उपयोग करके):<br></br><tt>$curl -d \"नमस्कार\"%1$s</tt></string>
     <string name="detail_clear_dialog_message">इस विषय की सभी सूचनाएँ हटाएँ?</string>
     <string name="main_banner_websocket_text">WebSockets पर स्विच करना आपके सर्वर से कनेक्ट करने का अनुशंसित तरीका है, और बैटरी जीवन में सुधार कर सकता है, लेकिन आपके <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">proxy में अतिरिक्त कॉन्फ़िगरेशन</a> की आवश्यकता हो सकती है। इसे सेटिंग्स में टॉगल किया जा सकता है।</string>
     <string name="detail_test_message_error_unauthorized_anon">संदेश नहीं भेजा जा सकता: अनाम प्रकाशन की अनुमति नहीं है।</string>
