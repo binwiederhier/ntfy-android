@@ -1,10 +1,10 @@
-Envie notificações para o seu telefone a partir de qualquer script Bash ou PowerShell, ou a partir da sua própria aplicação utilizando requisições PUT/POST, por exemplo, através de curl no Linux ou Invoke-WebRequest.
+Envie notificações para o seu celular a partir de qualquer script Bash ou PowerShell, ou a partir da sua própria aplicação utilizando solicitações PUT/POST, por exemplo, através do curl no Linux ou Invoke-WebRequest.
 
-ntfy é um cliente Android para https://ntfy.sh, um serviço de pub-subs gratuito e de código aberto baseado em HTTP. Você pode se inscrever em tópicos nesta aplicação, e depois publicar mensagens através de uma simples API HTTP.
+ntfy é um cliente Android para https://ntfy.sh, um serviço de pub-sub baseado em HTTP gratuito e de código aberto. Você pode se inscrever em tópicos neste app, e então publicar mensagens através de uma simples API HTTP.
 
 Usos:
 * Receber notificações quando um processo de longa duração for finalizado
-* Pingar o seu telefone quando uma cópia de segurança falhou
+* Alertar no seu celular quando um backup falhou
 * Alertar quando alguém fizer login no seu servidor
 
 Exemplo:
@@ -14,4 +14,4 @@ $ curl -d "O seu backup acabou" ntfy.sh/mytopic
 Encontre mais exemplos e instruções de utilização aqui:
 * Website: https://ntfy.sh
 * GitHub (servidor): https://github.com/binwiederhier/ntfy
-* GitHub (aplicação Android): https://github.com/binwiederhier/ntfy-android
+* GitHub (app Android): https://github.com/binwiederhier/ntfy-android

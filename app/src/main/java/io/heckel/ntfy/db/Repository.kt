@@ -342,6 +342,16 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
             .apply()
     }
 
+    fun getWebSocketReconnectRemindTime(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME, WEBSOCKET_RECONNECT_REMIND_TIME_ALWAYS)
+    }
+
+    fun setWebSocketReconnectRemindTime(timeMillis: Long) {
+        sharedPrefs.edit()
+            .putLong(SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME, timeMillis)
+            .apply()
+    }
+
     fun getDefaultBaseUrl(): String? {
         return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
             sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
@@ -492,6 +502,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)
+        const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
@@ -531,6 +542,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
         const val WEBSOCKET_REMIND_TIME_ALWAYS = 1L
         const val WEBSOCKET_REMIND_TIME_NEVER = Long.MAX_VALUE
+
+        const val WEBSOCKET_RECONNECT_REMIND_TIME_ALWAYS = 1L
+        const val WEBSOCKET_RECONNECT_REMIND_TIME_NEVER = Long.MAX_VALUE
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

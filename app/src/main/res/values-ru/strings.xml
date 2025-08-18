@@ -33,7 +33,7 @@
     <string name="detail_menu_disable_instant">Выключить моментальную доставку</string>
     <string name="detail_menu_test">Отправить тестовое уведомление</string>
     <string name="detail_menu_copy_url">Скопировать URL-адрес темы</string>
-    <string name="detail_menu_clear">Отчистить все уведомления</string>
+    <string name="detail_menu_clear">Очистить все уведомления</string>
     <string name="detail_menu_settings">Настройки подписок</string>
     <string name="detail_menu_unsubscribe">Отписаться</string>
     <string name="detail_action_mode_menu_copy">Скопировать</string>

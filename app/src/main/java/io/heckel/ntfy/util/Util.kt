@@ -212,7 +212,7 @@ fun formatActionLabel(action: Action): String {
     }
 }
 
-fun maybeAppendActionErrors(message: String, notification: Notification): String {
+fun maybeAppendActionErrors(message: CharSequence, notification: Notification): CharSequence {
     val actionErrors = notification.actions
         .orEmpty()
         .mapNotNull { action -> action.error }
@@ -393,13 +393,14 @@ class ContentUriRequestBody(
     }
 }
 
+// TODO: make this work in Android 34+
 // Hack: Make end icon for drop down smaller, see https://stackoverflow.com/a/57098715/1440785
 fun View.makeEndIconSmaller(resources: Resources) {
-    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
-    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
-    endIconImageView.minimumHeight = dimension.toInt()
-    endIconImageView.minimumWidth = dimension.toInt()
-    requestLayout()
+//    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+//    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
+//    endIconImageView.minimumHeight = dimension.toInt()
+//    endIconImageView.minimumWidth = dimension.toInt()
+//    requestLayout()
 }
 
 // Shows the ripple effect on the view, if it is ripple-able, see https://stackoverflow.com/a/56314062/1440785

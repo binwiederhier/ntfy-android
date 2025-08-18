@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_menu_settings_title">Seadistused</string>
+    <string name="refresh_message_no_results">Kõik on uuendatud</string>
+    <string name="refresh_message_result">%1$d teavitus(t) vastu võetud</string>
+    <string name="main_menu_report_bug_title">Teata vigadest</string>
+    <string name="main_menu_docs_title">Loe dokumentatsiooni</string>
+    <string name="main_menu_rate_title">Hinda rakendust ⭐</string>
+    <string name="main_menu_donate_title">Toeta arendajat 💸</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Kustuta jäädavalt</string>
+    <string name="main_item_status_text_not_one">%1$d teavitust</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">eile</string>
+    <string name="main_add_button_description">Lisa tellimus</string>
+    <string name="main_no_subscriptions_text">Tundub, et sul pole veel ühtegi tellimust.</string>
+    <string name="main_how_to_link">Üksikasjalikud juhendid leiduvad meie saidis ntfy.sh ja dokumentatsioonis.</string>
+    <string name="main_unified_push_toast">Seda tellimust haldab %1$s UnifiedPushi vahendusel</string>
+    <string name="main_action_mode_menu_unsubscribe">Lõpeta tellimus</string>
+    <string name="main_action_mode_delete_dialog_cancel">Katkesta</string>
+    <string name="main_item_status_text_one">%1$d teavitus</string>
+</resources>

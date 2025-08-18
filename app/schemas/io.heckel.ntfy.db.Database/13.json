@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 13,
-    "identityHash": "44fc291d937fdf02b9bc2d0abb10d2e0",
+    "identityHash": "208f16743f21d9c374f1314878eb93cb",
     "entities": [
       {
         "tableName": "Subscription",
@@ -94,10 +94,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -124,7 +124,7 @@
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `encoding` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `actions` TEXT, `deleted` INTEGER NOT NULL, `icon_url` TEXT, `icon_contentUri` TEXT, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `subscriptionId` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `contentType` TEXT NOT NULL, `encoding` TEXT NOT NULL, `notificationId` INTEGER NOT NULL, `priority` INTEGER NOT NULL DEFAULT 3, `tags` TEXT NOT NULL, `click` TEXT NOT NULL, `actions` TEXT, `deleted` INTEGER NOT NULL, `icon_url` TEXT, `icon_contentUri` TEXT, `attachment_name` TEXT, `attachment_type` TEXT, `attachment_size` INTEGER, `attachment_expires` INTEGER, `attachment_url` TEXT, `attachment_contentUri` TEXT, `attachment_progress` INTEGER, PRIMARY KEY(`id`, `subscriptionId`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -153,6 +153,12 @@
           {
             "fieldPath": "message",
             "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentType",
+            "columnName": "contentType",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -255,11 +261,11 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id",
             "subscriptionId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -288,10 +294,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "baseUrl"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -338,10 +344,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -350,7 +356,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '44fc291d937fdf02b9bc2d0abb10d2e0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '208f16743f21d9c374f1314878eb93cb')"
     ]
   }
 }

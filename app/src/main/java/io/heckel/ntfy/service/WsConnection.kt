@@ -56,10 +56,8 @@ class WsConnection(
     private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
-    private val topicIsUnifiedPush = connectionId.topicIsUnifiedPush
     private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
-    private val unifiedPushTopicsStr = topicIsUnifiedPush.filter { entry -> entry.value }.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
     init {
@@ -80,7 +78,7 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user, unifiedPushTopicsStr).build()
+        val request = requestBuilder(urlWithSince, user).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }
@@ -114,7 +112,27 @@ class WsConnection(
             Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
             val reconnectTime = Calendar.getInstance()
             reconnectTime.add(Calendar.SECOND, seconds)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, reconnectTime.timeInMillis, RECONNECT_TAG, { start() }, null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        reconnectTime.timeInMillis,
+                        RECONNECT_TAG,
+                        { start() },
+                        null
+                    )
+                } else {
+                    Log.d(TAG, "SCHEDULE_EXACT_ALARM permission denied: Failed to reschedule websocket connection")
+                }
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    reconnectTime.timeInMillis,
+                    RECONNECT_TAG,
+                    { start() },
+                    null
+                )
+            }
         } else {
             Log.d(TAG, "$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via handler)")
             val handler = Handler(Looper.getMainLooper())
