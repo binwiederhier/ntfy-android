@@ -53,7 +53,7 @@
     <string name="main_banner_battery_button_dismiss">தள்ளுபடி</string>
     <string name="main_banner_battery_button_fix_now">இப்போது சரிசெய்யவும்</string>
     <string name="add_dialog_base_urls_dropdown_clear">தெளிவான பணி முகவரி</string>
-    <string name="detail_how_to_example">எடுத்துக்காட்டு (சுருட்டைப் பயன்படுத்துதல்): <br/> <tt> $ சுருட்டை -d \"hi\" %1$s </tt></string>
+    <string name="detail_how_to_example">எடுத்துக்காட்டு (சுருட்டைப் பயன்படுத்துதல்): <br></br> <tt> $ சுருட்டை -d \"hi\" %1$s </tt></string>
     <string name="detail_how_to_link">Ntfy.sh, மற்றும் டாக்சில் விரிவான வழிமுறைகள் கிடைக்கின்றன.</string>
     <string name="detail_instant_delivery_disabled">உடனடி வழங்கல்</string>
     <string name="detail_deep_link_subscribed_toast_message">தலைப்பு %1$s க்கு குழுசேர்ந்தது</string>
