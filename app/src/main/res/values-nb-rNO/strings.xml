@@ -61,7 +61,7 @@
     <string name="add_dialog_instant_delivery_description">Forsikrer at meldinger blir levert umiddelbart, selv når enheten er inaktiv.</string>
     <string name="add_dialog_login_description">Dette emnet krever at du logger inn. Skriv inn et brukernavn og passord.</string>
     <string name="detail_how_to_intro">For å sende merknader til dette emnet kan du utføre PUT eller POST til emne-nettadressen.</string>
-    <string name="detail_how_to_example">Eksempel (ved bruk av curl):<br/><tt>$ curl -d \"Hei\" %1$s</tt></string>
+    <string name="detail_how_to_example">Eksempel (ved bruk av curl):<br></br><tt>$ curl -d \"Hei\" %1$s</tt></string>
     <string name="detail_item_snack_deleted">Merknad slettet</string>
     <string name="detail_item_menu_cancel">Avbryt nedlasting</string>
     <string name="detail_item_menu_save_file">Lagre fil</string>
