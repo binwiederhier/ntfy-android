@@ -177,8 +177,8 @@ class SubscriberService : Service() {
             .filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap(), emptyMap()) }
-            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }, topicIsUnifiedPush = entry.value.associate { s -> s.topic to (s.upConnectorToken != null) }) }
+            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
+            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
             .toSet()
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)

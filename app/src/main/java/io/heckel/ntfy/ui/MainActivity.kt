@@ -198,7 +198,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             SubscriberServiceManager(this).restart()
             wsBanner.visibility = View.GONE
 
-            // maybe show WebSocketReconnectBanner
+            // Maybe show WebSocketReconnectBanner
             viewModel.list().observe(this) {
                 it?.let { subscriptions ->
                     showHideWebSocketReconnectBanner(subscriptions)
@@ -210,14 +210,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val wsReconnectBanner = findViewById<View>(R.id.main_banner_websocket_reconnect)
             val wsReconnectText = findViewById<TextView>(R.id.main_banner_websocket_reconnect_text)
-            val wsReconnectDismissButton =
-                findViewById<Button>(R.id.main_banner_websocket_reconnect_dontaskagain)
-            val wsReconnectRemindButton =
-                findViewById<Button>(R.id.main_banner_websocket_reconnect_remind_later)
-            val wsReconnectEnableButton =
-                findViewById<Button>(R.id.main_banner_websocket_reconnect_enable)
-            wsReconnectText.movementMethod =
-                LinkMovementMethod.getInstance() // Make links clickable
+            val wsReconnectDismissButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_dontaskagain)
+            val wsReconnectRemindButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_remind_later)
+            val wsReconnectEnableButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_enable)
+            wsReconnectText.movementMethod = LinkMovementMethod.getInstance() // Make links clickable
             wsReconnectDismissButton.setOnClickListener {
                 wsReconnectBanner.visibility = View.GONE
                 repository.setWebSocketReconnectRemindTime(Repository.WEBSOCKET_RECONNECT_REMIND_TIME_NEVER)
@@ -287,12 +283,9 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val wsReconnectBanner = findViewById<View>(R.id.main_banner_websocket_reconnect)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasSelfHostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
-            val usingWebSockets =
-                repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
-            val wsReconnectRemindTimeReached =
-                repository.getWebSocketReconnectRemindTime() < System.currentTimeMillis()
-            val canScheduleExactAlarms =
-                (getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
+            val usingWebSockets = repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
+            val wsReconnectRemindTimeReached = repository.getWebSocketReconnectRemindTime() < System.currentTimeMillis()
+            val canScheduleExactAlarms = (getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
             val showBanner = hasSelfHostedSubscriptions && wsReconnectRemindTimeReached && usingWebSockets && !canScheduleExactAlarms
             Log.d(TAG, "hasSelfHostedSubscriptions: ${hasSelfHostedSubscriptions}, wsReconnectRemindTimeReached: ${wsReconnectRemindTimeReached}, usingWebSockets: ${usingWebSockets}, canScheduleExactAlarms: ${canScheduleExactAlarms}")
             wsReconnectBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
