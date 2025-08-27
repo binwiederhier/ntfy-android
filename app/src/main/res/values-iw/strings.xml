@@ -111,7 +111,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">נא לבחור כתובת שירות</string>
     <string name="add_dialog_base_urls_dropdown_clear">מחיקת כתובת השירות</string>
     <string name="detail_no_notifications_text">עדיין לא קיבלת התראות לנושא הזה.</string>
-    <string name="detail_how_to_example">דוגמה (עם curl):<br></br><tt>$ curl -d \"Shalom\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ דוגמה (עם curl):<br/><tt>$ curl -d \"Shalom\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">יש הנחיות מפורטות ב־ntfy.sh ובתיעוד.</string>
     <string name="detail_clear_dialog_message">למחוק את כל ההתראות בנושא הזה?</string>
     <string name="detail_clear_dialog_permanently_delete">למחוק לצמיתות</string>
@@ -343,4 +343,11 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_off">נעשה שימוש בהגדרות ברירת המחדל (צלילים, עקיפת „לא להפריע” וכו׳)</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">נעשה שימוש בהגדרות מותאמות אישית למינוי הזה</string>
     <string name="detail_settings_appearance_display_name_message">הגדרת שם תצוגה מותאם אישית למינוי הזה. להשאיר ריק לברירת המחדל (%1$s).</string>
+    <string name="main_banner_websocket_reconnect_text">כדי לוודא שחיבור ה־WebSocket משתחזר ברקע, יש להעניק ל־ntfy את ההרשאה התראות ותזכורות</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">לשאול בהמשך</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">התעלמות</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">להעניק כעת</string>
+    <string name="settings_advanced_exact_alarms_title">התראות מדויקות</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy יכול לתזמן התראות מדויקות (משמשות כדי לחבר את ה־WebSockets מחדש ברקע)</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy לא יכול לתזמן התראות מדויקות. לחיצה תעניק את ההרשאה כעת</string>
 </resources>

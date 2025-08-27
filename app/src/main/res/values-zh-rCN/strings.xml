@@ -59,7 +59,7 @@
     <string name="detail_item_menu_download">下载文件</string>
     <string name="detail_item_menu_save_file">保存文件</string>
     <string name="detail_how_to_intro">向此主题的链接地址发送 PUT 或者 POST 请求即可发送通知。</string>
-    <string name="detail_how_to_example">例子（使用 curl）：<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ 例子（使用 curl）：<br/><tt>$ curl -d "Hi" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_permanently_delete">永久删除</string>
     <string name="detail_clear_dialog_cancel">取消</string>
     <string name="detail_delete_dialog_message">您确定不再订阅此主题，并久删除所有您收到的通知吗？</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy 不再会作为 UnifiedPush 的一个分发器</string>
     <string name="settings_advanced_unifiedpush_title">启用 UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy 将作为 UnifiedPush 的一个分发器</string>
+    <string name="main_banner_websocket_reconnect_text">为确保 WebSocket 在后台重新连接，请授予 ntfy 闹钟和提醒权限</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">稍后询问</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">忽略</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">立即授予</string>
+    <string name="settings_advanced_exact_alarms_title">精确闹钟</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy 可以安排精确闹钟（用于在后台重新连接 WebSocket）</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy 无法安排精确闹钟。点击立即授予权限</string>
 </resources>
