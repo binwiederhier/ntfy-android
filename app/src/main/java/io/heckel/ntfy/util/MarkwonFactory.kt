@@ -28,6 +28,7 @@ internal object MarkwonFactory {
 
         return Markwon.builder(context)
             .usePlugin(CorePlugin.create())
+            .usePlugin(SoftBreakAddsNewLinePlugin.create())
             .usePlugin(MovementMethodPlugin.create(BetterLinkMovementMethod.getInstance()))
             .usePlugin(ImagesPlugin.create())
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
@@ -67,6 +68,7 @@ internal object MarkwonFactory {
 
         return Markwon.builder(context)
             .usePlugin(CorePlugin.create())
+            .usePlugin(SoftBreakAddsNewLinePlugin.create())
             .usePlugin(ImagesPlugin.create())
             .usePlugin(StrikethroughPlugin.create())
             .usePlugin(object : AbstractMarkwonPlugin() {
