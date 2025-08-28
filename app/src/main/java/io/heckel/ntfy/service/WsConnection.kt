@@ -42,7 +42,7 @@ class WsConnection(
     private val parser = NotificationParser()
     private val client = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
+        .pingInterval(0, TimeUnit.MILLISECONDS) // The server pings us, don't need to ping ourselves
         .connectTimeout(10, TimeUnit.SECONDS)
         .build()
     private var errorCount = 0
