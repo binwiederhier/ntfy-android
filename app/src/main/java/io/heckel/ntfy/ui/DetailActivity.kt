@@ -14,6 +14,7 @@ import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -185,6 +187,34 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
         } else {
             howToExample.text = Html.fromHtml(howToText)
+        }
+
+        // Message bar
+        val messageText: TextInputEditText = findViewById(R.id.detail_message_box)
+        val messageSendButton: Button = findViewById(R.id.detail_message_send_button)
+
+        messageSendButton.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val message = messageText.text.toString()
+                if (message.isNotEmpty()) {
+                    try {
+                        api.publish(subscriptionBaseUrl, subscriptionTopic, message = message)
+                        messageText.text?.clear()
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            Toast
+                                .makeText(this@DetailActivity, getString(R.string.detail_test_message_error, e.message), Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        Toast
+                            .makeText(this@DetailActivity, getString(R.string.detail_message_bar_empty_message), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+            }
         }
 
         // Swipe to refresh
