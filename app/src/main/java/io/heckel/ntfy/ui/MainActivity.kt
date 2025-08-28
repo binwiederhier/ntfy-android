@@ -506,6 +506,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             upAppId = null,
             upConnectorToken = null,
             displayName = null,
+            clientMessage = null,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
