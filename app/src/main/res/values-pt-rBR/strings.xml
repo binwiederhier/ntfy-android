@@ -56,7 +56,7 @@
     <string name="add_dialog_login_error_not_authorized">Login falhou. Usuário %1$s não autorizado.</string>
     <string name="add_dialog_login_new_user">Novo usuário</string>
     <string name="detail_no_notifications_text">Você ainda não recebeu nenhuma notificação desse tópico.</string>
-    <string name="detail_how_to_example">Exemplo (usando curl):<br></br><tt>$ curl -d \"Oi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando o curl):<br/><tt>$ curl -d \"Olá\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_message">Excluir todas as notificações desse tópico?</string>
     <string name="detail_clear_dialog_permanently_delete">Excluir permanentemente</string>
     <string name="detail_delete_dialog_message">Desinscrever desse tópico e excluir todas as notificações recebidas?</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_title">Habilitar UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy atuará como um distribuidor UnifiedPush</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continuar alertando</string>
+    <string name="main_banner_websocket_reconnect_text">Para se certificar que os WebSockets se reconectem em segundo plano, conceda a permissão de Alarmes e lembretes para o ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Perguntar depois</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Ignorar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Conceder agora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmes exatos</string>
+    <string name="settings_advanced_exact_alarms_true">O ntfy pode agendar alarmes exatos (usados para reconectar WebSockets em segundo plano)</string>
+    <string name="settings_advanced_exact_alarms_false">O ntfy NÃO CONSEGUE agendar alarmes exatos. Clique para conceder a permissão agora</string>
 </resources>
