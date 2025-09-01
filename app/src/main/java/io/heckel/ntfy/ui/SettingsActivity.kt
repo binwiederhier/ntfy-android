@@ -552,7 +552,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
-            // CanScheduleExactAlarms
+            // Update "Exact alarms" preference to match system setting
             updateExactAlarmsPref()
 
             // Version
@@ -698,7 +698,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
             exactAlarmsPref?.summary = if (canScheduleExactAlarms) getString(R.string.settings_advanced_exact_alarms_true) else getString(R.string.settings_advanced_exact_alarms_false)
             exactAlarmsPref?.onPreferenceClickListener = OnPreferenceClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !canScheduleExactAlarms) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
                 }
                 true
