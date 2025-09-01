@@ -348,6 +348,6 @@
     <string name="main_banner_websocket_reconnect_button_dismiss">Verwerfen</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Jetzt gewähren</string>
     <string name="settings_advanced_exact_alarms_title">Genaue Alarme</string>
-    <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen (wird verwendet, um WebSockets im Hintergrund wieder zu verbinden)</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy kann genaue Alarme NICHT planen. Hier tippen, um jetzt die Erlaubnis zu erteilen</string>
 </resources>
