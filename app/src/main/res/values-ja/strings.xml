@@ -87,7 +87,7 @@
     <string name="detail_how_to_link">詳細な説明は ntfy.sh またはドキュメントを参照してください。</string>
     <string name="detail_clear_dialog_permanently_delete">完全に削除</string>
     <string name="detail_delete_dialog_message">このトピックの購読を解除して受信した通知をすべて削除しますか？</string>
-    <string name="detail_how_to_example">例 (curlの場合): <br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ 例 (curlの場合):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_message">このトピックの全ての通知を削除しますか？</string>
     <string name="detail_clear_dialog_cancel">キャンセル</string>
     <string name="detail_delete_dialog_permanently_delete">完全に削除</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfyがUnifiedPushディストリビュータとして振る舞うようになります</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfyはUnifiedPushディストリビュータとして振る舞いません</string>
     <string name="settings_advanced_unifiedpush_title">UnifiedPushを有効化する</string>
+    <string name="main_banner_websocket_reconnect_text">WebSocketがバックグラウンドで再接続できるように、ntfyにアラームとリマインダーの権限を許可してください</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">後で</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">了解</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">承認する</string>
+    <string name="settings_advanced_exact_alarms_title">正確なアラーム</string>
+    <string name="settings_advanced_exact_alarms_true">ntfyは正確なアラームをスケジュールできます (バックグラウンドでWebSocketを再接続するのに使用)</string>
+    <string name="settings_advanced_exact_alarms_false">ntfyは正確なアラームをスケジュールできません。クリックして権限を許可してください</string>
 </resources>
