@@ -348,6 +348,6 @@
     <string name="main_banner_websocket_reconnect_button_dismiss">Desbotar</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Conceder agora</string>
     <string name="settings_advanced_exact_alarms_title">Alarmas exactas</string>
-    <string name="settings_advanced_exact_alarms_true">ntfy pode pogramar alarmas exactas (usadas para reconectar con WebSockets en segundo plano)</string>
-    <string name="settings_advanced_exact_alarms_false">ntfy NON PODE programar alarmas exactas. Preme para concederlle o permiso</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy pode pogramar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para revogar o permiso.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy non pode programar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para conceder o permiso.</string>
 </resources>
