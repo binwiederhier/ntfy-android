@@ -348,6 +348,6 @@
     <string name="main_banner_websocket_reconnect_button_dismiss">התעלמות</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">להעניק כעת</string>
     <string name="settings_advanced_exact_alarms_title">התראות מדויקות</string>
-    <string name="settings_advanced_exact_alarms_true">ntfy יכול לתזמן התראות מדויקות (משמשות כדי לחבר את ה־WebSockets מחדש ברקע)</string>
-    <string name="settings_advanced_exact_alarms_false">ntfy לא יכול לתזמן התראות מדויקות. לחיצה תעניק את ההרשאה כעת</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy יכול לתזמן התראות מדויקות, התראות מדויקות משמשות כדי לחבר את ה־WebSockets מחדש ברקע. לחיצה כאן תשלול את ההרשאה.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy לא יכול לתזמן התראות מדויקות. התראות מדויקות נחוצות כדי לחבר את ה־WebSockets מחדש ברקע. לחיצה תעניק את ההרשאה.</string>
 </resources>
