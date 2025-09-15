@@ -199,7 +199,7 @@
     <string name="add_dialog_button_back">Indietro</string>
     <string name="detail_no_notifications_text">Non hai ancora ricevuto notifiche su questo topic.</string>
     <string name="detail_item_menu_open">Apri file</string>
-    <string name="detail_how_to_example">Esempio (utilizzando curl):<br></br><tt>$ curl -d \"Ciao\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Esempio (utilizzando curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_instant_delivery_disabled">Consegna istantanea OFF</string>
     <string name="detail_item_menu_delete">Elimina file</string>
     <string name="detail_item_menu_save_file">Salva il file</string>
@@ -343,4 +343,11 @@
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Invia notifiche solo una volta</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Le notifiche a massima priorità continuano ad allertare fino a che non vengono rimosse</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Le notifiche ad alta priorità vengono inviate solo una volta</string>
+    <string name="main_banner_websocket_reconnect_text">Per garantire che i WebSocket si riconnettano in sottofondo, concedere l\'autorizzazione Allarme e Promemoria a ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Chiedi più tardi</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Dismetti</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Concedi ora</string>
+    <string name="settings_advanced_exact_alarms_title">Allarmi esatti</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy può programmare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per revocare l\'autorizzazione.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy non può pianificare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per concedere l\'autorizzazione.</string>
 </resources>
