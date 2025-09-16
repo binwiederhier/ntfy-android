@@ -11,12 +11,12 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace "io.heckel.ntfy"
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         versionCode 33
         versionName "1.17.0"

@@ -4,7 +4,7 @@
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> <!-- For instant delivery foregrounds service -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/> <!-- For instant delivery foregrounds service on SDK >= 34 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/> <!-- For instant delivery foregrounds service on SDK >= 34 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- To keep foreground service awake; soon not needed anymore -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!-- To restart service on reboot -->
     <uses-permission android:name="android.permission.VIBRATE"/> <!-- Incoming notifications should be able to vibrate the phone -->
@@ -93,15 +93,6 @@
                 android:name=".msg.NotificationService$ViewActionWithClearActivity"
                 android:exported="false">
         </activity>
-
-        <!-- Subscriber foreground service for hosts other than ntfy.sh -->
-        <service
-            android:name=".service.SubscriberService"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="This is the main feature of this application. The foreground notification displays the connectivity status to the configurable remote server and the service notifies the user when a new message has been published on the remote server." />
-        </service>
 
         <!-- Subscriber service restart on reboot -->
         <receiver
