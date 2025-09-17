@@ -201,7 +201,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 13)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -229,6 +229,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_10_11)
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
+                    .addMigrations(MIGRATION_13_14)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -332,6 +333,12 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN insistent INTEGER NOT NULL DEFAULT (-1)") // = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN dedicatedChannels INTEGER NOT NULL DEFAULT (0)")
+            }
+        }
+
+        private val MIGRATION_13_14 = object : Migration(13, 14) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
             }
         }
     }
