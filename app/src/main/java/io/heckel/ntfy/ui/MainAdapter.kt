@@ -1,12 +1,16 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +21,7 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.readBitmapFromUriOrNull
+import io.heckel.ntfy.util.subscriptionTopicShortUrl
 import java.text.DateFormat
 import java.util.*
 
@@ -69,7 +74,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             this.subscription = subscription
             val isUnifiedPush = subscription.upAppId != null
             var statusMessage = if (isUnifiedPush) {
-                context.getString(R.string.main_item_status_unified_push, subscription.upAppId)
+                context.getString(R.string.main_item_status_unified_push, subscriptionTopicShortUrl(subscription))
             } else if (subscription.totalCount == 1) {
                 context.getString(R.string.main_item_status_text_one, subscription.totalCount)
             } else {
@@ -97,7 +102,10 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             if (subscription.icon != null) {
                 imageView.setImageBitmap(subscription.icon.readBitmapFromUriOrNull(context))
             } else {
-                imageView.setImageResource(R.drawable.ic_sms_gray_24dp)
+                val icon = subscription.upAppId?.let {
+                    getApplicationIcon(context, it)
+                } ?: ContextCompat.getDrawable(context, R.drawable.ic_sms_gray_24dp)!!
+                imageView.setImageDrawable(icon)
             }
             nameView.text = displayName(subscription)
             statusView.text = statusMessage
@@ -118,6 +126,26 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
                 itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
             } else {
                 itemView.setBackgroundColor(Color.TRANSPARENT)
+            }
+        }
+
+        /**
+         * @return The application icon of [packageName], or null if the package name
+         * is not among installed packages.
+         */
+        private fun getApplicationIcon(context: Context, packageName: String): Drawable? {
+            return try {
+                val info = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    context.packageManager.getApplicationInfo(
+                        packageName,
+                        PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA.toLong()),
+                    )
+                } else {
+                    context.packageManager.getApplicationInfo(packageName, 0)
+                }
+                context.packageManager.getApplicationIcon(info)
+            } catch (e: PackageManager.NameNotFoundException) {
+                null
             }
         }
     }

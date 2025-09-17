@@ -174,4 +174,17 @@
                     android:resource="@xml/file_paths"/>
         </provider>
     </application>
+
+    <!--
+      Permit querying application info of apps that might register with us, to show registered
+      app information, such as the icon, in the registration list.
+      -->
+    <queries>
+        <intent>
+            <action android:name="io.heckel.ntfy.SEND_MESSAGE" />
+        </intent>
+        <intent>
+            <action android:name="org.unifiedpush.android.connector.NEW_ENDPOINT" />
+        </intent>
+    </queries>
 </manifest>
