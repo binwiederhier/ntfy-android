@@ -18,12 +18,12 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        versionCode 34
-        versionName "1.17.1"
+        versionCode 35
+        versionName "1.17.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        /* Required for Room schema  migrations */
+        /* Required for Room schema migrations */
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
