@@ -1,0 +1,18 @@
+Trimite notificări pe telefonul tău din orice script Bash sau PowerShell, sau din propria aplicație folosind cereri PUT/POST, de exemplu, prin curl pe Linux sau Invoke-WebRequest.
+
+ntfy este un client Android pentru https://ntfy.sh, un serviciu gratuit și open-source bazat pe HTTP pentru publicare și abonare. Te poți abona la subiecte în această aplicație și apoi publica mesaje printr-un simplu API HTTP .
+
+Utilizări:
+* Notifică-te când un proces de lungă durată s-a terminat
+* Trimite un ping pe telefon când o copie de rezervă a eșuat
+* Alertează-te când cineva se conectează la serverul tău
+
+Exemplu:
+
+$ curl -d "Copia de rezervă este finalizată" ntfy.sh/mytopic
+
+Găsește mai multe exemple și instrucțiuni de utilizare aici:
+
+* Website: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (aplicație Android): https://github.com/binwiederhier/ntfy-android

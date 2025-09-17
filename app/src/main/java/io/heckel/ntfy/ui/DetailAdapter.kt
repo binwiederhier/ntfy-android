@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,20 +35,23 @@ import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
+    private val markwon: Markwon = MarkwonFactory.createForMessage(activity)
     val selected = mutableSetOf<String>() // Notification IDs
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, lifecycleScope, repository, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -73,7 +78,16 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
+    class DetailViewHolder(
+        private val activity: Activity,
+        private val lifecycleScope: CoroutineScope,
+        private val repository: Repository,
+        private val markwon: Markwon,
+        itemView: View,
+        private val selected: Set<String>,
+        val onClick: (Notification) -> Unit,
+        val onLongClick: (Notification) -> Unit
+    ) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
         private val layout: View = itemView.findViewById(R.id.detail_item_layout)
@@ -98,9 +112,17 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
             val context = itemView.context
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
+            val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
             dateView.text = formatDateShort(notification.timestamp)
-            messageView.text = maybeAppendActionErrors(formatMessage(notification), notification)
+            if (notification.isMarkdown()) {
+                messageView.autoLinkMask = 0
+                markwon.setMarkdown(messageView, message.toString())
+            } else {
+                messageView.autoLinkMask = Linkify.WEB_URLS
+                messageView.text = message
+            }
+            messageView.movementMethod = BetterLinkMovementMethod.getInstance()
             messageView.setOnClickListener {
                 // Click & Long-click listeners on the text as well, because "autoLink=web" makes them
                 // clickable, and so we cannot rely on the underlying card to perform the action.
@@ -141,6 +163,13 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             maybeRenderAttachment(context, notification, attachmentFileStat)
             maybeRenderIcon(context, notification, iconFileStat)
             maybeRenderActions(context, notification)
+        }
+
+        private fun maybeMarkdown(message: String, notification: Notification): CharSequence {
+             if (notification.isMarkdown()) {
+                return markwon.toMarkdown(message)
+            }
+            return message
         }
 
         private fun renderPriority(context: Context, notification: Notification) {

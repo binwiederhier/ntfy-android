@@ -70,7 +70,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Rensa tjänstens URL</string>
     <string name="detail_no_notifications_text">Du har inte fått några meddelanden för detta ämne ännu.</string>
     <string name="detail_how_to_intro">För att skicka meddelanden till det här ämnet, PUT eller POST till ämnesadressen.</string>
-    <string name="detail_how_to_example">Exempel (med curl):<br/><tt>$ curl -d \"Hej\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exempel (med curl):<br></br><tt>$ curl -d \"Hej\" %1$s</tt></string>
     <string name="detail_how_to_link">Detaljerade instruktioner finns på ntfy.sh och i dokumentationen.</string>
     <string name="detail_clear_dialog_message">Ta bort alla meddelanden i det här ämnet\?</string>
     <string name="detail_clear_dialog_permanently_delete">Ta bort permanent</string>

@@ -1,0 +1,17 @@
+Telefoningizga har qanday Bash yoki PowerShell scriptidan yoki PUT/POST so‘rovlari yordamida shaxsiy ilovangizdan bildirishnomalarni yuboring, masalan. Linuxda curl yoki Invoke-WebRequest orqali.
+
+ntfy https://ntfy.sh uchun Android mijozidir, HTTP-ga asoslangan bepul va ochiq manbali pub-sub xizmati. Siz ushbu ilovadagi mavzularga obuna boʻlib, oddiy HTTP API orqali xabarlar yuborishingiz mumkin.
+
+Foydalaniladi:
+* Uzoq davom etadigan jarayon tugashi haqida o‘zingizga xabar berishda
+* Zaxiralash muvaffaqiyatsiz tugagach, telefoningizga ping yuborishda
+* Kimdir serveringizga kirganda ogohlantirishlarda
+
+Misol:
+
+$ curl -d "Muvaffaqiyatli deploy qilindi" ntfy.sh/mytopic
+
+Qo‘shimcha misollar va foydalanish ko‘rsatmalarini bu yerda toping:
+* Web-sayt: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (Android ilovasi): https://github.com/binwiederhier/ntfy-android

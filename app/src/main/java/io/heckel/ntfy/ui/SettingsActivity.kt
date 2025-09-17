@@ -1,6 +1,7 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.Toast
@@ -118,6 +120,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             userSettingsFragment = fragment
         }
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        settingsFragment.updateExactAlarmsPref()
     }
 
     class SettingsFragment : BasePreferenceFragment() {
@@ -546,6 +553,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Update "Exact alarms" preference to match system setting
+            updateExactAlarmsPref()
+
             // Version
             val versionPrefId = context?.getString(R.string.settings_about_version_key) ?: return
             val versionPref: Preference? = findPreference(versionPrefId)
@@ -676,6 +686,23 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         .makeText(context, getString(R.string.settings_advanced_clear_logs_deleted_toast), Toast.LENGTH_LONG)
                         .show()
                 }
+            }
+        }
+
+        fun updateExactAlarmsPref() {
+            val exactAlarmsPrefId = context?.getString(R.string.settings_advanced_exact_alarms_key) ?: return
+            val exactAlarmsPref: Preference? = findPreference(exactAlarmsPrefId)
+            val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                (activity?.getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
+            } else {
+                true
+            }
+            exactAlarmsPref?.summary = if (canScheduleExactAlarms) getString(R.string.settings_advanced_exact_alarms_true) else getString(R.string.settings_advanced_exact_alarms_false)
+            exactAlarmsPref?.onPreferenceClickListener = OnPreferenceClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                }
+                true
             }
         }
 

@@ -1,0 +1,1 @@
+Trimite notificări pe telefonul tău din orice script folosind PUT/POST

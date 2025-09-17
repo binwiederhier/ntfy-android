@@ -32,7 +32,7 @@
     <string name="add_dialog_login_username_hint">إسم المستخدم</string>
     <string name="add_dialog_login_new_user">مستخدم جديد</string>
     <string name="add_dialog_login_password_hint">كلمة المرور</string>
-    <string name="detail_how_to_example">مثال (باستخدام curl): <br/> <tt> $ curl -d \"أهلًا\" %1$s </tt></string>
+    <string name="detail_how_to_example">مثال (باستخدام curl): <br></br> <tt> $ curl -d \"أهلًا\" %1$s </tt></string>
     <string name="detail_item_snack_deleted">تم حذف الإشعار</string>
     <string name="detail_item_snack_undo">إلغاء</string>
     <string name="detail_item_menu_copy_contents">نسخ الإشعار</string>
@@ -40,4 +40,58 @@
     <string name="detail_test_message_error">لا يمكن إرسال رسالة: %1$s</string>
     <string name="detail_no_notifications_text">لم تتلق بعد أية إشعارات حول هذا الموضوع.</string>
     <string name="detail_delete_dialog_permanently_delete">الحذف بشكل نهائي</string>
+    <string name="channel_subscriber_notification_noinstant_text">تم الاشتراك في المواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">مشترك في موضوعين</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">مشترك في ثلاثة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">مشترك في ستة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">مشترك في أربعة مواضيع</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">مشترك في خمسة مواضيع</string>
+    <string name="main_menu_settings_title">الإعدادات</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">مشترك في موضوع واحد</string>
+    <string name="main_menu_rate_title">قيّم التطبيق ⭐</string>
+    <string name="channel_subscriber_notification_instant_text_two">تم الاشتراك في 2 موضوع فوري</string>
+    <string name="refresh_message_result">تم استلام %1$d اشعار(ات)</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">مشترك في %1$d موضوع</string>
+    <string name="main_menu_notifications_enabled">الاشعارات مفعلة</string>
+    <string name="main_menu_notifications_disabled_forever">الاشعارات مكتومة</string>
+    <string name="channel_subscriber_notification_instant_text_six">تم الاشتراك في 6 مواضيع فورية</string>
+    <string name="channel_subscriber_notification_instant_text_three">تم الاشتراك في 3 مواضيع فورية</string>
+    <string name="channel_subscriber_notification_instant_text_five">تم الاشتراك في 5 مواضيع فورية</string>
+    <string name="main_menu_notifications_disabled_until">الاشعارات مكتومة حتي %1$s</string>
+    <string name="channel_subscriber_notification_instant_text_more">تم الاشتراك في %1$d مواضيع فورية</string>
+    <string name="main_menu_report_bug_title">التبليغ عن خطأ</string>
+    <string name="main_action_bar_title">الموضوعات المشترك فيها</string>
+    <string name="main_action_mode_menu_unsubscribe">الغاء الاشتراك</string>
+    <string name="main_menu_docs_title">اقرا المراجع</string>
+    <string name="refresh_message_no_results">كل شئ محدث لاخر تحديث</string>
+    <string name="channel_subscriber_notification_instant_text_one">تم الاشتراك في 1 موضوع فوري</string>
+    <string name="channel_subscriber_notification_instant_text_four">تم الاشتراك في 4 مواضيع فورية</string>
+    <string name="main_menu_donate_title">تبرع 💸</string>
+    <string name="settings_title">اﻹعدادات</string>
+    <string name="refresh_message_error">تعذر تحديث %1$d اشتراكات
+\n
+\n%2$s</string>
+    <string name="refresh_message_error_one">تعذر تحديث الاشتراك: %1$s</string>
+    <string name="main_action_mode_delete_dialog_cancel">إلغاء</string>
+    <string name="main_item_status_text_one">إشعار %1$d</string>
+    <string name="main_item_status_text_not_one">%1$d إشعارات</string>
+    <string name="main_item_status_reconnecting">جارٍ إعادة الاتصال …</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">البارحة</string>
+    <string name="main_action_mode_delete_dialog_message">إلغاء الاشتراك من الموضوعات المحددة وحذف جميع الإشعارات نهائيًا؟</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">حذف نهائيًا</string>
+    <string name="main_add_button_description">إضافة اشتراك</string>
+    <string name="main_no_subscriptions_text">يبدو أنه ليس لديك أي اشتراكات حتى الآن.</string>
+    <string name="main_banner_websocket_button_dismiss">تجاهل</string>
+    <string name="detail_action_mode_delete_dialog_cancel">إلغاﺀ</string>
+    <string name="notification_dialog_cancel">إلغاﺀ</string>
+    <string name="settings_notifications_header">الإشعارات</string>
+    <string name="detail_menu_unsubscribe">الغاء الاشتراك</string>
+    <string name="detail_action_mode_menu_copy">نسخ</string>
+    <string name="detail_action_mode_menu_delete">حذف</string>
+    <string name="notification_dialog_save">حفظ</string>
+    <string name="notification_popup_action_open">فتح</string>
+    <string name="notification_popup_action_download">تنزيل</string>
+    <string name="notification_popup_action_cancel">إلغاﺀ</string>
+    <string name="detail_item_download_info_deleted">تم حذفه</string>
 </resources>

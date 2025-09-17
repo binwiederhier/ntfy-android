@@ -52,7 +52,7 @@
     <string name="add_dialog_login_new_user">Nuevo usuario</string>
     <string name="detail_no_notifications_text">Aún no ha recibido ninguna notificación para este tópico.</string>
     <string name="detail_how_to_intro">Para enviar notificaciones a este tópico, simplemente realice un PUT ó POST a la URL del tópico.</string>
-    <string name="detail_how_to_example">Ejemplo (usando curl):<br/><tt>$ curl -d \"Hola\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Ejemplo (usando curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_permanently_delete">Eliminar permanentemente</string>
     <string name="detail_clear_dialog_cancel">Cancelar</string>
     <string name="detail_delete_dialog_message">¿Dar de baja de este tópico y eliminar todas las notificaciones que ha recibido\?</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_title">Activar UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy actuará como distribuidor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy no actuará como distribuidor UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Para asegurar que WebSockets vuelva a conectarse en segundo plano, conceda el permiso \"Alarmas y Recordatorios\" para ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Preguntar más tarde</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Descartar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Conceder ahora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmas exactas</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy puede programar alarmas exactas (utilizadas para reconectar WebSockets en segundo plano)</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy no puede programar alarmas exactas. Haga clic para conceder el permiso ahora</string>
 </resources>

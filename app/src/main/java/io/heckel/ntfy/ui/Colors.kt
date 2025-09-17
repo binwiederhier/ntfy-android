@@ -2,11 +2,9 @@ package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.elevation.SurfaceColors
 import io.heckel.ntfy.R
-import io.heckel.ntfy.util.isDarkThemeOn
 
 class Colors {
     companion object {

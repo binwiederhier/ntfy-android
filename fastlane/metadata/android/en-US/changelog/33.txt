@@ -2,7 +2,6 @@ Features:
 * You can now disable UnifiedPush so ntfy does not act as a UnifiedPush distributor (#646, thanks to @ollien for reporting, and to @wunter8 for implementing)
 
 Bug fixes + maintenance:
-* UnifiedPush subscriptions now include the Rate-Topics header to facilitate subscriber-based billing (#652, thanks to @wunter8)
 * Subscriptions without icons no longer appear to use another subscription's icon (#634, thanks to @topcaser for reporting, and @wunter8 for fixing)
 * Bumped all dependencies to the latest versions (no ticket)
 
