@@ -18,8 +18,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        versionCode 36
-        versionName "1.17.3"
+        versionCode 37
+        versionName "1.17.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,12 +35,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+            shrinkResources false
             debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            shrinkResources false
             debuggable true
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
