@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         title = getString(R.string.main_action_bar_title)
 
         // Floating action button ("+")

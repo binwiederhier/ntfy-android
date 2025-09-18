@@ -79,6 +79,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         notifier = NotificationService(this)
         appBaseUrl = getString(R.string.app_base_url)
 
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

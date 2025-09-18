@@ -2,7 +2,6 @@ package io.heckel.ntfy.ui
 
 import android.Manifest
 import android.app.AlarmManager
-import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,6 +12,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.TextUtils
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -65,6 +65,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         repository = Repository.getInstance(this)
         serviceManager = SubscriberServiceManager(this)
+
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
 
         if (savedInstanceState == null) {
             settingsFragment = SettingsFragment() // Empty constructor!
