@@ -11,23 +11,21 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace "io.heckel.ntfy"
-    compileSdkVersion 34
+    compileSdkVersion 35
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 35
 
-        versionCode 33
-        versionName "1.17.0"
+        versionCode 39
+        versionName "1.17.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         /* Required for Room schema migrations */
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         buildFeatures {
@@ -37,12 +35,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+            shrinkResources false
             debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            shrinkResources false
             debuggable true
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"

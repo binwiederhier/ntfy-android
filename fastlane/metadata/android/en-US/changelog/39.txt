@@ -1,9 +1,9 @@
+This is largely a maintenance update to ensure the SDK is up-to-date.
+
 Features:
+* Markdown is now rendered if "Markdown: yes" was passed (#310, thanks to @NiNiyas for reporting)
 * You can now disable UnifiedPush so ntfy does not act as a UnifiedPush distributor (#646, thanks to @ollien for reporting, and to @wunter8 for implementing)
 
 Bug fixes + maintenance:
 * Subscriptions without icons no longer appear to use another subscription's icon (#634, thanks to @topcaser for reporting, and @wunter8 for fixing)
 * Bumped all dependencies to the latest versions (no ticket)
-
-Additional languages:
-* Swedish (thanks to @hellbown)

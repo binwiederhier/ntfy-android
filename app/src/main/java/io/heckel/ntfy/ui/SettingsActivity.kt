@@ -126,7 +126,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
     override fun onResume() {
         super.onResume()
-        settingsFragment.updateExactAlarmsPref()
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.updateExactAlarmsPref()
+        }
     }
 
     class SettingsFragment : BasePreferenceFragment() {
