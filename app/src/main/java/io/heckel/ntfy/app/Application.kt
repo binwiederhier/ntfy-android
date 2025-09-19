@@ -15,9 +15,9 @@ class Application : Application() {
     }
 
     override fun onCreate() {
+        super.onCreate()
         if (repository.getDynamicColorsEnabled()) {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
-        super.onCreate()
     }
 }

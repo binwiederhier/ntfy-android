@@ -1,12 +1,10 @@
 package io.heckel.ntfy.util
 
 import android.content.Context
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.style.*
 import android.text.util.Linkify
-import androidx.core.content.ContextCompat
-import io.heckel.ntfy.R
+import io.heckel.ntfy.ui.Colors
 import io.noties.markwon.*
 import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CoreProps
@@ -36,7 +34,7 @@ internal object MarkwonFactory {
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
                     builder
-                        .linkColor(ContextCompat.getColor(context, R.color.teal))
+                        .linkColor(Colors.linkColor(context))
                         .isLinkUnderlined(true)
                 }
 

@@ -12,6 +12,10 @@ class Colors {
             return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
 
+        fun linkColor(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
+        }
+
         fun itemSelectedBackground(context: Context): Int {
             return SurfaceColors.getColorForElevation(context, 10f)
         }
