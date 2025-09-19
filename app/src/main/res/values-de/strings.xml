@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_low_name">Niedrige Priorität</string>
-    <string name="channel_notifications_default_name">Normale Priorität</string>
+    <string name="channel_notifications_default_name">Standard-Priorität</string>
     <string name="channel_notifications_high_name">Hohe Priorität</string>
     <string name="channel_notifications_max_name">Höchste Priorität</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
-    <string name="channel_notifications_min_name">Min. Priorität</string>
-    <string name="channel_subscriber_notification_title">Warte auf Benachrichtigungen</string>
+    <string name="channel_notifications_min_name">Niedrigste Priorität</string>
+    <string name="channel_subscriber_notification_title">Warte auf eingehende Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Ein Sofortnachrichten-Thema abonniert</string>
     <string name="channel_subscriber_notification_instant_text_two">Zwei Sofortnachrichten-Themen abonniert</string>
     <string name="channel_subscriber_notification_instant_text_three">Drei Sofortnachrichten-Themen abonniert</string>
@@ -63,7 +63,7 @@
     <string name="add_dialog_login_new_user">Neuer Benutzer</string>
     <string name="detail_no_notifications_text">Du hast für dieses Thema noch keine Benachrichtigungen erhalten.</string>
     <string name="detail_how_to_intro">Um Benachrichtigungen an dieses Thema zu senden, sende einen PUT- oder POST-Request an die Themen-URL.</string>
-    <string name="detail_how_to_example">Beispiel (mit curl):<br/><tt>$ curl -d \"Hallo\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Beispiel (mit curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_message">Alle Benachrichtigungen in diesem Thema löschen\?</string>
     <string name="detail_delete_dialog_message">Das Abo dieses Themas beenden und alle empfangenen Benachrichtigungen löschen\?</string>
     <string name="detail_delete_dialog_permanently_delete">Endgültig löschen</string>
@@ -112,7 +112,7 @@
     <string name="notification_dialog_title">Benachrichtigungen stummschalten</string>
     <string name="notification_dialog_cancel">Abbrechen</string>
     <string name="notification_dialog_save">Speichern</string>
-    <string name="notification_dialog_enabled_toast_message">Benachrichtigungen aktiviert</string>
+    <string name="notification_dialog_enabled_toast_message">Benachrichtigungen reaktiviert</string>
     <string name="notification_dialog_muted_forever_toast_message">Benachrichtigungen stummgeschaltet</string>
     <string name="notification_dialog_muted_until_toast_message">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="notification_dialog_show_all">Alle Benachrichtigungen anzeigen</string>
@@ -136,7 +136,7 @@
     <string name="settings_title">Einstellungen</string>
     <string name="settings_notifications_header">Benachrichtigungen</string>
     <string name="settings_notifications_muted_until_title">Benachrichtigungen stummschalten</string>
-    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stummgeschaltet bis sie erneut aktiviert werden</string>
+    <string name="settings_notifications_muted_until_forever">Benachrichtigungen stummgeschaltet bis Reaktivierung</string>
     <string name="settings_notifications_muted_until_x">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="settings_notifications_min_priority_title">Minimale Priorität</string>
     <string name="settings_notifications_min_priority_summary_any">Zeigt alle Benachrichtigungen</string>
@@ -232,11 +232,11 @@
     <string name="user_dialog_button_cancel">Abbrechen</string>
     <string name="user_dialog_button_delete">Benutzer löschen</string>
     <string name="user_dialog_button_save">Speichern</string>
-    <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltetbis %1$s</string>
+    <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="main_menu_settings_title">Einstellungen</string>
     <string name="main_banner_battery_button_remind_later">Später fragen</string>
-    <string name="main_action_mode_delete_dialog_message">Vom gewählten Thema abmelden und alle Benachrichtigungen endgültig löschen\?</string>
-    <string name="main_how_to_intro">Klicke den + Button zum Erstellen oder Abonnieren eines Themas. Dann erhältst Du Benachrichtigungen auf dem Gerät, wenn Nachrichten per PUT oder POST veröffentlicht werden.</string>
+    <string name="main_action_mode_delete_dialog_message">Von dem/den ausgewählten Thema(en) abmelden und alle Benachrichtigungen dauerhaft löschen?</string>
+    <string name="main_how_to_intro">Klicke den + Button zum Erstellen oder Abonnieren eines Themas. Dann erhältst Du Benachrichtigungen auf dem Gerät, wenn Nachrichten per PUT oder POST gesendet werden.</string>
     <string name="add_dialog_login_error_not_authorized">Anmeldung fehlgeschlagen. Keine Berechtigung für Benutzer %1$s.</string>
     <string name="add_dialog_login_username_hint">Benutzername</string>
     <string name="add_dialog_foreground_description">Sofortnachrichten sind für andere Server als %1$s immer aktiviert.</string>
@@ -312,7 +312,7 @@
     <string name="detail_settings_appearance_icon_remove_title">Abo-Icon (entfernen durch Antippen)</string>
     <string name="detail_settings_appearance_icon_error_saving">Kann Icon nicht speichern: %1$s</string>
     <string name="detail_settings_global_setting_title">Globale Einstellung verwenden</string>
-    <string name="detail_settings_global_setting_suffix">globale Einstellung</string>
+    <string name="detail_settings_global_setting_suffix">verwendet globale Einstellung</string>
     <string name="channel_subscriber_notification_instant_text_six">Sechs Sofortnachrichten-Themen abonniert</string>
     <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
     <string name="detail_settings_appearance_icon_remove_summary">Icon, das in Benachrichtigungen zu diesem Thema angezeigt wird</string>
@@ -329,7 +329,7 @@
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">In Zwischenablage kopiert</string>
     <string name="main_menu_donate_title">Spenden 💸</string>
     <string name="detail_item_cannot_open_apk">Apps können nicht mehr installiert werden. Bitte stattdessen über einen Browser herunterladen. Details siehe Issue #531.</string>
-    <string name="detail_settings_notifications_dedicated_channels_summary_on">Verwende eigene Einstellungen für dieses Thema</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Eigene Einstellungen für dieses Abo verwenden</string>
     <string name="detail_settings_notifications_open_channels_title">Beanchrichtigungseinstellungen konfigurieren</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Durchgehend alarmieren</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Nur einmal alarmieren</string>
@@ -338,9 +338,16 @@
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Benachrichtigungen mit höchster Priorität alarmieren nur einmal</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Benachrichtigungen mit höchster Priorität alarmieren dauerhaft bis sie bestätigt werden</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Eigene Benachrichtigungseinstellungen</string>
-    <string name="detail_settings_notifications_dedicated_channels_summary_off">Verwende Standardeinstellungen (Töne, Übergehen von \"Nicht Stören\" etc.)</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Standardeinstellungen verwenden (Töne, Übergehen von \"Nicht Stören\" etc.)</string>
     <string name="detail_settings_notifications_open_channels_summary">„Bitte nicht stören“ unterbrechen, Töne, etc.</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy arbeitet nicht als UnifiedPush-Distributor</string>
     <string name="settings_advanced_unifiedpush_title">UnifiedPush aktivieren</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy arbeitet als UnifiedPush-Distributor</string>
+    <string name="main_banner_websocket_reconnect_text">Um sicherzustellen, dass WebSockets im Hintergrund erneut verbunden werden, erteile dem Alarm &amp; Reminders die Berechtigung für ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Später fragen</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Verwerfen</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Jetzt gewähren</string>
+    <string name="settings_advanced_exact_alarms_title">Genaue Alarme</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy kann keine genauen Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Tippe hier, um die Berechtigung zu erteilen.</string>
 </resources>

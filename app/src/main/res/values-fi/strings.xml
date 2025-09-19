@@ -34,8 +34,7 @@
     <string name="main_menu_rate_title">Äänestä aplikaatiota</string>
     <string name="detail_item_cannot_delete">Ei voida poistaa liitettä %1$s</string>
     <string name="settings_backup_restore_backup_summary">Vie asetukset, ilmoitukset ja käyttäjät</string>
-    <string name="notification_popup_file_downloading">Lataa %1$s, %2$d%%
-\n%3$s</string>
+    <string name="notification_popup_file_downloading">Ladataan %1$s, %2$d %%\n%3$s</string>
     <string name="main_item_status_text_not_one">%1$d Huomautusta</string>
     <string name="user_dialog_description_edit">Voit muokata valitun käyttäjän käyttäjätunnusta/salasanaa tai poistaa sen.</string>
     <string name="notification_dialog_show_all">Näytä kaikki ilmoitukset</string>
@@ -194,7 +193,7 @@
     <string name="detail_item_download_info_deleted">Poistettu</string>
     <string name="add_dialog_button_subscribe">Tilaa</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logit poistettu</string>
-    <string name="detail_item_download_info_downloading_x_percent">%1$d%% ladattu</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d %% ladattu</string>
     <string name="user_dialog_button_cancel">Peruuta</string>
     <string name="add_dialog_button_login">Kirjaudu</string>
     <string name="settings_backup_restore_restore_summary">Tuo asetukset, ilmoitukset ja käyttäjät</string>
@@ -203,7 +202,7 @@
     <string name="settings_general_users_prefs_title">Käyttäjät</string>
     <string name="detail_item_cannot_open_apk">Sovelluksia ei voi enää asentaa. Lataa sen sijaan selaimen kautta. Katso numero #531 saadaksesi lisätietoja.</string>
     <string name="settings_advanced_clear_logs_summary">Poista aiemmin tallennetut lokit ja aloita alusta</string>
-    <string name="refresh_message_error_one">Ei voitu päivittää: %1$s</string>
+    <string name="refresh_message_error_one">Ei voitu virkistää: %1$s</string>
     <string name="add_dialog_login_username_hint">Käyttäjänimi</string>
     <string name="detail_settings_about_header">-</string>
     <string name="settings_advanced_export_logs_uploading">Tallenna logi …</string>
@@ -234,9 +233,7 @@
     <string name="main_action_mode_delete_dialog_message">Lopetetaanko valittujen aiheiden tilaus ja poistetaanko kaikki ilmoitukset pysyvästi \?</string>
     <string name="notification_dialog_muted_until_toast_message">Ilmoituset hiljennetty %1$s asti</string>
     <string name="share_title">Jaa</string>
-    <string name="refresh_message_error">Ei voitu päivittää %1$d tilausta
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">Ei voitu virkistää %1$d tilausta\n\n%2$s</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Käytä JSON HTTP:n kautta muodostaaksesi yhteyden palvelimeen. Tämä menetelmä on testattu, mutta se voi kuluttaa enemmän akkua.</string>
     <string name="settings_advanced_export_logs_copied_logs">Logit kopioitu leikkelepöydälle</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Tilattu kuuteen topikkiin</string>
@@ -294,7 +291,7 @@
     <string name="notification_popup_file">%1$s
 \nTiedosto: %2$s</string>
     <string name="settings_notifications_muted_until_forever">Ilmoitukset mykistetty, kunnes niitä jatketaan</string>
-    <string name="detail_how_to_example">Esimerkki (käytä curl):<br/><tt>$ curl -d \"Hei\" %1$s</tt></string>
+    <string name="detail_how_to_example">Esimerkki (käytä curl):<br></br><tt>$ curl -d \"Hei\" %1$s</tt></string>
     <string name="detail_settings_appearance_icon_set_title">Kuvake</string>
     <string name="detail_instant_delivery_disabled">Välitön lähetys pois</string>
     <string name="channel_subscriber_notification_instant_text_four">Tilattu neljään välittömään topikkiin</string>

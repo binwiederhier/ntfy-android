@@ -1,0 +1,1 @@
+Küldj értesítéseket a telefonodra bármilyen scriptből a PUT/POST requesttel

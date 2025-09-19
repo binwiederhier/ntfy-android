@@ -1,0 +1,2 @@
+Features:
+* Added GIF support for preview images (ntfy-android#76, thanks to @MichaelArkh)

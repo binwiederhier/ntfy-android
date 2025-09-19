@@ -343,4 +343,8 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy zal optreden als UnifiedPush-distributeur</string>
     <string name="settings_advanced_unifiedpush_title">UnifiedPush inschakelen</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy treedt niet op als UnifiedPush-distributeur</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Vraag het later</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Afwijzen</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Nu toekennen</string>
+    <string name="main_banner_websocket_reconnect_text">Om ervoor te zorgen dat WebSockets op de achtergrond opnieuw verbinding maken, moet u de machtiging Alarm &amp; Herinneringen aan ntfy verlenen</string>
 </resources>

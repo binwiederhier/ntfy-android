@@ -133,4 +133,5 @@
     <string name="notification_dialog_cancel">Mégse</string>
     <string name="settings_notifications_header">Értesítések</string>
     <string name="settings_notifications_muted_until_title">Értesítések némítása</string>
+    <string name="main_unified_push_toast">Ez a feliratkozás %1$s által van kezelve UnifiedPush-al</string>
 </resources>

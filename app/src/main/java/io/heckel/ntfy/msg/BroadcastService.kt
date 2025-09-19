@@ -28,6 +28,7 @@ class BroadcastService(private val ctx: Context) {
         intent.putExtra("message", decodeMessage(notification))
         intent.putExtra("message_bytes", decodeBytesMessage(notification))
         intent.putExtra("message_encoding", notification.encoding)
+        intent.putExtra("content_type", notification.contentType)
         intent.putExtra("tags", notification.tags)
         intent.putExtra("tags_map", joinTagsMap(splitTags(notification.tags)))
         intent.putExtra("priority", notification.priority)
