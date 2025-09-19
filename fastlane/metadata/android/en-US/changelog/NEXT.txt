@@ -1,2 +1,3 @@
 Features:
 * Added GIF support for preview images (ntfy-android#76, thanks to @MichaelArkh)
+* Added WebP support for preview images (ntfy-android#81, thanks to @jokakilla)
