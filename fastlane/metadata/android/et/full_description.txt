@@ -1,0 +1,17 @@
+Saada PUT/POST päringutega oma nutiseadmesse teavitusi igast Bashi või PowerShelli skriptist või hoopis oma rakendusest, sealhulgas Linuxis curliga või Windowsis Invoke-WebRequest meetodiga.
+
+ntfy on https://ntfy.sh teenuse klient Androidi jaoks. Ntfy.sh on vaba ning avatud lähtekoodil põhinev „avalda ja telli“-tüüpi teenus. Sa tellid rakendusest sind huvitavad teemad ning saadad neile sõnumeid lihtsa HTTP API abil.
+
+Kasutusvõimalused:
+* teavita kauatöötava protsessi töö lõpust
+* saada sõnum telefoni, kui varukoopia tegemine ei õnnestu
+* hoiatus, kui keegi logib sinu serverisse
+
+Näide:
+
+$ curl -d "Varukoopia on tehtud" ntfy.sh/mytopic
+
+Lisateave ja kasutusjuhend leidub siin:
+* Veebisait: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (Androidi rakendus): https://github.com/binwiederhier/ntfy-android

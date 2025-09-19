@@ -55,7 +55,7 @@
     <string name="add_dialog_login_new_user">Pengguna baru</string>
     <string name="detail_no_notifications_text">Anda belum menerima notifikasi apa pun.</string>
     <string name="detail_how_to_intro">Untuk mengirimkan notifikasi ke topik ini, lakukan PUT atau POST ke URL topik.</string>
-    <string name="detail_how_to_example">Contoh (menggunakan curl):<br/><tt>$ curl -d \"Hai\" %1$s</tt></string>
+    <string name="detail_how_to_example">Contoh (menggunakan curl):<br></br><tt>$ curl -d \"Hai\" %1$s</tt></string>
     <string name="detail_how_to_link">Instruksi rinci tersedia di ntfy.sh, dan dalam dokumentasi.</string>
     <string name="detail_clear_dialog_message">Hapus semua notifikasi di topik ini\?</string>
     <string name="detail_clear_dialog_permanently_delete">Hapus secara permanen</string>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_min_name">اولویت اصلی</string>
-    <string name="channel_notifications_default_name">اولویت پیش تعریف</string>
+    <string name="channel_notifications_default_name">اولویت پیش‌فرض</string>
     <string name="channel_notifications_low_name">اولویت پایین</string>
-    <string name="channel_notifications_group_default_name">پیش تعریف</string>
+    <string name="channel_notifications_group_default_name">پیش‌فرض</string>
     <string name="channel_subscriber_notification_instant_text">عضویت یافته در تحویل فوری اطلاعیه ها</string>
     <string name="channel_subscriber_notification_instant_text_one">عضویت یافته در تحویل یک موضوع</string>
     <string name="channel_subscriber_notification_instant_text_three">عضویت یافته در دریافت سه موضوع</string>
@@ -39,4 +39,17 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">حذف برای همیشه</string>
     <string name="main_action_mode_delete_dialog_cancel">لغو</string>
     <string name="main_add_button_description">افزون اشتراک</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">مشترک شده به دو موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">مشترک شده به سه موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">مشترک شده به چهار موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">مشترک شده به پنج موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">مشترک شده به شش موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">مشترک شده در %1$d موضوع</string>
+    <string name="main_action_bar_title">موضوعات دنبال شده</string>
+    <string name="main_how_to_link">اطلاعات کامل بر روی ntfy.sh و مستندات، قابل دسترسی است.</string>
+    <string name="add_dialog_description_below">موضوعات به وسلیه رمز محافظت نمی شوند، پس نامی انتخاب کنید که قابل حدس زدن نباشد. بعد از مشترک شدن، شما می توانید با PUT/POST اطلاعیه ارسال کنید.</string>
+    <string name="add_dialog_topic_name_hint">نام موضوع، مثلا hoshdar_ali</string>
+    <string name="add_dialog_use_another_server">از سرور دیگری استفاده کن</string>
+    <string name="add_dialog_use_another_server_description">برای اشتراک در موضوعات از سرورهای دیگر، نشانی‌های سرویس را در زیر وارد کنید.</string>
+    <string name="main_how_to_intro">با فشردن + یک موضوع ایجاد کرده یا به آن مشترک شوید. از این پس شما هنگام ارسال توسط PUT یا POST بر روی دستگاه خود اطلاعیه دریافت می کنید.</string>
 </resources>

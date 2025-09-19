@@ -1,41 +1,50 @@
+plugins {
+    id 'com.google.devtools.ksp'
+}
+
 repositories {
     mavenCentral()
 }
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 33
+    namespace "io.heckel.ntfy"
+    compileSdkVersion 35
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 35
 
-        versionCode 33
-        versionName "1.17.0"
+        versionCode 41
+        versionName "1.17.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         /* Required for Room schema migrations */
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+
+        buildFeatures {
+            buildConfig true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
+            shrinkResources false
             debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            shrinkResources false
             debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
         }
     }
 
@@ -54,12 +63,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs += [
             '-Xjvm-default=all-compatibility' // https://stackoverflow.com/a/71234042/1440785
         ]
@@ -103,9 +112,10 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10'
 
     // Room (SQLite)
-    def room_version = "2.5.1"
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
 
     // OkHttp (HTTP library)
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
@@ -127,10 +137,24 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Image viewer
-    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:1.0.1'
 
-    //Glide
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    kapt 'com.github.bumptech.glide:compiler:4.16.0'
+    // Glide (GIF support)
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
+    ksp 'com.github.bumptech.glide:ksp:5.0.5'
 
+    // Better click handling for links
+    implementation 'me.saket:better-link-movement-method:2.2.0'
+
+    // Markdown
+    implementation 'io.noties.markwon:core:4.6.2'
+    implementation 'io.noties.markwon:image-picasso:4.6.2'
+    implementation 'io.noties.markwon:image:4.6.2'
+    implementation 'io.noties.markwon:linkify:4.6.2'
+    implementation 'io.noties.markwon:ext-tables:4.6.2'
+    implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
+
+    // Used by Markdown library, R8 complains if these are not here
+    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.29"
+    implementation "com.caverock:androidsvg:1.4"
 }

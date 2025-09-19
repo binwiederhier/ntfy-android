@@ -82,6 +82,12 @@
     <string name="main_banner_websocket_button_dismiss">Dismiss</string>
     <string name="main_banner_websocket_button_enable_now">Enable now</string>
 
+    <!-- Main activity: WebSocket Reconnect banner -->
+    <string name="main_banner_websocket_reconnect_text">To ensure WebSockets reconnect in the background, grant the "Alarm &amp; Reminders" permission to ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Ask later</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Dismiss</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Grant now</string>
+
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
     <string name="add_dialog_description_below">
@@ -347,6 +353,9 @@
     <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This is the recommended method, but may require additional config in your proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>

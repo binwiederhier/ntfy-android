@@ -44,7 +44,7 @@
 \n%1$s
 \n
 \nParolele sunt criptate, dar nu sunt listate aici.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Folosește WebSockets pentru conectarea la server. Asta este metoda recomandată, dar ar putea necesita setări adiționale în proxy-ul dumneavoastră</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Folosește WebSockets pentru conectarea la server. Asta este metoda recomandată, dar ar putea necesita setări adiționale în proxy-ul dumneavoastră.</string>
     <string name="detail_settings_appearance_icon_remove_title">Pictogramă abonament (apăsați pentru a elimina)</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Flux JSON prin HTTP</string>
     <string name="settings_notifications_auto_delete_title">Șterge notificări</string>
@@ -182,7 +182,7 @@
     <string name="detail_item_menu_delete">Șterge fișierul</string>
     <string name="detail_item_menu_cancel">Oprește descărcarea</string>
     <string name="detail_item_menu_save_file">Salvează fișierul</string>
-    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Downloads\"</string>
+    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Descarcări\"</string>
     <string name="detail_item_menu_copy_contents">Copiază notificarea</string>
     <string name="detail_item_menu_copy_contents_copied">Notificare copiată în clipboard</string>
     <string name="detail_item_cannot_open">Nu se poate deschide atașametul: %1$s</string>
@@ -313,7 +313,7 @@
     <string name="add_dialog_login_error_not_authorized">Logare eșuată. Utilizatorul %1$s nu este autorizat.</string>
     <string name="add_dialog_login_new_user">Utilizator nou</string>
     <string name="detail_no_notifications_text">Nu ai primit încă notificări pentru acest topic.</string>
-    <string name="detail_how_to_example">Exemplu (folosing curl):<br/><tt>$ curl -d \"Salut\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exemplu (folosing curl):<br></br><tt>$ curl -d \"Salut\" %1$s</tt></string>
     <string name="detail_delete_dialog_cancel">Anulează</string>
     <string name="detail_test_title">Test: Poți specifica un titlu dacă dorești.</string>
     <string name="detail_test_message">Această este o notificare de test de la aplicația ntfy pentru Android. Are nivelul priorității %1$d. Dacă trimiți altă notificare, s-ar putea să arate altfel.</string>
@@ -325,7 +325,7 @@
     <string name="detail_instant_delivery_enabled">Primire instantanee pornită</string>
     <string name="detail_instant_delivery_disabled">Primire instantanee oprită</string>
     <string name="main_banner_websocket_button_dismiss">Ignoră</string>
-    <string name="add_dialog_description_below">Topicele nu pot fi protejate cu parolă, așadar alegeți un nume greu de ghicit. Odată abonat, puteți PUT/POST notificări</string>
+    <string name="add_dialog_description_below">Topicele nu pot fi protejate cu parolă, așadar alegeți un nume greu de ghicit. Odată abonat, puteți PUT/POST notificări.</string>
     <string name="add_dialog_topic_name_hint">Numele topicului, exemplu: alertele_lui_phil</string>
     <string name="add_dialog_use_another_server_description">Introduceți URL-urile serviciilor mai jos pentru a vă abona la topice de la alte servere.</string>
     <string name="add_dialog_instant_delivery">Primire instantanee în modul doze</string>
@@ -340,4 +340,7 @@
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% descărcat</string>
     <string name="detail_menu_test">Trimite notificare de probă</string>
     <string name="settings_backup_restore_restore_summary">Importă setări, notificări și utilizatori</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy va avea rol de distribuitor UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_title">Activează UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nu va avea rol de distribuitor UnifiedPush</string>
 </resources>

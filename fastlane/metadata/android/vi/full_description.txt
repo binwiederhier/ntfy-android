@@ -1,0 +1,17 @@
+Gửi thông báo đến điện thoại của bạn từ bất kỳ script Bash hay PowerShell nào, hoặc từ ứng dụng của bạn bằng các yêu cầu PUT/POST, ví dụ: qua curl trên Linux hoặc Invoke-WebRequest trên Windows.
+
+ntfy ứng dụng Android dành cho https://ntfy.sh, một dịch vụ pub-sub dựa trên HTTP, miễn phí và mã nguồn mở. Bạn có thể đăng ký (subscribe) vào các topic trong ứng dụng này, và sau đó gửi thông báo (publish) qua một HTTP API đơn giản.
+
+Ứng dụng:
+* Thông báo cho bạn khi một tiến trình chạy trường kỳ đã hoàn tất
+* Gửi ping đến điện thoại khi bản sao lưu thất bại
+* Cảnh báo khi có người đăng nhập vào máy chủ của bạn
+
+Ví dụ:
+
+$ curl -d "Bản sao lưu của bạn đã hoàn tất" ntfy.sh/mytopic
+
+Xem thêm ví dụ và hướng dẫn tại:
+* Website: https://ntfy.sh
+* GitHub (server): https://github.com/binwiederhier/ntfy
+* GitHub (Android app): https://github.com/binwiederhier/ntfy-android

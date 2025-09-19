@@ -112,4 +112,26 @@
     <string name="detail_test_message">Ez egy teszt értesítés az Android ntfy alkalmazásból. A beállított prioritás %1$d. Ha küldesz egy újat nem feltétlenül így fog kinézni.</string>
     <string name="detail_test_message_error">Nem sikerült az üzenetet elküldeni: %1$s</string>
     <string name="detail_item_snack_undo">Visszavon</string>
+    <string name="detail_item_download_info_deleted">törölve</string>
+    <string name="detail_menu_unsubscribe">Leiratkozás</string>
+    <string name="detail_action_mode_menu_copy">Másolás</string>
+    <string name="detail_action_mode_menu_delete">Törlés</string>
+    <string name="share_menu_send">Megosztás</string>
+    <string name="notification_dialog_30min">30 perc</string>
+    <string name="notification_dialog_1h">1 óra</string>
+    <string name="notification_popup_action_cancel">Mégse</string>
+    <string name="detail_action_mode_delete_dialog_cancel">Mégse</string>
+    <string name="notification_dialog_save">Mentés</string>
+    <string name="notification_dialog_show_all">Összes értesítés mutatása</string>
+    <string name="notification_dialog_muted_forever_toast_message">Értesítések lenémítva</string>
+    <string name="notification_dialog_2h">2 óra</string>
+    <string name="notification_dialog_8h">8 óra</string>
+    <string name="settings_title">Beállítások</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d%% letöltve</string>
+    <string name="share_title">Megosztás</string>
+    <string name="notification_dialog_title">Értesítések némítása</string>
+    <string name="notification_dialog_cancel">Mégse</string>
+    <string name="settings_notifications_header">Értesítések</string>
+    <string name="settings_notifications_muted_until_title">Értesítések némítása</string>
+    <string name="main_unified_push_toast">Ez a feliratkozás %1$s által van kezelve UnifiedPush-al</string>
 </resources>
