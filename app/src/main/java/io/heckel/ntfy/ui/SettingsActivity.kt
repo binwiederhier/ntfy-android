@@ -327,6 +327,29 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Dynamic colors
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val dynamicColorsEnabledPrefId = context?.getString(R.string.settings_general_dynamic_colors_key) ?: return
+                val dynamicColorsEnabled: SwitchPreferenceCompat? = findPreference(dynamicColorsEnabledPrefId)
+                dynamicColorsEnabled?.isChecked = repository.getDynamicColorsEnabled()
+                dynamicColorsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                    override fun putBoolean(key: String?, value: Boolean) {
+                        repository.setDynamicColorsEnabled(value)
+                    }
+                    override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                        return repository.getDynamicColorsEnabled()
+                    }
+                }
+                dynamicColorsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                    if (pref.isChecked) {
+                        getString(R.string.settings_general_dynamic_colors_summary_enabled)
+                    } else {
+                        getString(R.string.settings_general_dynamic_colors_summary_disabled)
+                    }
+                }
+                dynamicColorsEnabled?.isVisible = true
+            }
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return

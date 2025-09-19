@@ -51,6 +51,10 @@
                 app:entries="@array/settings_general_dark_mode_entries"
                 app:entryValues="@array/settings_general_dark_mode_values"
                 app:defaultValue="-1"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_general_dynamic_colors_key"
+                app:title="@string/settings_general_dynamic_colors_title"
+                app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference

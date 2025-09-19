@@ -22,6 +22,7 @@
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
+    <string name="settings_general_dynamic_colors_key" translatable="false">DynamicColors</string>
     <string name="settings_backup_restore_backup_key" translatable="false">Backup</string>
     <string name="settings_backup_restore_restore_key" translatable="false">Restore</string>
     <string name="settings_advanced_broadcast_key" translatable="false">BroadcastEnabled</string>
