@@ -53,12 +53,10 @@ android {
         play {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'true'
-            buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'false'
         }
         fdroid {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'false'
-            buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'true'
         }
     }
 
@@ -80,22 +78,6 @@ android.applicationVariants.all { variant ->
     def shouldProcessGoogleServices = variant.flavorName == "play"
     def googleTask = tasks.findByName("process${variant.name.capitalize()}GoogleServices")
     googleTask.enabled = shouldProcessGoogleServices
-}
-
-// Strips out REQUEST_INSTALL_PACKAGES permission for Google Play variant
-android.applicationVariants.all { variant ->
-    def shouldStripInstallPermission = variant.flavorName == "play"
-    if (shouldStripInstallPermission) {
-        variant.outputs.each { output ->
-            def processManifest = output.getProcessManifestProvider().get()
-            processManifest.doLast { task ->
-                def outputDir = task.getMultiApkManifestOutputDirectory().get().asFile
-                def manifestOutFile = file("$outputDir/AndroidManifest.xml")
-                def newFileContents = manifestOutFile.collect { s -> s.contains("android.permission.REQUEST_INSTALL_PACKAGES") ? "" : s }.join("\n")
-                manifestOutFile.write(newFileContents, 'UTF-8')
-            }
-        }
-    }
 }
 
 dependencies {
