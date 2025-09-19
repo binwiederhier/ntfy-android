@@ -333,7 +333,7 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png", "image/gif").contains(mimeType)
+    return listOf("image/jpeg", "image/png", "image/gif", "image/webp").contains(mimeType)
 }
 
 // Google Play doesn't allow us to install received .apk files anymore.
