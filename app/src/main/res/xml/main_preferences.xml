@@ -37,9 +37,7 @@
     <PreferenceCategory app:title="@string/settings_general_header">
         <EditTextPreference
                 app:key="@string/settings_general_default_base_url_key"
-                app:title="@string/settings_general_default_base_url_title"
-                app:dialogLayout="@layout/preference_dialog_edittext_edited"
-                app:dialogMessage="@string/settings_general_default_base_url_message"/>
+                app:title="@string/settings_general_default_base_url_title" />
         <Preference
                 app:key="@string/settings_general_users_key"
                 app:title="@string/settings_general_users_title"

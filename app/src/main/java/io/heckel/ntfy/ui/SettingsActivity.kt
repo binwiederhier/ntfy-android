@@ -355,6 +355,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
             val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
             defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
+            defaultBaseUrl?.extras?.putString("message", getString(R.string.settings_general_default_base_url_message))
+            defaultBaseUrl?.extras?.putString("hint", getString(R.string.app_base_url))
             defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String, value: String?) {
                     val baseUrl = value ?: return

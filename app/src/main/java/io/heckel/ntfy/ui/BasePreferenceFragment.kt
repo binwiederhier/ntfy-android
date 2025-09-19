@@ -1,5 +1,6 @@
 package io.heckel.ntfy.ui
 
+import android.widget.TextView
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -29,9 +30,20 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
                     .show()
             }
             is EditTextPreference -> {
-                val view = layoutInflater.inflate(R.layout.dialog_edit_text_preference, null)
-                val editText = view.findViewById<TextInputEditText>(R.id.editText)
+                val view = layoutInflater.inflate(R.layout.preference_dialog_edittext_edited, null)
+                var message = ""
+                var hint = ""
+                if (preference.extras.getString("message") != null) {
+                    message = preference.extras.getString("message")!!
+                }
+                if (preference.extras.getString("hint") != null) {
+                    hint = preference.extras.getString("hint")!!
+                }
+                val messageView = view.findViewById<TextView>(android.R.id.message)
+                messageView.text = message
+                val editText = view.findViewById<TextInputEditText>(android.R.id.edit)
                 editText.setText(preference.text.toString())
+                editText.hint = hint
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(preference.title)
                     .setView(view)
