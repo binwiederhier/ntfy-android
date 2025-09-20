@@ -21,7 +21,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
 import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
@@ -324,16 +323,14 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png").contains(mimeType)
+    return listOf("image/jpeg", "image/png", "image/gif", "image/webp").contains(mimeType)
 }
 
-// Google Play doesn't allow us to install received .apk files anymore.
-// See https://github.com/binwiederhier/ntfy/issues/531
+// We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
+// Play didn't grant us the permission, and F-Droid users didn't want us to have it.
+// See https://github.com/binwiederhier/ntfy/issues/531 & https://github.com/binwiederhier/ntfy/issues/684
 fun canOpenAttachment(attachment: Attachment?): Boolean {
-    if (attachment?.type == ANDROID_APP_MIME_TYPE && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
-        return false
-    }
-    return true
+    return attachment?.type != ANDROID_APP_MIME_TYPE
 }
 
 // Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
