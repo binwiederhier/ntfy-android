@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/> <!-- Only required on SDK <= 28 -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> <!-- To reschedule the websocket retry -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> <!-- As of Android 13, we need to ask for permission to post notifications -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> <!-- Allows to ignore battery optimization without going to the settings -->
 
     <application
             android:name=".app.Application"
