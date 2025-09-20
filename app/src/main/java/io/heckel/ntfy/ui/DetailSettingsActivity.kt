@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -65,6 +66,7 @@ class DetailSettingsActivity : AppCompatActivity() {
 
         // Title
         val displayName = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         title = displayName
 
         // Show 'Back' button
@@ -137,7 +139,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadInstantPref() {
             val appBaseUrl = getString(R.string.app_base_url)
             val prefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = BuildConfig.FIREBASE_AVAILABLE && subscription.baseUrl == appBaseUrl
             pref?.isChecked = subscription.instant
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -148,7 +150,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.instant
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_instant_summary_on)
                 } else {
@@ -159,7 +161,7 @@ class DetailSettingsActivity : AppCompatActivity() {
 
         private fun loadDedicatedChannelsPrefs() {
             val prefId = context?.getString(R.string.detail_settings_notifications_dedicated_channels_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = true
             pref?.isChecked = subscription.dedicatedChannels
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -176,7 +178,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.dedicatedChannels
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summary_on)
                 } else {

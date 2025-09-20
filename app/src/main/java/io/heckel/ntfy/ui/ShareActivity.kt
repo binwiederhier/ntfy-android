@@ -55,6 +55,7 @@ class ShareActivity : AppCompatActivity() {
         Log.d(TAG, "Create $this with intent $intent")
 
         // Action bar
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         title = getString(R.string.share_title)
 
         // Show 'Back' button

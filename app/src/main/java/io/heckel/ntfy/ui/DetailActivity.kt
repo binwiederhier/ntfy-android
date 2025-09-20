@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,11 +17,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.appcompat.view.ActionMode
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -40,8 +40,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.random.Random
 
-
-class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
+class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
@@ -67,6 +66,36 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            actionMode = mode
+            if (mode != null) {
+                mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
+                mode.title = "1" // One item selected
+            }
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.detail_action_mode_copy -> {
+                    onMultiCopyClick()
+                    true
+                }
+                R.id.detail_action_mode_delete -> {
+                    onMultiDeleteClick()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            endActionModeAndRedraw()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +107,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         notifier = NotificationService(this)
         appBaseUrl = getString(R.string.app_base_url)
 
+        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -190,7 +220,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         // Swipe to refresh
         mainListContainer = findViewById(R.id.detail_notification_list_container)
         mainListContainer.setOnRefreshListener { refresh() }
-        mainListContainer.setColorSchemeResources(Colors.refreshProgressIndicator)
+        mainListContainer.setColorSchemeColors(Colors.swipeToRefreshColor(this))
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
@@ -568,8 +598,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onClearClick() {
         Log.d(TAG, "Clearing all notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_clear_dialog_message)
             .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -600,8 +629,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onDeleteClick() {
         Log.d(TAG, "Deleting subscription ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_delete_dialog_message)
             .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
                 Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
@@ -664,33 +692,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        this.actionMode = mode
-        if (mode != null) {
-            mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
-            mode.title = "1" // One item selected
-        }
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
-
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.detail_action_mode_copy -> {
-                onMultiCopyClick()
-                true
-            }
-            R.id.detail_action_mode_delete -> {
-                onMultiDeleteClick()
-                true
-            }
-            else -> false
-        }
-    }
-
     private fun onMultiCopyClick() {
         Log.d(TAG, "Copying multiple notifications to clipboard")
 
@@ -716,8 +717,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onMultiDeleteClick() {
         Log.d(TAG, "Showing multi-delete dialog for selected items")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
                 adapter.selected.map { notificationId -> viewModel.markAsDeleted(notificationId) }
@@ -735,18 +735,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.show()
     }
 
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        endActionModeAndRedraw()
-    }
-
     private fun beginActionMode(notification: Notification) {
-        actionMode = startActionMode(this)
+        actionMode = startSupportActionMode(actionModeCallback)
         adapter.toggleSelection(notification.id)
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun finishActionMode() {
@@ -758,11 +749,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         actionMode = null
         adapter.selected.clear()
         adapter.notifyItemRangeChanged(0, adapter.currentList.size)
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     companion object {
