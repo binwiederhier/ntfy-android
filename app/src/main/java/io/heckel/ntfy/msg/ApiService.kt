@@ -182,9 +182,17 @@ class ApiService {
             val builder = Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", USER_AGENT)
+
+            // Add existing auth header
             if (user != null) {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
             }
+
+            // Add custom headers
+            CustomHeaderConfig.getCustomHeaders().forEach { (name, value) ->
+                builder.addHeader(name, value)
+            }
+
             return builder
         }
     }

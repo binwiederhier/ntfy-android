@@ -10,6 +10,7 @@ import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
+import io.heckel.ntfy.util.CustomHeaderConfig
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -78,7 +79,16 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user).build()
+
+        // Build request with custom headers
+        val requestBuilder = requestBuilder(urlWithSince, user)
+
+        // Add custom headers for WebSocket
+        CustomHeaderConfig.getCustomHeaders().forEach { (name, value) ->
+            requestBuilder.addHeader(name, value)
+        }
+
+        val request = requestBuilder.build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }
