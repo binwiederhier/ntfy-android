@@ -1,5 +1,5 @@
-<!--?xml version="1.0" encoding="UTF-8"?-->
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="md_theme_primary">#006B5B</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#79F8DC</color>
@@ -30,4 +30,8 @@
     <color name="md_theme_surfaceTint">#006B5B</color>
     <color name="md_theme_outlineVariant">#BFC9C4</color>
     <color name="md_theme_scrim">#000000</color>
+
+    <!-- Remove black status bar in Action mode: https://stackoverflow.com/a/79456725 -->
+    <color name="abc_decor_view_status_guard" tools:override="true">@android:color/transparent</color>
+    <color name="abc_decor_view_status_guard_light" tools:override="true">@android:color/transparent</color>
 </resources>

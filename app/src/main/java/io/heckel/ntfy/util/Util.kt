@@ -1,7 +1,5 @@
 package io.heckel.ntfy.util
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentResolver
@@ -19,17 +17,20 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
-import android.util.TypedValue
 import android.view.View
-import android.view.Window
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
+import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
+import io.heckel.ntfy.db.ACTION_PROGRESS_SUCCESS
+import io.heckel.ntfy.db.Action
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +49,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
@@ -271,16 +272,6 @@ data class FileInfo(
     val filename: String,
     val size: Long,
 )
-
-// Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
-fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
-    val statusBarColorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
-    statusBarColorAnimation.addUpdateListener { animator ->
-        val color = animator.animatedValue as Int
-        window.statusBarColor = color
-    }
-    statusBarColorAnimation.start()
-}
 
 // Generates a (cryptographically secure) random string of a certain length
 fun randomString(len: Int): String {
@@ -509,4 +500,3 @@ fun Button.dangerButton(context: Context) {
 fun Long.nullIfZero(): Long? {
     return if (this == 0L) return null else this
 }
-

@@ -28,14 +28,6 @@ class Colors {
             return SurfaceColors.getColorForElevation(context, 20f)
         }
 
-        fun statusBarNormal(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.backgroundColor, Color.BLACK)
-        }
-
-        fun statusBarActionMode(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.backgroundColor, Color.BLACK)
-        }
-
         fun dangerText(context: Context): Int {
             return MaterialColors.getColor(context, R.attr.colorError, Color.RED)
         }

@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.method.LinkMovementMethod
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,12 +23,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
@@ -44,17 +48,25 @@ import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.dangerButton
+import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
+import io.heckel.ntfy.util.maybeSplitTopicUrl
+import io.heckel.ntfy.util.randomSubscriptionId
+import io.heckel.ntfy.util.shortUrl
+import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.DeleteWorker
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
+class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
@@ -70,10 +82,38 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private lateinit var fab: FloatingActionButton
 
     // Other stuff
-    private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
+
+    // Action mode stuff
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            actionMode = mode
+            if (mode != null) {
+                mode.menuInflater.inflate(R.menu.menu_main_action_mode, menu)
+                mode.title = "1" // One item selected
+            }
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.main_action_mode_delete -> {
+                    onMultiDeleteClick()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            endActionModeAndRedraw()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -620,36 +660,12 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         startActivity(intent)
     }
 
-
     private fun handleActionModeClick(subscription: Subscription) {
         adapter.toggleSelection(subscription.id)
         if (adapter.selected.size == 0) {
             finishActionMode()
         } else {
             actionMode!!.title = adapter.selected.size.toString()
-        }
-    }
-
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        this.actionMode = mode
-        if (mode != null) {
-            mode.menuInflater.inflate(R.menu.menu_main_action_mode, menu)
-            mode.title = "1" // One item selected
-        }
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
-
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.main_action_mode_delete -> {
-                onMultiDeleteClick()
-                true
-            }
-            else -> false
         }
     }
 
@@ -674,12 +690,8 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         dialog.show()
     }
 
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        endActionModeAndRedraw()
-    }
-
     private fun beginActionMode(subscription: Subscription) {
-        actionMode = startActionMode(this)
+        actionMode = startSupportActionMode(actionModeCallback)
         adapter.toggleSelection(subscription.id)
 
         // Fade out FAB
@@ -693,9 +705,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     fab.visibility = View.GONE
                 }
             })
-
-        // Fade status bar color
-        fadeStatusBarColor(window, Colors.statusBarNormal(this), Colors.statusBarActionMode(this))
     }
 
     private fun finishActionMode() {
@@ -720,9 +729,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     fab.visibility = View.VISIBLE // Required to replace the old listener
                 }
             })
-
-        // Fade status bar color
-        fadeStatusBarColor(window, Colors.statusBarActionMode(this), Colors.statusBarNormal(this))
     }
 
     private fun redrawList() {
