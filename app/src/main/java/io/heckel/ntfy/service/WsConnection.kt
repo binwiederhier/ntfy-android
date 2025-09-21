@@ -5,12 +5,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
-import io.heckel.ntfy.util.CustomHeaderConfig
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -81,17 +80,13 @@ class WsConnection(
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
 
         // Build request with custom headers
-        val requestBuilder = requestBuilder(urlWithSince, user)
-
-        // Add custom headers for WebSocket
-        CustomHeaderConfig.getCustomHeaders().forEach { (name, value) ->
-            requestBuilder.addHeader(name, value)
-        }
-
+        val requestBuilder = ApiService.requestBuilder(urlWithSince, user, repository)
         val request = requestBuilder.build()
+
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }
+
 
     @Synchronized
     override fun close() {

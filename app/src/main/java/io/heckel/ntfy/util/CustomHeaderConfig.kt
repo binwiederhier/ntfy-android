@@ -1,24 +1,26 @@
 package io.heckel.ntfy.util
 
+import io.heckel.ntfy.db.Repository
+
 object CustomHeaderConfig {
-    // Set these to your Cloudflare Zero Trust values
+    // Default header names - users can configure the values in settings
     const val CUSTOM_HEADER_1_NAME = "CF-Access-Client-Id"
-    const val CUSTOM_HEADER_1_VALUE = "your-client-id-here"
-
     const val CUSTOM_HEADER_2_NAME = "CF-Access-Client-Secret"
-    const val CUSTOM_HEADER_2_VALUE = "your-client-secret-here"
 
-    // Enable/disable custom headers easily
-    const val CUSTOM_HEADERS_ENABLED = true
+    fun getCustomHeaders(repository: Repository): Map<String, String> {
+        val headers = mutableMapOf<String, String>()
 
-    fun getCustomHeaders(): Map<String, String> {
-        return if (CUSTOM_HEADERS_ENABLED) {
-            mapOf(
-                CUSTOM_HEADER_1_NAME to CUSTOM_HEADER_1_VALUE,
-                CUSTOM_HEADER_2_NAME to CUSTOM_HEADER_2_VALUE
-            )
-        } else {
-            emptyMap()
+        val clientId = repository.getCustomHeader1()
+        val clientSecret = repository.getCustomHeader2()
+
+        if (clientId.isNotEmpty()) {
+            headers[CUSTOM_HEADER_1_NAME] = clientId
         }
+
+        if (clientSecret.isNotEmpty()) {
+            headers[CUSTOM_HEADER_2_NAME] = clientSecret
+        }
+
+        return headers
     }
 }

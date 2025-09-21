@@ -5,6 +5,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.*
+import io.heckel.ntfy.db.Repository
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
@@ -13,7 +14,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class ApiService {
+class ApiService(private val repository: Repository? = null) {
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -152,7 +153,7 @@ class ApiService {
             Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
         }
         val url = topicUrlAuth(baseUrl, topic)
-        val request = requestBuilder(url, user).build()
+        val request = requestBuilder(url, user, repository).build()
         client.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
@@ -178,7 +179,7 @@ class ApiService {
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
 
-        fun requestBuilder(url: String, user: User?): Request.Builder {
+        fun requestBuilder(url: String, user: User?, repository: Repository? = null): Request.Builder {
             val builder = Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", USER_AGENT)
@@ -188,9 +189,16 @@ class ApiService {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
             }
 
-            // Add custom headers
-            CustomHeaderConfig.getCustomHeaders().forEach { (name, value) ->
-                builder.addHeader(name, value)
+            // Add custom headers if repository is available
+            repository?.let {
+                val customHeaders = CustomHeaderConfig.getCustomHeaders(it)
+                if (customHeaders.isNotEmpty()) {
+                    Log.d(TAG, "Adding ${customHeaders.size} custom headers to request for $url")
+                    customHeaders.forEach { (name, value) ->
+                        builder.addHeader(name, value)
+                        Log.d(TAG, "Added custom header: $name")
+                    }
+                }
             }
 
             return builder

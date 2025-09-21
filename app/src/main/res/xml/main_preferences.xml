@@ -98,6 +98,16 @@
                 app:key="@string/settings_advanced_clear_logs_key"
                 app:title="@string/settings_advanced_clear_logs_title"
                 app:summary="@string/settings_advanced_clear_logs_summary"/>
+        <EditTextPreference
+                app:key="@string/settings_advanced_custom_header_1_key"
+                app:title="@string/settings_advanced_custom_header_1_title"
+                app:dialogTitle="@string/settings_advanced_custom_header_1_title"
+                app:dialogMessage="@string/settings_advanced_custom_header_1_description" />
+        <EditTextPreference
+                app:key="@string/settings_advanced_custom_header_2_key"
+                app:title="@string/settings_advanced_custom_header_2_title"
+                app:dialogTitle="@string/settings_advanced_custom_header_2_title"
+                app:dialogMessage="@string/settings_advanced_custom_header_2_description" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_about_header">
         <Preference

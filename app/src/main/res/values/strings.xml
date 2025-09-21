@@ -356,6 +356,16 @@
     <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
     <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
+    <string name="settings_advanced_custom_header_1_key">CustomHeader1</string>
+    <string name="settings_advanced_custom_header_1_title">CF-Access-Client-Id</string>
+    <string name="settings_advanced_custom_header_1_summary_empty">Not set (Cloudflare Zero Trust disabled)</string>
+    <string name="settings_advanced_custom_header_1_summary_set">Set (Cloudflare Zero Trust enabled)</string>
+    <string name="settings_advanced_custom_header_1_description">Enter your Cloudflare Access Client ID for Zero Trust authentication</string>
+    <string name="settings_advanced_custom_header_2_key">CustomHeader2</string>
+    <string name="settings_advanced_custom_header_2_title">CF-Access-Client-Secret</string>
+    <string name="settings_advanced_custom_header_2_summary_empty">Not set (Cloudflare Zero Trust disabled)</string>
+    <string name="settings_advanced_custom_header_2_summary_set">Set (Cloudflare Zero Trust enabled)</string>
+    <string name="settings_advanced_custom_header_2_description">Enter your Cloudflare Access Client Secret for Zero Trust authentication</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>

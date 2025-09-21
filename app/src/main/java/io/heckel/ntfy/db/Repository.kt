@@ -88,6 +88,38 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         subscriptionDao.remove(subscriptionId)
     }
 
+    fun getCustomHeader1(): String {
+        return sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADER_1, "") ?: ""
+    }
+
+    fun setCustomHeader1(value: String) {
+        if (value.isEmpty()) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_CUSTOM_HEADER_1)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_CUSTOM_HEADER_1, value)
+                .apply()
+        }
+    }
+
+    fun getCustomHeader2(): String {
+        return sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADER_2, "") ?: ""
+    }
+
+    fun setCustomHeader2(value: String) {
+        if (value.isEmpty()) {
+            sharedPrefs.edit()
+                .remove(SHARED_PREFS_CUSTOM_HEADER_2)
+                .apply()
+        } else {
+            sharedPrefs.edit()
+                .putString(SHARED_PREFS_CUSTOM_HEADER_2, value)
+                .apply()
+        }
+    }
+
     suspend fun getNotifications(): List<Notification> {
         return notificationDao.list()
     }
@@ -486,6 +518,8 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     companion object {
+        const val SHARED_PREFS_CUSTOM_HEADER_1 = "CustomHeader1"
+        const val SHARED_PREFS_CUSTOM_HEADER_2 = "CustomHeader2"
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_DELETE_WORKER_VERSION = "DeleteWorkerVersion"
