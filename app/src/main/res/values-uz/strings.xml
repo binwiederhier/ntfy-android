@@ -71,7 +71,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">URL manzilini tanlang</string>
     <string name="add_dialog_base_urls_dropdown_clear">URL manzilini tozalang</string>
     <string name="detail_how_to_intro">Ushbu mavzu bo‘yicha bildirishnomalarni yuborish uchun, mavzu URL manziliga PUT yoki POST so‘rov yuboring.</string>
-    <string name="detail_how_to_example">Misol (curl yordamida):<br/><tt>$ curl -d \"Salom\" %1$s</tt></string>
+    <string name="detail_how_to_example">Misol (curl yordamida):<br></br><tt>$ curl -d \"Salom\" %1$s</tt></string>
     <string name="detail_how_to_link">Batafsil ko‘rsatmalar ntfy.sh saytida va hujjatlarda mavjud.</string>
     <string name="detail_clear_dialog_message">Ushbu mavzudagi barcha bildirishnomalar o‘chirilsinmi?</string>
     <string name="detail_clear_dialog_permanently_delete">Butunlay o‘chirish</string>

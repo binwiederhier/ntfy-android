@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
         This file contains only overrides for the dark theme.
         Also see "ui/Colors.kt" for colors that have to be defined in code.
@@ -16,6 +16,7 @@
         <item name="android:colorBackground">@color/black_900</item> <!-- background -->
         <item name="android:statusBarColor">@color/black_900</item>
         <item name="actionModeBackground">@color/black_900</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
 
         <!-- Action bar background & text color -->
         <item name="colorSurface">@color/black_800b</item>

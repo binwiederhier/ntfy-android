@@ -19,17 +19,21 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
-import android.util.TypedValue
 import android.view.View
 import android.view.Window
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
+import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
+import io.heckel.ntfy.db.ACTION_PROGRESS_SUCCESS
+import io.heckel.ntfy.db.Action
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
 import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +52,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 
@@ -212,7 +216,7 @@ fun formatActionLabel(action: Action): String {
     }
 }
 
-fun maybeAppendActionErrors(message: String, notification: Notification): String {
+fun maybeAppendActionErrors(message: CharSequence, notification: Notification): CharSequence {
     val actionErrors = notification.actions
         .orEmpty()
         .mapNotNull { action -> action.error }
@@ -333,13 +337,14 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png").contains(mimeType)
+    return listOf("image/jpeg", "image/png", "image/gif", "image/webp").contains(mimeType)
 }
 
-// Google Play doesn't allow us to install received .apk files anymore.
-// See https://github.com/binwiederhier/ntfy/issues/531
+// We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
+// Play didn't grant us the permission, and F-Droid users didn't want us to have it.
+// See https://github.com/binwiederhier/ntfy/issues/531 & https://github.com/binwiederhier/ntfy/issues/684
 fun canOpenAttachment(attachment: Attachment?): Boolean {
-    if (attachment?.type == ANDROID_APP_MIME_TYPE && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
+    if (attachment?.type == ANDROID_APP_MIME_TYPE) {
         return false
     }
     return true
@@ -393,13 +398,14 @@ class ContentUriRequestBody(
     }
 }
 
+// TODO: make this work in Android 34+
 // Hack: Make end icon for drop down smaller, see https://stackoverflow.com/a/57098715/1440785
 fun View.makeEndIconSmaller(resources: Resources) {
-    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
-    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
-    endIconImageView.minimumHeight = dimension.toInt()
-    endIconImageView.minimumWidth = dimension.toInt()
-    requestLayout()
+//    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+//    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
+//    endIconImageView.minimumHeight = dimension.toInt()
+//    endIconImageView.minimumWidth = dimension.toInt()
+//    requestLayout()
 }
 
 // Shows the ripple effect on the view, if it is ripple-able, see https://stackoverflow.com/a/56314062/1440785

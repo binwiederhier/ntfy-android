@@ -57,6 +57,7 @@ class NotificationParser {
             timestamp = message.time,
             title = message.title ?: "",
             message = message.message,
+            contentType = message.contentType ?: "",
             encoding = message.encoding ?: "",
             priority = toPriority(message.priority),
             tags = joinTags(message.tags),

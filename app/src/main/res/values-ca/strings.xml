@@ -107,7 +107,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Esborra URL de servei</string>
     <string name="detail_no_notifications_text">Encara no has rebut cap notificació en aquest tema.</string>
     <string name="detail_how_to_intro">Per enviar notificacions en aquest tema, fes PUT o POST a la URL del tema.</string>
-    <string name="detail_how_to_example">Exemple (usant curl):<br/><tt>$ curl -d \"Hola\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exemple (usant curl):<br></br><tt>$ curl -d \"Hola\" %1$s</tt></string>
     <string name="main_unified_push_toast">Aquesta subscripció és gestionada per %1$s via UnifiedPush</string>
     <string name="main_how_to_link">Instruccions detallades disponibles a ntfy.sh i a la documentació.</string>
     <string name="main_banner_websocket_text">WebSockets és el mètode recomanat per connectar-te al teu servidor. Pot millorar el rendiment de la bateria, però pot requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuració addicional al teu proxy</a>. Aquesta opció pot ser habil·litada a Configuració.</string>

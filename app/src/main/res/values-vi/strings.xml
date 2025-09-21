@@ -5,7 +5,7 @@
     <string name="add_dialog_login_username_hint">Tên tài khoản</string>
     <string name="add_dialog_login_description">Chủ đề này cần đăng nhập để truy cập. Vui lòng nhập tên tài khoản và mật khẩu.</string>
     <string name="user_dialog_button_add">Thêm người dùng</string>
-    <string name="add_dialog_login_error_not_authorized">Đăng nhập thất bại. Không xác thực được tài khoản %1$s.</string>
+    <string name="add_dialog_login_error_not_authorized">Đăng nhập thất bại. Tài khoản %1$s không được cấp quyền.</string>
     <string name="user_dialog_description_edit">Bạn có thể chỉnh sửa tên tài khoản hoặc mật khẩu của người dùng này, hoặc xóa người dùng này khỏi hệ thống.</string>
     <string name="user_dialog_button_save">Lưu</string>
     <string name="user_dialog_password_hint_add">Mật khẩu</string>
@@ -23,4 +23,40 @@
     <string name="channel_notifications_default_name">Mặc định</string>
     <string name="channel_notifications_high_name">Ưu tiên cao</string>
     <string name="channel_subscriber_notification_title">Chờ thông báo</string>
+    <string name="refresh_message_result">Đã nhận %1$d thông báo</string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Xóa vĩnh viễn</string>
+    <string name="main_menu_donate_title">Quyên góp 💸</string>
+    <string name="main_action_mode_delete_dialog_cancel">Hủy</string>
+    <string name="main_action_mode_delete_dialog_message">Hủy đăng kí các chủ đề đã chọn và xóa tất cả thông báo?</string>
+    <string name="main_banner_websocket_button_remind_later">Hỏi sau</string>
+    <string name="add_dialog_button_cancel">Hủy</string>
+    <string name="add_dialog_button_subscribe">Đăng kí</string>
+    <string name="add_dialog_button_back">Quay lại</string>
+    <string name="add_dialog_button_login">Đăng nhập</string>
+    <string name="add_dialog_login_title">Yêu cầi đăng nhập</string>
+    <string name="detail_how_to_example">Ví dụ (với curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="add_dialog_error_connection_failed">Kết nối không thành công: %1$s</string>
+    <string name="detail_no_notifications_text">Bạn chưa nhận thông báo nào cho chủ đề này.</string>
+    <string name="detail_how_to_intro">Để gửi thông báo tới chủ đề này, hãy PUT hoặc POST vào URL của chủ đề.</string>
+    <string name="main_banner_websocket_text">Kết nối đến máy chủ bằng WebSockets là cách được khuyến nghị và có thể cải thiện thời lượng pin, nhưng có thể cần thêm cấu hình <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">trong proxy </a>của bạn. Điều này có thể được bật/tắt trong Cài đặt.</string>
+    <string name="main_menu_settings_title">Cài đặt</string>
+    <string name="main_menu_report_bug_title">Báo lỗi</string>
+    <string name="main_menu_rate_title">Đánh giá ứng dụng ⭐</string>
+    <string name="main_menu_docs_title">Đọc tài liệu</string>
+    <string name="main_action_mode_menu_unsubscribe">Hủy đăng kí</string>
+    <string name="main_item_date_yesterday">hôm qua</string>
+    <string name="main_no_subscriptions_text">Có vẻ bạn chưa đăng kí chủ đề nào.</string>
+    <string name="main_how_to_link">Hướng dẫn chi tiết trên ntfy.sh và trong tài liệu.</string>
+    <string name="main_banner_battery_button_remind_later">Hỏi sau</string>
+    <string name="main_item_status_text_one">%1$d thông báo</string>
+    <string name="main_item_status_text_not_one">%1$d thông báo</string>
+    <string name="main_action_bar_title">Chủ đề đăng kí</string>
+    <string name="main_menu_notifications_disabled_until">Thông báo bị tắt cho đến %1$s</string>
+    <string name="notification_dialog_save">Lưu</string>
+    <string name="add_dialog_login_new_user">Thêm người dùng</string>
+    <string name="detail_delete_dialog_cancel">Hủy</string>
+    <string name="detail_clear_dialog_cancel">Hủy</string>
+    <string name="detail_action_mode_delete_dialog_cancel">Huỷ</string>
+    <string name="notification_dialog_cancel">Huỷ</string>
+    <string name="notification_popup_action_cancel">Huỷ</string>
 </resources>

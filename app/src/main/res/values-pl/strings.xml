@@ -222,7 +222,7 @@
     <string name="share_content_title">Podgląd wiadomości</string>
     <string name="add_dialog_base_urls_dropdown_choose">Wybierz adres URL usługi</string>
     <string name="detail_how_to_intro">Aby wysłać powiadomienia do tego tematu, wyślij PUT lub POST-Request na adres URL tematu.</string>
-    <string name="detail_how_to_example">Przykład (za pomocą curl):<br/><tt>$ curl -d \"Cześć\" %1$s</tt></string>
+    <string name="detail_how_to_example">Przykład (za pomocą curl):<br></br><tt>$ curl -d \"Cześć\" %1$s</tt></string>
     <string name="detail_how_to_link">Szczegółowe instrukcje są dostępne w ntfy.sh, oraz w dokumentacji.</string>
     <string name="detail_clear_dialog_message">Usunąć wszystkie powiadomienia z tego tematu\?</string>
     <string name="detail_item_tags">Tagi: %1$s</string>
