@@ -353,64 +353,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
-            val customHeader1PrefId = context?.getString(R.string.settings_advanced_custom_header_1_key) ?: return
-            val customHeader1: EditTextPreference? = findPreference(customHeader1PrefId)
-            customHeader1?.text = repository.getCustomHeader1()
-            customHeader1?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String, value: String?) {
-                    val headerValue = value ?: ""
-                    repository.setCustomHeader1(headerValue)
-                    serviceManager.restart() // Restart service to apply new headers
-                }
-                override fun getString(key: String, defValue: String?): String? {
-                    return repository.getCustomHeader1()
-                }
-            }
-            customHeader1?.setOnBindEditTextListener { editText ->
-                editText.addTextChangedListener(AfterChangedTextWatcher {
-                    val okayButton: Button = editText.rootView.findViewById(android.R.id.button1)
-                    // Always enable - empty values are allowed to clear the header
-                    okayButton.isEnabled = true
-                })
-            }
-            customHeader1?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
-                if (TextUtils.isEmpty(pref.text)) {
-                    getString(R.string.settings_advanced_custom_header_1_summary_empty)
-                } else {
-                    getString(R.string.settings_advanced_custom_header_1_summary_set)
-                }
-            }
-
-            // Custom Header 2 (CF-Access-Client-Secret)
-            val customHeader2PrefId = context?.getString(R.string.settings_advanced_custom_header_2_key) ?: return
-            val customHeader2: EditTextPreference? = findPreference(customHeader2PrefId)
-            customHeader2?.text = repository.getCustomHeader2()
-            customHeader2?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String, value: String?) {
-                    val headerValue = value ?: ""
-                    repository.setCustomHeader2(headerValue)
-                    serviceManager.restart() // Restart service to apply new headers
-                }
-                override fun getString(key: String, defValue: String?): String? {
-                    return repository.getCustomHeader2()
-                }
-            }
-            customHeader2?.setOnBindEditTextListener { editText ->
-                // Make this a password field for security
-                editText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-                editText.addTextChangedListener(AfterChangedTextWatcher {
-                    val okayButton: Button = editText.rootView.findViewById(android.R.id.button1)
-                    okayButton.isEnabled = true
-                })
-            }
-            customHeader2?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
-                if (TextUtils.isEmpty(pref.text)) {
-                    getString(R.string.settings_advanced_custom_header_2_summary_empty)
-                } else {
-                    getString(R.string.settings_advanced_custom_header_2_summary_set)
-                }
-            }
-
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
             val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)

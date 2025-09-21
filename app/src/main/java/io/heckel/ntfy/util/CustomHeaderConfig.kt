@@ -1,26 +1,24 @@
 package io.heckel.ntfy.util
 
 import io.heckel.ntfy.db.Repository
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 object CustomHeaderConfig {
-    // Default header names - users can configure the values in settings
-    const val CUSTOM_HEADER_1_NAME = "CF-Access-Client-Id"
-    const val CUSTOM_HEADER_2_NAME = "CF-Access-Client-Secret"
 
     fun getCustomHeaders(repository: Repository): Map<String, String> {
-        val headers = mutableMapOf<String, String>()
+        return repository.getCustomHeaders()
+    }
 
-        val clientId = repository.getCustomHeader1()
-        val clientSecret = repository.getCustomHeader2()
+    fun addCustomHeader(repository: Repository, name: String, value: String) {
+        val headers = repository.getCustomHeaders().toMutableMap()
+        headers[name] = value
+        repository.setCustomHeaders(headers)
+    }
 
-        if (clientId.isNotEmpty()) {
-            headers[CUSTOM_HEADER_1_NAME] = clientId
-        }
-
-        if (clientSecret.isNotEmpty()) {
-            headers[CUSTOM_HEADER_2_NAME] = clientSecret
-        }
-
-        return headers
+    fun removeCustomHeader(repository: Repository, name: String) {
+        val headers = repository.getCustomHeaders().toMutableMap()
+        headers.remove(name)
+        repository.setCustomHeaders(headers)
     }
 }

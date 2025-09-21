@@ -11,6 +11,8 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
     private val subscriptionDao = database.subscriptionDao()
@@ -88,35 +90,32 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         subscriptionDao.remove(subscriptionId)
     }
 
-    fun getCustomHeader1(): String {
-        return sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADER_1, "") ?: ""
-    }
-
-    fun setCustomHeader1(value: String) {
-        if (value.isEmpty()) {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_CUSTOM_HEADER_1)
-                .apply()
+    fun getCustomHeaders(): Map<String, String> {
+        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
+        return if (json != null) {
+            try {
+                val type = object : TypeToken<Map<String, String>>() {}.type
+                Gson().fromJson(json, type) ?: emptyMap()
+            } catch (e: Exception) {
+                Log.w("Repository", "Failed to parse custom headers", e)
+                emptyMap()
+            }
         } else {
-            sharedPrefs.edit()
-                .putString(SHARED_PREFS_CUSTOM_HEADER_1, value)
-                .apply()
+            emptyMap()
         }
     }
 
-    fun getCustomHeader2(): String {
-        return sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADER_2, "") ?: ""
-    }
-
-    fun setCustomHeader2(value: String) {
-        if (value.isEmpty()) {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_CUSTOM_HEADER_2)
-                .apply()
+    fun setCustomHeaders(headers: Map<String, String>) {
+        val json = if (headers.isEmpty()) {
+            null
         } else {
-            sharedPrefs.edit()
-                .putString(SHARED_PREFS_CUSTOM_HEADER_2, value)
-                .apply()
+            Gson().toJson(headers)
+        }
+
+        if (json == null) {
+            sharedPrefs.edit().remove(SHARED_PREFS_CUSTOM_HEADERS).apply()
+        } else {
+            sharedPrefs.edit().putString(SHARED_PREFS_CUSTOM_HEADERS, json).apply()
         }
     }
 
@@ -518,8 +517,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     companion object {
-        const val SHARED_PREFS_CUSTOM_HEADER_1 = "CustomHeader1"
-        const val SHARED_PREFS_CUSTOM_HEADER_2 = "CustomHeader2"
         const val SHARED_PREFS_ID = "MainPreferences"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_DELETE_WORKER_VERSION = "DeleteWorkerVersion"
@@ -540,6 +537,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
+        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 
