@@ -291,7 +291,7 @@
     <string name="notification_popup_file">%1$s
 \nTiedosto: %2$s</string>
     <string name="settings_notifications_muted_until_forever">Ilmoitukset mykistetty, kunnes niitä jatketaan</string>
-    <string name="detail_how_to_example">Esimerkki (käytä curl):<br></br><tt>$ curl -d \"Hei\" %1$s</tt></string>
+    <string name="detail_how_to_example">Esimerkki (käytä curl):<br/><tt>$ curl -d \"Hei\" %1$s</tt></string>
     <string name="detail_settings_appearance_icon_set_title">Kuvake</string>
     <string name="detail_instant_delivery_disabled">Välitön lähetys pois</string>
     <string name="channel_subscriber_notification_instant_text_four">Tilattu neljään välittömään topikkiin</string>
@@ -340,4 +340,6 @@
     <string name="main_item_status_unified_push">%1$s (Yleis Push)</string>
     <string name="detail_item_tags">Tagit %1$s</string>
     <string name="main_item_status_text_one">%1$d Huomautus</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Kysy myöhemmin</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Sulje</string>
 </resources>
