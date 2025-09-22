@@ -4,3 +4,4 @@ Features:
 
 Bug fixes + maintenance:
 * Remove REQUEST_INSTALL_PACKAGES permission (#684)
+* Request to ignore battery optimizations before receiving subscription (ntfy-android#97, thanks to @p1gp1g)
