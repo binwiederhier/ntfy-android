@@ -128,7 +128,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
-        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
+        val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(this, repository.getDynamicColorsEnabled()))
+        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
         title = getString(R.string.main_action_bar_title)
 
         // Floating action button ("+")

@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.elevation.SurfaceColors
 import io.heckel.ntfy.R
@@ -26,6 +27,20 @@ class Colors {
 
         fun cardSelectedBackgroundColor(context: Context): Int {
             return SurfaceColors.getColorForElevation(context, 20f)
+        }
+
+        fun statusBarNormal(context: Context, dynamicColors: Boolean): Int {
+            val default = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context.resources.getColor(R.color.action_bar, context.theme)
+            } else {
+                @Suppress("DEPRECATION")
+                context.resources.getColor(R.color.action_bar)
+            }
+            return if (dynamicColors) {
+                MaterialColors.getColor(context, R.attr.colorSurface, default)
+            } else {
+                default
+            }
         }
 
         fun dangerText(context: Context): Int {

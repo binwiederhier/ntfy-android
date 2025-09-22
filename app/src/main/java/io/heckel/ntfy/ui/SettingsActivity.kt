@@ -66,7 +66,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         repository = Repository.getInstance(this)
         serviceManager = SubscriberServiceManager(this)
 
-        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
+        val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(this, repository.getDynamicColorsEnabled()))
+        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
 
         if (savedInstanceState == null) {
             settingsFragment = SettingsFragment() // Empty constructor!
