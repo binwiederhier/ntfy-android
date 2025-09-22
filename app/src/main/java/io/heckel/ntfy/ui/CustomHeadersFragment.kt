@@ -51,13 +51,7 @@ class CustomHeadersFragment : PreferenceFragmentCompat() {
         val preference = Preference(requireContext())
         preference.key = "header_$name"
         preference.title = name
-        preference.summary = if (name.contains("secret", ignoreCase = true) ||
-            name.contains("password", ignoreCase = true) ||
-            name.contains("token", ignoreCase = true)) {
-            "••••••••" // Hide sensitive values
-        } else {
-            value
-        }
+        preference.summary = "••••••••" // Always hide all values
 
         preference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             showEditHeaderDialog(name, value)
