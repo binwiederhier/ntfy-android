@@ -46,7 +46,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         DetailViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
-    private val api = ApiService()
+    private val api by lazy { ApiService(this) }
     private val messenger = FirebaseMessenger()
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent

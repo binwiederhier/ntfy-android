@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AddFragment : DialogFragment() {
-    private val api = ApiService()
+    private val api by lazy { ApiService(requireContext()) }
 
     private lateinit var repository: Repository
     private lateinit var subscribeListener: SubscribeListener

@@ -68,7 +68,7 @@ class BroadcastService(private val ctx: Context) {
         }
 
         private fun send(ctx: Context, intent: Intent) {
-            val api = ApiService()
+            val api = ApiService(ctx)
             val baseUrl = getStringExtra(intent, "base_url") ?: ctx.getString(R.string.app_base_url)
             val topic = getStringExtra(intent, "topic") ?: return
             val message = getStringExtra(intent, "message") ?: return

@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class ShareActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
-    private val api = ApiService()
+    private val api by lazy { ApiService(this) }
 
     // File to share
     private var fileUri: Uri? = null

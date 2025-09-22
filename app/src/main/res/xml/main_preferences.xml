@@ -98,6 +98,11 @@
                 app:key="@string/settings_advanced_clear_logs_key"
                 app:title="@string/settings_advanced_clear_logs_title"
                 app:summary="@string/settings_advanced_clear_logs_summary"/>
+        <Preference
+                app:key="@string/settings_advanced_custom_headers_key"
+                app:title="@string/settings_advanced_custom_headers_title"
+                app:summary="@string/settings_advanced_custom_headers_summary"
+                app:fragment="io.heckel.ntfy.ui.CustomHeadersFragment" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_about_header">
         <Preference

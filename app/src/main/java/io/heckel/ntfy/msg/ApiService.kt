@@ -1,8 +1,10 @@
 package io.heckel.ntfy.msg
 
+import android.content.Context
 import android.os.Build
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.*
 import okhttp3.*
@@ -13,21 +15,26 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class ApiService {
+class ApiService(private val context: Context) {
+    private val repository = Repository.getInstance(context)
+
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
+        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val publishClient = OkHttpClient.Builder()
         .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
+        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val subscriberClient = OkHttpClient.Builder()
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
+        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val parser = NotificationParser()
 
@@ -162,6 +169,29 @@ class ApiService {
                 return false
             }
             throw Exception("Unexpected server response ${response.code}")
+        }
+    }
+
+    /**
+     * Interceptor that adds custom headers to all HTTP requests
+     */
+    private class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val originalRequest = chain.request()
+            val customHeaders = repository.getCustomHeaders()
+
+            // If no custom headers, proceed with original request
+            if (customHeaders.isEmpty()) {
+                return chain.proceed(originalRequest)
+            }
+
+            // Add custom headers to the request
+            val requestBuilder = originalRequest.newBuilder()
+            customHeaders.forEach { (name, value) ->
+                requestBuilder.addHeader(name, value)
+            }
+
+            return chain.proceed(requestBuilder.build())
         }
     }
 

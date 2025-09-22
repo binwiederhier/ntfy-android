@@ -26,7 +26,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             Log.d(TAG, "Polling for new notifications")
             val repository = Repository.getInstance(applicationContext)
             val dispatcher = NotificationDispatcher(applicationContext, repository)
-            val api = ApiService()
+            val api = ApiService(applicationContext) // FIXED: Pass context parameter
 
             val baseUrl = inputData.getString(INPUT_DATA_BASE_URL)
             val topic = inputData.getString(INPUT_DATA_TOPIC)

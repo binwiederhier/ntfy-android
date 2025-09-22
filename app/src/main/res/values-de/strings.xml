@@ -350,4 +350,20 @@
     <string name="settings_advanced_exact_alarms_title">Genaue Alarme</string>
     <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy kann keine genauen Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Tippe hier, um die Berechtigung zu erteilen.</string>
+    <string name="settings_advanced_custom_headers_key">BenutzerdefinierteHeader</string>
+    <string name="settings_advanced_custom_headers_title">Benutzerdefinierte Header</string>
+    <string name="settings_advanced_custom_headers_summary">Benutzerdefinierte HTTP-Header zu allen Anfragen hinzufügen</string>
+    <string name="custom_headers_add_header">Header hinzufügen</string>
+    <string name="custom_headers_add_summary">Neuen benutzerdefinierten HTTP-Header hinzufügen</string>
+    <string name="custom_headers_add_title">Neuen Header hinzufügen</string>
+    <string name="custom_headers_edit_title">Header bearbeiten</string>
+    <string name="custom_headers_delete_title">Header löschen</string>
+    <string name="custom_headers_delete_message">Sind Sie sicher, dass Sie den Header „%1$s“ löschen möchten?</string>
+    <string name="custom_headers_add">Hinzufügen</string>
+    <string name="custom_headers_save">Speichern</string>
+    <string name="custom_headers_delete">Löschen</string>
+    <string name="custom_headers_error_title">Ungültiger Header</string>
+    <string name="custom_headers_invalid_name">Ungültige Zeichen im Header-Namen</string>
+    <string name="custom_headers_name_hint">Header-Name (z. B. CF-Access-Client-Id)</string>
+    <string name="custom_headers_value_hint">Header-Wert</string>
 </resources>
