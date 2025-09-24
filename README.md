@@ -1,23 +1,8 @@
-# ⚠️ F-Droid: Do not upgrade to ntfy 1.17.0
-
-9/20/2025 
-
-📢 **BROKEN ntfy version on F-Droid**: I am so sorry, but it looks like ntfy 1.17.0 got released on F-Droid accidentally. Please **DO NOT UPDATE**, as the app will crash on startup and will not work. 
-
-You can join the Google Play beta to upgrade to 1.17.8 (in testing!!) or manually install the .apk file from https://github.com/binwiederhier/ntfy-android/releases/tag/v1.17.8:
-
-- Join beta from Android: https://play.google.com/store/apps/details?id=io.heckel.ntfy
-- Joined beta from Web: https://play.google.com/apps/testing/io.heckel.ntfy
-
-My sincere apologies. I forgot that F-Droid automatically picks up tags. It's been a while. I suggest that you use the Backup feature in ntfy (Settings -> Back up to file) to save your current database to a json file, just in case.
-
-F-Droid release cycles take a while, so this will take a few days to get fixed. I am very sorry, guys.
-
---- 
-
 # ntfy Android App
 This is the Android app for [ntfy](https://github.com/binwiederhier/ntfy) ([ntfy.sh](https://ntfy.sh)). You can find the app in [F-Droid](https://f-droid.org/packages/io.heckel.ntfy/) or the [Play Store](https://play.google.com/store/apps/details?id=io.heckel.ntfy), 
-or as .apk files on the [releases page](https://github.com/binwiederhier/ntfy-android/releases).
+or as .apk files on the [GitHub releases page](https://github.com/binwiederhier/ntfy-android/releases).
+
+If you're downloading the APKs from GitHub, they are signed with a certificate with the following SHA-256 fingerprint: `6e145d7ae685eff75468e5067e03a6c3645453343e4e181dac8b6b17ff67489d`. You can also query the DNS TXT records for `ntfy.sh` to find this fingerprint.
 
 ## Build
 For up-to-date building instructions, please see the [official docs](https://docs.ntfy.sh/develop/#android-app).

@@ -231,9 +231,26 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
         }
         fixNowButton.setOnClickListener {
+            // It should not be visible for SDK < 23
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                startActivity(intent)
+                try {
+                    Log.d(TAG, Uri.parse("package:$packageName").toString())
+                    startActivity(
+                        Intent(
+                            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                            Uri.parse("package:$packageName")
+                        )
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    try {
+                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                    } catch (e2: ActivityNotFoundException) {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+                }
+                // Hide, at least for now
+                val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+                batteryBanner.visibility = View.GONE
             }
         }
 
@@ -323,7 +340,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         val hasInstantSubscriptions = subscriptions.count { it.instant } > 0
         val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
         val ignoringOptimizations = isIgnoringBatteryOptimizations(this@MainActivity)
-        val showBanner = hasInstantSubscriptions && batteryRemindTimeReached && !ignoringOptimizations
+        val showBanner = batteryRemindTimeReached && !ignoringOptimizations
         val batteryBanner = findViewById<View>(R.id.main_banner_battery)
         batteryBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
