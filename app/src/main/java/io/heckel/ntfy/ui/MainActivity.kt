@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -34,6 +35,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
@@ -129,7 +131,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
-        val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
+        val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
         toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
             this,
             repository.getDynamicColorsEnabled(),
@@ -155,7 +157,15 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
 
         mainList = findViewById(R.id.main_subscriptions_list)
-        adapter = MainAdapter(repository, onSubscriptionClick, onSubscriptionLongClick)
+        adapter = MainAdapter(
+            repository,
+            onSubscriptionClick,
+            onSubscriptionLongClick,
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_circle, theme)!!.apply {
+                setTint(Colors.primary(this@MainActivity))
+            },
+            Colors.onPrimary(this)
+        )
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {

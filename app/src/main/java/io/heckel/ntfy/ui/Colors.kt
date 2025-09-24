@@ -9,6 +9,14 @@ import io.heckel.ntfy.R
 
 class Colors {
     companion object {
+        fun primary(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
+        }
+
+        fun onPrimary(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorOnPrimary, Color.GREEN)
+        }
+
         fun notificationIcon(context: Context): Int {
             return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
