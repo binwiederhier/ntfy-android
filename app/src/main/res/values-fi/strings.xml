@@ -60,7 +60,7 @@
     <string name="channel_subscriber_notification_noinstant_text_two">Tilattu kahteen topikkiin</string>
     <string name="detail_settings_title">Tilausasetukset</string>
     <string name="detail_item_saved_successfully">Tallennettu nimellä %1$s lataukset kansioon</string>
-    <string name="settings_notifications_auto_delete_one_month">jälkeen kolmenkymmenen päivän</string>
+    <string name="settings_notifications_auto_delete_one_month">Kuukauden jälkeen</string>
     <string name="channel_notifications_group_default_name">Oletus</string>
     <string name="detail_menu_test">Lähetä testi ilmoitus</string>
     <string name="settings_notifications_priority_high">korkea</string>
@@ -91,14 +91,14 @@
     <string name="channel_subscriber_service_name">Tilaus palvelu</string>
     <string name="channel_subscriber_notification_instant_text_five">Tilattu viiteen välittömään topikkiin</string>
     <string name="settings_general_users_prefs_user_add">Lisää käyttäjiä</string>
-    <string name="settings_notifications_auto_delete_three_months">jälkeen kolmen kuukauden</string>
+    <string name="settings_notifications_auto_delete_three_months">Kolmen kuukauden jälkeen</string>
     <string name="main_add_button_description">Lisää tilaus</string>
     <string name="notification_dialog_muted_forever_toast_message">Ilmoitukset hiljennetty</string>
     <string name="settings_notifications_muted_until_show_all">Näytä kaikki ilmoitukset</string>
     <string name="notification_popup_file_download_failed">%1$s
 \ntiedosto: %2$s, lataus virhe</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Poista pysyvästi</string>
-    <string name="settings_notifications_auto_delete_three_days">Jälkeen kolmen päivän</string>
+    <string name="settings_notifications_auto_delete_three_days">Kolmen päivän jälkeen</string>
     <string name="settings_general_dark_mode_summary_light">Vaalea tila päälle</string>
     <string name="detail_item_cannot_open">Ei voida avata liitettä %1$s</string>
     <string name="settings_notifications_auto_download_5m">Jos tiedoston koko on alle 5 MB</string>
@@ -147,7 +147,7 @@
     <string name="settings_backup_restore_backup_entry_everything">Kaikki</string>
     <string name="settings_general_users_summary">Lisää/poista käyttäjiä suojatuille topikeille</string>
     <string name="add_dialog_use_another_server_description">Syötä palvelun URL-osoitte alle tilataksesi topikkeja muilta palvelimilta.</string>
-    <string name="settings_notifications_auto_delete_one_day">Jälkeen yhden päivän</string>
+    <string name="settings_notifications_auto_delete_one_day">Päivän jälkeen</string>
     <string name="settings_general_dark_mode_summary_dark">Tumma tila päällä. Oletko vampyyri \?</string>
     <string name="settings_general_users_prefs_user_add_summary">Lisää uusi käyttäjä uudelle palvelimelle</string>
     <string name="settings_general_dark_mode_entry_system">Käytä oletusasetusta</string>
@@ -314,7 +314,7 @@
     <string name="settings_notifications_auto_download_summary_always">Lataa automaattisesti liitteet</string>
     <string name="user_dialog_title_edit">Muokkaa käyttäjää</string>
     <string name="settings_backup_restore_restore_successful">Palautus onnistui</string>
-    <string name="settings_notifications_auto_delete_one_week">jälkeen seitsemän päivän</string>
+    <string name="settings_notifications_auto_delete_one_week">Viikon jälkeen</string>
     <string name="settings_backup_restore_restore_failed">Palautus epäonnistui: %1$s</string>
     <string name="settings_notifications_header">Ilmoitukset</string>
     <string name="detail_test_message">Tämä on testi-ilmoitus ntfy Android -sovelluksesta. Sillä on prioriteettitaso %1$d. Jos lähetät toisen, se voi näyttää erilaiselta.</string>
