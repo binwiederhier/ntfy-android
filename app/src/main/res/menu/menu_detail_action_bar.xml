@@ -1,17 +1,49 @@
-<menu xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/detail_menu_notifications_enabled" android:title="@string/detail_menu_notifications_enabled"
-          app:showAsAction="ifRoom" android:icon="@drawable/ic_notifications_white_24dp"/>
-    <item android:id="@+id/detail_menu_notifications_disabled_until" android:title="@string/detail_menu_notifications_disabled_forever"
-          app:showAsAction="ifRoom" android:icon="@drawable/ic_notifications_off_time_white_outline_24dp"/>
-    <item android:id="@+id/detail_menu_notifications_disabled_forever" android:title="@string/detail_menu_notifications_disabled_forever"
-          app:showAsAction="ifRoom" android:icon="@drawable/ic_notifications_off_white_outline_24dp"/>
-    <item android:id="@+id/detail_menu_enable_instant" android:title="@string/detail_menu_enable_instant"
-          app:showAsAction="ifRoom" android:icon="@drawable/ic_bolt_outline_white_24dp"/>
-    <item android:id="@+id/detail_menu_disable_instant" android:title="@string/detail_menu_disable_instant"
-          android:icon="@drawable/ic_bolt_white_24dp" app:showAsAction="ifRoom"/>
-    <item android:id="@+id/detail_menu_settings" android:title="@string/detail_menu_settings"/>
-    <item android:id="@+id/detail_menu_copy_url" android:title="@string/detail_menu_copy_url"/>
-    <item android:id="@+id/detail_menu_clear" android:title="@string/detail_menu_clear"/>
-    <item android:id="@+id/detail_menu_test" android:title="@string/detail_menu_test"/>
-    <item android:id="@+id/detail_menu_unsubscribe" android:title="@string/detail_menu_unsubscribe"/>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/detail_menu_notifications_enabled"
+        android:icon="@drawable/ic_notifications_white_24dp"
+        android:title="@string/detail_menu_notifications_enabled"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/detail_menu_notifications_disabled_until"
+        android:icon="@drawable/ic_notifications_off_time_white_outline_24dp"
+        android:title="@string/detail_menu_notifications_disabled_forever"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/detail_menu_notifications_disabled_forever"
+        android:icon="@drawable/ic_notifications_off_white_outline_24dp"
+        android:title="@string/detail_menu_notifications_disabled_forever"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/detail_menu_enable_instant"
+        android:icon="@drawable/ic_bolt_outline_white_24dp"
+        android:title="@string/detail_menu_enable_instant"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/detail_menu_disable_instant"
+        android:icon="@drawable/ic_bolt_white_24dp"
+        android:title="@string/detail_menu_disable_instant"
+        app:iconTint="@android:color/white"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/detail_menu_settings"
+        android:title="@string/detail_menu_settings" />
+    <item
+        android:id="@+id/detail_menu_copy_url"
+        android:title="@string/detail_menu_copy_url" />
+    <item
+        android:id="@+id/detail_menu_clear"
+        android:title="@string/detail_menu_clear" />
+    <item
+        android:id="@+id/detail_menu_test"
+        android:title="@string/detail_menu_test" />
+    <item
+        android:id="@+id/detail_menu_unsubscribe"
+        android:title="@string/detail_menu_unsubscribe" />
 </menu>
