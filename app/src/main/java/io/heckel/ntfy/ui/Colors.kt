@@ -29,7 +29,7 @@ class Colors {
             return SurfaceColors.getColorForElevation(context, 20f)
         }
 
-        fun statusBarNormal(context: Context, dynamicColors: Boolean): Int {
+        fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
             val default = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 context.resources.getColor(R.color.action_bar, context.theme)
             } else {
@@ -37,7 +37,11 @@ class Colors {
                 context.resources.getColor(R.color.action_bar)
             }
             return if (dynamicColors) {
-                MaterialColors.getColor(context, R.attr.colorSurface, default)
+                if (darkMode) {
+                    MaterialColors.getColor(context, R.attr.colorSurface, default)
+                } else {
+                    MaterialColors.getColor(context, R.attr.colorOnPrimaryContainer, default)
+                }
             } else {
                 default
             }

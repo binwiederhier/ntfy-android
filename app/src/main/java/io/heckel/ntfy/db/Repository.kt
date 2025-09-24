@@ -275,7 +275,7 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     fun setDynamicColorsEnabled(enabled: Boolean) {
         sharedPrefs.edit()
             .putBoolean(SHARED_PREFS_DYNAMIC_COLORS, enabled)
-            .apply()
+            .commit()
     }
 
     fun getDynamicColorsEnabled(): Boolean {

@@ -108,7 +108,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         appBaseUrl = getString(R.string.app_base_url)
 
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(this, repository.getDynamicColorsEnabled()))
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
+            this,
+            repository.getDynamicColorsEnabled(),
+            isDarkThemeOn(this)
+        ))
         setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

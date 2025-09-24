@@ -67,7 +67,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         serviceManager = SubscriberServiceManager(this)
 
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(this, repository.getDynamicColorsEnabled()))
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
+            this,
+            repository.getDynamicColorsEnabled(),
+            isDarkThemeOn(this)
+        ))
         setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
 
         if (savedInstanceState == null) {
@@ -337,6 +341,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 dynamicColorsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                     override fun putBoolean(key: String?, value: Boolean) {
                         repository.setDynamicColorsEnabled(value)
+
+                        // restart app
+                        val packageManager = requireContext().packageManager
+                        val packageName = requireContext().packageName
+                        val intent = packageManager.getLaunchIntentForPackage(packageName)
+                        val componentName = intent!!.component
+                        val mainIntent = Intent.makeRestartActivityTask(componentName)
+                        startActivity(mainIntent)
+                        Runtime.getRuntime().exit(0)
                     }
                     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                         return repository.getDynamicColorsEnabled()

@@ -56,7 +56,11 @@ class ShareActivity : AppCompatActivity() {
 
         // Action bar
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(this, repository.getDynamicColorsEnabled()))
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
+            this,
+            repository.getDynamicColorsEnabled(),
+            isDarkThemeOn(this)
+        ))
         setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
         title = getString(R.string.share_title)
 
