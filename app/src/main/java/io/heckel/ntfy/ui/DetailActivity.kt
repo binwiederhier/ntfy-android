@@ -127,11 +127,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 )
                 repository.addSubscription(subscription)
 
-                // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
-                if (baseUrl == appBaseUrl) {
-                    Log.d(TAG, "Subscribing to Firebase topic $topic")
-                    messenger.subscribe(topic)
-                }
+                // Subscribe to Firebase topic (even if instant, just to be sure!)
+                val firebaseTopic = if (baseUrl == appBaseUrl) topic else topicHash(baseUrl, topic)
+                Log.d(TAG, "Subscribing to Firebase topic $topic")
+                messenger.subscribe(firebaseTopic)
 
                 // Fetch cached messages
                 try {
@@ -608,9 +607,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 GlobalScope.launch(Dispatchers.IO) {
                     repository.removeAllNotifications(subscriptionId)
                     repository.removeSubscription(subscriptionId)
-                    if (subscriptionBaseUrl == appBaseUrl) {
-                        messenger.unsubscribe(subscriptionTopic)
-                    }
+
+                    val firebaseTopic = if (subscriptionBaseUrl == appBaseUrl) subscriptionTopic else topicHash(subscriptionBaseUrl, subscriptionTopic)
+                    Log.d(TAG, "Unsubscribing from Firebase topic $firebaseTopic")
+                    messenger.unsubscribe(firebaseTopic)
                 }
                 finish()
             }
