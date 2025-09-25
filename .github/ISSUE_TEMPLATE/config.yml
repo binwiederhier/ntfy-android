@@ -1,0 +1,15 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Report bugs or feature requests: Please use the main issue tracker"
+    url: https://github.com/binwiederhier/ntfy/issues
+    about: Please use the main project issue tracker for bug reports or or features
+  - name: Documentation
+    url: https://docs.ntfy.sh
+    about: Check out the ntfy documentation
+  - name: Discord Community
+    url: https://discord.gg/cT7ECsZj9w
+    about: Ask questions about ntfy on Discord
+  - name: Matrix Community
+    url: https://matrix.to/#/#ntfy:matrix.org
+    about: Ask questions about ntfy in the Matrix room
+
