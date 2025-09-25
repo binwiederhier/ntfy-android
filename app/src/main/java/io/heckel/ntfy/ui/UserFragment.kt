@@ -9,7 +9,9 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.AfterChangedTextWatcher
@@ -21,6 +23,7 @@ class UserFragment : DialogFragment() {
     private lateinit var baseUrlsInUse: ArrayList<String>
     private lateinit var listener: UserDialogListener
 
+    private lateinit var baseUrlViewLayout: TextInputLayout
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var usernameView: TextInputEditText
     private lateinit var passwordView: TextInputEditText
@@ -54,9 +57,10 @@ class UserFragment : DialogFragment() {
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_user_dialog, null)
 
         val positiveButtonTextResId = if (user == null) R.string.user_dialog_button_add else R.string.user_dialog_button_save
-        val titleView = view.findViewById(R.id.user_dialog_title) as TextView
-        val descriptionView = view.findViewById(R.id.user_dialog_description) as TextView
+        val titleView = view.findViewById<TextView>(R.id.user_dialog_title)
+        val descriptionView = view.findViewById<TextView>(R.id.user_dialog_description)
 
+        baseUrlViewLayout = view.findViewById(R.id.user_dialog_base_url_layout)
         baseUrlView = view.findViewById(R.id.user_dialog_base_url)
         usernameView = view.findViewById(R.id.user_dialog_username)
         passwordView = view.findViewById(R.id.user_dialog_password)
@@ -64,18 +68,18 @@ class UserFragment : DialogFragment() {
         if (user == null) {
             titleView.text = getString(R.string.user_dialog_title_add)
             descriptionView.text = getString(R.string.user_dialog_description_add)
-            baseUrlView.visibility = View.VISIBLE
+            baseUrlViewLayout.visibility = View.VISIBLE
             passwordView.hint = getString(R.string.user_dialog_password_hint_add)
         } else {
             titleView.text = getString(R.string.user_dialog_title_edit)
             descriptionView.text = getString(R.string.user_dialog_description_edit)
-            baseUrlView.visibility = View.GONE
+            baseUrlViewLayout.visibility = View.GONE
             usernameView.setText(user!!.username)
             passwordView.hint = getString(R.string.user_dialog_password_hint_edit)
         }
 
         // Build dialog
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireContext())
             .setView(view)
             .setPositiveButton(positiveButtonTextResId) { _, _ ->
                 saveClicked()

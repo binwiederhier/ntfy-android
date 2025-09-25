@@ -1,227 +1,334 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="?dialogPreferredPadding">
+
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/add_dialog_subscribe_view">
+        android:id="@+id/add_dialog_subscribe_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <TextView
-                    android:id="@+id/add_dialog_subscribe_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="3dp"
-                    android:text="@string/add_dialog_title"
-                    android:textAlignment="viewStart"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-            />
 
-        <ProgressBar
+            <TextView
+                android:id="@+id/add_dialog_subscribe_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="3dp"
+                android:text="@string/add_dialog_title"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
                 style="?android:attr/progressBarStyle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:id="@+id/add_dialog_subscribe_progress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/add_dialog_subscribe_description"
-                android:indeterminate="true" android:layout_marginBottom="5dp" android:visibility="gone"/>
-        <TextView
+                android:indeterminate="true"
+                android:layout_marginBottom="5dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/add_dialog_subscribe_description"
                 android:text="@string/add_dialog_description_below"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_description"
-                android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="3dp"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_title"/>
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/add_dialog_subscribe_topic_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
-                android:importantForAutofill="no"
-                android:maxLines="1" android:inputType="text" android:maxLength="64"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_description"/>
-        <CheckBox
-                android:text="@string/add_dialog_use_another_server"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_use_another_server_checkbox"
-                android:layout_marginStart="-3dp" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_topic_text"
-                android:layout_marginTop="-3dp"/>
-            <TextView
-                    android:text="@string/add_dialog_use_another_server_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_use_another_server_description"
-                    android:paddingStart="4dp" android:paddingTop="0dp"
-                    android:visibility="gone" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_use_another_server_checkbox"
-                    android:layout_marginTop="-5dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                    android:id="@+id/add_dialog_subscribe_base_url_layout"
+                android:id="@+id/add_dialog_subscribe_topic_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_dialog_subscribe_topic_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="0dp"
-                    android:padding="0dp"
-                    android:visibility="gone"
-                    app:endIconMode="custom"
-                    app:hintEnabled="false"
-                    app:boxBackgroundColor="@null"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_use_another_server_description">
-                <AutoCompleteTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/add_dialog_subscribe_base_url_text"
-                        android:hint="@string/app_base_url"
-                        android:maxLines="1"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginBottom="10dp"
-                        android:inputType="textNoSuggestions"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                />
+                    android:hint="@string/add_dialog_topic_name_hint"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:maxLength="64"/>
+
             </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+            <CheckBox
+                android:id="@+id/add_dialog_subscribe_use_another_server_checkbox"
+                android:text="@string/add_dialog_use_another_server"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-3dp"
+                android:layout_marginTop="-3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_topic_layout"/>
+
+            <TextView
+                android:id="@+id/add_dialog_subscribe_use_another_server_description"
+                android:text="@string/add_dialog_use_another_server_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="0dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_use_another_server_checkbox" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                android:id="@+id/add_dialog_subscribe_base_url_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                android:visibility="gone"
+                app:endIconMode="custom"
+                app:hintEnabled="false"
+                app:boxBackgroundColor="@null"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_use_another_server_description">
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_dialog_subscribe_base_url_text"
+                    android:hint="@string/app_base_url"
+                    android:maxLines="1"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="10dp"
+                    android:inputType="textNoSuggestions"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/add_dialog_subscribe_instant_delivery_box"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_instant_delivery_box"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_base_url_layout" android:layout_marginTop="-3dp">
-            <CheckBox
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_base_url_layout">
+
+                <CheckBox
+                    android:id="@+id/add_dialog_subscribe_instant_delivery_checkbox"
                     android:text="@string/add_dialog_instant_delivery"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_instant_delivery_checkbox"
-                    android:layout_marginTop="-8dp" android:layout_marginBottom="-5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-8dp"
+                    android:layout_marginBottom="-5dp"
                     android:layout_marginStart="-3dp"/>
-            <ImageView
+
+                <ImageView
                     android:layout_width="24dp"
-                    android:layout_height="24dp" app:srcCompat="@drawable/ic_bolt_gray_24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="3dp"
+                    android:paddingTop="3dp"
                     android:id="@+id/add_dialog_subscribe_instant_image"
+                    app:srcCompat="@drawable/ic_bolt_gray_24dp"
                     app:layout_constraintTop_toTopOf="@+id/main_item_text"
-                    app:layout_constraintEnd_toStartOf="@+id/main_item_date" android:paddingTop="3dp"
-                    android:layout_marginTop="3dp"/>
-        </LinearLayout>
+                    app:layout_constraintEnd_toStartOf="@+id/main_item_date"/>
+
+            </LinearLayout>
+
             <TextView
-                    android:text="@string/add_dialog_instant_delivery_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_instant_delivery_description"
-                    android:paddingStart="4dp" android:paddingTop="0dp"
-                    android:visibility="gone" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_box"/>
-            <TextView
-                    android:text="@string/add_dialog_foreground_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_foreground_description"
-                    android:paddingStart="4dp" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_description"/>
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp" app:srcCompat="@drawable/ic_error_red_24dp"
-                android:id="@+id/add_dialog_subscribe_error_text_image"
+                android:id="@+id/add_dialog_subscribe_instant_delivery_description"
+                android:text="@string/add_dialog_instant_delivery_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="0dp"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@id/add_dialog_subscribe_error_text" android:layout_marginTop="1dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_box"/>
+
             <TextView
-                    android:text="Unable to resolve host example.com"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" android:id="@+id/add_dialog_subscribe_error_text"
-                    android:paddingStart="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_foreground_description"
-                    android:paddingEnd="4dp"
-                    android:textAppearance="@style/DangerText"
-                    app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
-                    android:layout_marginTop="5dp"
-                    tools:visibility="gone"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:id="@+id/add_dialog_subscribe_foreground_description"
+                android:text="@string/add_dialog_foreground_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_description"/>
+
+            <ImageView
+                android:id="@+id/add_dialog_subscribe_error_text_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="1dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_error_red_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/add_dialog_subscribe_error_text"/>
+
+            <TextView
+                android:id="@+id/add_dialog_subscribe_error_text"
+                android:text="Unable to resolve host example.com"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textAppearance="@style/DangerText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_foreground_description"
+                app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
+                tools:visibility="gone"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
+
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/add_dialog_login_view">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/add_dialog_login_view">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
         <TextView
-                android:id="@+id/add_dialog_login_title"
-                android:layout_width="0dp"
+            android:id="@+id/add_dialog_login_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="3dp"
+            android:text="@string/add_dialog_login_title"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:text="@string/add_dialog_login_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_dialog_login_description"
+            android:paddingStart="4dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_dialog_login_title" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_dialog_login_username_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingBottom="3dp"
-                android:text="@string/add_dialog_login_title"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/add_dialog_login_description"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-        />
-        <TextView
-                android:text="@string/add_dialog_login_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_login_description"
-                android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_title" android:paddingEnd="4dp"/>
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/add_dialog_login_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/add_dialog_login_username_hint"
-                android:importantForAutofill="no"
-                android:maxLines="1" android:inputType="text" android:maxLength="64"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="10dp" app:layout_constraintTop_toBottomOf="@+id/add_dialog_login_description"/>
-        <com.google.android.material.textfield.TextInputEditText
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_dialog_login_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_dialog_login_username_hint"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:maxLength="64"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_dialog_login_password_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/add_dialog_login_username_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/add_dialog_login_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/add_dialog_login_password_hint"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_dialog_login_password_hint"
                 android:importantForAutofill="no"
-                android:maxLines="1" android:inputType="textPassword" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_username"/>
+                android:maxLines="1"
+                android:inputType="textPassword"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp" app:srcCompat="@drawable/ic_error_red_24dp"
-                android:id="@+id/add_dialog_login_error_text_image"
-                android:visibility="visible"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="@+id/add_dialog_login_error_text" app:layout_constraintTop_toTopOf="@+id/add_dialog_login_error_text"/>
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/add_dialog_login_error_text_image"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_error_red_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/add_dialog_login_error_text"
+            app:layout_constraintTop_toTopOf="@+id/add_dialog_login_error_text"/>
+
         <TextView
-                android:text="Login failed. User not authorized."
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:id="@+id/add_dialog_login_error_text"
-                android:paddingStart="4dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/add_dialog_login_password"
-                android:paddingEnd="4dp"
-                android:textAppearance="@style/DangerText"
-                app:layout_constraintStart_toEndOf="@id/add_dialog_login_error_text_image"/>
+            android:id="@+id/add_dialog_login_error_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Login failed. User not authorized."
+            android:paddingStart="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_dialog_login_password_layout"
+            android:paddingEnd="4dp"
+            android:textAppearance="@style/DangerText"
+            app:layout_constraintStart_toEndOf="@id/add_dialog_login_error_text_image"/>
+
         <ProgressBar
-                style="?android:attr/progressBarStyle"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:id="@+id/add_dialog_login_progress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/add_dialog_login_description"
-                android:indeterminate="true" android:layout_marginBottom="5dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            style="?android:attr/progressBarStyle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/add_dialog_login_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/add_dialog_login_description"
+            android:indeterminate="true"
+            android:layout_marginBottom="5dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
+
 </LinearLayout>

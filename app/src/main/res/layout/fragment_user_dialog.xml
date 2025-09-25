@@ -1,55 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:visibility="visible" android:paddingBottom="10dp">
-    <TextView
-            android:text="This topic requires you to login. Please pick an existing user or type in a username and password."
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/user_dialog_description"
-            android:paddingStart="4dp" android:paddingTop="3dp" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_dialog_title"/>
-    <TextView
-            android:id="@+id/user_dialog_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="3dp"
-            android:text="@string/user_dialog_title_add"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" android:paddingStart="4dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="?dialogPreferredPadding"
+    android:visibility="visible">
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
+        android:id="@+id/user_dialog_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="3dp"
+        android:text="@string/user_dialog_title_add"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/user_dialog_description"
+        android:text="@string/add_dialog_login_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:paddingBottom="?dialogPreferredPadding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_dialog_title"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_dialog_base_url_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/user_dialog_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_dialog_base_url"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/user_dialog_base_url_hint"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_dialog_base_url_hint"
             android:importantForAutofill="no"
-            android:maxLines="1" android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="6dp" app:layout_constraintTop_toBottomOf="@id/user_dialog_description"/>
-    <com.google.android.material.textfield.TextInputEditText
+            android:maxLines="1"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_dialog_username_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/user_dialog_base_url_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_dialog_username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/user_dialog_username_hint"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_dialog_username_hint"
             android:importantForAutofill="no"
-            android:maxLines="1" android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="6dp" app:layout_constraintTop_toBottomOf="@id/user_dialog_base_url"/>
-    <com.google.android.material.textfield.TextInputEditText
+            android:maxLines="1"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/user_dialog_username_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp">
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/user_dialog_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:hint="@string/user_dialog_password_hint_add"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_dialog_password_hint_add"
             android:importantForAutofill="no"
-            android:maxLines="1" android:inputType="textPassword"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="6dp" app:layout_constraintTop_toBottomOf="@id/user_dialog_username"/>
+            android:maxLines="1"
+            android:inputType="textPassword"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

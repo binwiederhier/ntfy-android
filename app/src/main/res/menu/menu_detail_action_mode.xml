@@ -1,6 +1,14 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/detail_action_mode_copy" android:title="@string/detail_action_mode_menu_copy"
-          android:icon="@drawable/ic_content_copy_white_24dp"/>
-    <item android:id="@+id/detail_action_mode_delete" android:title="@string/detail_action_mode_menu_delete"
-          android:icon="@drawable/ic_delete_white_20dp"/>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/detail_action_mode_copy"
+        android:icon="@drawable/ic_content_copy_white_24dp"
+        android:title="@string/detail_action_mode_menu_copy"
+        app:iconTint="@android:color/white" />
+    <item
+        android:id="@+id/detail_action_mode_delete"
+        android:icon="@drawable/ic_delete_white_20dp"
+        android:title="@string/detail_action_mode_menu_delete"
+        app:iconTint="@android:color/white" />
 </menu>

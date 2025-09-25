@@ -1,48 +1,66 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
-import androidx.core.content.ContextCompat
+import android.graphics.Color
+import android.os.Build
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.elevation.SurfaceColors
 import io.heckel.ntfy.R
-import io.heckel.ntfy.util.isDarkThemeOn
 
 class Colors {
     companion object {
-        val refreshProgressIndicator = R.color.teal
+        fun primary(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
+        }
+
+        fun onPrimary(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorOnPrimary, Color.GREEN)
+        }
 
         fun notificationIcon(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.teal_light else R.color.teal
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
+        }
+
+        fun linkColor(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
 
         fun itemSelectedBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.gray_400
-        }
-
-        fun cardBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_800b else R.color.white
-        }
-
-        fun cardSelectedBackground(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_700b else R.color.gray_500
+            return SurfaceColors.getColorForElevation(context, 10f)
         }
 
         fun cardBackgroundColor(context: Context): Int {
-            return ContextCompat.getColor(context, cardBackground(context))
+            return SurfaceColors.getColorForElevation(context, 5f)
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
-            return ContextCompat.getColor(context, cardSelectedBackground(context))
+            return SurfaceColors.getColorForElevation(context, 20f)
         }
 
-        fun statusBarNormal(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal
-        }
-
-        fun statusBarActionMode(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.black_900 else R.color.teal_dark
+        fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
+            val default = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context.resources.getColor(R.color.action_bar, context.theme)
+            } else {
+                @Suppress("DEPRECATION")
+                context.resources.getColor(R.color.action_bar)
+            }
+            return if (dynamicColors) {
+                if (darkMode) {
+                    MaterialColors.getColor(context, R.attr.colorSurface, default)
+                } else {
+                    MaterialColors.getColor(context, R.attr.colorOnPrimaryContainer, default)
+                }
+            } else {
+                default
+            }
         }
 
         fun dangerText(context: Context): Int {
-            return if (isDarkThemeOn(context)) R.color.red_light else R.color.red_dark
+            return MaterialColors.getColor(context, R.attr.colorError, Color.RED)
+        }
+
+        fun swipeToRefreshColor(context: Context): Int {
+            return MaterialColors.getColor(context, R.attr.colorPrimary, Color.GREEN)
         }
     }
 }
