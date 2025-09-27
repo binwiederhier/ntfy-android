@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +18,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.android.material.appbar.AppBarLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -64,9 +64,15 @@ class DetailSettingsActivity : AppCompatActivity() {
                 .commit()
         }
 
+        val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
+        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
+            this,
+            repository.getDynamicColorsEnabled(),
+            isDarkThemeOn(this)
+        ))
+        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
         // Title
         val displayName = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
-        setSupportActionBar(findViewById<View>(R.id.app_bar_drawer).findViewById(R.id.toolbar))
         title = displayName
 
         // Show 'Back' button
