@@ -30,7 +30,7 @@ class Colors {
         }
 
         fun cardBackgroundColor(context: Context): Int {
-            return SurfaceColors.getColorForElevation(context, 5f)
+            return onPrimary(context) // SurfaceColors.getColorForElevation(context, 5f)
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
@@ -39,7 +39,7 @@ class Colors {
 
         fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
             val default = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                context.resources.getColor(R.color.action_bar, context.theme)
+                context.resources.getColor(R.color.action_bar)
             } else {
                 @Suppress("DEPRECATION")
                 context.resources.getColor(R.color.action_bar)

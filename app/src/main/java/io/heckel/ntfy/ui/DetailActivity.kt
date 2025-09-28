@@ -114,6 +114,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             isDarkThemeOn(this)
         ))
         setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
+
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

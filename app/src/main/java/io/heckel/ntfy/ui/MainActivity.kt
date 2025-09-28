@@ -728,7 +728,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         actionMode = startSupportActionMode(actionModeCallback)
         adapter.toggleSelection(subscription.id)
 
-        // Fade out FAB
+            // Fade out FAB
         fab.alpha = 1f
         fab
             .animate()
