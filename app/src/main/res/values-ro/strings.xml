@@ -313,7 +313,7 @@
     <string name="add_dialog_login_error_not_authorized">Logare eșuată. Utilizatorul %1$s nu este autorizat.</string>
     <string name="add_dialog_login_new_user">Utilizator nou</string>
     <string name="detail_no_notifications_text">Nu ai primit încă notificări pentru acest topic.</string>
-    <string name="detail_how_to_example">Exemplu (folosing curl):<br></br><tt>$ curl -d \"Salut\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exemplu (folosing curl):<br/><tt>$ curl -d \"Salut\" %1$s</tt></string>
     <string name="detail_delete_dialog_cancel">Anulează</string>
     <string name="detail_test_title">Test: Poți specifica un titlu dacă dorești.</string>
     <string name="detail_test_message">Această este o notificare de test de la aplicația ntfy pentru Android. Are nivelul priorității %1$d. Dacă trimiți altă notificare, s-ar putea să arate altfel.</string>
@@ -343,4 +343,9 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy va avea rol de distribuitor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Activează UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nu va avea rol de distribuitor UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Întreabă mai târziu</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Respinge</string>
+    <string name="settings_advanced_exact_alarms_title">Alarme exacte</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSocket-urile în fundal. Faceți clic pentru a revoca permisiunea.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy nu poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSockets în fundal. Faceți clic pentru a acorda permisiunea.</string>
 </resources>
