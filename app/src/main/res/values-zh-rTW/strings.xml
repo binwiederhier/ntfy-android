@@ -213,7 +213,7 @@
     <string name="detail_item_saved_successfully">儲存為 \"Downloads\" 資料中的 \"%1$s\"</string>
     <string name="detail_test_message_error_unauthorized_user">不能夠發布信息：用戶 %1$s 不被授權。</string>
     <string name="detail_how_to_intro">PUT 或 POST 主題網址以傳送通訊。</string>
-    <string name="detail_how_to_example">例如（使用 curl): <br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">例如（使用 curl): <br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_test_message_error">不能夠傳送訊息：%1$s</string>
     <string name="detail_item_tags">標籤：%1$s</string>
     <string name="detail_instant_delivery_enabled">啟動即時傳送</string>

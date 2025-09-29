@@ -4,6 +4,7 @@ import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -98,7 +99,11 @@ class SubscriberService : Service() {
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
-        startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        } else {
+            startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+        }
     }
 
     override fun onDestroy() {
@@ -172,8 +177,8 @@ class SubscriberService : Service() {
             .filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap(), emptyMap()) }
-            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }, topicIsUnifiedPush = entry.value.associate { s -> s.topic to (s.upConnectorToken != null) }) }
+            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
+            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
             .toSet()
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)

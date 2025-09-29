@@ -3,6 +3,7 @@ package io.heckel.ntfy.ui
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.AlarmManager
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.method.LinkMovementMethod
 import android.view.ActionMode
 import android.view.Menu
@@ -125,9 +127,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     Log.addScrubTerm(s.topic)
                 }
 
-                // Update banner + WebSocket banner
+                // Update battery banner + WebSocket banner + websocket reconnect banner
                 showHideBatteryBanner(subscriptions)
                 showHideWebSocketBanner(subscriptions)
+                showHideWebSocketReconnectBanner(subscriptions)
             }
         }
 
@@ -169,9 +172,26 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
         }
         fixNowButton.setOnClickListener {
+            // It should not be visible for SDK < 23
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                startActivity(intent)
+                try {
+                    Log.d(TAG, Uri.parse("package:$packageName").toString())
+                    startActivity(
+                        Intent(
+                            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                            Uri.parse("package:$packageName")
+                        )
+                    )
+                } catch (e: ActivityNotFoundException) {
+                    try {
+                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                    } catch (e2: ActivityNotFoundException) {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+                }
+                // Hide, at least for now
+                val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+                batteryBanner.visibility = View.GONE
             }
         }
 
@@ -194,6 +214,34 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
             repository.setConnectionProtocol(Repository.CONNECTION_PROTOCOL_WS)
             SubscriberServiceManager(this).restart()
             wsBanner.visibility = View.GONE
+
+            // Maybe show WebSocketReconnectBanner
+            viewModel.list().observe(this) {
+                it?.let { subscriptions ->
+                    showHideWebSocketReconnectBanner(subscriptions)
+                }
+            }
+        }
+
+        // WebSocket Reconnect banner
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val wsReconnectBanner = findViewById<View>(R.id.main_banner_websocket_reconnect)
+            val wsReconnectText = findViewById<TextView>(R.id.main_banner_websocket_reconnect_text)
+            val wsReconnectDismissButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_dontaskagain)
+            val wsReconnectRemindButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_remind_later)
+            val wsReconnectEnableButton = findViewById<Button>(R.id.main_banner_websocket_reconnect_enable)
+            wsReconnectText.movementMethod = LinkMovementMethod.getInstance() // Make links clickable
+            wsReconnectDismissButton.setOnClickListener {
+                wsReconnectBanner.visibility = View.GONE
+                repository.setWebSocketReconnectRemindTime(Repository.WEBSOCKET_RECONNECT_REMIND_TIME_NEVER)
+            }
+            wsReconnectRemindButton.setOnClickListener {
+                wsReconnectBanner.visibility = View.GONE
+                repository.setWebSocketReconnectRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
+            }
+            wsReconnectEnableButton.setOnClickListener {
+                startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+            }
         }
 
         // Create notification channels right away, so we can configure them immediately after installing the app
@@ -233,7 +281,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val hasInstantSubscriptions = subscriptions.count { it.instant } > 0
         val batteryRemindTimeReached = repository.getBatteryOptimizationsRemindTime() < System.currentTimeMillis()
         val ignoringOptimizations = isIgnoringBatteryOptimizations(this@MainActivity)
-        val showBanner = hasInstantSubscriptions && batteryRemindTimeReached && !ignoringOptimizations
+        val showBanner = batteryRemindTimeReached && !ignoringOptimizations
         val batteryBanner = findViewById<View>(R.id.main_banner_battery)
         batteryBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
         Log.d(TAG, "Battery: ignoring optimizations = $ignoringOptimizations (we want this to be true); instant subscriptions = $hasInstantSubscriptions; remind time reached = $batteryRemindTimeReached; banner = $showBanner")
@@ -246,6 +294,21 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val showBanner = hasSelfHostedSubscriptions && wsRemindTimeReached && !usingWebSockets
         val wsBanner = findViewById<View>(R.id.main_banner_websocket)
         wsBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
+    }
+
+    private fun showHideWebSocketReconnectBanner(subscriptions: List<Subscription>) {
+        val wsReconnectBanner = findViewById<View>(R.id.main_banner_websocket_reconnect)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasSelfHostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
+            val usingWebSockets = repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
+            val wsReconnectRemindTimeReached = repository.getWebSocketReconnectRemindTime() < System.currentTimeMillis()
+            val canScheduleExactAlarms = (getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
+            val showBanner = hasSelfHostedSubscriptions && wsReconnectRemindTimeReached && usingWebSockets && !canScheduleExactAlarms
+            Log.d(TAG, "hasSelfHostedSubscriptions: ${hasSelfHostedSubscriptions}, wsReconnectRemindTimeReached: ${wsReconnectRemindTimeReached}, usingWebSockets: ${usingWebSockets}, canScheduleExactAlarms: ${canScheduleExactAlarms}")
+            wsReconnectBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
+        } else {
+            wsReconnectBanner.visibility = View.GONE
+        }
     }
 
     private fun schedulePeriodicPollWorker() {

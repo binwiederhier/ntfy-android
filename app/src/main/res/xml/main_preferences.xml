@@ -86,6 +86,9 @@
                 app:entries="@array/settings_advanced_connection_protocol_entries"
                 app:entryValues="@array/settings_advanced_connection_protocol_values"
                 app:defaultValue="jsonhttp"/>
+        <Preference
+            app:key="@string/settings_advanced_exact_alarms_key"
+            app:title="@string/settings_advanced_exact_alarms_title"/>
         <SwitchPreference
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 13,
-    "identityHash": "17313a9fc219de273bef12b162805d49",
+    "identityHash": "44fc291d937fdf02b9bc2d0abb10d2e0",
     "entities": [
       {
         "tableName": "Subscription",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `insistent` INTEGER NOT NULL, `overrideVolumeMaxPriority` INTEGER NOT NULL, `overrideVolumeSetting` INTEGER NOT NULL, `lastNotificationId` TEXT, `icon` TEXT, `upAppId` TEXT, `upConnectorToken` TEXT, `displayName` TEXT, `dedicatedChannels` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `baseUrl` TEXT NOT NULL, `topic` TEXT NOT NULL, `instant` INTEGER NOT NULL, `mutedUntil` INTEGER NOT NULL, `minPriority` INTEGER NOT NULL, `autoDelete` INTEGER NOT NULL, `insistent` INTEGER NOT NULL, `lastNotificationId` TEXT, `icon` TEXT, `upAppId` TEXT, `upConnectorToken` TEXT, `displayName` TEXT, `dedicatedChannels` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -57,18 +57,6 @@
             "notNull": true
           },
           {
-            "fieldPath": "overrideVolumeMaxPriority",
-            "columnName": "overrideVolumeMaxPriority",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "overrideVolumeSetting",
-            "columnName": "overrideVolumeSetting",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
             "fieldPath": "lastNotificationId",
             "columnName": "lastNotificationId",
             "affinity": "TEXT",
@@ -106,10 +94,10 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
           "columnNames": [
             "id"
-          ]
+          ],
+          "autoGenerate": false
         },
         "indices": [
           {
@@ -267,11 +255,11 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
           "columnNames": [
             "id",
             "subscriptionId"
-          ]
+          ],
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -300,10 +288,10 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
           "columnNames": [
             "baseUrl"
-          ]
+          ],
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -350,10 +338,10 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
           "columnNames": [
             "id"
-          ]
+          ],
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -362,7 +350,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '17313a9fc219de273bef12b162805d49')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '44fc291d937fdf02b9bc2d0abb10d2e0')"
     ]
   }
 }

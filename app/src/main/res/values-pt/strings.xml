@@ -219,7 +219,7 @@
     <string name="add_dialog_login_description">Esse tópico necessita autenticação. Por favor, insira um nome de utilizador e palavra-passe.</string>
     <string name="add_dialog_login_new_user">Novo utilizador</string>
     <string name="add_dialog_base_urls_dropdown_choose">Escolha URL de serviço</string>
-    <string name="detail_how_to_example">Exemplo (utilizando curl): <br/><tt>$ curl -d \"Olá\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exemplo (utilizando curl): <br></br><tt>$ curl -d \"Olá\" %1$s</tt></string>
     <string name="detail_delete_dialog_message">Deseja anular a subscrição deste tópico e eliminar todas as notificações recebidas\?</string>
     <string name="detail_test_message">Esta é uma notificação de teste da aplicação Android do ntfy. Tem uma prioridade de nível %1$d. Se enviar outra notificação, poderá ser diferente.</string>
     <string name="detail_test_message_error_too_large">Não foi possível enviar a mensagem: O anexo é grande demais.</string>
@@ -340,4 +340,7 @@
     <string name="detail_settings_notifications_open_channels_title">Definir configurações de notificação</string>
     <string name="detail_settings_notifications_open_channels_summary">Sobreposição de \"Não incomodar\" (NI), sons, etc.</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alertar apenas uma vez</string>
+    <string name="settings_advanced_unifiedpush_title">Habilitar UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy atuará como distribuidora UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy não atuará como distribuidora UnifiedPush</string>
 </resources>
