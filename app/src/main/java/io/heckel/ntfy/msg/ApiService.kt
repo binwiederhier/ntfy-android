@@ -175,7 +175,7 @@ class ApiService(private val context: Context) {
     /**
      * Interceptor that adds custom headers to all HTTP requests
      */
-    private class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
+    class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest = chain.request()
             val customHeaders = repository.getCustomHeaders()
