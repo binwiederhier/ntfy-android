@@ -395,9 +395,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
         val mutedUntilSeconds = repository.getGlobalMutedUntil()
         runOnUiThread {
-            // Show/hide in-app rate widget
+            // Show/hide menu items based on build config
             val rateAppItem = menu.findItem(R.id.main_menu_rate)
+            val donateItem = menu.findItem(R.id.main_menu_donate)
             rateAppItem.isVisible = BuildConfig.RATE_APP_AVAILABLE
+            donateItem.isVisible =  BuildConfig.DONATE_LINK_AVAILABLE
 
             // Pause notification icons
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)

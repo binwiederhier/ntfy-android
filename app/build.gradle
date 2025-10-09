@@ -18,8 +18,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        versionCode 41
-        versionName "1.17.8"
+        versionCode 42
+        versionName "1.17.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,11 +53,13 @@ android {
         play {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'true'
+            buildConfigField 'boolean', 'DONATE_LINK_AVAILABLE', 'false'
             buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'false'
         }
         fdroid {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'false'
+            buildConfigField 'boolean', 'DONATE_LINK_AVAILABLE', 'true'
             buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'true'
         }
     }
