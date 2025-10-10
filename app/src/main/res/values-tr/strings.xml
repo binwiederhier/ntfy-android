@@ -19,7 +19,7 @@
     <string name="refresh_message_no_results">Her şey güncel</string>
     <string name="main_menu_notifications_disabled_until">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="channel_subscriber_notification_noinstant_text_more">%1$d konuya abone olundu</string>
-    <string name="refresh_message_error">%1$d abonelik yenilenemedi \n \n%2$s</string>
+    <string name="refresh_message_error">%1$d abonelik yenilenemedi\n\n%2$s</string>
     <string name="refresh_message_error_one">Abonelik yenilenemedi: %1$s</string>
     <string name="main_action_bar_title">Abone olunan konular</string>
     <string name="main_menu_notifications_enabled">Bildirimler açık</string>
