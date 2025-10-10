@@ -248,7 +248,6 @@
     <string name="channel_subscriber_notification_instant_text_three">Uchta darhol yuborish mavzulariga obuna bo‘ldik</string>
     <string name="main_menu_notifications_disabled_until">Bildirishnomalar %1$s gacha o‘chirilgan</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Beshta mavzuga obuna bo‘ldik</string>
-    <string name="main_menu_donate_title">Xayriya qiling 💸</string>
     <string name="main_action_mode_delete_dialog_cancel">Bekor qilish</string>
     <string name="add_dialog_use_another_server_description">Boshqa serverlardan mavzularga obuna bo‘lish uchun quyida URL manzillarini kiriting.</string>
     <string name="add_dialog_login_description">Ushbu mavzu tizimga kirishni talab qiladi. Iltimos, foydalanuvchi nomi va parolni kiriting.</string>

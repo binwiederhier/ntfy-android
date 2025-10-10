@@ -328,7 +328,6 @@
     <string name="add_dialog_base_urls_dropdown_clear">Pulisci il servizio URL</string>
     <string name="main_banner_websocket_button_enable_now">Attiva ora</string>
     <string name="channel_notifications_group_default_name">Default</string>
-    <string name="main_menu_donate_title">Dona 💸</string>
     <string name="detail_item_cannot_open_apk">Le app non possono più essere installate: devono essere scaricate via browser. Vedi l\'issue #531 per dettagli.</string>
     <string name="settings_notifications_insistent_max_priority_title">Mantieni l\'alert per le notifiche a priorità massima</string>
     <string name="settings_advanced_unifiedpush_title">Attiva UnifiedPush</string>

@@ -80,7 +80,6 @@
     <string name="main_item_status_reconnecting">ponovno povezivanje…</string>
     <string name="main_banner_websocket_button_enable_now">Uključi sada</string>
     <string name="main_banner_websocket_text">Prebacivanje na WebSockete je preporučen način povezivanja sa serverom, i moglo bi poboljšati životni vijek baterije, ali može zahtjevati <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">dodatnu konfiguraciju u tvojem proxy-u</a>. Ovo možeš promijeniti u postavkama.</string>
-    <string name="main_menu_donate_title">Doniraj 💸</string>
     <string name="main_menu_report_bug_title">Prijavu grešku</string>
     <string name="main_how_to_link">Opširnije upute dostupne su na ntfy.sh i u dokumentaciji.</string>
     <string name="main_how_to_intro">Klikni + za kreiranje ili pretplaćivanje na temu. Nakon toga primaš obavijesti na uređaj kad pošalješ poruke preko PUT ili POST.</string>

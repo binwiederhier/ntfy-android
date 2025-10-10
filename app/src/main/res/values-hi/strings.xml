@@ -79,7 +79,6 @@
     <string name="add_dialog_title">विषय की सदस्यता लें</string>
     <string name="add_dialog_button_back">पीछे जाएं</string>
     <string name="channel_subscriber_notification_noinstant_text_one">एक विषय की सदस्यता</string>
-    <string name="main_menu_donate_title">दान करें</string>
     <string name="main_item_status_text_one">%1$d सूचना</string>
     <string name="detail_clear_dialog_cancel">रद्द करें</string>
     <string name="detail_delete_dialog_cancel">रद्द करें</string>

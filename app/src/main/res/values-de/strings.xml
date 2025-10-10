@@ -327,7 +327,6 @@
     <string name="detail_settings_about_topic_url_title">Themen-URL</string>
     <string name="detail_settings_about_header">Über</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">In Zwischenablage kopiert</string>
-    <string name="main_menu_donate_title">Spenden 💸</string>
     <string name="detail_item_cannot_open_apk">Apps können nicht mehr installiert werden. Bitte stattdessen über einen Browser herunterladen. Details siehe Issue #531.</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Eigene Einstellungen für dieses Abo verwenden</string>
     <string name="detail_settings_notifications_open_channels_title">Beanchrichtigungseinstellungen konfigurieren</string>

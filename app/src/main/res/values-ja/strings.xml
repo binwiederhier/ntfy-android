@@ -327,7 +327,6 @@
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">トピックのURL</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">クリップボードにコピーしました</string>
-    <string name="main_menu_donate_title">寄付する💸</string>
     <string name="detail_item_cannot_open_apk">アプリはインストールできなくなりました。代替手段としてブラウザからダウンロードしてください。詳細は issue #531 をご参照ください。</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">優先度最高は非表示になるまで通知継続</string>
     <string name="channel_notifications_group_default_name">デフォルト</string>

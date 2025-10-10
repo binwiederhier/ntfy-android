@@ -327,7 +327,6 @@
     <string name="main_banner_websocket_button_dismiss">Odrzuć</string>
     <string name="main_banner_websocket_button_enable_now">Aktywuj teraz</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Użyj strumienia JSON przez HTTP, aby połączyć się z serwerem. Ta metoda jest sprawdzona, ale może zużywać więcej baterii.</string>
-    <string name="main_menu_donate_title">Wspomóż💸</string>
     <string name="detail_item_cannot_open_apk">Aplikacja nie może zostać zainstalowana. Pobierz ją poprzez przeglądarkę. Sprawdź problem #531 po więcej informacji.</string>
     <string name="settings_notifications_insistent_max_priority_title">Nadal wysyłaj powiadomienia dla najwyższych priorytetów</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Własne ustawienia powiadomień</string>

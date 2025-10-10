@@ -327,7 +327,6 @@
     <string name="detail_settings_about_header">关于</string>
     <string name="detail_settings_about_topic_url_title">主题 URL</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已复制到剪贴板</string>
-    <string name="main_menu_donate_title">捐赠 💸</string>
     <string name="detail_item_cannot_open_apk">无法再安装应用。 请通过浏览器下载。 有关详细信息，请参阅问题 #531。</string>
     <string name="channel_notifications_group_default_name">默认</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">持续以最高优先级通知进行提醒，直至取消</string>

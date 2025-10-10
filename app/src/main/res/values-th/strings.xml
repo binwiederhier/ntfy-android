@@ -35,7 +35,6 @@
     <string name="main_menu_report_bug_title">รายงานปัญหา(Bug)</string>
     <string name="main_menu_docs_title">อ่านเอกสาร</string>
     <string name="main_menu_rate_title">ให้คะแนนแอป ⭐</string>
-    <string name="main_menu_donate_title">บริจาค 💸</string>
     <string name="main_action_mode_menu_unsubscribe">ยกเลิกการสมัครรับ</string>
     <string name="main_action_mode_delete_dialog_message">ต้องการยกเลิกการสมัครจากหัวข้อที่เลือกและลบการแจ้งเตือนทั้งหมดอย่างถาวรใช่ไหม</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">ลบถาวร</string>

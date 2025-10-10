@@ -108,7 +108,6 @@
     <string name="detail_settings_notifications_instant_title">即時通知</string>
     <string name="detail_settings_global_setting_suffix">使用全域設定</string>
     <string name="user_dialog_title_add">新增使用者</string>
-    <string name="main_menu_donate_title">捐獻 💸</string>
     <string name="detail_item_snack_undo">復原</string>
     <string name="detail_item_download_info_downloading_x_percent">已下載 %1$d%%</string>
     <string name="detail_menu_enable_instant">啓用即時通知</string>

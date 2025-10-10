@@ -34,7 +34,6 @@
     <string name="main_menu_notifications_disabled_until">Notifikasi disenyapkan hingga %1$s</string>
     <string name="main_menu_settings_title">Tetapan</string>
     <string name="main_menu_report_bug_title">Aduan Kerosakan</string>
-    <string name="main_menu_donate_title">Sumbangan 💸</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Padamkan secara kekal</string>
     <string name="main_action_mode_delete_dialog_cancel">Batal</string>
     <string name="main_item_status_text_one">%1$d notifikasi</string>

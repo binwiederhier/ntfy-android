@@ -327,7 +327,6 @@
     <string name="main_banner_websocket_button_enable_now">Povolit nyní</string>
     <string name="main_banner_websocket_text">WebSockets jsou doporučenou metodou připojení k vašemu serveru, která může zlepšit zvýšit výdrž baterie, ale může vyžadovat <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">další konfiguraci v proxy serveru</a>. Metodu připojení lze přepnout v Nastavení.</string>
     <string name="add_dialog_base_urls_dropdown_choose">Zvolit URL služby</string>
-    <string name="main_menu_donate_title">Přispět 💸</string>
     <string name="detail_item_cannot_open_apk">Aplikace již nelze nainstalovat. Místo toho stahujte přes prohlížeč. Podrobnosti naleznete v issue #531.</string>
     <string name="channel_notifications_group_default_name">Výchozí</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Upozornění s nejvyšší prioritou pouze jednou</string>

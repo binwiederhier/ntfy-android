@@ -397,9 +397,7 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         runOnUiThread {
             // Show/hide menu items based on build config
             val rateAppItem = menu.findItem(R.id.main_menu_rate)
-            val donateItem = menu.findItem(R.id.main_menu_donate)
             rateAppItem.isVisible = BuildConfig.RATE_APP_AVAILABLE
-            donateItem.isVisible =  BuildConfig.DONATE_LINK_AVAILABLE
 
             // Pause notification icons
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
@@ -443,10 +441,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                 } catch (e: ActivityNotFoundException) {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
                 }
-                true
-            }
-            R.id.main_menu_donate -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_donate_url))))
                 true
             }
             R.id.main_menu_docs -> {
