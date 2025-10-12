@@ -29,6 +29,7 @@ class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val repository = Repository.getInstance(context)
     private val markwon = MarkwonFactory.createForNotification(context)
+    private val appBaseUrl = context.getString(R.string.app_base_url)
 
     fun display(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Displaying notification $notification")
@@ -91,7 +92,7 @@ class NotificationService(val context: Context) {
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
-        val title = formatTitle(subscription, notification)
+        val title = formatTitle(appBaseUrl, subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
         val channelId = toChannelId(groupId, notification.priority)
         val insistent = notification.priority == PRIORITY_MAX &&
@@ -365,7 +366,7 @@ class NotificationService(val context: Context) {
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-            putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+            putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
             putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         }

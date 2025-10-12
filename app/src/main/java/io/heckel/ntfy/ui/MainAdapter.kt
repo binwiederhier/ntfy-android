@@ -64,6 +64,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
         private val notificationDisabledForeverImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_forever_image)
         private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
         private val newItemsView: TextView = itemView.findViewById(R.id.main_item_new)
+        private val appBaseUrl = context.getString(R.string.app_base_url)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
@@ -99,7 +100,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             } else {
                 imageView.setImageResource(R.drawable.ic_sms_gray_24dp)
             }
-            nameView.text = displayName(subscription)
+            nameView.text = displayName(appBaseUrl, subscription)
             statusView.text = statusMessage
             dateView.text = dateText
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE

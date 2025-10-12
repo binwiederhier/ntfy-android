@@ -18,8 +18,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        versionCode 44
-        versionName "1.17.11"
+        versionCode 46
+        versionName "1.17.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,11 +53,13 @@ android {
         play {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'true'
+            buildConfigField 'boolean', 'PAYMENT_LINKS_AVAILABLE', 'false' // Google Play Payments Policy, see #1463
             buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'false'
         }
         fdroid {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'false'
+            buildConfigField 'boolean', 'PAYMENT_LINKS_AVAILABLE', 'true'
             buildConfigField 'boolean', 'INSTALL_PACKAGES_AVAILABLE', 'true'
         }
     }
