@@ -313,7 +313,6 @@
     <string name="detail_item_cannot_open_apk">Установка приложений через уведомления больше не поддерживается. Скачайте приложение через браузер. Подробности смотрите в отчёте ntfy #531.</string>
     <string name="detail_settings_appearance_icon_set_title">Иконка подписки</string>
     <string name="detail_settings_appearance_icon_set_summary">Использовать иконку для отображения в уведомлениях</string>
-    <string name="main_menu_donate_title">Пожертвовать 💸</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Уведомления с наивысшим приоритетом будут давать о себе знать только один раз</string>
     <string name="detail_settings_notifications_instant_summary_off">Уведомления будут доставляться с помощью Firebase. Могут быть задержки с доставкой, но потребляется меньше энергии.</string>
     <string name="add_dialog_base_urls_dropdown_clear">Очистить URL-адрес сервера</string>

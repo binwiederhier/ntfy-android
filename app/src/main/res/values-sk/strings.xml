@@ -282,7 +282,6 @@
     <string name="main_menu_rate_title">Ohodnotiť aplikáciu ⭐</string>
     <string name="main_menu_docs_title">Prečítať dokumentáciu</string>
     <string name="main_menu_notifications_disabled_until">Oznámenia stlmené do %1$s</string>
-    <string name="main_menu_donate_title">Prispieť 💸</string>
     <string name="main_action_mode_delete_dialog_message">Odhlásiť odber z vybraných tém a natrvalo vymazať všetky oznámenia\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Vymazať natrvalo</string>
     <string name="main_action_mode_menu_unsubscribe">Odhlásiť odber</string>

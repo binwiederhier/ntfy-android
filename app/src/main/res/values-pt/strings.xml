@@ -258,7 +258,6 @@
     <string name="settings_general_dark_mode_summary_light">Modo claro</string>
     <string name="settings_general_dark_mode_title">Modo escuro</string>
     <string name="settings_general_dark_mode_summary_system">Usar a predefinição do sistema</string>
-    <string name="main_menu_donate_title">Doar 💸</string>
     <string name="settings_backup_restore_restore_failed">Falha ao restaurar %1$s</string>
     <string name="settings_advanced_header">Avançado</string>
     <string name="settings_advanced_broadcast_title">Messagens de transmissão</string>

@@ -329,7 +329,6 @@
     <string name="settings_notifications_insistent_max_priority_title">Pidä hälytykset korkeimmalla tasolla</string>
     <string name="settings_notifications_min_priority_max">Vain maksimi ja ylittävät</string>
     <string name="settings_about_header">About</string>
-    <string name="main_menu_donate_title">Lahjoita 💸</string>
     <string name="notification_dialog_8h">8 tuntia</string>
     <string name="detail_deep_link_subscribed_toast_message">Topikki %1$s tilattu</string>
     <string name="user_dialog_username_hint">Käyttäjätunnus</string>

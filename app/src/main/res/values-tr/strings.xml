@@ -327,7 +327,6 @@
     <string name="detail_settings_about_header">Hakkında</string>
     <string name="detail_settings_about_topic_url_title">Konu URL\'si</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Panoya kopyalandı</string>
-    <string name="main_menu_donate_title">Bağış yap 💸</string>
     <string name="detail_item_cannot_open_apk">Uygulamalar artık kurulamıyor. Bunun yerine tarayıcı üzerinden indirin. Ayrıntılar için sorun #531\'e bakın.</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">En yüksek öncelikli bildirimler yalnızca bir kez uyarı verir</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Bu abonelik için özel ayarları kullan</string>

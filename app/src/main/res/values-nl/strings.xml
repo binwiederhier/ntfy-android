@@ -328,7 +328,6 @@
     <string name="main_banner_websocket_button_enable_now">Nu inschakelen</string>
     <string name="main_banner_websocket_text">WebSockets is de aangeraden manier om te verbinden met uw server en kan batterij verbruik verminderen. Het kan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy"> extra configuratie in uw proxy</a> vereisen. Dit kan omgeschakeld worden in de instellingen.</string>
     <string name="channel_notifications_group_default_name">Standaard</string>
-    <string name="main_menu_donate_title">Doneer 💸</string>
     <string name="detail_item_cannot_open_apk">Apps kunnen niet meer worden geïnstalleerd. Download deze via de browser. Raadpleeg issue #531 voor meer details.</string>
     <string name="settings_notifications_insistent_max_priority_title">Behoud meldingen voor hoogste prioriteit</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max prioriteit berichten geven continue een melding totdat deze worden gesloten</string>

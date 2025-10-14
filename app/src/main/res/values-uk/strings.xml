@@ -331,7 +331,6 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Використання налаштувань за замовчуванням (звуки, \"Не турбувати\" тощо)</string>
     <string name="detail_settings_notifications_open_channels_summary">Перевизначення режиму \"Не турбувати\" (DND), звуки тощо.</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Продовжувати сповіщати</string>
-    <string name="main_menu_donate_title">Пожертвувати 💸</string>
     <string name="settings_notifications_insistent_max_priority_title">Безперервне сповіщення для найвищого пріоритету</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Сповіщення з максимальним пріоритетом безперервно сповіщають, доки не будуть закриті</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Сповіщення з максимальним пріоритетом сповіщають лише один раз</string>

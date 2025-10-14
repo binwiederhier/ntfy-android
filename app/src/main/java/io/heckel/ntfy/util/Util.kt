@@ -68,8 +68,13 @@ fun subscriptionTopicShortUrl(subscription: Subscription) : String {
     return topicShortUrl(subscription.baseUrl, subscription.topic)
 }
 
-fun displayName(subscription: Subscription) : String {
-    return subscription.displayName ?: subscriptionTopicShortUrl(subscription)
+fun displayName(appBaseUrl: String?, subscription: Subscription) : String {
+    if (subscription.displayName != null) {
+        return subscription.displayName
+    } else if (appBaseUrl == subscription.baseUrl) {
+        return subscription.topic
+    }
+    return subscriptionTopicShortUrl(subscription)
 }
 
 fun shortUrl(url: String) = url
@@ -190,11 +195,11 @@ fun decodeBytesMessage(notification: Notification): ByteArray {
  * See above; prepend emojis to title if the title is non-empty.
  * Otherwise, they are prepended to the message.
  */
-fun formatTitle(subscription: Subscription, notification: Notification): String {
+fun formatTitle(appBaseUrl: String?, subscription: Subscription, notification: Notification): String {
     return if (notification.title != "") {
         formatTitle(notification)
     } else {
-        displayName(subscription)
+        displayName(appBaseUrl, subscription)
     }
 }
 

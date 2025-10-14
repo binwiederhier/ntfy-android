@@ -1,0 +1,4 @@
+This is a small release to remove the "Donate" button from menu,
+as this violates the Google Play policies.
+
+No further changes are in this release.

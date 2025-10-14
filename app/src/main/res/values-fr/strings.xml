@@ -329,7 +329,6 @@
     <string name="detail_settings_about_topic_url_title">URL du sujet</string>
     <string name="channel_notifications_group_default_name">Défaut</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Conserver les notifications</string>
-    <string name="main_menu_donate_title">Faire un don 💸</string>
     <string name="detail_item_cannot_open_apk">Les applications ne peuvent plus être installées. Veuillez les télécharger via un navigateur. Voir le ticket #531 pour plus de détails.</string>
     <string name="settings_notifications_insistent_max_priority_title">Conserver les notifications avec une priorité maximale</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Paramètres personnalisés de la notification</string>
