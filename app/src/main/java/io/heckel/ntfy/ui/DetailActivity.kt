@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -31,13 +32,25 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.*
-import kotlinx.coroutines.*
-import java.util.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.copyToClipboard
+import io.heckel.ntfy.util.dangerButton
+import io.heckel.ntfy.util.decodeMessage
+import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.isDarkThemeOn
+import io.heckel.ntfy.util.randomSubscriptionId
+import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.util.topicUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import java.util.Date
 import kotlin.random.Random
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
@@ -118,6 +131,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+        val howToLink = findViewById<TextView>(R.id.detail_how_to_link)
+        howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
+
         // Handle direct deep links to topic "ntfy://..."
         val url = intent?.data
         if (intent?.action == ACTION_VIEW && url != null) {
@@ -189,7 +206,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
 
@@ -314,10 +331,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
             subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
-            subscriptionDisplayName = displayName(subscription)
+            subscriptionDisplayName = displayName(appBaseUrl, subscription)
 
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
+            showHideCopyMenuItems(subscription.baseUrl)
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -353,6 +371,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
+        showHideCopyMenuItems(subscriptionBaseUrl)
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -593,6 +612,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 val formattedDate = formatDateShort(subscriptionMutedUntil)
                 notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
             }
+        }
+    }
+
+
+    private fun showHideCopyMenuItems(subscriptionBaseUrl: String) {
+        if (!this::menu.isInitialized) {
+            return
+        }
+        runOnUiThread {
+            // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+            val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
+            copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
         }
     }
 

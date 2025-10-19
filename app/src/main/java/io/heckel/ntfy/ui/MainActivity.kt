@@ -27,6 +27,8 @@ import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -303,6 +305,10 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             }
         }
 
+        // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+        val howToLink = findViewById<TextView>(R.id.main_how_to_link)
+        howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
+
         // Create notification channels right away, so we can configure them immediately after installing the app
         dispatcher?.init()
 
@@ -352,7 +358,19 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         val wsRemindTimeReached = repository.getWebSocketRemindTime() < System.currentTimeMillis()
         val showBanner = hasSelfHostedSubscriptions && wsRemindTimeReached && !usingWebSockets
         val wsBanner = findViewById<View>(R.id.main_banner_websocket)
-        wsBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
+        if (showBanner) {
+            wsBanner.visibility = View.VISIBLE
+            if (!BuildConfig.PAYMENT_LINKS_AVAILABLE) {
+                // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+                // This is a big fat hack, but I have to release this quickly ...
+                val wsBannerMainText = findViewById<TextView>(R.id.main_banner_websocket_text)
+                val raw = getString(R.string.main_banner_websocket_text)
+                val unlinked = raw.replace(Regex("</?a[^>]*>"), "")
+                wsBannerMainText.text = HtmlCompat.fromHtml(unlinked, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            }
+        } else {
+            wsBanner.visibility = View.GONE
+        }
     }
 
     private fun showHideWebSocketReconnectBanner(subscriptions: List<Subscription>) {
@@ -471,9 +489,13 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         val mutedUntilSeconds = repository.getGlobalMutedUntil()
         runOnUiThread {
-            // Show/hide in-app rate widget
+            // Show/hide menu items based on build config
             val rateAppItem = menu.findItem(R.id.main_menu_rate)
+            val docsItem = menu.findItem(R.id.main_menu_docs)
+            val reportBugItem = menu.findItem(R.id.main_menu_report_bug)
             rateAppItem.isVisible = BuildConfig.RATE_APP_AVAILABLE
+            docsItem.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE // Google Payments Policy, see https://github.com/binwiederhier/ntfy/issues/1463
+            reportBugItem.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE // Google Payments Policy, see https://github.com/binwiederhier/ntfy/issues/1463
 
             // Pause notification icons
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
@@ -517,10 +539,6 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 } catch (e: ActivityNotFoundException) {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
                 }
-                true
-            }
-            R.id.main_menu_donate -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_donate_url))))
                 true
             }
             R.id.main_menu_docs -> {
@@ -650,7 +668,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                         }
                     }
                 } catch (e: Exception) {
-                    val topic = displayName(subscription)
+                    val topic = displayName(appBaseUrl, subscription)
                     if (errorMessage == "") errorMessage = "$topic: ${e.message}"
                     errors++
                 }
@@ -677,7 +695,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscription.id)
         intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
         intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-        intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+        intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
         intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
         intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
         startActivity(intent)
@@ -690,7 +708,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
         intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
         intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+        intent.putExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
         startActivity(intent)
     }
 

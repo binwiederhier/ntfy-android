@@ -31,7 +31,6 @@
     <string name="main_menu_report_bug_title">Informar dun fallo</string>
     <string name="main_menu_docs_title">Ler documentación</string>
     <string name="main_menu_rate_title">Valorar a app ⭐</string>
-    <string name="main_menu_donate_title">Doar 💸</string>
     <string name="main_action_mode_menu_unsubscribe">Retirar subscrición</string>
     <string name="main_action_mode_delete_dialog_message">Retirar a subscrición ao(s) asunto(s) seleccionado(s) e eliminar definitivamente tódalas notificacións\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Eliminar definitivamente</string>

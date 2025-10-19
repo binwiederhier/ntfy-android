@@ -50,7 +50,6 @@
     <string name="main_item_status_text_one">%1$d értesítés</string>
     <string name="main_action_mode_delete_dialog_cancel">Mégse</string>
     <string name="channel_notifications_group_default_name">Alapértelmezett</string>
-    <string name="main_menu_donate_title">Adomány 💸</string>
     <string name="main_banner_websocket_button_dismiss">Bezár</string>
     <string name="add_dialog_instant_delivery_description">Garantálja az azonnali üzenetküldést, akkor is, ha az eszköz inaktív.</string>
     <string name="add_dialog_foreground_description">Az azonnali üzenetküldés mindig bekapcsolva a %1$s címen kívül.</string>

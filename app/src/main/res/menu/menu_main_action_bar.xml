@@ -29,9 +29,6 @@
         android:id="@+id/main_menu_rate"
         android:title="@string/main_menu_rate_title" />
     <item
-        android:id="@+id/main_menu_donate"
-        android:title="@string/main_menu_donate_title" />
-    <item
         android:id="@+id/main_menu_report_bug"
         android:title="@string/main_menu_report_bug_title" />
 </menu>

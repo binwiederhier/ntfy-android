@@ -42,7 +42,6 @@
     <string name="main_menu_report_bug_title">Report a bug</string>
     <string name="main_menu_docs_title">Read the docs</string>
     <string name="main_menu_rate_title">Rate the app ⭐</string>
-    <string name="main_menu_donate_title">Donate 💸</string>
 
     <!-- Main activity: Action mode -->
     <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>

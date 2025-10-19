@@ -162,7 +162,6 @@
     <string name="main_menu_report_bug_title">Raportează o problemă</string>
     <string name="main_menu_docs_title">Citește documentația</string>
     <string name="main_action_mode_delete_dialog_message">Dezabonează-te de la topicele selectate și șterge notificările permanent\?</string>
-    <string name="main_menu_donate_title">Donează 💸</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_add_button_description">Adaugă abonament</string>
     <string name="main_item_status_text_not_one">%1$d notificări</string>

@@ -39,7 +39,6 @@
     <string name="main_item_status_reconnecting">התחברות מחדש…</string>
     <string name="main_how_to_intro">לחיצה על + תאפשר ליצור או להירשם לנושא. לאחר מכן התראות תגענה למכשיר שלך בעת שליחת הודעות עם PUT או POST.</string>
     <string name="main_how_to_link">הוראות מפורטות זמינות ב־ntfy.sh, ובתיעוד.</string>
-    <string name="main_menu_donate_title">תרומה 💸</string>
     <string name="channel_subscriber_notification_instant_text_two">מנוי לשני נושאים במסירה מיידית</string>
     <string name="channel_subscriber_notification_instant_text_three">מנוי לשלושה נושאים במסירה מיידית</string>
     <string name="channel_subscriber_notification_instant_text">מנוי לנושאים במסירה מיידית</string>

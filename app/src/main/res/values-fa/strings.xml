@@ -14,7 +14,6 @@
     <string name="main_menu_report_bug_title">گزارش یک نقص فنی</string>
     <string name="main_menu_docs_title">مطالعه مستندات</string>
     <string name="main_menu_rate_title">رتبه دهی به اپ ⭐</string>
-    <string name="main_menu_donate_title">حمایت مالی 💸</string>
     <string name="main_item_status_text_one">%1$d اطلاعیه</string>
     <string name="main_item_status_text_not_one">%1$d اطلاعیه</string>
     <string name="main_item_status_reconnecting">در حال اتصال دوباره …</string>

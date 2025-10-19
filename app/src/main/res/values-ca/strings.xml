@@ -6,7 +6,6 @@
     <string name="channel_notifications_high_name">Prioritat alta</string>
     <string name="channel_notifications_max_name">Prioritat màxima</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
-    <string name="main_menu_donate_title">Donar 💸</string>
     <string name="main_item_status_reconnecting">reconnectant…</string>
     <string name="channel_subscriber_notification_title">Escoltant notificacions entrants</string>
     <string name="channel_subscriber_notification_instant_text">Subscrit per entrega instantània de temes</string>
