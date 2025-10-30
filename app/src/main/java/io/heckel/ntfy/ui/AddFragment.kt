@@ -41,6 +41,9 @@ class AddFragment : DialogFragment() {
     private lateinit var subscribeBaseUrlText: AutoCompleteTextView
     private lateinit var subscribeUseAnotherServerCheckbox: CheckBox
     private lateinit var subscribeUseAnotherServerDescription: TextView
+    private lateinit var subscribeRequiresAuthCheckbox: CheckBox
+    private lateinit var subscribeUsernameText: TextInputEditText
+    private lateinit var subscribePasswordText: TextInputEditText
     private lateinit var subscribeInstantDeliveryBox: View
     private lateinit var subscribeInstantDeliveryCheckbox: CheckBox
     private lateinit var subscribeInstantDeliveryDescription: View
@@ -92,6 +95,9 @@ class AddFragment : DialogFragment() {
         subscribeBaseUrlText = view.findViewById(R.id.add_dialog_subscribe_base_url_text)
         subscribeBaseUrlText.background = view.background
         subscribeBaseUrlText.hint = defaultBaseUrl ?: appBaseUrl
+        subscribeRequiresAuthCheckbox = view.findViewById(R.id.add_dialog_subscribe_requires_auth_checkbox)
+        subscribeUsernameText = view.findViewById(R.id.add_dialog_subscribe_username_text)
+        subscribePasswordText = view.findViewById(R.id.add_dialog_subscribe_password_text)
         subscribeInstantDeliveryBox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_box)
         subscribeInstantDeliveryCheckbox = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_checkbox)
         subscribeInstantDeliveryDescription = view.findViewById(R.id.add_dialog_subscribe_instant_delivery_description)
@@ -179,6 +185,11 @@ class AddFragment : DialogFragment() {
             subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, _ ->
                 validateInputSubscribeView()
             }
+            subscribeRequiresAuthCheckbox.setOnCheckedChangeListener { _, _ ->
+                validateInputSubscribeView()
+            }
+            subscribeUsernameText.addTextChangedListener(subscribeTextWatcher)
+            subscribePasswordText.addTextChangedListener(subscribeTextWatcher)
             validateInputSubscribeView()
 
             // Focus topic text (keyboard is shown too, see above)
@@ -205,14 +216,29 @@ class AddFragment : DialogFragment() {
         enableSubscribeView(false)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val user = repository.getUser(baseUrl) // May be null
+                // Check if user provided credentials in the subscribe form
+                var user = repository.getUser(baseUrl) // May be null
+                if (user == null && subscribeRequiresAuthCheckbox.isChecked) {
+                    // User entered credentials directly in subscribe dialog
+                    user = User(
+                        baseUrl = baseUrl,
+                        username = subscribeUsernameText.text.toString(),
+                        password = subscribePasswordText.text.toString()
+                    )
+                }
+                
                 val authorized = api.checkAuth(baseUrl, topic, user)
                 if (authorized) {
                     Log.d(TAG, "Access granted to topic ${topicUrl(baseUrl, topic)}")
+                    // If user provided new credentials, save them
+                    if (user != null && subscribeRequiresAuthCheckbox.isChecked) {
+                        repository.addUser(user)
+                        Log.d(TAG, "Saved new user ${user.username} for base URL $baseUrl")
+                    }
                     dismissDialog()
                 } else {
                     if (user != null) {
-                        Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, but user already exists")
+                        Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, but user already exists or credentials invalid")
                         showErrorAndReenableSubscribeView(getString(R.string.add_dialog_login_error_not_authorized, user.username))
                     } else {
                         Log.w(TAG, "Access not allowed to topic ${topicUrl(baseUrl, topic)}, showing login dialog")
@@ -304,9 +330,19 @@ class AddFragment : DialogFragment() {
         if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeUseAnotherServerDescription.visibility = View.VISIBLE
             subscribeBaseUrlLayout.visibility = View.VISIBLE
+            subscribeRequiresAuthCheckbox.visibility = View.VISIBLE
         } else {
             subscribeUseAnotherServerDescription.visibility = View.GONE
             subscribeBaseUrlLayout.visibility = View.GONE
+            subscribeRequiresAuthCheckbox.visibility = View.GONE
+            subscribeRequiresAuthCheckbox.isChecked = false
+        }
+        if (subscribeRequiresAuthCheckbox.isChecked && subscribeUseAnotherServerCheckbox.isChecked) {
+            subscribeUsernameText.visibility = View.VISIBLE
+            subscribePasswordText.visibility = View.VISIBLE
+        } else {
+            subscribeUsernameText.visibility = View.GONE
+            subscribePasswordText.visibility = View.GONE
         }
         if (instantToggleAllowed) {
             subscribeInstantDeliveryBox.visibility = View.VISIBLE

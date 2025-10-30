@@ -96,6 +96,7 @@
     <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
     <string name="add_dialog_use_another_server">Use another server</string>
     <string name="add_dialog_use_another_server_description">Enter service URLs below to subscribe to topics from other servers.</string>
+    <string name="add_dialog_requires_auth">Requires authentication</string>
     <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
     <string name="add_dialog_instant_delivery_description">Ensures messages are delivered immediately, even if the device is inactive.</string>
     <string name="add_dialog_foreground_description">Instant delivery is always on for hosts other than %1$s.</string>
