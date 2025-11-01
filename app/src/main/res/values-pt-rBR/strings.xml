@@ -324,7 +324,6 @@
     <string name="add_dialog_base_urls_dropdown_clear">Limpar URL do serviço</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>
     <string name="channel_notifications_group_default_name">Padrão</string>
-    <string name="main_menu_donate_title">Doar 💸</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">As notificações de prioridade máxima alertam apenas uma vez</string>
     <string name="detail_settings_notifications_open_channels_title">Configurar configurações de notificação</string>
     <string name="detail_settings_notifications_open_channels_summary">Ignorar o Não Perturbe, sons, etc.</string>

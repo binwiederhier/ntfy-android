@@ -87,6 +87,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private lateinit var openChannelsPref: Preference
         private lateinit var iconSetLauncher: ActivityResultLauncher<String>
         private lateinit var iconRemovePref: Preference
+        private lateinit var appBaseUrl: String
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.detail_preferences, rootKey)
@@ -96,6 +97,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             serviceManager = SubscriberServiceManager(requireActivity())
             notificationService = NotificationService(requireActivity())
             resolver = requireContext().applicationContext.contentResolver
+            appBaseUrl = requireContext().getString(R.string.app_base_url)
 
             // Create result launcher for custom icon (must be created in onCreatePreferences() directly)
             iconSetLauncher = createIconPickLauncher()
@@ -381,7 +383,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     save(newSubscription)
                     // Update activity title
                     activity?.runOnUiThread {
-                        activity?.title = displayName(newSubscription)
+                        activity?.title = displayName(appBaseUrl, newSubscription)
                     }
                     // Update dedicated notification channel
                     if (newSubscription.dedicatedChannels) {
@@ -394,9 +396,10 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
             pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { provider ->
                 if (TextUtils.isEmpty(provider.text)) {
+                    val appBaseUrl = context?.getString(R.string.app_base_url)
                     getString(
                         R.string.detail_settings_appearance_display_name_default_summary,
-                        displayName(subscription)
+                        displayName(appBaseUrl, subscription)
                     )
                 } else {
                     provider.text

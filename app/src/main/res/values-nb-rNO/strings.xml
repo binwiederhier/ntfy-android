@@ -324,7 +324,6 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (standard)</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Kopier til utklippstavlen</string>
     <string name="detail_settings_appearance_display_name_message">Angi et tilpasset visningsnavn for dette abonnementet. La stå tomt for standard (%1$s).</string>
-    <string name="main_menu_donate_title">Doner 💸</string>
     <string name="main_banner_websocket_text">Å bytte til WebSockets er den anbefalte måten å koble til serveren på, og kan forbedre batterilevetiden, men kan kreve <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">ytterligere konfigurasjon i proxy-serveren</a>. Dette kan endres i innstillingene.</string>
     <string name="main_banner_websocket_button_enable_now">Aktiver nå</string>
     <string name="detail_deep_link_subscribed_toast_message">Abonnerte på emnet %1$s</string>

@@ -8,6 +8,5 @@
     <item android:id="@+id/main_menu_settings" android:title="@string/main_menu_settings_title"/>
     <item android:id="@+id/main_menu_docs" android:title="@string/main_menu_docs_title"/>
     <item android:id="@+id/main_menu_rate" android:title="@string/main_menu_rate_title"/>
-    <item android:id="@+id/main_menu_donate" android:title="@string/main_menu_donate_title"/>
     <item android:id="@+id/main_menu_report_bug" android:title="@string/main_menu_report_bug_title"/>
 </menu>

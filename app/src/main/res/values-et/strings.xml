@@ -6,7 +6,6 @@
     <string name="main_menu_report_bug_title">Teata vigadest</string>
     <string name="main_menu_docs_title">Loe dokumentatsiooni</string>
     <string name="main_menu_rate_title">Hinda rakendust ⭐</string>
-    <string name="main_menu_donate_title">Toeta arendajat 💸</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Kustuta jäädavalt</string>
     <string name="main_item_status_text_not_one">%1$d teavitust</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>

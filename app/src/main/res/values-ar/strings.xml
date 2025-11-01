@@ -66,7 +66,6 @@
     <string name="refresh_message_no_results">كل شئ محدث لاخر تحديث</string>
     <string name="channel_subscriber_notification_instant_text_one">تم الاشتراك في 1 موضوع فوري</string>
     <string name="channel_subscriber_notification_instant_text_four">تم الاشتراك في 4 مواضيع فورية</string>
-    <string name="main_menu_donate_title">تبرع 💸</string>
     <string name="settings_title">اﻹعدادات</string>
     <string name="refresh_message_error">تعذر تحديث %1$d اشتراكات
 \n

@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -80,6 +81,10 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+        val howToLink = findViewById<TextView>(R.id.detail_how_to_link)
+        howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
 
         // Handle direct deep links to topic "ntfy://..."
         val url = intent?.data
@@ -163,7 +168,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
 
@@ -288,10 +293,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
             subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
-            subscriptionDisplayName = displayName(subscription)
+            subscriptionDisplayName = displayName(appBaseUrl, subscription)
 
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
+            showHideCopyMenuItems(subscription.baseUrl)
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -327,6 +333,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
+        showHideCopyMenuItems(subscriptionBaseUrl)
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -567,6 +574,18 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 val formattedDate = formatDateShort(subscriptionMutedUntil)
                 notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
             }
+        }
+    }
+
+
+    private fun showHideCopyMenuItems(subscriptionBaseUrl: String) {
+        if (!this::menu.isInitialized) {
+            return
+        }
+        runOnUiThread {
+            // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+            val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
+            copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
         }
     }
 
