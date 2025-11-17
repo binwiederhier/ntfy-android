@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.MaterialColors
 import io.heckel.ntfy.R
+import io.heckel.ntfy.util.isDarkThemeOn
 
 class Colors {
     companion object {
@@ -30,11 +31,19 @@ class Colors {
         }
 
         fun cardBackgroundColor(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.colorSurfaceContainer, Color.WHITE)
+            return if (isDarkThemeOn(context)) {
+                MaterialColors.getColor(context, R.attr.colorSurfaceContainer, Color.GRAY)
+            } else {
+                MaterialColors.getColor(context, R.attr.colorSurface, Color.WHITE)
+            }
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.colorSurfaceContainerHigh, Color.GRAY)
+            return if (isDarkThemeOn(context)) {
+                MaterialColors.getColor(context, R.attr.colorSurfaceContainerHigh, Color.GRAY)
+            } else {
+                MaterialColors.getColor(context, R.attr.colorSurfaceContainerHighest, Color.GRAY)
+            }
         }
 
         fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
