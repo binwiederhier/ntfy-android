@@ -68,7 +68,10 @@
         <item name="android:textColor">?attr/colorError</item>
     </style>
 
-    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary" />
+    <style name="FloatingActionButton" parent="@style/Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">?attr/colorOnPrimary</item>
+    </style>
 
     <style name="CardView" parent="@style/Widget.Material3.CardView.Elevated" />
 
