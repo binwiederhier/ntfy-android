@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="MyActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">?attr/colorSurface</item>
         <item name="titleTextStyle">@style/MyActionModeTitle</item>

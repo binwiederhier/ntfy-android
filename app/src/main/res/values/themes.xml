@@ -88,7 +88,6 @@
         <item name="widgetLayout">@layout/view_preference_switch</item>
     </style>
 
-
     <style name="MyActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">?attr/colorPrimary</item>
         <item name="titleTextStyle">@style/MyActionModeTitle</item>
