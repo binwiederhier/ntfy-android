@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -127,6 +128,22 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             isDarkThemeOn(this)
         ))
         setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
+
+        // Set detail activity background: use theme background for dynamic colors, static gray for non-dynamic
+        val detailContentLayout = findViewById<View>(R.id.detail_content_layout)
+        if (repository.getDynamicColorsEnabled()) {
+            detailContentLayout.setBackgroundColor(
+                com.google.android.material.color.MaterialColors.getColor(
+                    this,
+                    android.R.attr.colorBackground,
+                    ContextCompat.getColor(this, R.color.detail_activity_background)
+                )
+            )
+        } else {
+            detailContentLayout.setBackgroundColor(
+                ContextCompat.getColor(this, R.color.detail_activity_background)
+            )
+        }
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
