@@ -48,7 +48,7 @@
     <color name="md_theme_surfaceContainerHigh">#282F33</color>
     <color name="md_theme_surfaceContainerHighest">#333333</color>
 
-    <color name="action_bar">#121212</color> <!-- md_theme_surface (dark) -->
+    <color name="action_bar">#1B2023</color> <!-- md_theme_surfaceContainer (dark) - matches card color -->
     <color name="detail_activity_background">#121212</color> <!-- Black for detail activity in dark mode -->
 
     <color name="md_theme_primary_mediumContrast">#9AECD7</color>

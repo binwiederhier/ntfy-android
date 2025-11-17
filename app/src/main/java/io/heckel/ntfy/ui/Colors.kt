@@ -30,7 +30,7 @@ class Colors {
         }
 
         fun cardBackgroundColor(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.colorSurface, Color.WHITE)
+            return MaterialColors.getColor(context, R.attr.colorSurfaceContainer, Color.WHITE)
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
