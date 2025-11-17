@@ -22,7 +22,7 @@
         <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:shapeAppearance="?shapeAppearanceLargeComponent"
+                style="@style/BannerCardStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -99,7 +99,8 @@
         <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:shapeAppearance="?shapeAppearanceLargeComponent" app:layout_constraintStart_toStartOf="parent"
+                style="@style/BannerCardStyle"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/main_banner_battery"
                 android:id="@+id/main_banner_websocket" android:visibility="visible">
 
@@ -166,7 +167,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:shapeAppearance="?shapeAppearanceLargeComponent" app:layout_constraintStart_toStartOf="parent"
+            style="@style/BannerCardStyle"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/main_banner_websocket"
             android:id="@+id/main_banner_websocket_reconnect" android:visibility="visible">
 
