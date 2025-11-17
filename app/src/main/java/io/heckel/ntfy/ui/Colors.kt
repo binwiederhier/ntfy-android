@@ -34,7 +34,7 @@ class Colors {
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
-            return MaterialColors.getColor(context, R.attr.colorSurfaceContainer, Color.GRAY)
+            return MaterialColors.getColor(context, R.attr.colorSurfaceContainerHigh, Color.GRAY)
         }
 
         fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
