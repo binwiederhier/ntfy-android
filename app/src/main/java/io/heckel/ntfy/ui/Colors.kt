@@ -3,8 +3,8 @@ package io.heckel.ntfy.ui
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import androidx.core.content.ContextCompat
 import com.google.android.material.color.MaterialColors
-import com.google.android.material.elevation.SurfaceColors
 import io.heckel.ntfy.R
 
 class Colors {
@@ -26,7 +26,7 @@ class Colors {
         }
 
         fun itemSelectedBackground(context: Context): Int {
-            return SurfaceColors.getColorForElevation(context, 10f)
+            return ContextCompat.getColor(context, R.color.md_theme_surfaceContainerHigh)
         }
 
         fun cardBackgroundColor(context: Context): Int {
@@ -34,7 +34,7 @@ class Colors {
         }
 
         fun cardSelectedBackgroundColor(context: Context): Int {
-            return SurfaceColors.getColorForElevation(context, 20f)
+            return ContextCompat.getColor(context, R.color.md_theme_surfaceContainerHighest)
         }
 
         fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
