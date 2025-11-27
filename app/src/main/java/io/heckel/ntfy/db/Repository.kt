@@ -7,6 +7,8 @@ import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -14,7 +16,11 @@ import java.util.concurrent.atomic.AtomicLong
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
+class Repository(
+    private val sharedPrefs: SharedPreferences,
+    private val database: Database,
+    private val context: Context
+) {
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
@@ -25,6 +31,26 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
     val mediaPlayer = MediaPlayer()
+
+    // Encrypted SharedPreferences for custom headers
+    private val encryptedPrefs: SharedPreferences by lazy {
+        try {
+            val masterKey = MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
+
+            EncryptedSharedPreferences.create(
+                context,
+                ENCRYPTED_PREFS_FILE_NAME,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to create encrypted preferences, falling back to regular SharedPreferences", e)
+            context.getSharedPreferences(ENCRYPTED_PREFS_FILE_NAME, Context.MODE_PRIVATE)
+        }
+    }
 
     init {
         Log.d(TAG, "Created $this")
@@ -484,13 +510,13 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun getCustomHeaders(): Map<String, String> {
-        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
+        val json = encryptedPrefs.getString(ENCRYPTED_PREFS_CUSTOM_HEADERS_KEY, null)
         return if (json != null) {
             try {
                 val type = object : TypeToken<Map<String, String>>() {}.type
                 Gson().fromJson(json, type) ?: emptyMap()
             } catch (e: Exception) {
-                Log.w("Repository", "Failed to parse custom headers", e)
+                Log.w(TAG, "Failed to parse custom headers", e)
                 emptyMap()
             }
         } else {
@@ -506,9 +532,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         }
 
         if (json == null) {
-            sharedPrefs.edit().remove(SHARED_PREFS_CUSTOM_HEADERS).apply()
+            encryptedPrefs.edit().remove(ENCRYPTED_PREFS_CUSTOM_HEADERS_KEY).apply()
         } else {
-            sharedPrefs.edit().putString(SHARED_PREFS_CUSTOM_HEADERS, json).apply()
+            encryptedPrefs.edit().putString(ENCRYPTED_PREFS_CUSTOM_HEADERS_KEY, json).apply()
         }
     }
 
@@ -537,7 +563,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
-        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
+
+        const val ENCRYPTED_PREFS_FILE_NAME = "SecurePreferences"
+        const val ENCRYPTED_PREFS_CUSTOM_HEADERS_KEY = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 
@@ -584,12 +612,12 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         fun getInstance(context: Context): Repository {
             val database = Database.getInstance(context.applicationContext)
             val sharedPrefs = context.getSharedPreferences(SHARED_PREFS_ID, Context.MODE_PRIVATE)
-            return getInstance(sharedPrefs, database)
+            return getInstance(sharedPrefs, database, context.applicationContext)
         }
 
-        private fun getInstance(sharedPrefs: SharedPreferences, database: Database): Repository {
+        private fun getInstance(sharedPrefs: SharedPreferences, database: Database, context: Context): Repository {
             return synchronized(Repository::class) {
-                val newInstance = instance ?: Repository(sharedPrefs, database)
+                val newInstance = instance ?: Repository(sharedPrefs, database, context)
                 instance = newInstance
                 newInstance
             }
