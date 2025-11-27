@@ -129,9 +129,6 @@ dependencies {
     // Better click handling for links
     implementation 'me.saket:better-link-movement-method:2.2.0'
 
-    // Encrypted SharedPreferences for secure storage
-    implementation 'androidx.security:security-crypto:1.1.0'
-
     // Markdown
     implementation 'io.noties.markwon:core:4.6.2'
     implementation 'io.noties.markwon:image-picasso:4.6.2'
