@@ -143,7 +143,7 @@
     <color name="md_theme_surfaceContainerHighest_highContrast">#C1C8C5</color>
 
     <color name="action_bar">#338574</color> <!-- md_theme_primary (light) -->
-    <color name="detail_activity_background">#E0E0E0</color> <!-- Light gray for detail activity in light mode -->
+    <color name="detail_activity_background">#EEEEEE</color> <!-- Light gray for detail activity in light mode -->
 
     <!-- Remove black status bar in Action mode: https://stackoverflow.com/a/79456725 -->
     <color name="abc_decor_view_status_guard" tools:override="true">@android:color/transparent</color>

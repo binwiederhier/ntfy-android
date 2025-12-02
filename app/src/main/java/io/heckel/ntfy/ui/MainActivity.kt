@@ -28,6 +28,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -146,6 +148,15 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             onSubscribeButtonClick()
+        }
+        
+        // Add bottom padding to FAB to account for navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val layoutParams = view.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+            layoutParams.bottomMargin = systemBars.bottom
+            view.layoutParams = layoutParams
+            insets
         }
 
         // Swipe to refresh
