@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="md_theme_primary">#076B5B</color>
+    <color name="md_theme_primary">#338574</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#A0F2DD</color>
     <color name="md_theme_onPrimaryContainer">#005144</color>
@@ -142,7 +142,7 @@
     <color name="md_theme_surfaceContainerHigh_highContrast">#CFD6D2</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#C1C8C5</color>
 
-    <color name="action_bar">#076B5B</color> <!-- md_theme_primary (light) -->
+    <color name="action_bar">#338574</color> <!-- md_theme_primary (light) -->
     <color name="detail_activity_background">#E0E0E0</color> <!-- Light gray for detail activity in light mode -->
 
     <!-- Remove black status bar in Action mode: https://stackoverflow.com/a/79456725 -->

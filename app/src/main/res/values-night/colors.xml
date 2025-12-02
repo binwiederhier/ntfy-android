@@ -47,10 +47,6 @@
     <color name="md_theme_surfaceContainer">#1B2023</color>
     <color name="md_theme_surfaceContainerHigh">#282F33</color>
     <color name="md_theme_surfaceContainerHighest">#333333</color>
-
-    <color name="action_bar">#1B2023</color> <!-- md_theme_surfaceContainer (dark) - matches card color -->
-    <color name="detail_activity_background">#121212</color> <!-- Black for detail activity in dark mode -->
-
     <color name="md_theme_primary_mediumContrast">#9AECD7</color>
     <color name="md_theme_onPrimary_mediumContrast">#002C24</color>
     <color name="md_theme_primaryContainer_mediumContrast">#4D9F8C</color>
@@ -145,4 +141,7 @@
     <color name="md_theme_surfaceContainer_highContrast">#2B3230</color>
     <color name="md_theme_surfaceContainerHigh_highContrast">#363D3A</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#424846</color>
+
+    <color name="action_bar">#1B2023</color> <!-- md_theme_surfaceContainer (dark) - matches card color -->
+    <color name="detail_activity_background">#121212</color> <!-- Black for detail activity in dark mode -->
 </resources>
