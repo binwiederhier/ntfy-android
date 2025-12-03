@@ -7,6 +7,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingHorizontal="?dialogPreferredPadding">
+    <LinearLayout
+        android:id="@+id/add_dialog_button_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/add_dialog_negative_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_dialog_button_cancel"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/add_dialog_positive_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_dialog_button_subscribe"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/add_dialog_subscribe_view"

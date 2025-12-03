@@ -145,27 +145,33 @@ class AddFragment : DialogFragment() {
         loginPasswordText.addTextChangedListener(loginTextWatcher)
 
         // Build dialog
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(view)
-            .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
-                // This will be overridden below to avoid closing the dialog immediately
+        // Build fullscreen dialog
+        val dialog = Dialog(requireContext(), android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
+        dialog.setContentView(view)
+        dialog.setCanceledOnTouchOutside(false)
+
+        // Force fullscreen size
+        dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT        )
+
+        // Add your buttons manually since we no longer use a builder
+        positiveButton = view.findViewById<Button?>(R.id.add_dialog_positive_button)
+            ?: Button(requireContext()).also {
+                // If you don't have dedicated buttons in layout, create them dynamically
             }
-            .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
-                // This will be overridden below
-            }
-            .create()
+
+        negativeButton = view.findViewById<Button?>(R.id.add_dialog_negative_button)
+            ?: Button(requireContext())
+
 
         // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
         // Add logic to disable "Subscribe" button on invalid input
         dialog.setOnShowListener {
-            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             positiveButton.isEnabled = false
             positiveButton.setOnClickListener {
                 positiveButtonClick()
             }
-            negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
             negativeButton.setOnClickListener {
                 negativeButtonClick()
             }
