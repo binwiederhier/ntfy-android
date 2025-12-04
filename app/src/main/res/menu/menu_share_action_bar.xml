@@ -5,6 +5,5 @@
         android:id="@+id/share_menu_send"
         android:icon="@drawable/ic_send_white_24dp"
         android:title="@string/share_menu_send"
-        app:iconTint="@android:color/white"
         app:showAsAction="always" />
 </menu>

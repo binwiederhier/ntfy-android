@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
@@ -67,12 +68,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         serviceManager = SubscriberServiceManager(this)
 
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(
             this,
-            repository.getDynamicColorsEnabled(),
-            isDarkThemeOn(this)
-        ))
-        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
+            dynamicColors,
+            darkMode
+        )
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
         if (savedInstanceState == null) {
             settingsFragment = SettingsFragment() // Empty constructor!
@@ -342,7 +357,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     override fun putBoolean(key: String?, value: Boolean) {
                         repository.setDynamicColorsEnabled(value)
 
-                        // restart app
+                        // Restart app
                         val packageManager = requireContext().packageManager
                         val packageName = requireContext().packageName
                         val intent = packageManager.getLaunchIntentForPackage(packageName)

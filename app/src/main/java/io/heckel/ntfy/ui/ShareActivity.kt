@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
@@ -18,6 +19,8 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.view.size
+import androidx.core.view.get
 
 class ShareActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
@@ -56,13 +59,23 @@ class ShareActivity : AppCompatActivity() {
 
         // Action bar
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
-            this,
-            repository.getDynamicColorsEnabled(),
-            isDarkThemeOn(this)
-        ))
-        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
         title = getString(R.string.share_title)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -242,6 +255,13 @@ class ShareActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_share_action_bar, menu)
         this.menu = menu
         sendItem = menu.findItem(R.id.share_menu_send)
+        
+        // Tint menu icons based on theme
+        val toolbarTextColor = Colors.toolbarTextColor(this, repository.getDynamicColorsEnabled(), isDarkThemeOn(this))
+        for (i in 0 until menu.size) {
+            menu[i].icon?.setTint(toolbarTextColor)
+        }
+        
         validateInput() // Disable icon
         return true
     }

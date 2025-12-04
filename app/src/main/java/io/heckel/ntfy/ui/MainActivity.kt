@@ -30,6 +30,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -72,6 +73,8 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import androidx.core.view.size
+import androidx.core.view.get
 
 class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
@@ -136,13 +139,23 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
         // Action bar
         val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
-        toolbarLayout.setBackgroundColor(Colors.statusBarNormal(
-            this,
-            repository.getDynamicColorsEnabled(),
-            isDarkThemeOn(this)
-        ))
-        setSupportActionBar(toolbarLayout.findViewById(R.id.toolbar))
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
         title = getString(R.string.main_action_bar_title)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
         // Floating action button ("+")
         fab = findViewById(R.id.fab)
@@ -460,6 +473,13 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main_action_bar, menu)
         this.menu = menu
+        
+        // Tint menu icons based on theme
+        val toolbarTextColor = Colors.toolbarTextColor(this, repository.getDynamicColorsEnabled(), isDarkThemeOn(this))
+        for (i in 0 until menu.size) {
+            menu[i].icon?.setTint(toolbarTextColor)
+        }
+        
         showHideNotificationMenuItems()
         checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true

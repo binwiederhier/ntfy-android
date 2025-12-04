@@ -48,7 +48,6 @@
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <item name="actionModeCloseButtonStyle">@style/ActionModeCloseButtonStyle</item>
@@ -57,7 +56,6 @@
     </style>
 
     <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:tint">@android:color/white</item>
     </style>
 
     <style name="ActionModeCloseButtonStyle" parent="Widget.AppCompat.ActionButton.CloseMode">

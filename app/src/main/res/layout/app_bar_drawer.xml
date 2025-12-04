@@ -12,8 +12,6 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:navigationIconTint="@android:color/white"
-        app:titleTextColor="@android:color/white" />
+        android:layout_height="?attr/actionBarSize" />
 
 </com.google.android.material.appbar.AppBarLayout>

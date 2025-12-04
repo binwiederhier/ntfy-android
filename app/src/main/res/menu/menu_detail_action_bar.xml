@@ -5,31 +5,26 @@
         android:id="@+id/detail_menu_notifications_enabled"
         android:icon="@drawable/ic_notifications_white_24dp"
         android:title="@string/detail_menu_notifications_enabled"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/detail_menu_notifications_disabled_until"
         android:icon="@drawable/ic_notifications_off_time_white_outline_24dp"
         android:title="@string/detail_menu_notifications_disabled_forever"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/detail_menu_notifications_disabled_forever"
         android:icon="@drawable/ic_notifications_off_white_outline_24dp"
         android:title="@string/detail_menu_notifications_disabled_forever"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/detail_menu_enable_instant"
         android:icon="@drawable/ic_bolt_outline_white_24dp"
         android:title="@string/detail_menu_enable_instant"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/detail_menu_disable_instant"
         android:icon="@drawable/ic_bolt_white_24dp"
         android:title="@string/detail_menu_disable_instant"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/detail_menu_settings"

@@ -54,13 +54,30 @@ class Colors {
                 context.resources.getColor(R.color.action_bar)
             }
             return if (dynamicColors) {
-                if (darkMode) {
-                    MaterialColors.getColor(context, R.attr.colorSurface, default)
-                } else {
-                    MaterialColors.getColor(context, R.attr.colorPrimary, default)
-                }
+                // Use colorSurface for both light and dark mode when dynamic colors are enabled
+                MaterialColors.getColor(context, R.attr.colorSurface, default)
             } else {
                 default
+            }
+        }
+
+        fun shouldUseLightStatusBar(dynamicColors: Boolean, darkMode: Boolean): Boolean {
+            // Use light status bar (dark icons) when dynamic colors are enabled in light mode
+            return dynamicColors && !darkMode
+        }
+
+        fun toolbarTextColor(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
+            return if (dynamicColors) {
+                // Use colorOnSurface (dark on light, light on dark) when dynamic colors are enabled
+                MaterialColors.getColor(context, R.attr.colorOnSurface, Color.BLACK)
+            } else {
+                if (darkMode) {
+                    // In dark mode, toolbar is gray (surfaceContainer), so use light text
+                    MaterialColors.getColor(context, R.attr.colorOnSurface, Color.WHITE)
+                } else {
+                    // In light mode, toolbar is teal (primary), so use white text
+                    MaterialColors.getColor(context, R.attr.colorOnPrimary, Color.WHITE)
+                }
             }
         }
 
@@ -73,3 +90,4 @@ class Colors {
         }
     }
 }
+
