@@ -35,7 +35,6 @@
     <string name="main_menu_report_bug_title">Anmeld fejl</string>
     <string name="main_menu_docs_title">Læs manualen</string>
     <string name="main_menu_rate_title">Anmeld appen ⭐</string>
-    <string name="main_menu_donate_title">Doner 💸</string>
     <string name="main_action_mode_menu_unsubscribe">Afmeld</string>
     <string name="main_action_mode_delete_dialog_message">Afmeld valgte emne(r) og slet alle notifikationer permanent?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Slet permanent</string>
