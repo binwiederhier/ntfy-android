@@ -9,6 +9,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
+import android.net.rtp.AudioStream
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannedString
@@ -95,8 +96,15 @@ class NotificationService(val context: Context) {
         val title = formatTitle(appBaseUrl, subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
         val channelId = toChannelId(groupId, notification.priority)
+        val overrideVolume = notification.priority == PRIORITY_MAX &&
+                ((repository.getOverrideVolumeMaxPriorityEnabled() && subscription.overrideVolumeMaxPriority == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL) || subscription.overrideVolumeMaxPriority == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED)
+        val volumeSetting = if (subscription.overrideVolumeMaxPriority == Repository.OVERRIDE_VOLUME_MAX_PRIORITY_ENABLED) {
+            subscription.overrideVolumeSetting
+        } else {
+            repository.getOverrideVolumeSetting()
+        }
         val insistent = notification.priority == PRIORITY_MAX &&
-                (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
+                ((repository.getInsistentMaxPriorityEnabled() && subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL) || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, Colors.notificationIcon(context)))
@@ -116,7 +124,7 @@ class NotificationService(val context: Context) {
 
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
-        maybePlayInsistentSound(groupId, insistent)
+        maybeOverrideVolumeAndPlayInsistentSound(groupId, overrideVolume, volumeSetting, insistent)
 
         notificationManager.notify(notification.notificationId, builder.build())
     }
@@ -356,8 +364,15 @@ class NotificationService(val context: Context) {
     class DeleteBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d(TAG, "Media player: Stopping insistent ring")
-            val mediaPlayer = Repository.getInstance(context).mediaPlayer
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            var audioStream = AudioManager.STREAM_NOTIFICATION
+            if (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) == 0){
+                audioStream = AudioManager.STREAM_ALARM
+            }
+            val repository = Repository.getInstance(context)
+            val mediaPlayer = repository.mediaPlayer
             mediaPlayer.stop()
+            audioManager.setStreamVolume(audioStream, repository.getPreviousVolume(), 0)
         }
     }
 
@@ -444,24 +459,38 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybePlayInsistentSound(groupId: String, insistent: Boolean) {
-        if (!insistent) {
+    private fun maybeOverrideVolumeAndPlayInsistentSound(groupId: String, overrideVolume: Boolean, volumeSetting: Int, insistent: Boolean) {
+        if (!overrideVolume && !insistent) {
             return
         }
         try {
-            val mediaPlayer = repository.mediaPlayer
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                Log.d(TAG, "Media player: Playing insistent alarm on alarm channel")
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(context, getInsistentSound(groupId))
-                mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
-                mediaPlayer.isLooping = true
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            } else {
-                Log.d(TAG, "Media player: Alarm volume is 0; not playing insistent alarm")
+            var audioStream = AudioManager.STREAM_NOTIFICATION
+            var usageStream = AudioAttributes.USAGE_NOTIFICATION
+            if (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) == 0){
+                audioStream = AudioManager.STREAM_ALARM
+                usageStream = AudioAttributes.USAGE_ALARM
             }
+
+            val mediaPlayer = repository.mediaPlayer
+            if (overrideVolume) {
+                val previousVolume = audioManager.getStreamVolume(audioStream)
+                audioManager.setStreamVolume(audioStream, volumeSetting, 0)
+                repository.setPreviousVolume(previousVolume)
+            }
+
+            mediaPlayer.reset()
+            mediaPlayer.setDataSource(context, getInsistentSound(groupId))
+            mediaPlayer.setAudioAttributes(AudioAttributes.Builder().setUsage(usageStream).build())
+            if (overrideVolume) {
+                Log.d(TAG, "Media player: Playing alarm on alarm channel")
+                mediaPlayer.setOnCompletionListener { audioManager.setStreamVolume(audioStream, repository.getPreviousVolume(), 0) }
+            } else {
+                Log.d(TAG, "Media player: Playing insistent alarm on notification channel")
+            }
+            mediaPlayer.isLooping = insistent
+            mediaPlayer.prepare()
+            mediaPlayer.start()
         } catch (e: Exception) {
             Log.w(TAG, "Media player: Failed to play insistent alarm", e)
         }

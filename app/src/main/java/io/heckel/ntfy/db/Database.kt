@@ -19,6 +19,8 @@ data class Subscription(
     @ColumnInfo(name = "minPriority") val minPriority: Int,
     @ColumnInfo(name = "autoDelete") val autoDelete: Long, // Seconds
     @ColumnInfo(name = "insistent") val insistent: Int, // Ring constantly for max priority notifications (-1 = use global, 0 = off, 1 = on)
+    @ColumnInfo(name = "overrideVolumeMaxPriority") val overrideVolumeMaxPriority: Int, // Override Volume for max priority notifications (-1 = use global, 0 = off, 1 = on)
+    @ColumnInfo(name = "overrideVolumeSetting") val overrideVolumeSetting: Int,
     @ColumnInfo(name = "lastNotificationId") val lastNotificationId: String?, // Used for polling, with since=<id>
     @ColumnInfo(name = "icon") val icon: String?, // content://-URI (or later other identifier)
     @ColumnInfo(name = "upAppId") val upAppId: String?, // UnifiedPush application package name
@@ -39,6 +41,8 @@ data class Subscription(
         minPriority: Int,
         autoDelete: Long,
         insistent: Int,
+        overrideVolumeMaxPriority: Int,
+        overrideVolumeSetting: Int,
         lastNotificationId: String,
         icon: String,
         upAppId: String,
@@ -55,6 +59,8 @@ data class Subscription(
                 minPriority,
                 autoDelete,
                 insistent,
+                overrideVolumeMaxPriority,
+                overrideVolumeSetting,
                 lastNotificationId,
                 icon,
                 upAppId,
@@ -81,6 +87,8 @@ data class SubscriptionWithMetadata(
     val autoDelete: Long,
     val minPriority: Int,
     val insistent: Int,
+    val overrideVolumeMaxPriority: Int,
+    val overrideVolumeSetting: Int,
     val lastNotificationId: String?,
     val icon: String?,
     val upAppId: String?,
@@ -201,7 +209,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 15)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -230,6 +238,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
+                    .addMigrations(MIGRATION_14_15)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -341,6 +350,13 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
             }
         }
+
+        private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN overrideVolumeMaxPriority INTEGER NOT NULL DEFAULT (-1)") // = Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN overrideVolumeSetting INTEGER NOT NULL DEFAULT (7)")
+            }
+        }
     }
 }
 
@@ -348,7 +364,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.overrideVolumeMaxPriority, s.overrideVolumeSetting, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -361,7 +377,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.overrideVolumeMaxPriority, s.overrideVolumeSetting, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -374,7 +390,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.overrideVolumeMaxPriority, s.overrideVolumeSetting, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -387,7 +403,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.overrideVolumeMaxPriority, s.overrideVolumeSetting, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -400,7 +416,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.overrideVolumeMaxPriority, s.overrideVolumeSetting, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

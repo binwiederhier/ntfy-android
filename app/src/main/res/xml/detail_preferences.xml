@@ -29,12 +29,28 @@
                 app:defaultValue="-1"
                 app:isPreferenceVisible="false"/> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
         <ListPreference
-                app:key="@string/detail_settings_notifications_insistent_max_priority_key"
-                app:title="@string/settings_notifications_insistent_max_priority_title"
-                app:entries="@array/detail_settings_notifications_insistent_max_priority_entries"
-                app:entryValues="@array/detail_settings_notifications_insistent_max_priority_values"
+                app:key="@string/detail_settings_notifications_override_volume_max_priority_key"
+                app:title="@string/settings_notifications_override_volume_max_priority_title"
+                app:entries="@array/detail_settings_notifications_override_volume_max_priority_entries"
+                app:entryValues="@array/detail_settings_notifications_override_volume_max_priority_values"
                 app:defaultValue="-1"
-                app:isPreferenceVisible="false"/> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+                app:isPreferenceVisible="false"/> <!-- Same as Repository.OVERRIDE_VOLUME_MAX_PRIORITY_USE_GLOBAL -->
+        <SeekBarPreference
+                app:key="@string/detail_settings_notifications_override_volume_setting_key"
+                app:title="@string/settings_notifications_override_volume_setting_title"
+                app:summary="@string/settings_notifications_override_volume_setting_summary"
+                app:defaultValue="7"
+                app:showSeekBarValue="false"
+                app:seekBarIncrement="1"
+                app:min="0"
+                app:isPreferenceVisible="false"/>
+        <ListPreference
+            app:key="@string/detail_settings_notifications_insistent_max_priority_key"
+            app:title="@string/settings_notifications_insistent_max_priority_title"
+            app:defaultValue="-1"
+            app:entries="@array/detail_settings_notifications_insistent_max_priority_entries"
+            app:entryValues="@array/detail_settings_notifications_insistent_max_priority_values"
+            app:isPreferenceVisible="false" /> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
         <SwitchPreference
                 app:key="@string/detail_settings_notifications_dedicated_channels_key"
                 app:title="@string/detail_settings_notifications_dedicated_channels_title"
