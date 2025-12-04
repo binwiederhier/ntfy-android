@@ -87,6 +87,15 @@
                 android:exported="false">
         </activity>
 
+        <!-- UnifiedPush link activity to facilitate distributor selection, see https://unifiedpush.org/developers/spec/android/#link-activity -->
+        <activity android:name=".up.LinkActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="unifiedpush" android:host="link" />
+            </intent-filter>
+        </activity>
+
         <!-- Subscriber foreground service for hosts other than ntfy.sh -->
         <service
             android:name=".service.SubscriberService"
