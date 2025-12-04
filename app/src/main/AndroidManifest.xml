@@ -86,13 +86,13 @@
                 android:name=".msg.NotificationService$ViewActionWithClearActivity"
                 android:exported="false">
         </activity>
-        <activity android:name=".up.LinkActivity"
-            android:exported="true">
+
+        <!-- UnifiedPush link activity to facilitate distributor selection, see https://unifiedpush.org/developers/spec/android/#link-activity -->
+        <activity android:name=".up.LinkActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="unifiedpush"
-                    android:host="link" />
+                <data android:scheme="unifiedpush" android:host="link" />
             </intent-filter>
         </activity>
 

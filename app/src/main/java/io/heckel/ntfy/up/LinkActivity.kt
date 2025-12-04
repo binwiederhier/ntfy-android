@@ -6,6 +6,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 
+/**
+ * This implements the "Select default distributor" selection for UnifiedPush.
+ *
+ * To test, install ntfy and another distributor (e.g. SunUp) on the same phone.
+ * Install an app that uses UnifiedPush (e.g. UP Example) and click "Register".
+ *
+ * You should see a popup to select the default distributor.
+ * See https://unifiedpush.org/developers/spec/android/#link-activity
+ */
 class LinkActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
