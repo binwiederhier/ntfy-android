@@ -212,7 +212,7 @@
     <string name="detail_item_saved_successfully">儲存為 \"Downloads\" 資料中的 \"%1$s\"</string>
     <string name="detail_test_message_error_unauthorized_user">不能夠發布信息：用戶 %1$s 不被授權。</string>
     <string name="detail_how_to_intro">PUT 或 POST 主題網址以傳送通訊。</string>
-    <string name="detail_how_to_example">例如（使用 curl): <br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ 例如（使用 curl): <br/><tt>$ curl -d "Hi" %1$s</tt>]]></string>
     <string name="detail_test_message_error">不能夠傳送訊息：%1$s</string>
     <string name="detail_item_tags">標籤：%1$s</string>
     <string name="detail_instant_delivery_enabled">啟動即時傳送</string>
@@ -342,4 +342,11 @@
     <string name="detail_settings_appearance_icon_error_saving">無法保存圖標：%1$s</string>
     <string name="detail_settings_global_setting_title">使用全局設置</string>
     <string name="user_dialog_description_edit">您可以編輯該用戶的用戶名和密碼，或刪除該用戶。</string>
+    <string name="main_banner_websocket_reconnect_text">為確保 WebSocket 能在背景重新連線，請授予 ntfy「鬧鐘與提醒」權限</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">關閉</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">稍後再問</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">立即授權</string>
+    <string name="settings_advanced_exact_alarms_title">精準提醒</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy 可以排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以撤銷此權限。</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy 無法排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以授予此權限。</string>
 </resources>

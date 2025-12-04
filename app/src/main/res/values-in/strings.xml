@@ -55,7 +55,7 @@
     <string name="add_dialog_login_new_user">Pengguna baru</string>
     <string name="detail_no_notifications_text">Anda belum menerima notifikasi apa pun.</string>
     <string name="detail_how_to_intro">Untuk mengirimkan notifikasi ke topik ini, lakukan PUT atau POST ke URL topik.</string>
-    <string name="detail_how_to_example">Contoh (menggunakan curl):<br></br><tt>$ curl -d \"Hai\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Contoh (menggunakan curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Instruksi rinci tersedia di ntfy.sh, dan dalam dokumentasi.</string>
     <string name="detail_clear_dialog_message">Hapus semua notifikasi di topik ini\?</string>
     <string name="detail_clear_dialog_permanently_delete">Hapus secara permanen</string>
@@ -342,4 +342,11 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy akan menjadi sebagai distributor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy tidak akan menjadi sebagai distributor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Aktifkan UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Untuk memastikan WebSockets tersambung kembali di latar belakang, berikan izin Alarm &amp; Pengingat untuk ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Tanyakan nanti</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Singkirkan</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Berikan sekarang</string>
+    <string name="settings_advanced_exact_alarms_title">Alarm akurat</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy dapat menjadwalkan alarm yang tepat. Alarm yang tepat diperlukan untuk menyambungkan kembali WebSockets di latar belakang. Klik untuk mencabut izin.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy tidak dapat menjadwalkan alarm yang tepat. Alarm yang tepat diperlukan untuk menyambungkan kembali WebSockets di latar belakang. Klik untuk memberikan izin.</string>
 </resources>

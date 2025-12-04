@@ -219,7 +219,7 @@
     <string name="add_dialog_login_description">Esse tópico necessita autenticação. Por favor, insira um nome de utilizador e palavra-passe.</string>
     <string name="add_dialog_login_new_user">Novo utilizador</string>
     <string name="add_dialog_base_urls_dropdown_choose">Escolha URL de serviço</string>
-    <string name="detail_how_to_example">Exemplo (utilizando curl): <br></br><tt>$ curl -d \"Olá\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando curl):<br/><tt>$ curl -d \"Olá\" %1$s</tt> ]]></string>
     <string name="detail_delete_dialog_message">Deseja anular a subscrição deste tópico e eliminar todas as notificações recebidas\?</string>
     <string name="detail_test_message">Esta é uma notificação de teste da aplicação Android do ntfy. Tem uma prioridade de nível %1$d. Se enviar outra notificação, poderá ser diferente.</string>
     <string name="detail_test_message_error_too_large">Não foi possível enviar a mensagem: O anexo é grande demais.</string>
@@ -342,4 +342,11 @@
     <string name="settings_advanced_unifiedpush_title">Habilitar UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy atuará como distribuidora UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy não atuará como distribuidora UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Para garantir que os WebSockets se reconectem em segundo plano, conceda a permissão de Alarmes e Lembretes à aplicação ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Lembrar mais tarde</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Ignorar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Autorizar agora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmes exactos</string>
+    <string name="settings_advanced_exact_alarms_true">O ntfy pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para revogar a permissão.</string>
+    <string name="settings_advanced_exact_alarms_false">O ntfy não pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para conceder a permissão.</string>
 </resources>
