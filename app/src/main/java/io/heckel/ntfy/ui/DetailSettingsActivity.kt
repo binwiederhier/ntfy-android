@@ -435,12 +435,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             topicUrlPref?.summary = topicUrl
             topicUrlPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("topic url", topicUrl)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                        .makeText(context, getString(R.string.detail_settings_about_topic_url_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                        .show()
+                copyToClipboard(context, "topic url", topicUrl)
                 true
             }
         }

@@ -552,12 +552,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         Log.d(TAG, "Copying topic URL $url to clipboard ")
 
         runOnUiThread {
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("topic address", url)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                .show()
+            copyToClipboard(this, "topic address", url)
         }
     }
 
@@ -741,13 +736,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 }
             }
         } else {
-            copyToClipboard(notification)
-        }
-    }
-
-    private fun copyToClipboard(notification: Notification) {
-        runOnUiThread {
-            copyToClipboard(this, notification)
+            runOnUiThread {
+                copyToClipboard(this, "notification", decodeMessage(notification))
+            }
         }
     }
 
@@ -777,12 +768,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 }.orEmpty()
             }
             runOnUiThread {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("notifications", content)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(this@DetailActivity, "notifications", content)
                 finishActionMode()
             }
         }
