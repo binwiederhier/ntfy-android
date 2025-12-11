@@ -15,9 +15,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.android.material.appbar.AppBarLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -63,6 +65,24 @@ class DetailSettingsActivity : AppCompatActivity() {
                 .commit()
         }
 
+        val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
+        
         // Title
         val displayName = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
         title = displayName
@@ -139,7 +159,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadInstantPref() {
             val appBaseUrl = getString(R.string.app_base_url)
             val prefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = BuildConfig.FIREBASE_AVAILABLE && subscription.baseUrl == appBaseUrl
             pref?.isChecked = subscription.instant
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -150,7 +170,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.instant
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_instant_summary_on)
                 } else {
@@ -161,7 +181,7 @@ class DetailSettingsActivity : AppCompatActivity() {
 
         private fun loadDedicatedChannelsPrefs() {
             val prefId = context?.getString(R.string.detail_settings_notifications_dedicated_channels_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = true
             pref?.isChecked = subscription.dedicatedChannels
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -178,7 +198,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.dedicatedChannels
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summary_on)
                 } else {

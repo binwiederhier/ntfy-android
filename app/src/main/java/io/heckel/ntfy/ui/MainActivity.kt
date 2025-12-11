@@ -14,8 +14,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,14 +23,25 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.view.ActionMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -46,17 +55,28 @@ import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.dangerButton
+import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.isDarkThemeOn
+import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
+import io.heckel.ntfy.util.maybeSplitTopicUrl
+import io.heckel.ntfy.util.randomSubscriptionId
+import io.heckel.ntfy.util.shortUrl
+import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.DeleteWorker
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import androidx.core.view.size
+import androidx.core.view.get
 
-class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
+class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
@@ -72,10 +92,38 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     private lateinit var fab: FloatingActionButton
 
     // Other stuff
-    private var actionMode: ActionMode? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
+
+    // Action mode stuff
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            actionMode = mode
+            if (mode != null) {
+                mode.menuInflater.inflate(R.menu.menu_main_action_mode, menu)
+                mode.title = "1" // One item selected
+            }
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.main_action_mode_delete -> {
+                    onMultiDeleteClick()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            endActionModeAndRedraw()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,18 +138,44 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         appBaseUrl = getString(R.string.app_base_url)
 
         // Action bar
+        val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
         title = getString(R.string.main_action_bar_title)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
         // Floating action button ("+")
         fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             onSubscribeButtonClick()
         }
+        
+        // Add bottom padding to FAB to account for navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val layoutParams = view.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+            layoutParams.bottomMargin = systemBars.bottom
+            view.layoutParams = layoutParams
+            insets
+        }
 
         // Swipe to refresh
         mainListContainer = findViewById(R.id.main_subscriptions_list_container)
         mainListContainer.setOnRefreshListener { refreshAllSubscriptions() }
-        mainListContainer.setColorSchemeResources(Colors.refreshProgressIndicator)
+        mainListContainer.setColorSchemeColors(Colors.swipeToRefreshColor(this))
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntries: View = findViewById(R.id.main_no_subscriptions)
@@ -109,7 +183,15 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
 
         mainList = findViewById(R.id.main_subscriptions_list)
-        adapter = MainAdapter(repository, onSubscriptionClick, onSubscriptionLongClick)
+        adapter = MainAdapter(
+            repository,
+            onSubscriptionClick,
+            onSubscriptionLongClick,
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_circle, theme)!!.apply {
+                setTint(Colors.primary(this@MainActivity))
+            },
+            Colors.onPrimary(this)
+        )
         mainList.adapter = adapter
 
         viewModel.list().observe(this) {
@@ -391,6 +473,13 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main_action_bar, menu)
         this.menu = menu
+        
+        // Tint menu icons based on theme
+        val toolbarTextColor = Colors.toolbarTextColor(this, repository.getDynamicColorsEnabled(), isDarkThemeOn(this))
+        for (i in 0 until menu.size) {
+            menu[i].icon?.setTint(toolbarTextColor)
+        }
+        
         showHideNotificationMenuItems()
         checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true
@@ -654,7 +743,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         startActivity(intent)
     }
 
-
     private fun handleActionModeClick(subscription: Subscription) {
         adapter.toggleSelection(subscription.id)
         if (adapter.selected.size == 0) {
@@ -664,34 +752,10 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         }
     }
 
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        this.actionMode = mode
-        if (mode != null) {
-            mode.menuInflater.inflate(R.menu.menu_main_action_mode, menu)
-            mode.title = "1" // One item selected
-        }
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
-
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.main_action_mode_delete -> {
-                onMultiDeleteClick()
-                true
-            }
-            else -> false
-        }
-    }
-
     private fun onMultiDeleteClick() {
         Log.d(DetailActivity.TAG, "Showing multi-delete dialog for selected items")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.main_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
                 adapter.selected.map { subscriptionId -> viewModel.remove(this, subscriptionId) }
@@ -709,15 +773,11 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
         dialog.show()
     }
 
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        endActionModeAndRedraw()
-    }
-
     private fun beginActionMode(subscription: Subscription) {
-        actionMode = startActionMode(this)
+        actionMode = startSupportActionMode(actionModeCallback)
         adapter.toggleSelection(subscription.id)
 
-        // Fade out FAB
+            // Fade out FAB
         fab.alpha = 1f
         fab
             .animate()
@@ -728,11 +788,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     fab.visibility = View.GONE
                 }
             })
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun finishActionMode() {
@@ -757,11 +812,6 @@ class MainActivity : AppCompatActivity(), ActionMode.Callback, AddFragment.Subsc
                     fab.visibility = View.VISIBLE // Required to replace the old listener
                 }
             })
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun redrawList() {

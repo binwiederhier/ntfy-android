@@ -25,7 +25,7 @@
                 app:entries="@array/settings_notifications_auto_delete_entries"
                 app:entryValues="@array/settings_notifications_auto_delete_values"
                 app:defaultValue="2592000"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_notifications_insistent_max_priority_key"
                 app:title="@string/settings_notifications_insistent_max_priority_title"
                 app:defaultValue="false"/>
@@ -37,9 +37,7 @@
     <PreferenceCategory app:title="@string/settings_general_header">
         <EditTextPreference
                 app:key="@string/settings_general_default_base_url_key"
-                app:title="@string/settings_general_default_base_url_title"
-                app:dialogLayout="@layout/preference_dialog_edittext_edited"
-                app:dialogMessage="@string/settings_general_default_base_url_message"/>
+                app:title="@string/settings_general_default_base_url_title" />
         <Preference
                 app:key="@string/settings_general_users_key"
                 app:title="@string/settings_general_users_title"
@@ -51,6 +49,10 @@
                 app:entries="@array/settings_general_dark_mode_entries"
                 app:entryValues="@array/settings_general_dark_mode_values"
                 app:defaultValue="-1"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_general_dynamic_colors_key"
+                app:title="@string/settings_general_dynamic_colors_title"
+                app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference
@@ -75,15 +77,15 @@
         <Preference
             app:key="@string/settings_advanced_exact_alarms_key"
             app:title="@string/settings_advanced_exact_alarms_title"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_broadcast_key"
                 app:title="@string/settings_advanced_broadcast_title"
                 app:enabled="true"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_unifiedpush_key"
                 app:title="@string/settings_advanced_unifiedpush_title"
                 app:enabled="true"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_record_logs_key"
                 app:title="@string/settings_advanced_record_logs_title"
                 app:enabled="true"/>

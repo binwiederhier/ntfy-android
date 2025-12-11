@@ -68,6 +68,9 @@ class Backuper(val context: Context) {
         if (settings.darkMode != null) {
             repository.setDarkMode(settings.darkMode)
         }
+        if (settings.dynamicColors != null) {
+            repository.setDynamicColorsEnabled(settings.dynamicColors)
+        }
         if (settings.connectionProtocol != null) {
             repository.setConnectionProtocol(settings.connectionProtocol)
         }
@@ -234,6 +237,7 @@ class Backuper(val context: Context) {
             autoDownloadMaxSize = repository.getAutoDownloadMaxSize(),
             autoDeleteSeconds = repository.getAutoDeleteSeconds(),
             darkMode = repository.getDarkMode(),
+            dynamicColors = repository.getDynamicColorsEnabled(),
             connectionProtocol = repository.getConnectionProtocol(),
             broadcastEnabled = repository.getBroadcastEnabled(),
             recordLogs = repository.getRecordLogs(),
@@ -357,6 +361,7 @@ data class Settings(
     val autoDownloadMaxSize: Long?,
     val autoDeleteSeconds: Long?,
     val darkMode: Int?,
+    val dynamicColors: Boolean?,
     val connectionProtocol: String?,
     val broadcastEnabled: Boolean?,
     val recordLogs: Boolean?,
