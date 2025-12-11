@@ -349,4 +349,7 @@
     <string name="settings_advanced_exact_alarms_title">精确闹钟</string>
     <string name="settings_advanced_exact_alarms_true">ntfy 可以安排精确闹钟。在后台重连 WebSockets 需要精确闹钟权限。单击撤销该权限。</string>
     <string name="settings_advanced_exact_alarms_false">ntfy 无法安排精确闹钟。在后台重连 WebSockets 需要精确闹钟权限。单击授予该权限。</string>
+    <string name="settings_general_dynamic_colors_title">动态颜色</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">使用动态系统颜色</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">使用 ntfy 主题色</string>
 </resources>
