@@ -49,18 +49,13 @@
 
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+
+        <item name="actionModeStyle">@style/ActionMode</item>
         <item name="actionModeCloseButtonStyle">@style/ActionModeCloseButtonStyle</item>
-
-        <item name="actionModeStyle">@style/MyActionMode</item>
+        <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
     </style>
 
-    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-    </style>
-
-    <style name="ActionModeCloseButtonStyle" parent="Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:tint">@android:color/white</item>
-    </style>
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow" />
 
     <style name="DangerText" parent="@android:style/TextAppearance">
         <item name="android:textColor">?attr/colorError</item>
@@ -86,13 +81,18 @@
         <item name="widgetLayout">@layout/view_preference_switch</item>
     </style>
 
-    <style name="MyActionMode" parent="@style/Widget.AppCompat.ActionMode">
+    <!-- Action mode colors -->
+    <style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
         <item name="background">?attr/colorPrimary</item>
-        <item name="titleTextStyle">@style/MyActionModeTitle</item>
+        <item name="titleTextStyle">@style/ActionModeTitle</item>
     </style>
 
-    <style name="MyActionModeTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionMode.Title">
+    <style name="ActionModeTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionMode.Title">
         <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="ActionModeCloseButtonStyle" parent="Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">@android:color/white</item>
     </style>
 
     <!-- Banner style with reduced corner radius -->
