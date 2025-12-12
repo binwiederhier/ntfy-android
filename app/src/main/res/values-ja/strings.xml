@@ -349,4 +349,7 @@
     <string name="settings_advanced_exact_alarms_title">正確なアラーム</string>
     <string name="settings_advanced_exact_alarms_true">ntfyは正確なアラームをスケジュールできます。正確なアラームはバックグラウンドでWebSocketを再接続するのに使用されます。クリックして権限を取り消す。</string>
     <string name="settings_advanced_exact_alarms_false">ntfyは正確なアラームをスケジュールできません。WebSocketsをバックグラウンドで再接続するには正確なアラームが必要です。クリックして権限を許可してください。</string>
+    <string name="settings_general_dynamic_colors_title">ダイナミックカラー</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">システムのダイナミックカラーを使用する</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">ntfyのテーマカラーを使用する</string>
 </resources>
