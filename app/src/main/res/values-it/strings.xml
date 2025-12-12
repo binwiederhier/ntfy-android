@@ -345,4 +345,7 @@
     <string name="settings_advanced_exact_alarms_title">Allarmi esatti</string>
     <string name="settings_advanced_exact_alarms_true">ntfy può programmare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per revocare l\'autorizzazione.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy non può pianificare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per concedere l\'autorizzazione.</string>
+    <string name="settings_general_dynamic_colors_title">Colori dinamici</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Utilizzo dei colori del sistema dinamico</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Utilizzo dei colori del tema ntfy</string>
 </resources>
