@@ -353,7 +353,6 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_14_15 = object : Migration(14, 15) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                // Create ServerHeader table for independent header storage
                 db.execSQL("CREATE TABLE ServerHeader (baseUrl TEXT NOT NULL, headers TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }
