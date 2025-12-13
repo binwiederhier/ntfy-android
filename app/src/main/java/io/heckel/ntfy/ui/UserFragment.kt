@@ -42,9 +42,10 @@ class UserFragment : DialogFragment() {
         val baseUrl = arguments?.getString(BUNDLE_BASE_URL)
         val username = arguments?.getString(BUNDLE_USERNAME)
         val password = arguments?.getString(BUNDLE_PASSWORD)
+        val headers = arguments?.getString(BUNDLE_HEADERS)
 
         if (baseUrl != null && username != null && password != null) {
-            user = User(baseUrl, username, password)
+            user = User(baseUrl, username, password, headers)
         }
 
         // Required for validation
@@ -135,7 +136,7 @@ class UserFragment : DialogFragment() {
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
         if (user == null) {
-            user = User(baseUrl, username, password)
+            user = User(baseUrl, username, password, null)
             listener.onAddUser(this, user!!)
         } else {
             user = if (password.isNotEmpty()) {
@@ -165,6 +166,7 @@ class UserFragment : DialogFragment() {
         private const val BUNDLE_BASE_URL = "baseUrl"
         private const val BUNDLE_USERNAME = "username"
         private const val BUNDLE_PASSWORD = "password"
+        private const val BUNDLE_HEADERS = "headers"
         private const val BUNDLE_BASE_URLS_IN_USE = "baseUrlsInUse"
 
         fun newInstance(user: User?, baseUrlsInUse: ArrayList<String>): UserFragment {
@@ -175,6 +177,7 @@ class UserFragment : DialogFragment() {
                 args.putString(BUNDLE_BASE_URL, user.baseUrl)
                 args.putString(BUNDLE_USERNAME, user.username)
                 args.putString(BUNDLE_PASSWORD, user.password)
+                args.putString(BUNDLE_HEADERS, user.headers)
             }
             fragment.arguments = args
             return fragment

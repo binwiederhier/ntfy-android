@@ -11,13 +11,12 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
+    private val serverHeaderDao = database.serverHeaderDao()
 
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
@@ -185,6 +184,30 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
     suspend fun deleteUser(baseUrl: String) {
         userDao.delete(baseUrl)
+    }
+
+    suspend fun getServerHeaders(): List<ServerHeader> {
+        return serverHeaderDao.list()
+    }
+
+    fun getServerHeadersLiveData(): LiveData<List<ServerHeader>> {
+        return serverHeaderDao.listFlow().asLiveData()
+    }
+
+    suspend fun addServerHeader(serverHeader: ServerHeader) {
+        serverHeaderDao.insert(serverHeader)
+    }
+
+    suspend fun updateServerHeader(serverHeader: ServerHeader) {
+        serverHeaderDao.update(serverHeader)
+    }
+
+    suspend fun getServerHeader(baseUrl: String): ServerHeader? {
+        return serverHeaderDao.get(baseUrl)
+    }
+
+    suspend fun deleteServerHeader(baseUrl: String) {
+        serverHeaderDao.delete(baseUrl)
     }
 
     fun getPollWorkerVersion(): Int {
@@ -483,35 +506,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         }
     }
 
-    fun getCustomHeaders(): Map<String, String> {
-        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
-        return if (json != null) {
-            try {
-                val type = object : TypeToken<Map<String, String>>() {}.type
-                Gson().fromJson(json, type) ?: emptyMap()
-            } catch (e: Exception) {
-                Log.w("Repository", "Failed to parse custom headers", e)
-                emptyMap()
-            }
-        } else {
-            emptyMap()
-        }
-    }
-
-    fun setCustomHeaders(headers: Map<String, String>) {
-        val json = if (headers.isEmpty()) {
-            null
-        } else {
-            Gson().toJson(headers)
-        }
-
-        if (json == null) {
-            sharedPrefs.edit().remove(SHARED_PREFS_CUSTOM_HEADERS).apply()
-        } else {
-            sharedPrefs.edit().putString(SHARED_PREFS_CUSTOM_HEADERS, json).apply()
-        }
-    }
-
     private fun getState(subscriptionId: Long): ConnectionState {
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
@@ -537,7 +531,6 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
-        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 

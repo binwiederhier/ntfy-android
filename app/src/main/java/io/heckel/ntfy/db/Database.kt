@@ -183,10 +183,17 @@ class Converters {
 data class User(
     @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
     @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "password") val password: String
+    @ColumnInfo(name = "password") val password: String,
+    @ColumnInfo(name = "headers") val headers: String? = null
 ) {
     override fun toString(): String = username
 }
+
+@Entity(tableName = "ServerHeader")
+data class ServerHeader(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "headers") val headers: String // JSON string of Map<String, String>
+)
 
 @Entity(tableName = "Log")
 data class LogEntry(
@@ -201,12 +208,13 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, ServerHeader::class, LogEntry::class], version = 15)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
     abstract fun userDao(): UserDao
+    abstract fun serverHeaderDao(): ServerHeaderDao
     abstract fun logDao(): LogDao
 
     companion object {
@@ -230,6 +238,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
+                    .addMigrations(MIGRATION_14_15)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -339,6 +348,13 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_13_14 = object : Migration(13, 14) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
+            }
+        }
+
+        private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Create ServerHeader table for independent header storage
+                db.execSQL("CREATE TABLE ServerHeader (baseUrl TEXT NOT NULL, headers TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }
     }
@@ -493,6 +509,27 @@ interface UserDao {
     suspend fun update(user: User)
 
     @Query("DELETE FROM user WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
+}
+
+@Dao
+interface ServerHeaderDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(serverHeader: ServerHeader)
+
+    @Query("SELECT * FROM ServerHeader ORDER BY baseUrl")
+    suspend fun list(): List<ServerHeader>
+
+    @Query("SELECT * FROM ServerHeader ORDER BY baseUrl")
+    fun listFlow(): Flow<List<ServerHeader>>
+
+    @Query("SELECT * FROM ServerHeader WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): ServerHeader?
+
+    @Update
+    suspend fun update(serverHeader: ServerHeader)
+
+    @Query("DELETE FROM ServerHeader WHERE baseUrl = :baseUrl")
     suspend fun delete(baseUrl: String)
 }
 

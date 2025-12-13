@@ -2,9 +2,10 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.os.Build
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.*
 import okhttp3.*
@@ -16,25 +17,20 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class ApiService(private val context: Context) {
-    private val repository = Repository.getInstance(context)
-
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
-        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val publishClient = OkHttpClient.Builder()
         .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
-        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val subscriberClient = OkHttpClient.Builder()
         .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
-        .addInterceptor(CustomHeadersInterceptor(repository))
         .build()
     private val parser = NotificationParser()
 
@@ -172,29 +168,6 @@ class ApiService(private val context: Context) {
         }
     }
 
-    /**
-     * Interceptor that adds custom headers to all HTTP requests
-     */
-    class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val originalRequest = chain.request()
-            val customHeaders = repository.getCustomHeaders()
-
-            // If no custom headers, proceed with original request
-            if (customHeaders.isEmpty()) {
-                return chain.proceed(originalRequest)
-            }
-
-            // Add custom headers to the request
-            val requestBuilder = originalRequest.newBuilder()
-            customHeaders.forEach { (name, value) ->
-                requestBuilder.addHeader(name, value)
-            }
-
-            return chain.proceed(requestBuilder.build())
-        }
-    }
-
     class UnauthorizedException(val user: User?) : Exception()
     class EntityTooLargeException : Exception()
 
@@ -214,6 +187,19 @@ class ApiService(private val context: Context) {
                 .addHeader("User-Agent", USER_AGENT)
             if (user != null) {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
+
+                // Add custom headers from user if present
+                if (user.headers != null) {
+                    try {
+                        val type = object : TypeToken<Map<String, String>>() {}.type
+                        val customHeaders = Gson().fromJson<Map<String, String>>(user.headers, type)
+                        customHeaders?.forEach { (name, value) ->
+                            builder.addHeader(name, value)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse custom headers for user ${user.username}", e)
+                    }
+                }
             }
             return builder
         }

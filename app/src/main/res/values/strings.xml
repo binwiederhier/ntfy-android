@@ -303,6 +303,14 @@
     <string name="settings_general_users_prefs_user_add">Add users</string>
     <string name="settings_general_users_prefs_user_add_title">Add new user</string>
     <string name="settings_general_users_prefs_user_add_summary">Create a new user for a new server</string>
+    <string name="settings_general_headers_title">Custom headers</string>
+    <string name="settings_general_headers_summary">Add custom HTTP headers per server</string>
+    <string name="settings_general_headers_prefs_title">Custom headers</string>
+    <string name="settings_general_headers_prefs_no_headers">No custom headers</string>
+    <string name="settings_general_headers_prefs_one_header">1 header</string>
+    <string name="settings_general_headers_prefs_many_headers">%1$d headers</string>
+    <string name="settings_general_headers_prefs_info_title">Information</string>
+    <string name="settings_general_headers_prefs_info_summary">Add users in \"Manage users\" first. Each server can have custom HTTP headers.</string>
     <string name="settings_general_dark_mode_title">Dark mode</string>
     <string name="settings_general_dark_mode_summary_system">Using the system default</string>
     <string name="settings_general_dark_mode_summary_light">Light mode on</string>
@@ -356,9 +364,6 @@
     <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
     <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
-    <string name="settings_advanced_custom_headers_key">CustomHeaders</string>
-    <string name="settings_advanced_custom_headers_title">Custom Headers</string>
-    <string name="settings_advanced_custom_headers_summary">Add custom HTTP headers to all requests</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -403,6 +408,10 @@
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
     <string name="user_dialog_button_save">Save</string>
+
+    <!-- Header dialog -->
+    <string name="header_dialog_title">Custom headers for %1$s</string>
+    <string name="header_dialog_button_save">Save</string>
 
     <!-- Custom Headers dialog  -->
     <string name="custom_headers_add_header">Add Header</string>

@@ -49,9 +49,10 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener {
+    UserFragment.UserDialogListener, HeaderFragment.HeaderDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
+    private lateinit var headerSettingsFragment: HeaderSettingsFragment
 
     private lateinit var repository: Repository
     private lateinit var serviceManager: SubscriberServiceManager
@@ -117,6 +118,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         // Save user settings fragment for later
         if (fragment is UserSettingsFragment) {
             userSettingsFragment = fragment
+        } else if (fragment is HeaderSettingsFragment) {
+            headerSettingsFragment = fragment
         }
         return true
     }
@@ -795,6 +798,91 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
+    class HeaderSettingsFragment : PreferenceFragmentCompat() {
+        private lateinit var repository: Repository
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.header_preferences, rootKey)
+            repository = Repository.getInstance(requireActivity())
+            reload()
+        }
+
+        data class ServerWithHeaders(
+            val baseUrl: String,
+            val headers: String?,
+            val headerCount: Int
+        )
+
+        fun reload() {
+            preferenceScreen.removeAll()
+            lifecycleScope.launch(Dispatchers.IO) {
+                // Get all users (which have headers now)
+                val serversWithHeaders = repository.getUsers()
+                    .map { user ->
+                        val headerCount = try {
+                            if (user.headers != null) {
+                                val type = object : com.google.gson.reflect.TypeToken<Map<String, String>>() {}.type
+                                val headers = com.google.gson.Gson().fromJson<Map<String, String>>(user.headers, type)
+                                headers?.size ?: 0
+                            } else {
+                                0
+                            }
+                        } catch (e: Exception) {
+                            0
+                        }
+                        ServerWithHeaders(user.baseUrl, user.headers, headerCount)
+                    }
+                    .groupBy { it.baseUrl }
+
+                activity?.runOnUiThread {
+                    addHeaderPreferences(serversWithHeaders)
+                }
+            }
+        }
+
+        private fun addHeaderPreferences(serversByBaseUrl: Map<String, List<ServerWithHeaders>>) {
+            serversByBaseUrl.forEach { entry ->
+                val baseUrl = entry.key
+                val server = entry.value.first()
+
+                val preferenceCategory = androidx.preference.PreferenceCategory(preferenceScreen.context)
+                preferenceCategory.title = shortUrl(baseUrl)
+                preferenceScreen.addPreference(preferenceCategory)
+
+                val preference = androidx.preference.Preference(preferenceScreen.context)
+                preference.title = baseUrl
+                preference.summary = if (server.headerCount == 0) {
+                    getString(R.string.settings_general_headers_prefs_no_headers)
+                } else if (server.headerCount == 1) {
+                    getString(R.string.settings_general_headers_prefs_one_header)
+                } else {
+                    getString(R.string.settings_general_headers_prefs_many_headers, server.headerCount)
+                }
+                preference.onPreferenceClickListener = androidx.preference.Preference.OnPreferenceClickListener { _ ->
+                    activity?.let {
+                        HeaderFragment
+                            .newInstance(baseUrl, server.headers)
+                            .show(it.supportFragmentManager, HeaderFragment.TAG)
+                    }
+                    true
+                }
+                preferenceCategory.addPreference(preference)
+            }
+
+            // Info text if no servers
+            if (serversByBaseUrl.isEmpty()) {
+                val infoCategory = androidx.preference.PreferenceCategory(preferenceScreen.context)
+                infoCategory.title = getString(R.string.settings_general_headers_prefs_info_title)
+                preferenceScreen.addPreference(infoCategory)
+
+                val infoPref = androidx.preference.Preference(preferenceScreen.context)
+                infoPref.summary = getString(R.string.settings_general_headers_prefs_info_summary)
+                infoPref.isSelectable = false
+                infoCategory.addPreference(infoPref)
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
@@ -829,6 +917,21 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             serviceManager.restart()
             runOnUiThread {
                 userSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onHeadersChanged(dialog: DialogFragment, baseUrl: String, headers: Map<String, String>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val user = repository.getUser(baseUrl)
+            if (user != null) {
+                val headersJson = if (headers.isEmpty()) null else com.google.gson.Gson().toJson(headers)
+                val updatedUser = user.copy(headers = headersJson)
+                repository.updateUser(updatedUser)
+                serviceManager.restart() // Restart connections with new headers
+                runOnUiThread {
+                    headerSettingsFragment.reload()
+                }
             }
         }
     }
