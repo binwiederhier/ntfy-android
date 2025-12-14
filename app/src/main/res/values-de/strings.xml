@@ -366,15 +366,15 @@
     <string name="custom_headers_add_title">Neuen Header hinzufügen</string>
     <string name="custom_headers_edit_title">Header bearbeiten</string>
     <string name="custom_headers_delete_title">Header löschen</string>
-    <string name="custom_headers_delete_message">Sind Sie sicher, dass Sie den Header „%1$s" löschen möchten?</string>
+    <string name="custom_headers_delete_message">Sicher, dass Sie den Header „%1$s" löschen möchten?</string>
     <string name="custom_headers_add">Hinzufügen</string>
     <string name="custom_headers_save">Speichern</string>
     <string name="custom_headers_delete">Löschen</string>
     <string name="custom_headers_error_title">Ungültiger Header</string>
     <string name="custom_headers_invalid_name">Ungültige Zeichen im Header-Namen</string>
-    <string name="custom_headers_name_hint">Header-Name (z. B. CF-Access-Client-Id)</string>
+    <string name="custom_headers_name_hint">Header-Name (z.B. CF-Access-Client-Id)</string>
     <string name="custom_headers_value_hint">Header-Wert</string>
-    <string name="custom_header_dialog_description_add">Fügen Sie einen benutzerdefinierten HTTP-Header hinzu, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>
-    <string name="custom_header_dialog_description_edit">Sie können den Header-Namen/Wert für den ausgewählten Header bearbeiten oder ihn löschen.</string>
-    <string name="custom_header_dialog_base_url_hint">Dienst-URL</string>
+    <string name="custom_header_dialog_description_add">Einen benutzerdefinierten HTTP-Header hinzufügen, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>
+    <string name="custom_header_dialog_description_edit">Den Header-Namen/Wert bearbeiten oder löschen.</string>
+    <string name="custom_header_dialog_base_url_hint">Service-URL</string>
 </resources>
