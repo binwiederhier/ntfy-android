@@ -493,22 +493,71 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
         }
     }
 
-    fun getCustomHeaders(): Map<String, String> {
+    /**
+     * Get all custom headers as a list of CustomHeader objects
+     */
+    fun getCustomHeaders(): List<CustomHeader> {
         val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
         return if (json != null) {
             try {
-                val type = object : TypeToken<Map<String, String>>() {}.type
-                Gson().fromJson(json, type) ?: emptyMap()
+                val type = object : TypeToken<List<CustomHeader>>() {}.type
+                Gson().fromJson(json, type) ?: emptyList()
             } catch (e: Exception) {
                 Log.w("Repository", "Failed to parse custom headers", e)
-                emptyMap()
+                emptyList()
             }
         } else {
-            emptyMap()
+            emptyList()
         }
     }
 
-    fun setCustomHeaders(headers: Map<String, String>) {
+    /**
+     * Get custom headers for a specific server URL
+     */
+    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
+        return getCustomHeaders().filter { it.baseUrl == baseUrl }
+    }
+
+    /**
+     * Add a new custom header
+     */
+    fun addCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.add(header)
+        saveCustomHeaders(currentHeaders)
+    }
+
+    /**
+     * Update an existing custom header
+     */
+    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        val index = currentHeaders.indexOfFirst {
+            it.baseUrl == oldHeader.baseUrl &&
+            it.name == oldHeader.name
+        }
+        if (index >= 0) {
+            currentHeaders[index] = newHeader
+            saveCustomHeaders(currentHeaders)
+        }
+    }
+
+    /**
+     * Delete a custom header
+     */
+    fun deleteCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.removeAll {
+            it.baseUrl == header.baseUrl &&
+            it.name == header.name
+        }
+        saveCustomHeaders(currentHeaders)
+    }
+
+    /**
+     * Save the list of custom headers to SharedPreferences
+     */
+    private fun saveCustomHeaders(headers: List<CustomHeader>) {
         val json = if (headers.isEmpty()) {
             null
         } else {

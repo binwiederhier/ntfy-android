@@ -173,22 +173,33 @@ class ApiService(private val context: Context) {
     }
 
     /**
-     * Interceptor that adds custom headers to all HTTP requests
+     * Interceptor that adds custom headers to HTTP requests based on the target server
      */
     class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest = chain.request()
-            val customHeaders = repository.getCustomHeaders()
+            val requestUrl = originalRequest.url.toString()
 
-            // If no custom headers, proceed with original request
+            // Extract base URL from the request (protocol + host + port)
+            val baseUrl = "${originalRequest.url.scheme}://${originalRequest.url.host}" +
+                    if (originalRequest.url.port != 80 && originalRequest.url.port != 443) {
+                        ":${originalRequest.url.port}"
+                    } else {
+                        ""
+                    }
+
+            // Get custom headers for this specific server
+            val customHeaders = repository.getCustomHeadersForServer(baseUrl)
+
+            // If no custom headers for this server, proceed with original request
             if (customHeaders.isEmpty()) {
                 return chain.proceed(originalRequest)
             }
 
             // Add custom headers to the request
             val requestBuilder = originalRequest.newBuilder()
-            customHeaders.forEach { (name, value) ->
-                requestBuilder.addHeader(name, value)
+            customHeaders.forEach { header ->
+                requestBuilder.addHeader(header.name, header.value)
             }
 
             return chain.proceed(requestBuilder.build())

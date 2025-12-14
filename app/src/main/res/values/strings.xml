@@ -358,9 +358,6 @@
     <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
     <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
-    <string name="settings_advanced_custom_headers_key">CustomHeaders</string>
-    <string name="settings_advanced_custom_headers_title">Custom Headers</string>
-    <string name="settings_advanced_custom_headers_summary">Add custom HTTP headers to all requests</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -406,6 +403,15 @@
     <string name="user_dialog_button_delete">Delete user</string>
     <string name="user_dialog_button_save">Save</string>
 
+    <!-- Custom Headers settings -->
+    <string name="settings_general_custom_headers_key">CustomHeaders</string>
+    <string name="settings_general_custom_headers_title">Custom headers</string>
+    <string name="settings_general_custom_headers_summary">Add custom HTTP headers per server</string>
+    <string name="settings_general_custom_headers_prefs_title">Custom Headers</string>
+    <string name="settings_general_custom_headers_prefs_header_add">Add header</string>
+    <string name="settings_general_custom_headers_prefs_header_add_title">Add a header for a server</string>
+    <string name="settings_general_custom_headers_prefs_header_add_summary">Headers are sent with every HTTP request to that server</string>
+
     <!-- Custom Headers dialog  -->
     <string name="custom_headers_add_header">Add Header</string>
     <string name="custom_headers_add_summary">Add a new custom HTTP header</string>
@@ -420,4 +426,7 @@
     <string name="custom_headers_invalid_name">Header name contains invalid characters</string>
     <string name="custom_headers_name_hint">Header name (e.g., CF-Access-Client-Id)</string>
     <string name="custom_headers_value_hint">Header value</string>
+    <string name="custom_header_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
+    <string name="custom_header_dialog_description_edit">You may edit the header name/value for the selected header, or delete it.</string>
+    <string name="custom_header_dialog_base_url_hint">Service URL</string>
 </resources>
