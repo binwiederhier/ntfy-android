@@ -1,7 +1,5 @@
 package io.heckel.ntfy.util
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentResolver
@@ -20,11 +18,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
 import android.view.View
-import android.view.Window
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
 import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
@@ -68,8 +64,13 @@ fun subscriptionTopicShortUrl(subscription: Subscription) : String {
     return topicShortUrl(subscription.baseUrl, subscription.topic)
 }
 
-fun displayName(subscription: Subscription) : String {
-    return subscription.displayName ?: subscriptionTopicShortUrl(subscription)
+fun displayName(appBaseUrl: String?, subscription: Subscription) : String {
+    if (subscription.displayName != null) {
+        return subscription.displayName
+    } else if (appBaseUrl == subscription.baseUrl) {
+        return subscription.topic
+    }
+    return subscriptionTopicShortUrl(subscription)
 }
 
 fun shortUrl(url: String) = url
@@ -190,11 +191,11 @@ fun decodeBytesMessage(notification: Notification): ByteArray {
  * See above; prepend emojis to title if the title is non-empty.
  * Otherwise, they are prepended to the message.
  */
-fun formatTitle(subscription: Subscription, notification: Notification): String {
+fun formatTitle(appBaseUrl: String?, subscription: Subscription, notification: Notification): String {
     return if (notification.title != "") {
         formatTitle(notification)
     } else {
-        displayName(subscription)
+        displayName(appBaseUrl, subscription)
     }
 }
 
@@ -276,16 +277,6 @@ data class FileInfo(
     val size: Long,
 )
 
-// Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
-fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
-    val statusBarColorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
-    statusBarColorAnimation.addUpdateListener { animator ->
-        val color = animator.animatedValue as Int
-        window.statusBarColor = color
-    }
-    statusBarColorAnimation.start()
-}
-
 // Generates a (cryptographically secure) random string of a certain length
 fun randomString(len: Int): String {
     val random = SecureRandom()
@@ -344,10 +335,7 @@ fun supportedImage(mimeType: String?): Boolean {
 // Play didn't grant us the permission, and F-Droid users didn't want us to have it.
 // See https://github.com/binwiederhier/ntfy/issues/531 & https://github.com/binwiederhier/ntfy/issues/684
 fun canOpenAttachment(attachment: Attachment?): Boolean {
-    if (attachment?.type == ANDROID_APP_MIME_TYPE) {
-        return false
-    }
-    return true
+    return attachment?.type != ANDROID_APP_MIME_TYPE
 }
 
 // Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
@@ -507,11 +495,10 @@ fun Button.dangerButton(context: Context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         setTextAppearance(R.style.DangerText)
     } else {
-        setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
+        setTextColor(Colors.dangerText(context))
     }
 }
 
 fun Long.nullIfZero(): Long? {
     return if (this == 0L) return null else this
 }
-

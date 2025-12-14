@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+    <include
+        android:id="@+id/app_bar_drawer"
+        layout="@layout/app_bar_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/share_content_text_hint"
                 android:importantForAutofill="no"
+                android:backgroundTint="?attr/colorPrimary"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 android:lines="10" android:gravity="start|top" app:layout_constraintTop_toBottomOf="@id/share_content_image" android:minLines="1" android:layout_marginTop="5dp"/>
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,6 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:hint="@string/add_dialog_topic_name_hint"
                 android:importantForAutofill="no"
+                android:backgroundTint="?attr/colorPrimary"
                 android:maxLines="1" android:inputType="text|textNoSuggestions" android:maxLength="64"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/share_topic_title" android:layout_marginStart="-3dp"/>
@@ -163,4 +179,7 @@
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="@+id/share_error_text" android:layout_marginTop="2dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

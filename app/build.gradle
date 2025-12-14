@@ -18,8 +18,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 35
 
-        versionCode 41
-        versionName "1.17.8"
+        versionCode 48
+        versionName "1.19.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -53,10 +53,12 @@ android {
         play {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'true'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'true'
+            buildConfigField 'boolean', 'PAYMENT_LINKS_AVAILABLE', 'false' // Google Play Payments Policy, see #1463
         }
         fdroid {
             buildConfigField 'boolean', 'FIREBASE_AVAILABLE', 'false'
             buildConfigField 'boolean', 'RATE_APP_AVAILABLE', 'false'
+            buildConfigField 'boolean', 'PAYMENT_LINKS_AVAILABLE', 'true'
         }
     }
 
@@ -112,7 +114,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Material design
-    implementation "com.google.android.material:material:1.9.0"
+    implementation "com.google.android.material:material:1.13.0"
 
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"

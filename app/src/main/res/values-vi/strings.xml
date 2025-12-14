@@ -25,7 +25,6 @@
     <string name="channel_subscriber_notification_title">Chờ thông báo</string>
     <string name="refresh_message_result">Đã nhận %1$d thông báo</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Xóa vĩnh viễn</string>
-    <string name="main_menu_donate_title">Quyên góp 💸</string>
     <string name="main_action_mode_delete_dialog_cancel">Hủy</string>
     <string name="main_action_mode_delete_dialog_message">Hủy đăng kí các chủ đề đã chọn và xóa tất cả thông báo?</string>
     <string name="main_banner_websocket_button_remind_later">Hỏi sau</string>

@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,13 @@ import io.heckel.ntfy.util.readBitmapFromUriOrNull
 import java.text.DateFormat
 import java.util.*
 
-class MainAdapter(private val repository: Repository, private val onClick: (Subscription) -> Unit, private val onLongClick: (Subscription) -> Unit) :
+class MainAdapter(
+    private val repository: Repository,
+    private val onClick: (Subscription) -> Unit,
+    private val onLongClick: (Subscription) -> Unit,
+    private val countDrawable: Drawable,
+    private val onPrimaryColor: Int
+) :
     ListAdapter<Subscription, MainAdapter.SubscriptionViewHolder>(TopicDiffCallback) {
     val selected = mutableSetOf<Long>() // Subscription IDs
 
@@ -28,7 +35,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_main_item, parent, false)
-        return SubscriptionViewHolder(view, repository, selected, onClick, onLongClick)
+        return SubscriptionViewHolder(view, repository, selected, onClick, onLongClick, countDrawable, onPrimaryColor)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -52,7 +59,15 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class SubscriptionViewHolder(itemView: View, private val repository: Repository, private val selected: Set<Long>, val onClick: (Subscription) -> Unit, val onLongClick: (Subscription) -> Unit) :
+    class SubscriptionViewHolder(
+        itemView: View,
+        private val repository: Repository,
+        private val selected: Set<Long>,
+        val onClick: (Subscription) -> Unit,
+        val onLongClick: (Subscription) -> Unit,
+        private val countDrawable: Drawable,
+        private val onPrimaryColor: Int
+    ) :
         RecyclerView.ViewHolder(itemView) {
         private var subscription: Subscription? = null
         private val context: Context = itemView.context
@@ -64,6 +79,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
         private val notificationDisabledForeverImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_forever_image)
         private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
         private val newItemsView: TextView = itemView.findViewById(R.id.main_item_new)
+        private val appBaseUrl = context.getString(R.string.app_base_url)
 
         fun bind(subscription: Subscription) {
             this.subscription = subscription
@@ -99,7 +115,7 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             } else {
                 imageView.setImageResource(R.drawable.ic_sms_gray_24dp)
             }
-            nameView.text = displayName(subscription)
+            nameView.text = displayName(appBaseUrl, subscription)
             statusView.text = statusMessage
             dateView.text = dateText
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
@@ -111,11 +127,13 @@ class MainAdapter(private val repository: Repository, private val onClick: (Subs
             } else {
                 newItemsView.visibility = View.VISIBLE
                 newItemsView.text = if (subscription.newCount <= 99) subscription.newCount.toString() else "99+"
+                newItemsView.setTextColor(onPrimaryColor)
+                newItemsView.background = countDrawable
             }
             itemView.setOnClickListener { onClick(subscription) }
             itemView.setOnLongClickListener { onLongClick(subscription); true }
             if (selected.contains(subscription.id)) {
-                itemView.setBackgroundResource(Colors.itemSelectedBackground(context))
+                itemView.setBackgroundColor(Colors.itemSelectedBackground(context))
             } else {
                 itemView.setBackgroundColor(Color.TRANSPARENT)
             }

@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="channel_notifications_min_name">Min prioritato</string>
+    <string name="channel_notifications_low_name">Malalta prioritato</string>
+    <string name="channel_notifications_default_name">Defaŭlta prioritato</string>
+</resources>

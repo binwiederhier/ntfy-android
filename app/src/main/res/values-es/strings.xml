@@ -327,7 +327,6 @@
     <string name="add_dialog_base_urls_dropdown_clear">Borrar la URL del servicio</string>
     <string name="main_banner_websocket_text">Cambiar a WebSockets es la forma recomendada para conectarse a su servidor, y podría mejorar la vida de la batería, pero puede requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional en su proxy</a>. Esto se puede cambiar en la Configuración.</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar ahora</string>
-    <string name="main_menu_donate_title">Donar 💸</string>
     <string name="detail_item_cannot_open_apk">Las aplicaciones ya no se pueden instalar desde ntfy. Descárguelas a través del navegador. Consulte el issue #531 para obtener más información.</string>
     <string name="channel_notifications_group_default_name">Predeterminado</string>
     <string name="settings_notifications_insistent_max_priority_title">Mantener alertas para la máxima prioridad</string>

@@ -19,9 +19,7 @@
     <string name="refresh_message_no_results">Her şey güncel</string>
     <string name="main_menu_notifications_disabled_until">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
     <string name="channel_subscriber_notification_noinstant_text_more">%1$d konuya abone olundu</string>
-    <string name="refresh_message_error">%1$d abonelik yenilenemedi
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">%1$d abonelik yenilenemedi\n\n%2$s</string>
     <string name="refresh_message_error_one">Abonelik yenilenemedi: %1$s</string>
     <string name="main_action_bar_title">Abone olunan konular</string>
     <string name="main_menu_notifications_enabled">Bildirimler açık</string>
@@ -209,7 +207,7 @@
     <string name="main_item_date_yesterday">dün</string>
     <string name="main_banner_battery_button_dismiss">Kapat</string>
     <string name="main_banner_battery_button_fix_now">Şimdi düzelt</string>
-    <string name="detail_how_to_example">Örnek (curl kullanarak):<br></br><tt>$ curl -d \"Merhaba\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Örnek (curl kullanarak):<br/><tt>$ curl -d "Merhaba" %1$s</tt> ]]></string>
     <string name="detail_delete_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="detail_test_message_error_unauthorized_user">Mesaj gönderilemiyor: \"%1$s\" kullanıcısı yetkilendirilmedi.</string>
     <string name="detail_how_to_link">Ayrıntılı talimatlar ntfy.sh adrsimde ve belgelerde bulunabilir.</string>
@@ -327,7 +325,6 @@
     <string name="detail_settings_about_header">Hakkında</string>
     <string name="detail_settings_about_topic_url_title">Konu URL\'si</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Panoya kopyalandı</string>
-    <string name="main_menu_donate_title">Bağış yap 💸</string>
     <string name="detail_item_cannot_open_apk">Uygulamalar artık kurulamıyor. Bunun yerine tarayıcı üzerinden indirin. Ayrıntılar için sorun #531\'e bakın.</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">En yüksek öncelikli bildirimler yalnızca bir kez uyarı verir</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Bu abonelik için özel ayarları kullan</string>
@@ -343,4 +340,11 @@
     <string name="settings_advanced_unifiedpush_title">UnifiedPush\'u etkinleştir</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy bir UnifiedPush dağıtıcısı olarak davranmayacaktır</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy bir UnifiedPush dağıtıcısı olarak davranacaktır</string>
+    <string name="main_banner_websocket_reconnect_text">WebSocket bağlantılarının arka planda yeniden bağlanmasını sağlamak için ntfy uygulamasına Alarm ve Hatırlatıcılar iznini verin</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Daha Sonra Hatırlat</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Yoksay</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Şimdi izin ver</string>
+    <string name="settings_advanced_exact_alarms_title">Kesin alarmlar</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy, kesin alarmlar planlayabilir. Kesin alarmlar, WebSocket’lerin arka planda yeniden bağlanması için gereklidir. İzni geri almak için tıklayın.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy, kesin alarmlar planlayamaz. Kesin alarmlar, WebSocket’lerin arka planda yeniden bağlanması için gereklidir. İzni vermek için tıklayın.</string>
 </resources>

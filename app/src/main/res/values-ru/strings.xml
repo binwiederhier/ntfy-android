@@ -18,7 +18,7 @@
     <string name="detail_delete_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_delete_dialog_cancel">Отмена</string>
     <string name="detail_test_title">Тест: Вы можете установить заголовок, если хотите.</string>
-    <string name="detail_how_to_example">Пример (используя curl):<br></br><tt>$ curl -d \"Привет\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[  Пример (используя curl):<br/><tt>$ curl -d \"Привет\" %1$s</tt>  ]]></string>
     <string name="detail_clear_dialog_message">Удалить все уведомления в этой теме\?</string>
     <string name="detail_clear_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_test_message_error">Не получилось отправить сообщение: %1$s</string>
@@ -313,7 +313,6 @@
     <string name="detail_item_cannot_open_apk">Установка приложений через уведомления больше не поддерживается. Скачайте приложение через браузер. Подробности смотрите в отчёте ntfy #531.</string>
     <string name="detail_settings_appearance_icon_set_title">Иконка подписки</string>
     <string name="detail_settings_appearance_icon_set_summary">Использовать иконку для отображения в уведомлениях</string>
-    <string name="main_menu_donate_title">Пожертвовать 💸</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Уведомления с наивысшим приоритетом будут давать о себе знать только один раз</string>
     <string name="detail_settings_notifications_instant_summary_off">Уведомления будут доставляться с помощью Firebase. Могут быть задержки с доставкой, но потребляется меньше энергии.</string>
     <string name="add_dialog_base_urls_dropdown_clear">Очистить URL-адрес сервера</string>
@@ -343,4 +342,11 @@
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Используются пользовательские настройки для этой подписки</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Уведомлять только один раз</string>
     <string name="settings_notifications_insistent_max_priority_title">Продолжать уведомлять при наивысшем приоритете</string>
+    <string name="main_banner_websocket_reconnect_text">Чтобы WebSockets работал в фоновом режиме, проставьте ntfy права «Будильники и напоминания»</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Спроси потом</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Закрыть</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Предоставить</string>
+    <string name="settings_advanced_exact_alarms_title">Точные оповещения</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy может выставлять точные оповещения. Точные оповещения необходимы для переподключения WebSockets в фоновом режиме. Нажмите, чтобы отозвать разрешение.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy может выставлять точные оповещения. Точные оповещения необходимы для переподключения WebSockets в фоновом режиме. Нажмите, чтобы дать разрешение.</string>
 </resources>

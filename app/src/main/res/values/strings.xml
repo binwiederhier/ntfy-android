@@ -42,7 +42,6 @@
     <string name="main_menu_report_bug_title">Report a bug</string>
     <string name="main_menu_docs_title">Read the docs</string>
     <string name="main_menu_rate_title">Rate the app ⭐</string>
-    <string name="main_menu_donate_title">Donate 💸</string>
 
     <!-- Main activity: Action mode -->
     <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
@@ -310,6 +309,9 @@
     <string name="settings_general_dark_mode_entry_system">Use system default</string>
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_general_dynamic_colors_title">Dynamic colors</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Using the dynamic system colors</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Using the ntfy theme colors</string>
     <string name="settings_backup_restore_header">Backup &amp; Restore</string>
     <string name="settings_backup_restore_backup_title">Back up to file</string>
     <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>

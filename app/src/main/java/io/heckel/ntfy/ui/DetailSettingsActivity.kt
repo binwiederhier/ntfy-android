@@ -15,9 +15,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.android.material.appbar.AppBarLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -63,6 +65,24 @@ class DetailSettingsActivity : AppCompatActivity() {
                 .commit()
         }
 
+        val toolbarLayout = findViewById<AppBarLayout>(R.id.app_bar_drawer)
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
+        
+        // Set system status bar color and appearance
+        window.statusBarColor = statusBarColor
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
+        
         // Title
         val displayName = intent.getStringExtra(DetailActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
         title = displayName
@@ -87,6 +107,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private lateinit var openChannelsPref: Preference
         private lateinit var iconSetLauncher: ActivityResultLauncher<String>
         private lateinit var iconRemovePref: Preference
+        private lateinit var appBaseUrl: String
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.detail_preferences, rootKey)
@@ -96,6 +117,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             serviceManager = SubscriberServiceManager(requireActivity())
             notificationService = NotificationService(requireActivity())
             resolver = requireContext().applicationContext.contentResolver
+            appBaseUrl = requireContext().getString(R.string.app_base_url)
 
             // Create result launcher for custom icon (must be created in onCreatePreferences() directly)
             iconSetLauncher = createIconPickLauncher()
@@ -137,7 +159,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         private fun loadInstantPref() {
             val appBaseUrl = getString(R.string.app_base_url)
             val prefId = context?.getString(R.string.detail_settings_notifications_instant_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = BuildConfig.FIREBASE_AVAILABLE && subscription.baseUrl == appBaseUrl
             pref?.isChecked = subscription.instant
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -148,7 +170,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.instant
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_instant_summary_on)
                 } else {
@@ -159,7 +181,7 @@ class DetailSettingsActivity : AppCompatActivity() {
 
         private fun loadDedicatedChannelsPrefs() {
             val prefId = context?.getString(R.string.detail_settings_notifications_dedicated_channels_key) ?: return
-            val pref: SwitchPreference? = findPreference(prefId)
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
             pref?.isVisible = true
             pref?.isChecked = subscription.dedicatedChannels
             pref?.preferenceDataStore = object : PreferenceDataStore() {
@@ -176,7 +198,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     return subscription.dedicatedChannels
                 }
             }
-            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { preference ->
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
                 if (preference.isChecked) {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summary_on)
                 } else {
@@ -381,7 +403,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     save(newSubscription)
                     // Update activity title
                     activity?.runOnUiThread {
-                        activity?.title = displayName(newSubscription)
+                        activity?.title = displayName(appBaseUrl, newSubscription)
                     }
                     // Update dedicated notification channel
                     if (newSubscription.dedicatedChannels) {
@@ -394,9 +416,10 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
             pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { provider ->
                 if (TextUtils.isEmpty(provider.text)) {
+                    val appBaseUrl = context?.getString(R.string.app_base_url)
                     getString(
                         R.string.detail_settings_appearance_display_name_default_summary,
-                        displayName(subscription)
+                        displayName(appBaseUrl, subscription)
                     )
                 } else {
                     provider.text

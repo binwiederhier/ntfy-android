@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.RadioButton
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import kotlinx.coroutines.Dispatchers
@@ -74,7 +75,7 @@ class NotificationFragment : DialogFragment() {
         muteForeverButton = view.findViewById(R.id.notification_dialog_forever)
         muteForeverButton.setOnClickListener{ onClick(Repository.MUTED_UNTIL_FOREVER) }
 
-        return AlertDialog.Builder(activity)
+        return MaterialAlertDialogBuilder(requireContext())
             .setView(view)
             .create()
     }
