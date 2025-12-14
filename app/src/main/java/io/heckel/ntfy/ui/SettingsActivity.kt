@@ -49,9 +49,10 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener {
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
+    private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
 
     private lateinit var repository: Repository
     private lateinit var serviceManager: SubscriberServiceManager
@@ -117,6 +118,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         // Save user settings fragment for later
         if (fragment is UserSettingsFragment) {
             userSettingsFragment = fragment
+        }
+        // Save custom header settings fragment for later
+        if (fragment is CustomHeaderSettingsFragment) {
+            customHeaderSettingsFragment = fragment
         }
         return true
     }
@@ -795,6 +800,91 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
+    class CustomHeaderSettingsFragment : PreferenceFragmentCompat() {
+        private lateinit var repository: Repository
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.custom_header_preferences, rootKey)
+            repository = Repository.getInstance(requireActivity())
+            reload()
+        }
+
+        data class CustomHeaderWithMetadata(
+            val baseUrl: String,
+            val headers: List<io.heckel.ntfy.db.CustomHeader>
+        )
+
+        fun reload() {
+            preferenceScreen.removeAll()
+            lifecycleScope.launch(Dispatchers.IO) {
+                val headersByBaseUrl = repository.getCustomHeaders()
+                    .groupBy { it.baseUrl }
+                    .map { entry ->
+                        CustomHeaderWithMetadata(entry.key, entry.value)
+                    }
+                    .sortedBy { it.baseUrl }
+
+                activity?.runOnUiThread {
+                    addCustomHeaderPreferences(headersByBaseUrl)
+                }
+            }
+        }
+
+        private fun addCustomHeaderPreferences(headersByBaseUrl: List<CustomHeaderWithMetadata>) {
+            val baseUrlsInUse = headersByBaseUrl.map { it.baseUrl }
+
+            headersByBaseUrl.forEach { serverHeaders ->
+                val baseUrl = serverHeaders.baseUrl
+                val headers = serverHeaders.headers
+
+                val preferenceCategory = PreferenceCategory(preferenceScreen.context)
+                preferenceCategory.title = shortUrl(baseUrl)
+                preferenceScreen.addPreference(preferenceCategory)
+
+                headers.forEach { header ->
+                    val preference = Preference(preferenceScreen.context)
+                    preference.title = header.name
+                    preference.summary = redactHeaderValue(header.value)
+                    preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                        activity?.let {
+                            CustomHeaderFragment
+                                .newInstance(header, baseUrlsInUse)
+                                .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
+                        }
+                        true
+                    }
+                    preferenceCategory.addPreference(preference)
+                }
+            }
+
+            // Add header
+            val headerAddCategory = PreferenceCategory(preferenceScreen.context)
+            headerAddCategory.title = getString(R.string.settings_general_custom_headers_prefs_header_add)
+            preferenceScreen.addPreference(headerAddCategory)
+
+            val headerAddPref = Preference(preferenceScreen.context)
+            headerAddPref.title = getString(R.string.settings_general_custom_headers_prefs_header_add_title)
+            headerAddPref.summary = getString(R.string.settings_general_custom_headers_prefs_header_add_summary)
+            headerAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                activity?.let {
+                    CustomHeaderFragment
+                        .newInstance(header = null, baseUrlsInUse = baseUrlsInUse)
+                        .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
+                }
+                true
+            }
+            headerAddCategory.addPreference(headerAddPref)
+        }
+
+        private fun redactHeaderValue(value: String): String {
+            return when {
+                value.isEmpty() -> "(empty)"
+                value.length <= 3 -> "•".repeat(value.length)
+                else -> "•".repeat(8)
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
@@ -829,6 +919,36 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             serviceManager.restart()
             runOnUiThread {
                 userSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onAddCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.addCustomHeader(header)
+            serviceManager.restart() // Restart to apply new headers
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onUpdateCustomHeader(dialog: DialogFragment, oldHeader: io.heckel.ntfy.db.CustomHeader, newHeader: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.updateCustomHeader(oldHeader, newHeader)
+            serviceManager.restart() // Restart to apply header changes
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onDeleteCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.deleteCustomHeader(header)
+            serviceManager.restart()
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
             }
         }
     }

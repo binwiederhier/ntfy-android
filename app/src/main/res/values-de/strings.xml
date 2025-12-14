@@ -350,15 +350,23 @@
     <string name="settings_advanced_exact_alarms_title">Genaue Alarme</string>
     <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy kann keine genauen Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Tippe hier, um die Berechtigung zu erteilen.</string>
-    <string name="settings_advanced_custom_headers_key">BenutzerdefinierteHeader</string>
-    <string name="settings_advanced_custom_headers_title">Benutzerdefinierte Header</string>
-    <string name="settings_advanced_custom_headers_summary">Benutzerdefinierte HTTP-Header zu allen Anfragen hinzufügen</string>
+
+    <!-- Custom Headers settings -->
+    <string name="settings_general_custom_headers_key">BenutzerdefinierteHeader</string>
+    <string name="settings_general_custom_headers_title">Benutzerdefinierte Header</string>
+    <string name="settings_general_custom_headers_summary">Benutzerdefinierte HTTP-Header pro Server hinzufügen</string>
+    <string name="settings_general_custom_headers_prefs_title">Benutzerdefinierte Header</string>
+    <string name="settings_general_custom_headers_prefs_header_add">Header hinzufügen</string>
+    <string name="settings_general_custom_headers_prefs_header_add_title">Header für einen Server hinzufügen</string>
+    <string name="settings_general_custom_headers_prefs_header_add_summary">Header werden mit jeder HTTP-Anfrage an diesen Server gesendet</string>
+
+    <!-- Custom Headers dialog -->
     <string name="custom_headers_add_header">Header hinzufügen</string>
     <string name="custom_headers_add_summary">Neuen benutzerdefinierten HTTP-Header hinzufügen</string>
     <string name="custom_headers_add_title">Neuen Header hinzufügen</string>
     <string name="custom_headers_edit_title">Header bearbeiten</string>
     <string name="custom_headers_delete_title">Header löschen</string>
-    <string name="custom_headers_delete_message">Sind Sie sicher, dass Sie den Header „%1$s“ löschen möchten?</string>
+    <string name="custom_headers_delete_message">Sind Sie sicher, dass Sie den Header „%1$s" löschen möchten?</string>
     <string name="custom_headers_add">Hinzufügen</string>
     <string name="custom_headers_save">Speichern</string>
     <string name="custom_headers_delete">Löschen</string>
@@ -366,4 +374,7 @@
     <string name="custom_headers_invalid_name">Ungültige Zeichen im Header-Namen</string>
     <string name="custom_headers_name_hint">Header-Name (z. B. CF-Access-Client-Id)</string>
     <string name="custom_headers_value_hint">Header-Wert</string>
+    <string name="custom_header_dialog_description_add">Fügen Sie einen benutzerdefinierten HTTP-Header hinzu, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>
+    <string name="custom_header_dialog_description_edit">Sie können den Header-Namen/Wert für den ausgewählten Header bearbeiten oder ihn löschen.</string>
+    <string name="custom_header_dialog_base_url_hint">Dienst-URL</string>
 </resources>

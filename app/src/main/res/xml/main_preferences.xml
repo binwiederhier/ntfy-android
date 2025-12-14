@@ -45,6 +45,11 @@
                 app:title="@string/settings_general_users_title"
                 app:summary="@string/settings_general_users_summary"
                 app:fragment="io.heckel.ntfy.ui.SettingsActivity$UserSettingsFragment"/>
+        <Preference
+                app:key="@string/settings_general_custom_headers_key"
+                app:title="@string/settings_general_custom_headers_title"
+                app:summary="@string/settings_general_custom_headers_summary"
+                app:fragment="io.heckel.ntfy.ui.SettingsActivity$CustomHeaderSettingsFragment"/>
         <ListPreference
                 app:key="@string/settings_general_dark_mode_key"
                 app:title="@string/settings_general_dark_mode_title"
@@ -98,11 +103,6 @@
                 app:key="@string/settings_advanced_clear_logs_key"
                 app:title="@string/settings_advanced_clear_logs_title"
                 app:summary="@string/settings_advanced_clear_logs_summary"/>
-        <Preference
-                app:key="@string/settings_advanced_custom_headers_key"
-                app:title="@string/settings_advanced_custom_headers_title"
-                app:summary="@string/settings_advanced_custom_headers_summary"
-                app:fragment="io.heckel.ntfy.ui.CustomHeadersFragment" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_about_header">
         <Preference
