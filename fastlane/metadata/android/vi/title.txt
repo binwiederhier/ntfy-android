@@ -1,1 +1,1 @@
-ntfy - PUT/POST đến điện thoại của bạn
+ntfy - PUT/POST đến điện thoại
