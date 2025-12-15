@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.util.AfterChangedTextWatcher
@@ -25,6 +26,7 @@ class CustomHeaderFragment : DialogFragment() {
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var headerNameView: TextInputEditText
     private lateinit var headerValueView: TextInputEditText
+    private lateinit var headerNameLayout: TextInputLayout
     private lateinit var positiveButton: Button
 
     interface CustomHeaderDialogListener {
@@ -60,6 +62,7 @@ class CustomHeaderFragment : DialogFragment() {
         baseUrlView = view.findViewById(R.id.custom_header_dialog_base_url)
         headerNameView = view.findViewById(R.id.custom_header_dialog_name)
         headerValueView = view.findViewById(R.id.custom_header_dialog_value)
+        headerNameLayout = view.findViewById(R.id.custom_header_dialog_name_layout)
 
         var title: String
         if (header == null) {
@@ -155,17 +158,32 @@ class CustomHeaderFragment : DialogFragment() {
         val headerName = headerNameView.text?.toString()?.trim() ?: ""
         val headerValue = headerValueView.text?.toString()?.trim() ?: ""
 
+        // Clear previous errors
+        headerNameLayout.error = null
+
+        // Validate header name
+        var isValid = true
+        if (headerName.isNotEmpty()) {
+            if (!validateHeaderName(headerName)) {
+                headerNameLayout.error = getString(R.string.custom_headers_invalid_name)
+                isValid = false
+            } else if (isReservedHeader(headerName)) {
+                headerNameLayout.error = getString(R.string.custom_headers_reserved_name)
+                isValid = false
+            }
+        }
+
         if (header == null) {
             // New header: baseUrl, name, and value required
             positiveButton.isEnabled = validUrl(baseUrl)
                 && headerName.isNotEmpty()
-                && validateHeaderName(headerName)
                 && headerValue.isNotEmpty()
+                && isValid
         } else {
             // Editing header: name and value required
             positiveButton.isEnabled = headerName.isNotEmpty()
-                && validateHeaderName(headerName)
                 && headerValue.isNotEmpty()
+                && isValid
         }
     }
 
@@ -176,6 +194,21 @@ class CustomHeaderFragment : DialogFragment() {
         // and must not start or end with hyphens
         val regex = Regex("^[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]$|^[A-Za-z0-9]$")
         return regex.matches(name)
+    }
+
+    private fun isReservedHeader(name: String): Boolean {
+        // These headers are already set by ntfy and cannot be overridden
+        val nameLower = name.lowercase()
+        val reservedHeaders = setOf(
+            "user-agent",
+            "authorization",
+            "host",
+            "connection",
+            "upgrade",
+            "accept-encoding"
+        )
+        // Also block all WebSocket-related headers
+        return reservedHeaders.contains(nameLower) || nameLower.startsWith("sec-websocket-")
     }
 
     companion object {
