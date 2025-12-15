@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
@@ -44,6 +45,7 @@ class WsConnection(
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
         .connectTimeout(10, TimeUnit.SECONDS)
+        .addInterceptor(ApiService.CustomHeadersInterceptor(repository))
         .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
