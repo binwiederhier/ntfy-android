@@ -424,8 +424,8 @@
     <string name="custom_headers_delete">Delete</string>
     <string name="custom_headers_error_title">Invalid Header</string>
     <string name="custom_headers_invalid_name">Header name contains invalid characters</string>
-    <string name="custom_headers_name_hint">Header name (e.g., CF-Access-Client-Id)</string>
-    <string name="custom_headers_value_hint">Header value</string>
+    <string name="custom_headers_name_hint">Name (e.g. CF-Access-Client-Id)</string>
+    <string name="custom_headers_value_hint">Value</string>
     <string name="custom_header_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
     <string name="custom_header_dialog_description_edit">You may edit the header name/value for the selected header, or delete it.</string>
     <string name="custom_header_dialog_base_url_hint">Service URL</string>

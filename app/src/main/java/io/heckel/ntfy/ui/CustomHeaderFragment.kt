@@ -1,6 +1,5 @@
 package io.heckel.ntfy.ui
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +7,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.CustomHeader
@@ -54,19 +55,19 @@ class CustomHeaderFragment : DialogFragment() {
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_custom_header_dialog, null)
 
         val positiveButtonTextResId = if (header == null) R.string.custom_headers_add else R.string.custom_headers_save
-        val titleView = view.findViewById(R.id.custom_header_dialog_title) as TextView
-        val descriptionView = view.findViewById(R.id.custom_header_dialog_description) as TextView
+        val descriptionView: TextView = view.findViewById(R.id.custom_header_dialog_description)
 
         baseUrlView = view.findViewById(R.id.custom_header_dialog_base_url)
         headerNameView = view.findViewById(R.id.custom_header_dialog_name)
         headerValueView = view.findViewById(R.id.custom_header_dialog_value)
 
+        var title: String
         if (header == null) {
-            titleView.text = getString(R.string.custom_headers_add_title)
+            title = getString(R.string.custom_headers_add_title)
             descriptionView.text = getString(R.string.custom_header_dialog_description_add)
             baseUrlView.visibility = View.VISIBLE
         } else {
-            titleView.text = getString(R.string.custom_headers_edit_title)
+            title = getString(R.string.custom_headers_edit_title)
             descriptionView.text = getString(R.string.custom_header_dialog_description_edit)
             baseUrlView.visibility = View.GONE
             baseUrlView.setText(header!!.baseUrl)
@@ -75,7 +76,8 @@ class CustomHeaderFragment : DialogFragment() {
         }
 
         // Build dialog
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
             .setView(view)
             .setPositiveButton(positiveButtonTextResId) { _, _ ->
                 saveClicked()
@@ -140,7 +142,7 @@ class CustomHeaderFragment : DialogFragment() {
             listener.onAddCustomHeader(this, newHeader)
         } else {
             val newHeader = CustomHeader(
-                if (baseUrl.isEmpty()) header!!.baseUrl else baseUrl,
+                baseUrl.ifEmpty { header!!.baseUrl },
                 headerName,
                 headerValue
             )
