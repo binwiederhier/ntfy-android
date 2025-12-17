@@ -25,7 +25,3 @@ allprojects {
         maven { url "https://jitpack.io" } // For StfalconImageViewer
     }
 }
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}

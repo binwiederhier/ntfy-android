@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'com.google.devtools.ksp'
 }
@@ -11,7 +13,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace "io.heckel.ntfy"
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
@@ -67,18 +69,20 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        freeCompilerArgs += [
-            '-Xjvm-default=all-compatibility' // https://stackoverflow.com/a/71234042/1440785
-        ]
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            freeCompilerArgs = [
+                '-Xjvm-default=all-compatibility' // https://stackoverflow.com/a/71234042/1440785
+            ]
+        }
     }
 }
 
 // Disables GoogleServices tasks for F-Droid variant
 android.applicationVariants.all { variant ->
     def shouldProcessGoogleServices = variant.flavorName == "play"
-    def googleTask = tasks.findByName("process${variant.name.capitalize()}GoogleServices")
+    def googleTask = tasks.named("process${variant.name.capitalize()}GoogleServices").get()
     googleTask.enabled = shouldProcessGoogleServices
 }
 
