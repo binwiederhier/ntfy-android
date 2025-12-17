@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -31,7 +30,6 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
-import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -342,10 +340,7 @@ fun canOpenAttachment(attachment: Attachment?): Boolean {
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val powerManager = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val appName = context.applicationContext.packageName
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        return powerManager.isIgnoringBatteryOptimizations(appName)
-    }
-    return true
+    return powerManager.isIgnoringBatteryOptimizations(appName)
 }
 
 // Returns true if dark mode is on, see https://stackoverflow.com/a/60761189/1440785
@@ -491,12 +486,8 @@ fun String.sha256(): String {
     return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
-fun Button.dangerButton(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        setTextAppearance(R.style.DangerText)
-    } else {
-        setTextColor(Colors.dangerText(context))
-    }
+fun Button.dangerButton() {
+    setTextAppearance(R.style.DangerText)
 }
 
 fun Long.nullIfZero(): Long? {

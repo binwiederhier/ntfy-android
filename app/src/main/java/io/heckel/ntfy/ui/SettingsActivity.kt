@@ -256,14 +256,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)
-            channelPrefs?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             channelPrefs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             channelPrefs?.onPreferenceClickListener = OnPreferenceClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                        putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                    })
-                }
+                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                })
                 false
             }
 

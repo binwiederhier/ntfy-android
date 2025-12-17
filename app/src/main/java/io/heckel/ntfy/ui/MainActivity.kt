@@ -257,27 +257,24 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
         }
         fixNowButton.setOnClickListener {
-            // It should not be visible for SDK < 23
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    Log.d(TAG, Uri.parse("package:$packageName").toString())
-                    startActivity(
-                        Intent(
-                            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                            Uri.parse("package:$packageName")
-                        )
+            try {
+                Log.d(TAG, Uri.parse("package:$packageName").toString())
+                startActivity(
+                    Intent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        Uri.parse("package:$packageName")
                     )
-                } catch (e: ActivityNotFoundException) {
-                    try {
-                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                    } catch (e2: ActivityNotFoundException) {
-                        startActivity(Intent(Settings.ACTION_SETTINGS))
-                    }
+                )
+            } catch (e: ActivityNotFoundException) {
+                try {
+                    startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                } catch (e2: ActivityNotFoundException) {
+                    startActivity(Intent(Settings.ACTION_SETTINGS))
                 }
-                // Hide, at least for now
-                val batteryBanner = findViewById<View>(R.id.main_banner_battery)
-                batteryBanner.visibility = View.GONE
             }
+            // Hide, at least for now
+            val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+            batteryBanner.visibility = View.GONE
         }
 
         // WebSocket banner
@@ -768,7 +765,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }

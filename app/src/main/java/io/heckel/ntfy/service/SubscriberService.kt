@@ -275,18 +275,15 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun createNotificationChannel(): NotificationManager? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channelName = getString(R.string.channel_subscriber_service_name) // Show's up in UI
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW).let {
-                it.setShowBadge(false) // Don't show long-press badge
-                it
-            }
-            notificationManager.createNotificationChannel(channel)
-            return notificationManager
+    private fun createNotificationChannel(): NotificationManager {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val channelName = getString(R.string.channel_subscriber_service_name) // Show's up in UI
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW).let {
+            it.setShowBadge(false) // Don't show long-press badge
+            it
         }
-        return null
+        notificationManager.createNotificationChannel(channel)
+        return notificationManager
     }
 
     private fun createNotification(title: String, text: String): Notification {

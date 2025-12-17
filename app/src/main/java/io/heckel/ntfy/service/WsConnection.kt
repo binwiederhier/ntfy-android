@@ -2,8 +2,6 @@ package io.heckel.ntfy.service
 
 import android.app.AlarmManager
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
@@ -108,23 +106,11 @@ class WsConnection(
             return
         }
         state = State.Scheduled
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
-            val reconnectTime = Calendar.getInstance()
-            reconnectTime.add(Calendar.SECOND, seconds)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        reconnectTime.timeInMillis,
-                        RECONNECT_TAG,
-                        { start() },
-                        null
-                    )
-                } else {
-                    Log.d(TAG, "SCHEDULE_EXACT_ALARM permission denied: Failed to reschedule websocket connection")
-                }
-            } else {
+        Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
+        val reconnectTime = Calendar.getInstance()
+        reconnectTime.add(Calendar.SECOND, seconds)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (alarmManager.canScheduleExactAlarms()) {
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
                     reconnectTime.timeInMillis,
@@ -132,11 +118,17 @@ class WsConnection(
                     { start() },
                     null
                 )
+            } else {
+                Log.d(TAG, "SCHEDULE_EXACT_ALARM permission denied: Failed to reschedule websocket connection")
             }
         } else {
-            Log.d(TAG, "$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via handler)")
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({ start() }, TimeUnit.SECONDS.toMillis(seconds.toLong()))
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                reconnectTime.timeInMillis,
+                RECONNECT_TAG,
+                { start() },
+                null
+            )
         }
     }
 
