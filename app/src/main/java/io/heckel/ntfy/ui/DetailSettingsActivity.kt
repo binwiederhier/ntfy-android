@@ -32,6 +32,7 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.util.*
+import androidx.core.net.toUri
 
 /**
  * Subscription settings
@@ -143,10 +144,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadInsistentMaxPriorityPref()
                 loadIconSetPref()
                 loadIconRemovePref()
-                if (notificationService.channelsSupported()) {
-                    loadDedicatedChannelsPrefs()
-                    loadOpenChannelsPrefs()
-                }
+                loadDedicatedChannelsPrefs()
+                loadOpenChannelsPrefs()
             } else {
                 val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
@@ -507,7 +506,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 return
             }
             try {
-                resolver.delete(Uri.parse(uri), null, null)
+                resolver.delete(uri.toUri(), null, null)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to delete $uri", e)
             }

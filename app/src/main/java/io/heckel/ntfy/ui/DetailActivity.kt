@@ -55,6 +55,7 @@ import java.util.Date
 import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
+import androidx.core.net.toUri
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -726,7 +727,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             handleActionModeClick(notification)
         } else if (notification.click != "") {
             try {
-                startActivity(Intent(ACTION_VIEW, Uri.parse(notification.click)))
+                startActivity(Intent(ACTION_VIEW, notification.click.toUri()))
             } catch (e: Exception) {
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {
