@@ -4,9 +4,6 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
-repositories {
-    mavenCentral()
-}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
