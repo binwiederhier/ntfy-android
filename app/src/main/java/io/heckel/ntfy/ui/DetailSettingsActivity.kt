@@ -96,7 +96,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         return true
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : BasePreferenceFragment() {
         private lateinit var resolver: ContentResolver
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
