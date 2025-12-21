@@ -349,4 +349,7 @@
     <string name="settings_advanced_exact_alarms_title">Alarmas exactas</string>
     <string name="settings_advanced_exact_alarms_true">ntfy pode pogramar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para revogar o permiso.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy non pode programar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para conceder o permiso.</string>
+    <string name="settings_general_dynamic_colors_title">Cores dinámicas</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Usando as cores dinámicas do sistema</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Usando as cores do decorado ntfy</string>
 </resources>

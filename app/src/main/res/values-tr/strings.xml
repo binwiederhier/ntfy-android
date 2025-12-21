@@ -347,4 +347,7 @@
     <string name="settings_advanced_exact_alarms_title">Kesin alarmlar</string>
     <string name="settings_advanced_exact_alarms_true">ntfy, kesin alarmlar planlayabilir. Kesin alarmlar, WebSocket’lerin arka planda yeniden bağlanması için gereklidir. İzni geri almak için tıklayın.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy, kesin alarmlar planlayamaz. Kesin alarmlar, WebSocket’lerin arka planda yeniden bağlanması için gereklidir. İzni vermek için tıklayın.</string>
+    <string name="settings_general_dynamic_colors_title">Değişken renkler</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Değişken sistem renkleri kullanılıyor</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">ntfy tema renkleri kullanılıyor</string>
 </resources>

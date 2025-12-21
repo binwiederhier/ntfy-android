@@ -346,4 +346,7 @@
     <string name="main_banner_websocket_reconnect_button_remind_later">Demander plus tard</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">Ignorer</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Autoriser</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmes exactes</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy peut programmer des alarmes exactes. Les alarmes exactes sont nécessaires pour reconnecter les WebSockets en arrière-plan. Cliquez pour révoquer l’autorisation.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy ne peut pas programmer d’alarmes exactes. Les alarmes exactes sont nécessaires pour reconnecter les WebSockets en arrière-plan. Cliquez pour accorder l’autorisation.</string>
 </resources>

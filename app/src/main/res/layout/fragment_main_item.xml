@@ -3,7 +3,7 @@
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
                                                    android:layout_width="match_parent"
                                                    android:layout_height="wrap_content"
-                                                   android:background="?android:attr/selectableItemBackground"
+                                                   android:foreground="?android:attr/selectableItemBackground"
                                                    android:orientation="horizontal" android:clickable="true"
                                                    android:focusable="true" android:paddingEnd="18dp"
                                                    android:paddingStart="18dp">

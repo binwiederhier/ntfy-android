@@ -339,4 +339,7 @@
     <string name="detail_settings_notifications_open_channels_summary">Helimärguanded, „Ära sega“ olekuga mittearvestamine, jne.</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Jätka pidevate märguannetega</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Anna märku vaid üks kord</string>
+    <string name="settings_general_dynamic_colors_title">Kasuta dünaamilist värvivalikut</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Kasutan dünaamilist süsteemi värvide valikut</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Kasutan ntfy kujunduste valikut</string>
 </resources>

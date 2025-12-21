@@ -349,4 +349,7 @@
     <string name="settings_advanced_exact_alarms_title">精準提醒</string>
     <string name="settings_advanced_exact_alarms_true">ntfy 可以排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以撤銷此權限。</string>
     <string name="settings_advanced_exact_alarms_false">ntfy 無法排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以授予此權限。</string>
+    <string name="settings_general_dynamic_colors_title">動態色彩</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">使用系統動態色彩</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">使用 ntfy 主題色彩</string>
 </resources>

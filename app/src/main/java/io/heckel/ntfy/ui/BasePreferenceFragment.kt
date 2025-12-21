@@ -1,6 +1,11 @@
 package io.heckel.ntfy.ui
 
+import android.os.Bundle
+import android.view.View
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -10,6 +15,20 @@ import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 
 abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        listView?.let { recyclerView ->
+            recyclerView.clipToPadding = false
+            ViewCompat.setOnApplyWindowInsetsListener(recyclerView) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.updatePadding(bottom = systemBars.bottom)
+                insets
+            }
+        }
+    }
+
     /**
      * Show [ListPreference] and [EditTextPreference] dialog by [MaterialAlertDialogBuilder]
      */
