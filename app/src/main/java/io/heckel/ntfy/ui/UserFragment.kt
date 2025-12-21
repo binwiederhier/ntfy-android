@@ -102,7 +102,7 @@ class UserFragment : DialogFragment() {
             if (user != null) {
                 dialog
                     .getButton(AlertDialog.BUTTON_NEUTRAL)
-                    .dangerButton(requireContext())
+                    .dangerButton()
             }
 
             // Validate input when typing

@@ -178,7 +178,7 @@
                     app:flow_firstVerticalBias="0"
                     app:flow_firstHorizontalStyle="packed"
                     app:flow_firstVerticalStyle="packed"
-                    app:flow_maxElementsWrap="1"
+                    app:flow_maxElementsWrap="3"
                     android:layout_margin="0dp"
                     android:padding="0dp"
                     app:constraint_referenced_ids="button1,button2,button3"/>

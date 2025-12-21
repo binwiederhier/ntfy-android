@@ -67,7 +67,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 .build()
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
-                if (!response.isSuccessful || response.body == null) {
+                if (!response.isSuccessful) {
                     throw Exception("Unexpected response: ${response.code}")
                 }
                 save(updateAttachmentFromResponse(response))
@@ -84,7 +84,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
                 val downloadLimit = getDownloadLimit(userAction)
                 outFile.use { fileOut ->
-                    val fileIn = response.body!!.byteStream()
+                    val fileIn = response.body.byteStream()
                     val buffer = ByteArray(BUFFER_SIZE)
                     var bytes = fileIn.read(buffer)
                     var lastProgress = 0L

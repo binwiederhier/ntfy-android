@@ -94,8 +94,8 @@ class ApiService {
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
-            val body = response.body?.string()?.trim()
-            if (body.isNullOrEmpty()) return emptyList()
+            val body = response.body.string().trim()
+            if (body.isEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
                 parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
             }
@@ -124,7 +124,7 @@ class ApiService {
                     if (!response.isSuccessful) {
                         throw Exception("Unexpected response ${response.code} when subscribing to topic $url")
                     }
-                    val source = response.body?.source() ?: throw Exception("Unexpected response for $url: body is empty")
+                    val source = response.body.source()
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
                         val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream

@@ -11,8 +11,9 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
+import androidx.core.content.edit
 
-class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
+class Repository(private val sharedPrefs: SharedPreferences, database: Database) {
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
@@ -190,9 +191,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setPollWorkerVersion(version: Int) {
-        sharedPrefs.edit()
-            .putInt(SHARED_PREFS_POLL_WORKER_VERSION, version)
-            .apply()
+        sharedPrefs.edit {
+            putInt(SHARED_PREFS_POLL_WORKER_VERSION, version)
+        }
     }
 
     fun getDeleteWorkerVersion(): Int {
@@ -200,9 +201,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setDeleteWorkerVersion(version: Int) {
-        sharedPrefs.edit()
-            .putInt(SHARED_PREFS_DELETE_WORKER_VERSION, version)
-            .apply()
+        sharedPrefs.edit {
+            putInt(SHARED_PREFS_DELETE_WORKER_VERSION, version)
+        }
     }
 
     fun getAutoRestartWorkerVersion(): Int {
@@ -210,20 +211,20 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setAutoRestartWorkerVersion(version: Int) {
-        sharedPrefs.edit()
-            .putInt(SHARED_PREFS_AUTO_RESTART_WORKER_VERSION, version)
-            .apply()
+        sharedPrefs.edit {
+            putInt(SHARED_PREFS_AUTO_RESTART_WORKER_VERSION, version)
+        }
     }
 
     fun setMinPriority(minPriority: Int) {
         if (minPriority <= MIN_PRIORITY_ANY) {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_MIN_PRIORITY)
-                .apply()
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_MIN_PRIORITY)
+            }
         } else {
-            sharedPrefs.edit()
-                .putInt(SHARED_PREFS_MIN_PRIORITY, minPriority)
-                .apply()
+            sharedPrefs.edit {
+                putInt(SHARED_PREFS_MIN_PRIORITY, minPriority)
+            }
         }
     }
 
@@ -241,9 +242,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setAutoDownloadMaxSize(maxSize: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, maxSize)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE, maxSize)
+        }
     }
 
     fun getAutoDeleteSeconds(): Long {
@@ -251,20 +252,20 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setAutoDeleteSeconds(seconds: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_AUTO_DELETE_SECONDS, seconds)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_AUTO_DELETE_SECONDS, seconds)
+        }
     }
 
     fun setDarkMode(mode: Int) {
         if (mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_DARK_MODE)
-                .apply()
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_DARK_MODE)
+            }
         } else {
-            sharedPrefs.edit()
-                .putInt(SHARED_PREFS_DARK_MODE, mode)
-                .apply()
+            sharedPrefs.edit {
+                putInt(SHARED_PREFS_DARK_MODE, mode)
+            }
         }
     }
 
@@ -273,9 +274,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setDynamicColorsEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_DYNAMIC_COLORS, enabled)
-            .commit()
+        sharedPrefs.edit(commit = true) {
+            putBoolean(SHARED_PREFS_DYNAMIC_COLORS, enabled)
+        }
     }
 
     fun getDynamicColorsEnabled(): Boolean {
@@ -283,9 +284,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setConnectionProtocol(connectionProtocol: String) {
-        sharedPrefs.edit()
-            .putString(SHARED_PREFS_CONNECTION_PROTOCOL, connectionProtocol)
-            .apply()
+        sharedPrefs.edit {
+            putString(SHARED_PREFS_CONNECTION_PROTOCOL, connectionProtocol)
+        }
     }
 
     fun getConnectionProtocol(): String {
@@ -297,9 +298,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setBroadcastEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_BROADCAST_ENABLED, enabled)
-            .apply()
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_BROADCAST_ENABLED, enabled)
+        }
     }
 
     fun getUnifiedPushEnabled(): Boolean {
@@ -307,9 +308,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setUnifiedPushEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_UNIFIEDPUSH_ENABLED, enabled)
-            .apply()
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_UNIFIEDPUSH_ENABLED, enabled)
+        }
     }
 
     fun getInsistentMaxPriorityEnabled(): Boolean {
@@ -317,9 +318,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setInsistentMaxPriorityEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, enabled)
-            .apply()
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED, enabled)
+        }
     }
 
     fun getRecordLogs(): Boolean {
@@ -327,9 +328,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setRecordLogsEnabled(enabled: Boolean) {
-        sharedPrefs.edit()
-            .putBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, enabled)
-            .apply()
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, enabled)
+        }
     }
 
     fun getBatteryOptimizationsRemindTime(): Long {
@@ -337,9 +338,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setBatteryOptimizationsRemindTime(timeMillis: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME, timeMillis)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME, timeMillis)
+        }
     }
 
     fun getWebSocketRemindTime(): Long {
@@ -347,9 +348,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setWebSocketRemindTime(timeMillis: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_WEBSOCKET_REMIND_TIME, timeMillis)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_WEBSOCKET_REMIND_TIME, timeMillis)
+        }
     }
 
     fun getWebSocketReconnectRemindTime(): Long {
@@ -357,9 +358,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setWebSocketReconnectRemindTime(timeMillis: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME, timeMillis)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME, timeMillis)
+        }
     }
 
     fun getDefaultBaseUrl(): String? {
@@ -369,16 +370,15 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
     fun setDefaultBaseUrl(baseUrl: String) {
         if (baseUrl == "") {
-            sharedPrefs
-                .edit()
-                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
-                .remove(SHARED_PREFS_DEFAULT_BASE_URL)
-                .apply()
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
+                    .remove(SHARED_PREFS_DEFAULT_BASE_URL)
+            }
         } else {
-            sharedPrefs.edit()
-                .remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
-                .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
-                .apply()
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
+                    .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
+            }
         }
     }
 
@@ -392,18 +392,18 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
     }
 
     fun setGlobalMutedUntil(mutedUntilTimestamp: Long) {
-        sharedPrefs.edit()
-            .putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, mutedUntilTimestamp)
-            .apply()
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, mutedUntilTimestamp)
+        }
     }
 
     fun checkGlobalMutedUntil(): Boolean {
         val mutedUntil = sharedPrefs.getLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
         val expired = mutedUntil > 1L && System.currentTimeMillis()/1000 > mutedUntil
         if (expired) {
-            sharedPrefs.edit()
-                .putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
-                .apply()
+            sharedPrefs.edit {
+                putLong(SHARED_PREFS_MUTED_UNTIL_TIMESTAMP, 0L)
+            }
             return true
         }
         return false
@@ -416,9 +416,9 @@ class Repository(private val sharedPrefs: SharedPreferences, private val databas
 
     fun addLastShareTopic(topic: String) {
         val topics = (getLastShareTopics().filterNot { it == topic } + topic).takeLast(LAST_TOPICS_COUNT)
-        sharedPrefs.edit()
-            .putString(SHARED_PREFS_LAST_TOPICS, topics.joinToString(separator = "\n"))
-            .apply()
+        sharedPrefs.edit {
+            putString(SHARED_PREFS_LAST_TOPICS, topics.joinToString(separator = "\n"))
+        }
     }
 
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {

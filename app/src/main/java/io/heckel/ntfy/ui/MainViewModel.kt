@@ -1,7 +1,6 @@
 package io.heckel.ntfy.ui
 
 import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +9,7 @@ import io.heckel.ntfy.db.*
 import io.heckel.ntfy.up.Distributor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
     fun list(): LiveData<List<Subscription>> {
@@ -35,7 +35,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         if (subscription.icon != null) {
             val resolver = context.applicationContext.contentResolver
             try {
-                resolver.delete(Uri.parse(subscription.icon), null, null)
+                resolver.delete(subscription.icon.toUri(), null, null)
             } catch (_: Exception) {
                 // Don't care
             }

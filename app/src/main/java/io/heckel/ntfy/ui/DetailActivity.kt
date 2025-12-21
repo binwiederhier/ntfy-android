@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.view.Menu
@@ -56,6 +55,7 @@ import java.util.Date
 import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
+import androidx.core.net.toUri
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -265,11 +265,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         howToExample.linksClickable = true
 
         val howToText = getString(R.string.detail_how_to_example, topicUrl)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            howToExample.text = Html.fromHtml(howToText)
-        }
+        howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
 
         // Swipe to refresh
         mainListContainer = findViewById(R.id.detail_notification_list_container)
@@ -684,7 +680,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }
@@ -721,7 +717,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }
@@ -731,7 +727,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             handleActionModeClick(notification)
         } else if (notification.click != "") {
             try {
-                startActivity(Intent(ACTION_VIEW, Uri.parse(notification.click)))
+                startActivity(Intent(ACTION_VIEW, notification.click.toUri()))
             } catch (e: Exception) {
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {
@@ -804,7 +800,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }

@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class EmojiLoader {
     InputStream stream
   ) throws IOException {
     StringBuilder sb = new StringBuilder();
-    InputStreamReader isr = new InputStreamReader(stream, "UTF-8");
+    InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8);
     BufferedReader br = new BufferedReader(isr);
     String read;
     while((read = br.readLine()) != null) {
@@ -49,12 +50,12 @@ public class EmojiLoader {
 
   protected static Emoji buildEmojiFromJSON(
     JSONObject json
-  ) throws UnsupportedEncodingException, JSONException {
+  ) throws JSONException {
     if (!json.has("emoji")) {
       return null;
     }
 
-    byte[] bytes = json.getString("emoji").getBytes("UTF-8");
+    byte[] bytes = json.getString("emoji").getBytes(StandardCharsets.UTF_8);
     List<String> aliases = jsonArrayToStringList(json.getJSONArray("aliases"));
     return new Emoji(aliases, bytes);
   }
