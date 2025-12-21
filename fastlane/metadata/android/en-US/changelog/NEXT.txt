@@ -1,0 +1,2 @@
+Maintenance + bug fixes:
+* Updated dependencies, minimum SDK version to 26, clean up legacy code, upgrade Gradle (ntfy-android#140, thanks to @cyb3rko)
