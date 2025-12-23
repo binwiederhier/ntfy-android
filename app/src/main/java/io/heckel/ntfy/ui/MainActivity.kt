@@ -31,6 +31,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updatePadding
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -194,6 +195,14 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             Colors.onPrimary(this)
         )
         mainList.adapter = adapter
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        mainList.clipToPadding = false
+        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
 
         viewModel.list().observe(this) {
             it?.let { subscriptions ->

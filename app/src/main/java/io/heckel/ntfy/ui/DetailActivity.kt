@@ -19,8 +19,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -281,6 +284,14 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         adapter = DetailAdapter(this, lifecycleScope, repository, onNotificationClick, onNotificationLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        mainList.clipToPadding = false
+        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
 
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
