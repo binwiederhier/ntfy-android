@@ -2,3 +2,4 @@ Maintenance + bug fixes:
 * Updated dependencies, minimum SDK version to 26, clean up legacy code, upgrade Gradle (ntfy-android#140, thanks to @cyb3rko)
 * Updated target SDK version to 36
 * Fixed crashes with redrawing the list when temporarily muted topics expire
+* Fixed ForegroundServiceDidNotStartInTimeException (#1520)
