@@ -516,7 +516,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 }
             }
             if (rerenderList) {
-                redrawList()
+                mainList.post {
+                    redrawList()
+                }
             }
         }
     }
