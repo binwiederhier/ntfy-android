@@ -199,6 +199,29 @@
     <string name="detail_settings_title">Subscription settings</string>
     <!-- ... -->
 
+    <!-- Publish dialog -->
+    <string name="publish_dialog_title">Publish to %1$s</string>
+    <string name="publish_dialog_title_hint">Title (optional)</string>
+    <string name="publish_dialog_message_hint">Message</string>
+    <string name="publish_dialog_tags_hint">Tags (optional, comma-separated)</string>
+    <string name="publish_dialog_priority_default">Default priority</string>
+    <string name="publish_dialog_priority_min">Min priority</string>
+    <string name="publish_dialog_priority_low">Low priority</string>
+    <string name="publish_dialog_priority_high">High priority</string>
+    <string name="publish_dialog_priority_max">Max priority</string>
+    <string name="publish_dialog_button_cancel">Cancel</string>
+    <string name="publish_dialog_button_send">Send</string>
+    <string name="publish_dialog_error_sending">Cannot send message: %1$s</string>
+    <string name="publish_dialog_message_published">Message published</string>
+
+    <!-- Message bar -->
+    <string name="message_bar_hint">Type a message here</string>
+    <string name="message_bar_publish_button_description">Publish message</string>
+    <string name="message_bar_expand_button_description">More options</string>
+
+    <!-- Detail activity: Publish FAB -->
+    <string name="detail_fab_publish_description">Publish notification</string>
+
     <!-- Share activity -->
     <string name="share_title">Share</string>
     <string name="share_menu_send">Share</string>
@@ -312,6 +335,9 @@
     <string name="settings_general_dynamic_colors_title">Dynamic colors</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Using the dynamic system colors</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Using the ntfy theme colors</string>
+    <string name="settings_general_message_bar_title">Show message bar</string>
+    <string name="settings_general_message_bar_summary_enabled">Message bar shown at bottom of topic view</string>
+    <string name="settings_general_message_bar_summary_disabled">Publish button shown at bottom of topic view</string>
     <string name="settings_backup_restore_header">Backup &amp; Restore</string>
     <string name="settings_backup_restore_backup_title">Back up to file</string>
     <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>
