@@ -37,6 +37,9 @@ android {
             minifyEnabled false
             shrinkResources false
             debuggable false
+            // DEV/TEST ONLY: Uncomment this to test the release build with a debug key.
+            //                This is required to test against the production Firebase config.
+            // signingConfig signingConfigs.debug
         }
         debug {
             minifyEnabled false

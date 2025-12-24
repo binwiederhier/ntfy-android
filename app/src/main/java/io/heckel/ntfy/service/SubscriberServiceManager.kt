@@ -47,15 +47,20 @@ class SubscriberServiceManager(private val context: Context) {
                 val app = context.applicationContext as Application
                 val subscriptionIdsWithInstantStatus = app.repository.getSubscriptionIdsWithInstantStatus()
                 val instantSubscriptions = subscriptionIdsWithInstantStatus.toList().filter { (_, instant) -> instant }.size
-                val action = if (instantSubscriptions > 0) SubscriberService.Action.START else SubscriberService.Action.STOP
-                val serviceState = SubscriberService.readServiceState(context)
-                if (serviceState == SubscriberService.ServiceState.STOPPED && action == SubscriberService.Action.STOP) {
-                    return@withContext Result.success()
-                }
-                Log.d(TAG, "ServiceStartWorker: Starting foreground service with action $action (work ID: ${id})")
-                Intent(context, SubscriberService::class.java).also {
-                    it.action = action.name
-                    ContextCompat.startForegroundService(context, it)
+                if (instantSubscriptions > 0) {
+                    // We have instant subscriptions, start the service
+                    Log.d(TAG, "ServiceStartWorker: Starting foreground service (work ID: ${id})")
+                    Intent(context, SubscriberService::class.java).also {
+                        it.action = SubscriberService.Action.START.name
+                        ContextCompat.startForegroundService(context, it)
+                    }
+                } else {
+                    // No instant subscriptions, stop the service using stopService()
+                    // This avoids ForegroundServiceDidNotStartInTimeException, see #1520
+                    Log.d(TAG, "ServiceStartWorker: Stopping service (work ID: ${id})")
+                    Intent(context, SubscriberService::class.java).also {
+                        context.stopService(it)
+                    }
                 }
             }
             return Result.success()
