@@ -1,9 +1,7 @@
 package io.heckel.ntfy.service
 
-import android.app.ForegroundServiceStartNotAllowedException
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
@@ -52,20 +50,9 @@ class SubscriberServiceManager(private val context: Context) {
                 if (instantSubscriptions > 0) {
                     // We have instant subscriptions, start the service
                     Log.d(TAG, "ServiceStartWorker: Starting foreground service (work ID: ${id})")
-                    try {
-                        Intent(context, SubscriberService::class.java).also {
-                            it.action = SubscriberService.Action.START.name
-                            ContextCompat.startForegroundService(context, it)
-                        }
-                    } catch (e: Exception) {
-                        // On Android 12+, starting a foreground service from the background is restricted.
-                        // ForegroundServiceStartNotAllowedException is thrown when the app is in the background.
-                        // The service will be started when the user opens the app next time.
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
-                            Log.w(TAG, "ServiceStartWorker: Cannot start foreground service from background (work ID: ${id}): ${e.message}")
-                        } else {
-                            throw e
-                        }
+                    Intent(context, SubscriberService::class.java).also {
+                        it.action = SubscriberService.Action.START.name
+                        ContextCompat.startForegroundService(context, it)
                     }
                 } else {
                     // No instant subscriptions, stop the service using stopService()

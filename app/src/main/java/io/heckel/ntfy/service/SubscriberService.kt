@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
