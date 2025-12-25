@@ -99,10 +99,24 @@ class SubscriberService : Service() {
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-        } else {
-            startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            } else {
+                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+            }
+        } catch (e: Exception) {
+            // On Android 12+, starting a foreground service from the background is restricted.
+            // ForegroundServiceStartNotAllowedException is thrown when the app is in the background.
+            // We stop ourselves gracefully; the service will be started when the user opens the app.
+            // This should not happen if the battery optimization exemption was granted by the user.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
+                Log.w(TAG, "Cannot start foreground service from background, stopping: ${e.message}")
+                stopSelf()
+                return
+            } else {
+                throw e
+            }
         }
     }
 
