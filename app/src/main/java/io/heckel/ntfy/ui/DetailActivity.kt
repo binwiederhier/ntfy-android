@@ -395,6 +395,17 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             messageBarExpandButton.setOnClickListener {
                 openPublishDialog(messageBarText.text.toString())
             }
+
+            // Handle window insets for navigation bar and keyboard
+            val contentLayout = findViewById<View>(R.id.detail_content_layout)
+            ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                // Use the larger of navigation bar or keyboard height
+                val bottomPadding = maxOf(systemBars.bottom, ime.bottom)
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomPadding)
+                insets
+            }
         } else {
             // Show FAB, hide message bar
             fab.visibility = View.VISIBLE
