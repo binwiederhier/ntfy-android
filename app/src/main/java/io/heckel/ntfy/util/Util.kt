@@ -327,7 +327,13 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp").contains(mimeType)
+    return listOf(
+        "image/jpeg",
+        "image/jpg", // Technically not a valid MIME type, see https://github.com/binwiederhier/ntfy-android/pull/142
+        "image/png",
+        "image/gif",
+        "image/webp"
+    ).contains(mimeType)
 }
 
 // We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
