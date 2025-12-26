@@ -117,13 +117,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Format as Markdown checkbox -->
-                <com.google.android.material.checkbox.MaterialCheckBox
-                    android:id="@+id/publish_dialog_markdown_checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/publish_dialog_format_markdown"/>
 
                 <!-- Tags (toggleable) -->
                 <LinearLayout
@@ -465,6 +458,15 @@
                     app:chipSpacingVertical="0dp"
                     app:chipSpacingHorizontal="8dp"
                     app:singleLine="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_markdown"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_markdown"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/publish_dialog_chip_title"

@@ -11,9 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.CheckBox
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -49,7 +47,6 @@ class PublishFragment : DialogFragment() {
     // Main fields
     private lateinit var titleText: TextInputEditText
     private lateinit var messageText: TextInputEditText
-    private lateinit var markdownCheckbox: CheckBox
     private lateinit var tagsText: TextInputEditText
     private lateinit var priorityDropdown: AutoCompleteTextView
 
@@ -58,6 +55,7 @@ class PublishFragment : DialogFragment() {
     private lateinit var chipTitle: Chip
     private lateinit var chipTags: Chip
     private lateinit var chipPriority: Chip
+    private lateinit var chipMarkdown: Chip
     private lateinit var chipClickUrl: Chip
     private lateinit var chipEmail: Chip
     private lateinit var chipDelay: Chip
@@ -128,6 +126,9 @@ class PublishFragment : DialogFragment() {
                 result.data?.data?.let { uri ->
                     handleSelectedFile(uri)
                 }
+            } else {
+                // User cancelled file picker, uncheck the chip
+                chipAttachFile.isChecked = false
             }
         }
     }
@@ -167,7 +168,6 @@ class PublishFragment : DialogFragment() {
         // Main fields
         titleText = view.findViewById(R.id.publish_dialog_title_text)
         messageText = view.findViewById(R.id.publish_dialog_message_text)
-        markdownCheckbox = view.findViewById(R.id.publish_dialog_markdown_checkbox)
         tagsText = view.findViewById(R.id.publish_dialog_tags_text)
         priorityDropdown = view.findViewById(R.id.publish_dialog_priority_dropdown)
         progress = view.findViewById(R.id.publish_dialog_progress)
@@ -184,7 +184,7 @@ class PublishFragment : DialogFragment() {
         val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
         val priorityAdapter = PriorityAdapter(requireContext(), priorityItems)
         priorityDropdown.setAdapter(priorityAdapter)
-        // Set default priority (index 2 = priority 3)
+        // Set default priority (index 2 = priority 3, since list is now max-first)
         priorityDropdown.setText(priorityItems[2].label, false)
         priorityDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedPriority = priorityItems[position].priority
@@ -196,6 +196,7 @@ class PublishFragment : DialogFragment() {
         chipTitle = view.findViewById(R.id.publish_dialog_chip_title)
         chipTags = view.findViewById(R.id.publish_dialog_chip_tags)
         chipPriority = view.findViewById(R.id.publish_dialog_chip_priority)
+        chipMarkdown = view.findViewById(R.id.publish_dialog_chip_markdown)
         chipClickUrl = view.findViewById(R.id.publish_dialog_chip_click_url)
         chipEmail = view.findViewById(R.id.publish_dialog_chip_email)
         chipDelay = view.findViewById(R.id.publish_dialog_chip_delay)
@@ -262,19 +263,35 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun setupChipListeners() {
+        // Markdown chip - no field to show, just toggle state
+        // (no listener needed, we just check isChecked when sending)
+
         chipTitle.setOnCheckedChangeListener { _, isChecked ->
             titleLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) titleText.setText("")
+            if (isChecked) {
+                titleText.requestFocus()
+                showKeyboard(titleText)
+            } else {
+                titleText.setText("")
+            }
         }
 
         chipTags.setOnCheckedChangeListener { _, isChecked ->
             tagsLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) tagsText.setText("")
+            if (isChecked) {
+                tagsText.requestFocus()
+                showKeyboard(tagsText)
+            } else {
+                tagsText.setText("")
+            }
         }
 
         chipPriority.setOnCheckedChangeListener { _, isChecked ->
             priorityLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) {
+            if (isChecked) {
+                priorityDropdown.requestFocus()
+                priorityDropdown.showDropDown()
+            } else {
                 // Reset to default priority
                 selectedPriority = 3
                 val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
@@ -284,17 +301,32 @@ class PublishFragment : DialogFragment() {
 
         chipClickUrl.setOnCheckedChangeListener { _, isChecked ->
             clickUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) clickUrlText.setText("")
+            if (isChecked) {
+                clickUrlText.requestFocus()
+                showKeyboard(clickUrlText)
+            } else {
+                clickUrlText.setText("")
+            }
         }
 
         chipEmail.setOnCheckedChangeListener { _, isChecked ->
             emailLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) emailText.setText("")
+            if (isChecked) {
+                emailText.requestFocus()
+                showKeyboard(emailText)
+            } else {
+                emailText.setText("")
+            }
         }
 
         chipDelay.setOnCheckedChangeListener { _, isChecked ->
             delayLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) delayText.setText("")
+            if (isChecked) {
+                delayText.requestFocus()
+                showKeyboard(delayText)
+            } else {
+                delayText.setText("")
+            }
         }
 
         chipAttachUrl.setOnCheckedChangeListener { _, isChecked ->
@@ -302,8 +334,9 @@ class PublishFragment : DialogFragment() {
             if (isChecked) {
                 // Mutually exclusive with attach file
                 chipAttachFile.isChecked = false
-            }
-            if (!isChecked) {
+                attachUrlText.requestFocus()
+                showKeyboard(attachUrlText)
+            } else {
                 attachUrlText.setText("")
                 attachFilenameText.setText("")
             }
@@ -314,8 +347,9 @@ class PublishFragment : DialogFragment() {
             if (isChecked) {
                 // Mutually exclusive with attach URL
                 chipAttachUrl.isChecked = false
-            }
-            if (!isChecked) {
+                // Open file picker immediately
+                openFilePicker()
+            } else {
                 selectedFileUri = null
                 selectedFileName = ""
                 attachFileName.text = ""
@@ -324,8 +358,20 @@ class PublishFragment : DialogFragment() {
 
         chipPhoneCall.setOnCheckedChangeListener { _, isChecked ->
             phoneCallLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) phoneCallText.setText("")
+            if (isChecked) {
+                phoneCallText.requestFocus()
+                showKeyboard(phoneCallText)
+            } else {
+                phoneCallText.setText("")
+            }
         }
+    }
+
+    private fun showKeyboard(view: View) {
+        view.postDelayed({
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        }, 100)
     }
 
     private fun setupRemoveButtonListeners(view: View) {
@@ -408,7 +454,7 @@ class PublishFragment : DialogFragment() {
     private fun onSendClick() {
         val title = if (chipTitle.isChecked) titleText.text.toString() else ""
         val message = messageText.text.toString()
-        val markdown = markdownCheckbox.isChecked
+        val markdown = chipMarkdown.isChecked
         val priority = if (chipPriority.isChecked) selectedPriority else 3 // Default priority if not shown
         val tagsString = if (chipTags.isChecked) tagsText.text.toString() else ""
         val tags = if (tagsString.isNotEmpty()) {
@@ -517,11 +563,11 @@ class PublishFragment : DialogFragment() {
     private fun enableView(enable: Boolean) {
         titleText.isEnabled = enable
         messageText.isEnabled = enable
-        markdownCheckbox.isEnabled = enable
         tagsText.isEnabled = enable
         priorityDropdown.isEnabled = enable
         
         // Chips
+        chipMarkdown.isEnabled = enable
         chipTitle.isEnabled = enable
         chipTags.isEnabled = enable
         chipPriority.isEnabled = enable

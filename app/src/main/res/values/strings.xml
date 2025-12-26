@@ -222,6 +222,7 @@
     <string name="publish_dialog_chip_click_url">Click URL</string>
     <string name="publish_dialog_chip_email">Email</string>
     <string name="publish_dialog_chip_delay">Delay</string>
+    <string name="publish_dialog_chip_markdown">Markdown</string>
     <string name="publish_dialog_chip_attach_url">Attach by URL</string>
     <string name="publish_dialog_chip_attach_file">Attach file</string>
     <string name="publish_dialog_chip_phone_call">Phone call</string>
