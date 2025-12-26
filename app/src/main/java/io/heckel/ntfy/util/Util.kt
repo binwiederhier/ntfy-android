@@ -327,7 +327,7 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png", "image/gif", "image/webp").contains(mimeType)
+    return listOf("image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp").contains(mimeType)
 }
 
 // We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
