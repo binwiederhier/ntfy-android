@@ -60,8 +60,6 @@ import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
@@ -92,7 +90,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var fab: FloatingActionButton
     private lateinit var messageBar: View
     private lateinit var messageBarText: TextInputEditText
-    private lateinit var messageBarSendButton: ImageButton
+    private lateinit var messageBarSendButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
 
     // Action mode stuff
