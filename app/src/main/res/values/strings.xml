@@ -201,9 +201,10 @@
 
     <!-- Publish dialog -->
     <string name="publish_dialog_title">Publish to %1$s</string>
-    <string name="publish_dialog_title_hint">Title (optional)</string>
+    <string name="publish_dialog_title_hint">Title</string>
     <string name="publish_dialog_message_hint">Message</string>
     <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="publish_dialog_priority_hint">Priority</string>
     <string name="publish_dialog_priority_default">Default priority</string>
     <string name="publish_dialog_priority_min">Min priority</string>
     <string name="publish_dialog_priority_low">Low priority</string>
@@ -215,6 +216,9 @@
     <string name="publish_dialog_message_published">Message published</string>
     <string name="publish_dialog_format_markdown">Format as Markdown</string>
     <string name="publish_dialog_other_features">Other features:</string>
+    <string name="publish_dialog_chip_title">Title</string>
+    <string name="publish_dialog_chip_tags">Tags</string>
+    <string name="publish_dialog_chip_priority">Priority</string>
     <string name="publish_dialog_chip_click_url">Click URL</string>
     <string name="publish_dialog_chip_email">Email</string>
     <string name="publish_dialog_chip_delay">Delay</string>

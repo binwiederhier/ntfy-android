@@ -144,4 +144,8 @@
 
     <color name="action_bar">#1B2023</color> <!-- md_theme_surfaceContainer (dark) - matches card color -->
     <color name="detail_activity_background">#121212</color> <!-- Black for detail activity in dark mode -->
+
+    <!-- Chip colors -->
+    <color name="chip_background_color">#2C2C2C</color> <!-- Dark gray background -->
+    <color name="chip_stroke_color">#424242</color> <!-- Dark gray stroke -->
 </resources>

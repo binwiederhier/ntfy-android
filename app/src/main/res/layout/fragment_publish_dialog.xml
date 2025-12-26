@@ -61,23 +61,42 @@
 
                 </FrameLayout>
 
-                <!-- Title -->
-                <com.google.android.material.textfield.TextInputLayout
+                <!-- Title (toggleable) -->
+                <LinearLayout
                     android:id="@+id/publish_dialog_title_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/publish_dialog_title_text"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="@string/publish_dialog_title_hint"
-                        android:importantForAutofill="no"
-                        android:maxLines="1"
-                        android:inputType="text"/>
+                        android:layout_weight="1">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_title_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_title_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="text"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_title_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
 
                 <!-- Message -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -106,20 +125,20 @@
                     android:layout_marginTop="4dp"
                     android:text="@string/publish_dialog_format_markdown"/>
 
-                <!-- Tags and Priority row -->
+                <!-- Tags (toggleable) -->
                 <LinearLayout
+                    android:id="@+id/publish_dialog_tags_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_marginTop="10dp"
-                    android:baselineAligned="false">
+                    android:gravity="center_vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/publish_dialog_tags_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp">
+                        android:layout_weight="1">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/publish_dialog_tags_text"
@@ -132,85 +151,52 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <ImageButton
+                        android:id="@+id/publish_dialog_tags_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Priority (toggleable) -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_priority_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:id="@+id/publish_dialog_priority_layout"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:hint="@string/publish_dialog_priority_hint">
 
                         <AutoCompleteTextView
                             android:id="@+id/publish_dialog_priority_dropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:text="@string/publish_dialog_priority_default"/>
+                            android:inputType="none"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <ImageButton
+                        android:id="@+id/publish_dialog_priority_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
                 </LinearLayout>
-
-                <!-- Other features section -->
-                <TextView
-                    android:id="@+id/publish_dialog_other_features_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/publish_dialog_other_features"
-                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"/>
-
-                <!-- Feature chips -->
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/publish_dialog_chip_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:singleLine="false">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_click_url"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_click_url"/>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_email"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_email"/>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_delay"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_delay"/>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_attach_url"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_attach_url"/>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_attach_file"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_attach_file"/>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/publish_dialog_chip_phone_call"
-                        style="@style/Widget.Material3.Chip.Filter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_chip_phone_call"/>
-
-                </com.google.android.material.chip.ChipGroup>
 
                 <!-- Click URL field -->
                 <LinearLayout
@@ -460,6 +446,109 @@
 
                 </LinearLayout>
 
+                <!-- Other features section -->
+                <TextView
+                    android:id="@+id/publish_dialog_other_features_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/publish_dialog_other_features"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                <!-- Feature chips -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/publish_dialog_chip_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:chipSpacingVertical="0dp"
+                    app:chipSpacingHorizontal="8dp"
+                    app:singleLine="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_title"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_title"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_tags"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_tags"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_priority"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_priority"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_click_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_click_url"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_email"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_email"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_delay"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_delay"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_url"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_file"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_file"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_phone_call"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_phone_call"
+                        app:chipBackgroundColor="@color/chip_background_color"
+                        app:chipStrokeWidth="0dp"/>
+
+                </com.google.android.material.chip.ChipGroup>
+
                 <!-- Documentation link -->
                 <TextView
                     android:id="@+id/publish_dialog_docs_link"
@@ -468,7 +557,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="@string/publish_dialog_docs_link"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
 
                 <!-- Error section -->

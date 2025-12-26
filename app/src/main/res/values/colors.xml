@@ -145,6 +145,10 @@
     <color name="action_bar">#338574</color> <!-- md_theme_primary (light) -->
     <color name="detail_activity_background">#EEEEEE</color> <!-- Light gray for detail activity in light mode -->
 
+    <!-- Chip colors -->
+    <color name="chip_background_color">#E8E8E8</color> <!-- Light gray background -->
+    <color name="chip_stroke_color">#BDBDBD</color> <!-- Gray stroke -->
+
     <!-- Remove black status bar in Action mode: https://stackoverflow.com/a/79456725 -->
     <color name="abc_decor_view_status_guard" tools:override="true">@android:color/transparent</color>
     <color name="abc_decor_view_status_guard_light" tools:override="true">@android:color/transparent</color>

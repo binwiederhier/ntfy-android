@@ -55,12 +55,20 @@ class PublishFragment : DialogFragment() {
 
     // Chips
     private lateinit var chipGroup: ChipGroup
+    private lateinit var chipTitle: Chip
+    private lateinit var chipTags: Chip
+    private lateinit var chipPriority: Chip
     private lateinit var chipClickUrl: Chip
     private lateinit var chipEmail: Chip
     private lateinit var chipDelay: Chip
     private lateinit var chipAttachUrl: Chip
     private lateinit var chipAttachFile: Chip
     private lateinit var chipPhoneCall: Chip
+
+    // Toggleable field layouts
+    private lateinit var titleLayout: View
+    private lateinit var tagsLayout: View
+    private lateinit var priorityLayout: View
 
     // Optional field layouts
     private lateinit var clickUrlLayout: View
@@ -176,19 +184,29 @@ class PublishFragment : DialogFragment() {
         val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
         val priorityAdapter = PriorityAdapter(requireContext(), priorityItems)
         priorityDropdown.setAdapter(priorityAdapter)
-        priorityDropdown.setText(priorityItems[2].label, false) // Default priority (index 2 = priority 3)
+        // Set default priority (index 2 = priority 3)
+        priorityDropdown.setText(priorityItems[2].label, false)
         priorityDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedPriority = priorityItems[position].priority
+            priorityDropdown.setText(priorityItems[position].label, false)
         }
 
         // Setup chips
         chipGroup = view.findViewById(R.id.publish_dialog_chip_group)
+        chipTitle = view.findViewById(R.id.publish_dialog_chip_title)
+        chipTags = view.findViewById(R.id.publish_dialog_chip_tags)
+        chipPriority = view.findViewById(R.id.publish_dialog_chip_priority)
         chipClickUrl = view.findViewById(R.id.publish_dialog_chip_click_url)
         chipEmail = view.findViewById(R.id.publish_dialog_chip_email)
         chipDelay = view.findViewById(R.id.publish_dialog_chip_delay)
         chipAttachUrl = view.findViewById(R.id.publish_dialog_chip_attach_url)
         chipAttachFile = view.findViewById(R.id.publish_dialog_chip_attach_file)
         chipPhoneCall = view.findViewById(R.id.publish_dialog_chip_phone_call)
+
+        // Setup toggleable field layouts
+        titleLayout = view.findViewById(R.id.publish_dialog_title_layout)
+        tagsLayout = view.findViewById(R.id.publish_dialog_tags_layout)
+        priorityLayout = view.findViewById(R.id.publish_dialog_priority_layout)
 
         // Setup optional field layouts
         clickUrlLayout = view.findViewById(R.id.publish_dialog_click_url_layout)
@@ -244,6 +262,26 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun setupChipListeners() {
+        chipTitle.setOnCheckedChangeListener { _, isChecked ->
+            titleLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) titleText.setText("")
+        }
+
+        chipTags.setOnCheckedChangeListener { _, isChecked ->
+            tagsLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) tagsText.setText("")
+        }
+
+        chipPriority.setOnCheckedChangeListener { _, isChecked ->
+            priorityLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) {
+                // Reset to default priority
+                selectedPriority = 3
+                val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
+                priorityDropdown.setText(priorityItems[2].label, false)
+            }
+        }
+
         chipClickUrl.setOnCheckedChangeListener { _, isChecked ->
             clickUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (!isChecked) clickUrlText.setText("")
@@ -291,6 +329,15 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun setupRemoveButtonListeners(view: View) {
+        view.findViewById<ImageButton>(R.id.publish_dialog_title_remove).setOnClickListener {
+            chipTitle.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_tags_remove).setOnClickListener {
+            chipTags.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_priority_remove).setOnClickListener {
+            chipPriority.isChecked = false
+        }
         view.findViewById<ImageButton>(R.id.publish_dialog_click_url_remove).setOnClickListener {
             chipClickUrl.isChecked = false
         }
@@ -359,10 +406,11 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun onSendClick() {
-        val title = titleText.text.toString()
+        val title = if (chipTitle.isChecked) titleText.text.toString() else ""
         val message = messageText.text.toString()
         val markdown = markdownCheckbox.isChecked
-        val tagsString = tagsText.text.toString()
+        val priority = if (chipPriority.isChecked) selectedPriority else 3 // Default priority if not shown
+        val tagsString = if (chipTags.isChecked) tagsText.text.toString() else ""
         val tags = if (tagsString.isNotEmpty()) {
             tagsString.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         } else {
@@ -401,7 +449,7 @@ class PublishFragment : DialogFragment() {
                         user = user,
                         message = message,
                         title = title,
-                        priority = selectedPriority,
+                        priority = priority,
                         tags = tags,
                         delay = delay,
                         body = body,
@@ -419,7 +467,7 @@ class PublishFragment : DialogFragment() {
                         user = user,
                         message = message,
                         title = title,
-                        priority = selectedPriority,
+                        priority = priority,
                         tags = tags,
                         delay = delay,
                         click = clickUrl,
@@ -474,6 +522,9 @@ class PublishFragment : DialogFragment() {
         priorityDropdown.isEnabled = enable
         
         // Chips
+        chipTitle.isEnabled = enable
+        chipTags.isEnabled = enable
+        chipPriority.isEnabled = enable
         chipClickUrl.isEnabled = enable
         chipEmail.isEnabled = enable
         chipDelay.isEnabled = enable

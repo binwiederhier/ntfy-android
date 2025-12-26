@@ -13,7 +13,9 @@ data class PriorityItem(
     val priority: Int,
     val label: String,
     val iconResId: Int
-)
+) {
+    override fun toString(): String = label
+}
 
 class PriorityAdapter(
     context: Context,
