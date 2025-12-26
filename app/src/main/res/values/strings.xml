@@ -203,7 +203,7 @@
     <string name="publish_dialog_title">Publish to %1$s</string>
     <string name="publish_dialog_title_hint">Title (optional)</string>
     <string name="publish_dialog_message_hint">Message</string>
-    <string name="publish_dialog_tags_hint">Tags (optional, comma-separated)</string>
+    <string name="publish_dialog_tags_hint">Tags</string>
     <string name="publish_dialog_priority_default">Default priority</string>
     <string name="publish_dialog_priority_min">Min priority</string>
     <string name="publish_dialog_priority_low">Low priority</string>
@@ -213,6 +213,23 @@
     <string name="publish_dialog_button_send">Send</string>
     <string name="publish_dialog_error_sending">Cannot send message: %1$s</string>
     <string name="publish_dialog_message_published">Message published</string>
+    <string name="publish_dialog_format_markdown">Format as Markdown</string>
+    <string name="publish_dialog_other_features">Other features:</string>
+    <string name="publish_dialog_chip_click_url">Click URL</string>
+    <string name="publish_dialog_chip_email">Email</string>
+    <string name="publish_dialog_chip_delay">Delay</string>
+    <string name="publish_dialog_chip_attach_url">Attach by URL</string>
+    <string name="publish_dialog_chip_attach_file">Attach file</string>
+    <string name="publish_dialog_chip_phone_call">Phone call</string>
+    <string name="publish_dialog_click_url_hint">URL to open when notification is clicked</string>
+    <string name="publish_dialog_email_hint">Email address to forward to</string>
+    <string name="publish_dialog_delay_hint">Delay, e.g. 30m, 1h, tomorrow 9am</string>
+    <string name="publish_dialog_attach_url_hint">Attachment URL</string>
+    <string name="publish_dialog_attach_filename_hint">Filename</string>
+    <string name="publish_dialog_phone_call_hint">Phone number to call</string>
+    <string name="publish_dialog_attach_file_button">Pick file</string>
+    <string name="publish_dialog_remove_field">Remove field</string>
+    <string name="publish_dialog_docs_link">For examples and a detailed description of all send features, please refer to the documentation.</string>
 
     <!-- Message bar -->
     <string name="message_bar_hint">Type a message here</string>

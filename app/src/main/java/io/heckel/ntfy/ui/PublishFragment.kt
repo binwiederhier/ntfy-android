@@ -2,19 +2,29 @@ package io.heckel.ntfy.ui
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.CheckBox
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -24,27 +34,71 @@ import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class PublishFragment : DialogFragment() {
     private val api = ApiService()
 
     private lateinit var repository: Repository
 
+    // Toolbar
     private lateinit var toolbar: MaterialToolbar
     private lateinit var sendMenuItem: MenuItem
+
+    // Main fields
     private lateinit var titleText: TextInputEditText
     private lateinit var messageText: TextInputEditText
+    private lateinit var markdownCheckbox: CheckBox
     private lateinit var tagsText: TextInputEditText
     private lateinit var priorityDropdown: AutoCompleteTextView
+
+    // Chips
+    private lateinit var chipGroup: ChipGroup
+    private lateinit var chipClickUrl: Chip
+    private lateinit var chipEmail: Chip
+    private lateinit var chipDelay: Chip
+    private lateinit var chipAttachUrl: Chip
+    private lateinit var chipAttachFile: Chip
+    private lateinit var chipPhoneCall: Chip
+
+    // Optional field layouts
+    private lateinit var clickUrlLayout: View
+    private lateinit var emailLayout: View
+    private lateinit var delayLayout: View
+    private lateinit var attachUrlLayout: View
+    private lateinit var attachFileLayout: View
+    private lateinit var phoneCallLayout: View
+
+    // Optional field inputs
+    private lateinit var clickUrlText: TextInputEditText
+    private lateinit var emailText: TextInputEditText
+    private lateinit var delayText: TextInputEditText
+    private lateinit var attachUrlText: TextInputEditText
+    private lateinit var attachFilenameText: TextInputEditText
+    private lateinit var phoneCallText: TextInputEditText
+
+    // Attach file
+    private lateinit var attachFileButton: MaterialButton
+    private lateinit var attachFileName: TextView
+
+    // Progress/Error
     private lateinit var progress: ProgressBar
     private lateinit var errorText: TextView
     private lateinit var errorImage: View
+    private lateinit var docsLink: TextView
 
+    // State
     private var baseUrl: String = ""
     private var topic: String = ""
     private var selectedPriority: Int = 3 // Default priority
-
     private var initialMessage: String = ""
+    private var selectedFileUri: Uri? = null
+    private var selectedFileName: String = ""
+    private var selectedFileMimeType: String = "application/octet-stream"
+
+    // File picker
+    private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
 
     interface PublishListener {
         fun onPublished()
@@ -56,6 +110,17 @@ class PublishFragment : DialogFragment() {
         super.onAttach(context)
         if (context is PublishListener) {
             publishListener = context
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        filePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                result.data?.data?.let { uri ->
+                    handleSelectedFile(uri)
+                }
+            }
         }
     }
 
@@ -91,33 +156,75 @@ class PublishFragment : DialogFragment() {
         }
         sendMenuItem = toolbar.menu.findItem(R.id.publish_dialog_send_button)
 
-        // Fields
+        // Main fields
         titleText = view.findViewById(R.id.publish_dialog_title_text)
         messageText = view.findViewById(R.id.publish_dialog_message_text)
+        markdownCheckbox = view.findViewById(R.id.publish_dialog_markdown_checkbox)
         tagsText = view.findViewById(R.id.publish_dialog_tags_text)
         priorityDropdown = view.findViewById(R.id.publish_dialog_priority_dropdown)
         progress = view.findViewById(R.id.publish_dialog_progress)
         errorText = view.findViewById(R.id.publish_dialog_error_text)
         errorImage = view.findViewById(R.id.publish_dialog_error_image)
+        docsLink = view.findViewById(R.id.publish_dialog_docs_link)
 
         // Set initial message if provided
         if (initialMessage.isNotEmpty()) {
             messageText.setText(initialMessage)
         }
 
-        // Setup priority dropdown
-        val priorities = listOf(
-            getString(R.string.publish_dialog_priority_min),
-            getString(R.string.publish_dialog_priority_low),
-            getString(R.string.publish_dialog_priority_default),
-            getString(R.string.publish_dialog_priority_high),
-            getString(R.string.publish_dialog_priority_max)
-        )
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, priorities)
-        priorityDropdown.setAdapter(adapter)
-        priorityDropdown.setText(priorities[2], false) // Default priority
+        // Setup priority dropdown with custom adapter
+        val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
+        val priorityAdapter = PriorityAdapter(requireContext(), priorityItems)
+        priorityDropdown.setAdapter(priorityAdapter)
+        priorityDropdown.setText(priorityItems[2].label, false) // Default priority (index 2 = priority 3)
         priorityDropdown.setOnItemClickListener { _, _, position, _ ->
-            selectedPriority = position + 1 // Priority is 1-5
+            selectedPriority = priorityItems[position].priority
+        }
+
+        // Setup chips
+        chipGroup = view.findViewById(R.id.publish_dialog_chip_group)
+        chipClickUrl = view.findViewById(R.id.publish_dialog_chip_click_url)
+        chipEmail = view.findViewById(R.id.publish_dialog_chip_email)
+        chipDelay = view.findViewById(R.id.publish_dialog_chip_delay)
+        chipAttachUrl = view.findViewById(R.id.publish_dialog_chip_attach_url)
+        chipAttachFile = view.findViewById(R.id.publish_dialog_chip_attach_file)
+        chipPhoneCall = view.findViewById(R.id.publish_dialog_chip_phone_call)
+
+        // Setup optional field layouts
+        clickUrlLayout = view.findViewById(R.id.publish_dialog_click_url_layout)
+        emailLayout = view.findViewById(R.id.publish_dialog_email_layout)
+        delayLayout = view.findViewById(R.id.publish_dialog_delay_layout)
+        attachUrlLayout = view.findViewById(R.id.publish_dialog_attach_url_layout)
+        attachFileLayout = view.findViewById(R.id.publish_dialog_attach_file_layout)
+        phoneCallLayout = view.findViewById(R.id.publish_dialog_phone_call_layout)
+
+        // Setup optional field inputs
+        clickUrlText = view.findViewById(R.id.publish_dialog_click_url_text)
+        emailText = view.findViewById(R.id.publish_dialog_email_text)
+        delayText = view.findViewById(R.id.publish_dialog_delay_text)
+        attachUrlText = view.findViewById(R.id.publish_dialog_attach_url_text)
+        attachFilenameText = view.findViewById(R.id.publish_dialog_attach_filename_text)
+        phoneCallText = view.findViewById(R.id.publish_dialog_phone_call_text)
+
+        // Attach file UI
+        attachFileButton = view.findViewById(R.id.publish_dialog_attach_file_button)
+        attachFileName = view.findViewById(R.id.publish_dialog_attach_file_name)
+
+        // Setup chip click listeners
+        setupChipListeners()
+
+        // Setup remove button listeners
+        setupRemoveButtonListeners(view)
+
+        // Setup file picker button
+        attachFileButton.setOnClickListener {
+            openFilePicker()
+        }
+
+        // Setup docs link
+        docsLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.ntfy.sh/publish/"))
+            startActivity(intent)
         }
 
         // Validation on text change
@@ -134,6 +241,96 @@ class PublishFragment : DialogFragment() {
         validateInput()
 
         return dialog
+    }
+
+    private fun setupChipListeners() {
+        chipClickUrl.setOnCheckedChangeListener { _, isChecked ->
+            clickUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) clickUrlText.setText("")
+        }
+
+        chipEmail.setOnCheckedChangeListener { _, isChecked ->
+            emailLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) emailText.setText("")
+        }
+
+        chipDelay.setOnCheckedChangeListener { _, isChecked ->
+            delayLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) delayText.setText("")
+        }
+
+        chipAttachUrl.setOnCheckedChangeListener { _, isChecked ->
+            attachUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (isChecked) {
+                // Mutually exclusive with attach file
+                chipAttachFile.isChecked = false
+            }
+            if (!isChecked) {
+                attachUrlText.setText("")
+                attachFilenameText.setText("")
+            }
+        }
+
+        chipAttachFile.setOnCheckedChangeListener { _, isChecked ->
+            attachFileLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (isChecked) {
+                // Mutually exclusive with attach URL
+                chipAttachUrl.isChecked = false
+            }
+            if (!isChecked) {
+                selectedFileUri = null
+                selectedFileName = ""
+                attachFileName.text = ""
+            }
+        }
+
+        chipPhoneCall.setOnCheckedChangeListener { _, isChecked ->
+            phoneCallLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) phoneCallText.setText("")
+        }
+    }
+
+    private fun setupRemoveButtonListeners(view: View) {
+        view.findViewById<ImageButton>(R.id.publish_dialog_click_url_remove).setOnClickListener {
+            chipClickUrl.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_email_remove).setOnClickListener {
+            chipEmail.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_delay_remove).setOnClickListener {
+            chipDelay.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_attach_url_remove).setOnClickListener {
+            chipAttachUrl.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_attach_file_remove).setOnClickListener {
+            chipAttachFile.isChecked = false
+        }
+        view.findViewById<ImageButton>(R.id.publish_dialog_phone_call_remove).setOnClickListener {
+            chipPhoneCall.isChecked = false
+        }
+    }
+
+    private fun openFilePicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+        filePickerLauncher.launch(intent)
+    }
+
+    private fun handleSelectedFile(uri: Uri) {
+        selectedFileUri = uri
+        
+        // Get file name and mime type
+        requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
+            selectedFileName = if (nameIndex >= 0) cursor.getString(nameIndex) else "file"
+        }
+        
+        selectedFileMimeType = requireContext().contentResolver.getType(uri) ?: "application/octet-stream"
+        attachFileName.text = selectedFileName
     }
 
     override fun onStart() {
@@ -164,12 +361,21 @@ class PublishFragment : DialogFragment() {
     private fun onSendClick() {
         val title = titleText.text.toString()
         val message = messageText.text.toString()
+        val markdown = markdownCheckbox.isChecked
         val tagsString = tagsText.text.toString()
         val tags = if (tagsString.isNotEmpty()) {
             tagsString.split(",").map { it.trim() }.filter { it.isNotEmpty() }
         } else {
             emptyList()
         }
+
+        // Optional fields
+        val clickUrl = if (chipClickUrl.isChecked) clickUrlText.text.toString() else ""
+        val email = if (chipEmail.isChecked) emailText.text.toString() else ""
+        val delay = if (chipDelay.isChecked) delayText.text.toString() else ""
+        val attachUrl = if (chipAttachUrl.isChecked) attachUrlText.text.toString() else ""
+        val attachFilename = if (chipAttachUrl.isChecked) attachFilenameText.text.toString() else ""
+        val phoneCall = if (chipPhoneCall.isChecked) phoneCallText.text.toString() else ""
 
         progress.visibility = View.VISIBLE
         errorText.visibility = View.GONE
@@ -179,16 +385,52 @@ class PublishFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(baseUrl)
-                api.publish(
-                    baseUrl = baseUrl,
-                    topic = topic,
-                    user = user,
-                    message = message,
-                    title = title,
-                    priority = selectedPriority,
-                    tags = tags,
-                    delay = ""
-                )
+                
+                // Handle file attachment
+                if (chipAttachFile.isChecked && selectedFileUri != null) {
+                    // Read file and send as body
+                    val inputStream = requireContext().contentResolver.openInputStream(selectedFileUri!!)
+                    val bytes = inputStream?.readBytes() ?: ByteArray(0)
+                    inputStream?.close()
+                    
+                    val body = bytes.toRequestBody(selectedFileMimeType.toMediaType())
+                    
+                    api.publish(
+                        baseUrl = baseUrl,
+                        topic = topic,
+                        user = user,
+                        message = message,
+                        title = title,
+                        priority = selectedPriority,
+                        tags = tags,
+                        delay = delay,
+                        body = body,
+                        filename = selectedFileName,
+                        click = clickUrl,
+                        email = email,
+                        call = phoneCall,
+                        markdown = markdown
+                    )
+                } else {
+                    // No file attachment
+                    api.publish(
+                        baseUrl = baseUrl,
+                        topic = topic,
+                        user = user,
+                        message = message,
+                        title = title,
+                        priority = selectedPriority,
+                        tags = tags,
+                        delay = delay,
+                        click = clickUrl,
+                        attach = attachUrl,
+                        email = email,
+                        call = phoneCall,
+                        markdown = markdown,
+                        filename = attachFilename
+                    )
+                }
+                
                 val activity = activity ?: return@launch
                 activity.runOnUiThread {
                     Toast.makeText(activity, R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
@@ -227,8 +469,27 @@ class PublishFragment : DialogFragment() {
     private fun enableView(enable: Boolean) {
         titleText.isEnabled = enable
         messageText.isEnabled = enable
+        markdownCheckbox.isEnabled = enable
         tagsText.isEnabled = enable
         priorityDropdown.isEnabled = enable
+        
+        // Chips
+        chipClickUrl.isEnabled = enable
+        chipEmail.isEnabled = enable
+        chipDelay.isEnabled = enable
+        chipAttachUrl.isEnabled = enable
+        chipAttachFile.isEnabled = enable
+        chipPhoneCall.isEnabled = enable
+        
+        // Optional fields
+        clickUrlText.isEnabled = enable
+        emailText.isEnabled = enable
+        delayText.isEnabled = enable
+        attachUrlText.isEnabled = enable
+        attachFilenameText.isEnabled = enable
+        phoneCallText.isEnabled = enable
+        attachFileButton.isEnabled = enable
+        
         sendMenuItem.isEnabled = enable && messageText.text?.isNotEmpty() == true
     }
 
@@ -249,4 +510,3 @@ class PublishFragment : DialogFragment() {
         }
     }
 }
-

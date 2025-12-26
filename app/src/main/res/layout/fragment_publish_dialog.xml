@@ -39,30 +39,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ProgressBar
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:id="@+id/publish_dialog_progress"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:indeterminate="true"
-                    android:layout_marginTop="16dp"
-                    android:visibility="gone"/>
+                <!-- Progress and Error -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
+                    <ProgressBar
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:id="@+id/publish_dialog_progress"
+                        android:layout_gravity="end"
+                        android:indeterminate="true"
+                        android:visibility="gone"/>
+
+                </FrameLayout>
+
+                <!-- Title -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/publish_dialog_title_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/publish_dialog_title_text"
@@ -75,13 +79,11 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Message -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/publish_dialog_message_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/publish_dialog_title_layout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -96,73 +98,415 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/publish_dialog_tags_layout"
+                <!-- Format as Markdown checkbox -->
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/publish_dialog_markdown_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/publish_dialog_format_markdown"/>
+
+                <!-- Tags and Priority row -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/publish_dialog_message_layout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:baselineAligned="false">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/publish_dialog_tags_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_tags_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_tags_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="text"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:id="@+id/publish_dialog_priority_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/publish_dialog_priority_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:text="@string/publish_dialog_priority_default"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Other features section -->
+                <TextView
+                    android:id="@+id/publish_dialog_other_features_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/publish_dialog_other_features"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                <!-- Feature chips -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/publish_dialog_chip_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:singleLine="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_click_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_click_url"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_email"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_email"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_delay"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_delay"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_url"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_file"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_file"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_phone_call"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_phone_call"/>
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- Click URL field -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_click_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_click_url_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_click_url_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="textUri"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_click_url_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Email field -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_email_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_email_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_email_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="textEmailAddress"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_email_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Delay field -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_delay_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_delay_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_delay_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="text"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_delay_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Attach URL fields -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_attach_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
                     android:layout_marginTop="10dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/publish_dialog_tags_text"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/publish_dialog_tags_hint"
-                        android:importantForAutofill="no"
-                        android:maxLines="1"
-                        android:inputType="text"/>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:id="@+id/publish_dialog_priority_layout"
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/publish_dialog_attach_url_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/publish_dialog_attach_url_hint"
+                                android:importantForAutofill="no"
+                                android:maxLines="1"
+                                android:inputType="textUri"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/publish_dialog_attach_filename_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/publish_dialog_attach_filename_hint"
+                                android:importantForAutofill="no"
+                                android:maxLines="1"
+                                android:inputType="text"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <ImageButton
+                            android:id="@+id/publish_dialog_attach_url_remove"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_cancel_gray_24dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/publish_dialog_remove_field"
+                            app:tint="?attr/colorOnSurfaceVariant"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Attach File field -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_attach_file_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/publish_dialog_tags_layout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="16dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/publish_dialog_priority_dropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:text="@string/publish_dialog_priority_default"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:id="@+id/publish_dialog_error_image"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="1dp"
+                    android:orientation="horizontal"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/ic_error_red_24dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/publish_dialog_error_text"/>
-
-                <TextView
-                    android:id="@+id/publish_dialog_error_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
-                    android:textAppearance="@style/DangerText"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/publish_dialog_priority_layout"
-                    app:layout_constraintStart_toEndOf="@id/publish_dialog_error_image"/>
+                    android:gravity="center_vertical">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/publish_dialog_attach_file_button"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_attach_file_button"
+                        app:icon="@drawable/ic_file_document_blue_24dp"/>
+
+                    <TextView
+                        android:id="@+id/publish_dialog_attach_file_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:ellipsize="middle"
+                        android:singleLine="true"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_attach_file_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Phone Call field -->
+                <LinearLayout
+                    android:id="@+id/publish_dialog_phone_call_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_phone_call_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_phone_call_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="phone"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/publish_dialog_phone_call_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_cancel_gray_24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/publish_dialog_remove_field"
+                        app:tint="?attr/colorOnSurfaceVariant"/>
+
+                </LinearLayout>
+
+                <!-- Documentation link -->
+                <TextView
+                    android:id="@+id/publish_dialog_docs_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/publish_dialog_docs_link"
+                    android:textColor="?attr/colorPrimary"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
+
+                <!-- Error section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/publish_dialog_error_image"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_error_red_24dp"/>
+
+                    <TextView
+                        android:id="@+id/publish_dialog_error_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textAppearance="@style/DangerText"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <!-- Bottom padding for keyboard -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"/>
+
+            </LinearLayout>
 
         </ScrollView>
 
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
