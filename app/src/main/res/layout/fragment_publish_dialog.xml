@@ -373,23 +373,31 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/publish_dialog_attach_file_button"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
+                    <TextView
+                        android:id="@+id/publish_dialog_attach_file_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_attach_file_button"
-                        app:icon="@drawable/ic_file_document_blue_24dp"/>
+                        android:text="@string/publish_dialog_attach_file_label"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
 
-                    <TextView
-                        android:id="@+id/publish_dialog_attach_file_name"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:ellipsize="middle"
-                        android:singleLine="true"
-                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                        android:layout_marginStart="8dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/publish_dialog_attach_file_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/publish_dialog_attach_file_name_hint"
+                            android:importantForAutofill="no"
+                            android:maxLines="1"
+                            android:inputType="text"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageButton
                         android:id="@+id/publish_dialog_attach_file_remove"
@@ -455,7 +463,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:chipSpacingVertical="0dp"
+                    app:chipSpacingVertical="-4dp"
                     app:chipSpacingHorizontal="8dp"
                     app:singleLine="false">
 

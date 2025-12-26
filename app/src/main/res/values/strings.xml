@@ -232,7 +232,8 @@
     <string name="publish_dialog_attach_url_hint">Attachment URL</string>
     <string name="publish_dialog_attach_filename_hint">Filename</string>
     <string name="publish_dialog_phone_call_hint">Phone number to call</string>
-    <string name="publish_dialog_attach_file_button">Pick file</string>
+    <string name="publish_dialog_attach_file_label">Attached file:</string>
+    <string name="publish_dialog_attach_file_name_hint">Filename</string>
     <string name="publish_dialog_remove_field">Remove field</string>
     <string name="publish_dialog_docs_link">For examples and a detailed description of all send features, please refer to the documentation.</string>
 

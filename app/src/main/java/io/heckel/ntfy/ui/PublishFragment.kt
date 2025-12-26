@@ -20,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
@@ -85,8 +84,7 @@ class PublishFragment : DialogFragment() {
     private lateinit var phoneCallText: TextInputEditText
 
     // Attach file
-    private lateinit var attachFileButton: MaterialButton
-    private lateinit var attachFileName: TextView
+    private lateinit var attachFileNameText: TextInputEditText
 
     // Progress/Error
     private lateinit var progress: ProgressBar
@@ -226,19 +224,13 @@ class PublishFragment : DialogFragment() {
         phoneCallText = view.findViewById(R.id.publish_dialog_phone_call_text)
 
         // Attach file UI
-        attachFileButton = view.findViewById(R.id.publish_dialog_attach_file_button)
-        attachFileName = view.findViewById(R.id.publish_dialog_attach_file_name)
+        attachFileNameText = view.findViewById(R.id.publish_dialog_attach_file_name)
 
         // Setup chip click listeners
         setupChipListeners()
 
         // Setup remove button listeners
         setupRemoveButtonListeners(view)
-
-        // Setup file picker button
-        attachFileButton.setOnClickListener {
-            openFilePicker()
-        }
 
         // Setup docs link
         docsLink.setOnClickListener {
@@ -352,7 +344,7 @@ class PublishFragment : DialogFragment() {
             } else {
                 selectedFileUri = null
                 selectedFileName = ""
-                attachFileName.text = ""
+                attachFileNameText.setText("")
             }
         }
 
@@ -423,7 +415,7 @@ class PublishFragment : DialogFragment() {
         }
         
         selectedFileMimeType = requireContext().contentResolver.getType(uri) ?: "application/octet-stream"
-        attachFileName.text = selectedFileName
+        attachFileNameText.setText(selectedFileName)
     }
 
     override fun onStart() {
@@ -499,7 +491,7 @@ class PublishFragment : DialogFragment() {
                         tags = tags,
                         delay = delay,
                         body = body,
-                        filename = selectedFileName,
+                        filename = attachFileNameText.text.toString(),
                         click = clickUrl,
                         email = email,
                         call = phoneCall,
@@ -585,7 +577,7 @@ class PublishFragment : DialogFragment() {
         attachUrlText.isEnabled = enable
         attachFilenameText.isEnabled = enable
         phoneCallText.isEnabled = enable
-        attachFileButton.isEnabled = enable
+        attachFileNameText.isEnabled = enable
         
         sendMenuItem.isEnabled = enable && messageText.text?.isNotEmpty() == true
     }
