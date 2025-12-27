@@ -269,16 +269,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Other features section -->
-                <TextView
-                    android:id="@+id/publish_dialog_other_features_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/publish_dialog_other_features"
-                    android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"/>
-
                 <!-- Feature chips -->
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/publish_dialog_chip_group"

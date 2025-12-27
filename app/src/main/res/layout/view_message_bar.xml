@@ -54,7 +54,6 @@
                 android:paddingEnd="16dp"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
-                android:textSize="16sp"
                 android:importantForAutofill="no"/>
 
         </LinearLayout>
@@ -67,11 +66,14 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_send_white_24dp"
         android:contentDescription="@string/message_bar_publish_button_description"
+        android:clickable="true"
+        android:focusable="true"
         app:fabSize="mini"
         app:fabCustomSize="48dp"
         app:maxImageSize="24dp"
         app:tint="@android:color/white"
         app:backgroundTint="?attr/colorPrimary"
+        app:rippleColor="#40FFFFFF"
         app:elevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

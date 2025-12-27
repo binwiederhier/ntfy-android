@@ -290,6 +290,7 @@ class PublishFragment : DialogFragment() {
         chipPriority.setOnCheckedChangeListener { _, isChecked ->
             priorityLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked) {
+                hideKeyboard()
                 priorityDropdown.requestFocus()
                 priorityDropdown.showDropDown()
             } else {
@@ -376,6 +377,11 @@ class PublishFragment : DialogFragment() {
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
         }, 100)
+    }
+
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     private fun updatePriorityIcon(iconResId: Int) {

@@ -432,6 +432,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
     private fun publishMessage(message: String) {
+        // Disable send button while publishing
+        messageBarSendButton.isEnabled = false
+        
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(subscriptionBaseUrl)
@@ -447,11 +450,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 )
                 runOnUiThread {
                     messageBarText.text?.clear()
-                    Toast.makeText(this@DetailActivity, R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
+                    messageBarSendButton.isEnabled = true
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to publish message", e)
                 runOnUiThread {
+                    messageBarSendButton.isEnabled = true
                     val errorMessage = when (e) {
                         is ApiService.UnauthorizedException -> {
                             if (e.user != null) {
