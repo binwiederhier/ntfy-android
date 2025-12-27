@@ -27,6 +27,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Upload progress indicator (below toolbar, doesn't shift content) -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/publish_dialog_upload_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="false"
+        android:max="100"
+        app:trackThickness="4dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,22 +55,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Progress and Error -->
-                <FrameLayout
+                <!-- Upload progress text -->
+                <TextView
+                    android:id="@+id/publish_dialog_upload_progress_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <ProgressBar
-                        style="?android:attr/progressBarStyle"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:id="@+id/publish_dialog_progress"
-                        android:layout_gravity="end"
-                        android:indeterminate="true"
-                        android:visibility="gone"/>
-
-                </FrameLayout>
+                    android:layout_marginTop="8dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone"/>
 
                 <!-- Title (toggleable) -->
                 <com.google.android.material.textfield.TextInputLayout

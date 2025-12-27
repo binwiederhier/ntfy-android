@@ -215,6 +215,8 @@
     <string name="publish_dialog_button_send">Send</string>
     <string name="publish_dialog_error_sending">Cannot send message: %1$s</string>
     <string name="publish_dialog_message_published">Message published</string>
+    <string name="publish_dialog_uploading">Uploading: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Upload cancelled</string>
     <string name="publish_dialog_other_features">Other features:</string>
     <string name="publish_dialog_chip_title">Title</string>
     <string name="publish_dialog_chip_tags">Tags</string>

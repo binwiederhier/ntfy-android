@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.text.method.LinkMovementMethod
 import android.widget.AutoCompleteTextView
-import android.widget.ProgressBar
 import android.widget.TextView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,7 +41,10 @@ import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.mimeTypeToIconResource
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import io.heckel.ntfy.util.ProgressRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -101,10 +104,15 @@ class PublishFragment : DialogFragment() {
     private lateinit var attachmentBoxSize: TextView
 
     // Progress/Error
-    private lateinit var progress: ProgressBar
+    private lateinit var uploadProgress: LinearProgressIndicator
+    private lateinit var uploadProgressText: TextView
     private lateinit var errorText: TextView
     private lateinit var errorImage: View
     private lateinit var docsLink: TextView
+    
+    // Upload job (for cancellation)
+    private var uploadJob: Job? = null
+    private var isUploading: Boolean = false
 
     // State
     private var baseUrl: String = ""
@@ -166,7 +174,11 @@ class PublishFragment : DialogFragment() {
         toolbar = view.findViewById(R.id.publish_dialog_toolbar)
         toolbar.title = getString(R.string.publish_dialog_title, topicShortUrl(baseUrl, topic))
         toolbar.setNavigationOnClickListener {
-            dismiss()
+            if (isUploading) {
+                cancelUpload()
+            } else {
+                dismiss()
+            }
         }
         toolbar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.publish_dialog_send_button) {
@@ -183,7 +195,8 @@ class PublishFragment : DialogFragment() {
         messageText = view.findViewById(R.id.publish_dialog_message_text)
         tagsText = view.findViewById(R.id.publish_dialog_tags_text)
         priorityDropdown = view.findViewById(R.id.publish_dialog_priority_dropdown)
-        progress = view.findViewById(R.id.publish_dialog_progress)
+        uploadProgress = view.findViewById(R.id.publish_dialog_upload_progress)
+        uploadProgressText = view.findViewById(R.id.publish_dialog_upload_progress_text)
         errorText = view.findViewById(R.id.publish_dialog_error_text)
         errorImage = view.findViewById(R.id.publish_dialog_error_image)
         docsLink = view.findViewById(R.id.publish_dialog_docs_text)
@@ -472,24 +485,32 @@ class PublishFragment : DialogFragment() {
         val attachFilename = if (chipAttachUrl.isChecked) attachFilenameText.text.toString() else ""
         val phoneCall = if (chipPhoneCall.isChecked) phoneCallText.text.toString() else ""
 
-        progress.visibility = View.VISIBLE
+        // Show progress UI
+        val hasFileAttachment = chipAttachFile.isChecked && selectedFileUri != null
+        if (hasFileAttachment) {
+            uploadProgress.visibility = View.VISIBLE
+            uploadProgress.progress = 0
+            uploadProgressText.visibility = View.VISIBLE
+            uploadProgressText.text = getString(R.string.publish_dialog_uploading, "0%", "0 B", formatBytes(selectedFileSize))
+        }
         errorText.visibility = View.GONE
         errorImage.visibility = View.GONE
         enableView(false)
+        isUploading = true
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        uploadJob = lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(baseUrl)
                 
                 // Handle file attachment
-                if (chipAttachFile.isChecked && selectedFileUri != null) {
+                if (hasFileAttachment) {
                     // Create streaming RequestBody to avoid loading entire file into memory
                     val fileUri = selectedFileUri!!
                     val mimeType = selectedFileMimeType.toMediaType()
                     val fileSize = selectedFileSize
                     val context = requireContext()
                     
-                    val body = object : RequestBody() {
+                    val baseBody = object : RequestBody() {
                         override fun contentType(): MediaType = mimeType
                         
                         override fun contentLength(): Long = fileSize
@@ -498,6 +519,20 @@ class PublishFragment : DialogFragment() {
                             context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                                 sink.writeAll(inputStream.source())
                             }
+                        }
+                    }
+                    
+                    // Wrap with progress tracking
+                    val body = ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
+                        val percent = if (totalBytes > 0) (bytesWritten * 100 / totalBytes).toInt() else 0
+                        activity?.runOnUiThread {
+                            uploadProgress.progress = percent
+                            uploadProgressText.text = getString(
+                                R.string.publish_dialog_uploading,
+                                "$percent%",
+                                formatBytes(bytesWritten),
+                                formatBytes(totalBytes)
+                            )
                         }
                     }
                     
@@ -537,17 +572,25 @@ class PublishFragment : DialogFragment() {
                     )
                 }
                 
-                val activity = activity ?: return@launch
-                activity.runOnUiThread {
-                    Toast.makeText(activity, R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    isUploading = false
+                    Toast.makeText(requireContext(), R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
                     publishListener?.onPublished()
                     dismiss()
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to publish message", e)
-                val activity = activity ?: return@launch
-                activity.runOnUiThread {
-                    progress.visibility = View.GONE
+                withContext(Dispatchers.Main) {
+                    isUploading = false
+                    uploadProgress.visibility = View.GONE
+                    uploadProgressText.visibility = View.GONE
+                    
+                    // Don't show error if cancelled
+                    if (e is kotlinx.coroutines.CancellationException) {
+                        enableView(true)
+                        return@withContext
+                    }
+                    
                     val errorMessage = when (e) {
                         is ApiService.UnauthorizedException -> {
                             if (e.user != null) {
@@ -570,6 +613,15 @@ class PublishFragment : DialogFragment() {
                 }
             }
         }
+    }
+    
+    private fun cancelUpload() {
+        uploadJob?.cancel()
+        isUploading = false
+        uploadProgress.visibility = View.GONE
+        uploadProgressText.visibility = View.GONE
+        enableView(true)
+        Toast.makeText(requireContext(), R.string.publish_dialog_upload_cancelled, Toast.LENGTH_SHORT).show()
     }
 
     private fun enableView(enable: Boolean) {

@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/message_bar_hint"
+                android:textColorHint="?android:attr/textColorSecondary"
                 android:inputType="textMultiLine|textCapSentences"
                 android:minHeight="48dp"
                 android:maxLines="4"
