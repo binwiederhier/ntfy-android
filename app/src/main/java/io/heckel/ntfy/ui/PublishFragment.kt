@@ -433,7 +433,7 @@ class PublishFragment : DialogFragment() {
         messageText.postDelayed({
             messageText.requestFocus()
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(messageText, InputMethodManager.SHOW_FORCED)
+            imm?.showSoftInput(messageText, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
     }
 
