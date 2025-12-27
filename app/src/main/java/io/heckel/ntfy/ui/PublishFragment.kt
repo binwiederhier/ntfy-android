@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -232,9 +231,6 @@ class PublishFragment : DialogFragment() {
         // Setup chip click listeners
         setupChipListeners()
 
-        // Setup remove button listeners
-        setupRemoveButtonListeners(view)
-
         // Setup docs link
         docsLink.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.ntfy.sh/publish/"))
@@ -375,36 +371,6 @@ class PublishFragment : DialogFragment() {
         drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         priorityDropdown.setCompoundDrawablesRelative(drawable, null, null, null)
         priorityDropdown.compoundDrawablePadding = (12 * resources.displayMetrics.density).toInt()
-    }
-
-    private fun setupRemoveButtonListeners(view: View) {
-        view.findViewById<ImageButton>(R.id.publish_dialog_title_remove).setOnClickListener {
-            chipTitle.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_tags_remove).setOnClickListener {
-            chipTags.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_priority_remove).setOnClickListener {
-            chipPriority.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_click_url_remove).setOnClickListener {
-            chipClickUrl.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_email_remove).setOnClickListener {
-            chipEmail.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_delay_remove).setOnClickListener {
-            chipDelay.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_attach_url_remove).setOnClickListener {
-            chipAttachUrl.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_attach_file_remove).setOnClickListener {
-            chipAttachFile.isChecked = false
-        }
-        view.findViewById<ImageButton>(R.id.publish_dialog_phone_call_remove).setOnClickListener {
-            chipPhoneCall.isChecked = false
-        }
     }
 
     private fun openFilePicker() {
