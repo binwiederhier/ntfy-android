@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
@@ -184,9 +185,11 @@ class PublishFragment : DialogFragment() {
         priorityDropdown.setAdapter(priorityAdapter)
         // Set default priority (index 2 = priority 3, since list is now max-first)
         priorityDropdown.setText(priorityItems[2].label, false)
+        updatePriorityIcon(priorityItems[2].iconResId)
         priorityDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedPriority = priorityItems[position].priority
             priorityDropdown.setText(priorityItems[position].label, false)
+            updatePriorityIcon(priorityItems[position].iconResId)
         }
 
         // Setup chips
@@ -288,6 +291,7 @@ class PublishFragment : DialogFragment() {
                 selectedPriority = 3
                 val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
                 priorityDropdown.setText(priorityItems[2].label, false)
+                updatePriorityIcon(priorityItems[2].iconResId)
             }
         }
 
@@ -364,6 +368,13 @@ class PublishFragment : DialogFragment() {
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
         }, 100)
+    }
+
+    private fun updatePriorityIcon(iconResId: Int) {
+        val drawable = ContextCompat.getDrawable(requireContext(), iconResId)
+        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        priorityDropdown.setCompoundDrawablesRelative(drawable, null, null, null)
+        priorityDropdown.compoundDrawablePadding = (12 * resources.displayMetrics.density).toInt()
     }
 
     private fun setupRemoveButtonListeners(view: View) {

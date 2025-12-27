@@ -202,8 +202,11 @@
     <!-- Publish dialog -->
     <string name="publish_dialog_title">Publish to %1$s</string>
     <string name="publish_dialog_title_hint">Title</string>
+    <string name="publish_dialog_title_placeholder">Notification title</string>
     <string name="publish_dialog_message_hint">Message</string>
+    <string name="publish_dialog_message_placeholder">Notification message content</string>
     <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="publish_dialog_tags_placeholder">Comma-separated list of tags, e.g. warning, skull</string>
     <string name="publish_dialog_priority_hint">Priority</string>
     <string name="publish_dialog_priority_default">Default priority</string>
     <string name="publish_dialog_priority_min">Min priority</string>
@@ -226,16 +229,24 @@
     <string name="publish_dialog_chip_attach_url">Attach by URL</string>
     <string name="publish_dialog_chip_attach_file">Attach file</string>
     <string name="publish_dialog_chip_phone_call">Phone call</string>
-    <string name="publish_dialog_click_url_hint">URL to open when notification is clicked</string>
-    <string name="publish_dialog_email_hint">Email address to forward to</string>
-    <string name="publish_dialog_delay_hint">Delay, e.g. 30m, 1h, tomorrow 9am</string>
+    <string name="publish_dialog_click_url_hint">Click URL</string>
+    <string name="publish_dialog_click_url_placeholder">URL opened when notification is clicked</string>
+    <string name="publish_dialog_email_hint">Email</string>
+    <string name="publish_dialog_email_placeholder">Email address to forward notification to</string>
+    <string name="publish_dialog_delay_hint">Delay delivery</string>
+    <string name="publish_dialog_delay_placeholder">Delay, e.g. 30m, 1h, tomorrow 9am</string>
     <string name="publish_dialog_attach_url_hint">Attachment URL</string>
-    <string name="publish_dialog_attach_filename_hint">Filename</string>
-    <string name="publish_dialog_phone_call_hint">Phone number to call</string>
+    <string name="publish_dialog_attach_url_placeholder">URL of the file to attach</string>
+    <string name="publish_dialog_attach_filename_hint">Attachment filename</string>
+    <string name="publish_dialog_attach_filename_placeholder">Filename used when attachment is saved</string>
+    <string name="publish_dialog_phone_call_hint">Phone call</string>
+    <string name="publish_dialog_phone_call_placeholder">Phone number to call on notification</string>
     <string name="publish_dialog_attach_file_label">Attached file:</string>
     <string name="publish_dialog_attach_file_name_hint">Filename</string>
     <string name="publish_dialog_remove_field">Remove field</string>
-    <string name="publish_dialog_docs_link">For examples and a detailed description of all send features, please refer to the documentation.</string>
+    <string name="publish_dialog_docs_text">For examples and a detailed description of all send features, please refer to the </string>
+    <string name="publish_dialog_docs_link_text">documentation</string>
+    <string name="publish_dialog_docs_suffix">.</string>
 
     <!-- Message bar -->
     <string name="message_bar_hint">Type a message here</string>
