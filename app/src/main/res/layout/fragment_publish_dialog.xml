@@ -87,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:placeholderText="@string/publish_dialog_message_placeholder">
+                    app:placeholderText="@string/message_bar_hint"> <!-- Re-use message bar hint -->
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/publish_dialog_message_text"

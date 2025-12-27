@@ -202,22 +202,19 @@
     <!-- Publish dialog -->
     <string name="publish_dialog_title">Publish to %1$s</string>
     <string name="publish_dialog_title_hint">Title</string>
-    <string name="publish_dialog_title_placeholder">Notification title</string>
+    <string name="publish_dialog_title_placeholder">e.g. Someone is at the door</string>
     <string name="publish_dialog_message_hint">Message</string>
-    <string name="publish_dialog_message_placeholder">Notification message content</string>
     <string name="publish_dialog_tags_hint">Tags</string>
-    <string name="publish_dialog_tags_placeholder">Comma-separated list of tags, e.g. warning, skull</string>
+    <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
     <string name="publish_dialog_priority_hint">Priority</string>
     <string name="publish_dialog_priority_default">Default priority</string>
     <string name="publish_dialog_priority_min">Min priority</string>
     <string name="publish_dialog_priority_low">Low priority</string>
     <string name="publish_dialog_priority_high">High priority</string>
     <string name="publish_dialog_priority_max">Max priority</string>
-    <string name="publish_dialog_button_cancel">Cancel</string>
     <string name="publish_dialog_button_send">Send</string>
     <string name="publish_dialog_error_sending">Cannot send message: %1$s</string>
     <string name="publish_dialog_message_published">Message published</string>
-    <string name="publish_dialog_format_markdown">Format as Markdown</string>
     <string name="publish_dialog_other_features">Other features:</string>
     <string name="publish_dialog_chip_title">Title</string>
     <string name="publish_dialog_chip_tags">Tags</string>
@@ -227,20 +224,20 @@
     <string name="publish_dialog_chip_delay">Delay</string>
     <string name="publish_dialog_chip_markdown">Markdown</string>
     <string name="publish_dialog_chip_attach_url">Attach by URL</string>
-    <string name="publish_dialog_chip_attach_file">Attach file</string>
+    <string name="publish_dialog_chip_attach_file">Attach local file</string>
     <string name="publish_dialog_chip_phone_call">Phone call</string>
     <string name="publish_dialog_click_url_hint">Click URL</string>
-    <string name="publish_dialog_click_url_placeholder">URL opened when notification is clicked</string>
+    <string name="publish_dialog_click_url_placeholder">e.g. https://example.com/alerts/1234</string>
     <string name="publish_dialog_email_hint">Email</string>
-    <string name="publish_dialog_email_placeholder">Email address to forward notification to</string>
+    <string name="publish_dialog_email_placeholder">e.g. phil@example.com</string>
     <string name="publish_dialog_delay_hint">Delay delivery</string>
-    <string name="publish_dialog_delay_placeholder">Delay, e.g. 30m, 1h, tomorrow 9am</string>
+    <string name="publish_dialog_delay_placeholder">e.g. 30m, 1h, tomorrow 9am</string>
     <string name="publish_dialog_attach_url_hint">Attachment URL</string>
-    <string name="publish_dialog_attach_url_placeholder">URL of the file to attach</string>
+    <string name="publish_dialog_attach_url_placeholder">e.g. https://example.com/flowers.jpg</string>
     <string name="publish_dialog_attach_filename_hint">Attachment filename</string>
-    <string name="publish_dialog_attach_filename_placeholder">Filename used when attachment is saved</string>
+    <string name="publish_dialog_attach_filename_placeholder">e.g. lilies.jpg</string>
     <string name="publish_dialog_phone_call_hint">Phone call</string>
-    <string name="publish_dialog_phone_call_placeholder">Phone number to call on notification</string>
+    <string name="publish_dialog_phone_call_placeholder">e.g. +1234567890</string>
     <string name="publish_dialog_docs_text">For examples and a detailed description of all send features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
 
     <!-- Message bar -->
