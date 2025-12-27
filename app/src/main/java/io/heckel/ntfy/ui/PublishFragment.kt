@@ -93,7 +93,7 @@ class PublishFragment : DialogFragment() {
     // Attachment box (shown after file is selected)
     private lateinit var attachmentBox: View
     private lateinit var attachmentBoxIcon: ImageView
-    private lateinit var attachmentBoxFilename: TextView
+    private lateinit var attachmentBoxFilenameText: TextInputEditText
     private lateinit var attachmentBoxSize: TextView
 
     // Progress/Error
@@ -111,7 +111,6 @@ class PublishFragment : DialogFragment() {
     private var selectedFileName: String = ""
     private var selectedFileSize: Long = 0
     private var selectedFileMimeType: String = "application/octet-stream"
-    private var attachFilenameWatcher: android.text.TextWatcher? = null
 
     // File picker
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
@@ -242,7 +241,7 @@ class PublishFragment : DialogFragment() {
         // Attachment box (shown after file is selected)
         attachmentBox = view.findViewById(R.id.publish_dialog_attachment_box)
         attachmentBoxIcon = attachmentBox.findViewById(R.id.attachment_box_icon)
-        attachmentBoxFilename = attachmentBox.findViewById(R.id.attachment_box_filename)
+        attachmentBoxFilenameText = attachmentBox.findViewById(R.id.attachment_box_filename)
         attachmentBoxSize = attachmentBox.findViewById(R.id.attachment_box_size)
 
         // Setup chip click listeners
@@ -357,8 +356,7 @@ class PublishFragment : DialogFragment() {
                 selectedFileName = ""
                 selectedFileSize = 0
                 attachmentBox.visibility = View.GONE
-                attachFilenameLayout.visibility = View.GONE
-                attachFilenameText.setText("")
+                attachmentBoxFilenameText.setText("")
             }
         }
 
@@ -409,28 +407,14 @@ class PublishFragment : DialogFragment() {
         
         selectedFileMimeType = requireContext().contentResolver.getType(uri) ?: "application/octet-stream"
         
-        // Show the attachment box
+        // Show the attachment box with icon, size, and filename field
         attachmentBox.visibility = View.VISIBLE
         attachmentBoxIcon.setImageResource(mimeTypeToIconResource(selectedFileMimeType))
-        attachmentBoxFilename.text = selectedFileName
         attachmentBoxSize.text = formatBytes(selectedFileSize)
+        attachmentBoxFilenameText.setText(selectedFileName)
         
-        // Show filename field and set value
-        attachFilenameLayout.visibility = View.VISIBLE
-        attachFilenameText.setText(selectedFileName)
-        
-        // Listen for filename changes to update the attachment box (remove old watcher first)
-        attachFilenameWatcher?.let { attachFilenameText.removeTextChangedListener(it) }
-        attachFilenameWatcher = AfterChangedTextWatcher { s ->
-            if (chipAttachFile.isChecked) {
-                val newName = s?.toString() ?: selectedFileName
-                attachmentBoxFilename.text = newName.ifEmpty { selectedFileName }
-            }
-        }
-        attachFilenameText.addTextChangedListener(attachFilenameWatcher)
-        
-        attachFilenameText.requestFocus()
-        showKeyboard(attachFilenameText)
+        attachmentBoxFilenameText.requestFocus()
+        showKeyboard(attachmentBoxFilenameText)
     }
 
     override fun onStart() {
@@ -455,7 +439,7 @@ class PublishFragment : DialogFragment() {
 
     private fun validateInput() {
         if (!this::sendMenuItem.isInitialized) return
-        sendMenuItem.isEnabled = messageText.text?.isNotEmpty() == true
+        sendMenuItem.isEnabled = true
     }
 
     private fun onSendClick() {
@@ -506,7 +490,7 @@ class PublishFragment : DialogFragment() {
                         tags = tags,
                         delay = delay,
                         body = body,
-                        filename = attachFilenameText.text.toString(),
+                        filename = attachmentBoxFilenameText.text.toString(),
                         click = clickUrl,
                         email = email,
                         call = phoneCall,
@@ -591,9 +575,10 @@ class PublishFragment : DialogFragment() {
         delayText.isEnabled = enable
         attachUrlText.isEnabled = enable
         attachFilenameText.isEnabled = enable
+        attachmentBoxFilenameText.isEnabled = enable
         phoneCallText.isEnabled = enable
         
-        sendMenuItem.isEnabled = enable && messageText.text?.isNotEmpty() == true
+        sendMenuItem.isEnabled = enable
     }
 
     companion object {

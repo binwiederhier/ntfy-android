@@ -4,41 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="8dp"
-    android:background="@drawable/attachment_box_background">
+    android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/attachment_box_icon"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="12dp"
-        android:contentDescription="@null"
-        app:srcCompat="@drawable/ic_file_document_blue_24dp"/>
-
+    <!-- Icon and size stacked vertically on the left -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginEnd="12dp">
 
-        <TextView
-            android:id="@+id/attachment_box_filename"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            android:ellipsize="middle"
-            android:singleLine="true"/>
+        <ImageView
+            android:id="@+id/attachment_box_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/ic_file_document_blue_24dp"/>
 
         <TextView
             android:id="@+id/attachment_box_size"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:textColor="?android:attr/textColorSecondary"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"/>
 
     </LinearLayout>
+
+    <!-- Filename text field on the right -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/attachment_box_filename_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="@string/publish_dialog_attach_filename_hint"
+        app:placeholderText="@string/publish_dialog_attach_filename_placeholder">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/attachment_box_filename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAutofill="no"
+            android:maxLines="1"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
 
