@@ -41,7 +41,12 @@ class ApiService {
         tags: List<String> = emptyList(),
         delay: String = "",
         body: RequestBody? = null,
-        filename: String = ""
+        filename: String = "",
+        click: String = "",
+        attach: String = "",
+        email: String = "",
+        call: String = "",
+        markdown: Boolean = false
     ) {
         val url = topicUrl(baseUrl, topic)
         val query = mutableListOf<String>()
@@ -59,6 +64,21 @@ class ApiService {
         }
         if (filename.isNotEmpty()) {
             query.add("filename=${URLEncoder.encode(filename, "UTF-8")}")
+        }
+        if (click.isNotEmpty()) {
+            query.add("click=${URLEncoder.encode(click, "UTF-8")}")
+        }
+        if (attach.isNotEmpty()) {
+            query.add("attach=${URLEncoder.encode(attach, "UTF-8")}")
+        }
+        if (email.isNotEmpty()) {
+            query.add("email=${URLEncoder.encode(email, "UTF-8")}")
+        }
+        if (call.isNotEmpty()) {
+            query.add("call=${URLEncoder.encode(call, "UTF-8")}")
+        }
+        if (markdown) {
+            query.add("markdown=true")
         }
         if (body != null) {
             query.add("message=${URLEncoder.encode(message.replace("\n", "\\n"), "UTF-8")}")
