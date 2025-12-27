@@ -18,10 +18,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputLayout
+import io.heckel.ntfy.BuildConfig
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
@@ -175,6 +177,7 @@ class PublishFragment : DialogFragment() {
         errorImage = view.findViewById(R.id.publish_dialog_error_image)
         docsLink = view.findViewById(R.id.publish_dialog_docs_text)
         docsLink.movementMethod = LinkMovementMethod.getInstance()
+        docsLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
 
         // Set initial message if provided
         if (initialMessage.isNotEmpty()) {
