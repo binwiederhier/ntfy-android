@@ -334,7 +334,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun getMessageBarEnabled(): Boolean {
-        return sharedPrefs.getBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, false) // Disabled by default (show FAB)
+        return sharedPrefs.getBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, true) // Enabled by default
     }
 
     fun setMessageBarEnabled(enabled: Boolean) {
