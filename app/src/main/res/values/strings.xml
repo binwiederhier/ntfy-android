@@ -242,10 +242,7 @@
     <string name="publish_dialog_phone_call_hint">Phone call</string>
     <string name="publish_dialog_phone_call_placeholder">Phone number to call on notification</string>
     <string name="publish_dialog_attach_file_label">Attached file:</string>
-    <string name="publish_dialog_attach_file_name_hint">Filename</string>
-    <string name="publish_dialog_docs_text">For examples and a detailed description of all send features, please refer to the </string>
-    <string name="publish_dialog_docs_link_text">documentation</string>
-    <string name="publish_dialog_docs_suffix">.</string>
+    <string name="publish_dialog_docs_text">For examples and a detailed description of all send features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
 
     <!-- Message bar -->
     <string name="message_bar_hint">Type a message here</string>

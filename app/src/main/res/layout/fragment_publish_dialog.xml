@@ -200,89 +200,56 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Attach URL fields -->
-                <LinearLayout
+                <!-- Attach URL field -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/publish_dialog_attach_url_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp">
-
-                    <!-- First row: URL field -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:placeholderText="@string/publish_dialog_attach_url_placeholder">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/publish_dialog_attach_url_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/publish_dialog_attach_url_hint"
-                            android:importantForAutofill="no"
-                            android:maxLines="1"
-                            android:inputType="textUri"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Second row: Filename field -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:placeholderText="@string/publish_dialog_attach_filename_placeholder">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/publish_dialog_attach_filename_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/publish_dialog_attach_filename_hint"
-                            android:importantForAutofill="no"
-                            android:maxLines="1"
-                            android:inputType="text"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-
-                <!-- Attach File field -->
-                <LinearLayout
-                    android:id="@+id/publish_dialog_attach_file_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:visibility="gone"
                     android:layout_marginTop="10dp"
-                    android:gravity="center_vertical">
+                    app:placeholderText="@string/publish_dialog_attach_url_placeholder">
 
-                    <TextView
-                        android:id="@+id/publish_dialog_attach_file_label"
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_attach_url_text"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_attach_file_label"
-                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                        android:hint="@string/publish_dialog_attach_url_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="textUri"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Attach File label (shown after local file is selected) -->
+                <TextView
+                    android:id="@+id/publish_dialog_attach_file_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/publish_dialog_attach_file_label"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
+
+                <!-- Attachment filename field (shared between attach URL and attach file) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_attach_filename_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    app:placeholderText="@string/publish_dialog_attach_filename_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_attach_filename_text"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                        android:hint="@string/publish_dialog_attach_filename_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"/>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/publish_dialog_attach_file_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/publish_dialog_attach_file_name_hint"
-                            android:importantForAutofill="no"
-                            android:maxLines="1"
-                            android:inputType="text"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Phone Call field -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -417,37 +384,15 @@
                 </com.google.android.material.chip.ChipGroup>
 
                 <!-- Documentation link -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/publish_dialog_docs_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/publish_dialog_docs_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_docs_text"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
-
-                    <TextView
-                        android:id="@+id/publish_dialog_docs_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_docs_link_text"
-                        android:textColor="?attr/colorPrimary"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/publish_dialog_docs_suffix"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
-
-                </LinearLayout>
+                    android:text="@string/publish_dialog_docs_text"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
 
                 <!-- Error section -->
                 <LinearLayout

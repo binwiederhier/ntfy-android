@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.text.method.LinkMovementMethod
 import android.widget.AutoCompleteTextView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
@@ -72,7 +74,6 @@ class PublishFragment : DialogFragment() {
     private lateinit var emailLayout: View
     private lateinit var delayLayout: View
     private lateinit var attachUrlLayout: View
-    private lateinit var attachFileLayout: View
     private lateinit var phoneCallLayout: View
 
     // Optional field inputs
@@ -81,10 +82,11 @@ class PublishFragment : DialogFragment() {
     private lateinit var delayText: TextInputEditText
     private lateinit var attachUrlText: TextInputEditText
     private lateinit var attachFilenameText: TextInputEditText
+    private lateinit var attachFilenameLayout: TextInputLayout
     private lateinit var phoneCallText: TextInputEditText
 
-    // Attach file
-    private lateinit var attachFileNameText: TextInputEditText
+    // Attach file label (shown after file is selected)
+    private lateinit var attachFileLabel: TextView
 
     // Progress/Error
     private lateinit var progress: ProgressBar
@@ -171,7 +173,8 @@ class PublishFragment : DialogFragment() {
         progress = view.findViewById(R.id.publish_dialog_progress)
         errorText = view.findViewById(R.id.publish_dialog_error_text)
         errorImage = view.findViewById(R.id.publish_dialog_error_image)
-        docsLink = view.findViewById(R.id.publish_dialog_docs_link)
+        docsLink = view.findViewById(R.id.publish_dialog_docs_text)
+        docsLink.movementMethod = LinkMovementMethod.getInstance()
 
         // Set initial message if provided
         if (initialMessage.isNotEmpty()) {
@@ -214,7 +217,6 @@ class PublishFragment : DialogFragment() {
         emailLayout = view.findViewById(R.id.publish_dialog_email_layout)
         delayLayout = view.findViewById(R.id.publish_dialog_delay_layout)
         attachUrlLayout = view.findViewById(R.id.publish_dialog_attach_url_layout)
-        attachFileLayout = view.findViewById(R.id.publish_dialog_attach_file_layout)
         phoneCallLayout = view.findViewById(R.id.publish_dialog_phone_call_layout)
 
         // Setup optional field inputs
@@ -223,19 +225,14 @@ class PublishFragment : DialogFragment() {
         delayText = view.findViewById(R.id.publish_dialog_delay_text)
         attachUrlText = view.findViewById(R.id.publish_dialog_attach_url_text)
         attachFilenameText = view.findViewById(R.id.publish_dialog_attach_filename_text)
+        attachFilenameLayout = view.findViewById(R.id.publish_dialog_attach_filename_layout)
         phoneCallText = view.findViewById(R.id.publish_dialog_phone_call_text)
 
-        // Attach file UI
-        attachFileNameText = view.findViewById(R.id.publish_dialog_attach_file_name)
+        // Attach file label (shown after file is selected)
+        attachFileLabel = view.findViewById(R.id.publish_dialog_attach_file_label)
 
         // Setup chip click listeners
         setupChipListeners()
-
-        // Setup docs link
-        docsLink.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.ntfy.sh/publish/"))
-            startActivity(intent)
-        }
 
         // Validation on text change
         val textWatcher = AfterChangedTextWatcher {
@@ -323,6 +320,7 @@ class PublishFragment : DialogFragment() {
 
         chipAttachUrl.setOnCheckedChangeListener { _, isChecked ->
             attachUrlLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
+            attachFilenameLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked) {
                 // Mutually exclusive with attach file
                 chipAttachFile.isChecked = false
@@ -335,16 +333,17 @@ class PublishFragment : DialogFragment() {
         }
 
         chipAttachFile.setOnCheckedChangeListener { _, isChecked ->
-            attachFileLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked) {
                 // Mutually exclusive with attach URL
                 chipAttachUrl.isChecked = false
-                // Open file picker immediately
+                // Open file picker immediately (don't show any UI yet)
                 openFilePicker()
             } else {
                 selectedFileUri = null
                 selectedFileName = ""
-                attachFileNameText.setText("")
+                attachFileLabel.visibility = View.GONE
+                attachFilenameLayout.visibility = View.GONE
+                attachFilenameText.setText("")
             }
         }
 
@@ -392,7 +391,13 @@ class PublishFragment : DialogFragment() {
         }
         
         selectedFileMimeType = requireContext().contentResolver.getType(uri) ?: "application/octet-stream"
-        attachFileNameText.setText(selectedFileName)
+        
+        // Show the "Attached file" label and filename field
+        attachFileLabel.visibility = View.VISIBLE
+        attachFilenameLayout.visibility = View.VISIBLE
+        attachFilenameText.setText(selectedFileName)
+        attachFilenameText.requestFocus()
+        showKeyboard(attachFilenameText)
     }
 
     override fun onStart() {
@@ -468,7 +473,7 @@ class PublishFragment : DialogFragment() {
                         tags = tags,
                         delay = delay,
                         body = body,
-                        filename = attachFileNameText.text.toString(),
+                        filename = attachFilenameText.text.toString(),
                         click = clickUrl,
                         email = email,
                         call = phoneCall,
@@ -554,7 +559,6 @@ class PublishFragment : DialogFragment() {
         attachUrlText.isEnabled = enable
         attachFilenameText.isEnabled = enable
         phoneCallText.isEnabled = enable
-        attachFileNameText.isEnabled = enable
         
         sendMenuItem.isEnabled = enable && messageText.text?.isNotEmpty() == true
     }
