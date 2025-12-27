@@ -27,11 +27,14 @@ import io.heckel.ntfy.BuildConfig
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
+import android.widget.ImageView
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.AfterChangedTextWatcher
+import io.heckel.ntfy.util.formatBytes
+import io.heckel.ntfy.util.mimeTypeToIconResource
 import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -87,8 +90,11 @@ class PublishFragment : DialogFragment() {
     private lateinit var attachFilenameLayout: TextInputLayout
     private lateinit var phoneCallText: TextInputEditText
 
-    // Attach file label (shown after file is selected)
-    private lateinit var attachFileLabel: TextView
+    // Attachment box (shown after file is selected)
+    private lateinit var attachmentBox: View
+    private lateinit var attachmentBoxIcon: ImageView
+    private lateinit var attachmentBoxFilename: TextView
+    private lateinit var attachmentBoxSize: TextView
 
     // Progress/Error
     private lateinit var progress: ProgressBar
@@ -103,7 +109,9 @@ class PublishFragment : DialogFragment() {
     private var initialMessage: String = ""
     private var selectedFileUri: Uri? = null
     private var selectedFileName: String = ""
+    private var selectedFileSize: Long = 0
     private var selectedFileMimeType: String = "application/octet-stream"
+    private var attachFilenameWatcher: android.text.TextWatcher? = null
 
     // File picker
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
@@ -231,8 +239,11 @@ class PublishFragment : DialogFragment() {
         attachFilenameLayout = view.findViewById(R.id.publish_dialog_attach_filename_layout)
         phoneCallText = view.findViewById(R.id.publish_dialog_phone_call_text)
 
-        // Attach file label (shown after file is selected)
-        attachFileLabel = view.findViewById(R.id.publish_dialog_attach_file_label)
+        // Attachment box (shown after file is selected)
+        attachmentBox = view.findViewById(R.id.publish_dialog_attachment_box)
+        attachmentBoxIcon = attachmentBox.findViewById(R.id.attachment_box_icon)
+        attachmentBoxFilename = attachmentBox.findViewById(R.id.attachment_box_filename)
+        attachmentBoxSize = attachmentBox.findViewById(R.id.attachment_box_size)
 
         // Setup chip click listeners
         setupChipListeners()
@@ -344,7 +355,8 @@ class PublishFragment : DialogFragment() {
             } else {
                 selectedFileUri = null
                 selectedFileName = ""
-                attachFileLabel.visibility = View.GONE
+                selectedFileSize = 0
+                attachmentBox.visibility = View.GONE
                 attachFilenameLayout.visibility = View.GONE
                 attachFilenameText.setText("")
             }
@@ -386,19 +398,37 @@ class PublishFragment : DialogFragment() {
     private fun handleSelectedFile(uri: Uri) {
         selectedFileUri = uri
         
-        // Get file name and mime type
+        // Get file name, size and mime type
         requireContext().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
             val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
             cursor.moveToFirst()
             selectedFileName = if (nameIndex >= 0) cursor.getString(nameIndex) else "file"
+            selectedFileSize = if (sizeIndex >= 0) cursor.getLong(sizeIndex) else 0
         }
         
         selectedFileMimeType = requireContext().contentResolver.getType(uri) ?: "application/octet-stream"
         
-        // Show the "Attached file" label and filename field
-        attachFileLabel.visibility = View.VISIBLE
+        // Show the attachment box
+        attachmentBox.visibility = View.VISIBLE
+        attachmentBoxIcon.setImageResource(mimeTypeToIconResource(selectedFileMimeType))
+        attachmentBoxFilename.text = selectedFileName
+        attachmentBoxSize.text = formatBytes(selectedFileSize)
+        
+        // Show filename field and set value
         attachFilenameLayout.visibility = View.VISIBLE
         attachFilenameText.setText(selectedFileName)
+        
+        // Listen for filename changes to update the attachment box (remove old watcher first)
+        attachFilenameWatcher?.let { attachFilenameText.removeTextChangedListener(it) }
+        attachFilenameWatcher = AfterChangedTextWatcher { s ->
+            if (chipAttachFile.isChecked) {
+                val newName = s?.toString() ?: selectedFileName
+                attachmentBoxFilename.text = newName.ifEmpty { selectedFileName }
+            }
+        }
+        attachFilenameText.addTextChangedListener(attachFilenameWatcher)
+        
         attachFilenameText.requestFocus()
         showKeyboard(attachFilenameText)
     }

@@ -220,16 +220,14 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Attach File label (shown after local file is selected) -->
-                <TextView
-                    android:id="@+id/publish_dialog_attach_file_label"
+                <!-- Attachment box (shown after local file is selected) -->
+                <include
+                    android:id="@+id/publish_dialog_attachment_box"
+                    layout="@layout/view_attachment_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:layout_marginTop="10dp"
-                    android:text="@string/publish_dialog_attach_file_label"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"/>
+                    android:visibility="gone"/>
 
                 <!-- Attachment filename field (shared between attach URL and attach file) -->
                 <com.google.android.material.textfield.TextInputLayout
