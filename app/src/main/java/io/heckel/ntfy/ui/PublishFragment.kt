@@ -28,6 +28,10 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageView
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okio.BufferedSink
+import okio.source
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.ApiService
@@ -479,12 +483,23 @@ class PublishFragment : DialogFragment() {
                 
                 // Handle file attachment
                 if (chipAttachFile.isChecked && selectedFileUri != null) {
-                    // Read file and send as body
-                    val inputStream = requireContext().contentResolver.openInputStream(selectedFileUri!!)
-                    val bytes = inputStream?.readBytes() ?: ByteArray(0)
-                    inputStream?.close()
+                    // Create streaming RequestBody to avoid loading entire file into memory
+                    val fileUri = selectedFileUri!!
+                    val mimeType = selectedFileMimeType.toMediaType()
+                    val fileSize = selectedFileSize
+                    val context = requireContext()
                     
-                    val body = bytes.toRequestBody(selectedFileMimeType.toMediaType())
+                    val body = object : RequestBody() {
+                        override fun contentType(): MediaType = mimeType
+                        
+                        override fun contentLength(): Long = fileSize
+                        
+                        override fun writeTo(sink: BufferedSink) {
+                            context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
+                                sink.writeAll(inputStream.source())
+                            }
+                        }
+                    }
                     
                     api.publish(
                         baseUrl = baseUrl,
