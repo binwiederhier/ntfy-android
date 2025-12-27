@@ -1,7 +1,11 @@
 package io.heckel.ntfy.up
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
@@ -32,7 +36,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
     }
 
     private fun register(context: Context, intent: Intent) {
-        val appId = intent.getStringExtra(EXTRA_APPLICATION) ?: return
+        val appId = getApplication(context, intent) ?: return
         val connectorToken = intent.getStringExtra(EXTRA_TOKEN) ?: return
         val app = context.applicationContext as Application
         val repository = app.repository
@@ -40,12 +44,13 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
         if (!repository.getUnifiedPushEnabled()) {
             Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
-            distributor.sendRegistrationFailed(appId, connectorToken, "UnifiedPush is disabled in ntfy")
+            // Action required: tell the app to not try again before an action as be done manually
+            // by the user
+            distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.ACTION_REQUIRED)
             return
         }
         if (appId.isBlank()) {
             Log.w(TAG, "Refusing registration: Empty application")
-            distributor.sendRegistrationFailed(appId, connectorToken, "Empty application string")
             return
         }
         GlobalScope.launch(Dispatchers.IO) {
@@ -61,7 +66,8 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                         distributor.sendEndpoint(appId, connectorToken, endpoint)
                     } else {
                         Log.d(TAG, "Subscription with connectorToken $connectorToken exists for a different app. Refusing registration.")
-                        distributor.sendRegistrationFailed(appId, connectorToken, "Connector token already exists")
+                        // Internal_error: try again with a new token
+                        distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.INTERNAL_ERROR)
                     }
                     return@launch
                 }
@@ -99,13 +105,89 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     SubscriberServiceManager.refresh(app)
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to add subscription", e)
-                    distributor.sendRegistrationFailed(appId, connectorToken, e.message)
+                    // Try again when there is network
+                    distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.NETWORK)
                 }
 
                 // Add to log scrubber
                 Log.addScrubTerm(shortUrl(baseUrl), Log.TermType.Domain)
                 Log.addScrubTerm(topic)
             }
+        }
+    }
+
+    /**
+     * Get application package name
+     */
+    private fun getApplication(context: Context, intent: Intent): String? {
+        return getApplicationAnd3(context, intent)
+            ?: getApplicationAnd2(intent)
+    }
+
+    /**
+     * Get application package name following AND_3 specifications.
+     */
+    private fun getApplicationAnd3(context: Context, intent: Intent): String? {
+        return if (Build.VERSION.SDK_INT >= 34) {
+            getApplicationAnd3SharedId(context, intent)
+        } else {
+            getApplicationAnd3PendingIntent(intent)
+        }
+    }
+
+    /**
+     * Try get application package name following AND_3 specifications for SDK>=34, with the shared
+     * identity.
+     *
+     * It fallback to [getApplicationAnd3PendingIntent] if the other application targets SDK<34.
+     */
+    @RequiresApi(34)
+    private fun getApplicationAnd3SharedId(context: Context, intent: Intent): String? {
+        return sentFromPackage?.also {
+            // We got the package name with the shared identity
+            android.util.Log.d(TAG, "Registering $it. Package name retrieved with shared identity")
+        } ?: getApplicationAnd3PendingIntent(intent)?.let { packageId ->
+            // We got the package name with the pending intent, checking if that app targets SDK<34
+            return if (Build.VERSION.SDK_INT >= 33) {
+                context.packageManager.getApplicationInfo(
+                    packageId,
+                    PackageManager.ApplicationInfoFlags.of(
+                        PackageManager.GET_META_DATA.toLong()
+                    )
+                )
+            } else {
+                context.packageManager.getApplicationInfo(packageId, 0)
+            }.let { ai ->
+                if (ai.targetSdkVersion >= 34) {
+                    android.util.Log.d(TAG, "App targeting Sdk >= 34 without shared identity, ignoring.")
+                    null
+                } else {
+                    packageId
+                }
+            }
+        }
+    }
+
+    /**
+     * Try get application package name following AND_3 specifications when running on
+     * a device with SDK<34 or receiving message from an application targeting SDK<34, with a pending
+     * intent.
+     *
+     * Always prefer [getApplicationAnd3SharedId] if possible.
+     */
+    private fun getApplicationAnd3PendingIntent(intent: Intent): String? {
+        return intent.getParcelableExtra<PendingIntent>(EXTRA_PI)?.creatorPackage?.also {
+            android.util.Log.d(TAG, "Registering $it. Package name retrieved with PendingIntent")
+        }
+    }
+
+    /**
+     * Try get the application package name using AND_2 specifications
+     */
+    @Deprecated("This follows AND_2 specifications. Will be removed.")
+    private fun getApplicationAnd2(intent: Intent): String? {
+        return intent.getStringExtra(EXTRA_APPLICATION)?.also {
+            android.util.Log.d(TAG, "Registering $it. Package name retrieved with legacy String extra")
         }
     }
 
