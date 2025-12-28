@@ -18,6 +18,7 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
+import androidx.core.content.edit
 
 class Repository(private val sharedPrefs: SharedPreferences, database: Database) {
     private val subscriptionDao = database.subscriptionDao()
