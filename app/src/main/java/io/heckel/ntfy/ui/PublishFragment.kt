@@ -214,8 +214,7 @@ class PublishFragment : DialogFragment() {
         val priorityItems = PriorityAdapter.createPriorityItems(requireContext())
         val priorityAdapter = PriorityAdapter(requireContext(), priorityItems)
         priorityDropdown.setAdapter(priorityAdapter)
-        // Set default priority (index 2 = priority 3, since list is now max-first)
-        priorityDropdown.setText(priorityItems[2].label, false)
+        priorityDropdown.setText(priorityItems[2].label, false) // Set default priority (index 2 -> priority 3)
         updatePriorityIcon(priorityItems[2].iconResId)
         priorityDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedPriority = priorityItems[position].priority
@@ -283,9 +282,6 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun setupChipListeners() {
-        // Markdown chip - no field to show, just toggle state
-        // (no listener needed, we just check isChecked when sending)
-
         chipTitle.setOnCheckedChangeListener { _, isChecked ->
             titleLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked) {
@@ -309,7 +305,7 @@ class PublishFragment : DialogFragment() {
         chipPriority.setOnCheckedChangeListener { _, isChecked ->
             priorityLayout.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (isChecked) {
-                hideKeyboard()
+                hideKeyboard() // FIXME: This does not seem to hide the keyboard
                 priorityDropdown.requestFocus()
                 priorityDropdown.showDropDown()
             } else {
