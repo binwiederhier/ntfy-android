@@ -240,7 +240,7 @@
     <string name="publish_dialog_attach_filename_placeholder">e.g. lilies.jpg</string>
     <string name="publish_dialog_phone_call_hint">Phone call</string>
     <string name="publish_dialog_phone_call_placeholder">e.g. +1234567890</string>
-    <string name="publish_dialog_docs_text">For examples and a detailed description of all send features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
+    <string name="publish_dialog_docs_text">For examples and a detailed description of all publish features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
 
     <!-- Message bar -->
     <string name="message_bar_hint">Type a message here</string>
