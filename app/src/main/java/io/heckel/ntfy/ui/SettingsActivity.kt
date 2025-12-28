@@ -350,38 +350,30 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
             val language: ListPreference? = findPreference(languagePrefId)
             if (language != null) {
-                // Build language entries dynamically from supported locales
+                // We only list languages that have > 80% of strings translated.
+                //
+                // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+                // to help translate other languages.
+                //
+                // IMPORTANT: If a language is added here, also add it to the locales_config.xml file.
+
                 val supportedLocales = listOf(
                     "" to getString(R.string.settings_general_language_system_default),
                     "en" to "English",
-                    "af" to "Afrikaans",
-                    "ar" to "العربية",
                     "bg" to "Български",
-                    "bn" to "বাংলা",
                     "ca" to "Català",
                     "cs" to "Čeština",
-                    "cu" to "Славе́нскїй",
-                    "cy" to "Cymraeg",
-                    "da" to "Dansk",
                     "de" to "Deutsch",
-                    "el" to "Ελληνικά",
-                    "eo" to "Esperanto",
                     "es" to "Español",
                     "et" to "Eesti",
-                    "fa" to "فارسی",
                     "fi" to "Suomi",
                     "fr" to "Français",
                     "gl" to "Galego",
-                    "hi" to "हिन्दी",
-                    "hr" to "Hrvatski",
-                    "hu" to "Magyar",
                     "in" to "Bahasa Indonesia",
                     "it" to "Italiano",
                     "iw" to "עברית",
                     "ja" to "日本語",
                     "ko" to "한국어",
-                    "mk" to "Македонски",
-                    "ms" to "Bahasa Melayu",
                     "nb-NO" to "Norsk bokmål",
                     "nl" to "Nederlands",
                     "pl" to "Polski",
@@ -392,12 +384,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     "sk" to "Slovenčina",
                     "sv" to "Svenska",
                     "ta" to "தமிழ்",
-                    "th" to "ไทย",
                     "tr" to "Türkçe",
                     "uk" to "Українська",
                     "uz" to "Oʻzbekcha",
                     "vi" to "Tiếng Việt",
-                    "xh" to "isiXhosa",
                     "zh-CN" to "简体中文",
                     "zh-TW" to "繁體中文"
                 )

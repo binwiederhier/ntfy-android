@@ -1,5 +1,6 @@
 Features:
-* Add message bar to publish messages from the app (#98, ntfy-android#144)
+* Allow publishing messages through the message bar and publish dialog (#98, ntfy-android#144)
+* Language selector to allow overriding the system language (#1508, thanks to @hudsonm62 for reporting)
 
 Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
