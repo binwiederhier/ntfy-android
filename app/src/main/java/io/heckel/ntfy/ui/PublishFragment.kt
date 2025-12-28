@@ -39,7 +39,6 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.formatBytes
 import io.heckel.ntfy.util.mimeTypeToIconResource
-import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

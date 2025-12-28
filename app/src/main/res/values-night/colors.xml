@@ -148,5 +148,4 @@
     <!-- Chip colors -->
     <color name="chip_background_color">#2C2C2C</color> <!-- Dark gray background -->
     <color name="chip_background_checked">#4A4A4A</color> <!-- Lighter when selected in dark mode -->
-    <color name="chip_stroke_color">#424242</color> <!-- Dark gray stroke -->
 </resources>
