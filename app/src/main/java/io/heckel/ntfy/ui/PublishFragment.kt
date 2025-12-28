@@ -110,8 +110,9 @@ class PublishFragment : DialogFragment() {
     private lateinit var errorImage: View
     private lateinit var docsLink: TextView
     
-    // Upload job (for cancellation)
+    // Upload job and call (for cancellation)
     private var uploadJob: Job? = null
+    private var uploadCall: okhttp3.Call? = null
     private var isUploading: Boolean = false
 
     // State
@@ -526,6 +527,7 @@ class PublishFragment : DialogFragment() {
                     val body = ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
                         val percent = if (totalBytes > 0) (bytesWritten * 100 / totalBytes).toInt() else 0
                         activity?.runOnUiThread {
+                            if (!isAdded) return@runOnUiThread
                             uploadProgress.progress = percent
                             uploadProgressText.text = getString(
                                 R.string.publish_dialog_uploading,
@@ -536,7 +538,7 @@ class PublishFragment : DialogFragment() {
                         }
                     }
                     
-                    api.publish(
+                    uploadCall = api.createPublishCall(
                         baseUrl = baseUrl,
                         topic = topic,
                         user = user,
@@ -552,9 +554,10 @@ class PublishFragment : DialogFragment() {
                         call = phoneCall,
                         markdown = markdown
                     )
+                    api.executePublishCall(uploadCall!!, user)
                 } else {
                     // No file attachment
-                    api.publish(
+                    uploadCall = api.createPublishCall(
                         baseUrl = baseUrl,
                         topic = topic,
                         user = user,
@@ -570,10 +573,13 @@ class PublishFragment : DialogFragment() {
                         markdown = markdown,
                         filename = attachFilename
                     )
+                    api.executePublishCall(uploadCall!!, user)
                 }
                 
                 withContext(Dispatchers.Main) {
+                    if (!isAdded) return@withContext
                     isUploading = false
+                    uploadCall = null
                     Toast.makeText(requireContext(), R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
                     publishListener?.onPublished()
                     dismiss()
@@ -581,12 +587,15 @@ class PublishFragment : DialogFragment() {
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to publish message", e)
                 withContext(Dispatchers.Main) {
+                    if (!isAdded) return@withContext
                     isUploading = false
+                    uploadCall = null
                     uploadProgress.visibility = View.GONE
                     uploadProgressText.visibility = View.GONE
                     
-                    // Don't show error if cancelled
-                    if (e is kotlinx.coroutines.CancellationException) {
+                    // Don't show error if cancelled (coroutine or OkHttp call)
+                    if (e is kotlinx.coroutines.CancellationException || 
+                        (e is java.io.IOException && e.message?.contains("Canceled") == true)) {
                         enableView(true)
                         return@withContext
                     }
@@ -616,12 +625,17 @@ class PublishFragment : DialogFragment() {
     }
     
     private fun cancelUpload() {
+        // Cancel both the coroutine job and the OkHttp call
+        uploadCall?.cancel()
         uploadJob?.cancel()
+        uploadCall = null
         isUploading = false
         uploadProgress.visibility = View.GONE
         uploadProgressText.visibility = View.GONE
         enableView(true)
-        Toast.makeText(requireContext(), R.string.publish_dialog_upload_cancelled, Toast.LENGTH_SHORT).show()
+        if (isAdded) {
+            Toast.makeText(requireContext(), R.string.publish_dialog_upload_cancelled, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun enableView(enable: Boolean) {

@@ -31,7 +31,11 @@ class ApiService {
         .build()
     private val parser = NotificationParser()
 
-    fun publish(
+    /**
+     * Creates a Call for publishing a message. The caller is responsible for executing
+     * and handling the response. This allows the caller to cancel the call if needed.
+     */
+    fun createPublishCall(
         baseUrl: String,
         topic: String,
         user: User? = null,
@@ -47,7 +51,7 @@ class ApiService {
         email: String = "",
         call: String = "",
         markdown: Boolean = false
-    ) {
+    ): Call {
         val url = topicUrl(baseUrl, topic)
         val query = mutableListOf<String>()
         if (priority in ALL_PRIORITIES) {
@@ -91,17 +95,48 @@ class ApiService {
         val request = requestBuilder(urlWithQuery, user)
             .put(body ?: message.toRequestBody())
             .build()
-        Log.d(TAG, "Publishing to $request")
-        publishClient.newCall(request).execute().use { response ->
+        Log.d(TAG, "Creating publish call to $request")
+        return publishClient.newCall(request)
+    }
+
+    /**
+     * Executes a publish call and handles the response.
+     */
+    fun executePublishCall(call: Call, user: User? = null) {
+        call.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
                 throw UnauthorizedException(user)
             } else if (response.code == 413) {
                 throw EntityTooLargeException()
             } else if (!response.isSuccessful) {
-                throw Exception("Unexpected response ${response.code} when publishing to $url")
+                throw Exception("Unexpected response ${response.code}")
             }
-            Log.d(TAG, "Successfully published to $url")
+            Log.d(TAG, "Successfully published")
         }
+    }
+
+    fun publish(
+        baseUrl: String,
+        topic: String,
+        user: User? = null,
+        message: String,
+        title: String = "",
+        priority: Int = PRIORITY_DEFAULT,
+        tags: List<String> = emptyList(),
+        delay: String = "",
+        body: RequestBody? = null,
+        filename: String = "",
+        click: String = "",
+        attach: String = "",
+        email: String = "",
+        call: String = "",
+        markdown: Boolean = false
+    ) {
+        val publishCall = createPublishCall(
+            baseUrl, topic, user, message, title, priority, tags, delay,
+            body, filename, click, attach, email, call, markdown
+        )
+        executePublishCall(publishCall, user)
     }
 
     fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
