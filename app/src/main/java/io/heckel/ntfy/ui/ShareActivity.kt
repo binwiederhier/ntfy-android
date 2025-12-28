@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -51,6 +52,7 @@ class ShareActivity : AppCompatActivity() {
     private lateinit var errorImage: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_share)
 
@@ -72,8 +74,7 @@ class ShareActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         title = getString(R.string.share_title)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 

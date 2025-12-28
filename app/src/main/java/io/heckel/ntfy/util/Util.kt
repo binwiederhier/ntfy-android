@@ -11,7 +11,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -31,7 +30,6 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
-import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -51,6 +49,7 @@ import java.text.StringCharacterIterator
 import java.util.Date
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import androidx.core.net.toUri
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
@@ -170,7 +169,7 @@ fun decodeMessage(notification: Notification): String {
         } else {
             notification.message
         }
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         notification.message + "(invalid base64)"
     }
 }
@@ -182,7 +181,7 @@ fun decodeBytesMessage(notification: Notification): ByteArray {
         } else {
             notification.message.toByteArray()
         }
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         notification.message.toByteArray()
     }
 }
@@ -232,7 +231,7 @@ fun maybeAppendActionErrors(message: CharSequence, notification: Notification): 
 // Queries the filename of a content URI
 fun fileName(context: Context, contentUri: String?, fallbackName: String): String {
     return try {
-        val info = fileStat(context, Uri.parse(contentUri))
+        val info = fileStat(context, contentUri?.toUri())
         info.filename
     } catch (_: Exception) {
         fallbackName
@@ -266,7 +265,7 @@ fun fileStat(context: Context, contentUri: Uri?): FileInfo {
 
 fun maybeFileStat(context: Context, contentUri: String?): FileInfo? {
     return try {
-        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
+        fileStat(context, contentUri?.toUri()) // Throws if the file does not exist
     } catch (_: Exception) {
         null
     }
@@ -328,7 +327,13 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png", "image/gif", "image/webp").contains(mimeType)
+    return listOf(
+        "image/jpeg",
+        "image/jpg", // Technically not a valid MIME type, see https://github.com/binwiederhier/ntfy-android/pull/142
+        "image/png",
+        "image/gif",
+        "image/webp"
+    ).contains(mimeType)
 }
 
 // We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
@@ -342,10 +347,7 @@ fun canOpenAttachment(attachment: Attachment?): Boolean {
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val powerManager = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val appName = context.applicationContext.packageName
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        return powerManager.isIgnoringBatteryOptimizations(appName)
-    }
-    return true
+    return powerManager.isIgnoringBatteryOptimizations(appName)
 }
 
 // Returns true if dark mode is on, see https://stackoverflow.com/a/60761189/1440785
@@ -432,7 +434,7 @@ fun Uri.readBitmapFromUri(context: Context): Bitmap {
 }
 
 fun String.readBitmapFromUri(context: Context): Bitmap {
-    return Uri.parse(this).readBitmapFromUri(context)
+    return this.toUri().readBitmapFromUri(context)
 }
 
 fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
@@ -491,12 +493,8 @@ fun String.sha256(): String {
     return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
-fun Button.dangerButton(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        setTextAppearance(R.style.DangerText)
-    } else {
-        setTextColor(Colors.dangerText(context))
-    }
+fun Button.dangerButton() {
+    setTextAppearance(R.style.DangerText)
 }
 
 fun Long.nullIfZero(): Long? {

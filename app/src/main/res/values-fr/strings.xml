@@ -31,7 +31,7 @@
     <string name="add_dialog_login_username_hint">Nom d\'utilisateur</string>
     <string name="add_dialog_login_error_not_authorized">Échec de la connexion. L\'utilisateur %1$s n\'est pas autorisé.</string>
     <string name="add_dialog_login_new_user">Nouvel utilisateur</string>
-    <string name="detail_how_to_intro">Pour envoyer des notifications à ce sujet, veuillez simplement PUT ou POST à l\'URL du sujet.</string>
+    <string name="detail_how_to_intro">Pour envoyer des notifications à ce sujet, faites simplement une requête PUT ou POST à l\'URL du sujet.</string>
     <string name="detail_test_title">Test : Vous pouvez mettre un titre si vous le voulez.</string>
     <string name="detail_test_message_error">Incapable d\'envoyer le message : %1$s</string>
     <string name="detail_copied_to_clipboard_message">Copié dans le presse-papier</string>
@@ -94,7 +94,7 @@
     <string name="add_dialog_button_login">Se connecter</string>
     <string name="add_dialog_login_description">Ce sujet requiert que vous soyez connecté. Veuillez entrer un nom d\'utilisateur et un mot de passe.</string>
     <string name="add_dialog_login_password_hint">Mot de passe</string>
-    <string name="detail_how_to_example">Example (utilisant curl):<br/><tt>$ curl -d \"Bonjour\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemple (avec curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_cancel">Annuler</string>
     <string name="detail_how_to_link">Des instructions détaillées sont disponible sur ntfy.sh et dans la documentation.</string>
     <string name="detail_clear_dialog_message">Supprimer toutes les notifications de ce sujet \?</string>
@@ -149,7 +149,7 @@
     <string name="settings_backup_restore_restore_failed">Échec de la restauration : %1$s</string>
     <string name="user_dialog_password_hint_add">Mot de passe</string>
     <string name="user_dialog_password_hint_edit">Mot de passe (pas de changement si laissé vide)</string>
-    <string name="share_topic_title">Partager</string>
+    <string name="share_topic_title">Partager à</string>
     <string name="share_suggested_topics">Sujets suggérés</string>
     <string name="share_successful">Message publié</string>
     <string name="notification_dialog_title">Mettre en sourdine les notifications</string>
@@ -346,4 +346,10 @@
     <string name="main_banner_websocket_reconnect_button_remind_later">Demander plus tard</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">Ignorer</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Autoriser</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmes exactes</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy peut programmer des alarmes exactes. Les alarmes exactes sont nécessaires pour reconnecter les WebSockets en arrière-plan. Cliquez pour révoquer l’autorisation.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy ne peut pas programmer d’alarmes exactes. Les alarmes exactes sont nécessaires pour reconnecter les WebSockets en arrière-plan. Cliquez pour accorder l’autorisation.</string>
+    <string name="settings_general_dynamic_colors_title">Couleurs dynamiques</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Utiliser les couleurs de thème ntfy</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Utiliser les couleurs dynamiques du système</string>
 </resources>

@@ -102,7 +102,7 @@
 
     <style name="BannerShapeAppearance">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
+        <item name="cornerSize">0dp</item>
     </style>
 
     <!-- Full-screen dialog style for Material 3 compliance -->
@@ -111,6 +111,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.App.FullScreenDialog</item>
     </style>
 

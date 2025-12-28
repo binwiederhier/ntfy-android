@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.AlarmManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -15,11 +14,13 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
@@ -60,6 +61,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     private lateinit var serviceManager: SubscriberServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -85,8 +87,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
@@ -261,14 +262,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)
-            channelPrefs?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             channelPrefs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             channelPrefs?.onPreferenceClickListener = OnPreferenceClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                        putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                    })
-                }
+                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                })
                 false
             }
 
@@ -353,6 +351,84 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Language
+            val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
+            val language: ListPreference? = findPreference(languagePrefId)
+            if (language != null) {
+                // We only list languages that have > 80% of strings translated.
+                //
+                // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+                // to help translate other languages.
+                //
+                // IMPORTANT: If a language is added here, also add it to the locales_config.xml file.
+
+                val supportedLocales = listOf(
+                    "" to getString(R.string.settings_general_language_system_default),
+                    "en" to "English",
+                    "bg" to "Български",
+                    "ca" to "Català",
+                    "cs" to "Čeština",
+                    "de" to "Deutsch",
+                    "es" to "Español",
+                    "et" to "Eesti",
+                    "fi" to "Suomi",
+                    "fr" to "Français",
+                    "gl" to "Galego",
+                    "in" to "Bahasa Indonesia",
+                    "it" to "Italiano",
+                    "iw" to "עברית",
+                    "ja" to "日本語",
+                    "ko" to "한국어",
+                    "nb-NO" to "Norsk bokmål",
+                    "nl" to "Nederlands",
+                    "pl" to "Polski",
+                    "pt" to "Português",
+                    "pt-BR" to "Português (Brasil)",
+                    "ro" to "Română",
+                    "ru" to "Русский",
+                    "sk" to "Slovenčina",
+                    "sv" to "Svenska",
+                    "ta" to "தமிழ்",
+                    "tr" to "Türkçe",
+                    "uk" to "Українська",
+                    "uz" to "Oʻzbekcha",
+                    "vi" to "Tiếng Việt",
+                    "zh-CN" to "简体中文",
+                    "zh-TW" to "繁體中文"
+                )
+                // Set title with 3 random flags to help users find this preference
+                val flags = listOf("🇧🇬", "🇨🇿", "🇩🇪", "🇪🇸", "🇪🇪", "🇫🇮", "🇫🇷", "🇮🇩", "🇮🇱", "🇮🇳", "🇮🇹", "🇯🇵", "🇰🇷", "🇳🇱", "🇳🇴", "🇵🇱", "🇵🇹", "🇧🇷", "🇷🇴", "🇷🇺", "🇸🇪", "🇸🇰", "🇹🇷", "🇹🇼", "🇺🇦", "🇺🇿", "🇻🇳", "🇨🇳")
+                val randomFlags = flags.shuffled().take(3).joinToString(" ")
+                language.title = "${getString(R.string.settings_general_language_title)} $randomFlags"
+                language.entries = supportedLocales.map { it.second }.toTypedArray()
+                language.entryValues = supportedLocales.map { it.first }.toTypedArray()
+
+                // Get current locale
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                val currentLocaleTag = if (currentLocales.isEmpty) "" else currentLocales.toLanguageTags()
+                language.value = currentLocaleTag
+
+                language.setOnPreferenceChangeListener { _, newValue ->
+                    val localeTag = newValue as String
+                    if (localeTag.isEmpty()) {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
+                    }
+                    true
+                }
+
+                language.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                    val currentLocalesForSummary = AppCompatDelegate.getApplicationLocales()
+                    if (currentLocalesForSummary.isEmpty) {
+                        getString(R.string.settings_general_language_summary_system)
+                    } else {
+                        val locale = currentLocalesForSummary[0]
+                        locale?.getDisplayName(locale)?.replaceFirstChar { it.uppercase() } ?: pref.entry?.toString() ?: ""
+                    }
+                }
+            }
+
             // Dynamic colors
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val dynamicColorsEnabledPrefId = context?.getString(R.string.settings_general_dynamic_colors_key) ?: return
@@ -383,6 +459,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 }
                 dynamicColorsEnabled?.isVisible = true
+            }
+
+            // Message bar enabled
+            val messageBarEnabledPrefId = context?.getString(R.string.settings_general_message_bar_key) ?: return
+            val messageBarEnabled: SwitchPreferenceCompat? = findPreference(messageBarEnabledPrefId)
+            messageBarEnabled?.isChecked = repository.getMessageBarEnabled()
+            messageBarEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setMessageBarEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getMessageBarEnabled()
+                }
+            }
+            messageBarEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_general_message_bar_summary_enabled)
+                } else {
+                    getString(R.string.settings_general_message_bar_summary_disabled)
+                }
             }
 
             // Default Base URL
@@ -627,7 +723,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             versionPref?.summary = version
             versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("ntfy version", version)
                 clipboard.setPrimaryClip(clip)
                 Toast
@@ -655,7 +751,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 val context = context ?: return@launch
                 val log = Log.getFormatted(context, scrub = scrub)
                 requireActivity().runOnUiThread {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("ntfy logs", log)
                     clipboard.setPrimaryClip(clip)
                     if (scrub) {
@@ -697,12 +793,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         if (!response.isSuccessful) {
                             throw Exception("Unexpected response ${response.code}")
                         }
-                        val body = response.body?.string()?.trim()
-                        if (body.isNullOrEmpty()) throw Exception("Return body is empty")
+                        val body = response.body.string().trim()
+                        if (body.isEmpty()) throw Exception("Return body is empty")
                         Log.d(TAG, "Logs uploaded successfully: $body")
-                        val resp = gson.fromJson(body.toString(), NopasteResponse::class.java)
+                        val resp = gson.fromJson(body, NopasteResponse::class.java)
                         requireActivity().runOnUiThread {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("logs URL", resp.url)
                             clipboard.setPrimaryClip(clip)
                             if (scrub) {

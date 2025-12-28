@@ -1,7 +1,6 @@
 package io.heckel.ntfy.work
 
 import android.content.Context
-import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -15,6 +14,7 @@ import io.heckel.ntfy.util.topicShortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import androidx.core.net.toUri
 
 /**
  * Deletes notifications marked for deletion and attachments for deleted notifications.
@@ -59,7 +59,7 @@ class DeleteWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx
         notifications.forEach { notification ->
             try {
                 val attachment = notification.attachment ?: return
-                val contentUri = Uri.parse(attachment.contentUri ?: return)
+                val contentUri = (attachment.contentUri ?: return).toUri()
                 Log.d(TAG, "Deleting attachment for notification ${notification.id}: ${attachment.contentUri} (${attachment.name})")
                 val deleted = resolver.delete(contentUri, null, null) > 0
                 if (!deleted) {

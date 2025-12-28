@@ -8,7 +8,6 @@ import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -20,6 +19,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -31,6 +31,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updatePadding
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -75,6 +76,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
+import androidx.core.net.toUri
 
 class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
@@ -126,6 +128,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -152,8 +155,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         setSupportActionBar(toolbar)
         title = getString(R.string.main_action_bar_title)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
@@ -193,6 +195,14 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             Colors.onPrimary(this)
         )
         mainList.adapter = adapter
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        mainList.clipToPadding = false
+        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
 
         viewModel.list().observe(this) {
             it?.let { subscriptions ->
@@ -257,27 +267,24 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             repository.setBatteryOptimizationsRemindTime(System.currentTimeMillis() + ONE_DAY_MILLIS)
         }
         fixNowButton.setOnClickListener {
-            // It should not be visible for SDK < 23
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                try {
-                    Log.d(TAG, Uri.parse("package:$packageName").toString())
-                    startActivity(
-                        Intent(
-                            Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                            Uri.parse("package:$packageName")
-                        )
+            try {
+                Log.d(TAG, "package:$packageName".toUri().toString())
+                startActivity(
+                    Intent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        "package:$packageName".toUri()
                     )
-                } catch (e: ActivityNotFoundException) {
-                    try {
-                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                    } catch (e2: ActivityNotFoundException) {
-                        startActivity(Intent(Settings.ACTION_SETTINGS))
-                    }
+                )
+            } catch (_: ActivityNotFoundException) {
+                try {
+                    startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                } catch (_: ActivityNotFoundException) {
+                    startActivity(Intent(Settings.ACTION_SETTINGS))
                 }
-                // Hide, at least for now
-                val batteryBanner = findViewById<View>(R.id.main_banner_battery)
-                batteryBanner.visibility = View.GONE
             }
+            // Hide, at least for now
+            val batteryBanner = findViewById<View>(R.id.main_banner_battery)
+            batteryBanner.visibility = View.GONE
         }
 
         // WebSocket banner
@@ -509,7 +516,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 }
             }
             if (rerenderList) {
-                redrawList()
+                mainList.post {
+                    redrawList()
+                }
             }
         }
     }
@@ -561,19 +570,27 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 true
             }
             R.id.main_menu_report_bug -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_report_bug_url))))
+                startActivity(
+                    Intent(Intent.ACTION_VIEW, getString(R.string.main_menu_report_bug_url).toUri())
+                )
                 true
             }
             R.id.main_menu_rate -> {
                 try {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
-                } catch (e: ActivityNotFoundException) {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
+                    )
+                } catch (_: ActivityNotFoundException) {
+                    startActivity(
+                        Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri())
+                    )
                 }
                 true
             }
             R.id.main_menu_docs -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.main_menu_docs_url))))
+                startActivity(
+                    Intent(Intent.ACTION_VIEW, getString(R.string.main_menu_docs_url).toUri())
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -686,7 +703,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             var errorMessage = "" // First error
             var newNotificationsCount = 0
             repository.getSubscriptions().forEach { subscription ->
-                Log.d(TAG, "subscription: ${subscription}")
+                Log.d(TAG, "subscription: $subscription")
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
                     val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
@@ -768,7 +785,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }

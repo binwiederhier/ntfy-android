@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,7 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
 import java.util.*
+import androidx.core.net.toUri
 
 /**
  * Subscription settings
@@ -44,6 +46,7 @@ class DetailSettingsActivity : AppCompatActivity() {
     private var subscriptionId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -78,8 +81,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
         
@@ -96,7 +98,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         return true
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    class SettingsFragment : BasePreferenceFragment() {
         private lateinit var resolver: ContentResolver
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
@@ -143,10 +145,8 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadInsistentMaxPriorityPref()
                 loadIconSetPref()
                 loadIconRemovePref()
-                if (notificationService.channelsSupported()) {
-                    loadDedicatedChannelsPrefs()
-                    loadOpenChannelsPrefs()
-                }
+                loadDedicatedChannelsPrefs()
+                loadOpenChannelsPrefs()
             } else {
                 val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
@@ -507,7 +507,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 return
             }
             try {
-                resolver.delete(Uri.parse(uri), null, null)
+                resolver.delete(uri.toUri(), null, null)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to delete $uri", e)
             }

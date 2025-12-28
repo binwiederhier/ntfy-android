@@ -349,4 +349,7 @@
     <string name="settings_advanced_exact_alarms_title">Будилници в точно време</string>
     <string name="settings_advanced_exact_alarms_true">ntfy може да насрочва будилници в точно определено време. Те са задължителни за повторно свързване на WebSockets във фонов режим. За да оттеглите разрешението докоснете.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy не може да насрочва будилници в точно определено време. Те са задължителни за повторно свързване на WebSockets във фонов режим. За да разрешите докоснете.</string>
+    <string name="settings_general_dynamic_colors_title">Динамични цветове</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Използване на динамичните системни цветове</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Използване на цветовете от темата на ntfy</string>
 </resources>

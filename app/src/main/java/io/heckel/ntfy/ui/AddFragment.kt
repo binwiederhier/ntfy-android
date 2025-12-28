@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.DialogFragment
@@ -23,6 +22,8 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.view.isVisible
+import androidx.core.view.isGone
 
 class AddFragment : DialogFragment() {
     private val api by lazy { ApiService(requireContext()) }
@@ -199,16 +200,16 @@ class AddFragment : DialogFragment() {
         subscribeTopicText.postDelayed({
             subscribeTopicText.requestFocus()
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_FORCED)
+            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
     }
 
     private fun onActionButtonClick() {
         val topic = subscribeTopicText.text.toString()
         val baseUrl = getBaseUrl()
-        if (subscribeView.visibility == View.VISIBLE) {
+        if (subscribeView.isVisible) {
             checkReadAndMaybeShowLogin(baseUrl, topic)
-        } else if (loginView.visibility == View.VISIBLE) {
+        } else if (loginView.isVisible) {
             loginAndMaybeDismiss(baseUrl, topic)
         }
     }
@@ -349,7 +350,7 @@ class AddFragment : DialogFragment() {
         if (!this::actionMenuItem.isInitialized || !this::loginUsernameText.isInitialized || !this::loginPasswordText.isInitialized) {
             return // As per crash seen in Google Play
         }
-        if (loginUsernameText.visibility == View.GONE) {
+        if (loginUsernameText.isGone) {
             actionMenuItem.isEnabled = true
         } else {
             actionMenuItem.isEnabled = (loginUsernameText.text?.isNotEmpty() ?: false)

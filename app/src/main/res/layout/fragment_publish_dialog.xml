@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/publish_dialog_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/publish_dialog_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+            android:paddingStart="0dp"
+            android:paddingEnd="12dp"
+            app:navigationIcon="@drawable/ic_close_white_24dp"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:menu="@menu/menu_publish_dialog" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Upload progress indicator (below toolbar, doesn't shift content) -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/publish_dialog_upload_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="false"
+        android:max="100"
+        app:trackThickness="4dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="?dialogPreferredPadding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ScrollView
+            android:id="@+id/publish_dialog_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Upload progress text -->
+                <TextView
+                    android:id="@+id/publish_dialog_upload_progress_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:visibility="gone"/>
+
+                <!-- Title (toggleable) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_title_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    app:placeholderText="@string/publish_dialog_title_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_title_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_title_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Message -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_message_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/message_bar_hint"> <!-- Re-use message bar hint -->
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_message_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_message_hint"
+                        android:importantForAutofill="no"
+                        android:minLines="3"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine|textCapSentences"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- Tags (toggleable) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_tags_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_tags_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_tags_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_tags_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Priority (toggleable) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_priority_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/publish_dialog_priority_hint">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/publish_dialog_priority_dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Click URL field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_click_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_click_url_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_click_url_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_click_url_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="textUri"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Email field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_email_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_email_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_email_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_email_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="textEmailAddress"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Delay field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_delay_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_delay_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_delay_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_delay_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Attach URL field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_attach_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_attach_url_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_attach_url_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_attach_url_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="textUri"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Attachment box (shown after local file is selected) -->
+                <include
+                    android:id="@+id/publish_dialog_attachment_box"
+                    layout="@layout/view_attachment_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone"/>
+
+                <!-- Attachment filename field (shared between attach URL and attach file) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_attach_filename_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"
+                    app:placeholderText="@string/publish_dialog_attach_filename_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_attach_filename_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_attach_filename_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Phone Call field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/publish_dialog_phone_call_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    app:placeholderText="@string/publish_dialog_phone_call_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/publish_dialog_phone_call_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/publish_dialog_phone_call_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="phone"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Feature chips -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/publish_dialog_chip_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:chipSpacingVertical="-4dp"
+                    app:chipSpacingHorizontal="8dp"
+                    app:singleLine="false">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_markdown"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_markdown"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_title"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_title"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_tags"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_tags"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_priority"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_priority"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_click_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_click_url"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_email"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_email"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_delay"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_delay"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_url"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_url"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_attach_file"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_attach_file"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/publish_dialog_chip_phone_call"
+                        style="@style/Widget.Material3.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/publish_dialog_chip_phone_call"
+                        app:chipBackgroundColor="@color/chip_background_state"
+                        app:chipStrokeWidth="0dp"/>
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <!-- Documentation link -->
+                <TextView
+                    android:id="@+id/publish_dialog_docs_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/publish_dialog_docs_text"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
+
+                <!-- Error section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/publish_dialog_error_image"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_error_red_24dp"/>
+
+                    <TextView
+                        android:id="@+id/publish_dialog_error_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textAppearance="@style/DangerText"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+
+                <!-- Bottom padding for keyboard -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

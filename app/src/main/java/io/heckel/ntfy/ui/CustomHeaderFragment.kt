@@ -103,7 +103,7 @@ class CustomHeaderFragment : DialogFragment() {
             if (header != null) {
                 dialog
                     .getButton(AlertDialog.BUTTON_NEUTRAL)
-                    .dangerButton(requireContext())
+                    .dangerButton()
             }
 
             // Validate input when typing

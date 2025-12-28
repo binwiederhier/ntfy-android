@@ -1,6 +1,5 @@
 package io.heckel.ntfy.ui
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle

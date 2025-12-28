@@ -1,6 +1,6 @@
 package io.heckel.ntfy.util;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,11 +16,7 @@ public class Emoji {
 
   protected Emoji(List<String> aliases, byte... bytes) {
     this.aliases = Collections.unmodifiableList(aliases);
-    try {
-      this.unicode = new String(bytes, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    this.unicode = new String(bytes, StandardCharsets.UTF_8);
   }
 
   public List<String> getAliases() {

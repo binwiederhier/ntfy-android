@@ -2,7 +2,6 @@ package io.heckel.ntfy.ui
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import androidx.core.content.ContextCompat
 import com.google.android.material.color.MaterialColors
 import io.heckel.ntfy.R
@@ -47,12 +46,7 @@ class Colors {
         }
 
         fun statusBarNormal(context: Context, dynamicColors: Boolean, darkMode: Boolean): Int {
-            val default = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                context.resources.getColor(R.color.action_bar, null)
-            } else {
-                @Suppress("DEPRECATION")
-                context.resources.getColor(R.color.action_bar)
-            }
+            val default = context.resources.getColor(R.color.action_bar, null)
             return if (dynamicColors) {
                 // Use colorSurface for both light and dark mode when dynamic colors are enabled
                 MaterialColors.getColor(context, R.attr.colorSurface, default)
@@ -90,4 +84,3 @@ class Colors {
         }
     }
 }
-

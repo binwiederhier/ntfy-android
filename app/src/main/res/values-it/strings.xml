@@ -257,7 +257,7 @@
     <string name="settings_general_dark_mode_entry_dark">Modalità scura</string>
     <string name="settings_backup_restore_backup_title">Backup su file</string>
     <string name="settings_general_dark_mode_summary_dark">Modalità scura attiva. Sei un vampiro?</string>
-    <string name="settings_backup_restore_header">Backup &amp; Ripristino</string>
+    <string name="settings_backup_restore_header">Backup e Ripristino</string>
     <string name="settings_backup_restore_restore_failed">Ripristino fallito: %1$s</string>
     <string name="settings_advanced_export_logs_copied_logs">Log copiati negli appunti</string>
     <string name="settings_about_header">Informazioni</string>
@@ -345,4 +345,7 @@
     <string name="settings_advanced_exact_alarms_title">Allarmi esatti</string>
     <string name="settings_advanced_exact_alarms_true">ntfy può programmare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per revocare l\'autorizzazione.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy non può pianificare allarmi esatti. Gli allarmi esatti sono necessari per riconnettere i WebSocket in sottofondo. Clicca per concedere l\'autorizzazione.</string>
+    <string name="settings_general_dynamic_colors_title">Colori dinamici</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Utilizzo dei colori del sistema dinamico</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Utilizzo dei colori del tema di ntfy</string>
 </resources>

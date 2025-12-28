@@ -51,7 +51,7 @@ class MainAdapter(
             selected.add(subscriptionId)
         }
 
-        if (selected.size != 0) {
+        if (selected.isNotEmpty()) {
             val listIds = currentList.map { subscription -> subscription.id }
             val subscriptionPosition = listIds.indexOf(subscriptionId)
             notifyItemChanged(subscriptionPosition)
