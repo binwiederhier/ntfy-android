@@ -110,9 +110,9 @@ class PublishFragment : DialogFragment() {
     private lateinit var errorImage: View
     private lateinit var docsLink: TextView
     
-    // Upload job and call (for cancellation)
+    // Upload job and cancel function (for cancellation)
     private var uploadJob: Job? = null
-    private var uploadCall: okhttp3.Call? = null
+    private var cancelUploadFn: (() -> Unit)? = null
     private var isUploading: Boolean = false
 
     // State
@@ -538,7 +538,7 @@ class PublishFragment : DialogFragment() {
                         }
                     }
                     
-                    uploadCall = api.createPublishCall(
+                    api.publish(
                         baseUrl = baseUrl,
                         topic = topic,
                         user = user,
@@ -552,12 +552,12 @@ class PublishFragment : DialogFragment() {
                         click = clickUrl,
                         email = email,
                         call = phoneCall,
-                        markdown = markdown
+                        markdown = markdown,
+                        onCancelAvailable = { cancel -> cancelUploadFn = cancel }
                     )
-                    api.executePublishCall(uploadCall!!, user)
                 } else {
                     // No file attachment
-                    uploadCall = api.createPublishCall(
+                    api.publish(
                         baseUrl = baseUrl,
                         topic = topic,
                         user = user,
@@ -571,15 +571,15 @@ class PublishFragment : DialogFragment() {
                         email = email,
                         call = phoneCall,
                         markdown = markdown,
-                        filename = attachFilename
+                        filename = attachFilename,
+                        onCancelAvailable = { cancel -> cancelUploadFn = cancel }
                     )
-                    api.executePublishCall(uploadCall!!, user)
                 }
                 
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
                     isUploading = false
-                    uploadCall = null
+                    cancelUploadFn = null
                     Toast.makeText(requireContext(), R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
                     publishListener?.onPublished()
                     dismiss()
@@ -589,7 +589,7 @@ class PublishFragment : DialogFragment() {
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
                     isUploading = false
-                    uploadCall = null
+                    cancelUploadFn = null
                     uploadProgress.visibility = View.GONE
                     uploadProgressText.visibility = View.GONE
                     
@@ -625,10 +625,10 @@ class PublishFragment : DialogFragment() {
     }
     
     private fun cancelUpload() {
-        // Cancel both the coroutine job and the OkHttp call
-        uploadCall?.cancel()
+        // Cancel both the HTTP request and the coroutine job
+        cancelUploadFn?.invoke()
         uploadJob?.cancel()
-        uploadCall = null
+        cancelUploadFn = null
         isUploading = false
         uploadProgress.visibility = View.GONE
         uploadProgressText.visibility = View.GONE
