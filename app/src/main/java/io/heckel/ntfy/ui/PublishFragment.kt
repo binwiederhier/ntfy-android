@@ -46,7 +46,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import io.heckel.ntfy.util.ProgressRequestBody
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 
 class PublishFragment : DialogFragment() {
     private val api = ApiService()
@@ -110,10 +109,10 @@ class PublishFragment : DialogFragment() {
     private lateinit var errorImage: View
     private lateinit var docsLink: TextView
     
-    // Upload job and cancel function (for cancellation)
-    private var uploadJob: Job? = null
-    private var cancelUploadFn: (() -> Unit)? = null
-    private var isUploading: Boolean = false
+    // Job and cancel function (represents active publish HTTP call)
+    private var job: Job? = null
+    private var cancel: (() -> Unit)? = null
+    private var sending: Boolean = false
 
     // State
     private var baseUrl: String = ""
@@ -175,7 +174,7 @@ class PublishFragment : DialogFragment() {
         toolbar = view.findViewById(R.id.publish_dialog_toolbar)
         toolbar.title = getString(R.string.publish_dialog_title, topicShortUrl(baseUrl, topic))
         toolbar.setNavigationOnClickListener {
-            if (isUploading) {
+            if (sending) {
                 cancelUpload()
             } else {
                 dismiss()
@@ -497,9 +496,10 @@ class PublishFragment : DialogFragment() {
         errorText.visibility = View.GONE
         errorImage.visibility = View.GONE
         enableView(false)
-        isUploading = true
 
-        uploadJob = lifecycleScope.launch(Dispatchers.IO) {
+        // Kick off HTTP request
+        sending = true
+        job = lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(baseUrl)
                 
@@ -553,7 +553,7 @@ class PublishFragment : DialogFragment() {
                         email = email,
                         call = phoneCall,
                         markdown = markdown,
-                        onCancelAvailable = { cancel -> cancelUploadFn = cancel }
+                        onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
                     )
                 } else {
                     // No file attachment
@@ -572,14 +572,14 @@ class PublishFragment : DialogFragment() {
                         call = phoneCall,
                         markdown = markdown,
                         filename = attachFilename,
-                        onCancelAvailable = { cancel -> cancelUploadFn = cancel }
+                        onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
                     )
                 }
                 
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
-                    isUploading = false
-                    cancelUploadFn = null
+                    sending = false
+                    cancel = null
                     Toast.makeText(requireContext(), R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
                     publishListener?.onPublished()
                     dismiss()
@@ -588,8 +588,8 @@ class PublishFragment : DialogFragment() {
                 Log.w(TAG, "Failed to publish message", e)
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
-                    isUploading = false
-                    cancelUploadFn = null
+                    sending = false
+                    cancel = null
                     uploadProgress.visibility = View.GONE
                     uploadProgressText.visibility = View.GONE
                     
@@ -626,10 +626,10 @@ class PublishFragment : DialogFragment() {
     
     private fun cancelUpload() {
         // Cancel both the HTTP request and the coroutine job
-        cancelUploadFn?.invoke()
-        uploadJob?.cancel()
-        cancelUploadFn = null
-        isUploading = false
+        cancel?.invoke()
+        job?.cancel()
+        cancel = null
+        sending = false
         uploadProgress.visibility = View.GONE
         uploadProgressText.visibility = View.GONE
         enableView(true)
