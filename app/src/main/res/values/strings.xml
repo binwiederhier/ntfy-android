@@ -214,7 +214,8 @@
     <string name="publish_dialog_priority_high">@string/channel_notifications_high_name</string>
     <string name="publish_dialog_priority_max">@string/channel_notifications_max_name</string>
     <string name="publish_dialog_button_publish">Publish</string>
-    <string name="publish_dialog_error_sending">Cannot send message: %1$s</string>
+    <string name="publish_dialog_error_sending">Cannot publish message: %1$s</string>
+    <string name="publish_dialog_error_server">Cannot publish message: %1$s (code %2$d)</string>
     <string name="publish_dialog_message_published">Message published</string>
     <string name="publish_dialog_uploading">Uploading: %1$s (%2$s / %3$s)</string>
     <string name="publish_dialog_upload_cancelled">Upload cancelled</string>

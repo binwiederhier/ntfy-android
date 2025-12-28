@@ -462,6 +462,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                         is ApiService.EntityTooLargeException -> {
                             getString(R.string.detail_test_message_error_too_large)
                         }
+                        is ApiService.ApiException -> {
+                            getString(R.string.publish_dialog_error_server, e.error, e.code)
+                        }
                         else -> {
                             getString(R.string.publish_dialog_error_sending, e.message)
                         }
