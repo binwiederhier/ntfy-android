@@ -427,7 +427,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
     private fun openPublishDialog(initialMessage: String) {
-        val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, initialMessage)
+        val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, subscriptionDisplayName, initialMessage)
         fragment.show(supportFragmentManager, PublishFragment.TAG)
     }
 

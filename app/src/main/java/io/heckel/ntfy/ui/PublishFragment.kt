@@ -116,6 +116,7 @@ class PublishFragment : DialogFragment() {
     // State
     private var baseUrl: String = ""
     private var topic: String = ""
+    private var displayName: String = ""
     private var selectedPriority: Int = 3 // Default priority
     private var initialMessage: String = ""
     private var selectedFileUri: Uri? = null
@@ -165,6 +166,7 @@ class PublishFragment : DialogFragment() {
         // Get arguments
         baseUrl = arguments?.getString(ARG_BASE_URL) ?: ""
         topic = arguments?.getString(ARG_TOPIC) ?: ""
+        displayName = arguments?.getString(ARG_DISPLAY_NAME) ?: ""
         initialMessage = arguments?.getString(ARG_MESSAGE) ?: ""
 
         // Build root view
@@ -172,7 +174,7 @@ class PublishFragment : DialogFragment() {
 
         // Setup toolbar
         toolbar = view.findViewById(R.id.publish_dialog_toolbar)
-        toolbar.title = getString(R.string.publish_dialog_title, topicShortUrl(baseUrl, topic))
+        toolbar.title = getString(R.string.publish_dialog_title, displayName)
         toolbar.setNavigationOnClickListener {
             if (publishing) {
                 cancel()
@@ -203,9 +205,10 @@ class PublishFragment : DialogFragment() {
         docsLink.movementMethod = LinkMovementMethod.getInstance()
         docsLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
 
-        // Set initial message if provided
+        // Set initial message if provided and place cursor at end
         if (initialMessage.isNotEmpty()) {
             messageText.setText(initialMessage)
+            messageText.setSelection(initialMessage.length)
         }
 
         // Setup priority dropdown with custom adapter
@@ -653,12 +656,14 @@ class PublishFragment : DialogFragment() {
         private const val ARG_BASE_URL = "baseUrl"
         private const val ARG_TOPIC = "topic"
         private const val ARG_MESSAGE = "message"
+        private const val ARG_DISPLAY_NAME = "displayName"
 
-        fun newInstance(baseUrl: String, topic: String, message: String = ""): PublishFragment {
+        fun newInstance(baseUrl: String, topic: String, displayName: String, message: String = ""): PublishFragment {
             val fragment = PublishFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_BASE_URL, baseUrl)
                 putString(ARG_TOPIC, topic)
+                putString(ARG_DISPLAY_NAME, displayName)
                 putString(ARG_MESSAGE, message)
             }
             return fragment
