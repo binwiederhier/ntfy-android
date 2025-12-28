@@ -353,4 +353,7 @@
     <string name="settings_general_dynamic_colors_title">Dynamische Farben</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Verwendung der dynamischen Systemfarben</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Verwendung der ntfy-Themenfarben</string>
+    <string name="publish_dialog_title">Veröffentlichen unter %1$s</string>
+    <string name="publish_dialog_title_hint">Titel</string>
+    <string name="publish_dialog_title_placeholder">z. B. Jemand steht vor der Tür.</string>
 </resources>
