@@ -350,6 +350,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
             val language: ListPreference? = findPreference(languagePrefId)
             if (language != null) {
+                // Set title with 3 random flags to help users find this preference
+                val flags = listOf("🇧🇬", "🇨🇿", "🇩🇪", "🇪🇸", "🇪🇪", "🇫🇮", "🇫🇷", "🇮🇩", "🇮🇱", "🇮🇳", "🇮🇹", "🇯🇵", "🇰🇷", "🇳🇱", "🇳🇴", "🇵🇱", "🇵🇹", "🇧🇷", "🇷🇴", "🇷🇺", "🇸🇪", "🇸🇰", "🇹🇷", "🇹🇼", "🇺🇦", "🇺🇿", "🇻🇳", "🇨🇳")
+                val randomFlags = flags.shuffled().take(3).joinToString(" ")
+                language.title = "${getString(R.string.settings_general_language_title)} $randomFlags"
+
                 // We only list languages that have > 80% of strings translated.
                 //
                 // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
