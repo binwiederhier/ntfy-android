@@ -53,7 +53,7 @@ class PublishFragment : DialogFragment() {
 
     // Toolbar
     private lateinit var toolbar: MaterialToolbar
-    private lateinit var sendMenuItem: MenuItem
+    private lateinit var publishMenuItem: MenuItem
 
     // Main fields
     private lateinit var titleText: TextInputEditText
@@ -181,14 +181,14 @@ class PublishFragment : DialogFragment() {
             }
         }
         toolbar.setOnMenuItemClickListener { menuItem ->
-            if (menuItem.itemId == R.id.publish_dialog_send_button) {
+            if (menuItem.itemId == R.id.publish_dialog_publish_button) {
                 onSendClick()
                 true
             } else {
                 false
             }
         }
-        sendMenuItem = toolbar.menu.findItem(R.id.publish_dialog_send_button)
+        publishMenuItem = toolbar.menu.findItem(R.id.publish_dialog_publish_button)
 
         // Main fields
         titleText = view.findViewById(R.id.publish_dialog_title_text)
@@ -493,8 +493,8 @@ class PublishFragment : DialogFragment() {
     }
 
     private fun validateInput() {
-        if (!this::sendMenuItem.isInitialized) return
-        sendMenuItem.isEnabled = true
+        if (!this::publishMenuItem.isInitialized) return
+        publishMenuItem.isEnabled = true
     }
 
     private fun onSendClick() {
@@ -645,7 +645,7 @@ class PublishFragment : DialogFragment() {
         attachmentBoxFilenameText.isEnabled = enable
         phoneCallText.isEnabled = enable
         
-        sendMenuItem.isEnabled = enable
+        publishMenuItem.isEnabled = enable
     }
 
     companion object {

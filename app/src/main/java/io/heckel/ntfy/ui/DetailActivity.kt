@@ -90,7 +90,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var fab: FloatingActionButton
     private lateinit var messageBar: View
     private lateinit var messageBarText: TextInputEditText
-    private lateinit var messageBarSendButton: FloatingActionButton
+    private lateinit var messageBarPublishButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
 
     // Action mode stuff
@@ -373,7 +373,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         fab = findViewById(R.id.detail_fab)
         messageBar = findViewById(R.id.detail_message_bar)
         messageBarText = messageBar.findViewById(R.id.message_bar_text)
-        messageBarSendButton = messageBar.findViewById(R.id.message_bar_send_button)
+        messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
         messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
 
         val messageBarEnabled = repository.getMessageBarEnabled()
@@ -384,7 +384,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             messageBar.visibility = View.VISIBLE
 
             // Send button click
-            messageBarSendButton.setOnClickListener {
+            messageBarPublishButton.setOnClickListener {
                 val message = messageBarText.text.toString()
                 if (message.isNotEmpty()) {
                     publishMessage(message)
@@ -433,7 +433,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
     private fun publishMessage(message: String) {
         // Disable send button while publishing
-        messageBarSendButton.isEnabled = false
+        messageBarPublishButton.isEnabled = false
         
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -450,12 +450,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 )
                 runOnUiThread {
                     messageBarText.text?.clear()
-                    messageBarSendButton.isEnabled = true
+                    messageBarPublishButton.isEnabled = true
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to publish message", e)
                 runOnUiThread {
-                    messageBarSendButton.isEnabled = true
+                    messageBarPublishButton.isEnabled = true
                     val errorMessage = when (e) {
                         is ApiService.UnauthorizedException -> {
                             if (e.user != null) {
