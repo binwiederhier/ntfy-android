@@ -249,6 +249,7 @@
     <string name="settings_notifications_auto_delete_summary_never">Bildirimleri hiçbir zaman otomatik olarak silme</string>
     <string name="settings_notifications_auto_delete_summary_one_week">Bir hafta sonra bildirimleri otomatik sil</string>
     <string name="settings_general_header">Genel</string>
+    <string name="settings_appearance_header">Görünüm</string>
     <string name="settings_general_users_prefs_user_used_by_one">%1$s konu tarafından kullanılıyor</string>
     <string name="settings_backup_restore_backup_title">Dosyaya yedekle</string>
     <string name="settings_title">Ayarlar</string>

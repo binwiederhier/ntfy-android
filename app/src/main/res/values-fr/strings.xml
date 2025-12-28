@@ -211,6 +211,7 @@
     <string name="settings_notifications_auto_delete_one_week">Après une semaine</string>
     <string name="settings_notifications_auto_delete_three_months">Après 3 mois</string>
     <string name="settings_general_header">Général</string>
+    <string name="settings_appearance_header">Apparence</string>
     <string name="settings_general_default_base_url_title">Serveur par défaut</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (défaut)</string>
     <string name="settings_general_users_title">Gérer les utilisateurs</string>

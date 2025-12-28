@@ -156,6 +156,7 @@
     <string name="settings_notifications_auto_delete_three_days">Despues de 3 dias</string>
     <string name="settings_notifications_auto_delete_three_months">Después de 3 meses</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Apariencia</string>
     <string name="settings_general_default_base_url_title">Servidor predeterminado</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (predeterminado)</string>
     <string name="settings_general_users_prefs_user_used_by_many">Utilizado por los tópicos %1$s</string>

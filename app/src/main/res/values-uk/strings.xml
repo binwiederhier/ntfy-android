@@ -295,6 +295,7 @@
     <string name="settings_notifications_auto_delete_three_months">Через 3 міс</string>
     <string name="user_dialog_title_add">Додати користувача</string>
     <string name="settings_general_header">Загальний</string>
+    <string name="settings_appearance_header">Зовнішній вигляд</string>
     <string name="settings_general_default_base_url_message">Введіть кореневу URL-адресу свого сервера, щоб використовувати свій власний сервер як стандартний під час підписки на нові теми та/або спільного доступу до тем.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (за умовчанням)</string>
     <string name="settings_general_users_prefs_title">Користувачі</string>

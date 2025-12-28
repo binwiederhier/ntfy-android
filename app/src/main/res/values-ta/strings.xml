@@ -120,6 +120,7 @@
     <string name="settings_notifications_auto_delete_never">ஒருபோதும்</string>
     <string name="settings_notifications_auto_delete_one_week">ஒரு வாரம் கழித்து</string>
     <string name="settings_general_header">பொது</string>
+    <string name="settings_appearance_header">தோற்றம்</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (இயல்புநிலை)</string>
     <string name="settings_general_users_prefs_user_not_used">எந்த தலைப்புகளாலும் பயன்படுத்தப்படவில்லை</string>
     <string name="settings_general_users_prefs_user_add_title">புதிய பயனரைச் சேர்க்கவும்</string>

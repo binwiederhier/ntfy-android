@@ -307,6 +307,7 @@
     <string name="settings_notifications_auto_delete_summary_three_months">Eliminar automàticament les notificacions al cap de 3 mesos</string>
     <string name="settings_notifications_auto_delete_three_months">Al cap de 3 mesos</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparença</string>
     <string name="settings_general_users_summary">Afegir/eliminar usuaris a temes protegits</string>
     <string name="settings_general_users_prefs_user_used_by_one">Usat pel tema %1$s</string>
     <string name="settings_general_users_prefs_user_used_by_many">Usat pels temes %1$s</string>

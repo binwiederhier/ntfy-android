@@ -342,6 +342,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Appearance</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>

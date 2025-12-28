@@ -5,6 +5,7 @@
     <string name="add_dialog_login_password_hint">Salasana</string>
     <string name="add_dialog_login_error_not_authorized">Kirjautuminen epäonnistui %1$s ei oikeuksia.</string>
     <string name="settings_general_header">Pääkäyttäjä</string>
+    <string name="settings_appearance_header">Ulkoasu</string>
     <string name="add_dialog_foreground_description">Välitön toimitus on aina päällä muille palvelimille kuin %1$s.</string>
     <string name="detail_clear_dialog_message">Poistetaanko kaikki tämän topikin ilmoitukset \?</string>
     <string name="channel_subscriber_notification_instant_text">Tilattu välittömään topikkiin</string>

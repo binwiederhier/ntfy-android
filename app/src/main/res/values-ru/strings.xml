@@ -53,6 +53,7 @@
     <string name="settings_notifications_auto_delete_one_month">Через месяц</string>
     <string name="settings_notifications_auto_delete_three_months">Через три месяца</string>
     <string name="settings_general_header">Общие</string>
+    <string name="settings_appearance_header">Внешний вид</string>
     <string name="settings_general_default_base_url_title">Сервер по умолчанию</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (по умолчанию)</string>
     <string name="channel_subscriber_notification_noinstant_text">Подписан на темы</string>

@@ -83,6 +83,7 @@
     <string name="settings_notifications_priority_min">کمینه</string>
     <string name="settings_notifications_auto_delete_never">هرگز</string>
     <string name="settings_general_header">عمومی</string>
+    <string name="settings_appearance_header">ظاهر</string>
     <string name="settings_general_users_prefs_title">کاربران</string>
     <string name="settings_backup_restore_backup_entry_everything">همه‌چیز</string>
     <string name="settings_advanced_header">پیشرفته</string>

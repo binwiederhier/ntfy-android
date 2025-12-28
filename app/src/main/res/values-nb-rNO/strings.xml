@@ -144,6 +144,7 @@
     <string name="settings_notifications_auto_delete_one_month">Etter én måned</string>
     <string name="settings_notifications_auto_delete_three_months">Etter tre måneder</string>
     <string name="settings_general_header">Generelt</string>
+    <string name="settings_appearance_header">Utseende</string>
     <string name="settings_general_default_base_url_title">Forvalgt tjener</string>
     <string name="settings_general_users_title">Håndter brukere</string>
     <string name="settings_general_users_summary">Legg til/fjern brukere for beskyttede emner</string>
