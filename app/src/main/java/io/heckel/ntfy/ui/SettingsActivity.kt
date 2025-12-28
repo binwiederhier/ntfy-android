@@ -20,6 +20,7 @@ import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
@@ -342,6 +343,84 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     AppCompatDelegate.MODE_NIGHT_NO -> getString(R.string.settings_general_dark_mode_summary_light)
                     AppCompatDelegate.MODE_NIGHT_YES -> getString(R.string.settings_general_dark_mode_summary_dark)
                     else -> getString(R.string.settings_general_dark_mode_summary_system)
+                }
+            }
+
+            // Language
+            val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
+            val language: ListPreference? = findPreference(languagePrefId)
+            if (language != null) {
+                // We only list languages that have > 80% of strings translated.
+                //
+                // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+                // to help translate other languages.
+                //
+                // IMPORTANT: If a language is added here, also add it to the locales_config.xml file.
+
+                val supportedLocales = listOf(
+                    "" to getString(R.string.settings_general_language_system_default),
+                    "en" to "English",
+                    "bg" to "Български",
+                    "ca" to "Català",
+                    "cs" to "Čeština",
+                    "de" to "Deutsch",
+                    "es" to "Español",
+                    "et" to "Eesti",
+                    "fi" to "Suomi",
+                    "fr" to "Français",
+                    "gl" to "Galego",
+                    "in" to "Bahasa Indonesia",
+                    "it" to "Italiano",
+                    "iw" to "עברית",
+                    "ja" to "日本語",
+                    "ko" to "한국어",
+                    "nb-NO" to "Norsk bokmål",
+                    "nl" to "Nederlands",
+                    "pl" to "Polski",
+                    "pt" to "Português",
+                    "pt-BR" to "Português (Brasil)",
+                    "ro" to "Română",
+                    "ru" to "Русский",
+                    "sk" to "Slovenčina",
+                    "sv" to "Svenska",
+                    "ta" to "தமிழ்",
+                    "tr" to "Türkçe",
+                    "uk" to "Українська",
+                    "uz" to "Oʻzbekcha",
+                    "vi" to "Tiếng Việt",
+                    "zh-CN" to "简体中文",
+                    "zh-TW" to "繁體中文"
+                )
+                // Set title with 3 random flags to help users find this preference
+                val flags = listOf("🇧🇬", "🇨🇿", "🇩🇪", "🇪🇸", "🇪🇪", "🇫🇮", "🇫🇷", "🇮🇩", "🇮🇱", "🇮🇳", "🇮🇹", "🇯🇵", "🇰🇷", "🇳🇱", "🇳🇴", "🇵🇱", "🇵🇹", "🇧🇷", "🇷🇴", "🇷🇺", "🇸🇪", "🇸🇰", "🇹🇷", "🇹🇼", "🇺🇦", "🇺🇿", "🇻🇳", "🇨🇳")
+                val randomFlags = flags.shuffled().take(3).joinToString(" ")
+                language.title = "${getString(R.string.settings_general_language_title)} $randomFlags"
+                language.entries = supportedLocales.map { it.second }.toTypedArray()
+                language.entryValues = supportedLocales.map { it.first }.toTypedArray()
+
+                // Get current locale
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                val currentLocaleTag = if (currentLocales.isEmpty) "" else currentLocales.toLanguageTags()
+                language.value = currentLocaleTag
+
+                language.setOnPreferenceChangeListener { _, newValue ->
+                    val localeTag = newValue as String
+                    if (localeTag.isEmpty()) {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
+                    }
+                    true
+                }
+
+                language.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                    val currentLocalesForSummary = AppCompatDelegate.getApplicationLocales()
+                    if (currentLocalesForSummary.isEmpty) {
+                        getString(R.string.settings_general_language_summary_system)
+                    } else {
+                        val locale = currentLocalesForSummary[0]
+                        locale?.getDisplayName(locale)?.replaceFirstChar { it.uppercase() } ?: pref.entry?.toString() ?: ""
+                    }
                 }
             }
 

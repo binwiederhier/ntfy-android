@@ -361,6 +361,9 @@
     <string name="settings_general_dark_mode_entry_system">Use system default</string>
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_general_language_title">Language</string>
+    <string name="settings_general_language_summary_system">Using system default</string>
+    <string name="settings_general_language_system_default">System default</string>
     <string name="settings_general_dynamic_colors_title">Dynamic colors</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Using the dynamic system colors</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Using the ntfy theme colors</string>
