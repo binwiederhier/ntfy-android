@@ -60,8 +60,11 @@ import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import android.widget.ImageButton
 
-class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
+class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
@@ -84,6 +87,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var menu: Menu
+    private lateinit var fab: FloatingActionButton
+    private lateinit var messageBar: View
+    private lateinit var messageBarText: TextInputEditText
+    private lateinit var messageBarPublishButton: FloatingActionButton
+    private lateinit var messageBarExpandButton: ImageButton
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -355,6 +363,126 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             repository.mediaPlayer.stop()
         } catch (_: Exception) {
             // Ignore errors
+        }
+
+        // Setup FAB and message bar
+        setupPublishUI()
+    }
+
+    private fun setupPublishUI() {
+        fab = findViewById(R.id.detail_fab)
+        messageBar = findViewById(R.id.detail_message_bar)
+        messageBarText = messageBar.findViewById(R.id.message_bar_text)
+        messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
+        messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
+
+        // Message bar enabled: Show message bar, hide FAB
+        if (repository.getMessageBarEnabled()) {
+            fab.visibility = View.GONE
+            messageBar.visibility = View.VISIBLE
+
+            // Send button click
+            messageBarPublishButton.setOnClickListener {
+                publishMessage(messageBarText.text.toString()) // Allow publishing empty messages
+            }
+
+            // Expand button click opens the full dialog
+            messageBarExpandButton.setOnClickListener {
+                openPublishDialog(messageBarText.text.toString())
+            }
+
+            // Handle window insets for navigation bar and keyboard
+            val contentLayout = findViewById<View>(R.id.detail_content_layout)
+            ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                // Use the larger of navigation bar or keyboard height
+                val bottomPadding = maxOf(systemBars.bottom, ime.bottom)
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomPadding)
+                insets
+            }
+        } else {
+            // Show FAB, hide message bar
+            fab.visibility = View.VISIBLE
+            messageBar.visibility = View.GONE
+
+            fab.setOnClickListener {
+                openPublishDialog("")
+            }
+
+            // Add bottom padding to FAB to account for navigation bar
+            ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val layoutParams = view.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+                layoutParams.bottomMargin = systemBars.bottom + resources.getDimensionPixelSize(R.dimen.fab_margin)
+                view.layoutParams = layoutParams
+                insets
+            }
+        }
+    }
+
+    private fun openPublishDialog(initialMessage: String) {
+        val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, subscriptionDisplayName, initialMessage)
+        fragment.show(supportFragmentManager, PublishFragment.TAG)
+    }
+
+    private fun publishMessage(message: String) {
+        // Disable send button while publishing
+        messageBarPublishButton.isEnabled = false
+        
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val user = repository.getUser(subscriptionBaseUrl)
+                api.publish(
+                    baseUrl = subscriptionBaseUrl,
+                    topic = subscriptionTopic,
+                    user = user,
+                    message = message,
+                    title = "",
+                    priority = 3, // Default priority
+                    tags = emptyList(),
+                    delay = ""
+                )
+                runOnUiThread {
+                    messageBarText.text?.clear()
+                    messageBarPublishButton.isEnabled = true
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to publish message", e)
+                runOnUiThread {
+                    messageBarPublishButton.isEnabled = true
+                    val errorMessage = when (e) {
+                        is ApiService.UnauthorizedException -> {
+                            if (e.user != null) {
+                                getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
+                            } else {
+                                getString(R.string.detail_test_message_error_unauthorized_anon)
+                            }
+                        }
+                        is ApiService.EntityTooLargeException -> {
+                            getString(R.string.detail_test_message_error_too_large)
+                        }
+                        is ApiService.ApiException -> {
+                            getString(R.string.publish_dialog_error_server, e.error, e.code)
+                        }
+                        else -> {
+                            getString(R.string.publish_dialog_error_sending, e.message)
+                        }
+                    }
+                    Toast.makeText(this@DetailActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    /**
+     * Called by the publish dialog (PublishFragment) after the notification
+     * was successfully published.
+     */
+    override fun onPublished() {
+        // Clear the message bar text when a message is published from the dialog
+        if (this::messageBarText.isInitialized) {
+            messageBarText.text?.clear()
         }
     }
 

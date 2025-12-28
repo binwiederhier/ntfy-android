@@ -53,6 +53,10 @@
                 app:key="@string/settings_general_dynamic_colors_key"
                 app:title="@string/settings_general_dynamic_colors_title"
                 app:isPreferenceVisible="false"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_general_message_bar_key"
+                app:title="@string/settings_general_message_bar_title"
+                app:defaultValue="true"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference

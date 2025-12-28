@@ -18,7 +18,6 @@
         android:id="@+id/detail_content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
         android:background="@color/detail_activity_background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -26,8 +25,12 @@
             style="@style/CardViewBackground"
             android:id="@+id/detail_notification_list_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/detail_message_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detail_notification_list"
                 android:layout_width="match_parent"
@@ -45,8 +48,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/detail_no_notifications" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/detail_no_notifications"
+            app:layout_constraintBottom_toTopOf="@id/detail_message_bar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
         <ImageView
                 android:layout_width="match_parent"
@@ -88,6 +93,28 @@
                 android:autoLink="web"/>
     </LinearLayout>
 
+    <include
+        android:id="@+id/detail_message_bar"
+        layout="@layout/view_message_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/detail_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:contentDescription="@string/detail_fab_publish_description"
+            android:src="@drawable/ic_create_white_24dp"
+            android:visibility="gone"
+            app:layout_anchor="@id/detail_content_layout"
+            app:layout_anchorGravity="bottom|end"
+            style="@style/FloatingActionButton"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

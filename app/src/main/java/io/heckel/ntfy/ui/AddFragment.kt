@@ -200,7 +200,7 @@ class AddFragment : DialogFragment() {
         subscribeTopicText.postDelayed({
             subscribeTopicText.requestFocus()
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_FORCED)
+            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_IMPLICIT)
         }, 200)
     }
 

@@ -377,6 +377,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 dynamicColorsEnabled?.isVisible = true
             }
 
+            // Message bar enabled
+            val messageBarEnabledPrefId = context?.getString(R.string.settings_general_message_bar_key) ?: return
+            val messageBarEnabled: SwitchPreferenceCompat? = findPreference(messageBarEnabledPrefId)
+            messageBarEnabled?.isChecked = repository.getMessageBarEnabled()
+            messageBarEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setMessageBarEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getMessageBarEnabled()
+                }
+            }
+            messageBarEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_general_message_bar_summary_enabled)
+                } else {
+                    getString(R.string.settings_general_message_bar_summary_disabled)
+                }
+            }
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return

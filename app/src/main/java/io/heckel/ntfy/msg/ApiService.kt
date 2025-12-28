@@ -1,6 +1,7 @@
 package io.heckel.ntfy.msg
 
 import android.os.Build
+import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.User
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class ApiService {
+    private val gson = Gson()
     private val client = OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
         .connectTimeout(15, TimeUnit.SECONDS)
@@ -41,7 +43,13 @@ class ApiService {
         tags: List<String> = emptyList(),
         delay: String = "",
         body: RequestBody? = null,
-        filename: String = ""
+        filename: String = "",
+        click: String = "",
+        attach: String = "",
+        email: String = "",
+        call: String = "",
+        markdown: Boolean = false,
+        onCancelAvailable: ((cancel: () -> Unit) -> Unit)? = null // Called when the HTTP request was started and cancellable (caller can cancel)
     ) {
         val url = topicUrl(baseUrl, topic)
         val query = mutableListOf<String>()
@@ -60,6 +68,21 @@ class ApiService {
         if (filename.isNotEmpty()) {
             query.add("filename=${URLEncoder.encode(filename, "UTF-8")}")
         }
+        if (click.isNotEmpty()) {
+            query.add("click=${URLEncoder.encode(click, "UTF-8")}")
+        }
+        if (attach.isNotEmpty()) {
+            query.add("attach=${URLEncoder.encode(attach, "UTF-8")}")
+        }
+        if (email.isNotEmpty()) {
+            query.add("email=${URLEncoder.encode(email, "UTF-8")}")
+        }
+        if (call.isNotEmpty()) {
+            query.add("call=${URLEncoder.encode(call, "UTF-8")}")
+        }
+        if (markdown) {
+            query.add("markdown=true")
+        }
         if (body != null) {
             query.add("message=${URLEncoder.encode(message.replace("\n", "\\n"), "UTF-8")}")
         }
@@ -72,12 +95,24 @@ class ApiService {
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
-        publishClient.newCall(request).execute().use { response ->
+        val httpCall = publishClient.newCall(request)
+        onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
+        httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
                 throw UnauthorizedException(user)
             } else if (response.code == 413) {
                 throw EntityTooLargeException()
             } else if (!response.isSuccessful) {
+                // Try to parse error response from server
+                val errorBody = response.body.string()
+                val apiError = try {
+                    gson.fromJson(errorBody, ErrorResponse::class.java)
+                } catch (e: Exception) {
+                    null
+                }
+                if (apiError?.error != null && apiError.code != null) {
+                    throw ApiException(apiError.error, apiError.code)
+                }
                 throw Exception("Unexpected response ${response.code} when publishing to $url")
             }
             Log.d(TAG, "Successfully published to $url")
@@ -167,6 +202,13 @@ class ApiService {
 
     class UnauthorizedException(val user: User?) : Exception()
     class EntityTooLargeException : Exception()
+    class ApiException(val error: String, val code: Int) : Exception(error)
+
+    private data class ErrorResponse(
+        val code: Int?,
+        val http: Int?,
+        val error: String?
+    )
 
     companion object {
         val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"

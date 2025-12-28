@@ -1,2 +1,5 @@
+Features:
+* Add message bar to publish messages from the app (#98, ntfy-android#144)
+
 Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
