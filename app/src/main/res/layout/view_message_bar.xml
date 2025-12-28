@@ -72,7 +72,7 @@
         app:fabSize="mini"
         app:fabCustomSize="48dp"
         app:maxImageSize="24dp"
-        app:tint="@android:color/white"
+        app:tint="?attr/colorOnPrimary"
         app:backgroundTint="?attr/colorPrimary"
         app:rippleColor="#40FFFFFF"
         app:elevation="2dp"
