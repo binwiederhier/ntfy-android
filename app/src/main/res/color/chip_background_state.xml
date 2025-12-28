@@ -3,4 +3,3 @@
     <item android:color="@color/chip_background_checked" android:state_checked="true"/>
     <item android:color="@color/chip_background_color"/>
 </selector>
-

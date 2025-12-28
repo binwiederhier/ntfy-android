@@ -376,22 +376,17 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
         messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
 
-        val messageBarEnabled = repository.getMessageBarEnabled()
-
-        if (messageBarEnabled) {
-            // Show message bar, hide FAB
+        // Message bar enabled: Show message bar, hide FAB
+        if (repository.getMessageBarEnabled()) {
             fab.visibility = View.GONE
             messageBar.visibility = View.VISIBLE
 
             // Send button click
             messageBarPublishButton.setOnClickListener {
-                val message = messageBarText.text.toString()
-                if (message.isNotEmpty()) {
-                    publishMessage(message)
-                }
+                publishMessage(messageBarText.text.toString()) // Allow publishing empty messages
             }
 
-            // Expand button click - open full dialog
+            // Expand button click opens the full dialog
             messageBarExpandButton.setOnClickListener {
                 openPublishDialog(messageBarText.text.toString())
             }
