@@ -127,6 +127,7 @@ class PublishFragment : DialogFragment() {
     // File picker
     private lateinit var filePickerLauncher: ActivityResultLauncher<Intent>
 
+    // Implemented by the DetailActivity, allows us to let it know when the message is published
     interface PublishListener {
         fun onPublished()
     }
@@ -503,9 +504,8 @@ class PublishFragment : DialogFragment() {
             try {
                 val user = repository.getUser(baseUrl)
                 
-                // Handle file attachment
-                if (hasFileAttachment) {
-                    // Create streaming RequestBody to avoid loading entire file into memory
+                // Build request body for file attachment (if any)
+                val body = if (hasFileAttachment) {
                     val fileUri = selectedFileUri!!
                     val mimeType = selectedFileMimeType.toMediaType()
                     val fileSize = selectedFileSize
@@ -513,9 +513,7 @@ class PublishFragment : DialogFragment() {
                     
                     val baseBody = object : RequestBody() {
                         override fun contentType(): MediaType = mimeType
-                        
                         override fun contentLength(): Long = fileSize
-                        
                         override fun writeTo(sink: BufferedSink) {
                             context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
                                 sink.writeAll(inputStream.source())
@@ -524,7 +522,7 @@ class PublishFragment : DialogFragment() {
                     }
                     
                     // Wrap with progress tracking
-                    val body = ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
+                    ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
                         val percent = if (totalBytes > 0) (bytesWritten * 100 / totalBytes).toInt() else 0
                         activity?.runOnUiThread {
                             if (!isAdded) return@runOnUiThread
@@ -537,44 +535,32 @@ class PublishFragment : DialogFragment() {
                             )
                         }
                     }
-                    
-                    api.publish(
-                        baseUrl = baseUrl,
-                        topic = topic,
-                        user = user,
-                        message = message,
-                        title = title,
-                        priority = priority,
-                        tags = tags,
-                        delay = delay,
-                        body = body,
-                        filename = attachmentBoxFilenameText.text.toString(),
-                        click = clickUrl,
-                        email = email,
-                        call = phoneCall,
-                        markdown = markdown,
-                        onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
-                    )
-                } else {
-                    // No file attachment
-                    api.publish(
-                        baseUrl = baseUrl,
-                        topic = topic,
-                        user = user,
-                        message = message,
-                        title = title,
-                        priority = priority,
-                        tags = tags,
-                        delay = delay,
-                        click = clickUrl,
-                        attach = attachUrl,
-                        email = email,
-                        call = phoneCall,
-                        markdown = markdown,
-                        filename = attachFilename,
-                        onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
-                    )
+                } else null
+                
+                // Filename comes from different sources depending on attachment type
+                val filename = when {
+                    hasFileAttachment -> attachmentBoxFilenameText.text.toString()
+                    else -> attachFilename
                 }
+                
+                api.publish(
+                    baseUrl = baseUrl,
+                    topic = topic,
+                    user = user,
+                    message = message,
+                    title = title,
+                    priority = priority,
+                    tags = tags,
+                    delay = delay,
+                    body = body,
+                    filename = filename,
+                    click = clickUrl,
+                    attach = if (hasFileAttachment) "" else attachUrl,
+                    email = email,
+                    call = phoneCall,
+                    markdown = markdown,
+                    onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
+                )
                 
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext

@@ -477,6 +477,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
     }
 
+    /**
+     * Called by the publish dialog (PublishFragment) after the notification
+     * was successfully published.
+     */
     override fun onPublished() {
         // Clear the message bar text when a message is published from the dialog
         if (this::messageBarText.isInitialized) {
