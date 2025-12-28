@@ -49,7 +49,6 @@ import okhttp3.MediaType.Companion.toMediaType
 
 class PublishFragment : DialogFragment() {
     private val api = ApiService()
-
     private lateinit var repository: Repository
 
     // Toolbar
@@ -111,8 +110,8 @@ class PublishFragment : DialogFragment() {
     
     // Job and cancel function (represents active publish HTTP call)
     private var job: Job? = null
-    private var cancel: (() -> Unit)? = null
-    private var sending: Boolean = false
+    private var cancelFn: (() -> Unit)? = null
+    private var publishing: Boolean = false
 
     // State
     private var baseUrl: String = ""
@@ -175,8 +174,8 @@ class PublishFragment : DialogFragment() {
         toolbar = view.findViewById(R.id.publish_dialog_toolbar)
         toolbar.title = getString(R.string.publish_dialog_title, topicShortUrl(baseUrl, topic))
         toolbar.setNavigationOnClickListener {
-            if (sending) {
-                cancelUpload()
+            if (publishing) {
+                cancel()
             } else {
                 dismiss()
             }
@@ -390,6 +389,38 @@ class PublishFragment : DialogFragment() {
         }
     }
 
+    private fun createFileRequestBody(): RequestBody {
+        val fileUri = selectedFileUri!!
+        val mimeType = selectedFileMimeType.toMediaType()
+        val fileSize = selectedFileSize
+        val context = requireContext()
+        
+        val baseBody = object : RequestBody() {
+            override fun contentType(): MediaType = mimeType
+            override fun contentLength(): Long = fileSize
+            override fun writeTo(sink: BufferedSink) {
+                context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
+                    sink.writeAll(inputStream.source())
+                }
+            }
+        }
+        
+        // Wrap with progress tracking
+        return ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
+            val percent = if (totalBytes > 0) (bytesWritten * 100 / totalBytes).toInt() else 0
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                uploadProgress.progress = percent
+                uploadProgressText.text = getString(
+                    R.string.publish_dialog_uploading,
+                    "$percent%",
+                    formatBytes(bytesWritten),
+                    formatBytes(totalBytes)
+                )
+            }
+        }
+    }
+
     private fun showKeyboard(view: View) {
         view.postDelayed({
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -499,50 +530,13 @@ class PublishFragment : DialogFragment() {
         enableView(false)
 
         // Kick off HTTP request
-        sending = true
+        publishing = true
         job = lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(baseUrl)
-                
-                // Build request body for file attachment (if any)
-                val body = if (hasFileAttachment) {
-                    val fileUri = selectedFileUri!!
-                    val mimeType = selectedFileMimeType.toMediaType()
-                    val fileSize = selectedFileSize
-                    val context = requireContext()
-                    
-                    val baseBody = object : RequestBody() {
-                        override fun contentType(): MediaType = mimeType
-                        override fun contentLength(): Long = fileSize
-                        override fun writeTo(sink: BufferedSink) {
-                            context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
-                                sink.writeAll(inputStream.source())
-                            }
-                        }
-                    }
-                    
-                    // Wrap with progress tracking
-                    ProgressRequestBody(baseBody) { bytesWritten, totalBytes ->
-                        val percent = if (totalBytes > 0) (bytesWritten * 100 / totalBytes).toInt() else 0
-                        activity?.runOnUiThread {
-                            if (!isAdded) return@runOnUiThread
-                            uploadProgress.progress = percent
-                            uploadProgressText.text = getString(
-                                R.string.publish_dialog_uploading,
-                                "$percent%",
-                                formatBytes(bytesWritten),
-                                formatBytes(totalBytes)
-                            )
-                        }
-                    }
-                } else null
-                
-                // Filename comes from different sources depending on attachment type
-                val filename = when {
-                    hasFileAttachment -> attachmentBoxFilenameText.text.toString()
-                    else -> attachFilename
-                }
-                
+                val body = if (hasFileAttachment) createFileRequestBody() else null
+                val filename = if (hasFileAttachment) attachmentBoxFilenameText.text.toString() else attachFilename
+
                 api.publish(
                     baseUrl = baseUrl,
                     topic = topic,
@@ -559,13 +553,13 @@ class PublishFragment : DialogFragment() {
                     email = email,
                     call = phoneCall,
                     markdown = markdown,
-                    onCancelAvailable = { cancel -> this@PublishFragment.cancel = cancel }
+                    onCancelAvailable = { cancel -> this@PublishFragment.cancelFn = cancel }
                 )
                 
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
-                    sending = false
-                    cancel = null
+                    publishing = false
+                    cancelFn = null
                     Toast.makeText(requireContext(), R.string.publish_dialog_message_published, Toast.LENGTH_SHORT).show()
                     publishListener?.onPublished()
                     dismiss()
@@ -574,8 +568,8 @@ class PublishFragment : DialogFragment() {
                 Log.w(TAG, "Failed to publish message", e)
                 withContext(Dispatchers.Main) {
                     if (!isAdded) return@withContext
-                    sending = false
-                    cancel = null
+                    publishing = false
+                    cancelFn = null
                     uploadProgress.visibility = View.GONE
                     uploadProgressText.visibility = View.GONE
                     
@@ -610,12 +604,12 @@ class PublishFragment : DialogFragment() {
         }
     }
     
-    private fun cancelUpload() {
+    private fun cancel() {
         // Cancel both the HTTP request and the coroutine job
-        cancel?.invoke()
+        cancelFn?.invoke()
         job?.cancel()
-        cancel = null
-        sending = false
+        cancelFn = null
+        publishing = false
         uploadProgress.visibility = View.GONE
         uploadProgressText.visibility = View.GONE
         enableView(true)

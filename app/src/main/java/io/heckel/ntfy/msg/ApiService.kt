@@ -47,7 +47,7 @@ class ApiService {
         email: String = "",
         call: String = "",
         markdown: Boolean = false,
-        onCancelAvailable: ((cancel: () -> Unit) -> Unit)? = null
+        onCancelAvailable: ((cancel: () -> Unit) -> Unit)? = null // Called when the HTTP request was started and cancellable (caller can cancel)
     ) {
         val url = topicUrl(baseUrl, topic)
         val query = mutableListOf<String>()
@@ -94,7 +94,7 @@ class ApiService {
             .build()
         Log.d(TAG, "Publishing to $request")
         val httpCall = publishClient.newCall(request)
-        onCancelAvailable?.invoke { httpCall.cancel() }
+        onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
         httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
                 throw UnauthorizedException(user)
