@@ -287,6 +287,7 @@
     <string name="settings_notifications_auto_delete_one_month">Efter en månad</string>
     <string name="settings_notifications_auto_delete_three_months">Efter 3 månader</string>
     <string name="settings_general_header">Allmänt</string>
+    <string name="settings_appearance_header">Utseende</string>
     <string name="settings_general_default_base_url_title">Standardserver</string>
     <string name="settings_general_users_prefs_user_not_used">Används inte av något ämne</string>
     <string name="settings_general_dark_mode_title">Mörkt tema</string>

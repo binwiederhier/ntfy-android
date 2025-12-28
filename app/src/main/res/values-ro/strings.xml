@@ -60,6 +60,7 @@
     <string name="settings_notifications_insistent_max_priority_title">Păstrează alertele pentru prioritatea maximă</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificările cu prioritate maximă se alertă o singură dată</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparență</string>
     <string name="settings_general_default_base_url_title">Server implicit</string>
     <string name="settings_general_default_base_url_message">Introduceți URL-ul rădăcinii a serverului dvs. pentru utilizarea implicită atunci când vă abonați la topice noi și/sau când partajați în topice.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (implicit)</string>

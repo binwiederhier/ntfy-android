@@ -96,6 +96,7 @@
     <string name="settings_notifications_auto_delete_one_month">1 個月後</string>
     <string name="settings_notifications_auto_delete_three_months">3 個月後</string>
     <string name="settings_general_header">一般</string>
+    <string name="settings_appearance_header">主題</string>
     <string name="settings_general_default_base_url_title">預設伺服器</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (預設)</string>
     <string name="settings_general_users_title">管理使用者</string>

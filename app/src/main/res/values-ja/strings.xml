@@ -214,6 +214,7 @@
     <string name="settings_notifications_auto_delete_summary_three_months">3か月後に通知を自動削除する</string>
     <string name="settings_notifications_auto_delete_never">自動削除しない</string>
     <string name="settings_general_header">一般</string>
+    <string name="settings_appearance_header">外観</string>
     <string name="settings_notifications_auto_delete_summary_three_days">3日後に通知を自動削除する</string>
     <string name="settings_notifications_auto_delete_summary_one_week">1週間後に通知を自動削除する</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (デフォルト)</string>

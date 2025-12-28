@@ -220,6 +220,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Manter as alertas da prioridade máis alta ata que se desboten</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificar as alertas da máxima prioridade só unha vez</string>
     <string name="settings_general_header">Xeral</string>
+    <string name="settings_appearance_header">Aspecto</string>
     <string name="settings_general_default_base_url_title">Servidor por defecto</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (por defecto)</string>
     <string name="settings_general_users_title">Xestionar usuarias</string>

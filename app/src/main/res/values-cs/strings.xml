@@ -171,6 +171,7 @@
     <string name="settings_notifications_auto_delete_one_month">Po jednom měsíci</string>
     <string name="settings_notifications_auto_delete_three_months">Po 3 měsících</string>
     <string name="settings_general_header">Obecné</string>
+    <string name="settings_appearance_header">Vzhled</string>
     <string name="settings_general_default_base_url_title">Výchozí server</string>
     <string name="settings_general_default_base_url_message">Zadejte kořenovou adresu URL svého serveru, jako výchozí při přihlašování k odběru nových témat nebo sdílení témat.</string>
     <string name="settings_general_users_prefs_user_add">Přidat uživatele</string>

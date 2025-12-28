@@ -103,6 +103,7 @@
     <string name="settings_notifications_header">Meldingen</string>
     <string name="settings_notifications_auto_delete_title">Meldingen verwijderen</string>
     <string name="settings_general_header">Algemeen</string>
+    <string name="settings_appearance_header">Weergave</string>
     <string name="settings_backup_restore_header">Backup &amp; Herstel</string>
     <string name="settings_backup_restore_backup_title">Back up naar bestand</string>
     <string name="settings_backup_restore_backup_summary">Configuratie, meldingen en gebruikers exporteren</string>
