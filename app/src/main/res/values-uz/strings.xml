@@ -80,7 +80,7 @@
     <string name="detail_test_title">Test: Agar xohlasangiz, sarlavha o‘rnatishingiz mumkin.</string>
     <string name="detail_test_message">Bu ntfy Android ilovasining sinov bildirishnomasidir. U %1$d darajadagi ustuvorlikka ega. Agar siz boshqasini yuborsangiz, u boshqacha ko‘rinishi mumkin.</string>
     <string name="detail_test_message_error_too_large">Xabar yuborib bo‘lmadi: biriktirma juda katta.</string>
-    <string name="detail_copied_to_clipboard_message">Xotiraga nusxa olindi</string>
+    <string name="common_copied_to_clipboard">Xotiraga nusxa olindi</string>
     <string name="detail_instant_delivery_enabled">Darhol yuborish yoqilgan</string>
     <string name="detail_instant_delivery_disabled">Darhol yuborish o‘chirilgan</string>
     <string name="detail_deep_link_subscribed_toast_message">%1$s mavzusiga obuna bo‘lindi</string>

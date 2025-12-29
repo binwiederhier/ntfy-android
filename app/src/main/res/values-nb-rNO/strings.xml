@@ -94,7 +94,7 @@
     <string name="detail_item_menu_copy_contents_copied">Varsel kopiert til utklippstavlen</string>
     <string name="detail_test_message_error_unauthorized_user">Kan ikke sende melding: Brukeren \"%1$s\" er ikke autorisert.</string>
     <string name="detail_test_message_error_too_large">Kan ikke sende melding: Vedlegget er for stort.</string>
-    <string name="detail_copied_to_clipboard_message">Kopiert til utklippstavlen</string>
+    <string name="common_copied_to_clipboard">Kopiert til utklippstavlen</string>
     <string name="detail_instant_delivery_enabled">Umiddelbar levering påskrudd</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Slett permanent</string>
     <string name="detail_action_mode_delete_dialog_cancel">Avbryt</string>

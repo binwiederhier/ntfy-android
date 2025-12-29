@@ -75,7 +75,7 @@
     <string name="add_dialog_login_new_user">建立新使用者</string>
     <string name="add_dialog_base_urls_dropdown_choose">選擇 ntfy 服務 URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">清除 URL</string>
-    <string name="detail_copied_to_clipboard_message">已複製到剪貼簿</string>
+    <string name="common_copied_to_clipboard">已複製到剪貼簿</string>
     <string name="add_dialog_button_login">登入</string>
     <string name="add_dialog_login_description">這個主題需要登入，請先輸入帳號密碼。</string>
     <string name="add_dialog_instant_delivery">在省電模式下依然接收即時通知</string>

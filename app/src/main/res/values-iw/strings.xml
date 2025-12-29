@@ -228,7 +228,7 @@
     <string name="add_dialog_button_back">חזרה</string>
     <string name="add_dialog_button_cancel">ביטול</string>
     <string name="detail_delete_dialog_permanently_delete">למחוק לצמיתות</string>
-    <string name="detail_copied_to_clipboard_message">הועתק ללוח הגזירים</string>
+    <string name="common_copied_to_clipboard">הועתק ללוח הגזירים</string>
     <string name="detail_item_snack_deleted">ההתראה נמחקה</string>
     <string name="detail_item_menu_download">הורדת קובץ</string>
     <string name="detail_item_menu_copy_url">העתקת כתובת</string>

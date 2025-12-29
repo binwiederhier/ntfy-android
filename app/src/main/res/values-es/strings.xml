@@ -60,7 +60,7 @@
     <string name="detail_test_message_error_unauthorized_user">No se pudo enviar el mensaje: El usuario %1$s no está autorizado.</string>
     <string name="detail_test_message_error">No se pudo enviar el mensaje: %1$s</string>
     <string name="detail_test_message_error_too_large">No se pudo enviar el mensaje: El archivo adjunto es demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado al portapapeles</string>
+    <string name="common_copied_to_clipboard">Copiado al portapapeles</string>
     <string name="detail_instant_delivery_enabled">Entrega instantánea habilitada</string>
     <string name="detail_instant_delivery_disabled">Entrega instantánea deshabilitada</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>

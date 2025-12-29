@@ -213,7 +213,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Kan bericht niet versturen: Anoniem publiceren niet toegestaan.</string>
     <string name="detail_test_message_error_unauthorized_user">Kan bericht niet versturen: De gebruiker \"%1$s\" is niet geautoriseerd.</string>
     <string name="detail_test_message_error_too_large">Kan bericht niet versturen: De bijlage is te groot.</string>
-    <string name="detail_copied_to_clipboard_message">Gekopieerd naar het klembord</string>
+    <string name="common_copied_to_clipboard">Gekopieerd naar het klembord</string>
     <string name="detail_instant_delivery_enabled">Directe levering aan</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notificatie verwijderd</string>

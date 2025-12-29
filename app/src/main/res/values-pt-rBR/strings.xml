@@ -225,7 +225,7 @@
     <string name="detail_item_download_info_deleted_expires_x">apagado, link expira em %1$s</string>
     <string name="detail_item_download_info_download_failed_expires_x">download falhou, link expira em %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Não é possível enviar a mensagem: Publicação anônima não permitida.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado para área de transferência</string>
+    <string name="common_copied_to_clipboard">Copiado para área de transferência</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>
     <string name="detail_item_cannot_open">Não é possível abrir o anexo: %1$s</string>
     <string name="detail_menu_notifications_enabled">Notificações ativadas</string>

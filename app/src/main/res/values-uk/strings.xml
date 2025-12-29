@@ -124,7 +124,7 @@
     <string name="detail_test_message">Це тестове сповіщення від програми ntfy для Android. Він має рівень пріоритету %1$d. Якщо ви надішлете інший, він може виглядати інакше.</string>
     <string name="main_how_to_intro">Натисніть +, щоб створити тему або підписатися на неї. Після цього ви отримуєте сповіщення на свій пристрій, коли надсилаєте повідомлення через PUT або POST.</string>
     <string name="add_dialog_login_username_hint">Ім\'я користувача</string>
-    <string name="detail_copied_to_clipboard_message">Скопійовано в буфер обміну</string>
+    <string name="common_copied_to_clipboard">Скопійовано в буфер обміну</string>
     <string name="main_banner_websocket_text">Перехід на WebSockets є рекомендованим способом підключення до вашого сервера, який може подовжити час автономної роботи, але може вимагати <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">додаткової конфігурації вашого проксі</a>. Це можна вимкнути в налаштуваннях.</string>
     <string name="add_dialog_login_title">Необхідно ввійти</string>
     <string name="add_dialog_login_new_user">Новий користувач</string>

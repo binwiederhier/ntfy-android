@@ -94,7 +94,7 @@
     <string name="detail_no_notifications_text">Még nem érkezett értesítés ebben a témában.</string>
     <string name="detail_delete_dialog_permanently_delete">Végleges törlés</string>
     <string name="detail_test_message_error_unauthorized_anon">Nem sikerült az üzenetet elküldni: A névtelen publikálás nem engedélyezett.</string>
-    <string name="detail_copied_to_clipboard_message">Vágólapra másolva</string>
+    <string name="common_copied_to_clipboard">Vágólapra másolva</string>
     <string name="detail_instant_delivery_enabled">Azonnali küldés bekapcsolva</string>
     <string name="detail_instant_delivery_disabled">Azonnali küldés kikapcsolva</string>
     <string name="detail_item_menu_open">Fájl megnyitása</string>

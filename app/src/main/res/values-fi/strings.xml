@@ -186,7 +186,7 @@
     <string name="settings_notifications_min_priority_default">Oletus prioriteetin ja sen ylittävät</string>
     <string name="detail_test_message_error_unauthorized_anon">Viestiä ei voi lähettää: Nimetöntä lähetystä ei sallita.</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocketit</string>
-    <string name="detail_copied_to_clipboard_message">Kopioitu leikepöydälle</string>
+    <string name="common_copied_to_clipboard">Kopioitu leikepöydälle</string>
     <string name="channel_subscriber_notification_noinstant_text">Tilattu topikkiin</string>
     <string name="detail_action_mode_menu_copy">Kopioi</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream yli HTTP</string>

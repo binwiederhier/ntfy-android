@@ -83,7 +83,7 @@
     <string name="add_dialog_button_cancel">Отмена</string>
     <string name="main_unified_push_toast">Эта подписка управляется %1$s через UnifiedPush</string>
     <string name="detail_item_snack_undo">Отменить</string>
-    <string name="detail_copied_to_clipboard_message">Скопировано в буфер обмена</string>
+    <string name="common_copied_to_clipboard">Скопировано в буфер обмена</string>
     <string name="detail_deep_link_subscribed_toast_message">Подписались на тему %1$s</string>
     <string name="detail_item_tags">Тэги: %1$s</string>
     <string name="detail_item_menu_delete">Удалить файл</string>

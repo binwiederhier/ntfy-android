@@ -116,7 +116,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nie można wysłać wiadomości: Anonimowa publikacja nie jest dozwolona.</string>
     <string name="detail_test_message_error_unauthorized_user">Nie można wysłać wiadomości: Użytkownik \"%1$s\" nie ma uprawnień.</string>
     <string name="detail_test_message_error_too_large">Nie można wysłać wiadomości: Załącznik jest zbyt duży.</string>
-    <string name="detail_copied_to_clipboard_message">Skopiowano do schowka</string>
+    <string name="common_copied_to_clipboard">Skopiowano do schowka</string>
     <string name="detail_item_cannot_delete">Nie można usunąć załącznika: %1$s</string>
     <string name="detail_item_download_failed">Nie można pobrać załącznika: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">nie pobrany</string>

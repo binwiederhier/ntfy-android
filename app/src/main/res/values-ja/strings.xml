@@ -96,7 +96,7 @@
     <string name="share_topic_title">共有する</string>
     <string name="notification_popup_action_open">開く</string>
     <string name="detail_test_message_error_too_large">メッセージを送信できませんでした: 添付サイズが大きすぎます。</string>
-    <string name="detail_copied_to_clipboard_message">クリップボードにコピーしました</string>
+    <string name="common_copied_to_clipboard">クリップボードにコピーしました</string>
     <string name="detail_item_snack_undo">元に戻す</string>
     <string name="detail_item_menu_open">ファイルを開く</string>
     <string name="detail_item_menu_delete">ファイルを削除</string>

@@ -63,7 +63,7 @@
     <string name="detail_test_title">Test: Puoi impostare un titolo, se vuoi.</string>
     <string name="detail_test_message_error_unauthorized_anon">Impossibile inviare il messaggio: Pubblicazione anonima non permessa.</string>
     <string name="detail_test_message_error_unauthorized_user">Impossibile inviare il messaggio: L\'utente \"%1$s\" non è autorizzato.</string>
-    <string name="detail_copied_to_clipboard_message">Copiato negli appunti</string>
+    <string name="common_copied_to_clipboard">Copiato negli appunti</string>
     <string name="detail_instant_delivery_enabled">Consegna istantanea ATTIVATA</string>
     <string name="detail_item_tags">Etichette: %1$s</string>
     <string name="detail_test_message_error_too_large">Impossibile inviare il messaggio: L\'allegato è troppo grande.</string>

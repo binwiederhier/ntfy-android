@@ -26,7 +26,7 @@
     <string name="user_dialog_button_save">حفظ</string>
     <string name="add_dialog_base_urls_dropdown_choose">اختر عنوان URL للخدمة</string>
     <string name="add_dialog_login_title">تسجيل الدخول مطلوب</string>
-    <string name="detail_copied_to_clipboard_message">تم نسخه إلى الحافظة</string>
+    <string name="common_copied_to_clipboard">تم نسخه إلى الحافظة</string>
     <string name="detail_instant_delivery_enabled">التسليم الفوري مُفعَّل</string>
     <string name="channel_subscriber_notification_instant_text">مشترِك في الإستلام الفوري للمواضيع</string>
     <string name="add_dialog_login_username_hint">إسم المستخدم</string>

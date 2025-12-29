@@ -66,7 +66,7 @@
     <string name="detail_test_message_error">Mesaj gönderilemiyor: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Mesaj gönderilemiyor: Anonim yayına izin verilmiyor.</string>
     <string name="detail_test_message_error_too_large">Mesaj gönderilemiyor: Ek çok büyük.</string>
-    <string name="detail_copied_to_clipboard_message">Panoya kopyalandı</string>
+    <string name="common_copied_to_clipboard">Panoya kopyalandı</string>
     <string name="detail_instant_delivery_enabled">Anında teslimat açık</string>
     <string name="detail_instant_delivery_disabled">Anında teslimat kapalı</string>
     <string name="detail_item_tags">Etiketler: %1$s</string>

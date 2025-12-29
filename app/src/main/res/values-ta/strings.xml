@@ -188,7 +188,7 @@
     <string name="detail_test_message_error_unauthorized_anon">செய்தியை அனுப்ப முடியாது: அநாமதேய வெளியீடு அனுமதிக்கப்படவில்லை.</string>
     <string name="detail_test_message_error_unauthorized_user">செய்தியை அனுப்ப முடியாது: பயனர் \"%1$s\" அங்கீகரிக்கப்படவில்லை.</string>
     <string name="detail_test_message_error_too_large">செய்தியை அனுப்ப முடியாது: இணைப்பு மிகப் பெரியது.</string>
-    <string name="detail_copied_to_clipboard_message">இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது</string>
+    <string name="common_copied_to_clipboard">இடைநிலைப்பலகைக்கு நகலெடுக்கப்பட்டது</string>
     <string name="detail_instant_delivery_enabled">உடனடி வழங்கல்</string>
     <string name="detail_item_snack_undo">செயல்தவிர்</string>
     <string name="detail_item_menu_open">கோப்பை திற</string>

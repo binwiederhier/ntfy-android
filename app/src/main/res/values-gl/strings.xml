@@ -96,7 +96,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Non se enviou a mensaxe: Non está permitida a publicación anónima.</string>
     <string name="detail_test_message_error_unauthorized_user">Non se enviou a mensaxe: A usuaria \"%1$s\" non ten autorización.</string>
     <string name="detail_test_message_error_too_large">Non se enviou a mensaxe: O adxunto é demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado ao portapapeis</string>
+    <string name="common_copied_to_clipboard">Copiado ao portapapeis</string>
     <string name="detail_instant_delivery_enabled">Entrega inmediata activada</string>
     <string name="detail_instant_delivery_disabled">Entrega inmediata desactivada</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscrita ao tema %1$s</string>

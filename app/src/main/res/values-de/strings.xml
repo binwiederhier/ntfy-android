@@ -73,7 +73,7 @@
     <string name="detail_test_message_error">Nachricht kann nicht gesendet werden: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Nachricht kann nicht gesendet werden: Benutzer \"%1$s\" hat keine Berechtigung.</string>
     <string name="detail_test_message_error_too_large">Nachricht kann nicht gesendet werden: Anhang zu groß.</string>
-    <string name="detail_copied_to_clipboard_message">In Zwischenablage kopiert</string>
+    <string name="common_copied_to_clipboard">In Zwischenablage kopiert</string>
     <string name="detail_instant_delivery_disabled">Sofortnachrichten deaktiviert</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Benachrichtigung gelöscht</string>

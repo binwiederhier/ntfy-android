@@ -211,7 +211,7 @@
     <string name="settings_general_users_prefs_user_used_by_one">주제 %1$s에서 사용됨</string>
     <string name="settings_about_version_copied_to_clipboard_message">클립보드에 복사됨</string>
     <string name="detail_settings_global_setting_title">전역 설정 사용하기</string>
-    <string name="detail_copied_to_clipboard_message">클립보드에 복사됨</string>
+    <string name="common_copied_to_clipboard">클립보드에 복사됨</string>
     <string name="detail_item_menu_open">파일 열기</string>
     <string name="detail_item_menu_copy_url_copied">URL이 클립보드에 복사됨</string>
     <string name="add_dialog_base_urls_dropdown_choose">서비스 URL 선택</string>

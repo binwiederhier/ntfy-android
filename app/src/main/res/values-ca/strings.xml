@@ -91,7 +91,7 @@
     <string name="detail_test_message">Això es una notificació de prova de l\'aplicació per Android de ntfy. Té un nivell de prioritat %1$d. Si n\'envies una altra, pot ser diferent.</string>
     <string name="detail_test_message_error">No es pot enviar el missatge: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">No es pot enviar el missatge: L\'usuari \"%1$s\" no està autoritzat.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat al porta-retalls</string>
+    <string name="common_copied_to_clipboard">Copiat al porta-retalls</string>
     <string name="detail_item_snack_deleted">Notificació eliminada</string>
     <string name="detail_item_menu_open">Obre arxiu</string>
     <string name="detail_item_menu_save_file">Guardar l\'arxiu</string>

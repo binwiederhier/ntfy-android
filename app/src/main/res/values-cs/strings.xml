@@ -70,7 +70,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nelze odeslat zprávu: Anonymní publikování není povoleno.</string>
     <string name="detail_test_message_error_unauthorized_user">Nelze odeslat zprávu: Uživatel \"%1$s\" není autorizován.</string>
     <string name="detail_test_message_error_too_large">Nelze odeslat zprávu: Příloha je příliš velká.</string>
-    <string name="detail_copied_to_clipboard_message">Zkopírováno do schránky</string>
+    <string name="common_copied_to_clipboard">Zkopírováno do schránky</string>
     <string name="detail_instant_delivery_enabled">Okamžité doručení zapnuto</string>
     <string name="detail_instant_delivery_disabled">Okamžité doručení vypnuto</string>
     <string name="detail_deep_link_subscribed_toast_message">Přihlášeno k odběru tématu %1$s</string>

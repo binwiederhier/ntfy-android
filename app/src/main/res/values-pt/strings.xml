@@ -72,7 +72,7 @@
     <string name="detail_test_title">Teste: Pode definir um título se quiser.</string>
     <string name="detail_test_message_error">Não foi possível enviar a mensagem: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Não foi possível enviar a mensagem: Publicações anónimas não são permitidas.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado para a área de transferência</string>
+    <string name="common_copied_to_clipboard">Copiado para a área de transferência</string>
     <string name="detail_deep_link_subscribed_toast_message">Tópico \"%1$s\" subscrito</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>
     <string name="detail_item_snack_deleted">Notificação eliminada</string>

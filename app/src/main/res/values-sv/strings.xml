@@ -83,7 +83,7 @@
     <string name="detail_test_message_error">Kan inte skicka meddelande: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Kan inte skicka meddelande: Användaren \"%1$s\" är inte auktoriserad.</string>
     <string name="detail_test_message_error_too_large">Kan inte skicka meddelande: Bilagan är för stor.</string>
-    <string name="detail_copied_to_clipboard_message">Kopierat till urklipp</string>
+    <string name="common_copied_to_clipboard">Kopierat till urklipp</string>
     <string name="detail_instant_delivery_enabled">Omedelbar leverans på</string>
     <string name="detail_instant_delivery_disabled">Omedelbar leverans av</string>
     <string name="detail_deep_link_subscribed_toast_message">Prenumererar på ämne %1$s</string>

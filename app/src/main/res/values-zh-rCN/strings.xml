@@ -69,7 +69,7 @@
     <string name="detail_test_message_error">无法发送消息：%1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">无法发送消息：主题禁止匿名发布。</string>
     <string name="detail_test_message_error_too_large">无法发送消息：附件体积过大。</string>
-    <string name="detail_copied_to_clipboard_message">已复制到剪贴板</string>
+    <string name="common_copied_to_clipboard">已复制到剪贴板</string>
     <string name="detail_instant_delivery_enabled">实时推送已开启</string>
     <string name="detail_instant_delivery_disabled">实时推送已关闭</string>
     <string name="detail_item_tags">标签：%1$s</string>

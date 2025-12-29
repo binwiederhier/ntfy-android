@@ -59,7 +59,7 @@
     <string name="detail_test_message_error">Nemožno odoslať správu: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Nemožno odoslať správu: Používateľ \"%1$s\" nie je autorizovaný.</string>
     <string name="detail_test_message_error_too_large">Nemožno odoslať správu: Príloha je príliš veľká.</string>
-    <string name="detail_copied_to_clipboard_message">Skopírované do schránky</string>
+    <string name="common_copied_to_clipboard">Skopírované do schránky</string>
     <string name="detail_instant_delivery_enabled">Okamžité doručovanie zapnuté</string>
     <string name="detail_instant_delivery_disabled">Okamžité doručovanie vypnuté</string>
     <string name="detail_deep_link_subscribed_toast_message">Prihlásený na odber témy %1$s</string>

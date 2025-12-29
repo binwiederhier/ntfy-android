@@ -162,7 +162,7 @@
     <string name="detail_test_message_error">Sõnumi saatmine ei õnnestu: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Sõnumi saatmine ei õnnestu: Anonüümne teavitamine pole lubatud.</string>
     <string name="detail_test_message_error_too_large">Sõnumi saatmine ei õnnestu: Manus on liiga suur.</string>
-    <string name="detail_copied_to_clipboard_message">Kopeeritud lõikelauale</string>
+    <string name="common_copied_to_clipboard">Kopeeritud lõikelauale</string>
     <string name="detail_test_message_error_unauthorized_user">Sõnumi saatmine ei õnnestu: „%1$s“ kasutaja on autentimata.</string>
     <string name="detail_menu_clear">Kustuta kõik teavitused</string>
     <string name="detail_menu_settings">Tellimuste seadistused</string>

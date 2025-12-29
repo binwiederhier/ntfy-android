@@ -34,7 +34,7 @@
     <string name="detail_how_to_intro">Pour envoyer des notifications à ce sujet, faites simplement une requête PUT ou POST à l\'URL du sujet.</string>
     <string name="detail_test_title">Test : Vous pouvez mettre un titre si vous le voulez.</string>
     <string name="detail_test_message_error">Incapable d\'envoyer le message : %1$s</string>
-    <string name="detail_copied_to_clipboard_message">Copié dans le presse-papier</string>
+    <string name="common_copied_to_clipboard">Copié dans le presse-papier</string>
     <string name="detail_instant_delivery_disabled">Livraison instantanée inactive</string>
     <string name="detail_item_tags">Étiquettes : %1$s</string>
     <string name="detail_item_snack_undo">Annuler</string>

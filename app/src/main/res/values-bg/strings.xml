@@ -111,7 +111,7 @@
     <string name="detail_test_message_error">Грешка при изпращане: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Грешка при изпращане: Анонимното публикуване не е разрешено.</string>
     <string name="detail_test_message_error_too_large">Грешка при изпращане: Прикаченият файл е твърде голям.</string>
-    <string name="detail_copied_to_clipboard_message">Копирано в междинната памет</string>
+    <string name="common_copied_to_clipboard">Копирано в междинната памет</string>
     <string name="detail_item_tags">Етикети: %1$s</string>
     <string name="detail_item_menu_cancel">Отказ от изтегляне</string>
     <string name="detail_instant_delivery_enabled">Незабавното доставяне включено</string>

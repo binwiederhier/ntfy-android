@@ -67,7 +67,7 @@
     <string name="detail_test_message_error">Tidak dapat mengirimkan pesan: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Tidak dapat mengirimkan pesan: Penerbitan anonim tidak diizinkan.</string>
     <string name="detail_test_message_error_too_large">Tidak dapat mengirimkan pesan: Lampiran terlalu besar.</string>
-    <string name="detail_copied_to_clipboard_message">Disalin ke papan klip</string>
+    <string name="common_copied_to_clipboard">Disalin ke papan klip</string>
     <string name="detail_instant_delivery_enabled">Pengiriman instan menyala</string>
     <string name="detail_instant_delivery_disabled">Pengiriman instan mati</string>
     <string name="detail_item_tags">Tanda: %1$s</string>

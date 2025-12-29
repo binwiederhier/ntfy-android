@@ -321,7 +321,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nu se poate trimite mesajul: Publicarea anonimă nu este permisă.</string>
     <string name="detail_test_message_error_unauthorized_user">Nu se poate trimite mesajul: Utilizatorul \"%1$s\" nu este autorizat.</string>
     <string name="detail_test_message_error_too_large">Nu se poate trimite mesajul: Atașamentul este prea mare.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat în clipboard</string>
+    <string name="common_copied_to_clipboard">Copiat în clipboard</string>
     <string name="detail_instant_delivery_enabled">Primire instantanee pornită</string>
     <string name="detail_instant_delivery_disabled">Primire instantanee oprită</string>
     <string name="main_banner_websocket_button_dismiss">Ignoră</string>
