@@ -980,8 +980,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         private fun addCustomHeaderPreferences(headersByBaseUrl: List<CustomHeaderWithMetadata>) {
-            val baseUrlsInUse = headersByBaseUrl.map { it.baseUrl }
-
             headersByBaseUrl.forEach { serverHeaders ->
                 val baseUrl = serverHeaders.baseUrl
                 val headers = serverHeaders.headers
@@ -997,7 +995,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                         activity?.let {
                             CustomHeaderFragment
-                                .newInstance(header, baseUrlsInUse)
+                                .newInstance(header)
                                 .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
                         }
                         true
@@ -1017,7 +1015,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             headerAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                 activity?.let {
                     CustomHeaderFragment
-                        .newInstance(header = null, baseUrlsInUse = baseUrlsInUse)
+                        .newInstance(header = null)
                         .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
                 }
                 true

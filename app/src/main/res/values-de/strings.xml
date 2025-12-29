@@ -223,6 +223,7 @@
     <string name="user_dialog_description_add">Du kannst hier einen Benutzer hinzufügen. Alle Themen auf dem angegebenen Server verwenden dann diesen Benutzer.</string>
     <string name="user_dialog_description_edit">Du kannst Benutzernamen/Kennwort für den gewählten Benutzer ändern oder löschen.</string>
     <string name="user_dialog_base_url_hint">Service-URL</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">Authorization-Header ist bereits in benutzerdefinierten Headern für diesen Server gesetzt</string>
     <string name="user_dialog_username_hint">Benutzername</string>
     <string name="user_dialog_password_hint_add">Kennwort</string>
     <string name="user_dialog_password_hint_edit">Kennwort (leer lassen für keine Änderung)</string>
@@ -364,6 +365,7 @@
     <string name="custom_headers_error_title">Ungültiger Header</string>
     <string name="custom_headers_invalid_name">Ungültige Zeichen im Header-Namen</string>
     <string name="custom_headers_reserved_name">Dieser Header ist reserviert und wird von ntfy gesetzt</string>
+    <string name="custom_headers_user_exists">Authorization-Header kann nicht hinzugefügt werden: Ein Benutzer ist bereits für diesen Server konfiguriert</string>
     <string name="custom_headers_name_hint">Name (z.B. CF-Access-Client-Id)</string>
     <string name="custom_headers_value_hint">Wert</string>
     <string name="custom_header_dialog_description_add">Einen benutzerdefinierten HTTP-Header hinzufügen, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>

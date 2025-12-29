@@ -13,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.dangerButton
@@ -22,6 +23,7 @@ class UserFragment : DialogFragment() {
     private var user: User? = null
     private lateinit var baseUrlsInUse: ArrayList<String>
     private lateinit var listener: UserDialogListener
+    private lateinit var repository: Repository
 
     private lateinit var baseUrlViewLayout: TextInputLayout
     private lateinit var baseUrlView: TextInputEditText
@@ -38,6 +40,7 @@ class UserFragment : DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = activity as UserDialogListener
+        repository = Repository.getInstance(context)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -155,9 +158,26 @@ class UserFragment : DialogFragment() {
         val baseUrl = baseUrlView.text?.toString() ?: ""
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
+        
+        // Clear previous errors
+        baseUrlViewLayout.error = null
+        
         if (user == null) {
+            // Check if Authorization header already exists in custom headers
+            val hasAuthorizationHeader = if (this::repository.isInitialized && validUrl(baseUrl)) {
+                repository.getCustomHeadersForServer(baseUrl)
+                    .any { it.name.equals("Authorization", ignoreCase = true) }
+            } else {
+                false
+            }
+            
+            if (hasAuthorizationHeader) {
+                baseUrlViewLayout.error = getString(R.string.user_dialog_base_url_error_authorization_header_exists)
+            }
+            
             positiveButton.isEnabled = validUrl(baseUrl)
                     && !baseUrlsInUse.contains(baseUrl)
+                    && !hasAuthorizationHeader
                     && username.isNotEmpty() && password.isNotEmpty()
         } else {
             positiveButton.isEnabled = username.isNotEmpty() // Unchanged if left blank

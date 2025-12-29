@@ -14,14 +14,19 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.CustomHeader
+import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.validUrl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CustomHeaderFragment : DialogFragment() {
     private var header: CustomHeader? = null
-    private lateinit var baseUrlsInUse: ArrayList<String>
     private lateinit var listener: CustomHeaderDialogListener
+    private lateinit var repository: Repository
 
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var headerNameView: TextInputEditText
@@ -38,6 +43,7 @@ class CustomHeaderFragment : DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = activity as CustomHeaderDialogListener
+        repository = Repository.getInstance(context)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -49,9 +55,6 @@ class CustomHeaderFragment : DialogFragment() {
         if (baseUrl != null && headerName != null && headerValue != null) {
             header = CustomHeader(baseUrl, headerName, headerValue)
         }
-
-        // Required for validation
-        baseUrlsInUse = arguments?.getStringArrayList(BUNDLE_BASE_URLS_IN_USE) ?: arrayListOf()
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_custom_header_dialog, null)
@@ -161,29 +164,44 @@ class CustomHeaderFragment : DialogFragment() {
         // Clear previous errors
         headerNameLayout.error = null
 
-        // Validate header name
-        var isValid = true
-        if (headerName.isNotEmpty()) {
-            if (!validateHeaderName(headerName)) {
-                headerNameLayout.error = getString(R.string.custom_headers_invalid_name)
-                isValid = false
-            } else if (isReservedHeader(headerName)) {
-                headerNameLayout.error = getString(R.string.custom_headers_reserved_name)
-                isValid = false
+        // Validate header name and check if a user already exists for this server
+        CoroutineScope(Dispatchers.Main).launch {
+            var isValid = true
+            if (headerName.isNotEmpty()) {
+                if (!validateHeaderName(headerName)) {
+                    headerNameLayout.error = getString(R.string.custom_headers_invalid_name)
+                    isValid = false
+                } else if (isReservedHeader(headerName)) {
+                    headerNameLayout.error = getString(R.string.custom_headers_reserved_name)
+                    isValid = false
+                } else if (headerName.equals("Authorization", ignoreCase = true)) {
+                    // Check if a user exists for this server (async)
+                    val targetBaseUrl = if (header != null) header!!.baseUrl else baseUrl
+                    val userExists = if (this@CustomHeaderFragment::repository.isInitialized && validUrl(targetBaseUrl)) {
+                        withContext(Dispatchers.IO) {
+                            repository.getUser(targetBaseUrl) != null
+                        }
+                    } else {
+                        false
+                    }
+                    if (userExists) {
+                        headerNameLayout.error = getString(R.string.custom_headers_user_exists)
+                        isValid = false
+                    }
+                }
             }
-        }
-
-        if (header == null) {
-            // New header: baseUrl, name, and value required
-            positiveButton.isEnabled = validUrl(baseUrl)
-                && headerName.isNotEmpty()
-                && headerValue.isNotEmpty()
-                && isValid
-        } else {
-            // Editing header: name and value required
-            positiveButton.isEnabled = headerName.isNotEmpty()
-                && headerValue.isNotEmpty()
-                && isValid
+            if (header == null) {
+                // New header: baseUrl, name, and value required
+                positiveButton.isEnabled = validUrl(baseUrl)
+                        && headerName.isNotEmpty()
+                        && headerValue.isNotEmpty()
+                        && isValid
+            } else {
+                // Editing header: name and value required
+                positiveButton.isEnabled = headerName.isNotEmpty()
+                        && headerValue.isNotEmpty()
+                        && isValid
+            }
         }
     }
 
@@ -215,12 +233,10 @@ class CustomHeaderFragment : DialogFragment() {
         private const val BUNDLE_BASE_URL = "baseUrl"
         private const val BUNDLE_HEADER_NAME = "headerName"
         private const val BUNDLE_HEADER_VALUE = "headerValue"
-        private const val BUNDLE_BASE_URLS_IN_USE = "baseUrlsInUse"
 
-        fun newInstance(header: CustomHeader?, baseUrlsInUse: List<String>): CustomHeaderFragment {
+        fun newInstance(header: CustomHeader?): CustomHeaderFragment {
             val fragment = CustomHeaderFragment()
             val args = Bundle()
-            args.putStringArrayList(BUNDLE_BASE_URLS_IN_USE, ArrayList(baseUrlsInUse))
             if (header != null) {
                 args.putString(BUNDLE_BASE_URL, header.baseUrl)
                 args.putString(BUNDLE_HEADER_NAME, header.name)

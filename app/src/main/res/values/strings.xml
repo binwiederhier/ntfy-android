@@ -458,6 +458,7 @@
     <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
     <string name="user_dialog_base_url_hint">Service URL</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">Authorization header already set in custom headers for this server</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (unchanged if left blank)</string>
@@ -479,6 +480,7 @@
     <string name="custom_headers_error_title">Invalid Header</string>
     <string name="custom_headers_invalid_name">Header name contains invalid characters</string>
     <string name="custom_headers_reserved_name">This header is reserved and set by ntfy</string>
+    <string name="custom_headers_user_exists">Cannot add Authorization header: A user is already configured for this server</string>
     <string name="custom_headers_name_hint">Name (e.g. CF-Access-Client-Id)</string>
     <string name="custom_headers_value_hint">Value</string>
     <string name="custom_header_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
