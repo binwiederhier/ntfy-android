@@ -201,7 +201,6 @@ class CustomHeaderFragment : DialogFragment() {
         val nameLower = name.lowercase()
         val reservedHeaders = setOf(
             "user-agent",
-            "authorization",
             "host",
             "connection",
             "upgrade",

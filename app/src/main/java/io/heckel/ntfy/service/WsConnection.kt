@@ -43,7 +43,6 @@ class WsConnection(
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
         .connectTimeout(10, TimeUnit.SECONDS)
-        .addInterceptor(ApiService.CustomHeadersInterceptor(repository))
         .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
@@ -78,7 +77,7 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user).build()
+        val request = requestBuilder(urlWithSince, user, repository).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }
