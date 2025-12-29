@@ -395,4 +395,24 @@
     <string name="settings_general_message_bar_title">显示消息栏</string>
     <string name="settings_general_message_bar_summary_enabled">显示在话题视图底部的消息栏</string>
     <string name="settings_general_message_bar_summary_disabled">显示在话题视图底部的发布按钮</string>
+    <string name="settings_advanced_custom_headers_title">自定义标头</string>
+    <string name="settings_advanced_custom_headers_summary">定义将随每个请求一起发送的自定义 HTTP 标头，例如，如果 ntfy 服务器位于需要身份验证的代理或隧道后面。</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">添加标头</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">添加服务器标头</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">每个 HTTP 请求都包含标头。每个 ntfy 服务器都可以拥有自己的一组自定义标头。</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">如果为此服务器设置了自定义授权标头，则无法添加用户</string>
+    <string name="custom_headers_dialog_title_add">添加自定义标头</string>
+    <string name="custom_headers_dialog_title_edit">编辑自定义标头</string>
+    <string name="custom_headers_dialog_base_url_hint">服务 URL</string>
+    <string name="custom_headers_dialog_name_hint">标头名称（如：CF-Access-Client-Id）</string>
+    <string name="custom_headers_dialog_value_hint">标头值（如 9f3c2e4a1b2d4e）</string>
+    <string name="custom_headers_dialog_description_add">添加随每一个到指定服务器的请求一同发送的 HTTP 标头。</string>
+    <string name="custom_headers_dialog_description_edit">可以编辑所选标头的名称/值，或将其删除。</string>
+    <string name="custom_headers_dialog_error_invalid_name">标头名称包含无效字符</string>
+    <string name="custom_headers_dialog_error_reserved_name">此标头由 ntfy 保留并设置</string>
+    <string name="custom_headers_dialog_error_user_exists">如果为该服务器配置了用户，则无法添加授权标头</string>
+    <string name="custom_headers_dialog_error_duplicate">此服务器上已存在同名标头</string>
+    <string name="custom_headers_dialog_button_add">添加</string>
+    <string name="custom_headers_dialog_button_save">保存</string>
+    <string name="custom_headers_dialog_button_delete">删除</string>
 </resources>
