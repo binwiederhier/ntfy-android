@@ -302,13 +302,16 @@ class AddFragment : DialogFragment() {
         // Show/hide things: This logic is intentionally kept simple. Do not simplify "just because it's pretty".
         val instantToggleAllowed = if (!BuildConfig.FIREBASE_AVAILABLE) {
             false
-        } else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
+        } else {
+            true
+        }
+        /*else if (subscribeUseAnotherServerCheckbox.isChecked && subscribeBaseUrlText.text.toString() == appBaseUrl) {
             true
         } else if (!subscribeUseAnotherServerCheckbox.isChecked && defaultBaseUrl == null) {
             true
         } else {
             false
-        }
+        }*/
         if (subscribeUseAnotherServerCheckbox.isChecked) {
             subscribeUseAnotherServerDescription.visibility = View.VISIBLE
             subscribeBaseUrlLayout.visibility = View.VISIBLE
@@ -364,7 +367,7 @@ class AddFragment : DialogFragment() {
         activity.runOnUiThread {
             val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
-            val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
+            val instant = !BuildConfig.FIREBASE_AVAILABLE || /*baseUrl != appBaseUrl ||*/ subscribeInstantDeliveryCheckbox.isChecked
             subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()
         }
