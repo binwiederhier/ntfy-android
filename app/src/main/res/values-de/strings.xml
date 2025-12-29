@@ -352,16 +352,11 @@
     <string name="settings_advanced_custom_headers_prefs_header_add">Header hinzufügen</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_title">Header für einen Server hinzufügen</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_summary">Header werden mit jeder HTTP-Anfrage an diesen Server gesendet</string>
-    <string name="custom_headers_add_header">Header hinzufügen</string>
-    <string name="custom_headers_add_summary">Neuen benutzerdefinierten HTTP-Header hinzufügen</string>
     <string name="custom_headers_dialog_title_add">Neuen Header hinzufügen</string>
     <string name="custom_headers_dialog_title_edit">Header bearbeiten</string>
-    <string name="custom_headers_delete_title">Header löschen</string>
-    <string name="custom_headers_delete_message">Sicher, dass Sie den Header „%1$s" löschen möchten?</string>
     <string name="custom_headers_dialog_button_add">Hinzufügen</string>
     <string name="custom_headers_dialog_button_save">Speichern</string>
     <string name="custom_headers_dialog_button_delete">Löschen</string>
-    <string name="custom_headers_error_title">Ungültiger Header</string>
     <string name="custom_headers_dialog_error_invalid_name">Ungültige Zeichen im Header-Namen</string>
     <string name="custom_headers_dialog_error_reserved_name">Dieser Header ist reserviert und wird von ntfy gesetzt</string>
     <string name="custom_headers_dialog_error_user_exists">Authorization-Header kann nicht hinzugefügt werden: Ein Benutzer ist bereits für diesen Server konfiguriert</string>
