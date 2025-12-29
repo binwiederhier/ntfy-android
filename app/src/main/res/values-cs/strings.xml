@@ -60,7 +60,7 @@
     <string name="add_dialog_login_error_not_authorized">Přihlášení se nezdařilo. Uživatel %1$s není autorizován.</string>
     <string name="detail_no_notifications_text">K tomuto tématu jste zatím neobdrželi žádné oznámení.</string>
     <string name="detail_how_to_intro">Pro odeslání oznámení k tomuto tématu, jednoduše odešlete PUT nebo POST dotaz na URL tématu.</string>
-    <string name="detail_how_to_example">Příklad (použití curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Příklad (použití curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_clear_dialog_message">Smazat všechna oznámení v tomto tématu\?</string>
     <string name="detail_clear_dialog_permanently_delete">Odstranit natrvalo</string>
     <string name="detail_delete_dialog_message">Odhlásit se z tohoto tématu a smazat všechna přijatá oznámení\?</string>
@@ -70,7 +70,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nelze odeslat zprávu: Anonymní publikování není povoleno.</string>
     <string name="detail_test_message_error_unauthorized_user">Nelze odeslat zprávu: Uživatel \"%1$s\" není autorizován.</string>
     <string name="detail_test_message_error_too_large">Nelze odeslat zprávu: Příloha je příliš velká.</string>
-    <string name="detail_copied_to_clipboard_message">Zkopírováno do schránky</string>
+    <string name="common_copied_to_clipboard">Zkopírováno do schránky</string>
     <string name="detail_instant_delivery_enabled">Okamžité doručení zapnuto</string>
     <string name="detail_instant_delivery_disabled">Okamžité doručení vypnuto</string>
     <string name="detail_deep_link_subscribed_toast_message">Přihlášeno k odběru tématu %1$s</string>
@@ -171,6 +171,7 @@
     <string name="settings_notifications_auto_delete_one_month">Po jednom měsíci</string>
     <string name="settings_notifications_auto_delete_three_months">Po 3 měsících</string>
     <string name="settings_general_header">Obecné</string>
+    <string name="settings_appearance_header">Vzhled</string>
     <string name="settings_general_default_base_url_title">Výchozí server</string>
     <string name="settings_general_default_base_url_message">Zadejte kořenovou adresu URL svého serveru, jako výchozí při přihlašování k odběru nových témat nebo sdílení témat.</string>
     <string name="settings_general_users_prefs_user_add">Přidat uživatele</string>
@@ -327,7 +328,6 @@
     <string name="main_banner_websocket_button_enable_now">Povolit nyní</string>
     <string name="main_banner_websocket_text">WebSockets jsou doporučenou metodou připojení k vašemu serveru, která může zlepšit zvýšit výdrž baterie, ale může vyžadovat <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">další konfiguraci v proxy serveru</a>. Metodu připojení lze přepnout v Nastavení.</string>
     <string name="add_dialog_base_urls_dropdown_choose">Zvolit URL služby</string>
-    <string name="main_menu_donate_title">Přispět 💸</string>
     <string name="detail_item_cannot_open_apk">Aplikace již nelze nainstalovat. Místo toho stahujte přes prohlížeč. Podrobnosti naleznete v issue #531.</string>
     <string name="channel_notifications_group_default_name">Výchozí</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Upozornění s nejvyšší prioritou pouze jednou</string>

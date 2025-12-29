@@ -59,7 +59,7 @@
     <string name="detail_item_menu_download">下载文件</string>
     <string name="detail_item_menu_save_file">保存文件</string>
     <string name="detail_how_to_intro">向此主题的链接地址发送 PUT 或者 POST 请求即可发送通知。</string>
-    <string name="detail_how_to_example">例子（使用 curl）：<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ 例子（使用 curl）：<br/><tt>$ curl -d "Hi" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_permanently_delete">永久删除</string>
     <string name="detail_clear_dialog_cancel">取消</string>
     <string name="detail_delete_dialog_message">您确定不再订阅此主题，并久删除所有您收到的通知吗？</string>
@@ -69,7 +69,7 @@
     <string name="detail_test_message_error">无法发送消息：%1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">无法发送消息：主题禁止匿名发布。</string>
     <string name="detail_test_message_error_too_large">无法发送消息：附件体积过大。</string>
-    <string name="detail_copied_to_clipboard_message">已复制到剪贴板</string>
+    <string name="common_copied_to_clipboard">已复制到剪贴板</string>
     <string name="detail_instant_delivery_enabled">实时推送已开启</string>
     <string name="detail_instant_delivery_disabled">实时推送已关闭</string>
     <string name="detail_item_tags">标签：%1$s</string>
@@ -209,6 +209,7 @@
     <string name="settings_notifications_auto_delete_one_month">1 个月之后</string>
     <string name="settings_notifications_auto_delete_three_months">3 个月之后</string>
     <string name="settings_general_header">通用</string>
+    <string name="settings_appearance_header">外观</string>
     <string name="settings_general_default_base_url_title">默认服务器</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (默认)</string>
     <string name="settings_general_users_title">管理用户</string>
@@ -327,7 +328,6 @@
     <string name="detail_settings_about_header">关于</string>
     <string name="detail_settings_about_topic_url_title">主题 URL</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已复制到剪贴板</string>
-    <string name="main_menu_donate_title">捐赠 💸</string>
     <string name="detail_item_cannot_open_apk">无法再安装应用。 请通过浏览器下载。 有关详细信息，请参阅问题 #531。</string>
     <string name="channel_notifications_group_default_name">默认</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">持续以最高优先级通知进行提醒，直至取消</string>
@@ -343,4 +343,14 @@
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy 不再会作为 UnifiedPush 的一个分发器</string>
     <string name="settings_advanced_unifiedpush_title">启用 UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy 将作为 UnifiedPush 的一个分发器</string>
+    <string name="main_banner_websocket_reconnect_text">为确保 WebSocket 在后台重新连接，请授予 ntfy 闹钟和提醒权限</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">稍后询问</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">忽略</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">立即授予</string>
+    <string name="settings_advanced_exact_alarms_title">精确闹钟</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy 可以安排精确闹钟。在后台重连 WebSockets 需要精确闹钟权限。单击撤销该权限。</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy 无法安排精确闹钟。在后台重连 WebSockets 需要精确闹钟权限。单击授予该权限。</string>
+    <string name="settings_general_dynamic_colors_title">动态颜色</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">使用动态系统颜色</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">使用 ntfy 主题色</string>
 </resources>

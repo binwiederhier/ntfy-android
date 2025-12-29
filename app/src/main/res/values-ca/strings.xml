@@ -6,7 +6,6 @@
     <string name="channel_notifications_high_name">Prioritat alta</string>
     <string name="channel_notifications_max_name">Prioritat màxima</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
-    <string name="main_menu_donate_title">Donar 💸</string>
     <string name="main_item_status_reconnecting">reconnectant…</string>
     <string name="channel_subscriber_notification_title">Escoltant notificacions entrants</string>
     <string name="channel_subscriber_notification_instant_text">Subscrit per entrega instantània de temes</string>
@@ -92,7 +91,7 @@
     <string name="detail_test_message">Això es una notificació de prova de l\'aplicació per Android de ntfy. Té un nivell de prioritat %1$d. Si n\'envies una altra, pot ser diferent.</string>
     <string name="detail_test_message_error">No es pot enviar el missatge: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">No es pot enviar el missatge: L\'usuari \"%1$s\" no està autoritzat.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat al porta-retalls</string>
+    <string name="common_copied_to_clipboard">Copiat al porta-retalls</string>
     <string name="detail_item_snack_deleted">Notificació eliminada</string>
     <string name="detail_item_menu_open">Obre arxiu</string>
     <string name="detail_item_menu_save_file">Guardar l\'arxiu</string>
@@ -107,7 +106,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Esborra URL de servei</string>
     <string name="detail_no_notifications_text">Encara no has rebut cap notificació en aquest tema.</string>
     <string name="detail_how_to_intro">Per enviar notificacions en aquest tema, fes PUT o POST a la URL del tema.</string>
-    <string name="detail_how_to_example">Exemple (usant curl):<br/><tt>$ curl -d \"Hola\" %1$s</tt></string>
+    <string name="detail_how_to_example">Exemple (usant curl):<br></br><tt>$ curl -d \"Hola\" %1$s</tt></string>
     <string name="main_unified_push_toast">Aquesta subscripció és gestionada per %1$s via UnifiedPush</string>
     <string name="main_how_to_link">Instruccions detallades disponibles a ntfy.sh i a la documentació.</string>
     <string name="main_banner_websocket_text">WebSockets és el mètode recomanat per connectar-te al teu servidor. Pot millorar el rendiment de la bateria, però pot requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuració addicional al teu proxy</a>. Aquesta opció pot ser habil·litada a Configuració.</string>
@@ -308,6 +307,7 @@
     <string name="settings_notifications_auto_delete_summary_three_months">Eliminar automàticament les notificacions al cap de 3 mesos</string>
     <string name="settings_notifications_auto_delete_three_months">Al cap de 3 mesos</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparença</string>
     <string name="settings_general_users_summary">Afegir/eliminar usuaris a temes protegits</string>
     <string name="settings_general_users_prefs_user_used_by_one">Usat pel tema %1$s</string>
     <string name="settings_general_users_prefs_user_used_by_many">Usat pels temes %1$s</string>

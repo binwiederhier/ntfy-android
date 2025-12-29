@@ -1,0 +1,2 @@
+Features:
+* Moved the user interface to Material 3 and added dynamic color support (#580, ntfy-android#56, ntfy-android#126, ntfy-android#135, thanks to @Bnyro and @cyb3rko for the implementation, and to @RokeJulianLockhart for reporting)

@@ -1,7 +1,5 @@
 package io.heckel.ntfy.util
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentResolver
@@ -19,19 +17,20 @@ import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
-import android.util.TypedValue
 import android.view.View
-import android.view.Window
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
-import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
+import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
+import io.heckel.ntfy.db.ACTION_PROGRESS_SUCCESS
+import io.heckel.ntfy.db.Action
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
-import io.heckel.ntfy.ui.Colors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -48,9 +47,10 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
 import java.text.StringCharacterIterator
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import androidx.core.net.toUri
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
@@ -65,8 +65,13 @@ fun subscriptionTopicShortUrl(subscription: Subscription) : String {
     return topicShortUrl(subscription.baseUrl, subscription.topic)
 }
 
-fun displayName(subscription: Subscription) : String {
-    return subscription.displayName ?: subscriptionTopicShortUrl(subscription)
+fun displayName(appBaseUrl: String?, subscription: Subscription) : String {
+    if (subscription.displayName != null) {
+        return subscription.displayName
+    } else if (appBaseUrl == subscription.baseUrl) {
+        return subscription.topic
+    }
+    return subscriptionTopicShortUrl(subscription)
 }
 
 fun shortUrl(url: String) = url
@@ -166,7 +171,7 @@ fun decodeMessage(notification: Notification): String {
         } else {
             notification.message
         }
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         notification.message + "(invalid base64)"
     }
 }
@@ -178,7 +183,7 @@ fun decodeBytesMessage(notification: Notification): ByteArray {
         } else {
             notification.message.toByteArray()
         }
-    } catch (e: IllegalArgumentException) {
+    } catch (_: IllegalArgumentException) {
         notification.message.toByteArray()
     }
 }
@@ -187,11 +192,11 @@ fun decodeBytesMessage(notification: Notification): ByteArray {
  * See above; prepend emojis to title if the title is non-empty.
  * Otherwise, they are prepended to the message.
  */
-fun formatTitle(subscription: Subscription, notification: Notification): String {
+fun formatTitle(appBaseUrl: String?, subscription: Subscription, notification: Notification): String {
     return if (notification.title != "") {
         formatTitle(notification)
     } else {
-        displayName(subscription)
+        displayName(appBaseUrl, subscription)
     }
 }
 
@@ -213,7 +218,7 @@ fun formatActionLabel(action: Action): String {
     }
 }
 
-fun maybeAppendActionErrors(message: String, notification: Notification): String {
+fun maybeAppendActionErrors(message: CharSequence, notification: Notification): CharSequence {
     val actionErrors = notification.actions
         .orEmpty()
         .mapNotNull { action -> action.error }
@@ -228,7 +233,7 @@ fun maybeAppendActionErrors(message: String, notification: Notification): String
 // Queries the filename of a content URI
 fun fileName(context: Context, contentUri: String?, fallbackName: String): String {
     return try {
-        val info = fileStat(context, Uri.parse(contentUri))
+        val info = fileStat(context, contentUri?.toUri())
         info.filename
     } catch (_: Exception) {
         fallbackName
@@ -262,7 +267,7 @@ fun fileStat(context: Context, contentUri: Uri?): FileInfo {
 
 fun maybeFileStat(context: Context, contentUri: String?): FileInfo? {
     return try {
-        fileStat(context, Uri.parse(contentUri)) // Throws if the file does not exist
+        fileStat(context, contentUri?.toUri()) // Throws if the file does not exist
     } catch (_: Exception) {
         null
     }
@@ -272,16 +277,6 @@ data class FileInfo(
     val filename: String,
     val size: Long,
 )
-
-// Status bar color fading to match action bar, see https://stackoverflow.com/q/51150077/1440785
-fun fadeStatusBarColor(window: Window, fromColor: Int, toColor: Int) {
-    val statusBarColorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
-    statusBarColorAnimation.addUpdateListener { animator ->
-        val color = animator.animatedValue as Int
-        window.statusBarColor = color
-    }
-    statusBarColorAnimation.start()
-}
 
 // Generates a (cryptographically secure) random string of a certain length
 fun randomString(len: Int): String {
@@ -334,26 +329,27 @@ fun mimeTypeToIconResource(mimeType: String?): Int {
 }
 
 fun supportedImage(mimeType: String?): Boolean {
-    return listOf("image/jpeg", "image/png").contains(mimeType)
+    return listOf(
+        "image/jpeg",
+        "image/jpg", // Technically not a valid MIME type, see https://github.com/binwiederhier/ntfy-android/pull/142
+        "image/png",
+        "image/gif",
+        "image/webp"
+    ).contains(mimeType)
 }
 
-// Google Play doesn't allow us to install received .apk files anymore.
-// See https://github.com/binwiederhier/ntfy/issues/531
+// We cannot open .apk files, because we don't have the REQUEST_INSTALL_PACKAGES anymore
+// Play didn't grant us the permission, and F-Droid users didn't want us to have it.
+// See https://github.com/binwiederhier/ntfy/issues/531 & https://github.com/binwiederhier/ntfy/issues/684
 fun canOpenAttachment(attachment: Attachment?): Boolean {
-    if (attachment?.type == ANDROID_APP_MIME_TYPE && !BuildConfig.INSTALL_PACKAGES_AVAILABLE) {
-        return false
-    }
-    return true
+    return attachment?.type != ANDROID_APP_MIME_TYPE
 }
 
 // Check if battery optimization is enabled, see https://stackoverflow.com/a/49098293/1440785
 fun isIgnoringBatteryOptimizations(context: Context): Boolean {
     val powerManager = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
     val appName = context.applicationContext.packageName
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        return powerManager.isIgnoringBatteryOptimizations(appName)
-    }
-    return true
+    return powerManager.isIgnoringBatteryOptimizations(appName)
 }
 
 // Returns true if dark mode is on, see https://stackoverflow.com/a/60761189/1440785
@@ -394,13 +390,14 @@ class ContentUriRequestBody(
     }
 }
 
+// TODO: make this work in Android 34+
 // Hack: Make end icon for drop down smaller, see https://stackoverflow.com/a/57098715/1440785
 fun View.makeEndIconSmaller(resources: Resources) {
-    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
-    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
-    endIconImageView.minimumHeight = dimension.toInt()
-    endIconImageView.minimumWidth = dimension.toInt()
-    requestLayout()
+//    val dimension = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30f, resources.displayMetrics)
+//    val endIconImageView = findViewById<ImageView>(R.id.text_input_end_icon)
+//    endIconImageView.minimumHeight = dimension.toInt()
+//    endIconImageView.minimumWidth = dimension.toInt()
+//    requestLayout()
 }
 
 // Shows the ripple effect on the view, if it is ripple-able, see https://stackoverflow.com/a/56314062/1440785
@@ -439,7 +436,7 @@ fun Uri.readBitmapFromUri(context: Context): Bitmap {
 }
 
 fun String.readBitmapFromUri(context: Context): Bitmap {
-    return Uri.parse(this).readBitmapFromUri(context)
+    return this.toUri().readBitmapFromUri(context)
 }
 
 fun String.readBitmapFromUriOrNull(context: Context): Bitmap? {
@@ -482,14 +479,16 @@ fun ensureSafeNewFile(dir: File, name: String): File {
     throw Exception("Cannot find safe file")
 }
 
-fun copyToClipboard(context: Context, notification: Notification) {
-    val message = decodeMessage(notification)
+fun copyToClipboard(context: Context, label: String, message: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("notification message", message)
+    val clip = ClipData.newPlainText(label, message)
     clipboard.setPrimaryClip(clip)
-    Toast
-        .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-        .show()
+
+    // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+        val copied = context.getString(R.string.common_copied_to_clipboard)
+        Toast.makeText(context, copied, Toast.LENGTH_LONG).show()
+    }
 }
 
 fun String.sha256(): String {
@@ -498,15 +497,10 @@ fun String.sha256(): String {
     return digest.fold("") { str, it -> str + "%02x".format(it) }
 }
 
-fun Button.dangerButton(context: Context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        setTextAppearance(R.style.DangerText)
-    } else {
-        setTextColor(ContextCompat.getColor(context, Colors.dangerText(context)))
-    }
+fun Button.dangerButton() {
+    setTextAppearance(R.style.DangerText)
 }
 
 fun Long.nullIfZero(): Long? {
     return if (this == 0L) return null else this
 }
-

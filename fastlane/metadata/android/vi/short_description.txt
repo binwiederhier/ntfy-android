@@ -1,0 +1,1 @@
+Gửi thông báo đến điện thoại từ bất kỳ script nào bằng yêu cầu PUT/POST

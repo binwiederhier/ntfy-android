@@ -60,7 +60,6 @@
     <string name="add_dialog_topic_name_hint">Όνομα θέματος</string>
     <string name="add_dialog_use_another_server">Χρήση άλλου server/εξυπηρετητή</string>
     <string name="add_dialog_title">Εγγραφή σε ειδοποίηση</string>
-    <string name="main_menu_donate_title">Κάντε δωρεά</string>
     <string name="main_banner_websocket_text">Η μετάβαση σε WebSockets είναι ο συνιστώμενος τρόπος σύνδεσης με τον διακομιστή σας και μπορεί να βελτιώσει τη διάρκεια ζωής της μπαταρίας, αλλά μπορεί να απαιτεί <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">πρόσθετες ρυθμίσεις στο διακομιστή μεσολάβησης</a>. Αυτό μπορεί να ενεργοποιηθεί στις Ρυθμίσεις.</string>
     <string name="add_dialog_login_password_hint">Κωδικός πρόσβασης</string>
     <string name="add_dialog_login_error_not_authorized">Η σύνδεση απέτυχε. Ο χρήστης %1$s δεν είναι εξουσιοδοτημένος.</string>

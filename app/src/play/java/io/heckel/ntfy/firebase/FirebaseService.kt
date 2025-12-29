@@ -97,6 +97,7 @@ class FirebaseService : FirebaseMessagingService() {
         val click = data["click"]
         val iconUrl = data["icon"]
         val actions = data["actions"] // JSON array as string, sigh ...
+        val contentType = data["content_type"]
         val encoding = data["encoding"]
         val attachmentName = data["attachment_name"] ?: "attachment.bin"
         val attachmentType = data["attachment_type"]
@@ -137,6 +138,7 @@ class FirebaseService : FirebaseMessagingService() {
                 timestamp = timestamp,
                 title = title ?: "",
                 message = message,
+                contentType = contentType ?: "",
                 encoding = encoding ?: "",
                 priority = toPriority(priority),
                 tags = tags ?: "",

@@ -69,6 +69,9 @@ class Backuper(val context: Context) {
         if (settings.darkMode != null) {
             repository.setDarkMode(settings.darkMode)
         }
+        if (settings.dynamicColors != null) {
+            repository.setDynamicColorsEnabled(settings.dynamicColors)
+        }
         if (settings.connectionProtocol != null) {
             repository.setConnectionProtocol(settings.connectionProtocol)
         }
@@ -184,6 +187,7 @@ class Backuper(val context: Context) {
                     timestamp = n.timestamp,
                     title = n.title,
                     message = n.message,
+                    contentType = n.contentType,
                     encoding = n.encoding,
                     notificationId = 0,
                     priority = n.priority,
@@ -234,6 +238,7 @@ class Backuper(val context: Context) {
             autoDownloadMaxSize = repository.getAutoDownloadMaxSize(),
             autoDeleteSeconds = repository.getAutoDeleteSeconds(),
             darkMode = repository.getDarkMode(),
+            dynamicColors = repository.getDynamicColorsEnabled(),
             connectionProtocol = repository.getConnectionProtocol(),
             broadcastEnabled = repository.getBroadcastEnabled(),
             recordLogs = repository.getRecordLogs(),
@@ -313,6 +318,7 @@ class Backuper(val context: Context) {
                 timestamp = n.timestamp,
                 title = n.title,
                 message = n.message,
+                contentType = n.contentType,
                 encoding = n.encoding,
                 priority = n.priority,
                 tags = n.tags,
@@ -356,6 +362,7 @@ data class Settings(
     val autoDownloadMaxSize: Long?,
     val autoDeleteSeconds: Long?,
     val darkMode: Int?,
+    val dynamicColors: Boolean?,
     val connectionProtocol: String?,
     val broadcastEnabled: Boolean?,
     val recordLogs: Boolean?,
@@ -387,6 +394,7 @@ data class Notification(
     val timestamp: Long,
     val title: String,
     val message: String,
+    val contentType: String, // "" or "text/markdown" (empty assumes "text/plain")
     val encoding: String, // "base64" or ""
     val priority: Int, // 1=min, 3=default, 5=max
     val tags: String,

@@ -102,6 +102,7 @@ data class Notification(
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
+    @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
     @ColumnInfo(name = "encoding") val encoding: String, // "base64" or ""
     @ColumnInfo(name = "notificationId") val notificationId: Int, // Android notification popup ID
     @ColumnInfo(name = "priority", defaultValue = "3") val priority: Int, // 1=min, 3=default, 5=max
@@ -113,6 +114,10 @@ data class Notification(
     @ColumnInfo(name = "deleted") val deleted: Boolean,
 )
 
+fun Notification.isMarkdown(): Boolean {
+    return contentType == "text/markdown"
+}
+
 @Entity
 data class Attachment(
     @ColumnInfo(name = "name") val name: String, // Filename
@@ -123,7 +128,7 @@ data class Attachment(
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
     @ColumnInfo(name = "progress") val progress: Int, // Progress during download, -1 if not downloaded
 ) {
-    constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
+    @Ignore constructor(name: String, type: String?, size: Long?, expires: Long?, url: String) :
             this(name, type, size, expires, url, null, ATTACHMENT_PROGRESS_NONE)
 }
 
@@ -138,7 +143,7 @@ data class Icon(
     @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
 ) {
-    constructor(url:String) :
+    @Ignore constructor(url:String) :
             this(url, null)
 }
 
@@ -195,11 +200,11 @@ data class LogEntry(
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "exception") val exception: String?
 ) {
-    constructor(timestamp: Long, tag: String, level: Int, message: String, exception: String?) :
+    @Ignore constructor(timestamp: Long, tag: String, level: Int, message: String, exception: String?) :
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 13)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -227,6 +232,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_10_11)
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
+                    .addMigrations(MIGRATION_13_14)
                     .fallbackToDestructiveMigration()
                     .build()
                 this.instance = instance
@@ -330,6 +336,12 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN insistent INTEGER NOT NULL DEFAULT (-1)") // = Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN dedicatedChannels INTEGER NOT NULL DEFAULT (0)")
+            }
+        }
+
+        private val MIGRATION_13_14 = object : Migration(13, 14) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
             }
         }
     }

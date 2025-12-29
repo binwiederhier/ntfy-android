@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_notifications_min_name">اولویت اصلی</string>
-    <string name="channel_notifications_default_name">اولویت پیش تعریف</string>
+    <string name="channel_notifications_default_name">اولویت پیش‌فرض</string>
     <string name="channel_notifications_low_name">اولویت پایین</string>
-    <string name="channel_notifications_group_default_name">پیش تعریف</string>
+    <string name="channel_notifications_group_default_name">پیش‌فرض</string>
     <string name="channel_subscriber_notification_instant_text">عضویت یافته در تحویل فوری اطلاعیه ها</string>
     <string name="channel_subscriber_notification_instant_text_one">عضویت یافته در تحویل یک موضوع</string>
     <string name="channel_subscriber_notification_instant_text_three">عضویت یافته در دریافت سه موضوع</string>
@@ -14,7 +14,6 @@
     <string name="main_menu_report_bug_title">گزارش یک نقص فنی</string>
     <string name="main_menu_docs_title">مطالعه مستندات</string>
     <string name="main_menu_rate_title">رتبه دهی به اپ ⭐</string>
-    <string name="main_menu_donate_title">حمایت مالی 💸</string>
     <string name="main_item_status_text_one">%1$d اطلاعیه</string>
     <string name="main_item_status_text_not_one">%1$d اطلاعیه</string>
     <string name="main_item_status_reconnecting">در حال اتصال دوباره …</string>
@@ -39,4 +38,64 @@
     <string name="main_action_mode_delete_dialog_permanently_delete">حذف برای همیشه</string>
     <string name="main_action_mode_delete_dialog_cancel">لغو</string>
     <string name="main_add_button_description">افزون اشتراک</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">مشترک شده به دو موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">مشترک شده به سه موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">مشترک شده به چهار موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">مشترک شده به پنج موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">مشترک شده به شش موضوع</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">مشترک شده در %1$d موضوع</string>
+    <string name="main_action_bar_title">موضوعات دنبال شده</string>
+    <string name="main_how_to_link">اطلاعات کامل بر روی ntfy.sh و مستندات، قابل دسترسی است.</string>
+    <string name="add_dialog_description_below">موضوعات به وسلیه رمز محافظت نمی شوند، پس نامی انتخاب کنید که قابل حدس زدن نباشد. بعد از مشترک شدن، شما می توانید با PUT/POST اطلاعیه ارسال کنید.</string>
+    <string name="add_dialog_topic_name_hint">نام موضوع، مثلا hoshdar_ali</string>
+    <string name="add_dialog_use_another_server">از سرور دیگری استفاده کن</string>
+    <string name="add_dialog_use_another_server_description">برای اشتراک در موضوعات از سرورهای دیگر، نشانی‌های سرویس را در زیر وارد کنید.</string>
+    <string name="main_how_to_intro">با فشردن + یک موضوع ایجاد کرده یا به آن مشترک شوید. از این پس شما هنگام ارسال توسط PUT یا POST بر روی دستگاه خود اطلاعیه دریافت می کنید.</string>
+    <string name="main_banner_battery_button_dismiss">رد کردن</string>
+    <string name="main_banner_websocket_button_dismiss">رد کردن</string>
+    <string name="add_dialog_button_cancel">لغو</string>
+    <string name="add_dialog_button_subscribe">اشتراک</string>
+    <string name="add_dialog_button_back">بازگشت</string>
+    <string name="add_dialog_login_username_hint">نام کاربری</string>
+    <string name="add_dialog_login_password_hint">گذرواژه</string>
+    <string name="detail_clear_dialog_cancel">لغو</string>
+    <string name="detail_delete_dialog_cancel">لغو</string>
+    <string name="detail_item_snack_undo">برگردان</string>
+    <string name="detail_item_download_info_deleted">حذف شده</string>
+    <string name="detail_menu_unsubscribe">لغو اشتراک</string>
+    <string name="detail_action_mode_menu_copy">رونوشت</string>
+    <string name="detail_action_mode_menu_delete">حذف</string>
+    <string name="detail_action_mode_delete_dialog_cancel">لغو</string>
+    <string name="share_title">هم‌رسانی</string>
+    <string name="share_menu_send">هم‌رسانی</string>
+    <string name="notification_dialog_cancel">لغو</string>
+    <string name="notification_dialog_save">ذخیره</string>
+    <string name="notification_popup_action_open">گشودن</string>
+    <string name="notification_popup_action_browse">مرور</string>
+    <string name="notification_popup_action_download">بارگیری</string>
+    <string name="notification_popup_action_cancel">لغو</string>
+    <string name="settings_title">تنظیمات</string>
+    <string name="settings_notifications_header">آگاهی‌ها</string>
+    <string name="settings_notifications_priority_low">کم</string>
+    <string name="settings_notifications_priority_default">پیش‌گزیده</string>
+    <string name="settings_notifications_priority_high">زیاد</string>
+    <string name="settings_notifications_priority_max">بیشینه</string>
+    <string name="settings_notifications_priority_min">کمینه</string>
+    <string name="settings_notifications_auto_delete_never">هرگز</string>
+    <string name="settings_general_header">عمومی</string>
+    <string name="settings_appearance_header">ظاهر</string>
+    <string name="settings_general_users_prefs_title">کاربران</string>
+    <string name="settings_backup_restore_backup_entry_everything">همه‌چیز</string>
+    <string name="settings_advanced_header">پیشرفته</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_button_ok">قبول</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">سوکت‌های وب</string>
+    <string name="settings_about_header">درباره</string>
+    <string name="settings_about_version_title">نگارش</string>
+    <string name="detail_settings_appearance_header">ظاهر</string>
+    <string name="detail_settings_about_header">درباره</string>
+    <string name="user_dialog_username_hint">نام کاربری</string>
+    <string name="user_dialog_password_hint_add">گذرواژه</string>
+    <string name="user_dialog_button_cancel">لغو</string>
+    <string name="user_dialog_button_save">ذخیره</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">رد کردن</string>
 </resources>

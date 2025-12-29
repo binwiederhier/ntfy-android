@@ -70,7 +70,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Rensa tjänstens URL</string>
     <string name="detail_no_notifications_text">Du har inte fått några meddelanden för detta ämne ännu.</string>
     <string name="detail_how_to_intro">För att skicka meddelanden till det här ämnet, PUT eller POST till ämnesadressen.</string>
-    <string name="detail_how_to_example">Exempel (med curl):<br/><tt>$ curl -d \"Hej\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exempel (med curl):<br/><tt>$ curl -d \"Hej\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Detaljerade instruktioner finns på ntfy.sh och i dokumentationen.</string>
     <string name="detail_clear_dialog_message">Ta bort alla meddelanden i det här ämnet\?</string>
     <string name="detail_clear_dialog_permanently_delete">Ta bort permanent</string>
@@ -83,7 +83,7 @@
     <string name="detail_test_message_error">Kan inte skicka meddelande: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Kan inte skicka meddelande: Användaren \"%1$s\" är inte auktoriserad.</string>
     <string name="detail_test_message_error_too_large">Kan inte skicka meddelande: Bilagan är för stor.</string>
-    <string name="detail_copied_to_clipboard_message">Kopierat till urklipp</string>
+    <string name="common_copied_to_clipboard">Kopierat till urklipp</string>
     <string name="detail_instant_delivery_enabled">Omedelbar leverans på</string>
     <string name="detail_instant_delivery_disabled">Omedelbar leverans av</string>
     <string name="detail_deep_link_subscribed_toast_message">Prenumererar på ämne %1$s</string>
@@ -113,7 +113,6 @@
     <string name="detail_settings_title">Prenumerationsinställningar</string>
     <string name="share_title">Dela</string>
     <string name="share_menu_send">Dela</string>
-    <string name="main_menu_donate_title">Donera 💸</string>
     <string name="detail_item_snack_undo">Ångra</string>
     <string name="detail_item_menu_open">Öppna fil</string>
     <string name="detail_item_menu_delete">Ta bort fil</string>
@@ -288,6 +287,7 @@
     <string name="settings_notifications_auto_delete_one_month">Efter en månad</string>
     <string name="settings_notifications_auto_delete_three_months">Efter 3 månader</string>
     <string name="settings_general_header">Allmänt</string>
+    <string name="settings_appearance_header">Utseende</string>
     <string name="settings_general_default_base_url_title">Standardserver</string>
     <string name="settings_general_users_prefs_user_not_used">Används inte av något ämne</string>
     <string name="settings_general_dark_mode_title">Mörkt tema</string>
@@ -343,4 +343,11 @@
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Meddela endast en gång</string>
     <string name="detail_settings_global_setting_title">Använd de globala inställningarna</string>
     <string name="detail_settings_appearance_icon_remove_summary">Ikon som visas i meddelanden för detta ämne</string>
+    <string name="main_banner_websocket_reconnect_text">För att säkerställa att WebSockets återansluter i bakgrunden, bevilja behörigheten Alarm &amp; Påminnelser till ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Fråga senare</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Avfärda</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Bevilja nu</string>
+    <string name="settings_advanced_exact_alarms_title">Exakta larm</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy kan schemalägga exakta larm. Exakta larm krävs för att återansluta WebSockets i bakgrunden. Klicka för att återkalla behörigheten.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy kan inte schemalägga exakta larm. Exakta larm krävs för att återansluta WebSockets i bakgrunden. Klicka för att bevilja behörigheten.</string>
 </resources>

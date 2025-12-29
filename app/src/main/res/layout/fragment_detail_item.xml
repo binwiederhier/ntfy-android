@@ -60,7 +60,7 @@
                 android:id="@+id/detail_item_message_text"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:autoLink="web"
+                android:autoLink="web|phone|email"
                 app:layout_constraintTop_toBottomOf="@id/detail_item_title_text"
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="12dp"
                 app:layout_constraintBottom_toTopOf="@id/detail_item_attachment_image" app:layout_constraintEnd_toStartOf="@id/detail_item_icon" android:layout_marginEnd="6dp"/>
@@ -178,7 +178,7 @@
                     app:flow_firstVerticalBias="0"
                     app:flow_firstHorizontalStyle="packed"
                     app:flow_firstVerticalStyle="packed"
-                    app:flow_maxElementsWrap="1"
+                    app:flow_maxElementsWrap="3"
                     android:layout_margin="0dp"
                     android:padding="0dp"
                     app:constraint_referenced_ids="button1,button2,button3"/>

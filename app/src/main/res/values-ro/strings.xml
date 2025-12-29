@@ -44,7 +44,7 @@
 \n%1$s
 \n
 \nParolele sunt criptate, dar nu sunt listate aici.</string>
-    <string name="settings_advanced_connection_protocol_summary_ws">Folosește WebSockets pentru conectarea la server. Asta este metoda recomandată, dar ar putea necesita setări adiționale în proxy-ul dumneavoastră</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Folosește WebSockets pentru conectarea la server. Asta este metoda recomandată, dar ar putea necesita setări adiționale în proxy-ul dumneavoastră.</string>
     <string name="detail_settings_appearance_icon_remove_title">Pictogramă abonament (apăsați pentru a elimina)</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Flux JSON prin HTTP</string>
     <string name="settings_notifications_auto_delete_title">Șterge notificări</string>
@@ -60,6 +60,7 @@
     <string name="settings_notifications_insistent_max_priority_title">Păstrează alertele pentru prioritatea maximă</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificările cu prioritate maximă se alertă o singură dată</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparență</string>
     <string name="settings_general_default_base_url_title">Server implicit</string>
     <string name="settings_general_default_base_url_message">Introduceți URL-ul rădăcinii a serverului dvs. pentru utilizarea implicită atunci când vă abonați la topice noi și/sau când partajați în topice.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (implicit)</string>
@@ -162,7 +163,6 @@
     <string name="main_menu_report_bug_title">Raportează o problemă</string>
     <string name="main_menu_docs_title">Citește documentația</string>
     <string name="main_action_mode_delete_dialog_message">Dezabonează-te de la topicele selectate și șterge notificările permanent\?</string>
-    <string name="main_menu_donate_title">Donează 💸</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_add_button_description">Adaugă abonament</string>
     <string name="main_item_status_text_not_one">%1$d notificări</string>
@@ -182,7 +182,7 @@
     <string name="detail_item_menu_delete">Șterge fișierul</string>
     <string name="detail_item_menu_cancel">Oprește descărcarea</string>
     <string name="detail_item_menu_save_file">Salvează fișierul</string>
-    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Downloads\"</string>
+    <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Descarcări\"</string>
     <string name="detail_item_menu_copy_contents">Copiază notificarea</string>
     <string name="detail_item_menu_copy_contents_copied">Notificare copiată în clipboard</string>
     <string name="detail_item_cannot_open">Nu se poate deschide atașametul: %1$s</string>
@@ -321,11 +321,11 @@
     <string name="detail_test_message_error_unauthorized_anon">Nu se poate trimite mesajul: Publicarea anonimă nu este permisă.</string>
     <string name="detail_test_message_error_unauthorized_user">Nu se poate trimite mesajul: Utilizatorul \"%1$s\" nu este autorizat.</string>
     <string name="detail_test_message_error_too_large">Nu se poate trimite mesajul: Atașamentul este prea mare.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat în clipboard</string>
+    <string name="common_copied_to_clipboard">Copiat în clipboard</string>
     <string name="detail_instant_delivery_enabled">Primire instantanee pornită</string>
     <string name="detail_instant_delivery_disabled">Primire instantanee oprită</string>
     <string name="main_banner_websocket_button_dismiss">Ignoră</string>
-    <string name="add_dialog_description_below">Topicele nu pot fi protejate cu parolă, așadar alegeți un nume greu de ghicit. Odată abonat, puteți PUT/POST notificări</string>
+    <string name="add_dialog_description_below">Topicele nu pot fi protejate cu parolă, așadar alegeți un nume greu de ghicit. Odată abonat, puteți PUT/POST notificări.</string>
     <string name="add_dialog_topic_name_hint">Numele topicului, exemplu: alertele_lui_phil</string>
     <string name="add_dialog_use_another_server_description">Introduceți URL-urile serviciilor mai jos pentru a vă abona la topice de la alte servere.</string>
     <string name="add_dialog_instant_delivery">Primire instantanee în modul doze</string>
@@ -343,4 +343,9 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy va avea rol de distribuitor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Activează UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nu va avea rol de distribuitor UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Întreabă mai târziu</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Respinge</string>
+    <string name="settings_advanced_exact_alarms_title">Alarme exacte</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSocket-urile în fundal. Faceți clic pentru a revoca permisiunea.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy nu poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSockets în fundal. Faceți clic pentru a acorda permisiunea.</string>
 </resources>

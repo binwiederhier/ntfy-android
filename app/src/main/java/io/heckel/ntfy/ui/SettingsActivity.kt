@@ -1,28 +1,33 @@
 package io.heckel.ntfy.ui
 
 import android.Manifest
-import android.app.AlertDialog
+import android.app.AlarmManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.TextUtils
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import androidx.preference.Preference.OnPreferenceClickListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -55,6 +60,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     private lateinit var serviceManager: SubscriberServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -62,6 +68,27 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
         repository = Repository.getInstance(this)
         serviceManager = SubscriberServiceManager(this)
+
+        val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(
+            this,
+            dynamicColors,
+            darkMode
+        )
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
+        
+        // Set system status bar appearance
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
         if (savedInstanceState == null) {
             settingsFragment = SettingsFragment() // Empty constructor!
@@ -119,7 +146,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         return true
     }
 
-    class SettingsFragment : PreferenceFragmentCompat() {
+    override fun onResume() {
+        super.onResume()
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.updateExactAlarmsPref()
+        }
+    }
+
+    class SettingsFragment : BasePreferenceFragment() {
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
         private var autoDownloadSelection = AUTO_DOWNLOAD_SELECTION_NOT_SET
@@ -202,7 +236,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Keep alerting for max priority
             val insistentMaxPriorityPrefId = context?.getString(R.string.settings_notifications_insistent_max_priority_key) ?: return
-            val insistentMaxPriority: SwitchPreference? = findPreference(insistentMaxPriorityPrefId)
+            val insistentMaxPriority: SwitchPreferenceCompat? = findPreference(insistentMaxPriorityPrefId)
             insistentMaxPriority?.isChecked = repository.getInsistentMaxPriorityEnabled()
             insistentMaxPriority?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -212,7 +246,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getInsistentMaxPriorityEnabled()
                 }
             }
-            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            insistentMaxPriority?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
@@ -223,14 +257,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)
-            channelPrefs?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             channelPrefs?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             channelPrefs?.onPreferenceClickListener = OnPreferenceClickListener {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                        putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                    })
-                }
+                startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                })
                 false
             }
 
@@ -315,11 +346,143 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Language
+            val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
+            val language: ListPreference? = findPreference(languagePrefId)
+            if (language != null) {
+                // We only list languages that have > 80% of strings translated.
+                //
+                // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+                // to help translate other languages.
+                //
+                // IMPORTANT: If a language is added here, also add it to the locales_config.xml file.
+
+                val supportedLocales = listOf(
+                    "" to getString(R.string.settings_general_language_system_default),
+                    "en" to "English",
+                    "bg" to "Български",
+                    "ca" to "Català",
+                    "cs" to "Čeština",
+                    "de" to "Deutsch",
+                    "es" to "Español",
+                    "et" to "Eesti",
+                    "fi" to "Suomi",
+                    "fr" to "Français",
+                    "gl" to "Galego",
+                    "in" to "Bahasa Indonesia",
+                    "it" to "Italiano",
+                    "iw" to "עברית",
+                    "ja" to "日本語",
+                    "ko" to "한국어",
+                    "nb-NO" to "Norsk bokmål",
+                    "nl" to "Nederlands",
+                    "pl" to "Polski",
+                    "pt" to "Português",
+                    "pt-BR" to "Português (Brasil)",
+                    "ro" to "Română",
+                    "ru" to "Русский",
+                    "sk" to "Slovenčina",
+                    "sv" to "Svenska",
+                    "ta" to "தமிழ்",
+                    "tr" to "Türkçe",
+                    "uk" to "Українська",
+                    "uz" to "Oʻzbekcha",
+                    "vi" to "Tiếng Việt",
+                    "zh-CN" to "简体中文",
+                    "zh-TW" to "繁體中文"
+                )
+                // Set title with 3 random flags to help users find this preference
+                val flags = listOf("🇧🇬", "🇨🇿", "🇩🇪", "🇪🇸", "🇪🇪", "🇫🇮", "🇫🇷", "🇮🇩", "🇮🇱", "🇮🇳", "🇮🇹", "🇯🇵", "🇰🇷", "🇳🇱", "🇳🇴", "🇵🇱", "🇵🇹", "🇧🇷", "🇷🇴", "🇷🇺", "🇸🇪", "🇸🇰", "🇹🇷", "🇹🇼", "🇺🇦", "🇺🇿", "🇻🇳", "🇨🇳")
+                val randomFlags = flags.shuffled().take(3).joinToString(" ")
+                language.title = "${getString(R.string.settings_general_language_title)} $randomFlags"
+                language.entries = supportedLocales.map { it.second }.toTypedArray()
+                language.entryValues = supportedLocales.map { it.first }.toTypedArray()
+
+                // Get current locale
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                val currentLocaleTag = if (currentLocales.isEmpty) "" else currentLocales.toLanguageTags()
+                language.value = currentLocaleTag
+
+                language.setOnPreferenceChangeListener { _, newValue ->
+                    val localeTag = newValue as String
+                    if (localeTag.isEmpty()) {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
+                    }
+                    true
+                }
+
+                language.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                    val currentLocalesForSummary = AppCompatDelegate.getApplicationLocales()
+                    if (currentLocalesForSummary.isEmpty) {
+                        getString(R.string.settings_general_language_summary_system)
+                    } else {
+                        val locale = currentLocalesForSummary[0]
+                        locale?.getDisplayName(locale)?.replaceFirstChar { it.uppercase() } ?: pref.entry?.toString() ?: ""
+                    }
+                }
+            }
+
+            // Dynamic colors
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val dynamicColorsEnabledPrefId = context?.getString(R.string.settings_general_dynamic_colors_key) ?: return
+                val dynamicColorsEnabled: SwitchPreferenceCompat? = findPreference(dynamicColorsEnabledPrefId)
+                dynamicColorsEnabled?.isChecked = repository.getDynamicColorsEnabled()
+                dynamicColorsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                    override fun putBoolean(key: String?, value: Boolean) {
+                        repository.setDynamicColorsEnabled(value)
+
+                        // Restart app
+                        val packageManager = requireContext().packageManager
+                        val packageName = requireContext().packageName
+                        val intent = packageManager.getLaunchIntentForPackage(packageName)
+                        val componentName = intent!!.component
+                        val mainIntent = Intent.makeRestartActivityTask(componentName)
+                        startActivity(mainIntent)
+                        Runtime.getRuntime().exit(0)
+                    }
+                    override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                        return repository.getDynamicColorsEnabled()
+                    }
+                }
+                dynamicColorsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                    if (pref.isChecked) {
+                        getString(R.string.settings_general_dynamic_colors_summary_enabled)
+                    } else {
+                        getString(R.string.settings_general_dynamic_colors_summary_disabled)
+                    }
+                }
+                dynamicColorsEnabled?.isVisible = true
+            }
+
+            // Message bar enabled
+            val messageBarEnabledPrefId = context?.getString(R.string.settings_general_message_bar_key) ?: return
+            val messageBarEnabled: SwitchPreferenceCompat? = findPreference(messageBarEnabledPrefId)
+            messageBarEnabled?.isChecked = repository.getMessageBarEnabled()
+            messageBarEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setMessageBarEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getMessageBarEnabled()
+                }
+            }
+            messageBarEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_general_message_bar_summary_enabled)
+                } else {
+                    getString(R.string.settings_general_message_bar_summary_disabled)
+                }
+            }
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
             val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
             defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
+            defaultBaseUrl?.extras?.putString("message", getString(R.string.settings_general_default_base_url_message))
+            defaultBaseUrl?.extras?.putString("hint", getString(R.string.app_base_url))
             defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String, value: String?) {
                     val baseUrl = value ?: return
@@ -346,7 +509,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Broadcast enabled
             val broadcastEnabledPrefId = context?.getString(R.string.settings_advanced_broadcast_key) ?: return
-            val broadcastEnabled: SwitchPreference? = findPreference(broadcastEnabledPrefId)
+            val broadcastEnabled: SwitchPreferenceCompat? = findPreference(broadcastEnabledPrefId)
             broadcastEnabled?.isChecked = repository.getBroadcastEnabled()
             broadcastEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -356,7 +519,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getBroadcastEnabled()
                 }
             }
-            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            broadcastEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_broadcast_summary_enabled)
                 } else {
@@ -366,7 +529,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Enable UnifiedPush
             val unifiedPushEnabledPrefId = context?.getString(R.string.settings_advanced_unifiedpush_key) ?: return
-            val unifiedPushEnabled: SwitchPreference? = findPreference(unifiedPushEnabledPrefId)
+            val unifiedPushEnabled: SwitchPreferenceCompat? = findPreference(unifiedPushEnabledPrefId)
             unifiedPushEnabled?.isChecked = repository.getUnifiedPushEnabled()
             unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -376,7 +539,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return repository.getUnifiedPushEnabled()
                 }
             }
-            unifiedPushEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            unifiedPushEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_unifiedpush_summary_enabled)
                 } else {
@@ -411,7 +574,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Record logs
             val recordLogsPrefId = context?.getString(R.string.settings_advanced_record_logs_key) ?: return
-            val recordLogsEnabled: SwitchPreference? = findPreference(recordLogsPrefId)
+            val recordLogsEnabled: SwitchPreferenceCompat? = findPreference(recordLogsPrefId)
             recordLogsEnabled?.isChecked = Log.getRecord()
             recordLogsEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
@@ -424,7 +587,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     return Log.getRecord()
                 }
             }
-            recordLogsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreference> { pref ->
+            recordLogsEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
                 if (pref.isChecked) {
                     getString(R.string.settings_advanced_record_logs_summary_enabled)
                 } else {
@@ -545,6 +708,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Update "Exact alarms" preference to match system setting
+            updateExactAlarmsPref()
+
             // Version
             val versionPrefId = context?.getString(R.string.settings_about_version_key) ?: return
             val versionPref: Preference? = findPreference(versionPrefId)
@@ -552,12 +718,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             versionPref?.summary = version
             versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("ntfy version", version)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(context, getString(R.string.settings_about_version_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(context, "ntfy version", version)
                 true
             }
         }
@@ -580,7 +741,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 val context = context ?: return@launch
                 val log = Log.getFormatted(context, scrub = scrub)
                 requireActivity().runOnUiThread {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("ntfy logs", log)
                     clipboard.setPrimaryClip(clip)
                     if (scrub) {
@@ -622,12 +783,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         if (!response.isSuccessful) {
                             throw Exception("Unexpected response ${response.code}")
                         }
-                        val body = response.body?.string()?.trim()
-                        if (body.isNullOrEmpty()) throw Exception("Return body is empty")
+                        val body = response.body.string().trim()
+                        if (body.isEmpty()) throw Exception("Return body is empty")
                         Log.d(TAG, "Logs uploaded successfully: $body")
-                        val resp = gson.fromJson(body.toString(), NopasteResponse::class.java)
+                        val resp = gson.fromJson(body, NopasteResponse::class.java)
                         requireActivity().runOnUiThread {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("logs URL", resp.url)
                             clipboard.setPrimaryClip(clip)
                             if (scrub) {
@@ -658,7 +819,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             } else {
                 getString(R.string.settings_advanced_export_logs_scrub_dialog_empty)
             }
-            val dialog = AlertDialog.Builder(activity)
+            val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(title)
                 .setMessage(scrubbedText)
                 .setPositiveButton(R.string.settings_advanced_export_logs_scrub_dialog_button_ok) { _, _ -> /* Nothing */ }
@@ -678,11 +839,28 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
         }
 
+        fun updateExactAlarmsPref() {
+            val exactAlarmsPrefId = context?.getString(R.string.settings_advanced_exact_alarms_key) ?: return
+            val exactAlarmsPref: Preference? = findPreference(exactAlarmsPrefId)
+            val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                (activity?.getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
+            } else {
+                true
+            }
+            exactAlarmsPref?.summary = if (canScheduleExactAlarms) getString(R.string.settings_advanced_exact_alarms_true) else getString(R.string.settings_advanced_exact_alarms_false)
+            exactAlarmsPref?.onPreferenceClickListener = OnPreferenceClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                }
+                true
+            }
+        }
+
         @Keep
         data class NopasteResponse(val url: String)
     }
 
-    class UserSettingsFragment : PreferenceFragmentCompat() {
+    class UserSettingsFragment : BasePreferenceFragment() {
         private lateinit var repository: Repository
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

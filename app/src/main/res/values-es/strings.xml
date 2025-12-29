@@ -52,7 +52,7 @@
     <string name="add_dialog_login_new_user">Nuevo usuario</string>
     <string name="detail_no_notifications_text">Aún no ha recibido ninguna notificación para este tópico.</string>
     <string name="detail_how_to_intro">Para enviar notificaciones a este tópico, simplemente realice un PUT ó POST a la URL del tópico.</string>
-    <string name="detail_how_to_example">Ejemplo (usando curl):<br/><tt>$ curl -d \"Hola\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Ejemplo (usando curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_permanently_delete">Eliminar permanentemente</string>
     <string name="detail_clear_dialog_cancel">Cancelar</string>
     <string name="detail_delete_dialog_message">¿Dar de baja de este tópico y eliminar todas las notificaciones que ha recibido\?</string>
@@ -60,7 +60,7 @@
     <string name="detail_test_message_error_unauthorized_user">No se pudo enviar el mensaje: El usuario %1$s no está autorizado.</string>
     <string name="detail_test_message_error">No se pudo enviar el mensaje: %1$s</string>
     <string name="detail_test_message_error_too_large">No se pudo enviar el mensaje: El archivo adjunto es demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado al portapapeles</string>
+    <string name="common_copied_to_clipboard">Copiado al portapapeles</string>
     <string name="detail_instant_delivery_enabled">Entrega instantánea habilitada</string>
     <string name="detail_instant_delivery_disabled">Entrega instantánea deshabilitada</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>
@@ -156,6 +156,7 @@
     <string name="settings_notifications_auto_delete_three_days">Despues de 3 dias</string>
     <string name="settings_notifications_auto_delete_three_months">Después de 3 meses</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Apariencia</string>
     <string name="settings_general_default_base_url_title">Servidor predeterminado</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (predeterminado)</string>
     <string name="settings_general_users_prefs_user_used_by_many">Utilizado por los tópicos %1$s</string>
@@ -327,7 +328,6 @@
     <string name="add_dialog_base_urls_dropdown_clear">Borrar la URL del servicio</string>
     <string name="main_banner_websocket_text">Cambiar a WebSockets es la forma recomendada para conectarse a su servidor, y podría mejorar la vida de la batería, pero puede requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional en su proxy</a>. Esto se puede cambiar en la Configuración.</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar ahora</string>
-    <string name="main_menu_donate_title">Donar 💸</string>
     <string name="detail_item_cannot_open_apk">Las aplicaciones ya no se pueden instalar desde ntfy. Descárguelas a través del navegador. Consulte el issue #531 para obtener más información.</string>
     <string name="channel_notifications_group_default_name">Predeterminado</string>
     <string name="settings_notifications_insistent_max_priority_title">Mantener alertas para la máxima prioridad</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_title">Activar UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy actuará como distribuidor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy no actuará como distribuidor UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Para asegurar que WebSockets vuelva a conectarse en segundo plano, conceda el permiso \"Alarmas y Recordatorios\" para ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Preguntar más tarde</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Descartar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Conceder ahora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmas exactas</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy puede programar alarmas exactas (utilizadas para reconectar WebSockets en segundo plano)</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy no puede programar alarmas exactas. Haga clic para conceder el permiso ahora</string>
 </resources>

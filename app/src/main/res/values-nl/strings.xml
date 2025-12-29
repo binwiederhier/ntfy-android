@@ -103,6 +103,7 @@
     <string name="settings_notifications_header">Meldingen</string>
     <string name="settings_notifications_auto_delete_title">Meldingen verwijderen</string>
     <string name="settings_general_header">Algemeen</string>
+    <string name="settings_appearance_header">Weergave</string>
     <string name="settings_backup_restore_header">Backup &amp; Herstel</string>
     <string name="settings_backup_restore_backup_title">Back up naar bestand</string>
     <string name="settings_backup_restore_backup_summary">Configuratie, meldingen en gebruikers exporteren</string>
@@ -212,7 +213,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Kan bericht niet versturen: Anoniem publiceren niet toegestaan.</string>
     <string name="detail_test_message_error_unauthorized_user">Kan bericht niet versturen: De gebruiker \"%1$s\" is niet geautoriseerd.</string>
     <string name="detail_test_message_error_too_large">Kan bericht niet versturen: De bijlage is te groot.</string>
-    <string name="detail_copied_to_clipboard_message">Gekopieerd naar het klembord</string>
+    <string name="common_copied_to_clipboard">Gekopieerd naar het klembord</string>
     <string name="detail_instant_delivery_enabled">Directe levering aan</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notificatie verwijderd</string>
@@ -328,7 +329,6 @@
     <string name="main_banner_websocket_button_enable_now">Nu inschakelen</string>
     <string name="main_banner_websocket_text">WebSockets is de aangeraden manier om te verbinden met uw server en kan batterij verbruik verminderen. Het kan <a href="https://ntfy.sh/docs/config/#nginxapache2caddy"> extra configuratie in uw proxy</a> vereisen. Dit kan omgeschakeld worden in de instellingen.</string>
     <string name="channel_notifications_group_default_name">Standaard</string>
-    <string name="main_menu_donate_title">Doneer 💸</string>
     <string name="detail_item_cannot_open_apk">Apps kunnen niet meer worden geïnstalleerd. Download deze via de browser. Raadpleeg issue #531 voor meer details.</string>
     <string name="settings_notifications_insistent_max_priority_title">Behoud meldingen voor hoogste prioriteit</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max prioriteit berichten geven continue een melding totdat deze worden gesloten</string>
@@ -343,4 +343,8 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy zal optreden als UnifiedPush-distributeur</string>
     <string name="settings_advanced_unifiedpush_title">UnifiedPush inschakelen</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy treedt niet op als UnifiedPush-distributeur</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Vraag het later</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Afwijzen</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Nu toekennen</string>
+    <string name="main_banner_websocket_reconnect_text">Om ervoor te zorgen dat WebSockets op de achtergrond opnieuw verbinding maken, moet u de machtiging Alarm &amp; Herinneringen aan ntfy verlenen</string>
 </resources>

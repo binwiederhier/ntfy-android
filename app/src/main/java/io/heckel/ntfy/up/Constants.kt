@@ -13,9 +13,8 @@ const val ACTION_MESSAGE = "org.unifiedpush.android.connector.MESSAGE"
 const val ACTION_REGISTER = "org.unifiedpush.android.distributor.REGISTER"
 const val ACTION_UNREGISTER = "org.unifiedpush.android.distributor.UNREGISTER"
 
-const val FEATURE_BYTES_MESSAGE = "org.unifiedpush.android.distributor.feature.BYTES_MESSAGE"
-
 const val EXTRA_APPLICATION = "application"
+const val EXTRA_PI = "pi"
 const val EXTRA_TOKEN = "token"
 const val EXTRA_ENDPOINT = "endpoint"
 const val EXTRA_MESSAGE = "message"

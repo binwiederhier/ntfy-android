@@ -5,6 +5,7 @@
     <string name="add_dialog_login_password_hint">Salasana</string>
     <string name="add_dialog_login_error_not_authorized">Kirjautuminen epäonnistui %1$s ei oikeuksia.</string>
     <string name="settings_general_header">Pääkäyttäjä</string>
+    <string name="settings_appearance_header">Ulkoasu</string>
     <string name="add_dialog_foreground_description">Välitön toimitus on aina päällä muille palvelimille kuin %1$s.</string>
     <string name="detail_clear_dialog_message">Poistetaanko kaikki tämän topikin ilmoitukset \?</string>
     <string name="channel_subscriber_notification_instant_text">Tilattu välittömään topikkiin</string>
@@ -34,8 +35,7 @@
     <string name="main_menu_rate_title">Äänestä aplikaatiota</string>
     <string name="detail_item_cannot_delete">Ei voida poistaa liitettä %1$s</string>
     <string name="settings_backup_restore_backup_summary">Vie asetukset, ilmoitukset ja käyttäjät</string>
-    <string name="notification_popup_file_downloading">Lataa %1$s, %2$d%%
-\n%3$s</string>
+    <string name="notification_popup_file_downloading">Ladataan %1$s, %2$d %%\n%3$s</string>
     <string name="main_item_status_text_not_one">%1$d Huomautusta</string>
     <string name="user_dialog_description_edit">Voit muokata valitun käyttäjän käyttäjätunnusta/salasanaa tai poistaa sen.</string>
     <string name="notification_dialog_show_all">Näytä kaikki ilmoitukset</string>
@@ -61,7 +61,7 @@
     <string name="channel_subscriber_notification_noinstant_text_two">Tilattu kahteen topikkiin</string>
     <string name="detail_settings_title">Tilausasetukset</string>
     <string name="detail_item_saved_successfully">Tallennettu nimellä %1$s lataukset kansioon</string>
-    <string name="settings_notifications_auto_delete_one_month">jälkeen kolmenkymmenen päivän</string>
+    <string name="settings_notifications_auto_delete_one_month">Kuukauden jälkeen</string>
     <string name="channel_notifications_group_default_name">Oletus</string>
     <string name="detail_menu_test">Lähetä testi ilmoitus</string>
     <string name="settings_notifications_priority_high">korkea</string>
@@ -92,14 +92,14 @@
     <string name="channel_subscriber_service_name">Tilaus palvelu</string>
     <string name="channel_subscriber_notification_instant_text_five">Tilattu viiteen välittömään topikkiin</string>
     <string name="settings_general_users_prefs_user_add">Lisää käyttäjiä</string>
-    <string name="settings_notifications_auto_delete_three_months">jälkeen kolmen kuukauden</string>
+    <string name="settings_notifications_auto_delete_three_months">Kolmen kuukauden jälkeen</string>
     <string name="main_add_button_description">Lisää tilaus</string>
     <string name="notification_dialog_muted_forever_toast_message">Ilmoitukset hiljennetty</string>
     <string name="settings_notifications_muted_until_show_all">Näytä kaikki ilmoitukset</string>
     <string name="notification_popup_file_download_failed">%1$s
 \ntiedosto: %2$s, lataus virhe</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Poista pysyvästi</string>
-    <string name="settings_notifications_auto_delete_three_days">Jälkeen kolmen päivän</string>
+    <string name="settings_notifications_auto_delete_three_days">Kolmen päivän jälkeen</string>
     <string name="settings_general_dark_mode_summary_light">Vaalea tila päälle</string>
     <string name="detail_item_cannot_open">Ei voida avata liitettä %1$s</string>
     <string name="settings_notifications_auto_download_5m">Jos tiedoston koko on alle 5 MB</string>
@@ -148,7 +148,7 @@
     <string name="settings_backup_restore_backup_entry_everything">Kaikki</string>
     <string name="settings_general_users_summary">Lisää/poista käyttäjiä suojatuille topikeille</string>
     <string name="add_dialog_use_another_server_description">Syötä palvelun URL-osoitte alle tilataksesi topikkeja muilta palvelimilta.</string>
-    <string name="settings_notifications_auto_delete_one_day">Jälkeen yhden päivän</string>
+    <string name="settings_notifications_auto_delete_one_day">Päivän jälkeen</string>
     <string name="settings_general_dark_mode_summary_dark">Tumma tila päällä. Oletko vampyyri \?</string>
     <string name="settings_general_users_prefs_user_add_summary">Lisää uusi käyttäjä uudelle palvelimelle</string>
     <string name="settings_general_dark_mode_entry_system">Käytä oletusasetusta</string>
@@ -186,7 +186,7 @@
     <string name="settings_notifications_min_priority_default">Oletus prioriteetin ja sen ylittävät</string>
     <string name="detail_test_message_error_unauthorized_anon">Viestiä ei voi lähettää: Nimetöntä lähetystä ei sallita.</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocketit</string>
-    <string name="detail_copied_to_clipboard_message">Kopioitu leikepöydälle</string>
+    <string name="common_copied_to_clipboard">Kopioitu leikepöydälle</string>
     <string name="channel_subscriber_notification_noinstant_text">Tilattu topikkiin</string>
     <string name="detail_action_mode_menu_copy">Kopioi</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream yli HTTP</string>
@@ -194,7 +194,7 @@
     <string name="detail_item_download_info_deleted">Poistettu</string>
     <string name="add_dialog_button_subscribe">Tilaa</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logit poistettu</string>
-    <string name="detail_item_download_info_downloading_x_percent">%1$d%% ladattu</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d %% ladattu</string>
     <string name="user_dialog_button_cancel">Peruuta</string>
     <string name="add_dialog_button_login">Kirjaudu</string>
     <string name="settings_backup_restore_restore_summary">Tuo asetukset, ilmoitukset ja käyttäjät</string>
@@ -203,7 +203,7 @@
     <string name="settings_general_users_prefs_title">Käyttäjät</string>
     <string name="detail_item_cannot_open_apk">Sovelluksia ei voi enää asentaa. Lataa sen sijaan selaimen kautta. Katso numero #531 saadaksesi lisätietoja.</string>
     <string name="settings_advanced_clear_logs_summary">Poista aiemmin tallennetut lokit ja aloita alusta</string>
-    <string name="refresh_message_error_one">Ei voitu päivittää: %1$s</string>
+    <string name="refresh_message_error_one">Ei voitu virkistää: %1$s</string>
     <string name="add_dialog_login_username_hint">Käyttäjänimi</string>
     <string name="detail_settings_about_header">-</string>
     <string name="settings_advanced_export_logs_uploading">Tallenna logi …</string>
@@ -234,9 +234,7 @@
     <string name="main_action_mode_delete_dialog_message">Lopetetaanko valittujen aiheiden tilaus ja poistetaanko kaikki ilmoitukset pysyvästi \?</string>
     <string name="notification_dialog_muted_until_toast_message">Ilmoituset hiljennetty %1$s asti</string>
     <string name="share_title">Jaa</string>
-    <string name="refresh_message_error">Ei voitu päivittää %1$d tilausta
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">Ei voitu virkistää %1$d tilausta\n\n%2$s</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Käytä JSON HTTP:n kautta muodostaaksesi yhteyden palvelimeen. Tämä menetelmä on testattu, mutta se voi kuluttaa enemmän akkua.</string>
     <string name="settings_advanced_export_logs_copied_logs">Logit kopioitu leikkelepöydälle</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Tilattu kuuteen topikkiin</string>
@@ -294,7 +292,7 @@
     <string name="notification_popup_file">%1$s
 \nTiedosto: %2$s</string>
     <string name="settings_notifications_muted_until_forever">Ilmoitukset mykistetty, kunnes niitä jatketaan</string>
-    <string name="detail_how_to_example">Esimerkki (käytä curl):<br/><tt>$ curl -d \"Hei\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Esimerkki (käytä curl):<br/><tt>$ curl -d "Hei" %1$s</tt> ]]></string>
     <string name="detail_settings_appearance_icon_set_title">Kuvake</string>
     <string name="detail_instant_delivery_disabled">Välitön lähetys pois</string>
     <string name="channel_subscriber_notification_instant_text_four">Tilattu neljään välittömään topikkiin</string>
@@ -317,7 +315,7 @@
     <string name="settings_notifications_auto_download_summary_always">Lataa automaattisesti liitteet</string>
     <string name="user_dialog_title_edit">Muokkaa käyttäjää</string>
     <string name="settings_backup_restore_restore_successful">Palautus onnistui</string>
-    <string name="settings_notifications_auto_delete_one_week">jälkeen seitsemän päivän</string>
+    <string name="settings_notifications_auto_delete_one_week">Viikon jälkeen</string>
     <string name="settings_backup_restore_restore_failed">Palautus epäonnistui: %1$s</string>
     <string name="settings_notifications_header">Ilmoitukset</string>
     <string name="detail_test_message">Tämä on testi-ilmoitus ntfy Android -sovelluksesta. Sillä on prioriteettitaso %1$d. Jos lähetät toisen, se voi näyttää erilaiselta.</string>
@@ -331,8 +329,7 @@
     <string name="settings_advanced_record_logs_title">Nauhoitetut logit</string>
     <string name="settings_notifications_insistent_max_priority_title">Pidä hälytykset korkeimmalla tasolla</string>
     <string name="settings_notifications_min_priority_max">Vain maksimi ja ylittävät</string>
-    <string name="settings_about_header">About</string>
-    <string name="main_menu_donate_title">Lahjoita 💸</string>
+    <string name="settings_about_header">Tietoja</string>
     <string name="notification_dialog_8h">8 tuntia</string>
     <string name="detail_deep_link_subscribed_toast_message">Topikki %1$s tilattu</string>
     <string name="user_dialog_username_hint">Käyttäjätunnus</string>
@@ -343,4 +340,7 @@
     <string name="main_item_status_unified_push">%1$s (Yleis Push)</string>
     <string name="detail_item_tags">Tagit %1$s</string>
     <string name="main_item_status_text_one">%1$d Huomautus</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Kysy myöhemmin</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Sulje</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Salli nyt</string>
 </resources>

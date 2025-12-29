@@ -116,7 +116,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nie można wysłać wiadomości: Anonimowa publikacja nie jest dozwolona.</string>
     <string name="detail_test_message_error_unauthorized_user">Nie można wysłać wiadomości: Użytkownik \"%1$s\" nie ma uprawnień.</string>
     <string name="detail_test_message_error_too_large">Nie można wysłać wiadomości: Załącznik jest zbyt duży.</string>
-    <string name="detail_copied_to_clipboard_message">Skopiowano do schowka</string>
+    <string name="common_copied_to_clipboard">Skopiowano do schowka</string>
     <string name="detail_item_cannot_delete">Nie można usunąć załącznika: %1$s</string>
     <string name="detail_item_download_failed">Nie można pobrać załącznika: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">nie pobrany</string>
@@ -222,7 +222,7 @@
     <string name="share_content_title">Podgląd wiadomości</string>
     <string name="add_dialog_base_urls_dropdown_choose">Wybierz adres URL usługi</string>
     <string name="detail_how_to_intro">Aby wysłać powiadomienia do tego tematu, wyślij PUT lub POST-Request na adres URL tematu.</string>
-    <string name="detail_how_to_example">Przykład (za pomocą curl):<br/><tt>$ curl -d \"Cześć\" %1$s</tt></string>
+    <string name="detail_how_to_example">Przykład (za pomocą curl):<br></br><tt>$ curl -d \"Cześć\" %1$s</tt></string>
     <string name="detail_how_to_link">Szczegółowe instrukcje są dostępne w ntfy.sh, oraz w dokumentacji.</string>
     <string name="detail_clear_dialog_message">Usunąć wszystkie powiadomienia z tego tematu\?</string>
     <string name="detail_item_tags">Tagi: %1$s</string>
@@ -276,6 +276,7 @@
     <string name="settings_notifications_auto_delete_one_week">Po tygodniu</string>
     <string name="settings_notifications_auto_delete_three_months">Po 3 miesiącach</string>
     <string name="settings_general_header">Ogólne</string>
+    <string name="settings_appearance_header">Wygląd</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (domyślny)</string>
     <string name="settings_general_users_title">Zarządzaj użytkownikami</string>
     <string name="settings_general_users_summary">Dodaj/usuń użytkowników dla tematów chronionych</string>
@@ -327,7 +328,6 @@
     <string name="main_banner_websocket_button_dismiss">Odrzuć</string>
     <string name="main_banner_websocket_button_enable_now">Aktywuj teraz</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Użyj strumienia JSON przez HTTP, aby połączyć się z serwerem. Ta metoda jest sprawdzona, ale może zużywać więcej baterii.</string>
-    <string name="main_menu_donate_title">Wspomóż💸</string>
     <string name="detail_item_cannot_open_apk">Aplikacja nie może zostać zainstalowana. Pobierz ją poprzez przeglądarkę. Sprawdź problem #531 po więcej informacji.</string>
     <string name="settings_notifications_insistent_max_priority_title">Nadal wysyłaj powiadomienia dla najwyższych priorytetów</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Własne ustawienia powiadomień</string>

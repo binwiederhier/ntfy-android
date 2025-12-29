@@ -8,4 +8,5 @@
     <string name="channel_notifications_high_name">বেশি গুরুত্ব</string>
     <string name="channel_subscriber_notification_title">আগত নোটিফিকেশন এর জন্য অপেক্ষা করা হচ্ছে</string>
     <string name="channel_subscriber_notification_instant_text">তাত্ক্ষণিক পাওয়া বিষয়গুলোতে যোগ দেওয়া হয়েছে</string>
+    <string name="user_dialog_button_add">ব্যবহারকারী যোগ করুন</string>
 </resources>

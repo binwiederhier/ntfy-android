@@ -48,7 +48,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Vymazanie URL adresy služby</string>
     <string name="detail_no_notifications_text">K tejto téme ste zatiaľ nedostali žiadne upozornenia.</string>
     <string name="detail_how_to_intro">Ak chcete posielať oznámenia do tejto témy, jednoducho zadajte adresu PUT alebo POST na URL adresu témy.</string>
-    <string name="detail_how_to_example">Príklad (pomocou curl):<br/><tt>$ curl -d \"Ahoj\" %1$s</tt></string>
+    <string name="detail_how_to_example">Príklad (pomocou curl):<br></br><tt>$ curl -d \"Ahoj\" %1$s</tt></string>
     <string name="detail_clear_dialog_cancel">Zrušiť</string>
     <string name="detail_delete_dialog_message">Odhlásiť sa z tejto témy a vymazať všetky prijaté oznámenia\?</string>
     <string name="detail_delete_dialog_permanently_delete">Vymazať natrvalo</string>
@@ -59,7 +59,7 @@
     <string name="detail_test_message_error">Nemožno odoslať správu: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">Nemožno odoslať správu: Používateľ \"%1$s\" nie je autorizovaný.</string>
     <string name="detail_test_message_error_too_large">Nemožno odoslať správu: Príloha je príliš veľká.</string>
-    <string name="detail_copied_to_clipboard_message">Skopírované do schránky</string>
+    <string name="common_copied_to_clipboard">Skopírované do schránky</string>
     <string name="detail_instant_delivery_enabled">Okamžité doručovanie zapnuté</string>
     <string name="detail_instant_delivery_disabled">Okamžité doručovanie vypnuté</string>
     <string name="detail_deep_link_subscribed_toast_message">Prihlásený na odber témy %1$s</string>
@@ -169,6 +169,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Upozornenia s maximálnou prioritou nepretržite upozorňujú, kým nie sú zrušené</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Oznámenia s maximálnou prioritou upozornia len raz</string>
     <string name="settings_general_header">Všeobecné</string>
+    <string name="settings_appearance_header">Vzhľad</string>
     <string name="settings_general_default_base_url_message">Zadajte koreňovú URL adresu vášho servera, aby ste použili svoj vlastný server ako predvolený pri prihlásení na odber nových tém alebo zdieľaní tém.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (predvolené)</string>
     <string name="settings_general_users_title">Správa používateľov</string>
@@ -282,7 +283,6 @@
     <string name="main_menu_rate_title">Ohodnotiť aplikáciu ⭐</string>
     <string name="main_menu_docs_title">Prečítať dokumentáciu</string>
     <string name="main_menu_notifications_disabled_until">Oznámenia stlmené do %1$s</string>
-    <string name="main_menu_donate_title">Prispieť 💸</string>
     <string name="main_action_mode_delete_dialog_message">Odhlásiť odber z vybraných tém a natrvalo vymazať všetky oznámenia\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Vymazať natrvalo</string>
     <string name="main_action_mode_menu_unsubscribe">Odhlásiť odber</string>

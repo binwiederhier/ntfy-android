@@ -75,7 +75,7 @@
     <string name="add_dialog_login_new_user">建立新使用者</string>
     <string name="add_dialog_base_urls_dropdown_choose">選擇 ntfy 服務 URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">清除 URL</string>
-    <string name="detail_copied_to_clipboard_message">已複製到剪貼簿</string>
+    <string name="common_copied_to_clipboard">已複製到剪貼簿</string>
     <string name="add_dialog_button_login">登入</string>
     <string name="add_dialog_login_description">這個主題需要登入，請先輸入帳號密碼。</string>
     <string name="add_dialog_instant_delivery">在省電模式下依然接收即時通知</string>
@@ -96,6 +96,7 @@
     <string name="settings_notifications_auto_delete_one_month">1 個月後</string>
     <string name="settings_notifications_auto_delete_three_months">3 個月後</string>
     <string name="settings_general_header">一般</string>
+    <string name="settings_appearance_header">主題</string>
     <string name="settings_general_default_base_url_title">預設伺服器</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (預設)</string>
     <string name="settings_general_users_title">管理使用者</string>
@@ -108,7 +109,6 @@
     <string name="detail_settings_notifications_instant_title">即時通知</string>
     <string name="detail_settings_global_setting_suffix">使用全域設定</string>
     <string name="user_dialog_title_add">新增使用者</string>
-    <string name="main_menu_donate_title">捐獻 💸</string>
     <string name="detail_item_snack_undo">復原</string>
     <string name="detail_item_download_info_downloading_x_percent">已下載 %1$d%%</string>
     <string name="detail_menu_enable_instant">啓用即時通知</string>
@@ -213,7 +213,7 @@
     <string name="detail_item_saved_successfully">儲存為 \"Downloads\" 資料中的 \"%1$s\"</string>
     <string name="detail_test_message_error_unauthorized_user">不能夠發布信息：用戶 %1$s 不被授權。</string>
     <string name="detail_how_to_intro">PUT 或 POST 主題網址以傳送通訊。</string>
-    <string name="detail_how_to_example">例如（使用 curl): <br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ 例如（使用 curl): <br/><tt>$ curl -d "Hi" %1$s</tt>]]></string>
     <string name="detail_test_message_error">不能夠傳送訊息：%1$s</string>
     <string name="detail_item_tags">標籤：%1$s</string>
     <string name="detail_instant_delivery_enabled">啟動即時傳送</string>
@@ -343,4 +343,14 @@
     <string name="detail_settings_appearance_icon_error_saving">無法保存圖標：%1$s</string>
     <string name="detail_settings_global_setting_title">使用全局設置</string>
     <string name="user_dialog_description_edit">您可以編輯該用戶的用戶名和密碼，或刪除該用戶。</string>
+    <string name="main_banner_websocket_reconnect_text">為確保 WebSocket 能在背景重新連線，請授予 ntfy「鬧鐘與提醒」權限</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">關閉</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">稍後再問</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">立即授權</string>
+    <string name="settings_advanced_exact_alarms_title">精準提醒</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy 可以排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以撤銷此權限。</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy 無法排程精準提醒。精準提醒是讓 WebSocket 能在背景重新連線的必要條件。點擊以授予此權限。</string>
+    <string name="settings_general_dynamic_colors_title">動態色彩</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">使用系統動態色彩</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">使用 ntfy 主題色彩</string>
 </resources>

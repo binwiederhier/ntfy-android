@@ -1,0 +1,1 @@
+Saada PUT/POST-päringutega mis iganes skriptist teavitusi oma telefoni

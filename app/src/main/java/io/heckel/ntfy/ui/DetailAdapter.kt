@@ -5,10 +5,10 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +23,7 @@ import androidx.core.view.allViews
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
@@ -33,20 +34,24 @@ import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import androidx.core.net.toUri
 
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
+    private val markwon: Markwon = MarkwonFactory.createForMessage(activity)
     val selected = mutableSetOf<String>() // Notification IDs
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, lifecycleScope, repository, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -65,7 +70,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             selected.add(notificationId)
         }
 
-        if (selected.size != 0) {
+        if (selected.isNotEmpty()) {
             val listIds = currentList.map { notification -> notification.id }
             val notificationPosition = listIds.indexOf(notificationId)
             notifyItemChanged(notificationPosition)
@@ -73,7 +78,16 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     }
 
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
-    class DetailViewHolder(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, itemView: View, private val selected: Set<String>, val onClick: (Notification) -> Unit, val onLongClick: (Notification) -> Unit) :
+    class DetailViewHolder(
+        private val activity: Activity,
+        private val lifecycleScope: CoroutineScope,
+        private val repository: Repository,
+        private val markwon: Markwon,
+        itemView: View,
+        private val selected: Set<String>,
+        val onClick: (Notification) -> Unit,
+        val onLongClick: (Notification) -> Unit
+    ) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
         private val layout: View = itemView.findViewById(R.id.detail_item_layout)
@@ -98,9 +112,17 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
             val context = itemView.context
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
+            val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
             dateView.text = formatDateShort(notification.timestamp)
-            messageView.text = maybeAppendActionErrors(formatMessage(notification), notification)
+            if (notification.isMarkdown()) {
+                messageView.autoLinkMask = 0
+                markwon.setMarkdown(messageView, message.toString())
+            } else {
+                messageView.autoLinkMask = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
+                messageView.text = message
+            }
+            messageView.movementMethod = BetterLinkMovementMethod.getInstance()
             messageView.setOnClickListener {
                 // Click & Long-click listeners on the text as well, because "autoLink=web" makes them
                 // clickable, and so we cannot rely on the underlying card to perform the action.
@@ -143,6 +165,13 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             maybeRenderActions(context, notification)
         }
 
+        private fun maybeMarkdown(message: String, notification: Notification): CharSequence {
+             if (notification.isMarkdown()) {
+                return markwon.toMarkdown(message)
+            }
+            return message
+        }
+
         private fun renderPriority(context: Context, notification: Notification) {
             when (notification.priority) {
                 PRIORITY_MIN -> {
@@ -175,8 +204,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
             val attachment = notification.attachment
             val image = attachment.contentUri != null && supportedImage(attachment.type) && previewableImage(attachmentFileStat)
-            val bitmap = if (image) attachment.contentUri?.readBitmapFromUriOrNull(context) else null
-            maybeRenderAttachmentImage(context, bitmap)
+            val bitmap = if (image) attachment.contentUri.readBitmapFromUriOrNull(context) else null
+            maybeRenderAttachmentImage(context, bitmap, attachment)
             maybeRenderAttachmentBox(context, notification, attachment, attachmentFileStat, bitmap)
         }
 
@@ -281,12 +310,14 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 openItem.setOnMenuItemClickListener { openFile(context, attachment) }
                 saveFileItem.setOnMenuItemClickListener { saveFile(context, attachment) }
                 deleteItem.setOnMenuItemClickListener { deleteFile(context, notification, attachment) }
-                copyUrlItem.setOnMenuItemClickListener { copyUrl(context, attachment) }
+                copyUrlItem.setOnMenuItemClickListener { copyToClipboard(context, "attachment url", attachment.url); true }
                 downloadItem.setOnMenuItemClickListener { downloadFile(context, notification) }
                 cancelItem.setOnMenuItemClickListener { cancelDownload(context, notification) }
             }
             if (hasClickLink) {
-                copyContentsItem.setOnMenuItemClickListener { copyContents(context, notification) }
+                copyContentsItem.setOnMenuItemClickListener {
+                    copyToClipboard(context, "notification", decodeMessage(notification)); true
+                }
             }
             openItem.isVisible = hasAttachment && attachmentExists
             downloadItem.isVisible = hasAttachment && !attachmentExists && !expired && !inProgress
@@ -321,7 +352,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expires_x, formatDateShort(attachment.expires!!)))
+                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expires_x, formatDateShort(attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_not_downloaded))
                 }
@@ -331,7 +362,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_deleted_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_deleted_expires_x, formatDateShort(attachment.expires!!)))
+                    infos.add(context.getString(R.string.detail_item_download_info_deleted_expires_x, formatDateShort(attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_deleted))
                 }
@@ -339,28 +370,29 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_download_failed_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_download_failed_expires_x, formatDateShort(attachment.expires!!)))
+                    infos.add(context.getString(R.string.detail_item_download_info_download_failed_expires_x, formatDateShort(attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_download_failed))
                 }
             }
-            return if (infos.size > 0) {
+            return if (infos.isNotEmpty()) {
                 "$name\n${infos.joinToString(", ")}"
             } else {
                 name
             }
         }
 
-        private fun maybeRenderAttachmentImage(context: Context, bitmap: Bitmap?) {
+        private fun maybeRenderAttachmentImage(context: Context, bitmap: Bitmap?, attachment: Attachment) {
             if (bitmap == null) {
                 attachmentImageView.visibility = View.GONE
                 return
             }
             try {
-                attachmentImageView.setImageBitmap(bitmap)
+                Glide.with(context).load(attachment.contentUri).fitCenter().into(attachmentImageView)
                 attachmentImageView.setOnClickListener {
-                    val loadImage = { view: ImageView, image: Bitmap -> view.setImageBitmap(image) }
-                    StfalconImageViewer.Builder(context, listOf(bitmap), loadImage)
+                    StfalconImageViewer.Builder<Any?>(context, listOf(bitmap)) { imageView, _ ->
+                        Glide.with(context).load(attachment.contentUri).into(imageView)
+                    }
                         .allowZooming(true)
                         .withTransitionFrom(attachmentImageView)
                         .withHiddenStatusBar(false)
@@ -381,12 +413,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             }
             Log.d(TAG, "Opening file ${attachment.contentUri}")
             try {
-                val contentUri = Uri.parse(attachment.contentUri)
+                val contentUri = attachment.contentUri?.toUri()
                 val intent = Intent(Intent.ACTION_VIEW, contentUri)
                 intent.setDataAndType(contentUri, attachment.type ?: "application/octet-stream") // Required for Android <= P
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 context.startActivity(intent)
-            } catch (e: ActivityNotFoundException) {
+            } catch (_: ActivityNotFoundException) {
                 Toast
                     .makeText(context, context.getString(R.string.detail_item_cannot_open_not_found), Toast.LENGTH_LONG)
                     .show()
@@ -413,7 +445,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                         put(MediaStore.MediaColumns.IS_PENDING, 1) // While downloading
                     }
                 }
-                val inUri = Uri.parse(attachment.contentUri)
+                val inUri = attachment.contentUri!!.toUri()
                 val inFile = resolver.openInputStream(inUri) ?: throw Exception("Cannot open input stream")
                 val outUri = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     val file = ensureSafeNewFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), attachment.name)
@@ -444,7 +476,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
         private fun deleteFile(context: Context, notification: Notification, attachment: Attachment): Boolean {
             try {
-                val contentUri = Uri.parse(attachment.contentUri)
+                val contentUri = attachment.contentUri!!.toUri()
                 val resolver = context.applicationContext.contentResolver
                 val deleted = resolver.delete(contentUri, null, null) > 0
                 if (!deleted) throw Exception("no rows deleted")
@@ -480,21 +512,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             return true
         }
 
-        private fun copyUrl(context: Context, attachment: Attachment): Boolean {
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("attachment url", attachment.url)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(context, context.getString(R.string.detail_item_menu_copy_url_copied), Toast.LENGTH_LONG)
-                .show()
-            return true
-        }
-
-        private fun copyContents(context: Context, notification: Notification): Boolean {
-            copyToClipboard(context, notification)
-            return true
-        }
-
         private fun runAction(context: Context, notification: Notification, action: Action): Boolean {
             when (action.action) {
                 ACTION_VIEW -> runViewAction(context, action)
@@ -506,7 +523,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private fun runViewAction(context: Context, action: Action) {
             try {
                 val url = action.url ?: return
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                val intent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
                 context.startActivity(intent)

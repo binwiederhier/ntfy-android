@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="detail_how_to_link">자세한 설명은 ntfy.sh와 docs 페이지에서 찾으실 수 있습니다.</string>
-    <string name="channel_notifications_high_name">알림 (우선순위 높음)</string>
+    <string name="channel_notifications_high_name">우선순위 높음</string>
     <string name="main_menu_notifications_disabled_forever">알림 음소거됨</string>
     <string name="channel_subscriber_notification_instant_text_three">즉시 전달 주제 3개 구독중</string>
     <string name="add_dialog_use_another_server">다른 서버 사용</string>
     <string name="main_menu_notifications_enabled">알림 켜짐</string>
-    <string name="channel_notifications_default_name">알림 (우선순위 기본)</string>
-    <string name="channel_notifications_max_name">알림 (우선순위 최상)</string>
+    <string name="channel_notifications_default_name">우선순위 기본</string>
+    <string name="channel_notifications_max_name">우선순위 최상</string>
     <string name="channel_subscriber_service_name">구독 서비스</string>
     <string name="channel_subscriber_notification_title">알림 수신중</string>
     <string name="channel_subscriber_notification_instant_text">즉시 전달 주제를 구독함</string>
@@ -137,6 +137,7 @@
     <string name="settings_notifications_auto_delete_one_month">1달 뒤</string>
     <string name="settings_notifications_auto_delete_three_months">3달 뒤</string>
     <string name="settings_general_header">일반</string>
+    <string name="settings_appearance_header">표시 설정</string>
     <string name="settings_general_default_base_url_title">기본 서버</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (기본)</string>
     <string name="settings_general_dark_mode_title">다크 모드</string>
@@ -165,9 +166,9 @@
     <string name="settings_advanced_connection_protocol_title">연결 프로토콜</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="detail_settings_appearance_header">표시 설정</string>
-    <string name="channel_notifications_low_name">알림 (우선순위 낮음)</string>
+    <string name="channel_notifications_low_name">우선순위 낮음</string>
     <string name="user_dialog_button_save">저장</string>
-    <string name="channel_notifications_min_name">알림 (우선순위 최하)</string>
+    <string name="channel_notifications_min_name">우선순위 최하</string>
     <string name="channel_subscriber_notification_instant_text_two">즉시 전달 주제 2개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_five">즉시 전달 주제 5개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_four">즉시 전달 주제 4개 구독중</string>
@@ -210,7 +211,7 @@
     <string name="settings_general_users_prefs_user_used_by_one">주제 %1$s에서 사용됨</string>
     <string name="settings_about_version_copied_to_clipboard_message">클립보드에 복사됨</string>
     <string name="detail_settings_global_setting_title">전역 설정 사용하기</string>
-    <string name="detail_copied_to_clipboard_message">클립보드에 복사됨</string>
+    <string name="common_copied_to_clipboard">클립보드에 복사됨</string>
     <string name="detail_item_menu_open">파일 열기</string>
     <string name="detail_item_menu_copy_url_copied">URL이 클립보드에 복사됨</string>
     <string name="add_dialog_base_urls_dropdown_choose">서비스 URL 선택</string>
@@ -327,4 +328,6 @@
     <string name="user_dialog_password_hint_add">비밀번호</string>
     <string name="user_dialog_button_add">사용자 추가</string>
     <string name="user_dialog_button_delete">사용자 삭제</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">이 구독에 사용자 설정 사용</string>
+    <string name="channel_notifications_group_default_name">기본 그룹</string>
 </resources>

@@ -1,0 +1,8 @@
+Features:
+* Added GIF support for preview images (ntfy-android#76, thanks to @MichaelArkh)
+* Added WebP support for preview images (ntfy-android#81, thanks to @jokakilla)
+* Added UnifiedPush distributor selection support (ntfy-android#137, thanks to @p1gp1g)
+
+Bug fixes + maintenance:
+* Remove REQUEST_INSTALL_PACKAGES permission (#684)
+* Request to ignore battery optimizations before receiving subscription (ntfy-android#97, thanks to @p1gp1g)

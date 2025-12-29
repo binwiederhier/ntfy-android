@@ -71,7 +71,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">URL manzilini tanlang</string>
     <string name="add_dialog_base_urls_dropdown_clear">URL manzilini tozalang</string>
     <string name="detail_how_to_intro">Ushbu mavzu bo‘yicha bildirishnomalarni yuborish uchun, mavzu URL manziliga PUT yoki POST so‘rov yuboring.</string>
-    <string name="detail_how_to_example">Misol (curl yordamida):<br/><tt>$ curl -d \"Salom\" %1$s</tt></string>
+    <string name="detail_how_to_example">Misol (curl yordamida):<br></br><tt>$ curl -d \"Salom\" %1$s</tt></string>
     <string name="detail_how_to_link">Batafsil ko‘rsatmalar ntfy.sh saytida va hujjatlarda mavjud.</string>
     <string name="detail_clear_dialog_message">Ushbu mavzudagi barcha bildirishnomalar o‘chirilsinmi?</string>
     <string name="detail_clear_dialog_permanently_delete">Butunlay o‘chirish</string>
@@ -80,7 +80,7 @@
     <string name="detail_test_title">Test: Agar xohlasangiz, sarlavha o‘rnatishingiz mumkin.</string>
     <string name="detail_test_message">Bu ntfy Android ilovasining sinov bildirishnomasidir. U %1$d darajadagi ustuvorlikka ega. Agar siz boshqasini yuborsangiz, u boshqacha ko‘rinishi mumkin.</string>
     <string name="detail_test_message_error_too_large">Xabar yuborib bo‘lmadi: biriktirma juda katta.</string>
-    <string name="detail_copied_to_clipboard_message">Xotiraga nusxa olindi</string>
+    <string name="common_copied_to_clipboard">Xotiraga nusxa olindi</string>
     <string name="detail_instant_delivery_enabled">Darhol yuborish yoqilgan</string>
     <string name="detail_instant_delivery_disabled">Darhol yuborish o‘chirilgan</string>
     <string name="detail_deep_link_subscribed_toast_message">%1$s mavzusiga obuna bo‘lindi</string>
@@ -185,6 +185,7 @@
     <string name="settings_notifications_insistent_max_priority_title">Yuqori ustuvorlik haqida ogohlantirish</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Maksimal ustuvor bildirishnomalar yopilmaguncha doimiy ravishda ogohlantiriladi</string>
     <string name="settings_general_header">Umumiy</string>
+    <string name="settings_appearance_header">Tashqi ko\'rinish</string>
     <string name="settings_general_default_base_url_title">Standart server</string>
     <string name="settings_general_default_base_url_message">Yangi mavzularga obuna bo‘lish va/yoki mavzularga ulashishda o‘z serveringizdan standart foydalanish uchun serveringizning asosiy URL manzilini kiriting.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (standart)</string>
@@ -248,7 +249,6 @@
     <string name="channel_subscriber_notification_instant_text_three">Uchta darhol yuborish mavzulariga obuna bo‘ldik</string>
     <string name="main_menu_notifications_disabled_until">Bildirishnomalar %1$s gacha o‘chirilgan</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Beshta mavzuga obuna bo‘ldik</string>
-    <string name="main_menu_donate_title">Xayriya qiling 💸</string>
     <string name="main_action_mode_delete_dialog_cancel">Bekor qilish</string>
     <string name="add_dialog_use_another_server_description">Boshqa serverlardan mavzularga obuna bo‘lish uchun quyida URL manzillarini kiriting.</string>
     <string name="add_dialog_login_description">Ushbu mavzu tizimga kirishni talab qiladi. Iltimos, foydalanuvchi nomi va parolni kiriting.</string>

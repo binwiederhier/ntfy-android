@@ -1,0 +1,9 @@
+This release makes changes to comply with the Google Play policies.
+See https://github.com/binwiederhier/ntfy/issues/1463 for details.
+
+Changes:
+- Remove the "Donate" button from menu (all variants)
+- Change default display name from "ntfy.sh/mytopic" to "mytopic" (all variants)
+- Remove links to ntfy docs and issue tracker (Play variant only)
+- Remove how-to links to ntfy.sh in a few places (Play variant only)
+- Remove "Copy topic address" from subscription menu (Play variant only)

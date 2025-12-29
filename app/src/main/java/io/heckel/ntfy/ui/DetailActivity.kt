@@ -1,28 +1,31 @@
 package io.heckel.ntfy.ui
 
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.Html
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -31,17 +34,34 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.*
-import kotlinx.coroutines.*
-import java.util.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.copyToClipboard
+import io.heckel.ntfy.util.dangerButton
+import io.heckel.ntfy.util.decodeMessage
+import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.isDarkThemeOn
+import io.heckel.ntfy.util.randomSubscriptionId
+import io.heckel.ntfy.util.topicShortUrl
+import io.heckel.ntfy.util.topicUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import java.util.Date
 import kotlin.random.Random
+import androidx.core.view.size
+import androidx.core.view.get
+import androidx.core.net.toUri
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import android.widget.ImageButton
 
-
-class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFragment.NotificationSettingsListener {
+class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
@@ -64,11 +84,47 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var menu: Menu
+    private lateinit var fab: FloatingActionButton
+    private lateinit var messageBar: View
+    private lateinit var messageBarText: TextInputEditText
+    private lateinit var messageBarPublishButton: FloatingActionButton
+    private lateinit var messageBarExpandButton: ImageButton
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            actionMode = mode
+            if (mode != null) {
+                mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
+                mode.title = "1" // One item selected
+            }
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.detail_action_mode_copy -> {
+                    onMultiCopyClick()
+                    true
+                }
+                R.id.detail_action_mode_delete -> {
+                    onMultiDeleteClick()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            endActionModeAndRedraw()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
@@ -78,8 +134,45 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         notifier = NotificationService(this)
         appBaseUrl = getString(R.string.app_base_url)
 
+        val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
+        val dynamicColors = repository.getDynamicColorsEnabled()
+        val darkMode = isDarkThemeOn(this)
+        val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
+        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        toolbarLayout.setBackgroundColor(statusBarColor)
+        
+        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setTitleTextColor(toolbarTextColor)
+        toolbar.setNavigationIconTint(toolbarTextColor)
+        toolbar.overflowIcon?.setTint(toolbarTextColor)
+        setSupportActionBar(toolbar)
+        
+        // Set system status bar appearance
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
+            Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
+
+        // Set detail activity background: use theme background for dynamic colors, static gray for non-dynamic
+        val detailContentLayout = findViewById<View>(R.id.detail_content_layout)
+        if (repository.getDynamicColorsEnabled()) {
+            detailContentLayout.setBackgroundColor(
+                com.google.android.material.color.MaterialColors.getColor(
+                    this,
+                    android.R.attr.colorBackground,
+                    ContextCompat.getColor(this, R.color.detail_activity_background)
+                )
+            )
+        } else {
+            detailContentLayout.setBackgroundColor(
+                ContextCompat.getColor(this, R.color.detail_activity_background)
+            )
+        }
+
         // Show 'Back' button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+        val howToLink = findViewById<TextView>(R.id.detail_how_to_link)
+        howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
 
         // Handle direct deep links to topic "ntfy://..."
         val url = intent?.data
@@ -151,7 +244,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(subscription))
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
             intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
 
@@ -180,16 +273,12 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         howToExample.linksClickable = true
 
         val howToText = getString(R.string.detail_how_to_example, topicUrl)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            howToExample.text = Html.fromHtml(howToText)
-        }
+        howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
 
         // Swipe to refresh
         mainListContainer = findViewById(R.id.detail_notification_list_container)
         mainListContainer.setOnRefreshListener { refresh() }
-        mainListContainer.setColorSchemeResources(Colors.refreshProgressIndicator)
+        mainListContainer.setColorSchemeColors(Colors.swipeToRefreshColor(this))
 
         // Update main list based on viewModel (& its datasource/livedata)
         val noEntriesText: View = findViewById(R.id.detail_no_notifications)
@@ -199,6 +288,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         adapter = DetailAdapter(this, lifecycleScope, repository, onNotificationClick, onNotificationLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        mainList.clipToPadding = false
+        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
 
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
@@ -263,6 +360,126 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         } catch (_: Exception) {
             // Ignore errors
         }
+
+        // Setup FAB and message bar
+        setupPublishUI()
+    }
+
+    private fun setupPublishUI() {
+        fab = findViewById(R.id.detail_fab)
+        messageBar = findViewById(R.id.detail_message_bar)
+        messageBarText = messageBar.findViewById(R.id.message_bar_text)
+        messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
+        messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
+
+        // Message bar enabled: Show message bar, hide FAB
+        if (repository.getMessageBarEnabled()) {
+            fab.visibility = View.GONE
+            messageBar.visibility = View.VISIBLE
+
+            // Send button click
+            messageBarPublishButton.setOnClickListener {
+                publishMessage(messageBarText.text.toString()) // Allow publishing empty messages
+            }
+
+            // Expand button click opens the full dialog
+            messageBarExpandButton.setOnClickListener {
+                openPublishDialog(messageBarText.text.toString())
+            }
+
+            // Handle window insets for navigation bar and keyboard
+            val contentLayout = findViewById<View>(R.id.detail_content_layout)
+            ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                // Use the larger of navigation bar or keyboard height
+                val bottomPadding = maxOf(systemBars.bottom, ime.bottom)
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomPadding)
+                insets
+            }
+        } else {
+            // Show FAB, hide message bar
+            fab.visibility = View.VISIBLE
+            messageBar.visibility = View.GONE
+
+            fab.setOnClickListener {
+                openPublishDialog("")
+            }
+
+            // Add bottom padding to FAB to account for navigation bar
+            ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val layoutParams = view.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+                layoutParams.bottomMargin = systemBars.bottom + resources.getDimensionPixelSize(R.dimen.fab_margin)
+                view.layoutParams = layoutParams
+                insets
+            }
+        }
+    }
+
+    private fun openPublishDialog(initialMessage: String) {
+        val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, subscriptionDisplayName, initialMessage)
+        fragment.show(supportFragmentManager, PublishFragment.TAG)
+    }
+
+    private fun publishMessage(message: String) {
+        // Disable send button while publishing
+        messageBarPublishButton.isEnabled = false
+        
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val user = repository.getUser(subscriptionBaseUrl)
+                api.publish(
+                    baseUrl = subscriptionBaseUrl,
+                    topic = subscriptionTopic,
+                    user = user,
+                    message = message,
+                    title = "",
+                    priority = 3, // Default priority
+                    tags = emptyList(),
+                    delay = ""
+                )
+                runOnUiThread {
+                    messageBarText.text?.clear()
+                    messageBarPublishButton.isEnabled = true
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to publish message", e)
+                runOnUiThread {
+                    messageBarPublishButton.isEnabled = true
+                    val errorMessage = when (e) {
+                        is ApiService.UnauthorizedException -> {
+                            if (e.user != null) {
+                                getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
+                            } else {
+                                getString(R.string.detail_test_message_error_unauthorized_anon)
+                            }
+                        }
+                        is ApiService.EntityTooLargeException -> {
+                            getString(R.string.detail_test_message_error_too_large)
+                        }
+                        is ApiService.ApiException -> {
+                            getString(R.string.publish_dialog_error_server, e.error, e.code)
+                        }
+                        else -> {
+                            getString(R.string.publish_dialog_error_sending, e.message)
+                        }
+                    }
+                    Toast.makeText(this@DetailActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    /**
+     * Called by the publish dialog (PublishFragment) after the notification
+     * was successfully published.
+     */
+    override fun onPublished() {
+        // Clear the message bar text when a message is published from the dialog
+        if (this::messageBarText.isInitialized) {
+            messageBarText.text?.clear()
+        }
     }
 
     override fun onResume() {
@@ -276,10 +493,11 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
             subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
-            subscriptionDisplayName = displayName(subscription)
+            subscriptionDisplayName = displayName(appBaseUrl, subscription)
 
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
+            showHideCopyMenuItems(subscription.baseUrl)
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -311,10 +529,17 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_detail_action_bar, menu)
         this.menu = menu
+        
+        // Tint menu icons based on theme
+        val toolbarTextColor = Colors.toolbarTextColor(this, repository.getDynamicColorsEnabled(), isDarkThemeOn(this))
+        for (i in 0 until menu.size) {
+            menu[i].icon?.setTint(toolbarTextColor)
+        }
 
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
+        showHideCopyMenuItems(subscriptionBaseUrl)
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -459,12 +684,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         Log.d(TAG, "Copying topic URL $url to clipboard ")
 
         runOnUiThread {
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("topic address", url)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                .show()
+            copyToClipboard(this, "topic address", url)
         }
     }
 
@@ -558,6 +778,18 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
+
+    private fun showHideCopyMenuItems(subscriptionBaseUrl: String) {
+        if (!this::menu.isInitialized) {
+            return
+        }
+        runOnUiThread {
+            // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
+            val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
+            copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
+        }
+    }
+
     private fun updateTitle(subscriptionDisplayName: String) {
         runOnUiThread {
             title = subscriptionDisplayName
@@ -567,8 +799,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onClearClick() {
         Log.d(TAG, "Clearing all notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_clear_dialog_message)
             .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
@@ -580,7 +811,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }
@@ -599,8 +830,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onDeleteClick() {
         Log.d(TAG, "Deleting subscription ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_delete_dialog_message)
             .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
                 Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
@@ -619,7 +849,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }
@@ -629,7 +859,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
             handleActionModeClick(notification)
         } else if (notification.click != "") {
             try {
-                startActivity(Intent(ACTION_VIEW, Uri.parse(notification.click)))
+                startActivity(Intent(ACTION_VIEW, notification.click.toUri()))
             } catch (e: Exception) {
                 Log.w(TAG, "Cannot open click URL", e)
                 runOnUiThread {
@@ -639,13 +869,9 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 }
             }
         } else {
-            copyToClipboard(notification)
-        }
-    }
-
-    private fun copyToClipboard(notification: Notification) {
-        runOnUiThread {
-            copyToClipboard(this, notification)
+            runOnUiThread {
+                copyToClipboard(this, "notification", decodeMessage(notification))
+            }
         }
     }
 
@@ -664,33 +890,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         }
     }
 
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        this.actionMode = mode
-        if (mode != null) {
-            mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
-            mode.title = "1" // One item selected
-        }
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return false
-    }
-
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.detail_action_mode_copy -> {
-                onMultiCopyClick()
-                true
-            }
-            R.id.detail_action_mode_delete -> {
-                onMultiDeleteClick()
-                true
-            }
-            else -> false
-        }
-    }
-
     private fun onMultiCopyClick() {
         Log.d(TAG, "Copying multiple notifications to clipboard")
 
@@ -702,12 +901,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
                 }.orEmpty()
             }
             runOnUiThread {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("notifications", content)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(this@DetailActivity, "notifications", content)
                 finishActionMode()
             }
         }
@@ -716,8 +910,7 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
     private fun onMultiDeleteClick() {
         Log.d(TAG, "Showing multi-delete dialog for selected items")
 
-        val builder = AlertDialog.Builder(this)
-        val dialog = builder
+        val dialog = MaterialAlertDialogBuilder(this)
             .setMessage(R.string.detail_action_mode_delete_dialog_message)
             .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
                 adapter.selected.map { notificationId -> viewModel.markAsDeleted(notificationId) }
@@ -730,23 +923,14 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         dialog.setOnShowListener {
             dialog
                 .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton(this)
+                .dangerButton()
         }
         dialog.show()
     }
 
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        endActionModeAndRedraw()
-    }
-
     private fun beginActionMode(notification: Notification) {
-        actionMode = startActionMode(this)
+        actionMode = startSupportActionMode(actionModeCallback)
         adapter.toggleSelection(notification.id)
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     private fun finishActionMode() {
@@ -758,11 +942,6 @@ class DetailActivity : AppCompatActivity(), ActionMode.Callback, NotificationFra
         actionMode = null
         adapter.selected.clear()
         adapter.notifyItemRangeChanged(0, adapter.currentList.size)
-
-        // Fade status bar color
-        val fromColor = ContextCompat.getColor(this, Colors.statusBarActionMode(this))
-        val toColor = ContextCompat.getColor(this, Colors.statusBarNormal(this))
-        fadeStatusBarColor(window, fromColor, toColor)
     }
 
     companion object {

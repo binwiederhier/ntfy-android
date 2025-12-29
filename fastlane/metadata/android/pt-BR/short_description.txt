@@ -1,1 +1,1 @@
-Enviar notificações ao telefone via qualquer script usando requisições PUT/POST
+Envie notificações ao seu celular de qualquer script via solicitações PUT/POST

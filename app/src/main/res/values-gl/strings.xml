@@ -31,7 +31,6 @@
     <string name="main_menu_report_bug_title">Informar dun fallo</string>
     <string name="main_menu_docs_title">Ler documentación</string>
     <string name="main_menu_rate_title">Valorar a app ⭐</string>
-    <string name="main_menu_donate_title">Doar 💸</string>
     <string name="main_action_mode_menu_unsubscribe">Retirar subscrición</string>
     <string name="main_action_mode_delete_dialog_message">Retirar a subscrición ao(s) asunto(s) seleccionado(s) e eliminar definitivamente tódalas notificacións\?</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Eliminar definitivamente</string>
@@ -83,7 +82,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">Escribe URL do servizo</string>
     <string name="add_dialog_base_urls_dropdown_clear">Limpar URL do servizo</string>
     <string name="detail_no_notifications_text">Aínda non recibiches notificacións deste tema.</string>
-    <string name="detail_how_to_example">Exemplo (usando curl): <br/><tt>$ curl -d \"Ola\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Tes instruccións polo miúdo en ntfy.sh, e na documentación.</string>
     <string name="detail_clear_dialog_message">Eliminar todas as notificacións neste tema\?</string>
     <string name="detail_clear_dialog_permanently_delete">Eliminar permanentemente</string>
@@ -97,7 +96,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Non se enviou a mensaxe: Non está permitida a publicación anónima.</string>
     <string name="detail_test_message_error_unauthorized_user">Non se enviou a mensaxe: A usuaria \"%1$s\" non ten autorización.</string>
     <string name="detail_test_message_error_too_large">Non se enviou a mensaxe: O adxunto é demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado ao portapapeis</string>
+    <string name="common_copied_to_clipboard">Copiado ao portapapeis</string>
     <string name="detail_instant_delivery_enabled">Entrega inmediata activada</string>
     <string name="detail_instant_delivery_disabled">Entrega inmediata desactivada</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscrita ao tema %1$s</string>
@@ -221,6 +220,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Manter as alertas da prioridade máis alta ata que se desboten</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificar as alertas da máxima prioridade só unha vez</string>
     <string name="settings_general_header">Xeral</string>
+    <string name="settings_appearance_header">Aspecto</string>
     <string name="settings_general_default_base_url_title">Servidor por defecto</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (por defecto)</string>
     <string name="settings_general_users_title">Xestionar usuarias</string>
@@ -343,4 +343,14 @@
     <string name="user_dialog_username_hint">Identificador</string>
     <string name="user_dialog_password_hint_add">Contrasinal</string>
     <string name="user_dialog_password_hint_edit">Contrasinal (baleiro para non cambiar)</string>
+    <string name="main_banner_websocket_reconnect_text">Para asegurar que WebSockets reconecte en segundo plano, concede o permiso de Alertas e Recordatorios a ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Solicitar máis tarde</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Desbotar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Conceder agora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmas exactas</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy pode pogramar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para revogar o permiso.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy non pode programar alarmas exactas. Estas alarmas requírense para reconectar en segundo plano con WebSockets. Preme para conceder o permiso.</string>
+    <string name="settings_general_dynamic_colors_title">Cores dinámicas</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Usando as cores dinámicas do sistema</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Usando as cores do decorado ntfy</string>
 </resources>

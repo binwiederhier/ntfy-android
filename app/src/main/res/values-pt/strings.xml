@@ -72,7 +72,7 @@
     <string name="detail_test_title">Teste: Pode definir um título se quiser.</string>
     <string name="detail_test_message_error">Não foi possível enviar a mensagem: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Não foi possível enviar a mensagem: Publicações anónimas não são permitidas.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado para a área de transferência</string>
+    <string name="common_copied_to_clipboard">Copiado para a área de transferência</string>
     <string name="detail_deep_link_subscribed_toast_message">Tópico \"%1$s\" subscrito</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>
     <string name="detail_item_snack_deleted">Notificação eliminada</string>
@@ -180,6 +180,7 @@
     <string name="settings_notifications_auto_delete_one_month">Após um mês</string>
     <string name="settings_notifications_auto_delete_three_months">Após 3 meses</string>
     <string name="settings_general_header">Geral</string>
+    <string name="settings_appearance_header">Aparência</string>
     <string name="settings_general_default_base_url_title">Servidor padrão</string>
     <string name="settings_general_default_base_url_message">Insira o URL raíz do servidor para utilizar seu próprio como padrão ao subscrever novos tópicos e/ou partilhar em tópicos.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (padrão)</string>
@@ -219,7 +220,7 @@
     <string name="add_dialog_login_description">Esse tópico necessita autenticação. Por favor, insira um nome de utilizador e palavra-passe.</string>
     <string name="add_dialog_login_new_user">Novo utilizador</string>
     <string name="add_dialog_base_urls_dropdown_choose">Escolha URL de serviço</string>
-    <string name="detail_how_to_example">Exemplo (utilizando curl): <br/><tt>$ curl -d \"Olá\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando curl):<br/><tt>$ curl -d \"Olá\" %1$s</tt> ]]></string>
     <string name="detail_delete_dialog_message">Deseja anular a subscrição deste tópico e eliminar todas as notificações recebidas\?</string>
     <string name="detail_test_message">Esta é uma notificação de teste da aplicação Android do ntfy. Tem uma prioridade de nível %1$d. Se enviar outra notificação, poderá ser diferente.</string>
     <string name="detail_test_message_error_too_large">Não foi possível enviar a mensagem: O anexo é grande demais.</string>
@@ -258,7 +259,6 @@
     <string name="settings_general_dark_mode_summary_light">Modo claro</string>
     <string name="settings_general_dark_mode_title">Modo escuro</string>
     <string name="settings_general_dark_mode_summary_system">Usar a predefinição do sistema</string>
-    <string name="main_menu_donate_title">Doar 💸</string>
     <string name="settings_backup_restore_restore_failed">Falha ao restaurar %1$s</string>
     <string name="settings_advanced_header">Avançado</string>
     <string name="settings_advanced_broadcast_title">Messagens de transmissão</string>
@@ -340,4 +340,14 @@
     <string name="detail_settings_notifications_open_channels_title">Definir configurações de notificação</string>
     <string name="detail_settings_notifications_open_channels_summary">Sobreposição de \"Não incomodar\" (NI), sons, etc.</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alertar apenas uma vez</string>
+    <string name="settings_advanced_unifiedpush_title">Habilitar UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy atuará como distribuidora UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy não atuará como distribuidora UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Para garantir que os WebSockets se reconectem em segundo plano, conceda a permissão de Alarmes e Lembretes à aplicação ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Lembrar mais tarde</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Ignorar</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Autorizar agora</string>
+    <string name="settings_advanced_exact_alarms_title">Alarmes exactos</string>
+    <string name="settings_advanced_exact_alarms_true">O ntfy pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para revogar a permissão.</string>
+    <string name="settings_advanced_exact_alarms_false">O ntfy não pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para conceder a permissão.</string>
 </resources>

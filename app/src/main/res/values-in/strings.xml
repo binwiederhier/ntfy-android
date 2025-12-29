@@ -55,7 +55,7 @@
     <string name="add_dialog_login_new_user">Pengguna baru</string>
     <string name="detail_no_notifications_text">Anda belum menerima notifikasi apa pun.</string>
     <string name="detail_how_to_intro">Untuk mengirimkan notifikasi ke topik ini, lakukan PUT atau POST ke URL topik.</string>
-    <string name="detail_how_to_example">Contoh (menggunakan curl):<br/><tt>$ curl -d \"Hai\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Contoh (menggunakan curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Instruksi rinci tersedia di ntfy.sh, dan dalam dokumentasi.</string>
     <string name="detail_clear_dialog_message">Hapus semua notifikasi di topik ini\?</string>
     <string name="detail_clear_dialog_permanently_delete">Hapus secara permanen</string>
@@ -67,7 +67,7 @@
     <string name="detail_test_message_error">Tidak dapat mengirimkan pesan: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Tidak dapat mengirimkan pesan: Penerbitan anonim tidak diizinkan.</string>
     <string name="detail_test_message_error_too_large">Tidak dapat mengirimkan pesan: Lampiran terlalu besar.</string>
-    <string name="detail_copied_to_clipboard_message">Disalin ke papan klip</string>
+    <string name="common_copied_to_clipboard">Disalin ke papan klip</string>
     <string name="detail_instant_delivery_enabled">Pengiriman instan menyala</string>
     <string name="detail_instant_delivery_disabled">Pengiriman instan mati</string>
     <string name="detail_item_tags">Tanda: %1$s</string>
@@ -156,6 +156,7 @@
     <string name="settings_notifications_auto_delete_one_month">Setelah satu bulan</string>
     <string name="settings_notifications_auto_delete_three_months">Setelah 3 bulan</string>
     <string name="settings_general_header">Umum</string>
+    <string name="settings_appearance_header">Tampilan</string>
     <string name="settings_general_default_base_url_title">Server bawaan</string>
     <string name="settings_general_default_base_url_message">Masukkan URL akar server Anda untuk menggunakan server Anda sendiri untuk bawaan ketika berlangganan ke topik baru dan/atau membagikan ke topik.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (bawaan)</string>
@@ -327,7 +328,6 @@
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Disalin ke papan klip</string>
     <string name="detail_settings_about_header">Tentang</string>
     <string name="detail_settings_about_topic_url_title">URL Topik</string>
-    <string name="main_menu_donate_title">Donasi 💸</string>
     <string name="detail_item_cannot_open_apk">Aplikasi tidak dapat dipasang lagi. Unduh melalui peramban. Lihat masalah #531 untuk detail lebih lanjut.</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notifikasi prioritas maks hanya memperingati sekali</string>
     <string name="detail_settings_notifications_open_channels_title">Atur pengaturan notifikasi</string>
@@ -343,4 +343,11 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy akan menjadi sebagai distributor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy tidak akan menjadi sebagai distributor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Aktifkan UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">Untuk memastikan WebSockets tersambung kembali di latar belakang, berikan izin Alarm &amp; Pengingat untuk ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Tanyakan nanti</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Singkirkan</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Berikan sekarang</string>
+    <string name="settings_advanced_exact_alarms_title">Alarm akurat</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy dapat menjadwalkan alarm yang tepat. Alarm yang tepat diperlukan untuk menyambungkan kembali WebSockets di latar belakang. Klik untuk mencabut izin.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy tidak dapat menjadwalkan alarm yang tepat. Alarm yang tepat diperlukan untuk menyambungkan kembali WebSockets di latar belakang. Klik untuk memberikan izin.</string>
 </resources>

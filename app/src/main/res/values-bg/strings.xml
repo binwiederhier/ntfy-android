@@ -92,7 +92,7 @@
     <string name="add_dialog_login_title">Изисква се вход</string>
     <string name="add_dialog_login_username_hint">Потребител</string>
     <string name="add_dialog_login_error_not_authorized">Неуспешен вход. Потребителят %1$s няма достъп.</string>
-    <string name="detail_how_to_example">Пример (с curl): <br/><tt>$ curl -d \"Здравей\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Пример (curl): <br/><tt>$ curl -d "Здравейте" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="main_how_to_link">Подробни инструкции са достъпни на ntfy.sh и в документацията.</string>
     <string name="detail_clear_dialog_permanently_delete">Премахване</string>
@@ -111,7 +111,7 @@
     <string name="detail_test_message_error">Грешка при изпращане: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Грешка при изпращане: Анонимното публикуване не е разрешено.</string>
     <string name="detail_test_message_error_too_large">Грешка при изпращане: Прикаченият файл е твърде голям.</string>
-    <string name="detail_copied_to_clipboard_message">Копирано в междинната памет</string>
+    <string name="common_copied_to_clipboard">Копирано в междинната памет</string>
     <string name="detail_item_tags">Етикети: %1$s</string>
     <string name="detail_item_menu_cancel">Отказ от изтегляне</string>
     <string name="detail_instant_delivery_enabled">Незабавното доставяне включено</string>
@@ -155,6 +155,7 @@
     <string name="settings_notifications_auto_delete_three_days">След три дена</string>
     <string name="settings_notifications_auto_delete_one_week">След една седмица</string>
     <string name="settings_general_header">Общи</string>
+    <string name="settings_appearance_header">Външен вид</string>
     <string name="settings_general_default_base_url_title">Сървър по подразбиране</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (подразбиран)</string>
     <string name="settings_backup_restore_backup_summary">Изнасят се настройките, известията и потребителите</string>
@@ -255,7 +256,7 @@
     <string name="settings_advanced_broadcast_summary_enabled">Известията ще да бъдат излъчвани към други приложения</string>
     <string name="settings_general_users_prefs_user_add_summary">Създава се потребител за нов сървър</string>
     <string name="settings_advanced_broadcast_title">Излъчване на съобщения</string>
-    <string name="settings_general_dark_mode_title">Тема</string>
+    <string name="settings_general_dark_mode_title">Тъмна тема</string>
     <string name="settings_general_dark_mode_summary_light">Светла тема</string>
     <string name="settings_general_dark_mode_summary_dark">Тъмна тема. Вампир ли сте\?</string>
     <string name="settings_general_dark_mode_entry_light">Светла тема</string>
@@ -327,7 +328,6 @@
     <string name="detail_settings_about_header">Относно</string>
     <string name="detail_settings_about_topic_url_title">Адрес на темата</string>
     <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Копирано в междинната памет</string>
-    <string name="main_menu_donate_title">Даряване 💸</string>
     <string name="detail_item_cannot_open_apk">Ntfy не може да инсталира получени приложения. Вместо това изтеглете чрез браузъра. За подробности вижте дефект №531.</string>
     <string name="channel_notifications_group_default_name">Подразбирани</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Потребителски настройки за известия</string>
@@ -343,4 +343,14 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy ще работи като дистрибутор на UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Включване на UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy няма да работи като дистрибутор на UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_text">За да сте сигурни, че WebSockets се свързват във фонов режим дайте разрешението Будилник и напомняне на ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">По-късно</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Затваряне</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Разрешаване</string>
+    <string name="settings_advanced_exact_alarms_title">Будилници в точно време</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy може да насрочва будилници в точно определено време. Те са задължителни за повторно свързване на WebSockets във фонов режим. За да оттеглите разрешението докоснете.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy не може да насрочва будилници в точно определено време. Те са задължителни за повторно свързване на WebSockets във фонов режим. За да разрешите докоснете.</string>
+    <string name="settings_general_dynamic_colors_title">Динамични цветове</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Използване на динамичните системни цветове</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Използване на цветовете от темата на ntfy</string>
 </resources>

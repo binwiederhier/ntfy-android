@@ -1,16 +1,17 @@
 package io.heckel.ntfy.ui
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.BuildConfig
@@ -21,6 +22,8 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.view.isVisible
+import androidx.core.view.isGone
 
 class AddFragment : DialogFragment() {
     private val api = ApiService()
@@ -30,10 +33,10 @@ class AddFragment : DialogFragment() {
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
 
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var actionMenuItem: MenuItem
     private lateinit var subscribeView: View
     private lateinit var loginView: View
-    private lateinit var positiveButton: Button
-    private lateinit var negativeButton: Button
 
     // Subscribe page
     private lateinit var subscribeTopicText: TextInputEditText
@@ -77,6 +80,21 @@ class AddFragment : DialogFragment() {
 
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_add_dialog, null)
+
+        // Setup toolbar
+        toolbar = view.findViewById(R.id.add_dialog_toolbar)
+        toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.add_dialog_action_button) {
+                onActionButtonClick()
+                true
+            } else {
+                false
+            }
+        }
+        actionMenuItem = toolbar.menu.findItem(R.id.add_dialog_action_button)
 
         // Main "pages"
         subscribeView = view.findViewById(R.id.add_dialog_subscribe_view)
@@ -136,6 +154,19 @@ class AddFragment : DialogFragment() {
             }
         }
 
+        // Subscribe view validation
+        val subscribeTextWatcher = AfterChangedTextWatcher {
+            validateInputSubscribeView()
+        }
+        subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
+        subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
+        subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, _ ->
+            validateInputSubscribeView()
+        }
+        subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, _ ->
+            validateInputSubscribeView()
+        }
+
         // Username/password validation on type
         val loginTextWatcher = AfterChangedTextWatcher {
             validateInputLoginView()
@@ -144,56 +175,41 @@ class AddFragment : DialogFragment() {
         loginPasswordText.addTextChangedListener(loginTextWatcher)
 
         // Build dialog
-        val dialog = AlertDialog.Builder(activity)
-            .setView(view)
-            .setPositiveButton(R.string.add_dialog_button_subscribe) { _, _ ->
-                // This will be overridden below to avoid closing the dialog immediately
-            }
-            .setNegativeButton(R.string.add_dialog_button_cancel) { _, _ ->
-                // This will be overridden below
-            }
-            .create()
+        val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
+        dialog.setContentView(view)
 
-        // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-        // Add logic to disable "Subscribe" button on invalid input
-        dialog.setOnShowListener {
-            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            positiveButton.isEnabled = false
-            positiveButton.setOnClickListener {
-                positiveButtonClick()
-            }
-            negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            negativeButton.setOnClickListener {
-                negativeButtonClick()
-            }
-            val subscribeTextWatcher = AfterChangedTextWatcher {
-                validateInputSubscribeView()
-            }
-            subscribeTopicText.addTextChangedListener(subscribeTextWatcher)
-            subscribeBaseUrlText.addTextChangedListener(subscribeTextWatcher)
-            subscribeInstantDeliveryCheckbox.setOnCheckedChangeListener { _, _ ->
-                validateInputSubscribeView()
-            }
-            subscribeUseAnotherServerCheckbox.setOnCheckedChangeListener { _, _ ->
-                validateInputSubscribeView()
-            }
-            validateInputSubscribeView()
-
-            // Focus topic text (keyboard is shown too, see above)
-            subscribeTopicText.requestFocus()
-        }
+        // Initial validation
+        validateInputSubscribeView()
 
         return dialog
     }
 
-    private fun positiveButtonClick() {
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Show keyboard after the dialog is fully visible
+        subscribeTopicText.postDelayed({
+            subscribeTopicText.requestFocus()
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(subscribeTopicText, InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
+    }
+
+    private fun onActionButtonClick() {
         val topic = subscribeTopicText.text.toString()
         val baseUrl = getBaseUrl()
-        if (subscribeView.visibility == View.VISIBLE) {
+        if (subscribeView.isVisible) {
             checkReadAndMaybeShowLogin(baseUrl, topic)
-        } else if (loginView.visibility == View.VISIBLE) {
+        } else if (loginView.isVisible) {
             loginAndMaybeDismiss(baseUrl, topic)
         }
     }
@@ -280,16 +296,8 @@ class AddFragment : DialogFragment() {
         }
     }
 
-    private fun negativeButtonClick() {
-        if (subscribeView.visibility == View.VISIBLE) {
-            dialog?.cancel()
-        } else if (loginView.visibility == View.VISIBLE) {
-            showSubscribeView()
-        }
-    }
-
     private fun validateInputSubscribeView() {
-        if (!this::positiveButton.isInitialized) return // As per crash seen in Google Play
+        if (!this::actionMenuItem.isInitialized) return // As per crash seen in Google Play
 
         // Show/hide things: This logic is intentionally kept simple. Do not simplify "just because it's pretty".
         val instantToggleAllowed = if (!BuildConfig.FIREBASE_AVAILABLE) {
@@ -327,11 +335,11 @@ class AddFragment : DialogFragment() {
             activity?.let {
                 it.runOnUiThread {
                     if (subscription != null || DISALLOWED_TOPICS.contains(topic)) {
-                        positiveButton.isEnabled = false
+                        actionMenuItem.isEnabled = false
                     } else if (subscribeUseAnotherServerCheckbox.isChecked) {
-                        positiveButton.isEnabled = validTopic(topic) && validUrl(baseUrl)
+                        actionMenuItem.isEnabled = validTopic(topic) && validUrl(baseUrl)
                     } else {
-                        positiveButton.isEnabled = validTopic(topic)
+                        actionMenuItem.isEnabled = validTopic(topic)
                     }
                 }
             }
@@ -339,13 +347,13 @@ class AddFragment : DialogFragment() {
     }
 
     private fun validateInputLoginView() {
-        if (!this::positiveButton.isInitialized || !this::loginUsernameText.isInitialized || !this::loginPasswordText.isInitialized) {
+        if (!this::actionMenuItem.isInitialized || !this::loginUsernameText.isInitialized || !this::loginPasswordText.isInitialized) {
             return // As per crash seen in Google Play
         }
-        if (loginUsernameText.visibility == View.GONE) {
-            positiveButton.isEnabled = true
+        if (loginUsernameText.isGone) {
+            actionMenuItem.isEnabled = true
         } else {
-            positiveButton.isEnabled = (loginUsernameText.text?.isNotEmpty() ?: false)
+            actionMenuItem.isEnabled = (loginUsernameText.text?.isNotEmpty() ?: false)
                     && (loginPasswordText.text?.isNotEmpty() ?: false)
         }
     }
@@ -372,8 +380,11 @@ class AddFragment : DialogFragment() {
 
     private fun showSubscribeView() {
         resetSubscribeView()
-        positiveButton.text = getString(R.string.add_dialog_button_subscribe)
-        negativeButton.text = getString(R.string.add_dialog_button_cancel)
+        toolbar.setTitle(R.string.add_dialog_title)
+        actionMenuItem.setTitle(R.string.add_dialog_button_subscribe)
+        toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
         loginView.visibility = View.GONE
         subscribeView.visibility = View.VISIBLE
         if (subscribeTopicText.requestFocus()) {
@@ -385,8 +396,11 @@ class AddFragment : DialogFragment() {
     private fun showLoginView(activity: Activity) {
         resetLoginView()
         loginProgress.visibility = View.INVISIBLE
-        positiveButton.text = getString(R.string.add_dialog_button_login)
-        negativeButton.text = getString(R.string.add_dialog_button_back)
+        toolbar.setTitle(R.string.add_dialog_login_title)
+        actionMenuItem.setTitle(R.string.add_dialog_button_login)
+        toolbar.setNavigationOnClickListener {
+            showSubscribeView()
+        }
         subscribeView.visibility = View.GONE
         loginView.visibility = View.VISIBLE
         if (loginUsernameText.requestFocus()) {
@@ -400,7 +414,7 @@ class AddFragment : DialogFragment() {
         subscribeBaseUrlText.isEnabled = enable
         subscribeInstantDeliveryCheckbox.isEnabled = enable
         subscribeUseAnotherServerCheckbox.isEnabled = enable
-        positiveButton.isEnabled = enable
+        actionMenuItem.isEnabled = enable
     }
 
     private fun resetSubscribeView() {
@@ -413,7 +427,7 @@ class AddFragment : DialogFragment() {
     private fun enableLoginView(enable: Boolean) {
         loginUsernameText.isEnabled = enable
         loginPasswordText.isEnabled = enable
-        positiveButton.isEnabled = enable
+        actionMenuItem.isEnabled = enable
         if (enable && loginUsernameText.requestFocus()) {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(loginUsernameText, InputMethodManager.SHOW_IMPLICIT)

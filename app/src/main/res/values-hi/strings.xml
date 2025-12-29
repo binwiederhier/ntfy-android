@@ -79,14 +79,18 @@
     <string name="add_dialog_title">विषय की सदस्यता लें</string>
     <string name="add_dialog_button_back">पीछे जाएं</string>
     <string name="channel_subscriber_notification_noinstant_text_one">एक विषय की सदस्यता</string>
-    <string name="main_menu_donate_title">दान करें</string>
     <string name="main_item_status_text_one">%1$d सूचना</string>
     <string name="detail_clear_dialog_cancel">रद्द करें</string>
     <string name="detail_delete_dialog_cancel">रद्द करें</string>
     <string name="detail_how_to_link">विस्तृत निर्देश ntfy.sh पर और डॉक्स में उपलब्ध हैं।</string>
     <string name="detail_clear_dialog_permanently_delete">स्थायी रूप से हटाएं</string>
     <string name="detail_how_to_intro">इस विषय पर सूचनाएं भेजने के लिए, बस विषय URL पर PUT या POST करें।</string>
-    <string name="detail_how_to_example">उदाहरण (curl का उपयोग करके):<br/><tt>$curl -d \"नमस्कार\"%1$s</tt></string>
+    <string name="detail_how_to_example">उदाहरण (curl का उपयोग करके):<br></br><tt>$curl -d \"नमस्कार\"%1$s</tt></string>
     <string name="detail_clear_dialog_message">इस विषय की सभी सूचनाएँ हटाएँ?</string>
     <string name="main_banner_websocket_text">WebSockets पर स्विच करना आपके सर्वर से कनेक्ट करने का अनुशंसित तरीका है, और बैटरी जीवन में सुधार कर सकता है, लेकिन आपके <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">proxy में अतिरिक्त कॉन्फ़िगरेशन</a> की आवश्यकता हो सकती है। इसे सेटिंग्स में टॉगल किया जा सकता है।</string>
+    <string name="detail_test_message_error_unauthorized_anon">संदेश नहीं भेजा जा सकता: अनाम प्रकाशन की अनुमति नहीं है।</string>
+    <string name="detail_test_message_error_too_large">संदेश नहीं भेजा जा सकता: अनुलग्नक बहुत बड़ा है।</string>
+    <string name="detail_delete_dialog_message">इस विषय से सदस्यता समाप्त करें और सभी प्राप्त अधिसूचनाएं हटा दें?</string>
+    <string name="detail_delete_dialog_permanently_delete">स्थायी रूप से हटाएं</string>
+    <string name="detail_test_title">परीक्षण: यदि आप चाहें तो शीर्षक निर्धारित कर सकते हैं।</string>
 </resources>

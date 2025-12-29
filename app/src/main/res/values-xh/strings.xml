@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_dialog_login_username_hint">Igama lomsebenzisi</string>
+    <string name="add_dialog_button_back">Emva</string>
+    <string name="add_dialog_button_login">Ngema</string>
+    <string name="main_banner_websocket_button_dismiss">Gxotha</string>
+    <string name="add_dialog_button_cancel">Rhoxisa</string>
+    <string name="add_dialog_button_subscribe">Bhalisa</string>
+</resources>
