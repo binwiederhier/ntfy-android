@@ -109,7 +109,6 @@
     <style name="Theme.App.FullScreenDialog" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.App.FullScreenDialog</item>
