@@ -461,8 +461,8 @@
     <string name="user_dialog_button_save">Save</string>
 
     <!-- Custom Headers settings -->
-    <string name="settings_general_custom_headers_key">CustomHeaders</string>
-    <string name="settings_general_custom_headers_title">Custom headers</string>
+    <string name="settings_advanced_custom_headers_key" translatable="false">CustomHeaders</string>
+    <string name="settings_advanced_custom_headers_title">Custom headers</string>
     <string name="settings_general_custom_headers_summary">Add custom HTTP headers per server</string>
     <string name="settings_general_custom_headers_prefs_title">Custom Headers</string>
     <string name="settings_general_custom_headers_prefs_header_add">Add header</string>

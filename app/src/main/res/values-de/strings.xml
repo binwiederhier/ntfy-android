@@ -346,7 +346,7 @@
     <string name="settings_advanced_exact_alarms_title">Genaue Alarme</string>
     <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy kann keine genauen Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Tippe hier, um die Berechtigung zu erteilen.</string>
-    <string name="settings_general_custom_headers_title">Benutzerdefinierte Header</string>
+    <string name="settings_advanced_custom_headers_title">Benutzerdefinierte Header</string>
     <string name="settings_general_custom_headers_summary">Benutzerdefinierte HTTP-Header pro Server hinzufügen</string>
     <string name="settings_general_custom_headers_prefs_title">Benutzerdefinierte Header</string>
     <string name="settings_general_custom_headers_prefs_header_add">Header hinzufügen</string>
