@@ -167,6 +167,8 @@ class CustomHeaderFragment : DialogFragment() {
         // Validate header name and check if a user already exists for this server
         CoroutineScope(Dispatchers.Main).launch {
             var isValid = true
+            val targetBaseUrl = if (header != null) header!!.baseUrl else baseUrl
+            
             if (headerName.isNotEmpty()) {
                 if (!validateHeaderName(headerName)) {
                     headerNameLayout.error = getString(R.string.custom_headers_dialog_error_invalid_name)
@@ -174,20 +176,12 @@ class CustomHeaderFragment : DialogFragment() {
                 } else if (isReservedHeader(headerName)) {
                     headerNameLayout.error = getString(R.string.custom_headers_dialog_error_reserved_name)
                     isValid = false
-                } else if (headerName.equals("Authorization", ignoreCase = true)) {
-                    // Check if a user exists for this server (async)
-                    val targetBaseUrl = if (header != null) header!!.baseUrl else baseUrl
-                    val userExists = if (this@CustomHeaderFragment::repository.isInitialized && validUrl(targetBaseUrl)) {
-                        withContext(Dispatchers.IO) {
-                            repository.getUser(targetBaseUrl) != null
-                        }
-                    } else {
-                        false
-                    }
-                    if (userExists) {
-                        headerNameLayout.error = getString(R.string.custom_headers_dialog_error_user_exists)
-                        isValid = false
-                    }
+                } else if (isDuplicateHeader(targetBaseUrl, headerName)) {
+                    headerNameLayout.error = getString(R.string.custom_headers_dialog_error_duplicate)
+                    isValid = false
+                } else if (headerName.equals("Authorization", ignoreCase = true) && hasUserForServer(targetBaseUrl)) {
+                    headerNameLayout.error = getString(R.string.custom_headers_dialog_error_user_exists)
+                    isValid = false
                 }
             }
             if (header == null) {
@@ -226,6 +220,31 @@ class CustomHeaderFragment : DialogFragment() {
         )
         // Also block all WebSocket-related headers
         return reservedHeaders.contains(nameLower) || nameLower.startsWith("sec-websocket-")
+    }
+
+    private suspend fun isDuplicateHeader(baseUrl: String, headerName: String): Boolean {
+        if (!this::repository.isInitialized || !validUrl(baseUrl)) {
+            return false
+        }
+        val existingHeaders = withContext(Dispatchers.IO) {
+            repository.getCustomHeadersForServer(baseUrl)
+        }
+        return existingHeaders.any { existingHeader ->
+            // When editing, exclude the current header being edited
+            val isCurrentHeader = header != null && 
+                existingHeader.baseUrl == header!!.baseUrl && 
+                existingHeader.name == header!!.name
+            !isCurrentHeader && existingHeader.name.equals(headerName, ignoreCase = true)
+        }
+    }
+
+    private suspend fun hasUserForServer(baseUrl: String): Boolean {
+        if (!this::repository.isInitialized || !validUrl(baseUrl)) {
+            return false
+        }
+        return withContext(Dispatchers.IO) {
+            repository.getUser(baseUrl) != null
+        }
     }
 
     companion object {

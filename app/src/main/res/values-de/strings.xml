@@ -360,6 +360,7 @@
     <string name="custom_headers_dialog_error_invalid_name">Ungültige Zeichen im Header-Namen</string>
     <string name="custom_headers_dialog_error_reserved_name">Dieser Header ist reserviert und wird von ntfy gesetzt</string>
     <string name="custom_headers_dialog_error_user_exists">Authorization-Header kann nicht hinzugefügt werden, wenn ein Benutzer für diesen Server konfiguriert ist</string>
+    <string name="custom_headers_dialog_error_duplicate">Ein Header mit diesem Namen existiert bereits für diesen Server</string>
     <string name="custom_headers_dialog_name_hint">Header-Name (z.B. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Wert (z.B. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Einen benutzerdefinierten HTTP-Header hinzufügen, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>

@@ -467,8 +467,8 @@
     <string name="user_dialog_button_save">Save</string>
 
     <!-- Custom headers dialog  -->
-    <string name="custom_headers_dialog_title_add">Add Custom Header</string>
-    <string name="custom_headers_dialog_title_edit">Edit Custom Header</string>
+    <string name="custom_headers_dialog_title_add">Add custom header</string>
+    <string name="custom_headers_dialog_title_edit">Edit custom header</string>
     <string name="custom_headers_dialog_base_url_hint">Service URL</string>
     <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Value (e.g. 9f3c2e4a1b2d4e)</string>
@@ -477,6 +477,7 @@
     <string name="custom_headers_dialog_error_invalid_name">Header name contains invalid characters</string>
     <string name="custom_headers_dialog_error_reserved_name">This header is reserved and set by ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Cannot add Authorization header if a user is configured for this server</string>
+    <string name="custom_headers_dialog_error_duplicate">A header with this name already exists for this server</string>
     <string name="custom_headers_dialog_button_add">Add</string>
     <string name="custom_headers_dialog_button_save">Save</string>
     <string name="custom_headers_dialog_button_delete">Delete</string>
