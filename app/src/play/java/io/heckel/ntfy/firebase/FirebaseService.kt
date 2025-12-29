@@ -115,8 +115,11 @@ class FirebaseService : FirebaseMessagingService() {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
 
             // Check if notification was truncated and discard if it will (or likely already did) arrive via instant delivery
-            val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
-            if (truncated && subscription.instant) {
+            val subscription = repository.getSubscription(baseUrl, topic)
+            if (subscription == null) {
+                Log.d(TAG, "Discarding message for subscription that doesn't exist: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                return@launch
+            } else if (truncated && subscription.instant) {
                 Log.d(TAG, "Discarding truncated message that did/will arrive via instant delivery: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 return@launch
             }

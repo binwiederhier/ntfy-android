@@ -19,6 +19,12 @@ class FirebaseMessenger {
     fun unsubscribe(topic: String) {
         val firebase = maybeInstance() ?: return
         firebase.unsubscribeFromTopic(topic)
+            .addOnCompleteListener {
+                Log.d(TAG, "Unsubscribing from topic $topic complete: result=${it.result}, exception=${it.exception}, successful=${it.isSuccessful}")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Unsubscribing from topic $topic failed: ${e.message}", e)
+            }
     }
 
     private fun maybeInstance(): FirebaseMessaging? {

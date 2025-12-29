@@ -60,6 +60,7 @@ import androidx.core.net.toUri
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
+import io.heckel.ntfy.util.topicHash
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
