@@ -59,7 +59,7 @@ class CustomHeaderFragment : DialogFragment() {
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_custom_header_dialog, null)
 
-        val positiveButtonTextResId = if (header == null) R.string.custom_headers_add else R.string.custom_headers_save
+        val positiveButtonTextResId = if (header == null) R.string.custom_headers_dialog_button_add else R.string.custom_headers_dialog_button_save
         val descriptionView: TextView = view.findViewById(R.id.custom_header_dialog_description)
 
         baseUrlView = view.findViewById(R.id.custom_header_dialog_base_url)
@@ -69,12 +69,12 @@ class CustomHeaderFragment : DialogFragment() {
 
         var title: String
         if (header == null) {
-            title = getString(R.string.custom_headers_add_title)
-            descriptionView.text = getString(R.string.custom_header_dialog_description_add)
+            title = getString(R.string.custom_headers_dialog_title_add)
+            descriptionView.text = getString(R.string.custom_headers_dialog_description_add)
             baseUrlView.visibility = View.VISIBLE
         } else {
-            title = getString(R.string.custom_headers_edit_title)
-            descriptionView.text = getString(R.string.custom_header_dialog_description_edit)
+            title = getString(R.string.custom_headers_dialog_title_edit)
+            descriptionView.text = getString(R.string.custom_headers_dialog_description_edit)
             baseUrlView.visibility = View.GONE
             baseUrlView.setText(header!!.baseUrl)
             headerNameView.setText(header!!.name)
@@ -92,7 +92,7 @@ class CustomHeaderFragment : DialogFragment() {
                 // Do nothing
             }
         if (header != null) {
-            builder.setNeutralButton(R.string.custom_headers_delete)  { _, _ ->
+            builder.setNeutralButton(R.string.custom_headers_dialog_button_delete)  { _, _ ->
                 if (this::listener.isInitialized) {
                     listener.onDeleteCustomHeader(this, header!!)
                 }
@@ -169,10 +169,10 @@ class CustomHeaderFragment : DialogFragment() {
             var isValid = true
             if (headerName.isNotEmpty()) {
                 if (!validateHeaderName(headerName)) {
-                    headerNameLayout.error = getString(R.string.custom_headers_invalid_name)
+                    headerNameLayout.error = getString(R.string.custom_headers_dialog_error_invalid_name)
                     isValid = false
                 } else if (isReservedHeader(headerName)) {
-                    headerNameLayout.error = getString(R.string.custom_headers_reserved_name)
+                    headerNameLayout.error = getString(R.string.custom_headers_dialog_error_reserved_name)
                     isValid = false
                 } else if (headerName.equals("Authorization", ignoreCase = true)) {
                     // Check if a user exists for this server (async)
@@ -185,7 +185,7 @@ class CustomHeaderFragment : DialogFragment() {
                         false
                     }
                     if (userExists) {
-                        headerNameLayout.error = getString(R.string.custom_headers_user_exists)
+                        headerNameLayout.error = getString(R.string.custom_headers_dialog_error_user_exists)
                         isValid = false
                     }
                 }
