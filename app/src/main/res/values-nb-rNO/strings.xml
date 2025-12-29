@@ -66,7 +66,6 @@
     <string name="detail_item_menu_cancel">Avbryt nedlasting</string>
     <string name="detail_item_menu_save_file">Lagre fil</string>
     <string name="detail_item_menu_copy_url">Kopier nettadresse</string>
-    <string name="detail_item_menu_copy_url_copied">URL kopiert til utklippstavlen</string>
     <string name="detail_item_menu_copy_contents">Kopier merknad</string>
     <string name="detail_item_cannot_download">Kan ikke åpne eller laste ned vedlegg. Lenken utløp og ingen lokal fil ble funnet.</string>
     <string name="detail_item_cannot_open">Kan ikke åpne vedlegg: %1$s</string>
@@ -91,10 +90,9 @@
     <string name="detail_menu_settings">Abonnementsinnstillinger</string>
     <string name="detail_menu_unsubscribe">Opphev abonnement</string>
     <string name="detail_instant_delivery_disabled">Umiddelbar levering avskrudd</string>
-    <string name="detail_item_menu_copy_contents_copied">Varsel kopiert til utklippstavlen</string>
     <string name="detail_test_message_error_unauthorized_user">Kan ikke sende melding: Brukeren \"%1$s\" er ikke autorisert.</string>
     <string name="detail_test_message_error_too_large">Kan ikke sende melding: Vedlegget er for stort.</string>
-    <string name="detail_copied_to_clipboard_message">Kopiert til utklippstavlen</string>
+    <string name="common_copied_to_clipboard">Kopiert til utklippstavlen</string>
     <string name="detail_instant_delivery_enabled">Umiddelbar levering påskrudd</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Slett permanent</string>
     <string name="detail_action_mode_delete_dialog_cancel">Avbryt</string>
@@ -144,6 +142,7 @@
     <string name="settings_notifications_auto_delete_one_month">Etter én måned</string>
     <string name="settings_notifications_auto_delete_three_months">Etter tre måneder</string>
     <string name="settings_general_header">Generelt</string>
+    <string name="settings_appearance_header">Utseende</string>
     <string name="settings_general_default_base_url_title">Forvalgt tjener</string>
     <string name="settings_general_users_title">Håndter brukere</string>
     <string name="settings_general_users_summary">Legg til/fjern brukere for beskyttede emner</string>
@@ -196,7 +195,6 @@
     <string name="settings_advanced_clear_logs_deleted_toast">Logger slettet</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Bruk en JSON-strøm over HTTP for å koble til tjeneren. Dette er en godt utprøvd metode, men kan bruke mer batteri.</string>
     <string name="settings_about_header">Om</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Kopiert til utklippstavlen</string>
     <string name="user_dialog_title_add">Legg til bruker</string>
     <string name="user_dialog_title_edit">Rediger bruker</string>
     <string name="user_dialog_base_url_hint">Tjeneste-URL</string>
@@ -322,7 +320,6 @@
     <string name="detail_settings_appearance_icon_error_saving">Kan ikke lagre ikon: %1$s</string>
     <string name="detail_settings_appearance_display_name_title">Visningsnavn</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (standard)</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Kopier til utklippstavlen</string>
     <string name="detail_settings_appearance_display_name_message">Angi et tilpasset visningsnavn for dette abonnementet. La stå tomt for standard (%1$s).</string>
     <string name="main_banner_websocket_text">Å bytte til WebSockets er den anbefalte måten å koble til serveren på, og kan forbedre batterilevetiden, men kan kreve <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">ytterligere konfigurasjon i proxy-serveren</a>. Dette kan endres i innstillingene.</string>
     <string name="main_banner_websocket_button_enable_now">Aktiver nå</string>

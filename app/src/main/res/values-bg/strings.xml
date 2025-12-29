@@ -111,7 +111,7 @@
     <string name="detail_test_message_error">Грешка при изпращане: %1$s</string>
     <string name="detail_test_message_error_unauthorized_anon">Грешка при изпращане: Анонимното публикуване не е разрешено.</string>
     <string name="detail_test_message_error_too_large">Грешка при изпращане: Прикаченият файл е твърде голям.</string>
-    <string name="detail_copied_to_clipboard_message">Копирано в междинната памет</string>
+    <string name="common_copied_to_clipboard">Копирано в междинната памет</string>
     <string name="detail_item_tags">Етикети: %1$s</string>
     <string name="detail_item_menu_cancel">Отказ от изтегляне</string>
     <string name="detail_instant_delivery_enabled">Незабавното доставяне включено</string>
@@ -155,6 +155,7 @@
     <string name="settings_notifications_auto_delete_three_days">След три дена</string>
     <string name="settings_notifications_auto_delete_one_week">След една седмица</string>
     <string name="settings_general_header">Общи</string>
+    <string name="settings_appearance_header">Външен вид</string>
     <string name="settings_general_default_base_url_title">Сървър по подразбиране</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (подразбиран)</string>
     <string name="settings_backup_restore_backup_summary">Изнасят се настройките, известията и потребителите</string>
@@ -210,14 +211,11 @@
     <string name="user_dialog_description_edit">Можете да променяте избрания потребител или да го премахнете.</string>
     <string name="settings_about_version_title">Издание</string>
     <string name="settings_about_header">Относно</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Копирано в междинната памет</string>
     <string name="user_dialog_base_url_hint">Адрес на услугата</string>
     <string name="detail_item_cannot_open">Прикаченият файл не може да бъде отворен: %1$s</string>
     <string name="detail_item_snack_deleted">Известието е премахнато</string>
     <string name="detail_item_snack_undo">Отменяне</string>
     <string name="detail_item_menu_copy_url">Копиране на адреса</string>
-    <string name="detail_item_menu_copy_contents_copied">Известията са копирани в междинната памет</string>
-    <string name="detail_item_menu_copy_url_copied">Адресът е копиран в междинната памет</string>
     <string name="detail_item_menu_open">Отваряне</string>
     <string name="detail_item_menu_delete">Премахване</string>
     <string name="detail_item_menu_download">Изтегляне</string>
@@ -326,7 +324,6 @@
     <string name="detail_settings_appearance_display_name_message">Задайте име на абонамента. За да върнете името по подразбиране (%1$s) оставете празно.</string>
     <string name="detail_settings_about_header">Относно</string>
     <string name="detail_settings_about_topic_url_title">Адрес на темата</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Копирано в междинната памет</string>
     <string name="detail_item_cannot_open_apk">Ntfy не може да инсталира получени приложения. Вместо това изтеглете чрез браузъра. За подробности вижте дефект №531.</string>
     <string name="channel_notifications_group_default_name">Подразбирани</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Потребителски настройки за известия</string>

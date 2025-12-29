@@ -6,7 +6,6 @@
     <string name="settings_advanced_export_logs_error_uploading">Nu s-au putut încărca jurnalele: %1$s</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiat în clipboard</string>
     <string name="detail_settings_notifications_instant_summary_on">Notificările sunt primite instantaneu. Necesită un serviciu în prim plan și consumă mai multă baterie.</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Setări personalizate pentru notificări</string>
     <string name="detail_settings_appearance_icon_set_summary">Setează o pictogramă care să fie afișată în notificări</string>
@@ -60,6 +59,7 @@
     <string name="settings_notifications_insistent_max_priority_title">Păstrează alertele pentru prioritatea maximă</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificările cu prioritate maximă se alertă o singură dată</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparență</string>
     <string name="settings_general_default_base_url_title">Server implicit</string>
     <string name="settings_general_default_base_url_message">Introduceți URL-ul rădăcinii a serverului dvs. pentru utilizarea implicită atunci când vă abonați la topice noi și/sau când partajați în topice.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (implicit)</string>
@@ -124,7 +124,6 @@
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (implicit)</string>
     <string name="detail_settings_global_setting_title">Folosește setarea globală</string>
     <string name="detail_settings_about_header">Despre</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiat în clipboard</string>
     <string name="detail_settings_global_setting_suffix">folosind setarea globală</string>
     <string name="user_dialog_title_add">Adaugă utilizator</string>
     <string name="user_dialog_title_edit">Modifică utilizator</string>
@@ -183,7 +182,6 @@
     <string name="detail_item_menu_save_file">Salvează fișierul</string>
     <string name="detail_item_saved_successfully">Salvat ca \"%1$s\" în directorul \"Descarcări\"</string>
     <string name="detail_item_menu_copy_contents">Copiază notificarea</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificare copiată în clipboard</string>
     <string name="detail_item_cannot_open">Nu se poate deschide atașametul: %1$s</string>
     <string name="detail_item_cannot_open_url">Nu se poate deschide URL-ul: %1$s</string>
     <string name="detail_item_cannot_open_apk">Aplicațiile nu mai pot fi instalate. Descarcă prin intermediul browser-ului. Consultați problema #531 pentru detalii.</string>
@@ -258,7 +256,6 @@
     <string name="detail_clear_dialog_permanently_delete">Șterge permanent</string>
     <string name="detail_clear_dialog_cancel">Anulează</string>
     <string name="detail_item_menu_open">Deschide fișier</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiat în clipboard</string>
     <string name="detail_item_download_info_deleted">șters</string>
     <string name="detail_item_download_info_download_failed">descărcare eșuată</string>
     <string name="detail_item_download_info_download_failed_expired">descărcare eșuată, linkul a expirat</string>
@@ -320,7 +317,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nu se poate trimite mesajul: Publicarea anonimă nu este permisă.</string>
     <string name="detail_test_message_error_unauthorized_user">Nu se poate trimite mesajul: Utilizatorul \"%1$s\" nu este autorizat.</string>
     <string name="detail_test_message_error_too_large">Nu se poate trimite mesajul: Atașamentul este prea mare.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat în clipboard</string>
+    <string name="common_copied_to_clipboard">Copiat în clipboard</string>
     <string name="detail_instant_delivery_enabled">Primire instantanee pornită</string>
     <string name="detail_instant_delivery_disabled">Primire instantanee oprită</string>
     <string name="main_banner_websocket_button_dismiss">Ignoră</string>

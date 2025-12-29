@@ -96,7 +96,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Non se enviou a mensaxe: Non está permitida a publicación anónima.</string>
     <string name="detail_test_message_error_unauthorized_user">Non se enviou a mensaxe: A usuaria \"%1$s\" non ten autorización.</string>
     <string name="detail_test_message_error_too_large">Non se enviou a mensaxe: O adxunto é demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado ao portapapeis</string>
+    <string name="common_copied_to_clipboard">Copiado ao portapapeis</string>
     <string name="detail_instant_delivery_enabled">Entrega inmediata activada</string>
     <string name="detail_instant_delivery_disabled">Entrega inmediata desactivada</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscrita ao tema %1$s</string>
@@ -109,9 +109,7 @@
     <string name="detail_item_menu_cancel">Cancelar descarga</string>
     <string name="detail_item_menu_save_file">Gardar ficheiro</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiado ao portapapeis</string>
     <string name="detail_item_menu_copy_contents">Copiar notificación</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificación copiada ao portapapeis</string>
     <string name="detail_item_saved_successfully">Gardado como \"%1$s\" no cartafol \"Descargas\"</string>
     <string name="detail_how_to_intro">Enviar notificacións a este tema, simplemente envía con PUT ou POST ao URL do tema.</string>
     <string name="detail_item_cannot_download">Non se pode abrir ou descargar o adxunto. A ligazón caducou e non se atopa un ficheiro local.</string>
@@ -220,6 +218,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Manter as alertas da prioridade máis alta ata que se desboten</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Notificar as alertas da máxima prioridade só unha vez</string>
     <string name="settings_general_header">Xeral</string>
+    <string name="settings_appearance_header">Aspecto</string>
     <string name="settings_general_default_base_url_title">Servidor por defecto</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (por defecto)</string>
     <string name="settings_general_users_title">Xestionar usuarias</string>
@@ -278,7 +277,6 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Fluxo JSON sobre HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar un fluxo JSON sobre HTTP para conectar co servidor. Este método é robusto, pero podería consumir máis batería.</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiado ao portapapeis</string>
     <string name="detail_settings_notifications_instant_title">Entrega inmediata</string>
     <string name="settings_about_header">Acerca de</string>
     <string name="settings_about_version_title">Versión</string>
@@ -291,7 +289,6 @@
     <string name="detail_settings_notifications_open_channels_title">Configurar axustes da notificación</string>
     <string name="detail_settings_appearance_icon_error_saving">Non se gardou a icona: %1$s</string>
     <string name="detail_settings_appearance_display_name_title">Nome mostrado</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado ao portapapeis</string>
     <string name="settings_backup_restore_restore_title">Restablecer desde ficheiro</string>
     <string name="settings_backup_restore_restore_summary">Importar configuración, notificacións e usuarias</string>
     <string name="settings_backup_restore_restore_successful">Restablecemento correcto</string>

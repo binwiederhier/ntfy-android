@@ -34,7 +34,7 @@
     <string name="detail_how_to_intro">Pour envoyer des notifications à ce sujet, faites simplement une requête PUT ou POST à l\'URL du sujet.</string>
     <string name="detail_test_title">Test : Vous pouvez mettre un titre si vous le voulez.</string>
     <string name="detail_test_message_error">Incapable d\'envoyer le message : %1$s</string>
-    <string name="detail_copied_to_clipboard_message">Copié dans le presse-papier</string>
+    <string name="common_copied_to_clipboard">Copié dans le presse-papier</string>
     <string name="detail_instant_delivery_disabled">Livraison instantanée inactive</string>
     <string name="detail_item_tags">Étiquettes : %1$s</string>
     <string name="detail_item_snack_undo">Annuler</string>
@@ -108,11 +108,9 @@
     <string name="detail_test_message_error_too_large">Impossible d\'envoyer le message : La pièce jointe est trop lourde.</string>
     <string name="detail_instant_delivery_enabled">Livraison instantanée active</string>
     <string name="detail_item_snack_deleted">Notification supprimée</string>
-    <string name="detail_item_menu_copy_url_copied">L\'URL a été copiée dans le presse-papier</string>
     <string name="detail_item_menu_delete">Supprimer un fichier</string>
     <string name="detail_item_menu_save_file">Sauvegarder le fichier</string>
     <string name="detail_item_menu_copy_contents">Copier la notification</string>
-    <string name="detail_item_menu_copy_contents_copied">La notification a été copiée dans le presse-papier</string>
     <string name="detail_item_saved_successfully">Sauvegardé en tant que \"%1$s\" dans le dossier \"Téléchargements\"</string>
     <string name="detail_item_cannot_download">Incapable d\'ouvrir ou de télécharger la pièce jointe. Le lien est expiré et aucun fichier local n\'a pu être trouvé.</string>
     <string name="detail_item_cannot_open">Incapable d\'ouvrir le pièce jointe : %1$s</string>
@@ -211,6 +209,7 @@
     <string name="settings_notifications_auto_delete_one_week">Après une semaine</string>
     <string name="settings_notifications_auto_delete_three_months">Après 3 mois</string>
     <string name="settings_general_header">Général</string>
+    <string name="settings_appearance_header">Apparence</string>
     <string name="settings_general_default_base_url_title">Serveur par défaut</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (défaut)</string>
     <string name="settings_general_users_title">Gérer les utilisateurs</string>
@@ -288,7 +287,6 @@
     <string name="settings_advanced_export_logs_copied_url">Journaux téléchargés et URL copiée</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Utiliser un flux JSON en HTTP pour se connecter au serveur. Cette méthode est éprouvée, mais peut consommer plus de batterie.</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Utiliser des WebSockets pour se connecter au serveur. Il s\'agit de la méthode recommandée, mais peut requérir une configuration supplémentaire de votre proxy.</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copié dans le presse-papier</string>
     <string name="settings_advanced_record_logs_title">Enregistrer les journaux</string>
     <string name="user_dialog_description_add">Vous pouvez ajouter un utilisateur ici. Tous les sujets du serveur sélectionné utiliseront cet utilisateur.</string>
     <string name="user_dialog_description_edit">Vous pouvez éditer le nom d\'utilisateur et le mot de passe de l\'utilisateur sélectionné, ou le supprimer.</string>
@@ -324,7 +322,6 @@
     <string name="detail_settings_appearance_display_name_title">Nom d\'affichage</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s</string>
     <string name="detail_settings_appearance_display_name_message">Mettre un nom d\'affichage personnalisé pour cette souscription. Laisse ce champ vide pour mettre la valeur par défaut (%1$s).</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copié au Presse-papier</string>
     <string name="detail_settings_about_header">À propos</string>
     <string name="detail_settings_about_topic_url_title">URL du sujet</string>
     <string name="channel_notifications_group_default_name">Défaut</string>

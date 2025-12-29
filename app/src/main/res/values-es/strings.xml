@@ -60,14 +60,13 @@
     <string name="detail_test_message_error_unauthorized_user">No se pudo enviar el mensaje: El usuario %1$s no está autorizado.</string>
     <string name="detail_test_message_error">No se pudo enviar el mensaje: %1$s</string>
     <string name="detail_test_message_error_too_large">No se pudo enviar el mensaje: El archivo adjunto es demasiado grande.</string>
-    <string name="detail_copied_to_clipboard_message">Copiado al portapapeles</string>
+    <string name="common_copied_to_clipboard">Copiado al portapapeles</string>
     <string name="detail_instant_delivery_enabled">Entrega instantánea habilitada</string>
     <string name="detail_instant_delivery_disabled">Entrega instantánea deshabilitada</string>
     <string name="detail_item_tags">Etiquetas: %1$s</string>
     <string name="detail_item_snack_deleted">Notificación eliminada</string>
     <string name="detail_item_menu_open">Abrir archivo</string>
     <string name="detail_item_menu_download">Descargar archivo</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificación copiada al portapapeles</string>
     <string name="detail_item_saved_successfully">Guardado como %1$s en la carpeta de Descargas</string>
     <string name="detail_item_cannot_open">No se puede abrir el archivo adjunto: %1$s</string>
     <string name="detail_item_cannot_open_url">No se pudo abrir la URL: %1$s</string>
@@ -156,6 +155,7 @@
     <string name="settings_notifications_auto_delete_three_days">Despues de 3 dias</string>
     <string name="settings_notifications_auto_delete_three_months">Después de 3 meses</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Apariencia</string>
     <string name="settings_general_default_base_url_title">Servidor predeterminado</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (predeterminado)</string>
     <string name="settings_general_users_prefs_user_used_by_many">Utilizado por los tópicos %1$s</string>
@@ -211,7 +211,6 @@
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_version_title">Versión</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiado al portapapeles</string>
     <string name="user_dialog_title_add">Añadir usuario</string>
     <string name="user_dialog_title_edit">Editar usuario</string>
     <string name="user_dialog_description_add">Aquí puede añadir un usuario. Todos los tópicos para el servidor dado utilizarán este usuario.</string>
@@ -225,7 +224,6 @@
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="add_dialog_use_another_server_description">Introduzca las URL de servicio para suscribirse a los tópicos de otros servidores.</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiada al portapapeles</string>
     <string name="settings_notifications_min_priority_summary_any">Se mostrarán todas las notificaciones</string>
     <string name="settings_notifications_auto_delete_one_month">Después de un mes</string>
     <string name="channel_subscriber_notification_instant_text_three">Suscrito a tres tópicos de entrega instantánea</string>
@@ -322,7 +320,6 @@
     <string name="detail_settings_appearance_display_name_message">Establezca un nombre a mostrar para esta suscripción. Deje en blanco para usar el valor predeterminado (%1$s).</string>
     <string name="detail_settings_about_header">Acerca de</string>
     <string name="detail_settings_about_topic_url_title">URL del tópico</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado a portapapeles</string>
     <string name="add_dialog_base_urls_dropdown_choose">Elija la URL del servicio</string>
     <string name="add_dialog_base_urls_dropdown_clear">Borrar la URL del servicio</string>
     <string name="main_banner_websocket_text">Cambiar a WebSockets es la forma recomendada para conectarse a su servidor, y podría mejorar la vida de la batería, pero puede requerir <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configuración adicional en su proxy</a>. Esto se puede cambiar en la Configuración.</string>

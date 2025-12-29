@@ -54,7 +54,6 @@
     <string name="detail_test_message_error_unauthorized_anon">No es pot enviar el missatge: No es permeten publicacions anònimes.</string>
     <string name="detail_instant_delivery_disabled">Entrega instantània desactivada</string>
     <string name="detail_item_menu_copy_contents">Copiar la notificació</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificació copiada al porta-retalls</string>
     <string name="detail_menu_test">Enviar notificació de prova</string>
     <string name="notification_dialog_save">Guardar</string>
     <string name="main_banner_battery_button_remind_later">Preguntar més endavant</string>
@@ -71,7 +70,6 @@
     <string name="detail_item_menu_download">Descarrega l\'arxiu</string>
     <string name="detail_item_menu_cancel">Cancel·la la descàrrega</string>
     <string name="detail_item_menu_copy_url">Copiar la URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiada al porta-retalls</string>
     <string name="detail_item_cannot_open_url">No es pot obrir la URL: %1$s</string>
     <string name="detail_item_cannot_save">No es pot guardar l\'adjunt: %1$s</string>
     <string name="detail_item_cannot_delete">No es pot eliminar l\'adjunt: %1$s</string>
@@ -91,7 +89,7 @@
     <string name="detail_test_message">Això es una notificació de prova de l\'aplicació per Android de ntfy. Té un nivell de prioritat %1$d. Si n\'envies una altra, pot ser diferent.</string>
     <string name="detail_test_message_error">No es pot enviar el missatge: %1$s</string>
     <string name="detail_test_message_error_unauthorized_user">No es pot enviar el missatge: L\'usuari \"%1$s\" no està autoritzat.</string>
-    <string name="detail_copied_to_clipboard_message">Copiat al porta-retalls</string>
+    <string name="common_copied_to_clipboard">Copiat al porta-retalls</string>
     <string name="detail_item_snack_deleted">Notificació eliminada</string>
     <string name="detail_item_menu_open">Obre arxiu</string>
     <string name="detail_item_menu_save_file">Guardar l\'arxiu</string>
@@ -230,7 +228,6 @@
     <string name="detail_settings_global_setting_title">Usar configuració global</string>
     <string name="detail_settings_global_setting_suffix">usant configuració global</string>
     <string name="detail_settings_about_topic_url_title">URL del tema</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiat al porta-retalls</string>
     <string name="user_dialog_title_add">Afegir usuari</string>
     <string name="user_dialog_description_edit">Pots editar el nom d\'usuari o la contrasenya de l\'usuari seleccionat, o eliminar-lo.</string>
     <string name="user_dialog_base_url_hint">URL de servei</string>
@@ -307,6 +304,7 @@
     <string name="settings_notifications_auto_delete_summary_three_months">Eliminar automàticament les notificacions al cap de 3 mesos</string>
     <string name="settings_notifications_auto_delete_three_months">Al cap de 3 mesos</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Aparença</string>
     <string name="settings_general_users_summary">Afegir/eliminar usuaris a temes protegits</string>
     <string name="settings_general_users_prefs_user_used_by_one">Usat pel tema %1$s</string>
     <string name="settings_general_users_prefs_user_used_by_many">Usat pels temes %1$s</string>
@@ -328,7 +326,6 @@
 \nLes contrasenyes s\'han descartat, però no es mostren.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Cap tema/nom de host ha estat censurat. Potser no tens cap subscripció\?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">D\'acord</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiat al porta-retalls</string>
     <string name="detail_settings_appearance_header">Apariència</string>
     <string name="detail_settings_appearance_icon_set_summary">Triar una icona per mostrar a les notificacions</string>
     <string name="detail_settings_appearance_icon_remove_summary">Icona mostrada a notificacions d\'aquest tema</string>

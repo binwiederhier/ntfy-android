@@ -116,7 +116,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nie można wysłać wiadomości: Anonimowa publikacja nie jest dozwolona.</string>
     <string name="detail_test_message_error_unauthorized_user">Nie można wysłać wiadomości: Użytkownik \"%1$s\" nie ma uprawnień.</string>
     <string name="detail_test_message_error_too_large">Nie można wysłać wiadomości: Załącznik jest zbyt duży.</string>
-    <string name="detail_copied_to_clipboard_message">Skopiowano do schowka</string>
+    <string name="common_copied_to_clipboard">Skopiowano do schowka</string>
     <string name="detail_item_cannot_delete">Nie można usunąć załącznika: %1$s</string>
     <string name="detail_item_download_failed">Nie można pobrać załącznika: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">nie pobrany</string>
@@ -173,7 +173,6 @@
     <string name="detail_settings_global_setting_suffix">przy użyciu ustawienia globalnego</string>
     <string name="detail_settings_about_header">Informacje o</string>
     <string name="detail_settings_about_topic_url_title">Adres URL tematu</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Skopiowano do schowka</string>
     <string name="user_dialog_password_hint_add">Hasło</string>
     <string name="user_dialog_password_hint_edit">Hasło (niezmienione, jeśli pozostawiono puste)</string>
     <string name="user_dialog_button_delete">Usuń użytkownika</string>
@@ -207,9 +206,7 @@
     <string name="detail_item_cannot_save">Nie można zapisać załącznika: %1$s</string>
     <string name="detail_item_menu_open">Otwórz plik</string>
     <string name="detail_item_menu_copy_url">Kopiuj Adres URL</string>
-    <string name="detail_item_menu_copy_url_copied">Adres URL skopiowany do schowka</string>
     <string name="detail_item_menu_copy_contents">Kopiuj powiadomienie</string>
-    <string name="detail_item_menu_copy_contents_copied">Powiadomienie skopiowane do schowka</string>
     <string name="detail_item_saved_successfully">Zapisane jako \"%1$s\" w folderze \"Downloads\"</string>
     <string name="detail_item_cannot_download">Nie można otworzyć lub pobrać załącznika. Link wygasł i nie można było znaleźć lokalnego pliku.</string>
     <string name="detail_item_cannot_open">Nie można otworzyć załącznika: %1$s</string>
@@ -276,6 +273,7 @@
     <string name="settings_notifications_auto_delete_one_week">Po tygodniu</string>
     <string name="settings_notifications_auto_delete_three_months">Po 3 miesiącach</string>
     <string name="settings_general_header">Ogólne</string>
+    <string name="settings_appearance_header">Wygląd</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (domyślny)</string>
     <string name="settings_general_users_title">Zarządzaj użytkownikami</string>
     <string name="settings_general_users_summary">Dodaj/usuń użytkowników dla tematów chronionych</string>
@@ -314,7 +312,6 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Strumień JSON przez HTTP</string>
     <string name="settings_about_version_title">Wersja</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Skopiowano do schowka</string>
     <string name="detail_settings_notifications_instant_summary_on">Powiadomienia są dostarczane natychmiastowo. Wymaga usługi pierwszego planu i zużywa więcej baterii.</string>
     <string name="detail_settings_appearance_header">Wygląd</string>
     <string name="detail_settings_appearance_icon_set_title">Ikona subskrypcji</string>

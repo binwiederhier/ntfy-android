@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -477,14 +478,16 @@ fun ensureSafeNewFile(dir: File, name: String): File {
     throw Exception("Cannot find safe file")
 }
 
-fun copyToClipboard(context: Context, notification: Notification) {
-    val message = decodeMessage(notification)
+fun copyToClipboard(context: Context, label: String, message: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("notification message", message)
+    val clip = ClipData.newPlainText(label, message)
     clipboard.setPrimaryClip(clip)
-    Toast
-        .makeText(context, context.getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-        .show()
+
+    // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+        val copied = context.getString(R.string.common_copied_to_clipboard)
+        Toast.makeText(context, copied, Toast.LENGTH_LONG).show()
+    }
 }
 
 fun String.sha256(): String {
