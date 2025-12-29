@@ -1,5 +1,6 @@
 Features:
 * Allow publishing messages through the message bar and publish dialog (#98, ntfy-android#144)
+* Define custom HTTP headers to support authenticated proxies, tunnels and SSO (#116, #1018, ntfy-android#132, ntfy-android#146, thanks to @CrazyWolf13)
 * Language selector to allow overriding the system language (#1508, ntfy-android#145, thanks to @hudsonm62 for reporting)
 * Highlight phone numbers and email addresses in notifications (ntfy-android#71, thanks to @brennenputh)
 

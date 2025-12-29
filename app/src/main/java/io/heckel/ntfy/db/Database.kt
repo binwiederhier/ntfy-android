@@ -216,7 +216,7 @@ abstract class Database : RoomDatabase() {
         fun getInstance(context: Context): Database {
             return instance ?: synchronized(this) {
                 val instance = Room
-                    .databaseBuilder(context.applicationContext, Database::class.java,"AppDatabase")
+                    .databaseBuilder(context.applicationContext, Database::class.java, "AppDatabase")
                     .addMigrations(MIGRATION_1_2)
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
@@ -230,7 +230,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
                 instance
