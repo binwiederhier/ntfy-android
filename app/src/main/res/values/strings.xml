@@ -471,7 +471,7 @@
     <string name="custom_headers_dialog_title_edit">Edit custom header</string>
     <string name="custom_headers_dialog_base_url_hint">Service URL</string>
     <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
-    <string name="custom_headers_dialog_value_hint">Value (e.g. 9f3c2e4a1b2d4e)</string>
+    <string name="custom_headers_dialog_value_hint">Header value (e.g. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
     <string name="custom_headers_dialog_description_edit">You may edit the header name/value for the selected header, or delete it.</string>
     <string name="custom_headers_dialog_error_invalid_name">Header name contains invalid characters</string>
