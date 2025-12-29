@@ -211,32 +211,26 @@ class ApiService(context: Context) {
      */
     class CustomHeadersInterceptor(private val repository: Repository) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
-            val originalRequest = chain.request()
-            val requestUrl = originalRequest.url.toString()
-
-            // Extract base URL from the request (protocol + host + port)
-            val baseUrl = "${originalRequest.url.scheme}://${originalRequest.url.host}" +
-                    if (originalRequest.url.port != 80 && originalRequest.url.port != 443) {
-                        ":${originalRequest.url.port}"
-                    } else {
-                        ""
-                    }
-
-            // Get custom headers for this specific server
-            val customHeaders = repository.getCustomHeadersForServer(baseUrl)
+            val request = chain.request()
+            val customHeaders = repository.getCustomHeadersForServer(buildBaseUrl(request))
 
             // If no custom headers for this server, proceed with original request
             if (customHeaders.isEmpty()) {
-                return chain.proceed(originalRequest)
+                return chain.proceed(request)
             }
 
             // Add custom headers to the request
-            val requestBuilder = originalRequest.newBuilder()
+            val requestBuilder = request.newBuilder()
             customHeaders.forEach { header ->
                 requestBuilder.addHeader(header.name, header.value)
             }
-
             return chain.proceed(requestBuilder.build())
+        }
+
+        private fun buildBaseUrl(request: Request): String {
+            val schemeAndHost = "${request.url.scheme}://${request.url.host}"
+            val maybePort = if (request.url.port != 80 && request.url.port != 443) ":${request.url.port}" else ""
+            return schemeAndHost + maybePort
         }
     }
 

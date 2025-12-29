@@ -993,7 +993,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 headers.forEach { header ->
                     val preference = Preference(preferenceScreen.context)
                     preference.title = header.name
-                    preference.summary = redactHeaderValue(header.value)
+                    preference.summary = "••••••••"
                     preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                         activity?.let {
                             CustomHeaderFragment
@@ -1008,12 +1008,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
             // Add header
             val headerAddCategory = PreferenceCategory(preferenceScreen.context)
-            headerAddCategory.title = getString(R.string.settings_general_custom_headers_prefs_header_add)
+            headerAddCategory.title = getString(R.string.settings_advanced_custom_headers_prefs_header_add)
             preferenceScreen.addPreference(headerAddCategory)
 
             val headerAddPref = Preference(preferenceScreen.context)
-            headerAddPref.title = getString(R.string.settings_general_custom_headers_prefs_header_add_title)
-            headerAddPref.summary = getString(R.string.settings_general_custom_headers_prefs_header_add_summary)
+            headerAddPref.title = getString(R.string.settings_advanced_custom_headers_prefs_header_add_title)
+            headerAddPref.summary = getString(R.string.settings_advanced_custom_headers_prefs_header_add_summary)
             headerAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
                 activity?.let {
                     CustomHeaderFragment
@@ -1023,14 +1023,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 true
             }
             headerAddCategory.addPreference(headerAddPref)
-        }
-
-        private fun redactHeaderValue(value: String): String {
-            return when {
-                value.isEmpty() -> "(empty)"
-                value.length <= 3 -> "•".repeat(value.length)
-                else -> "•".repeat(8)
-            }
         }
     }
 

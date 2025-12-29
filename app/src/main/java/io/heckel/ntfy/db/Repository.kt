@@ -18,7 +18,6 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import androidx.core.content.edit
 
 class Repository(private val sharedPrefs: SharedPreferences, database: Database) {
     private val subscriptionDao = database.subscriptionDao()
@@ -399,6 +398,64 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+
+    fun getCustomHeaders(): List<CustomHeader> {
+        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
+        return if (json != null) {
+            try {
+                val type = object : TypeToken<List<CustomHeader>>() {}.type
+                Gson().fromJson(json, type) ?: emptyList()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse custom headers", e)
+                emptyList()
+            }
+        } else {
+            emptyList()
+        }
+    }
+
+    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
+        return getCustomHeaders().filter { it.baseUrl == baseUrl }
+    }
+
+    fun addCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.add(header)
+        setCustomHeaders(currentHeaders)
+    }
+
+    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        val index = currentHeaders.indexOfFirst {
+            it.baseUrl == oldHeader.baseUrl && it.name == oldHeader.name
+        }
+        if (index >= 0) {
+            currentHeaders[index] = newHeader
+            setCustomHeaders(currentHeaders)
+        }
+    }
+
+    fun deleteCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.removeAll {
+            it.baseUrl == header.baseUrl && it.name == header.name
+        }
+        setCustomHeaders(currentHeaders)
+    }
+
+    private fun setCustomHeaders(headers: List<CustomHeader>) {
+        if (headers.isEmpty()) {
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_CUSTOM_HEADERS)
+            }
+        } else {
+            sharedPrefs.edit {
+                putString(SHARED_PREFS_CUSTOM_HEADERS, Gson().toJson(headers))
+            }
+        }
+    }
+
+
     fun isGlobalMuted(): Boolean {
         val mutedUntil = getGlobalMutedUntil()
         return mutedUntil == 1L || (mutedUntil > 1L && mutedUntil > System.currentTimeMillis()/1000)
@@ -508,84 +565,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
-    /**
-     * Get all custom headers as a list of CustomHeader objects
-     */
-    fun getCustomHeaders(): List<CustomHeader> {
-        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
-        return if (json != null) {
-            try {
-                val type = object : TypeToken<List<CustomHeader>>() {}.type
-                Gson().fromJson(json, type) ?: emptyList()
-            } catch (e: Exception) {
-                Log.w("Repository", "Failed to parse custom headers", e)
-                emptyList()
-            }
-        } else {
-            emptyList()
-        }
-    }
-
-    /**
-     * Get custom headers for a specific server URL
-     */
-    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
-        return getCustomHeaders().filter { it.baseUrl == baseUrl }
-    }
-
-    /**
-     * Add a new custom header
-     */
-    fun addCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.add(header)
-        saveCustomHeaders(currentHeaders)
-    }
-
-    /**
-     * Update an existing custom header
-     */
-    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        val index = currentHeaders.indexOfFirst {
-            it.baseUrl == oldHeader.baseUrl &&
-            it.name == oldHeader.name
-        }
-        if (index >= 0) {
-            currentHeaders[index] = newHeader
-            saveCustomHeaders(currentHeaders)
-        }
-    }
-
-    /**
-     * Delete a custom header
-     */
-    fun deleteCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.removeAll {
-            it.baseUrl == header.baseUrl &&
-            it.name == header.name
-        }
-        saveCustomHeaders(currentHeaders)
-    }
-
-    /**
-     * Save the list of custom headers to SharedPreferences
-     */
-    private fun saveCustomHeaders(headers: List<CustomHeader>) {
-        val json = if (headers.isEmpty()) {
-            null
-        } else {
-            Gson().toJson(headers)
-        }
-
-        if (json == null) {
-            sharedPrefs.edit().remove(SHARED_PREFS_CUSTOM_HEADERS).apply()
-        } else {
-            sharedPrefs.edit().putString(SHARED_PREFS_CUSTOM_HEADERS, json).apply()
-        }
-    }
-
     private fun getState(subscriptionId: Long): ConnectionState {
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
     }
@@ -672,6 +651,12 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 }
+
+data class CustomHeader(
+    val baseUrl: String,
+    val name: String,
+    val value: String
+)
 
 /* https://stackoverflow.com/a/57079290/1440785 */
 fun <T, K, R> LiveData<T>.combineWith(
