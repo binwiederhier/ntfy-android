@@ -3,20 +3,19 @@ package io.heckel.ntfy.ui
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.AfterChangedTextWatcher
-import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.validUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,11 +27,15 @@ class CustomHeaderFragment : DialogFragment() {
     private lateinit var listener: CustomHeaderDialogListener
     private lateinit var repository: Repository
 
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var saveMenuItem: MenuItem
+    private lateinit var deleteMenuItem: MenuItem
+    private lateinit var descriptionView: TextView
+    private lateinit var baseUrlViewLayout: TextInputLayout
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var headerNameView: TextInputEditText
     private lateinit var headerValueView: TextInputEditText
     private lateinit var headerNameLayout: TextInputLayout
-    private lateinit var positiveButton: Button
 
     interface CustomHeaderDialogListener {
         fun onAddCustomHeader(dialog: DialogFragment, header: CustomHeader)
@@ -47,6 +50,10 @@ class CustomHeaderFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        if (activity == null) {
+            throw IllegalStateException("Activity cannot be null")
+        }
+
         // Reconstruct header (if it is present in the bundle)
         val baseUrl = arguments?.getString(BUNDLE_BASE_URL)
         val headerName = arguments?.getString(BUNDLE_HEADER_NAME)
@@ -59,82 +66,95 @@ class CustomHeaderFragment : DialogFragment() {
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_custom_header_dialog, null)
 
-        val positiveButtonTextResId = if (header == null) R.string.custom_headers_dialog_button_add else R.string.custom_headers_dialog_button_save
-        val descriptionView: TextView = view.findViewById(R.id.custom_header_dialog_description)
+        // Setup toolbar
+        toolbar = view.findViewById(R.id.custom_header_dialog_toolbar)
+        toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.custom_header_dialog_action_save -> {
+                    saveClicked()
+                    true
+                }
+                R.id.custom_header_dialog_action_delete -> {
+                    if (this::listener.isInitialized) {
+                        listener.onDeleteCustomHeader(this, header!!)
+                    }
+                    dismiss()
+                    true
+                }
+                else -> false
+            }
+        }
+        saveMenuItem = toolbar.menu.findItem(R.id.custom_header_dialog_action_save)
+        deleteMenuItem = toolbar.menu.findItem(R.id.custom_header_dialog_action_delete)
 
+        // Setup views
+        descriptionView = view.findViewById(R.id.custom_header_dialog_description)
+        baseUrlViewLayout = view.findViewById(R.id.custom_header_dialog_base_url_layout)
         baseUrlView = view.findViewById(R.id.custom_header_dialog_base_url)
         headerNameView = view.findViewById(R.id.custom_header_dialog_name)
         headerValueView = view.findViewById(R.id.custom_header_dialog_value)
         headerNameLayout = view.findViewById(R.id.custom_header_dialog_name_layout)
 
-        var title: String
         if (header == null) {
-            title = getString(R.string.custom_headers_dialog_title_add)
+            toolbar.setTitle(R.string.custom_headers_dialog_title_add)
             descriptionView.text = getString(R.string.custom_headers_dialog_description_add)
-            baseUrlView.visibility = View.VISIBLE
+            baseUrlViewLayout.visibility = View.VISIBLE
+            saveMenuItem.setTitle(R.string.custom_headers_dialog_button_add)
+            deleteMenuItem.isVisible = false
         } else {
-            title = getString(R.string.custom_headers_dialog_title_edit)
+            toolbar.setTitle(R.string.custom_headers_dialog_title_edit)
             descriptionView.text = getString(R.string.custom_headers_dialog_description_edit)
-            baseUrlView.visibility = View.GONE
+            baseUrlViewLayout.visibility = View.GONE
             baseUrlView.setText(header!!.baseUrl)
             headerNameView.setText(header!!.name)
             headerValueView.setText(header!!.value)
+            saveMenuItem.setTitle(R.string.custom_headers_dialog_button_save)
+            deleteMenuItem.isVisible = true
         }
 
-        // Build dialog
-        val builder = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(title)
-            .setView(view)
-            .setPositiveButton(positiveButtonTextResId) { _, _ ->
-                saveClicked()
-            }
-            .setNegativeButton(R.string.user_dialog_button_cancel) { _, _ ->
-                // Do nothing
-            }
-        if (header != null) {
-            builder.setNeutralButton(R.string.custom_headers_dialog_button_delete)  { _, _ ->
-                if (this::listener.isInitialized) {
-                    listener.onDeleteCustomHeader(this, header!!)
-                }
-            }
-        }
-        val dialog = builder.create()
-        dialog.setOnShowListener {
-            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-
-            // Delete button should be red
-            if (header != null) {
-                dialog
-                    .getButton(AlertDialog.BUTTON_NEUTRAL)
-                    .dangerButton()
-            }
-
-            // Validate input when typing
-            val textWatcher = AfterChangedTextWatcher {
-                validateInput()
-            }
-            baseUrlView.addTextChangedListener(textWatcher)
-            headerNameView.addTextChangedListener(textWatcher)
-            headerValueView.addTextChangedListener(textWatcher)
-
-            // Focus
-            if (header != null) {
-                headerNameView.requestFocus()
-                if (headerNameView.text != null) {
-                    headerNameView.setSelection(headerNameView.text!!.length)
-                }
-            } else {
-                baseUrlView.requestFocus()
-            }
-
-            // Validate now!
+        // Validate input when typing
+        val textWatcher = AfterChangedTextWatcher {
             validateInput()
         }
+        baseUrlView.addTextChangedListener(textWatcher)
+        headerNameView.addTextChangedListener(textWatcher)
+        headerValueView.addTextChangedListener(textWatcher)
 
-        // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        // Build dialog
+        val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
+        dialog.setContentView(view)
+
+        // Initial validation
+        validateInput()
 
         return dialog
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Show keyboard after the dialog is fully visible
+        val focusView = if (header != null) headerNameView else baseUrlView
+        focusView.postDelayed({
+            focusView.requestFocus()
+            if (header != null && headerNameView.text != null) {
+                headerNameView.setSelection(headerNameView.text!!.length)
+            }
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(focusView, InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
     }
 
     private fun saveClicked() {
@@ -154,9 +174,12 @@ class CustomHeaderFragment : DialogFragment() {
             )
             listener.onUpdateCustomHeader(this, header!!, newHeader)
         }
+        dismiss()
     }
 
     private fun validateInput() {
+        if (!this::saveMenuItem.isInitialized) return // As per crash seen in Google Play
+
         val baseUrl = baseUrlView.text?.toString() ?: ""
         val headerName = headerNameView.text?.toString()?.trim() ?: ""
         val headerValue = headerValueView.text?.toString()?.trim() ?: ""
@@ -186,13 +209,13 @@ class CustomHeaderFragment : DialogFragment() {
             }
             if (header == null) {
                 // New header: baseUrl, name, and value required
-                positiveButton.isEnabled = validUrl(baseUrl)
+                saveMenuItem.isEnabled = validUrl(baseUrl)
                         && headerName.isNotEmpty()
                         && headerValue.isNotEmpty()
                         && isValid
             } else {
                 // Editing header: name and value required
-                positiveButton.isEnabled = headerName.isNotEmpty()
+                saveMenuItem.isEnabled = headerName.isNotEmpty()
                         && headerValue.isNotEmpty()
                         && isValid
             }

@@ -1,22 +1,21 @@
 package io.heckel.ntfy.ui
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.AfterChangedTextWatcher
-import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.validUrl
 
 class UserFragment : DialogFragment() {
@@ -25,11 +24,14 @@ class UserFragment : DialogFragment() {
     private lateinit var listener: UserDialogListener
     private lateinit var repository: Repository
 
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var saveMenuItem: MenuItem
+    private lateinit var deleteMenuItem: MenuItem
+    private lateinit var descriptionView: TextView
     private lateinit var baseUrlViewLayout: TextInputLayout
     private lateinit var baseUrlView: TextInputEditText
     private lateinit var usernameView: TextInputEditText
     private lateinit var passwordView: TextInputEditText
-    private lateinit var positiveButton: Button
 
     interface UserDialogListener {
         fun onAddUser(dialog: DialogFragment, user: User)
@@ -44,6 +46,10 @@ class UserFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        if (activity == null) {
+            throw IllegalStateException("Activity cannot be null")
+        }
+
         // Reconstruct user (if it is present in the bundle)
         val baseUrl = arguments?.getString(BUNDLE_BASE_URL)
         val username = arguments?.getString(BUNDLE_USERNAME)
@@ -59,81 +65,94 @@ class UserFragment : DialogFragment() {
         // Build root view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_user_dialog, null)
 
-        val positiveButtonTextResId = if (user == null) R.string.user_dialog_button_add else R.string.user_dialog_button_save
-        val titleView = view.findViewById<TextView>(R.id.user_dialog_title)
-        val descriptionView = view.findViewById<TextView>(R.id.user_dialog_description)
+        // Setup toolbar
+        toolbar = view.findViewById(R.id.user_dialog_toolbar)
+        toolbar.setNavigationOnClickListener {
+            dismiss()
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.user_dialog_action_save -> {
+                    saveClicked()
+                    true
+                }
+                R.id.user_dialog_action_delete -> {
+                    if (this::listener.isInitialized) {
+                        listener.onDeleteUser(this, user!!.baseUrl)
+                    }
+                    dismiss()
+                    true
+                }
+                else -> false
+            }
+        }
+        saveMenuItem = toolbar.menu.findItem(R.id.user_dialog_action_save)
+        deleteMenuItem = toolbar.menu.findItem(R.id.user_dialog_action_delete)
 
+        // Setup views
+        descriptionView = view.findViewById(R.id.user_dialog_description)
         baseUrlViewLayout = view.findViewById(R.id.user_dialog_base_url_layout)
         baseUrlView = view.findViewById(R.id.user_dialog_base_url)
         usernameView = view.findViewById(R.id.user_dialog_username)
         passwordView = view.findViewById(R.id.user_dialog_password)
 
         if (user == null) {
-            titleView.text = getString(R.string.user_dialog_title_add)
+            toolbar.setTitle(R.string.user_dialog_title_add)
             descriptionView.text = getString(R.string.user_dialog_description_add)
             baseUrlViewLayout.visibility = View.VISIBLE
             passwordView.hint = getString(R.string.user_dialog_password_hint_add)
+            saveMenuItem.setTitle(R.string.user_dialog_button_add)
+            deleteMenuItem.isVisible = false
         } else {
-            titleView.text = getString(R.string.user_dialog_title_edit)
+            toolbar.setTitle(R.string.user_dialog_title_edit)
             descriptionView.text = getString(R.string.user_dialog_description_edit)
             baseUrlViewLayout.visibility = View.GONE
             usernameView.setText(user!!.username)
             passwordView.hint = getString(R.string.user_dialog_password_hint_edit)
+            saveMenuItem.setTitle(R.string.user_dialog_button_save)
+            deleteMenuItem.isVisible = true
         }
 
-        // Build dialog
-        val builder = MaterialAlertDialogBuilder(requireContext())
-            .setView(view)
-            .setPositiveButton(positiveButtonTextResId) { _, _ ->
-                saveClicked()
-            }
-            .setNegativeButton(R.string.user_dialog_button_cancel) { _, _ ->
-                // Do nothing
-            }
-        if (user != null) {
-            builder.setNeutralButton(R.string.user_dialog_button_delete)  { _, _ ->
-                if (this::listener.isInitialized) {
-                    listener.onDeleteUser(this, user!!.baseUrl)
-                }
-            }
-        }
-        val dialog = builder.create()
-        dialog.setOnShowListener {
-            positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-
-            // Delete button should be red
-            if (user != null) {
-                dialog
-                    .getButton(AlertDialog.BUTTON_NEUTRAL)
-                    .dangerButton()
-            }
-
-            // Validate input when typing
-            val textWatcher = AfterChangedTextWatcher {
-                validateInput()
-            }
-            baseUrlView.addTextChangedListener(textWatcher)
-            usernameView.addTextChangedListener(textWatcher)
-            passwordView.addTextChangedListener(textWatcher)
-
-            // Focus
-            if (user != null) {
-                usernameView.requestFocus()
-                if (usernameView.text != null) {
-                    usernameView.setSelection(usernameView.text!!.length)
-                }
-            } else {
-                baseUrlView.requestFocus()
-            }
-
-            // Validate now!
+        // Validate input when typing
+        val textWatcher = AfterChangedTextWatcher {
             validateInput()
         }
+        baseUrlView.addTextChangedListener(textWatcher)
+        usernameView.addTextChangedListener(textWatcher)
+        passwordView.addTextChangedListener(textWatcher)
 
-        // Show keyboard when the dialog is shown (see https://stackoverflow.com/a/19573049/1440785)
-        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        // Build dialog
+        val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
+        dialog.setContentView(view)
+
+        // Initial validation
+        validateInput()
 
         return dialog
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Show keyboard after the dialog is fully visible
+        val focusView = if (user != null) usernameView else baseUrlView
+        focusView.postDelayed({
+            focusView.requestFocus()
+            if (user != null && usernameView.text != null) {
+                usernameView.setSelection(usernameView.text!!.length)
+            }
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(focusView, InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
     }
 
     private fun saveClicked() {
@@ -152,9 +171,12 @@ class UserFragment : DialogFragment() {
             }
             listener.onUpdateUser(this, user!!)
         }
+        dismiss()
     }
 
     private fun validateInput() {
+        if (!this::saveMenuItem.isInitialized) return // As per crash seen in Google Play
+
         val baseUrl = baseUrlView.text?.toString() ?: ""
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
@@ -175,12 +197,12 @@ class UserFragment : DialogFragment() {
                 baseUrlViewLayout.error = getString(R.string.user_dialog_base_url_error_authorization_header_exists)
             }
             
-            positiveButton.isEnabled = validUrl(baseUrl)
+            saveMenuItem.isEnabled = validUrl(baseUrl)
                     && !baseUrlsInUse.contains(baseUrl)
                     && !hasAuthorizationHeader
                     && username.isNotEmpty() && password.isNotEmpty()
         } else {
-            positiveButton.isEnabled = username.isNotEmpty() // Unchanged if left blank
+            saveMenuItem.isEnabled = username.isNotEmpty() // Unchanged if left blank
         }
     }
 
