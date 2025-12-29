@@ -44,6 +44,11 @@
                 app:summary="@string/settings_general_users_summary"
                 app:fragment="io.heckel.ntfy.ui.SettingsActivity$UserSettingsFragment"/>
         <ListPreference
+                app:key="@string/settings_general_language_key"
+                app:title="@string/settings_general_language_title"/>
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/settings_appearance_header">
+        <ListPreference
                 app:key="@string/settings_general_dark_mode_key"
                 app:title="@string/settings_general_dark_mode_title"
                 app:entries="@array/settings_general_dark_mode_entries"
@@ -53,6 +58,10 @@
                 app:key="@string/settings_general_dynamic_colors_key"
                 app:title="@string/settings_general_dynamic_colors_title"
                 app:isPreferenceVisible="false"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_general_message_bar_key"
+                app:title="@string/settings_general_message_bar_title"
+                app:defaultValue="true"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference
@@ -85,6 +94,11 @@
                 app:key="@string/settings_advanced_unifiedpush_key"
                 app:title="@string/settings_advanced_unifiedpush_title"
                 app:enabled="true"/>
+        <Preference
+            app:key="@string/settings_advanced_custom_headers_key"
+            app:title="@string/settings_advanced_custom_headers_title"
+            app:summary="@string/settings_advanced_custom_headers_summary"
+            app:fragment="io.heckel.ntfy.ui.SettingsActivity$CustomHeaderSettingsFragment"/>
         <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_record_logs_key"
                 app:title="@string/settings_advanced_record_logs_title"

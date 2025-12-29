@@ -1,9 +1,6 @@
 package io.heckel.ntfy.ui
 
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
@@ -14,12 +11,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -56,13 +57,16 @@ import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
+import android.widget.ImageButton
 
-class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener {
+class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
-    private val api = ApiService()
+    private val api by lazy { ApiService(this) }
     private val messenger = FirebaseMessenger()
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -80,6 +84,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var menu: Menu
+    private lateinit var fab: FloatingActionButton
+    private lateinit var messageBar: View
+    private lateinit var messageBarText: TextInputEditText
+    private lateinit var messageBarPublishButton: FloatingActionButton
+    private lateinit var messageBarExpandButton: ImageButton
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -115,6 +124,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
@@ -137,8 +147,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
@@ -280,6 +289,14 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         adapter = DetailAdapter(this, lifecycleScope, repository, onNotificationClick, onNotificationLongClick)
         mainList = findViewById(R.id.detail_notification_list)
         mainList.adapter = adapter
+        
+        // Apply window insets to ensure content is not covered by navigation bar
+        mainList.clipToPadding = false
+        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBars.bottom)
+            insets
+        }
 
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
@@ -343,6 +360,126 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             repository.mediaPlayer.stop()
         } catch (_: Exception) {
             // Ignore errors
+        }
+
+        // Setup FAB and message bar
+        setupPublishUI()
+    }
+
+    private fun setupPublishUI() {
+        fab = findViewById(R.id.detail_fab)
+        messageBar = findViewById(R.id.detail_message_bar)
+        messageBarText = messageBar.findViewById(R.id.message_bar_text)
+        messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
+        messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
+
+        // Message bar enabled: Show message bar, hide FAB
+        if (repository.getMessageBarEnabled()) {
+            fab.visibility = View.GONE
+            messageBar.visibility = View.VISIBLE
+
+            // Send button click
+            messageBarPublishButton.setOnClickListener {
+                publishMessage(messageBarText.text.toString()) // Allow publishing empty messages
+            }
+
+            // Expand button click opens the full dialog
+            messageBarExpandButton.setOnClickListener {
+                openPublishDialog(messageBarText.text.toString())
+            }
+
+            // Handle window insets for navigation bar and keyboard
+            val contentLayout = findViewById<View>(R.id.detail_content_layout)
+            ViewCompat.setOnApplyWindowInsetsListener(contentLayout) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                // Use the larger of navigation bar or keyboard height
+                val bottomPadding = maxOf(systemBars.bottom, ime.bottom)
+                view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomPadding)
+                insets
+            }
+        } else {
+            // Show FAB, hide message bar
+            fab.visibility = View.VISIBLE
+            messageBar.visibility = View.GONE
+
+            fab.setOnClickListener {
+                openPublishDialog("")
+            }
+
+            // Add bottom padding to FAB to account for navigation bar
+            ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val layoutParams = view.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+                layoutParams.bottomMargin = systemBars.bottom + resources.getDimensionPixelSize(R.dimen.fab_margin)
+                view.layoutParams = layoutParams
+                insets
+            }
+        }
+    }
+
+    private fun openPublishDialog(initialMessage: String) {
+        val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, subscriptionDisplayName, initialMessage)
+        fragment.show(supportFragmentManager, PublishFragment.TAG)
+    }
+
+    private fun publishMessage(message: String) {
+        // Disable send button while publishing
+        messageBarPublishButton.isEnabled = false
+        
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val user = repository.getUser(subscriptionBaseUrl)
+                api.publish(
+                    baseUrl = subscriptionBaseUrl,
+                    topic = subscriptionTopic,
+                    user = user,
+                    message = message,
+                    title = "",
+                    priority = 3, // Default priority
+                    tags = emptyList(),
+                    delay = ""
+                )
+                runOnUiThread {
+                    messageBarText.text?.clear()
+                    messageBarPublishButton.isEnabled = true
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to publish message", e)
+                runOnUiThread {
+                    messageBarPublishButton.isEnabled = true
+                    val errorMessage = when (e) {
+                        is ApiService.UnauthorizedException -> {
+                            if (e.user != null) {
+                                getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
+                            } else {
+                                getString(R.string.detail_test_message_error_unauthorized_anon)
+                            }
+                        }
+                        is ApiService.EntityTooLargeException -> {
+                            getString(R.string.detail_test_message_error_too_large)
+                        }
+                        is ApiService.ApiException -> {
+                            getString(R.string.publish_dialog_error_server, e.error, e.code)
+                        }
+                        else -> {
+                            getString(R.string.publish_dialog_error_sending, e.message)
+                        }
+                    }
+                    Toast.makeText(this@DetailActivity, errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    /**
+     * Called by the publish dialog (PublishFragment) after the notification
+     * was successfully published.
+     */
+    override fun onPublished() {
+        // Clear the message bar text when a message is published from the dialog
+        if (this::messageBarText.isInitialized) {
+            messageBarText.text?.clear()
         }
     }
 
@@ -548,12 +685,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         Log.d(TAG, "Copying topic URL $url to clipboard ")
 
         runOnUiThread {
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("topic address", url)
-            clipboard.setPrimaryClip(clip)
-            Toast
-                .makeText(this, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                .show()
+            copyToClipboard(this, "topic address", url)
         }
     }
 
@@ -737,13 +869,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 }
             }
         } else {
-            copyToClipboard(notification)
-        }
-    }
-
-    private fun copyToClipboard(notification: Notification) {
-        runOnUiThread {
-            copyToClipboard(this, notification)
+            runOnUiThread {
+                copyToClipboard(this, "notification", decodeMessage(notification))
+            }
         }
     }
 
@@ -773,12 +901,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 }.orEmpty()
             }
             runOnUiThread {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("notifications", content)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(this@DetailActivity, getString(R.string.detail_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(this@DetailActivity, "notifications", content)
                 finishActionMode()
             }
         }

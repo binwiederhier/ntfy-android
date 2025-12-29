@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        This file only lists languages that have > 80% of strings translated.
+
+        Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+        to help translate other languages.
+
+        IMPORTANT: If a language is added here, also add it to the supportedLocales list
+        in the SettingsActivity.
+    -->
+    <locale android:name="en"/> <!-- English (default) -->
+    <locale android:name="bg"/> <!-- Bulgarian -->
+    <locale android:name="ca"/> <!-- Catalan -->
+    <locale android:name="cs"/> <!-- Czech -->
+    <locale android:name="de"/> <!-- German -->
+    <locale android:name="es"/> <!-- Spanish -->
+    <locale android:name="et"/> <!-- Estonian -->
+    <locale android:name="fi"/> <!-- Finnish -->
+    <locale android:name="fr"/> <!-- French -->
+    <locale android:name="gl"/> <!-- Galician -->
+    <locale android:name="in"/> <!-- Indonesian -->
+    <locale android:name="it"/> <!-- Italian -->
+    <locale android:name="iw"/> <!-- Hebrew -->
+    <locale android:name="ja"/> <!-- Japanese -->
+    <locale android:name="ko"/> <!-- Korean -->
+    <locale android:name="nb-NO"/> <!-- Norwegian Bokmål -->
+    <locale android:name="nl"/> <!-- Dutch -->
+    <locale android:name="pl"/> <!-- Polish -->
+    <locale android:name="pt"/> <!-- Portuguese -->
+    <locale android:name="pt-BR"/> <!-- Portuguese (Brazil) -->
+    <locale android:name="ro"/> <!-- Romanian -->
+    <locale android:name="ru"/> <!-- Russian -->
+    <locale android:name="sk"/> <!-- Slovak -->
+    <locale android:name="sv"/> <!-- Swedish -->
+    <locale android:name="ta"/> <!-- Tamil -->
+    <locale android:name="tr"/> <!-- Turkish -->
+    <locale android:name="uk"/> <!-- Ukrainian -->
+    <locale android:name="uz"/> <!-- Uzbek -->
+    <locale android:name="vi"/> <!-- Vietnamese -->
+    <locale android:name="zh-CN"/> <!-- Chinese (Simplified) -->
+    <locale android:name="zh-TW"/> <!-- Chinese (Traditional) -->
+</locale-config>

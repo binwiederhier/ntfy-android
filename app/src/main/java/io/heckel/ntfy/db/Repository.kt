@@ -6,12 +6,18 @@ import android.media.MediaPlayer
 import android.os.Build
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.*
+import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import androidx.core.content.edit
 
 class Repository(private val sharedPrefs: SharedPreferences, database: Database) {
     private val subscriptionDao = database.subscriptionDao()
@@ -333,6 +339,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getMessageBarEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, true) // Enabled by default
+    }
+
+    fun setMessageBarEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, enabled)
+        }
+    }
+
     fun getBatteryOptimizationsRemindTime(): Long {
         return sharedPrefs.getLong(SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME, BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS)
     }
@@ -378,6 +394,62 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             sharedPrefs.edit {
                 remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
                     .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
+            }
+        }
+    }
+
+    fun getCustomHeaders(): List<CustomHeader> {
+        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
+        return if (json != null) {
+            try {
+                val type = object : TypeToken<List<CustomHeader>>() {}.type
+                Gson().fromJson(json, type) ?: emptyList()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse custom headers", e)
+                emptyList()
+            }
+        } else {
+            emptyList()
+        }
+    }
+
+    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
+        return getCustomHeaders().filter { it.baseUrl == baseUrl }
+    }
+
+    fun addCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.add(header)
+        setCustomHeaders(currentHeaders)
+    }
+
+    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        val index = currentHeaders.indexOfFirst {
+            it.baseUrl == oldHeader.baseUrl && it.name == oldHeader.name
+        }
+        if (index >= 0) {
+            currentHeaders[index] = newHeader
+            setCustomHeaders(currentHeaders)
+        }
+    }
+
+    fun deleteCustomHeader(header: CustomHeader) {
+        val currentHeaders = getCustomHeaders().toMutableList()
+        currentHeaders.removeAll {
+            it.baseUrl == header.baseUrl && it.name == header.name
+        }
+        setCustomHeaders(currentHeaders)
+    }
+
+    private fun setCustomHeaders(headers: List<CustomHeader>) {
+        if (headers.isEmpty()) {
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_CUSTOM_HEADERS)
+            }
+        } else {
+            sharedPrefs.edit {
+                putString(SHARED_PREFS_CUSTOM_HEADERS, Gson().toJson(headers))
             }
         }
     }
@@ -511,12 +583,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
+        const val SHARED_PREFS_MESSAGE_BAR_ENABLED = "MessageBarEnabled"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
         const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)
         const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
+        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 
@@ -575,6 +649,12 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 }
+
+data class CustomHeader(
+    val baseUrl: String,
+    val name: String,
+    val value: String
+)
 
 /* https://stackoverflow.com/a/57079290/1440785 */
 fun <T, K, R> LiveData<T>.combineWith(

@@ -1,15 +1,13 @@
 package io.heckel.ntfy.ui
 
 import android.content.ContentResolver
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -45,6 +43,7 @@ class DetailSettingsActivity : AppCompatActivity() {
     private var subscriptionId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -79,8 +78,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
         
@@ -434,12 +432,7 @@ class DetailSettingsActivity : AppCompatActivity() {
             topicUrlPref?.summary = topicUrl
             topicUrlPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("topic url", topicUrl)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                        .makeText(context, getString(R.string.detail_settings_about_topic_url_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                        .show()
+                copyToClipboard(context, "topic url", topicUrl)
                 true
             }
         }

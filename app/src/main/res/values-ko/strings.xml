@@ -137,6 +137,7 @@
     <string name="settings_notifications_auto_delete_one_month">1달 뒤</string>
     <string name="settings_notifications_auto_delete_three_months">3달 뒤</string>
     <string name="settings_general_header">일반</string>
+    <string name="settings_appearance_header">표시 설정</string>
     <string name="settings_general_default_base_url_title">기본 서버</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (기본)</string>
     <string name="settings_general_dark_mode_title">다크 모드</string>
@@ -196,7 +197,6 @@
     <string name="detail_how_to_intro">알림을 받으려면 아래 주소로 PUT이나 POST 요청을 보내세요.</string>
     <string name="detail_deep_link_subscribed_toast_message">주제 %1$s 를 구독했습니다</string>
     <string name="detail_item_menu_cancel">다운로드 취소</string>
-    <string name="detail_item_menu_copy_contents_copied">알림이 클립보드로 복사됨</string>
     <string name="detail_item_cannot_save">첨부 파일을 저장할 수 없습니다: %1$s</string>
     <string name="detail_item_cannot_delete">첨부 파일을 삭제할 수 없습니다: %1$s</string>
     <string name="share_content_title">메세지 미리보기</string>
@@ -208,11 +208,9 @@
     <string name="detail_item_menu_download">파일 다운로드</string>
     <string name="detail_item_cannot_download">첨부 파일을 열거나 다운로드할 수 없습니다. 링크가 만료되었으며 로컬 사본을 찾을 수 없습니다.</string>
     <string name="settings_general_users_prefs_user_used_by_one">주제 %1$s에서 사용됨</string>
-    <string name="settings_about_version_copied_to_clipboard_message">클립보드에 복사됨</string>
     <string name="detail_settings_global_setting_title">전역 설정 사용하기</string>
-    <string name="detail_copied_to_clipboard_message">클립보드에 복사됨</string>
+    <string name="common_copied_to_clipboard">클립보드에 복사됨</string>
     <string name="detail_item_menu_open">파일 열기</string>
-    <string name="detail_item_menu_copy_url_copied">URL이 클립보드에 복사됨</string>
     <string name="add_dialog_base_urls_dropdown_choose">서비스 URL 선택</string>
     <string name="detail_how_to_example">예제 (curl 사용):<br/><tt>$ curl -d \\\"Hi\\\" %1$s</tt></string>
     <string name="share_content_file_error">파일 정보를 읽을 수 없습니다: %1$s</string>
@@ -321,7 +319,6 @@
     <string name="user_dialog_title_edit">사용자 편집</string>
     <string name="user_dialog_base_url_hint">서비스 URL</string>
     <string name="user_dialog_password_hint_edit">비밀번호 (변경시에만 입력)</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">클립보드에 복사됨</string>
     <string name="user_dialog_title_add">사용자 추가</string>
     <string name="user_dialog_description_edit">선택한 사용자의 아이디나 비밀번호를 변경하거나 삭제할 수 있습니다.</string>
     <string name="user_dialog_password_hint_add">비밀번호</string>

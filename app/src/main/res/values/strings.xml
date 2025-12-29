@@ -1,6 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
            tools:ignore="MissingTranslation">
 
+    <!-- Common strings -->
+    <string name="common_copied_to_clipboard">Copied to clipboard</string>
+
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Min priority</string>
     <string name="channel_notifications_low_name">Low priority</string>
@@ -138,7 +141,6 @@
     <string name="detail_test_message_error_unauthorized_anon">Cannot send message: Anonymous publishing not allowed.</string>
     <string name="detail_test_message_error_unauthorized_user">Cannot send message: The user \"%1$s\" is not authorized.</string>
     <string name="detail_test_message_error_too_large">Cannot send message: The attachment is too big.</string>
-    <string name="detail_copied_to_clipboard_message">Copied to clipboard</string>
     <string name="detail_instant_delivery_enabled">Instant delivery on</string>
     <string name="detail_instant_delivery_disabled">Instant delivery off</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
@@ -151,9 +153,7 @@
     <string name="detail_item_menu_cancel">Cancel download</string>
     <string name="detail_item_menu_save_file">Save file</string>
     <string name="detail_item_menu_copy_url">Copy URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copied to clipboard</string>
     <string name="detail_item_menu_copy_contents">Copy notification</string>
-    <string name="detail_item_menu_copy_contents_copied">Notification copied to clipboard</string>
     <string name="detail_item_saved_successfully">Saved as \"%1$s\" in the \"Downloads\" folder</string>
     <string name="detail_item_cannot_download">Cannot open or download attachment. The link expired and no local file could be found.</string>
     <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
@@ -198,6 +198,58 @@
     <!-- Detail settings -->
     <string name="detail_settings_title">Subscription settings</string>
     <!-- ... -->
+
+    <!-- Publish dialog -->
+    <string name="publish_dialog_title">Publish to %1$s</string>
+    <string name="publish_dialog_title_hint">Title</string>
+    <string name="publish_dialog_title_placeholder">e.g. Someone is at the door</string>
+    <string name="publish_dialog_message_hint">Message</string>
+    <string name="publish_dialog_message_placeholder" translatable="false">@string/message_bar_hint</string>
+    <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
+    <string name="publish_dialog_priority_hint">Priority</string>
+    <string name="publish_dialog_priority_default" translatable="false">@string/channel_notifications_default_name</string>
+    <string name="publish_dialog_priority_min" translatable="false">@string/channel_notifications_min_name</string>
+    <string name="publish_dialog_priority_low" translatable="false">@string/channel_notifications_low_name</string>
+    <string name="publish_dialog_priority_high" translatable="false">@string/channel_notifications_high_name</string>
+    <string name="publish_dialog_priority_max" translatable="false">@string/channel_notifications_max_name</string>
+    <string name="publish_dialog_button_publish">Publish</string>
+    <string name="publish_dialog_error_sending">Cannot publish message: %1$s</string>
+    <string name="publish_dialog_error_server">Cannot publish message: %1$s (code %2$d)</string>
+    <string name="publish_dialog_message_published">Message published</string>
+    <string name="publish_dialog_uploading">Uploading: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Upload cancelled</string>
+    <string name="publish_dialog_chip_title">Title</string>
+    <string name="publish_dialog_chip_tags">Tags</string>
+    <string name="publish_dialog_chip_priority">Priority</string>
+    <string name="publish_dialog_chip_click_url">Click URL</string>
+    <string name="publish_dialog_chip_email">Email</string>
+    <string name="publish_dialog_chip_delay">Delay</string>
+    <string name="publish_dialog_chip_markdown">Markdown</string>
+    <string name="publish_dialog_chip_attach_url">Attach by URL</string>
+    <string name="publish_dialog_chip_attach_file">Attach local file</string>
+    <string name="publish_dialog_chip_phone_call">Phone call</string>
+    <string name="publish_dialog_click_url_hint">Click URL</string>
+    <string name="publish_dialog_click_url_placeholder">e.g. https://example.com/alerts/1234</string>
+    <string name="publish_dialog_email_hint">Email</string>
+    <string name="publish_dialog_email_placeholder">e.g. phil@example.com</string>
+    <string name="publish_dialog_delay_hint">Delay delivery</string>
+    <string name="publish_dialog_delay_placeholder">e.g. 30m, 1h, today 9pm (English only)</string>
+    <string name="publish_dialog_attach_url_hint">Attachment URL</string>
+    <string name="publish_dialog_attach_url_placeholder">e.g. https://example.com/flowers.jpg</string>
+    <string name="publish_dialog_attach_filename_hint">Attachment filename</string>
+    <string name="publish_dialog_attach_filename_placeholder">e.g. lilies.jpg</string>
+    <string name="publish_dialog_phone_call_hint">Phone call</string>
+    <string name="publish_dialog_phone_call_placeholder">e.g. +1234567890</string>
+    <string name="publish_dialog_docs_text">For examples and a detailed description of all publish features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
+
+    <!-- Message bar -->
+    <string name="message_bar_hint">Type a message here</string>
+    <string name="message_bar_publish_button_description">Publish message</string>
+    <string name="message_bar_expand_button_description">More options</string>
+
+    <!-- Detail activity: Publish FAB -->
+    <string name="detail_fab_publish_description">Publish notification</string>
 
     <!-- Share activity -->
     <string name="share_title">Share</string>
@@ -290,6 +342,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
     <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Appearance</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
@@ -309,9 +362,15 @@
     <string name="settings_general_dark_mode_entry_system">Use system default</string>
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_general_language_title">Language</string>
+    <string name="settings_general_language_summary_system">Using system default</string>
+    <string name="settings_general_language_system_default">System default</string>
     <string name="settings_general_dynamic_colors_title">Dynamic colors</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Using the dynamic system colors</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Using the ntfy theme colors</string>
+    <string name="settings_general_message_bar_title">Show message bar</string>
+    <string name="settings_general_message_bar_summary_enabled">Message bar shown at bottom of topic view</string>
+    <string name="settings_general_message_bar_summary_disabled">Publish button shown at bottom of topic view</string>
     <string name="settings_backup_restore_header">Backup &amp; Restore</string>
     <string name="settings_backup_restore_backup_title">Back up to file</string>
     <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>
@@ -331,6 +390,11 @@
     <string name="settings_advanced_unifiedpush_title">Enable UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy will act as a UnifiedPush distributor</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy will not act as a UnifiedPush distributor</string>
+    <string name="settings_advanced_custom_headers_title">Custom headers</string>
+    <string name="settings_advanced_custom_headers_summary">Define custom HTTP headers that will be sent along with every request, e.g. if your ntfy server is behind an authenticated proxy or tunnel.</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Add header</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Add a header for a server</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Headers are included with every HTTP request. Each ntfy server can have its own set of custom headers.</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
     <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>
@@ -361,7 +425,6 @@
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- Subscription settings (most strings are re-used from above) -->
     <string name="detail_settings_notifications_instant_title">Instant delivery</string>
@@ -387,7 +450,6 @@
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">Topic URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copied to clipboard</string>
 
     <!-- User add/edit dialog -->
     <string name="user_dialog_title_add">Add user</string>
@@ -395,6 +457,7 @@
     <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
     <string name="user_dialog_base_url_hint">Service URL</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">Cannot add user if custom Authorization header is set for this server</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (unchanged if left blank)</string>
@@ -402,4 +465,20 @@
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
     <string name="user_dialog_button_save">Save</string>
+
+    <!-- Custom headers dialog  -->
+    <string name="custom_headers_dialog_title_add">Add custom header</string>
+    <string name="custom_headers_dialog_title_edit">Edit custom header</string>
+    <string name="custom_headers_dialog_base_url_hint">Service URL</string>
+    <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
+    <string name="custom_headers_dialog_value_hint">Header value (e.g. 9f3c2e4a1b2d4e)</string>
+    <string name="custom_headers_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
+    <string name="custom_headers_dialog_description_edit">You may edit the header name/value for the selected header, or delete it.</string>
+    <string name="custom_headers_dialog_error_invalid_name">Header name contains invalid characters</string>
+    <string name="custom_headers_dialog_error_reserved_name">This header is reserved and set by ntfy</string>
+    <string name="custom_headers_dialog_error_user_exists">Cannot add Authorization header if a user is configured for this server</string>
+    <string name="custom_headers_dialog_error_duplicate">A header with this name already exists for this server</string>
+    <string name="custom_headers_dialog_button_add">Add</string>
+    <string name="custom_headers_dialog_button_save">Save</string>
+    <string name="custom_headers_dialog_button_delete">Delete</string>
 </resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/user_dialog_action_save"
+        android:title="@string/user_dialog_button_add"
+        android:enabled="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/user_dialog_action_delete"
+        android:title="@string/user_dialog_button_delete"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>
+

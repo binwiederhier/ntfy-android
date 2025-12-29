@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/publish_dialog_publish_button"
+        android:title="@string/publish_dialog_button_publish"
+        android:enabled="false"
+        app:showAsAction="always" />
+</menu>

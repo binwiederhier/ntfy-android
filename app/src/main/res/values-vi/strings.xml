@@ -111,7 +111,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Không thể gửi thông báo: Gửi ẩn danh không được phép.</string>
     <string name="detail_test_message_error_unauthorized_user">Không thể gửi thông báo: Người dùng \"%1$s\" không có quyền.</string>
     <string name="detail_test_message_error_too_large">Không thể gửi thông báo: Tệp đính kèm quá lớn.</string>
-    <string name="detail_copied_to_clipboard_message">Đã lưu vào clipboard</string>
+    <string name="common_copied_to_clipboard">Đã lưu vào clipboard</string>
     <string name="detail_instant_delivery_enabled">Hiện thông báo thời gian thực</string>
     <string name="detail_instant_delivery_disabled">Đã tắt thông báo thời gian thực</string>
     <string name="detail_deep_link_subscribed_toast_message">Đã đăng kí chủ đề %1$s</string>
@@ -123,9 +123,7 @@
     <string name="detail_item_menu_cancel">Hủy tải xuống</string>
     <string name="detail_item_menu_save_file">Lưu tệp</string>
     <string name="detail_item_menu_copy_url">Sao chép URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL đã được sao chép vào clipboard</string>
     <string name="detail_item_menu_copy_contents">Sao chép thông báo</string>
-    <string name="detail_item_menu_copy_contents_copied">Thông báo đã được sao chép vào clipboard</string>
     <string name="detail_item_saved_successfully">Đã lưu thành \"%1$s\" trong thư mục \"Downloads\"</string>
     <string name="detail_item_cannot_download">Không thể mở hoặc tải tệp. Liên kết hết hạn và không tìm thấy tệp.</string>
     <string name="detail_item_cannot_open">Không thể mở tệp đính kèm: %1$s</string>
@@ -241,6 +239,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Cảnh báo liên tục cho thông báo ưu tiên cao nhất cho đén khi tắt</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Cảnh báo một lần cho thông báo ưu tiên cao nhất</string>
     <string name="settings_general_header">Tổng quan</string>
+    <string name="settings_appearance_header">Giao diện</string>
     <string name="settings_general_default_base_url_title">Server mặc định</string>
     <string name="settings_general_default_base_url_message">Nhập URL server để dùng làm mặc định khi đăng ký/chia sẻ chủ đề mới.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (mặc định)</string>
@@ -308,7 +307,6 @@
     <string name="settings_advanced_exact_alarms_true">ntfy có thể đặt báo thức chính xác. Báo thức chính xác cần thiết để kết nối lại WebSockets khi chạy nền. Nhấn để thu hồi quyền.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy không thể đặt báo thức chính xác. Báo thức chính xác cần thiết để kết nối lại WebSockets khi chạy nền. Nhấn để cấp quyền.</string>
     <string name="settings_about_version_title">Phiên bản</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Đã lưu vào clipboard</string>
     <string name="detail_settings_notifications_instant_title">Thông báo thời gian thực</string>
     <string name="detail_settings_notifications_instant_summary_on">Thông báo được gửi ngay lập tức. Cần foreground service và tốn pin hơn.</string>
     <string name="detail_settings_notifications_instant_summary_off">Thông báo được gửi qua Firebase. Có thể trễ, nhưng tiết kiệm pin hơn.</string>
@@ -331,7 +329,6 @@
     <string name="detail_settings_global_setting_title">Sử dụng cài đặt chung</string>
     <string name="detail_settings_global_setting_suffix">đang sử dụng cài đặt chung</string>
     <string name="detail_settings_about_topic_url_title">URL chủ đề</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Đã lưu vào clipboard</string>
     <string name="user_dialog_title_add">Thêm tài khoản</string>
     <string name="user_dialog_title_edit">Chỉnh sửa tài khoản</string>
     <string name="user_dialog_description_add">Thêm tài khoản cho server này. Tất cả chủ đề của server sẽ dùng tài khoản này.</string>

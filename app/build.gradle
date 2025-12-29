@@ -15,10 +15,10 @@ android {
     defaultConfig {
         applicationId "io.heckel.ntfy"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
 
-        versionCode 50
-        versionName "1.19.2"
+        versionCode 53
+        versionName "1.20.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -37,6 +37,9 @@ android {
             minifyEnabled false
             shrinkResources false
             debuggable false
+            // DEV/TEST ONLY: Uncomment this to test the release build with a debug key.
+            //                This is required to test against the production Firebase config.
+            // signingConfig signingConfigs.debug
         }
         debug {
             minifyEnabled false

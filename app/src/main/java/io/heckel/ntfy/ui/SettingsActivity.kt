@@ -14,11 +14,13 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
+import androidx.core.os.LocaleListCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
@@ -50,14 +52,16 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener {
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
+    private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
 
     private lateinit var repository: Repository
     private lateinit var serviceManager: SubscriberServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -83,8 +87,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
-        // Set system status bar color and appearance
-        window.statusBarColor = statusBarColor
+        // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
 
@@ -140,6 +143,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         // Save user settings fragment for later
         if (fragment is UserSettingsFragment) {
             userSettingsFragment = fragment
+        }
+        // Save custom header settings fragment for later
+        if (fragment is CustomHeaderSettingsFragment) {
+            customHeaderSettingsFragment = fragment
         }
         return true
     }
@@ -344,6 +351,84 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Language
+            val languagePrefId = context?.getString(R.string.settings_general_language_key) ?: return
+            val language: ListPreference? = findPreference(languagePrefId)
+            if (language != null) {
+                // We only list languages that have > 80% of strings translated.
+                //
+                // Please use Hosted Weblate (https://hosted.weblate.org/projects/ntfy/android/)
+                // to help translate other languages.
+                //
+                // IMPORTANT: If a language is added here, also add it to the locales_config.xml file.
+
+                val supportedLocales = listOf(
+                    "" to getString(R.string.settings_general_language_system_default),
+                    "en" to "English",
+                    "bg" to "Български",
+                    "ca" to "Català",
+                    "cs" to "Čeština",
+                    "de" to "Deutsch",
+                    "es" to "Español",
+                    "et" to "Eesti",
+                    "fi" to "Suomi",
+                    "fr" to "Français",
+                    "gl" to "Galego",
+                    "in" to "Bahasa Indonesia",
+                    "it" to "Italiano",
+                    "iw" to "עברית",
+                    "ja" to "日本語",
+                    "ko" to "한국어",
+                    "nb-NO" to "Norsk bokmål",
+                    "nl" to "Nederlands",
+                    "pl" to "Polski",
+                    "pt" to "Português",
+                    "pt-BR" to "Português (Brasil)",
+                    "ro" to "Română",
+                    "ru" to "Русский",
+                    "sk" to "Slovenčina",
+                    "sv" to "Svenska",
+                    "ta" to "தமிழ்",
+                    "tr" to "Türkçe",
+                    "uk" to "Українська",
+                    "uz" to "Oʻzbekcha",
+                    "vi" to "Tiếng Việt",
+                    "zh-CN" to "简体中文",
+                    "zh-TW" to "繁體中文"
+                )
+                // Set title with 3 random flags to help users find this preference
+                val flags = listOf("🇧🇬", "🇨🇿", "🇩🇪", "🇪🇸", "🇪🇪", "🇫🇮", "🇫🇷", "🇮🇩", "🇮🇱", "🇮🇳", "🇮🇹", "🇯🇵", "🇰🇷", "🇳🇱", "🇳🇴", "🇵🇱", "🇵🇹", "🇧🇷", "🇷🇴", "🇷🇺", "🇸🇪", "🇸🇰", "🇹🇷", "🇹🇼", "🇺🇦", "🇺🇿", "🇻🇳", "🇨🇳")
+                val randomFlags = flags.shuffled().take(3).joinToString(" ")
+                language.title = "${getString(R.string.settings_general_language_title)} $randomFlags"
+                language.entries = supportedLocales.map { it.second }.toTypedArray()
+                language.entryValues = supportedLocales.map { it.first }.toTypedArray()
+
+                // Get current locale
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                val currentLocaleTag = if (currentLocales.isEmpty) "" else currentLocales.toLanguageTags()
+                language.value = currentLocaleTag
+
+                language.setOnPreferenceChangeListener { _, newValue ->
+                    val localeTag = newValue as String
+                    if (localeTag.isEmpty()) {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                    } else {
+                        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeTag))
+                    }
+                    true
+                }
+
+                language.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                    val currentLocalesForSummary = AppCompatDelegate.getApplicationLocales()
+                    if (currentLocalesForSummary.isEmpty) {
+                        getString(R.string.settings_general_language_summary_system)
+                    } else {
+                        val locale = currentLocalesForSummary[0]
+                        locale?.getDisplayName(locale)?.replaceFirstChar { it.uppercase() } ?: pref.entry?.toString() ?: ""
+                    }
+                }
+            }
+
             // Dynamic colors
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val dynamicColorsEnabledPrefId = context?.getString(R.string.settings_general_dynamic_colors_key) ?: return
@@ -374,6 +459,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 }
                 dynamicColorsEnabled?.isVisible = true
+            }
+
+            // Message bar enabled
+            val messageBarEnabledPrefId = context?.getString(R.string.settings_general_message_bar_key) ?: return
+            val messageBarEnabled: SwitchPreferenceCompat? = findPreference(messageBarEnabledPrefId)
+            messageBarEnabled?.isChecked = repository.getMessageBarEnabled()
+            messageBarEnabled?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setMessageBarEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getMessageBarEnabled()
+                }
+            }
+            messageBarEnabled?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_general_message_bar_summary_enabled)
+                } else {
+                    getString(R.string.settings_general_message_bar_summary_disabled)
+                }
             }
 
             // Default Base URL
@@ -618,12 +723,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             versionPref?.summary = version
             versionPref?.onPreferenceClickListener = OnPreferenceClickListener {
                 val context = context ?: return@OnPreferenceClickListener false
-                val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("ntfy version", version)
-                clipboard.setPrimaryClip(clip)
-                Toast
-                    .makeText(context, getString(R.string.settings_about_version_copied_to_clipboard_message), Toast.LENGTH_LONG)
-                    .show()
+                copyToClipboard(context, "ntfy version", version)
                 true
             }
         }
@@ -849,6 +949,81 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
+    class CustomHeaderSettingsFragment : PreferenceFragmentCompat() {
+        private lateinit var repository: Repository
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.custom_header_preferences, rootKey)
+            repository = Repository.getInstance(requireActivity())
+            reload()
+        }
+
+        data class CustomHeaderWithMetadata(
+            val baseUrl: String,
+            val headers: List<io.heckel.ntfy.db.CustomHeader>
+        )
+
+        fun reload() {
+            preferenceScreen.removeAll()
+            lifecycleScope.launch(Dispatchers.IO) {
+                val headersByBaseUrl = repository.getCustomHeaders()
+                    .groupBy { it.baseUrl }
+                    .map { entry ->
+                        CustomHeaderWithMetadata(entry.key, entry.value)
+                    }
+                    .sortedBy { it.baseUrl }
+
+                activity?.runOnUiThread {
+                    addCustomHeaderPreferences(headersByBaseUrl)
+                }
+            }
+        }
+
+        private fun addCustomHeaderPreferences(headersByBaseUrl: List<CustomHeaderWithMetadata>) {
+            headersByBaseUrl.forEach { serverHeaders ->
+                val baseUrl = serverHeaders.baseUrl
+                val headers = serverHeaders.headers
+
+                val preferenceCategory = PreferenceCategory(preferenceScreen.context)
+                preferenceCategory.title = shortUrl(baseUrl)
+                preferenceScreen.addPreference(preferenceCategory)
+
+                headers.forEach { header ->
+                    val preference = Preference(preferenceScreen.context)
+                    preference.title = header.name
+                    preference.summary = "••••••••"
+                    preference.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                        activity?.let {
+                            CustomHeaderFragment
+                                .newInstance(header)
+                                .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
+                        }
+                        true
+                    }
+                    preferenceCategory.addPreference(preference)
+                }
+            }
+
+            // Add header
+            val headerAddCategory = PreferenceCategory(preferenceScreen.context)
+            headerAddCategory.title = getString(R.string.settings_advanced_custom_headers_prefs_header_add)
+            preferenceScreen.addPreference(headerAddCategory)
+
+            val headerAddPref = Preference(preferenceScreen.context)
+            headerAddPref.title = getString(R.string.settings_advanced_custom_headers_prefs_header_add_title)
+            headerAddPref.summary = getString(R.string.settings_advanced_custom_headers_prefs_header_add_summary)
+            headerAddPref.onPreferenceClickListener = OnPreferenceClickListener { _ ->
+                activity?.let {
+                    CustomHeaderFragment
+                        .newInstance(header = null)
+                        .show(it.supportFragmentManager, CustomHeaderFragment.TAG)
+                }
+                true
+            }
+            headerAddCategory.addPreference(headerAddPref)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD) {
@@ -883,6 +1058,36 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             serviceManager.restart()
             runOnUiThread {
                 userSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onAddCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.addCustomHeader(header)
+            serviceManager.restart() // Restart to apply new headers
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onUpdateCustomHeader(dialog: DialogFragment, oldHeader: io.heckel.ntfy.db.CustomHeader, newHeader: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.updateCustomHeader(oldHeader, newHeader)
+            serviceManager.restart() // Restart to apply header changes
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
+            }
+        }
+    }
+
+    override fun onDeleteCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.deleteCustomHeader(header)
+            serviceManager.restart()
+            runOnUiThread {
+                customHeaderSettingsFragment.reload()
             }
         }
     }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  app:title="@string/settings_advanced_custom_headers_title">
+    <!-- This is just a template/shell. It's dynamically populated by the code. -->
+</PreferenceScreen>

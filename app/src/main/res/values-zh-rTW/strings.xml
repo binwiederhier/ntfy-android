@@ -75,7 +75,7 @@
     <string name="add_dialog_login_new_user">建立新使用者</string>
     <string name="add_dialog_base_urls_dropdown_choose">選擇 ntfy 服務 URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">清除 URL</string>
-    <string name="detail_copied_to_clipboard_message">已複製到剪貼簿</string>
+    <string name="common_copied_to_clipboard">已複製到剪貼簿</string>
     <string name="add_dialog_button_login">登入</string>
     <string name="add_dialog_login_description">這個主題需要登入，請先輸入帳號密碼。</string>
     <string name="add_dialog_instant_delivery">在省電模式下依然接收即時通知</string>
@@ -96,11 +96,11 @@
     <string name="settings_notifications_auto_delete_one_month">1 個月後</string>
     <string name="settings_notifications_auto_delete_three_months">3 個月後</string>
     <string name="settings_general_header">一般</string>
+    <string name="settings_appearance_header">主題</string>
     <string name="settings_general_default_base_url_title">預設伺服器</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (預設)</string>
     <string name="settings_general_users_title">管理使用者</string>
     <string name="settings_backup_restore_header">備份與還原</string>
-    <string name="settings_about_version_copied_to_clipboard_message">已複製到剪貼簿</string>
     <string name="settings_about_header">關於</string>
     <string name="settings_about_version_title">版本號</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -177,7 +177,6 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON 串流 (透過 HTTP 連接)</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocket</string>
     <string name="detail_settings_about_topic_url_title">主題 URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已複製到剪貼簿</string>
     <string name="user_dialog_password_hint_add">密碼</string>
     <string name="user_dialog_button_save">儲存</string>
     <string name="user_dialog_button_add">新增使用者</string>
@@ -190,7 +189,6 @@
     <string name="detail_settings_about_header">關於</string>
     <string name="settings_backup_restore_backup_failed">備份失敗： %1$s</string>
     <string name="add_dialog_foreground_description">除了 %1$s 以外伺服器有即時傳送。</string>
-    <string name="detail_item_menu_copy_contents_copied">通知已複製至剪貼簿</string>
     <string name="channel_notifications_group_default_name">預設</string>
     <string name="detail_how_to_link">可以再說明書 (ntfy.sh) 找到詳細指示。</string>
     <string name="detail_clear_dialog_message">確定清除主題內的全部通訊？</string>
@@ -217,7 +215,6 @@
     <string name="detail_item_tags">標籤：%1$s</string>
     <string name="detail_instant_delivery_enabled">啟動即時傳送</string>
     <string name="detail_item_menu_copy_url">複製網址</string>
-    <string name="detail_item_menu_copy_url_copied">網址已複製至剪貼簿</string>
     <string name="detail_item_cannot_open">無法開啟附件：%1$s</string>
     <string name="detail_item_cannot_open_not_found">無法開啟附件：檔案可能已被刪除或檔案無法被任何軟件開啟。</string>
     <string name="detail_item_cannot_download">無法開啟或下載附件，網址無效而且找不到本地檔案。</string>

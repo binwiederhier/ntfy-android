@@ -1,93 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="?dialogPreferredPadding"
-    android:visibility="visible">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
 
-    <TextView
-        android:id="@+id/user_dialog_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="3dp"
-        android:text="@string/user_dialog_title_add"
-        android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextView
-        android:id="@+id/user_dialog_description"
-        android:text="@string/add_dialog_login_description"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/user_dialog_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="3dp"
-        android:paddingBottom="?dialogPreferredPadding"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_dialog_title"/>
+        android:background="?attr/colorSurface"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/user_dialog_base_url_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/user_dialog_description"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="6dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/user_dialog_base_url"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/user_dialog_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_dialog_base_url_hint"
-            android:importantForAutofill="no"
-            android:maxLines="1"
-            android:inputType="text"/>
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+            android:paddingStart="0dp"
+            android:paddingEnd="12dp"
+            app:navigationIcon="@drawable/ic_close_white_24dp"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="@string/user_dialog_title_add"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:menu="@menu/menu_user_dialog" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/user_dialog_username_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/user_dialog_base_url_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="6dp">
+        android:layout_height="match_parent"
+        android:paddingHorizontal="?dialogPreferredPadding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/user_dialog_username"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_dialog_username_hint"
-            android:importantForAutofill="no"
-            android:maxLines="1"
-            android:inputType="text"/>
+            android:layout_height="wrap_content">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/user_dialog_description"
+                android:text="@string/user_dialog_description_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/user_dialog_username_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="6dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_dialog_base_url_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/user_dialog_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/user_dialog_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_dialog_password_hint_add"
-            android:importantForAutofill="no"
-            android:maxLines="1"
-            android:inputType="textPassword"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_dialog_base_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/user_dialog_base_url_hint"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:inputType="text"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_dialog_username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/user_dialog_base_url_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_dialog_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/user_dialog_username_hint"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:inputType="text"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_dialog_password_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/user_dialog_username_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_dialog_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/user_dialog_password_hint_add"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:inputType="textPassword"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
