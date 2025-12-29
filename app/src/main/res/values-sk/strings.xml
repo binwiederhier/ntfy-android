@@ -71,7 +71,6 @@
     <string name="detail_item_menu_download">Stiahnuť súbor</string>
     <string name="detail_item_menu_cancel">Zrušiť sťahovanie</string>
     <string name="detail_item_menu_copy_url">Kopírovať adresu URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL adresa skopírovaná do schránky</string>
     <string name="detail_item_menu_copy_contents">Kopírovať oznámenie</string>
     <string name="detail_item_saved_successfully">Uložené ako \"%1$s\" v priečinku \"Stiahnuté\"</string>
     <string name="detail_item_cannot_open">Nie je možné otvoriť prílohu: %1$s</string>
@@ -223,7 +222,6 @@
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Použiť tok JSON cez HTTP na pripojenie k serveru. Táto metóda je overená, avšak môže spotrebovať viac batérie.</string>
     <string name="settings_about_header">O programe</string>
     <string name="settings_advanced_connection_protocol_entry_ws">Protokol WebSockets</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Skopírované do schránky</string>
     <string name="detail_settings_notifications_open_channels_summary">Vypnutie funkcie Nerušiť (DND), zvuky atď.</string>
     <string name="settings_about_version_title">Verzia</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -243,7 +241,6 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ikona zobrazená v oznámeniach pre túto tému</string>
     <string name="detail_settings_appearance_icon_error_saving">Ikonu sa nepodarilo uložiť: %1$s</string>
     <string name="user_dialog_button_cancel">Zrušiť</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Skopírované do schránky</string>
     <string name="user_dialog_button_save">Uložiť</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predvolené)</string>
     <string name="detail_settings_about_header">O programe</string>
@@ -300,7 +297,6 @@
     <string name="share_content_image_error">Nemožno načítať obrázok: %1$s</string>
     <string name="detail_menu_notifications_enabled">Oznámenia zapnuté</string>
     <string name="detail_item_menu_save_file">Uložiť súbor</string>
-    <string name="detail_item_menu_copy_contents_copied">Oznámenie skopírované do schránky</string>
     <string name="detail_test_message_error_unauthorized_anon">Nemožno odoslať správu: Anonymné publikovanie nie je povolené.</string>
     <string name="detail_item_cannot_download">Nie je možné otvoriť alebo stiahnuť prílohu. Platnosť odkazu vypršala a nepodarilo sa nájsť žiadny miestny súbor.</string>
     <string name="detail_item_cannot_open_apk">Aplikácie už nie je možné nainštalovať. Namiesto toho si ich stiahnite cez prehliadač. Podrobnosti nájdete v issue #531.</string>

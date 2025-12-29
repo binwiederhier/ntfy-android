@@ -85,7 +85,6 @@
     <string name="settings_advanced_export_logs_error_uploading">Kon logs niet uploaden: %1$s</string>
     <string name="user_dialog_title_add">Gebruiker toevoegen</string>
     <string name="settings_advanced_export_logs_uploading">Log uploaden …</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Gekopieerd naar het klembord</string>
     <string name="detail_menu_notifications_disabled_forever">Meldingen gedempt</string>
     <string name="detail_menu_notifications_disabled_until">Meldingen gedempt tot %1$s</string>
     <string name="detail_menu_test">Testmelding verzenden</string>
@@ -124,9 +123,7 @@
     <string name="settings_general_dark_mode_entry_dark">Donkere modus</string>
     <string name="settings_general_default_base_url_title">Standaardserver</string>
     <string name="settings_general_users_title">Gebruikers beheren</string>
-    <string name="detail_item_menu_copy_url_copied">URL gekopieerd naar klembord</string>
     <string name="detail_item_menu_open">Bestand openen</string>
-    <string name="detail_item_menu_copy_contents_copied">Melding gekopieerd naar klembord</string>
     <string name="detail_item_saved_successfully">Opgeslagen als \"%1$s\" in de \"Downloads\" folder</string>
     <string name="detail_item_menu_save_file">Bestand opslaan</string>
     <string name="detail_item_snack_undo">Ongedaan maken</string>
@@ -323,7 +320,6 @@
     <string name="detail_settings_appearance_display_name_message">Zet een schermnaam voor dit abonnement. Laat het veld leeg om de standaard naam te kiezen (%1$s).</string>
     <string name="detail_settings_about_header">Over</string>
     <string name="detail_settings_about_topic_url_title">Onderwerp URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Gekopieerd naar klembord</string>
     <string name="add_dialog_base_urls_dropdown_choose">Kies service URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">Service URL verwijderen</string>
     <string name="main_banner_websocket_button_enable_now">Nu inschakelen</string>

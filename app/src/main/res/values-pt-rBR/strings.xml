@@ -71,9 +71,7 @@
     <string name="detail_item_menu_cancel">Cancelar download</string>
     <string name="detail_item_menu_save_file">Salvar arquivo</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiada para área de transferência</string>
     <string name="detail_item_menu_copy_contents">Copiar notificação</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificação copiada para área de transferência</string>
     <string name="detail_item_saved_successfully">\"%1$s\" salvo na pasta \"Downloads\"</string>
     <string name="detail_item_cannot_download">Não é possível abrir ou baixar o anexo. O link expirou e nenhum arquivo local pode ser encontrado.</string>
     <string name="detail_item_cannot_open_url">Não é possível abrir a URL: %1$s</string>
@@ -187,7 +185,6 @@
     <string name="settings_about_header">Sobre</string>
     <string name="settings_about_version_title">Versão</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiado para a área de transferência</string>
     <string name="user_dialog_title_add">Adicionar usuário</string>
     <string name="user_dialog_title_edit">Editar usuário</string>
     <string name="user_dialog_description_edit">Você pode editar nome de usuário/senha para o usuário selecionado ou apagá-lo.</string>
@@ -320,7 +317,6 @@
     <string name="main_banner_websocket_text">WebSockets são o modo recomendado de conectar ao seu servidor, e pode melhorar a vida da bateria, mas pode necessitar de <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais na sua proxy</a>. Isso pode ser alterado nas Configurações.</string>
     <string name="detail_settings_about_header">Sobre</string>
     <string name="detail_settings_about_topic_url_title">URL do tópico</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado para a área de transferência</string>
     <string name="add_dialog_base_urls_dropdown_choose">Escolher URL do serviço</string>
     <string name="add_dialog_base_urls_dropdown_clear">Limpar URL do serviço</string>
     <string name="main_banner_websocket_button_enable_now">Habilitar agora</string>

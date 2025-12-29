@@ -68,7 +68,6 @@
     <string name="detail_item_snack_deleted">Értesítés törölve</string>
     <string name="detail_item_menu_download">Fájl letöltése</string>
     <string name="detail_test_message_error_unauthorized_user">Nem sikerült az üzenetet elküldeni: A \"%1$s\" felhasználó jogosultságai nem megfelelőek.</string>
-    <string name="detail_item_menu_copy_url_copied">URL a vágólapra másolva</string>
     <string name="detail_item_menu_copy_contents">Értesítés másolása</string>
     <string name="add_dialog_title">Feliratokozás a témára</string>
     <string name="main_banner_websocket_button_enable_now">Engedélyezés most</string>
@@ -78,7 +77,6 @@
     <string name="detail_clear_dialog_message">Töröljük az összes értesítést ebben a témában\?</string>
     <string name="detail_test_message_error_too_large">Nem sikerült az üzenetet elküldeni: A csatolmány túl nagy.</string>
     <string name="detail_deep_link_subscribed_toast_message">Feliratkozva a %1$s témára</string>
-    <string name="detail_item_menu_copy_contents_copied">Értesítés a vágólapra másolva</string>
     <string name="main_banner_battery_button_remind_later">Később</string>
     <string name="main_how_to_link">Részletes leírás elérhető a ntfy.sh oldalon és a dokumentációban.</string>
     <string name="main_banner_battery_text">Az akkumulátor optimalizáció kikapcsolása javasolt az értesítési problémák elkerülésére.</string>

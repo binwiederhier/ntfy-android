@@ -79,7 +79,6 @@
     <string name="detail_item_menu_cancel">Batalkan unduhan</string>
     <string name="detail_item_menu_save_file">Simpan file</string>
     <string name="detail_item_menu_copy_url">Salin URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL disalin ke papan klip</string>
     <string name="detail_item_menu_copy_contents">Salin notifikasi</string>
     <string name="detail_item_cannot_open_not_found">Tidak dapat membuka lampiran: File mungkin terhapus, atau tidak ada aplikasi yang terinstal yang dapat membuka file.</string>
     <string name="detail_item_cannot_save">Tidak dapat menyimpan lampiran: %1$s</string>
@@ -210,7 +209,6 @@
     <string name="user_dialog_description_edit">Anda dapat mengubah nama pengguna/kata sandi untuk pengguna yang dipilih, atau hapus pengguna itu.</string>
     <string name="user_dialog_base_url_hint">URL Layanan</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Berlangganan ke satu topik</string>
-    <string name="detail_item_menu_copy_contents_copied">Notifikasi disalin ke papan klip</string>
     <string name="detail_item_cannot_open_url">Tidak dapat membuka URL: %1$s</string>
     <string name="settings_notifications_min_priority_summary_any">Menampilkan semua notifikasi</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
@@ -291,7 +289,6 @@
     <string name="settings_advanced_header">Tingkat lanjut</string>
     <string name="settings_advanced_broadcast_summary_enabled">Aplikasi dapat menerima notifikasi yang datang sebagai siaran</string>
     <string name="settings_advanced_export_logs_summary">Salin catatan ke papan klip, atau unggah ke nopaste.net (dimiliki oleh penulis ntfy). Nama host dan topik dapat disensor, notifikasi tidak akan disensor.</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Disalin ke papan klip</string>
     <string name="user_dialog_password_hint_add">Kata Sandi</string>
     <string name="user_dialog_button_delete">Hapus pengguna</string>
     <string name="user_dialog_password_hint_edit">Kata Sandi (tidak diubah jika ditinggalkan kosong)</string>
@@ -325,7 +322,6 @@
     <string name="detail_settings_appearance_display_name_title">Nama tampilan</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (bawaan)</string>
     <string name="detail_settings_appearance_display_name_message">Tetapkan sebuah nama tampilan kustom untuk langganan ini. Tinggalkan kosong untuk bawaan (%1$s).</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Disalin ke papan klip</string>
     <string name="detail_settings_about_header">Tentang</string>
     <string name="detail_settings_about_topic_url_title">URL Topik</string>
     <string name="detail_item_cannot_open_apk">Aplikasi tidak dapat dipasang lagi. Unduh melalui peramban. Lihat masalah #531 untuk detail lebih lanjut.</string>

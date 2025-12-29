@@ -109,9 +109,7 @@
     <string name="detail_item_menu_cancel">Cancelar descarga</string>
     <string name="detail_item_menu_save_file">Gardar ficheiro</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiado ao portapapeis</string>
     <string name="detail_item_menu_copy_contents">Copiar notificación</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificación copiada ao portapapeis</string>
     <string name="detail_item_saved_successfully">Gardado como \"%1$s\" no cartafol \"Descargas\"</string>
     <string name="detail_how_to_intro">Enviar notificacións a este tema, simplemente envía con PUT ou POST ao URL do tema.</string>
     <string name="detail_item_cannot_download">Non se pode abrir ou descargar o adxunto. A ligazón caducou e non se atopa un ficheiro local.</string>
@@ -279,7 +277,6 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Fluxo JSON sobre HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Usar un fluxo JSON sobre HTTP para conectar co servidor. Este método é robusto, pero podería consumir máis batería.</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiado ao portapapeis</string>
     <string name="detail_settings_notifications_instant_title">Entrega inmediata</string>
     <string name="settings_about_header">Acerca de</string>
     <string name="settings_about_version_title">Versión</string>
@@ -292,7 +289,6 @@
     <string name="detail_settings_notifications_open_channels_title">Configurar axustes da notificación</string>
     <string name="detail_settings_appearance_icon_error_saving">Non se gardou a icona: %1$s</string>
     <string name="detail_settings_appearance_display_name_title">Nome mostrado</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado ao portapapeis</string>
     <string name="settings_backup_restore_restore_title">Restablecer desde ficheiro</string>
     <string name="settings_backup_restore_restore_summary">Importar configuración, notificacións e usuarias</string>
     <string name="settings_backup_restore_restore_successful">Restablecemento correcto</string>

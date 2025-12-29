@@ -107,9 +107,7 @@
     <string name="detail_instant_delivery_disabled">即時配信オフ</string>
     <string name="detail_item_snack_deleted">通知を削除しました</string>
     <string name="detail_item_menu_download">ファイルをダウンロード</string>
-    <string name="detail_item_menu_copy_url_copied">URLをクリップボードにコピーしました</string>
     <string name="detail_item_menu_copy_contents">通知をコピー</string>
-    <string name="detail_item_menu_copy_contents_copied">通知をクリップボードにコピーしました</string>
     <string name="detail_item_cannot_download">添付ファイルを開くまたはダウンロードできませんでした。リンクが失効しているか、ローカルファイルが見つかりません。</string>
     <string name="detail_item_cannot_delete">添付ファイルを削除できません: %1$s</string>
     <string name="detail_item_download_info_not_downloaded">未ダウンロード</string>
@@ -284,7 +282,6 @@
     <string name="settings_advanced_clear_logs_summary">これまで記録されたログを消去し、再開します</string>
     <string name="settings_advanced_clear_logs_deleted_toast">ログが削除されました</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">サーバーへの接続に JSON stream over HTTP を使用します。このメソッドは様々な場面で使われていますが、バッテリーをより多く消費します。</string>
-    <string name="settings_about_version_copied_to_clipboard_message">クリップボードにコピーしました</string>
     <string name="user_dialog_title_add">ユーザーを追加</string>
     <string name="user_dialog_description_edit">選択されたユーザーのユーザー名/パスワードを変更または削除できます。</string>
     <string name="user_dialog_base_url_hint">サービスURL</string>
@@ -327,7 +324,6 @@
     <string name="main_banner_websocket_button_enable_now">今すぐ有効化</string>
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">トピックのURL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">クリップボードにコピーしました</string>
     <string name="detail_item_cannot_open_apk">アプリはインストールできなくなりました。代替手段としてブラウザからダウンロードしてください。詳細は issue #531 をご参照ください。</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">優先度最高は非表示になるまで通知継続</string>
     <string name="channel_notifications_group_default_name">デフォルト</string>

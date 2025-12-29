@@ -100,9 +100,7 @@
     <string name="add_dialog_login_password_hint">Lösenord</string>
     <string name="detail_test_message_error_unauthorized_anon">Kan inte skicka meddelande: Anonym publicering är inte tillåten.</string>
     <string name="detail_item_snack_deleted">Notifikation borttagen</string>
-    <string name="detail_item_menu_copy_url_copied">URL kopierad till urklipp</string>
     <string name="detail_item_menu_copy_contents">Kopiera notifikation</string>
-    <string name="detail_item_menu_copy_contents_copied">Notifikation kopierad till urklipp</string>
     <string name="detail_item_cannot_open_url">Kan inte öppna URL: %1$s</string>
     <string name="detail_menu_clear">Rensa alla notifikationer</string>
     <string name="detail_menu_test">Skicka testnotifikation</string>
@@ -265,7 +263,6 @@
     <string name="detail_settings_notifications_instant_summary_on">Notifieringarna levereras direkt. Kräver att appen aktivt körs vilket kräver mer batteri.</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Kopierad till urklipp</string>
     <string name="detail_settings_appearance_header">Utseende</string>
     <string name="detail_settings_notifications_instant_title">Omedelbar leverans</string>
     <string name="detail_settings_appearance_icon_set_title">Prenumerationsikon</string>
@@ -323,7 +320,6 @@
     <string name="detail_settings_appearance_display_name_message">Sätt ett eget visningsnamn för denna prenumeration. Lämna blank för standard (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (standard)</string>
     <string name="detail_settings_about_topic_url_title">Ämnes-URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Kopierad till urklipp</string>
     <string name="user_dialog_title_add">Lägg till användare</string>
     <string name="user_dialog_description_add">Du kan lägga till en användare här. Alla ämnen för den givna servern kommer att använda den här användaren.</string>
     <string name="user_dialog_base_url_hint">Service-URL</string>
