@@ -1,6 +1,7 @@
 Features:
 * Allow publishing messages through the message bar and publish dialog (#98, ntfy-android#144)
 * Language selector to allow overriding the system language (#1508, ntfy-android#145, thanks to @hudsonm62 for reporting)
+* Highlight phone numbers and email addresses in notifications (ntfy-android#71, thanks to @brennenputh)
 
 Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)

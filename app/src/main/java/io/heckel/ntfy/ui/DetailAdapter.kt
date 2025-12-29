@@ -119,7 +119,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 messageView.autoLinkMask = 0
                 markwon.setMarkdown(messageView, message.toString())
             } else {
-                messageView.autoLinkMask = Linkify.WEB_URLS
+                messageView.autoLinkMask = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
                 messageView.text = message
             }
             messageView.movementMethod = BetterLinkMovementMethod.getInstance()
