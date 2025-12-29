@@ -204,15 +204,15 @@
     <string name="publish_dialog_title_hint">Title</string>
     <string name="publish_dialog_title_placeholder">e.g. Someone is at the door</string>
     <string name="publish_dialog_message_hint">Message</string>
-    <string name="publish_dialog_message_placeholder">@string/message_bar_hint</string>
+    <string name="publish_dialog_message_placeholder" translatable="false">@string/message_bar_hint</string>
     <string name="publish_dialog_tags_hint">Tags</string>
     <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
     <string name="publish_dialog_priority_hint">Priority</string>
-    <string name="publish_dialog_priority_default">@string/channel_notifications_default_name</string>
-    <string name="publish_dialog_priority_min">@string/channel_notifications_min_name</string>
-    <string name="publish_dialog_priority_low">@string/channel_notifications_low_name</string>
-    <string name="publish_dialog_priority_high">@string/channel_notifications_high_name</string>
-    <string name="publish_dialog_priority_max">@string/channel_notifications_max_name</string>
+    <string name="publish_dialog_priority_default" translatable="false">@string/channel_notifications_default_name</string>
+    <string name="publish_dialog_priority_min" translatable="false">@string/channel_notifications_min_name</string>
+    <string name="publish_dialog_priority_low" translatable="false">@string/channel_notifications_low_name</string>
+    <string name="publish_dialog_priority_high" translatable="false">@string/channel_notifications_high_name</string>
+    <string name="publish_dialog_priority_max" translatable="false">@string/channel_notifications_max_name</string>
     <string name="publish_dialog_button_publish">Publish</string>
     <string name="publish_dialog_error_sending">Cannot publish message: %1$s</string>
     <string name="publish_dialog_error_server">Cannot publish message: %1$s (code %2$d)</string>
