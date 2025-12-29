@@ -390,6 +390,12 @@
     <string name="settings_advanced_unifiedpush_title">Enable UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy will act as a UnifiedPush distributor</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy will not act as a UnifiedPush distributor</string>
+    <string name="settings_advanced_custom_headers_title">Custom headers</string>
+    <string name="settings_advanced_custom_headers_summary">Add custom HTTP headers per server</string>
+    <string name="settings_advanced_custom_headers_prefs_title">Custom Headers</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Add header</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Add a header for a server</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Headers are sent with every HTTP request to that server</string>
     <string name="settings_advanced_record_logs_title">Record logs</string>
     <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
     <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>
@@ -459,15 +465,6 @@
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
     <string name="user_dialog_button_save">Save</string>
-
-    <!-- Custom Headers settings -->
-    <string name="settings_advanced_custom_headers_key" translatable="false">CustomHeaders</string>
-    <string name="settings_advanced_custom_headers_title">Custom headers</string>
-    <string name="settings_general_custom_headers_summary">Add custom HTTP headers per server</string>
-    <string name="settings_general_custom_headers_prefs_title">Custom Headers</string>
-    <string name="settings_general_custom_headers_prefs_header_add">Add header</string>
-    <string name="settings_general_custom_headers_prefs_header_add_title">Add a header for a server</string>
-    <string name="settings_general_custom_headers_prefs_header_add_summary">Headers are sent with every HTTP request to that server</string>
 
     <!-- Custom Headers dialog  -->
     <string name="custom_headers_add_header">Add Header</string>

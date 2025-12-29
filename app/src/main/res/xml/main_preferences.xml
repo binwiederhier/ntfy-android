@@ -97,7 +97,7 @@
         <Preference
             app:key="@string/settings_advanced_custom_headers_key"
             app:title="@string/settings_advanced_custom_headers_title"
-            app:summary="@string/settings_general_custom_headers_summary"
+            app:summary="@string/settings_advanced_custom_headers_summary"
             app:fragment="io.heckel.ntfy.ui.SettingsActivity$CustomHeaderSettingsFragment"/>
         <SwitchPreferenceCompat
                 app:key="@string/settings_advanced_record_logs_key"

@@ -347,11 +347,11 @@
     <string name="settings_advanced_exact_alarms_true">ntfy kann genaue Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Hier tippen, um die Berechtigung zu widerrufen.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy kann keine genauen Alarme planen. Um WebSockets im Hintergrund wieder zu verbinden, sind genaue Alarme erforderlich. Tippe hier, um die Berechtigung zu erteilen.</string>
     <string name="settings_advanced_custom_headers_title">Benutzerdefinierte Header</string>
-    <string name="settings_general_custom_headers_summary">Benutzerdefinierte HTTP-Header pro Server hinzufügen</string>
-    <string name="settings_general_custom_headers_prefs_title">Benutzerdefinierte Header</string>
-    <string name="settings_general_custom_headers_prefs_header_add">Header hinzufügen</string>
-    <string name="settings_general_custom_headers_prefs_header_add_title">Header für einen Server hinzufügen</string>
-    <string name="settings_general_custom_headers_prefs_header_add_summary">Header werden mit jeder HTTP-Anfrage an diesen Server gesendet</string>
+    <string name="settings_advanced_custom_headers_summary">Benutzerdefinierte HTTP-Header pro Server hinzufügen</string>
+    <string name="settings_advanced_custom_headers_prefs_title">Benutzerdefinierte Header</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Header hinzufügen</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Header für einen Server hinzufügen</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Header werden mit jeder HTTP-Anfrage an diesen Server gesendet</string>
     <string name="custom_headers_add_header">Header hinzufügen</string>
     <string name="custom_headers_add_summary">Neuen benutzerdefinierten HTTP-Header hinzufügen</string>
     <string name="custom_headers_add_title">Neuen Header hinzufügen</string>
