@@ -80,9 +80,7 @@
     <string name="detail_item_menu_download">Laadi fail alla</string>
     <string name="detail_item_menu_cancel">Katkesta allalaadimine</string>
     <string name="detail_item_menu_copy_url">Kopeeri võrguaadress</string>
-    <string name="detail_item_menu_copy_url_copied">Võrguaadress on kopeeritud lõikelauale</string>
     <string name="detail_item_menu_copy_contents">Kopeeri teavitus</string>
-    <string name="detail_item_menu_copy_contents_copied">Teavitus on kopeeritud lõikelauale</string>
     <string name="detail_item_cannot_download">Manust ei saa avada ega alla laadida. Link on aegunud ja kohalikus nutiseadmes vastavat faili ei leidu.</string>
     <string name="detail_item_cannot_open">Manuse avamine ei õnnestu: %1$s</string>
     <string name="detail_item_cannot_open_not_found">Manuse avamine ei õnnestu: ta võib olla kustutatud või ei leidu ühtegi avamiseks vajalikku rakendust.</string>
@@ -104,7 +102,6 @@
     <string name="detail_settings_notifications_instant_summary_on">Teavitused jõuavad kohale koheselt. Eeldab, et kasutatav teenus on esiplaanil ja nõustud suurema akukoormusega.</string>
     <string name="detail_item_download_info_not_downloaded_expired">allalaadimata, link on aegunud</string>
     <string name="detail_item_saved_successfully">Salvestasime kui „%1$s“ allalaadimiste kausta</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Kopeeritud lõikelauale</string>
     <string name="detail_item_download_info_deleted_expires_x">kustutatud, link aegub %1$s</string>
     <string name="detail_item_download_info_deleted_expired">kustutatud, link on aegunud</string>
     <string name="detail_settings_appearance_icon_remove_summary">Selle teema teavituste puhul kuvatav tunnuspilt</string>
@@ -311,7 +308,6 @@
     <string name="user_dialog_title_edit">Muuda kasutajat</string>
     <string name="user_dialog_description_edit">Sa võid muuta valitud kasutaja kasutajanime või salasõna, aga ta ka sootuks kustutada.</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Kopeeritud lõikelauale</string>
     <string name="user_dialog_base_url_hint">Teenuse võrguaadress</string>
     <string name="user_dialog_username_hint">Kasutajanimi</string>
     <string name="user_dialog_password_hint_add">Salasõna</string>

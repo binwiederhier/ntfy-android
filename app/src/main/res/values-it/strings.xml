@@ -69,7 +69,6 @@
     <string name="detail_test_message_error_too_large">Impossibile inviare il messaggio: L\'allegato è troppo grande.</string>
     <string name="detail_item_snack_deleted">Notifica eliminata</string>
     <string name="detail_item_snack_undo">Annulla</string>
-    <string name="detail_item_menu_copy_contents_copied">Notifica copiata negli appunti</string>
     <string name="detail_item_cannot_download">Impossibile aprire o scaricare l\'allegato. Il collegamento è scaduto e nessun file locale è stato trovato.</string>
     <string name="detail_item_cannot_open">Impossibile aprire l\'allegato: %1$s</string>
     <string name="detail_item_cannot_open_url">Impossibile aprire URL: %1$s</string>
@@ -202,7 +201,6 @@
     <string name="detail_item_menu_save_file">Salva il file</string>
     <string name="detail_item_menu_copy_url">Copia URL</string>
     <string name="detail_menu_copy_url">Copia l\'indirizzo dell\'argomento</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiato negli appunti</string>
     <string name="detail_menu_notifications_enabled">Notifiche ON</string>
     <string name="detail_test_message_error">Impossibile inviare il messaggio: %1$s</string>
     <string name="detail_item_menu_cancel">Annulla download</string>
@@ -285,7 +283,6 @@
     <string name="settings_advanced_connection_protocol_summary_ws">Usa WebSockets per collegarti al server. Questo è il metodo consigliato, ma potrebbe richiedere una configurazione aggiuntiva del proxy.</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="user_dialog_title_add">Aggiungi utente</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiato negli appunti</string>
     <string name="user_dialog_title_edit">Modifica utente</string>
     <string name="channel_subscriber_notification_title">In attesa di notifiche in ingresso</string>
     <string name="detail_test_message">Questa è una notifica test dall\'app Android ntfy. Ha livello di priorità %1$d. Se ne invii un\'altra, potrebbe avere contenuti differenti.</string>
@@ -320,7 +317,6 @@
     <string name="detail_settings_appearance_display_name_message">Impostare un nome di visualizzazione personalizzato per questa iscrizione. Lasciare vuoto per il nome predefinito (%1$s).</string>
     <string name="detail_settings_about_header">Informazioni</string>
     <string name="detail_settings_about_topic_url_title">URL argomento</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiato negli appunti</string>
     <string name="add_dialog_base_urls_dropdown_choose">Scegli il servizio URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">Pulisci il servizio URL</string>
     <string name="main_banner_websocket_button_enable_now">Attiva ora</string>

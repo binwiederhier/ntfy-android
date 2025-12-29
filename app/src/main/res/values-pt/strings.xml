@@ -206,7 +206,6 @@
     <string name="settings_backup_restore_backup_successful">Cópia criada</string>
     <string name="settings_backup_restore_backup_failed">Falha ao criar cópia: %1$s</string>
     <string name="detail_item_saved_successfully">Guardado como \"%1$s\" na pasta \"Downloads\" (\"Transferências\")</string>
-    <string name="detail_item_menu_copy_contents_copied">Notificação copiada para a área de transferência</string>
     <string name="detail_item_cannot_download">Não foi possível abrir ou descarregar o anexo. A ligação expirou e nenhum ficheiro local foi encontrado.</string>
     <string name="detail_item_download_info_not_downloaded_expired">não foi descarregado, a ligação expirou</string>
     <string name="detail_menu_notifications_disabled_until">Notificações silenciadas até %1$s</string>
@@ -243,7 +242,6 @@
     <string name="detail_test_message_error_unauthorized_user">Não foi possível enviar a mensagem: O utilizador \"%1$s\" não está autorizado.</string>
     <string name="detail_instant_delivery_disabled">Entrega instantânea desativada</string>
     <string name="detail_item_menu_delete">Eliminar ficheiro</string>
-    <string name="detail_item_menu_copy_url_copied">URL copiado para a área de transferência</string>
     <string name="detail_item_menu_copy_contents">Copiar notificação</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_popup_action_open">Abrir</string>
@@ -282,7 +280,6 @@
     <string name="detail_settings_global_setting_suffix">usar configuração global</string>
     <string name="detail_settings_about_header">Sobre a aplicação</string>
     <string name="detail_settings_about_topic_url_title">URL do tópico</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Copiado para a área de transferência</string>
     <string name="user_dialog_title_add">Adicionar utilizador</string>
     <string name="settings_backup_restore_restore_title">Restaurar de um ficheiro</string>
     <string name="settings_backup_restore_restore_summary">Importar configurações, notificações e usuários</string>
@@ -313,7 +310,6 @@
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="detail_settings_notifications_instant_title">Entrega instantânea</string>
     <string name="detail_settings_notifications_instant_summary_on">As notificações são entregues instantaneamente. Requer um serviço que corre em primeiro plano e consome mais bateria.</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Copiado para área de transferência</string>
     <string name="detail_settings_appearance_icon_error_saving">Não foi possível guardar o ícone: %1$s</string>
     <string name="detail_settings_appearance_icon_remove_summary">Ícone exibido nas notificações deste tópico</string>
     <string name="detail_settings_appearance_display_name_title">Nome de exibição</string>

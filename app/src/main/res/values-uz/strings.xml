@@ -91,7 +91,6 @@
     <string name="detail_item_menu_download">Faylni yuklab olish</string>
     <string name="detail_item_menu_save_file">Faylni saqlash</string>
     <string name="detail_item_menu_copy_url">URL manzilini nusxalash</string>
-    <string name="detail_item_menu_copy_url_copied">URL xotiraga nusxalandi</string>
     <string name="detail_item_menu_copy_contents">Bildirishnomani nusxalash</string>
     <string name="detail_item_saved_successfully">\"Yuklashlar\" jildida \"%1$s\" nomi bilan saqlandi</string>
     <string name="detail_item_cannot_download">Biriktirmani ochib yoki yuklab bo‘lmadi. Havola muddati eskirgan va fayl topilmadi.</string>
@@ -229,7 +228,6 @@
     <string name="settings_about_header">Haqida</string>
     <string name="settings_about_version_title">Talqin</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Nusxalandi</string>
     <string name="detail_settings_notifications_instant_title">Darhol yuborish</string>
     <string name="detail_settings_notifications_instant_summary_on">Bildirishnomalar darhol yetkaziladi. Oldindan xizmat ko‘rsatishni talab qiladi va ko‘proq batareya sarflaydi.</string>
     <string name="detail_settings_notifications_instant_summary_off">Bildirishnomalar Firebase yordamida yetkaziladi. Yetkazib berish kechikishi mumkin, lekin batareyani kamroq sarflaydi.</string>
@@ -259,7 +257,6 @@
     <string name="share_topic_title">Birovga ulashish</string>
     <string name="detail_item_snack_undo">Qaytarish</string>
     <string name="detail_item_menu_cancel">Yuklashni bekor qilish</string>
-    <string name="detail_item_menu_copy_contents_copied">Bildirishnoma xotiraga nusxalandi</string>
     <string name="detail_item_download_failed">Biriktirma yuklab olinmadi: %1$s</string>
     <string name="detail_item_download_info_download_failed">yuklab bo‘lmadi</string>
     <string name="detail_menu_clear">Barcha bildirishnomalarni tozalash</string>
@@ -342,5 +339,4 @@
     <string name="user_dialog_button_delete">Foydalanuvchini o‘chirish</string>
     <string name="user_dialog_title_add">Foydalanuvchi qo‘shish</string>
     <string name="user_dialog_button_save">Saqlash</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Buferga nusxalandi</string>
 </resources>

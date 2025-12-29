@@ -79,7 +79,6 @@
     <string name="detail_item_menu_delete">删除文件</string>
     <string name="detail_item_menu_cancel">不再下载</string>
     <string name="detail_item_menu_copy_url">复制链接地址</string>
-    <string name="detail_item_menu_copy_url_copied">链接地址已复制到剪贴板</string>
     <string name="detail_item_menu_copy_contents">复制通知</string>
     <string name="detail_item_saved_successfully">已保存为“下载”目录中的 %1$s</string>
     <string name="detail_item_cannot_download">无法打开或下载附件。此链接已过期且未保存到本地。</string>
@@ -159,7 +158,6 @@
     <string name="detail_item_download_failed">无法下载附件：%1$s</string>
     <string name="detail_item_download_info_not_downloaded">未下载</string>
     <string name="detail_item_download_info_not_downloaded_expired">未下载，链接已失效</string>
-    <string name="detail_item_menu_copy_contents_copied">通知已复制到剪贴板</string>
     <string name="detail_item_cannot_open">无法打开附件：%1$s</string>
     <string name="detail_item_cannot_open_not_found">无法打开附件：此文件已被删除或无可用打开方式。</string>
     <string name="detail_item_cannot_open_url">无法打开链接：%1$s</string>
@@ -283,7 +281,6 @@
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_version_title">版本</string>
-    <string name="settings_about_version_copied_to_clipboard_message">已复制到剪贴板</string>
     <string name="user_dialog_description_add">您可以在此添加用户。所有该服务器上的主题订阅都将使用该用户。</string>
     <string name="user_dialog_button_delete">删除用户</string>
     <string name="user_dialog_description_edit">您可以编辑该用户的用户名和密码，或删除该用户。</string>
@@ -327,7 +324,6 @@
     <string name="main_banner_websocket_button_enable_now">马上开启</string>
     <string name="detail_settings_about_header">关于</string>
     <string name="detail_settings_about_topic_url_title">主题 URL</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">已复制到剪贴板</string>
     <string name="detail_item_cannot_open_apk">无法再安装应用。 请通过浏览器下载。 有关详细信息，请参阅问题 #531。</string>
     <string name="channel_notifications_group_default_name">默认</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">持续以最高优先级通知进行提醒，直至取消</string>

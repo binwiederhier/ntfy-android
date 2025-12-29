@@ -22,7 +22,6 @@
     <string name="detail_item_menu_cancel">إلغاء التنزيل</string>
     <string name="detail_item_menu_save_file">حفظ الملف</string>
     <string name="detail_item_menu_copy_url">إنسخ الرابط</string>
-    <string name="detail_item_menu_copy_contents_copied">تم نسخ الإشعار إلى الحافظة</string>
     <string name="user_dialog_button_save">حفظ</string>
     <string name="add_dialog_base_urls_dropdown_choose">اختر عنوان URL للخدمة</string>
     <string name="add_dialog_login_title">تسجيل الدخول مطلوب</string>

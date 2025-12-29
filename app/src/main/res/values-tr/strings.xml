@@ -74,7 +74,6 @@
     <string name="detail_item_snack_undo">Geri al</string>
     <string name="detail_item_menu_open">Dosyayı aç</string>
     <string name="detail_item_menu_copy_url">URL\'yi kopyala</string>
-    <string name="detail_item_menu_copy_url_copied">URL panoya kopyalandı</string>
     <string name="detail_item_menu_copy_contents">Bildirimi kopyala</string>
     <string name="detail_item_cannot_download">Ek açılamıyor veya indirilemiyor. Bağlantının süresi doldu ve yerel dosya bulunamadı.</string>
     <string name="detail_item_cannot_open_url">URL açılamıyor: %1$s</string>
@@ -180,7 +179,6 @@
     <string name="settings_about_header">Hakkında</string>
     <string name="settings_about_version_title">Sürüm</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="settings_about_version_copied_to_clipboard_message">Panoya kopyalandı</string>
     <string name="user_dialog_title_add">Kullanıcı ekle</string>
     <string name="user_dialog_title_edit">Kullanıcıyı düzenle</string>
     <string name="user_dialog_description_add">Buraya bir kullanıcı ekleyebilirsiniz. Verilen sunucu için tüm konular bu kullanıcıyı kullanacaktır.</string>
@@ -217,7 +215,6 @@
     <string name="detail_menu_copy_url">Konu adresini kopyala</string>
     <string name="detail_item_menu_cancel">İndirmeyi iptal et</string>
     <string name="detail_item_menu_save_file">Dosyayı kaydet</string>
-    <string name="detail_item_menu_copy_contents_copied">Bildirim panoya kopyalandı</string>
     <string name="detail_item_cannot_open_not_found">Ek açılamıyor: Dosya silinmiş olabilir veya dosyayı açacak kurulu uygulama yok.</string>
     <string name="detail_item_saved_successfully">İndirilenler klasöründe \"%1$s\" olarak kaydedildi</string>
     <string name="detail_menu_notifications_disabled_forever">Bildirimler sessize alındı</string>
@@ -325,7 +322,6 @@
     <string name="detail_settings_appearance_display_name_message">Bu abonelik için özel bir görünen ad belirleyin. Öntanımlı değer (%1$s) için boş bırakın.</string>
     <string name="detail_settings_about_header">Hakkında</string>
     <string name="detail_settings_about_topic_url_title">Konu URL\'si</string>
-    <string name="detail_settings_about_topic_url_copied_to_clipboard_message">Panoya kopyalandı</string>
     <string name="detail_item_cannot_open_apk">Uygulamalar artık kurulamıyor. Bunun yerine tarayıcı üzerinden indirin. Ayrıntılar için sorun #531\'e bakın.</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">En yüksek öncelikli bildirimler yalnızca bir kez uyarı verir</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Bu abonelik için özel ayarları kullan</string>
