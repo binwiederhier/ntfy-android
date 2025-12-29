@@ -398,7 +398,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
-
     fun getCustomHeaders(): List<CustomHeader> {
         val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
         return if (json != null) {
@@ -454,7 +453,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             }
         }
     }
-
 
     fun isGlobalMuted(): Boolean {
         val mutedUntil = getGlobalMutedUntil()

@@ -47,8 +47,8 @@ import io.heckel.ntfy.util.ProgressRequestBody
 import okhttp3.MediaType.Companion.toMediaType
 
 class PublishFragment : DialogFragment() {
-    private lateinit var api: ApiService
     private lateinit var repository: Repository
+    private lateinit var api: ApiService
 
     // Toolbar
     private lateinit var toolbar: MaterialToolbar

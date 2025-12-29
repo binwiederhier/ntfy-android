@@ -26,9 +26,8 @@ import androidx.core.view.isVisible
 import androidx.core.view.isGone
 
 class AddFragment : DialogFragment() {
-    private val api by lazy { ApiService(requireContext()) }
-
     private lateinit var repository: Repository
+    private lateinit var api: ApiService
     private lateinit var subscribeListener: SubscribeListener
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
@@ -75,6 +74,7 @@ class AddFragment : DialogFragment() {
 
         // Dependencies (Fragments need a default constructor)
         repository = Repository.getInstance(requireActivity())
+        api = ApiService(requireContext())
         appBaseUrl = getString(R.string.app_base_url)
         defaultBaseUrl = repository.getDefaultBaseUrl()
 

@@ -63,8 +63,8 @@ class SubscriberService : Service() {
     private var isServiceStarted = false
     private val repository by lazy { (application as Application).repository }
     private val dispatcher by lazy { NotificationDispatcher(this, repository) }
-    private val connections = ConcurrentHashMap<ConnectionId, Connection>()
     private val api by lazy { ApiService(this) }
+    private val connections = ConcurrentHashMap<ConnectionId, Connection>()
     private var notificationManager: NotificationManager? = null
     private var serviceNotification: Notification? = null
     private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
