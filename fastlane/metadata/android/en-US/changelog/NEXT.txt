@@ -8,3 +8,4 @@ Features:
 Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
 * Unify "copy to clipboard" notifications, use Android 13 style (ntfy-android#61, thanks to @thgoebel)
+* Fix crash in user add dialog (onAddUser)
