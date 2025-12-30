@@ -31,11 +31,15 @@ import java.util.concurrent.TimeUnit
  *
  * This class implements the **AND_3 specification** from UnifiedPush, which defines a mechanism
  * for distributors (like ntfy) to "raise" the target application to foreground importance before
- * sending the push message. Here's the flow:
+ * sending the push message.
  *
- * 1. **Check ntfy's foreground status**: When ntfy receives a push notification (via FCM or
- *    WebSocket), it temporarily has foreground importance (IMPORTANCE_FOREGROUND or
- *    IMPORTANCE_FOREGROUND_SERVICE). The [checkForeground] method verifies this.
+ * See: https://unifiedpush.org/developers/spec/android/#service-to-raise-to-the-foreground
+ *
+ * Here's the flow:
+ *
+ * 1. **Check ntfy's foreground status**: When ntfy receives a message for a UnifiedPush app,
+ *    it temporarily has foreground importance (IMPORTANCE_FOREGROUND or IMPORTANCE_FOREGROUND_SERVICE).
+ *    The [checkForeground] method verifies this.
  *
  * 2. **Check target app support**: The target app must export a service with the action
  *    `org.unifiedpush.android.connector.RAISE_TO_FOREGROUND`. This is checked via
