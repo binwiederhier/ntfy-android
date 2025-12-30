@@ -403,4 +403,8 @@
     <string name="custom_headers_dialog_error_duplicate">Sellise nimega päisekirje on selle serveri jaoks juba olemas</string>
     <string name="custom_headers_dialog_error_user_exists">Kui kasutaja on seadistatud selle serveri jaoks, siis „Authorization“ kirjet väärtustada ei saa</string>
     <string name="custom_headers_dialog_description_edit">Sa võid valitud päisekirje nime ja väärtust muuta või kustutada.</string>
+    <string name="custom_headers_dialog_description_add">Sisesta sulle vajalik HTTP-päisekirje, mis lisatakse selle serveri päringutele.</string>
+    <string name="custom_headers_dialog_title_edit">Muuda päisekirjet</string>
+    <string name="custom_headers_dialog_title_add">Lisa sulle vajalik päisekirje</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">Kui selle serveri jaoks on lisatud „Authorization“ kirje, siis eraldi kasutajat väärtustada ei saa</string>
 </resources>
