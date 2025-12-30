@@ -44,8 +44,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
         Log.d(TAG, "REGISTER received for app $appId (connectorToken=$connectorToken)")
         if (!repository.getUnifiedPushEnabled()) {
             Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
-            // Action required: tell the app to not try again before an action as be done manually
-            // by the user
+            // Action required: tell the app to not try again before an action as be done manuall by the user
             distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.ACTION_REQUIRED)
             return
         }

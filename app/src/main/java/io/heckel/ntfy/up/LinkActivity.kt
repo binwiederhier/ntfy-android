@@ -31,6 +31,6 @@ class LinkActivity: Activity() {
     }
 
     companion object {
-        private val TAG = LinkActivity::class.simpleName
+        private val TAG = "NtfyUpLinkActivity"
     }
 }

@@ -16,8 +16,8 @@ enum class FailedReason {
      * The distributor requires a user action to work. For instance, the distributor may be log out of the push server and requires the user to log in. The user must interact with the distributor or sending a new registration will fail again.
      */
     ACTION_REQUIRED,
-    /*
+    /**
      * The distributor requires a VAPID key and the app didn't provide one during registration.
-        VAPID_REQUIRED,
      */
+    VAPID_REQUIRED, // Currently unused
 }
