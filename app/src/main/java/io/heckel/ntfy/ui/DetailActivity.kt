@@ -189,20 +189,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             finish()
             return
         }
-        val secure = url.getBooleanQueryParameter("secure", true)
-        var baseUrl = "https://${url.host}"
-        if (secure) {
-            if (url.port != 443 && url.port != -1) {
-                baseUrl = "https://${url.host}:${url.port}"
-            }
-        } else {
-            if (url.port != 80 && url.port != -1) {
-                baseUrl = "http://${url.host}:${url.port}"
-            } else {
-                baseUrl = "http://${url.host}"
-            }
-        }
+        val secure = url.getBooleanQueryParameter("secure", true) // Default to https://
+        val displayName = url.getQueryParameter("display")
+        val baseUrl = extractBaseUrl(url, secure)
         val topic = url.pathSegments.first()
+
         title = topicShortUrl(baseUrl, topic)
 
         // Subscribe to topic if it doesn't already exist
@@ -224,7 +215,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     icon = null,
                     upAppId = null,
                     upConnectorToken = null,
-                    displayName = null,
+                    displayName = displayName,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
@@ -264,6 +255,13 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 loadView()
             }
         }
+    }
+
+    fun extractBaseUrl(url: Uri, secure: Boolean): String {
+        if (secure) {
+            return if (url.port != 443 && url.port != -1) "https://${url.host}:${url.port}" else "https://${url.host}"
+        }
+        return if (url.port != 80 && url.port != -1)  "http://${url.host}:${url.port}" else "http://${url.host}"
     }
 
     private fun loadView() {

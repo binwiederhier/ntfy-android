@@ -4,6 +4,7 @@ Features:
 * Implement UnifiedPush "raise to foreground" requirement (ntfy-android#98, ntfy-android#148, thanks to @p1gp1g)
 * Language selector to allow overriding the system language (#1508, ntfy-android#145, thanks to @hudsonm62 for reporting)
 * Highlight phone numbers and email addresses in notifications (#957, ntfy-android#71, thanks to @brennenputh)
+* Support for port and display name in ntfy:// links (ntfy-android#130, thanks to @godovski)
 
 Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
