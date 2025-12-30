@@ -222,6 +222,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getAccountSyncWorkerVersion(): Int {
+        return sharedPrefs.getInt(SHARED_PREFS_ACCOUNT_SYNC_WORKER_VERSION, 0)
+    }
+
+    fun setAccountSyncWorkerVersion(version: Int) {
+        sharedPrefs.edit {
+            putInt(SHARED_PREFS_ACCOUNT_SYNC_WORKER_VERSION, version)
+        }
+    }
+
     fun setMinPriority(minPriority: Int) {
         if (minPriority <= MIN_PRIORITY_ANY) {
             sharedPrefs.edit {
@@ -572,6 +582,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_DELETE_WORKER_VERSION = "DeleteWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"
+        const val SHARED_PREFS_ACCOUNT_SYNC_WORKER_VERSION = "AccountSyncWorkerVersion"
         const val SHARED_PREFS_MUTED_UNTIL_TIMESTAMP = "MutedUntil"
         const val SHARED_PREFS_MIN_PRIORITY = "MinPriority"
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"

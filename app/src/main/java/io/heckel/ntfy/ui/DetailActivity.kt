@@ -34,6 +34,7 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
+import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
@@ -221,6 +222,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     lastActive = Date().time/1000
                 )
                 repository.addSubscription(subscription)
+                // Sync to remote account if logged in
+                AccountManager.getInstance(this@DetailActivity).addSubscriptionToRemote(subscription)
 
                 // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
                 if (baseUrl == appBaseUrl) {
@@ -847,6 +850,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 GlobalScope.launch(Dispatchers.IO) {
                     repository.removeAllNotifications(subscriptionId)
                     repository.removeSubscription(subscriptionId)
+                    // Sync deletion to remote account if logged in
+                    AccountManager.getInstance(this@DetailActivity).deleteSubscriptionFromRemote(subscriptionBaseUrl, subscriptionTopic)
                     if (subscriptionBaseUrl == appBaseUrl) {
                         messenger.unsubscribe(subscriptionTopic)
                     }

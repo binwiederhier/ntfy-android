@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.firebase.FirebaseMessenger
+import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.up.Distributor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,8 +23,10 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         return repository.getSubscriptionIdsWithInstantStatusLiveData()
     }
 
-    fun add(subscription: Subscription) = viewModelScope.launch(Dispatchers.IO) {
+    fun add(context: Context, subscription: Subscription) = viewModelScope.launch(Dispatchers.IO) {
         repository.addSubscription(subscription)
+        // Sync to remote account if logged in
+        AccountManager.getInstance(context).addSubscriptionToRemote(subscription)
     }
 
     fun remove(context: Context, subscriptionId: Long) = viewModelScope.launch(Dispatchers.IO) {
@@ -34,6 +37,8 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
         }
         repository.removeAllNotifications(subscriptionId)
         repository.removeSubscription(subscriptionId)
+        // Sync deletion to remote account if logged in
+        AccountManager.getInstance(context).deleteSubscriptionFromRemote(subscription.baseUrl, subscription.topic)
         if (subscription.icon != null) {
             val resolver = context.applicationContext.contentResolver
             try {

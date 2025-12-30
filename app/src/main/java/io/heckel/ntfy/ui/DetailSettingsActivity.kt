@@ -22,6 +22,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
@@ -397,7 +398,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 override fun putString(key: String?, value: String?) {
                     val displayName = if (value != "") value else null
                     val newSubscription = subscription.copy(displayName = displayName)
-                    save(newSubscription)
+                    save(newSubscription, syncDisplayName = true)
                     // Update activity title
                     activity?.runOnUiThread {
                         activity?.title = displayName(appBaseUrl, newSubscription)
@@ -505,12 +506,16 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun save(newSubscription: Subscription, refresh: Boolean = false) {
+        private fun save(newSubscription: Subscription, refresh: Boolean = false, syncDisplayName: Boolean = false) {
             subscription = newSubscription
             lifecycleScope.launch(Dispatchers.IO) {
                 repository.updateSubscription(newSubscription)
                 if (refresh) {
                     SubscriberServiceManager.refresh(requireContext())
+                }
+                if (syncDisplayName) {
+                    // Sync displayName change to remote account if logged in
+                    AccountManager.getInstance(requireContext()).updateSubscriptionOnRemote(newSubscription)
                 }
             }
         }
