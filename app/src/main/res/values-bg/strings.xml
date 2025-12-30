@@ -395,4 +395,9 @@
     <string name="settings_general_message_bar_title">Лента за съобщения</string>
     <string name="settings_general_message_bar_summary_enabled">Лентата за съобщения е долу в прегледа на тема</string>
     <string name="settings_general_message_bar_summary_disabled">Бутонът за публикуване е долу в прегледа на тема</string>
+    <string name="settings_advanced_custom_headers_title">Заглавки по избор</string>
+    <string name="settings_advanced_custom_headers_summary">Задайте заглавки на HTTP по избор. Ще бъдат изпращани с всяка заявка. Полезно ако сървърът на ntfy изисква удостоверяване или достъп през тунел.</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Добавяне на заглавка</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Добавяне на заглавка за сървъра</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Заглавките ще бъдат изпращани с всяка заявка по HTTP. Всеки сървър може да има свой набор от заявки.</string>
 </resources>
