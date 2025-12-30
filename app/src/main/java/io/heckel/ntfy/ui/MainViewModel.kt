@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.up.Distributor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,6 +41,12 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
             } catch (_: Exception) {
                 // Don't care
             }
+        }
+        // Unsubscribe from Firebase if this is the default ntfy.sh server
+        val appBaseUrl = context.getString(R.string.app_base_url)
+        if (subscription.baseUrl == appBaseUrl) {
+            val messenger = FirebaseMessenger()
+            messenger.unsubscribe(subscription.topic)
         }
     }
 
