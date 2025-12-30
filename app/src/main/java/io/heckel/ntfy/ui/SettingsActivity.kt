@@ -1037,7 +1037,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         lifecycleScope.launch(Dispatchers.IO) {
             repository.addUser(user) // New users are not used, so no service refresh required
             runOnUiThread {
-                userSettingsFragment.reload()
+                if (this@SettingsActivity::userSettingsFragment.isInitialized) {
+                    userSettingsFragment.reload()
+                }
             }
         }
     }
@@ -1047,7 +1049,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.updateUser(user)
             serviceManager.restart() // Editing does not change the user ID
             runOnUiThread {
-                userSettingsFragment.reload()
+                if (this@SettingsActivity::userSettingsFragment.isInitialized) {
+                    userSettingsFragment.reload()
+                }
             }
         }
     }
@@ -1057,7 +1061,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.deleteUser(baseUrl)
             serviceManager.restart()
             runOnUiThread {
-                userSettingsFragment.reload()
+                if (this@SettingsActivity::userSettingsFragment.isInitialized) {
+                    userSettingsFragment.reload()
+                }
             }
         }
     }
@@ -1067,7 +1073,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.addCustomHeader(header)
             serviceManager.restart() // Restart to apply new headers
             runOnUiThread {
-                customHeaderSettingsFragment.reload()
+                if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
+                    customHeaderSettingsFragment.reload()
+                }
             }
         }
     }
@@ -1077,7 +1085,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.updateCustomHeader(oldHeader, newHeader)
             serviceManager.restart() // Restart to apply header changes
             runOnUiThread {
-                customHeaderSettingsFragment.reload()
+                if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
+                    customHeaderSettingsFragment.reload()
+                }
             }
         }
     }
@@ -1087,7 +1097,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.deleteCustomHeader(header)
             serviceManager.restart()
             runOnUiThread {
-                customHeaderSettingsFragment.reload()
+                if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
+                    customHeaderSettingsFragment.reload()
+                }
             }
         }
     }
