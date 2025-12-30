@@ -190,7 +190,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             return
         }
         val secure = url.getBooleanQueryParameter("secure", true)
-        val baseUrl = if (secure) "https://${url.host}" else "http://${url.host}"
+        var baseUrl = "https://${url.host}"
+        if (secure) {
+            if (url.port != 443 && url.port != -1) {
+                baseUrl = "https://${url.host}:${url.port}"
+            }
+        } else {
+            if (url.port != 80 && url.port != -1) {
+                baseUrl = "http://${url.host}:${url.port}"
+            } else {
+                baseUrl = "http://${url.host}"
+            }
+        }
         val topic = url.pathSegments.first()
         title = topicShortUrl(baseUrl, topic)
 
