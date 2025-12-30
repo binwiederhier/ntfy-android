@@ -386,4 +386,21 @@
     <string name="settings_general_message_bar_title">Näita sõnumiriba</string>
     <string name="settings_general_message_bar_summary_enabled">Sõnumiriba kuvatakse teemavaate all</string>
     <string name="settings_general_message_bar_summary_disabled">Avaldamise nupp kuvatakse teemavaate all</string>
+    <string name="publish_dialog_delay_placeholder">nt. 30m, 1h, today 9pm (palun sisesta vaid inglise keeles)</string>
+    <string name="settings_advanced_custom_headers_title">Kohandatud päised</string>
+    <string name="settings_advanced_custom_headers_summary">Sisesta sulle vajalikud HTTP-päisekirjed, mis lisatakse igale päringule, kasutamiseks näiteks siis, kui ntfy peab kasutama proksit või tunnelit.</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Lisa päisekirje</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Lisa päisekirje serveri jaoks</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Päisekirjed lisatakse igale HTTP-päringule. Igal serveril saavad olla omad päisekirjed.</string>
+    <string name="custom_headers_dialog_base_url_hint">Teenuse võrguaadress</string>
+    <string name="custom_headers_dialog_name_hint">Päise nimi (nt. CF-Access-Client-Id)</string>
+    <string name="custom_headers_dialog_value_hint">Päise väärtus (nt. 9f3c2e4a1b2d4e)</string>
+    <string name="custom_headers_dialog_error_invalid_name">Päisenimes on kelatud väärtusi</string>
+    <string name="custom_headers_dialog_error_reserved_name">Selle päisekirje kasutamine on piiratud ning määratud vaid ntfy poolt</string>
+    <string name="custom_headers_dialog_button_add">Lisa</string>
+    <string name="custom_headers_dialog_button_save">Salvesta</string>
+    <string name="custom_headers_dialog_button_delete">Kustuta</string>
+    <string name="custom_headers_dialog_error_duplicate">Sellise nimega päisekirje on selle serveri jaoks juba olemas</string>
+    <string name="custom_headers_dialog_error_user_exists">Kui kasutaja on seadistatud selle serveri jaoks, siis „Authorization“ kirjet väärtustada ei saa</string>
+    <string name="custom_headers_dialog_description_edit">Sa võid valitud päisekirje nime ja väärtust muuta või kustutada.</string>
 </resources>
