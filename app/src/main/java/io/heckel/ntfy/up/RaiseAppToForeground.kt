@@ -57,6 +57,20 @@ import java.util.concurrent.TimeUnit
  * 5. **Maintain binding briefly**: The binding is kept alive for 5 seconds (or extended if more
  *    messages arrive) to give the target app time to start its foreground service. After the
  *    timeout, the binding is released via [unbind].
+ *    
+ * ## Example logs (using UP-Example app, see https://github.com/binwiederhier/ntfy-android/pull/98#issuecomment-3681330111)
+ *
+ * ```
+ * NtfyUpDistributor      D  Sending MESSAGE to org.unifiedpush.example (token=e9830034-b97d-485d-a7f1-c8a03af9cbd2): 107 bytes
+ * NtfyUpRaiseFgFactory   D  New instance for org.unifiedpush.example
+ * NtfyUpRaiseFg          I  Found foreground process: io.heckel.ntfy.debug
+ * NtfyUpRaiseFg          D  Binding to org.unifiedpush.example
+ * NtfyUpRaiseFg          D  onServiceConnected ComponentInfo{org.unifiedpush.example/org.unifiedpush.android.connector.internal.RaiseToForegroundService}
+ * NtfyUpRaiseFg          D  Sending msg for org.unifiedpush.example
+ * NtfyUpRaiseFg          D  Timeout expired, unbinding
+ * NtfyUpRaiseFgFactory   D  Removing instance for org.unifiedpush.example
+ * NtfyUpRaiseFg          D  Unbound
+ * ```
  *
  * ## Why "Foreground" Matters
  *
