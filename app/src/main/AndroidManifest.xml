@@ -13,12 +13,14 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> <!-- As of Android 13, we need to ask for permission to post notifications -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> <!-- Allows to ignore battery optimization without going to the settings -->
 
+    <!-- UnifiedPush "raise to foreground" requirement, see https://unifiedpush.org/developers/spec/android/#service-to-raise-to-the-foreground -->
     <queries>
         <intent>
             <action android:name="org.unifiedpush.android.connector.RAISE_TO_FOREGROUND" />
         </intent>
     </queries>
 
+    <!-- Application -->
     <application
             android:name=".app.Application"
             android:allowBackup="true"
