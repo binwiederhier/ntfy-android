@@ -35,5 +35,5 @@ object RaiseAppToForegroundFactory {
         }
     }
     private val instances: MutableMap<String, RaiseAppToForeground> = mutableMapOf()
-    private const val TAG = "RaiseAppToF.Factory"
+    private const val TAG = "NtfyUpRaiseFgFactory"
 }

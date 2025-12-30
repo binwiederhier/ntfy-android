@@ -284,7 +284,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
     }
 
     private companion object {
-        private const val TAG = "NtfyUpRaiseAppToForeground"
+        private const val TAG = "NtfyUpRaiseFg"
         private const val ACTION = "org.unifiedpush.android.connector.RAISE_TO_FOREGROUND"
 
         /** Executor to unbind 5 seconds later */
