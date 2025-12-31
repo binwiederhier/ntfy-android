@@ -17,23 +17,19 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 import java.util.Date
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val sslManager = SSLManager.getInstance(context)
-    private val clientCache = ConcurrentHashMap<String, OkHttpClient>()
     
-    private fun getClient(url: String): OkHttpClient {
+    private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return clientCache.getOrPut(baseUrl) {
-            sslManager.getOkHttpClientBuilder(baseUrl)
-                .callTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build()
-        }
+        return sslManager.getOkHttpClientBuilder(baseUrl)
+            .callTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
     }
     
     private fun extractBaseUrl(url: String): String {
@@ -86,7 +82,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
                 .url(icon.url)
                 .addHeader("User-Agent", ApiService.USER_AGENT)
                 .build()
-            getClient(icon.url).newCall(request).execute().use { response ->
+            createClient(icon.url).newCall(request).execute().use { response ->
                 Log.d(TAG, "Headers received: $response, Content-Length: ${response.headers["Content-Length"]}")
                 if (!response.isSuccessful) {
                     throw Exception("Unexpected response: ${response.code}")

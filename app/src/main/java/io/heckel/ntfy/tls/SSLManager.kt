@@ -8,7 +8,6 @@ import java.security.Principal
 import java.security.PrivateKey
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
-import java.util.concurrent.ConcurrentHashMap
 import javax.net.ssl.*
 
 /**
@@ -22,10 +21,6 @@ import javax.net.ssl.*
  */
 class SSLManager private constructor(private val context: Context) {
     private val certManager: CertificateManager by lazy { CertificateManager.getInstance(context) }
-    
-    // Cache of SSL configurations per baseUrl
-    private val sslContextCache = ConcurrentHashMap<String, SSLContext>()
-    private val trustManagerCache = ConcurrentHashMap<String, X509TrustManager>()
 
     // System trust manager (cached)
     private val systemTrustManager: X509TrustManager by lazy {
@@ -46,43 +41,16 @@ class SSLManager private constructor(private val context: Context) {
     /**
      * Configure an existing OkHttpClient.Builder with custom SSL
      */
-    fun configureSSL(builder: OkHttpClient.Builder, baseUrl: String) {
-        val sslContext = getOrCreateSSLContext(baseUrl)
-        val trustManager = getOrCreateTrustManager(baseUrl)
-        
-        builder.sslSocketFactory(sslContext.socketFactory, trustManager)
-        builder.hostnameVerifier(getHostnameVerifier(baseUrl))
-    }
-
-    /**
-     * Get or create an SSLContext for a specific server
-     */
-    private fun getOrCreateSSLContext(baseUrl: String): SSLContext {
-        return sslContextCache.getOrPut(baseUrl) {
-            createSSLContext(baseUrl)
-        }
-    }
-
-    /**
-     * Get or create a TrustManager for a specific server
-     */
-    private fun getOrCreateTrustManager(baseUrl: String): X509TrustManager {
-        return trustManagerCache.getOrPut(baseUrl) {
-            createTrustManager(baseUrl)
-        }
-    }
-
-    /**
-     * Create an SSLContext with custom TrustManager and KeyManager
-     */
-    private fun createSSLContext(baseUrl: String): SSLContext {
-        val trustManager = getOrCreateTrustManager(baseUrl)
+    private fun configureSSL(builder: OkHttpClient.Builder, baseUrl: String) {
+        val trustManager = createTrustManager(baseUrl)
         val keyManager = createKeyManager(baseUrl)
         
         val sslContext = SSLContext.getInstance("TLS")
         val keyManagers = if (keyManager != null) arrayOf(keyManager) else null
         sslContext.init(keyManagers, arrayOf(trustManager), null)
-        return sslContext
+        
+        builder.sslSocketFactory(sslContext.socketFactory, trustManager)
+        builder.hostnameVerifier(createHostnameVerifier(baseUrl))
     }
 
     /**
@@ -179,9 +147,9 @@ class SSLManager private constructor(private val context: Context) {
     }
 
     /**
-     * Get a HostnameVerifier that allows trusted self-signed certs
+     * Create a HostnameVerifier that allows trusted self-signed certs
      */
-    private fun getHostnameVerifier(baseUrl: String): HostnameVerifier {
+    private fun createHostnameVerifier(baseUrl: String): HostnameVerifier {
         return HostnameVerifier { hostname, session ->
             // First try default verification
             val defaultVerifier = HttpsURLConnection.getDefaultHostnameVerifier()
@@ -201,53 +169,24 @@ class SSLManager private constructor(private val context: Context) {
     }
 
     /**
-     * Invalidate cached SSL configuration for a specific server
+     * Fetch the server certificate without trusting it.
+     * Used to display certificate details before user decides to trust.
      */
-    fun invalidateCache(baseUrl: String) {
-        sslContextCache.remove(baseUrl)
-        trustManagerCache.remove(baseUrl)
-        Log.d(TAG, "Invalidated SSL cache for $baseUrl")
-    }
-
-    /**
-     * Invalidate all cached SSL configurations
-     */
-    fun invalidateAllCaches() {
-        sslContextCache.clear()
-        trustManagerCache.clear()
-        Log.d(TAG, "Invalidated all SSL caches")
-    }
-
-    /**
-     * Create a special TrustManager that captures the certificate chain during handshake
-     * Used for showing certificate details to user before trusting
-     */
-    fun createCertificateCapturingTrustManager(onCertificateCaptured: (Array<X509Certificate>) -> Unit): X509TrustManager {
-        return object : X509TrustManager {
+    fun fetchServerCertificate(baseUrl: String): X509Certificate? {
+        var capturedCert: X509Certificate? = null
+        
+        val trustManager = object : X509TrustManager {
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
 
             override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
                 if (chain != null && chain.isNotEmpty()) {
-                    @Suppress("UNCHECKED_CAST")
-                    onCertificateCaptured(chain as Array<X509Certificate>)
+                    capturedCert = chain[0]
                 }
                 // Always throw to prevent connection
                 throw CertificateException("Certificate captured for inspection")
             }
 
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        }
-    }
-
-    /**
-     * Fetch the server certificate without trusting it
-     * Used to display certificate details before user decides to trust
-     */
-    fun fetchServerCertificate(baseUrl: String): X509Certificate? {
-        var capturedCert: X509Certificate? = null
-        
-        val trustManager = createCertificateCapturingTrustManager { chain ->
-            capturedCert = chain.firstOrNull()
         }
 
         val sslContext = SSLContext.getInstance("TLS")
@@ -292,4 +231,3 @@ class SSLManager private constructor(private val context: Context) {
         }
     }
 }
-

@@ -15,23 +15,19 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val sslManager = SSLManager.getInstance(context)
-    private val clientCache = ConcurrentHashMap<String, OkHttpClient>()
     
-    private fun getClient(url: String): OkHttpClient {
+    private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return clientCache.getOrPut(baseUrl) {
-            sslManager.getOkHttpClientBuilder(baseUrl)
-                .callTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build()
-        }
+        return sslManager.getOkHttpClientBuilder(baseUrl)
+            .callTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
     }
     
     private fun extractBaseUrl(url: String): String {
@@ -99,7 +95,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         val request = builder.build()
 
         Log.d(TAG, "Executing HTTP request: ${method.uppercase(Locale.getDefault())} ${action.url}")
-        getClient(url).newCall(request).execute().use { response ->
+        createClient(url).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
                 return

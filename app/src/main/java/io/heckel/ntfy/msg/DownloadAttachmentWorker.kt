@@ -21,23 +21,19 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
     private val sslManager = SSLManager.getInstance(context)
-    private val clientCache = ConcurrentHashMap<String, OkHttpClient>()
     
-    private fun getClient(url: String): OkHttpClient {
+    private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return clientCache.getOrPut(baseUrl) {
-            sslManager.getOkHttpClientBuilder(baseUrl)
-                .callTimeout(15, TimeUnit.MINUTES)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build()
-        }
+        return sslManager.getOkHttpClientBuilder(baseUrl)
+            .callTimeout(15, TimeUnit.MINUTES)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
     }
     
     private fun extractBaseUrl(url: String): String {
@@ -83,7 +79,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 .url(attachment.url)
                 .addHeader("User-Agent", ApiService.USER_AGENT)
                 .build()
-            getClient(attachment.url).newCall(request).execute().use { response ->
+            createClient(attachment.url).newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
                 if (!response.isSuccessful) {
                     throw Exception("Unexpected response: ${response.code}")

@@ -72,7 +72,7 @@ class CertificateTrustFragment : DialogFragment() {
         dialog?.window?.apply {
             setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
     }

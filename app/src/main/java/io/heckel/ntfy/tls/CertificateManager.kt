@@ -2,8 +2,6 @@ package io.heckel.ntfy.tls
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -50,14 +48,6 @@ class CertificateManager private constructor(private val context: Context) {
     }
 
     /**
-     * Check if a certificate is trusted for a given server
-     */
-    fun isCertificateTrusted(baseUrl: String, cert: X509Certificate): Boolean {
-        val fingerprint = TrustedCertificate.calculateFingerprint(cert)
-        return getTrustedCertificatesForServer(baseUrl).any { it.fingerprint == fingerprint }
-    }
-
-    /**
      * Add a trusted certificate
      */
     fun addTrustedCertificate(cert: TrustedCertificate) {
@@ -66,8 +56,6 @@ class CertificateManager private constructor(private val context: Context) {
         certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
         certs.add(cert)
         saveTrustedCertificates(certs)
-        // Notify SSLManager to refresh
-        SSLManager.getInstance(context).invalidateCache(cert.baseUrl)
     }
 
     /**
@@ -84,18 +72,6 @@ class CertificateManager private constructor(private val context: Context) {
         val certs = getTrustedCertificates().toMutableList()
         certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
         saveTrustedCertificates(certs)
-        // Notify SSLManager to refresh
-        SSLManager.getInstance(context).invalidateCache(cert.baseUrl)
-    }
-
-    /**
-     * Remove all trusted certificates for a server
-     */
-    fun removeTrustedCertificatesForServer(baseUrl: String) {
-        val certs = getTrustedCertificates().toMutableList()
-        certs.removeAll { it.baseUrl == baseUrl }
-        saveTrustedCertificates(certs)
-        SSLManager.getInstance(context).invalidateCache(baseUrl)
     }
 
     /**
@@ -145,13 +121,6 @@ class CertificateManager private constructor(private val context: Context) {
     }
 
     /**
-     * Check if a client certificate is configured for a server
-     */
-    fun hasClientCertificate(baseUrl: String): Boolean {
-        return getClientCertificateForServer(baseUrl) != null
-    }
-
-    /**
      * Add a client certificate from PEM files
      * 
      * @param baseUrl Server URL this certificate is for
@@ -183,9 +152,6 @@ class CertificateManager private constructor(private val context: Context) {
         }
         certs.add(clientCert)
         saveClientCertificates(certs)
-
-        // Notify SSLManager to refresh
-        SSLManager.getInstance(context).invalidateCache(baseUrl)
     }
 
     /**
@@ -228,9 +194,6 @@ class CertificateManager private constructor(private val context: Context) {
         val certs = getClientCertificates().toMutableList()
         certs.removeAll { it.alias == cert.alias }
         saveClientCertificates(certs)
-
-        // Notify SSLManager to refresh
-        SSLManager.getInstance(context).invalidateCache(cert.baseUrl)
     }
 
     /**
@@ -270,39 +233,6 @@ class CertificateManager private constructor(private val context: Context) {
             } else {
                 putString(PREF_CLIENT_CERTS, gson.toJson(certs))
             }
-        }
-    }
-
-    // ==================== Backup/Restore Support ====================
-
-    /**
-     * Export trusted certificates for backup (client certs cannot be exported)
-     */
-    fun exportTrustedCertificatesJson(): String {
-        return gson.toJson(getTrustedCertificates())
-    }
-
-    /**
-     * Import trusted certificates from backup
-     */
-    fun importTrustedCertificatesJson(json: String) {
-        try {
-            val type = object : TypeToken<List<TrustedCertificate>>() {}.type
-            val imported: List<TrustedCertificate> = gson.fromJson(json, type) ?: return
-            val current = getTrustedCertificates().toMutableList()
-            
-            // Merge: add new certs, skip duplicates
-            imported.forEach { cert ->
-                if (current.none { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }) {
-                    current.add(cert)
-                }
-            }
-            saveTrustedCertificates(current)
-            
-            // Invalidate all caches
-            SSLManager.getInstance(context).invalidateAllCaches()
-        } catch (e: Exception) {
-            Log.w(TAG, "Failed to import trusted certificates", e)
         }
     }
 
