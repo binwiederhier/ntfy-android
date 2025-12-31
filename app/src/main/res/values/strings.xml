@@ -481,4 +481,60 @@
     <string name="custom_headers_dialog_button_add">Add</string>
     <string name="custom_headers_dialog_button_save">Save</string>
     <string name="custom_headers_dialog_button_delete">Delete</string>
+
+    <!-- Certificate trust dialog -->
+    <string name="certificate_trust_dialog_title">Trust this certificate?</string>
+    <string name="certificate_trust_dialog_description">The server\'s certificate could not be verified. This may happen with self-signed certificates or custom Certificate Authorities. Review the details below before trusting.</string>
+    <string name="certificate_trust_dialog_subject">Subject</string>
+    <string name="certificate_trust_dialog_issuer">Issuer</string>
+    <string name="certificate_trust_dialog_fingerprint">SHA-256 Fingerprint</string>
+    <string name="certificate_trust_dialog_valid_from">Valid from</string>
+    <string name="certificate_trust_dialog_valid_until">Valid until</string>
+    <string name="certificate_trust_dialog_expired_warning">Warning: This certificate has expired!</string>
+    <string name="certificate_trust_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid!</string>
+    <string name="certificate_trust_dialog_button_trust">Trust</string>
+    <string name="certificate_trust_dialog_button_cancel">Cancel</string>
+
+    <!-- Certificate settings -->
+    <string name="settings_advanced_certificates_title">Manage certificates</string>
+    <string name="settings_advanced_certificates_summary">Trust self-signed server certificates and manage client certificates for mTLS</string>
+    <string name="settings_certificates_prefs_title">Certificates</string>
+    <string name="settings_certificates_prefs_trusted_header">Trusted server certificates</string>
+    <string name="settings_certificates_prefs_trusted_empty">No trusted certificates</string>
+    <string name="settings_certificates_prefs_trusted_add">Add CA certificate</string>
+    <string name="settings_certificates_prefs_trusted_add_title">Add a trusted CA certificate</string>
+    <string name="settings_certificates_prefs_trusted_add_summary">Import a PEM certificate file to trust a custom Certificate Authority</string>
+    <string name="settings_certificates_prefs_client_header">Client certificates (mTLS)</string>
+    <string name="settings_certificates_prefs_client_empty">No client certificates</string>
+    <string name="settings_certificates_prefs_client_add">Add client certificate</string>
+    <string name="settings_certificates_prefs_client_add_title">Add a client certificate</string>
+    <string name="settings_certificates_prefs_client_add_summary">Import PEM certificate and key files for mutual TLS authentication</string>
+    <string name="settings_certificates_prefs_expires">Expires: %1$s</string>
+    <string name="settings_certificates_prefs_expired">Expired</string>
+
+    <!-- Certificate dialog -->
+    <string name="certificate_dialog_title_view">Certificate details</string>
+    <string name="certificate_dialog_title_add_trusted">Add trusted certificate</string>
+    <string name="certificate_dialog_title_add_client">Add client certificate</string>
+    <string name="certificate_dialog_base_url_hint">Service URL (e.g. https://ntfy.example.com)</string>
+    <string name="certificate_dialog_select_cert_file">Select certificate file (.pem, .crt)</string>
+    <string name="certificate_dialog_select_key_file">Select private key file (.pem, .key)</string>
+    <string name="certificate_dialog_cert_file_selected">Certificate: %1$s</string>
+    <string name="certificate_dialog_key_file_selected">Key: %1$s</string>
+    <string name="certificate_dialog_no_file_selected">No file selected</string>
+    <string name="certificate_dialog_button_add">Add</string>
+    <string name="certificate_dialog_button_delete">Delete</string>
+    <string name="certificate_dialog_button_cancel">Cancel</string>
+    <string name="certificate_dialog_error_invalid_cert">Invalid certificate file</string>
+    <string name="certificate_dialog_error_invalid_key">Invalid private key file. Ensure it\'s in PKCS#8 PEM format.</string>
+    <string name="certificate_dialog_error_missing_url">Please enter a service URL</string>
+    <string name="certificate_dialog_error_invalid_url">Invalid service URL</string>
+    <string name="certificate_dialog_error_missing_cert">Please select a certificate file</string>
+    <string name="certificate_dialog_error_missing_key">Please select a private key file</string>
+    <string name="certificate_dialog_delete_confirm">Delete this certificate?</string>
+    <string name="certificate_dialog_added_toast">Certificate added</string>
+    <string name="certificate_dialog_deleted_toast">Certificate deleted</string>
+
+    <!-- Add dialog SSL error -->
+    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted. Tap to review.</string>
 </resources>

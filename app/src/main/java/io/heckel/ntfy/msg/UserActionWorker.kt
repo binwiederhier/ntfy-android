@@ -8,20 +8,38 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.Log
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val client = OkHttpClient.Builder()
-        .callTimeout(60, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+    private val sslManager = SSLManager.getInstance(context)
+    private val clientCache = ConcurrentHashMap<String, OkHttpClient>()
+    
+    private fun getClient(url: String): OkHttpClient {
+        val baseUrl = extractBaseUrl(url)
+        return clientCache.getOrPut(baseUrl) {
+            sslManager.getOkHttpClientBuilder(baseUrl)
+                .callTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+    
+    private fun extractBaseUrl(url: String): String {
+        val httpUrl = url.toHttpUrlOrNull() ?: return ""
+        val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
+        val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
+        return schemeAndHost + maybePort
+    }
     private val notifier = NotificationService(context)
     private val broadcaster = BroadcastService(context)
     private lateinit var repository: Repository
@@ -81,7 +99,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         val request = builder.build()
 
         Log.d(TAG, "Executing HTTP request: ${method.uppercase(Locale.getDefault())} ${action.url}")
-        client.newCall(request).execute().use { response ->
+        getClient(url).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
                 return

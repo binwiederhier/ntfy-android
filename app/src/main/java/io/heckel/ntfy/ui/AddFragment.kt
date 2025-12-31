@@ -19,13 +19,17 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.core.view.isGone
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLHandshakeException
+import javax.net.ssl.SSLPeerUnverifiedException
 
-class AddFragment : DialogFragment() {
+class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustListener {
     private lateinit var repository: Repository
     private lateinit var api: ApiService
     private lateinit var subscribeListener: SubscribeListener
@@ -240,9 +244,68 @@ class AddFragment : DialogFragment() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
-                showErrorAndReenableSubscribeView(e.message)
+                
+                // Check if this is an SSL certificate error
+                if (isSSLException(e)) {
+                    Log.d(TAG, "SSL certificate error detected, attempting to fetch certificate for user review")
+                    handleSSLException(baseUrl, topic, e)
+                } else {
+                    showErrorAndReenableSubscribeView(e.message)
+                }
             }
         }
+    }
+    
+    private fun isSSLException(e: Exception): Boolean {
+        var cause: Throwable? = e
+        while (cause != null) {
+            if (cause is SSLHandshakeException || 
+                cause is SSLPeerUnverifiedException ||
+                cause is java.security.cert.CertificateException) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+    
+    private fun handleSSLException(baseUrl: String, topic: String, e: Exception) {
+        // Try to fetch the server's certificate
+        val sslManager = SSLManager.getInstance(requireContext())
+        val certificate = sslManager.fetchServerCertificate(baseUrl)
+        
+        val activity = activity ?: return
+        activity.runOnUiThread {
+            if (certificate != null) {
+                // Show the certificate trust dialog
+                showCertificateTrustDialog(baseUrl, certificate)
+            } else {
+                // Could not fetch certificate, show generic SSL error
+                showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
+            }
+        }
+    }
+    
+    private fun showCertificateTrustDialog(baseUrl: String, certificate: X509Certificate) {
+        subscribeProgress.visibility = View.GONE
+        enableSubscribeView(true)
+        
+        CertificateTrustFragment
+            .newInstance(baseUrl, certificate)
+            .show(childFragmentManager, CertificateTrustFragment.TAG)
+    }
+    
+    // CertificateTrustFragment.CertificateTrustListener implementation
+    override fun onCertificateTrusted(baseUrl: String, certificate: X509Certificate) {
+        Log.d(TAG, "Certificate trusted for $baseUrl, retrying connection")
+        // Retry the connection now that the certificate is trusted
+        val topic = subscribeTopicText.text.toString()
+        checkReadAndMaybeShowLogin(baseUrl, topic)
+    }
+    
+    override fun onCertificateRejected() {
+        Log.d(TAG, "Certificate rejected by user")
+        showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
     }
 
     private fun showErrorAndReenableSubscribeView(message: String?) {

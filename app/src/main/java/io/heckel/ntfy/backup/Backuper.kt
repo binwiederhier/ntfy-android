@@ -10,6 +10,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.tls.CertificateManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -20,6 +21,7 @@ class Backuper(val context: Context) {
     private val repository = (context.applicationContext as Application).repository
     private val messenger = FirebaseMessenger()
     private val notifier = NotificationService(context)
+    private val certManager = CertificateManager.getInstance(context)
 
     suspend fun backup(uri: Uri, withSettings: Boolean = true, withSubscriptions: Boolean = true, withUsers: Boolean = true) {
         Log.d(TAG, "Backing up settings to file $uri")
@@ -50,6 +52,7 @@ class Backuper(val context: Context) {
         applySubscriptions(backupFile.subscriptions)
         applyNotifications(backupFile.notifications)
         applyUsers(backupFile.users)
+        applyTrustedCertificates(backupFile.trustedCertificates)
     }
 
     private fun applySettings(settings: Settings?) {
@@ -220,6 +223,28 @@ class Backuper(val context: Context) {
         }
     }
 
+    private fun applyTrustedCertificates(certificates: List<TrustedCertificateBackup>?) {
+        if (certificates == null) {
+            return
+        }
+        certificates.forEach { c ->
+            try {
+                val trustedCert = io.heckel.ntfy.tls.TrustedCertificate(
+                    baseUrl = c.baseUrl,
+                    fingerprint = c.fingerprint,
+                    subject = c.subject,
+                    issuer = c.issuer,
+                    notBefore = c.notBefore,
+                    notAfter = c.notAfter,
+                    pemEncoded = c.pemEncoded
+                )
+                certManager.addTrustedCertificate(trustedCert)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to restore trusted certificate ${c.fingerprint}: ${e.message}. Ignoring.", e)
+            }
+        }
+    }
+
     private suspend fun createBackupFile(withSettings: Boolean, withSubscriptions: Boolean, withUsers: Boolean): BackupFile {
         return BackupFile(
             magic = FILE_MAGIC,
@@ -227,7 +252,8 @@ class Backuper(val context: Context) {
             settings = if (withSettings) createSettings() else null,
             subscriptions = if (withSubscriptions) createSubscriptionList() else null,
             notifications = if (withSubscriptions) createNotificationList() else null,
-            users = if (withUsers) createUserList() else null
+            users = if (withUsers) createUserList() else null,
+            trustedCertificates = if (withSettings) createTrustedCertificateList() else null
         )
     }
 
@@ -340,6 +366,20 @@ class Backuper(val context: Context) {
         }
     }
 
+    private fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
+        return certManager.getTrustedCertificates().map { c ->
+            TrustedCertificateBackup(
+                baseUrl = c.baseUrl,
+                fingerprint = c.fingerprint,
+                subject = c.subject,
+                issuer = c.issuer,
+                notBefore = c.notBefore,
+                notAfter = c.notAfter,
+                pemEncoded = c.pemEncoded
+            )
+        }
+    }
+
     companion object {
         private const val FILE_MAGIC = "ntfy2586"
         private const val FILE_VERSION = 1
@@ -353,7 +393,8 @@ data class BackupFile(
     val settings: Settings?,
     val subscriptions: List<Subscription>?,
     val notifications: List<Notification>?,
-    val users: List<User>?
+    val users: List<User>?,
+    val trustedCertificates: List<TrustedCertificateBackup>? = null
 )
 
 data class Settings(
@@ -438,6 +479,16 @@ data class User(
     val baseUrl: String,
     val username: String,
     val password: String
+)
+
+data class TrustedCertificateBackup(
+    val baseUrl: String,
+    val fingerprint: String,
+    val subject: String,
+    val issuer: String,
+    val notBefore: Long,
+    val notAfter: Long,
+    val pemEncoded: String
 )
 
 class InvalidBackupFileException : Exception("Invalid backup file format")

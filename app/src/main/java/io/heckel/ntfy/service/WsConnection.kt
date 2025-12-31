@@ -1,11 +1,13 @@
 package io.heckel.ntfy.service
 
 import android.app.AlarmManager
+import android.content.Context
 import android.os.Build
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -30,6 +32,7 @@ import kotlin.random.Random
  * https://github.com/gotify/android/blob/master/app/src/main/java/com/github/gotify/service/WebSocketConnection.java
  */
 class WsConnection(
+    private val context: Context,
     private val connectionId: ConnectionId,
     private val repository: Repository,
     private val user: User?,
@@ -39,11 +42,14 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val client = OkHttpClient.Builder()
-        .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .build()
+    private val sslManager = SSLManager.getInstance(context)
+    private val client: OkHttpClient by lazy {
+        sslManager.getOkHttpClientBuilder(connectionId.baseUrl)
+            .readTimeout(0, TimeUnit.MILLISECONDS)
+            .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .build()
+    }
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null

@@ -7,6 +7,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -14,27 +15,50 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class ApiService(context: Context) {
+class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
+    private val sslManager = SSLManager.getInstance(context)
     private val gson = Gson()
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val publishClient = OkHttpClient.Builder()
-        .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val subscriberClient = OkHttpClient.Builder()
-        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
-        .build()
+    
+    // Client caches per baseUrl for SSL configuration
+    private val clientCache = ConcurrentHashMap<String, OkHttpClient>()
+    private val publishClientCache = ConcurrentHashMap<String, OkHttpClient>()
+    private val subscriberClientCache = ConcurrentHashMap<String, OkHttpClient>()
+    
+    private fun getClient(baseUrl: String): OkHttpClient {
+        return clientCache.getOrPut(baseUrl) {
+            sslManager.getOkHttpClientBuilder(baseUrl)
+                .callTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+    
+    private fun getPublishClient(baseUrl: String): OkHttpClient {
+        return publishClientCache.getOrPut(baseUrl) {
+            sslManager.getOkHttpClientBuilder(baseUrl)
+                .callTimeout(5, TimeUnit.MINUTES)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+    
+    private fun getSubscriberClient(baseUrl: String): OkHttpClient {
+        return subscriberClientCache.getOrPut(baseUrl) {
+            sslManager.getOkHttpClientBuilder(baseUrl)
+                .readTimeout(77, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+    
     private val parser = NotificationParser()
 
     fun publish(
@@ -99,7 +123,7 @@ class ApiService(context: Context) {
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
-        val httpCall = publishClient.newCall(request)
+        val httpCall = getPublishClient(baseUrl).newCall(request)
         onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
         httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
@@ -129,7 +153,7 @@ class ApiService(context: Context) {
         Log.d(TAG, "Polling topic $url")
 
         val request = requestBuilder(url, user, repository).build()
-        client.newCall(request).execute().use { response ->
+        getClient(baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
@@ -156,7 +180,7 @@ class ApiService(context: Context) {
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val request = requestBuilder(url, user, repository).build()
-        val call = subscriberClient.newCall(request)
+        val call = getSubscriberClient(baseUrl).newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 try {
@@ -192,7 +216,7 @@ class ApiService(context: Context) {
         }
         val url = topicUrlAuth(baseUrl, topic)
         val request = requestBuilder(url, user, repository).build()
-        client.newCall(request).execute().use { response ->
+        getClient(baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
             } else if (user == null && response.code == 404) {
