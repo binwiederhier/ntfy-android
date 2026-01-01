@@ -516,7 +516,7 @@
     <string name="certificate_dialog_title_view">Certificate details</string>
     <string name="certificate_dialog_title_add_trusted">Add trusted certificate</string>
     <string name="certificate_dialog_title_add_client">Add client certificate</string>
-    <string name="certificate_dialog_description_add_trusted">Add a trusted CA or server certificate. Connections to the service URL will trust this certificate.</string>
+    <string name="certificate_dialog_description_add_trusted">Add a trusted server or CA certificate. Connections to the service URL will trust this certificate.</string>
     <string name="certificate_dialog_description_add_client">Add a client certificate for mTLS authentication. The certificate and private key will be used when connecting to the service.</string>
     <string name="certificate_dialog_base_url_hint">Service URL (e.g. https://ntfy.example.com)</string>
     <string name="certificate_dialog_select_cert_file">Select certificate file (.pem, .crt)</string>
@@ -538,5 +538,5 @@
     <string name="certificate_dialog_deleted_toast">Certificate deleted</string>
 
     <!-- Add dialog SSL error -->
-    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted. Tap to review.</string>
+    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
 </resources>

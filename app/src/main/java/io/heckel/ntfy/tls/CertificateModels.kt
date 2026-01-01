@@ -70,18 +70,6 @@ data class TrustedCertificate(
     }
 
     /**
-     * Get a shortened fingerprint for display (first 8 bytes)
-     */
-    fun shortFingerprint(): String {
-        val parts = fingerprint.split(":")
-        return if (parts.size >= 8) {
-            parts.take(8).joinToString(":")
-        } else {
-            fingerprint
-        }
-    }
-
-    /**
      * Get a human-readable subject (extract CN if available)
      */
     fun displaySubject(): String {
@@ -134,7 +122,7 @@ data class ClientCertificate(
      */
     fun isValid(): Boolean {
         val now = System.currentTimeMillis()
-        return now >= notBefore && now <= notAfter
+        return now in notBefore..notAfter
     }
 
     /**
@@ -145,4 +133,3 @@ data class ClientCertificate(
         return cnMatch?.groupValues?.get(1) ?: subject
     }
 }
-

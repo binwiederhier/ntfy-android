@@ -1,5 +1,6 @@
 package io.heckel.ntfy.tls
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
@@ -243,6 +244,7 @@ class CertificateManager private constructor(private val context: Context) {
         private const val PREF_CLIENT_CERTS = "client_certificates"
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
 
+        @SuppressLint("StaticFieldLeak") // Using applicationContext, so no leak
         @Volatile
         private var instance: CertificateManager? = null
 
@@ -253,4 +255,3 @@ class CertificateManager private constructor(private val context: Context) {
         }
     }
 }
-

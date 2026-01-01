@@ -223,6 +223,7 @@ class SSLManager private constructor(private val context: Context) {
         private const val TAG = "NtfySSLManager"
 
         @Volatile
+        @SuppressLint("StaticFieldLeak") // Using applicationContext, so no leak
         private var instance: SSLManager? = null
 
         fun getInstance(context: Context): SSLManager {

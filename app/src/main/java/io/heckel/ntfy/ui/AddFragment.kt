@@ -248,7 +248,7 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
                 // Check if this is an SSL certificate error
                 if (isSSLException(e)) {
                     Log.d(TAG, "SSL certificate error detected, attempting to fetch certificate for user review")
-                    handleSSLException(baseUrl, topic, e)
+                    handleSSLException(baseUrl)
                 } else {
                     showErrorAndReenableSubscribeView(e.message)
                 }
@@ -269,7 +269,7 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
         return false
     }
     
-    private fun handleSSLException(baseUrl: String, topic: String, e: Exception) {
+    private fun handleSSLException(baseUrl: String) {
         // Try to fetch the server's certificate
         val sslManager = SSLManager.getInstance(requireContext())
         val certificate = sslManager.fetchServerCertificate(baseUrl)
@@ -277,7 +277,6 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
         val activity = activity ?: return
         activity.runOnUiThread {
             if (certificate != null) {
-                // Show the certificate trust dialog
                 showCertificateTrustDialog(baseUrl, certificate)
             } else {
                 // Could not fetch certificate, show generic SSL error
