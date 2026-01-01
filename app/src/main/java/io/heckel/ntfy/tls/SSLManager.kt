@@ -1,5 +1,6 @@
 package io.heckel.ntfy.tls
 
+import android.annotation.SuppressLint
 import android.content.Context
 import io.heckel.ntfy.util.Log
 import okhttp3.OkHttpClient
@@ -172,15 +173,18 @@ class SSLManager private constructor(private val context: Context) {
      * Fetch the server certificate without trusting it.
      * Used to display certificate details before user decides to trust.
      */
+    @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
     fun fetchServerCertificate(baseUrl: String): X509Certificate? {
         var capturedCert: X509Certificate? = null
-        
+        val sslContext = SSLContext.getInstance("TLS")
         val trustManager = object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                // We don't really care. We're just fetching this to display it.
+            }
 
             override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
                 if (chain != null && chain.isNotEmpty()) {
-                    capturedCert = chain[0]
+                    capturedCert = chain[0] // First cert in chain is the server cert
                 }
                 // Always throw to prevent connection
                 throw CertificateException("Certificate captured for inspection")
@@ -188,10 +192,9 @@ class SSLManager private constructor(private val context: Context) {
 
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
         }
-
-        val sslContext = SSLContext.getInstance("TLS")
         sslContext.init(null, arrayOf(trustManager), null)
 
+        // Create connection to capture certificate
         try {
             val url = java.net.URL(baseUrl)
             val host = url.host
@@ -200,21 +203,19 @@ class SSLManager private constructor(private val context: Context) {
             } else {
                 url.port
             }
-
             val socketFactory = sslContext.socketFactory
             val socket = socketFactory.createSocket(host, port) as SSLSocket
             socket.soTimeout = 10000
             try {
                 socket.startHandshake()
             } catch (e: Exception) {
-                // Expected - we throw from the trust manager
+                // Expected, we throw from the trust manager
             } finally {
                 socket.close()
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to fetch certificate from $baseUrl", e)
         }
-
         return capturedCert
     }
 
