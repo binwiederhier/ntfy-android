@@ -1,164 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/certificate_trust_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:background="?attr/colorSurface"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/certificate_trust_title"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/certificate_trust_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/certificate_trust_dialog_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+            android:paddingStart="0dp"
+            android:paddingEnd="12dp"
+            app:navigationIcon="@drawable/ic_close_white_24dp"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="@string/certificate_trust_dialog_title"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:menu="@menu/menu_certificate_trust_dialog" />
 
-        <!-- Description -->
-        <TextView
-            android:id="@+id/certificate_trust_description"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="?dialogPreferredPadding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/certificate_trust_dialog_description"
-            android:textSize="14sp"
-            android:layout_marginBottom="24dp" />
+            android:layout_height="wrap_content">
 
-        <!-- Warning for expired/not-yet-valid certs -->
-        <TextView
-            android:id="@+id/certificate_trust_warning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone" />
+            <!-- Description -->
+            <TextView
+                android:id="@+id/certificate_trust_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/certificate_trust_dialog_description"
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Subject -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/certificate_trust_dialog_subject"
-            android:textSize="12sp"
-            android:textColor="?android:textColorSecondary" />
+            <!-- Warning for expired/not-yet-valid certs -->
+            <TextView
+                android:id="@+id/certificate_trust_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/certificate_trust_subject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"
-            android:textIsSelectable="true" />
+            <!-- Subject -->
+            <TextView
+                android:id="@+id/certificate_trust_subject_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/certificate_trust_dialog_subject"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_warning"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Issuer -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/certificate_trust_dialog_issuer"
-            android:textSize="12sp"
-            android:textColor="?android:textColorSecondary" />
+            <TextView
+                android:id="@+id/certificate_trust_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textIsSelectable="true"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_subject_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/certificate_trust_issuer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginBottom="16dp"
-            android:textIsSelectable="true" />
+            <!-- Issuer -->
+            <TextView
+                android:id="@+id/certificate_trust_issuer_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/certificate_trust_dialog_issuer"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_subject"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Fingerprint -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/certificate_trust_dialog_fingerprint"
-            android:textSize="12sp"
-            android:textColor="?android:textColorSecondary" />
+            <TextView
+                android:id="@+id/certificate_trust_issuer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textIsSelectable="true"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_issuer_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/certificate_trust_fingerprint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
-            android:layout_marginBottom="16dp"
-            android:textIsSelectable="true" />
+            <!-- Fingerprint -->
+            <TextView
+                android:id="@+id/certificate_trust_fingerprint_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/certificate_trust_dialog_fingerprint"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_issuer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Validity -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            <TextView
+                android:id="@+id/certificate_trust_fingerprint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textIsSelectable="true"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_fingerprint_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-            <LinearLayout
+            <!-- Valid From -->
+            <TextView
+                android:id="@+id/certificate_trust_valid_from_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="@string/certificate_trust_dialog_valid_from"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_fingerprint"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/certificate_trust_valid_until_label"
+                app:layout_constraintWidth_percent="0.5" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/certificate_trust_dialog_valid_from"
-                    android:textSize="12sp"
-                    android:textColor="?android:textColorSecondary" />
-
-                <TextView
-                    android:id="@+id/certificate_trust_valid_from"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/certificate_trust_valid_from"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_valid_from_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/certificate_trust_valid_until"
+                app:layout_constraintWidth_percent="0.5" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/certificate_trust_dialog_valid_until"
-                    android:textSize="12sp"
-                    android:textColor="?android:textColorSecondary" />
-
-                <TextView
-                    android:id="@+id/certificate_trust_valid_until"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/certificate_trust_cancel_button"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
+            <!-- Valid Until -->
+            <TextView
+                android:id="@+id/certificate_trust_valid_until_label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/certificate_trust_dialog_button_cancel" />
+                android:text="@string/certificate_trust_dialog_valid_until"
+                android:textSize="12sp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_fingerprint"
+                app:layout_constraintStart_toEndOf="@id/certificate_trust_valid_from_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/certificate_trust_button"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/certificate_trust_valid_until"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/certificate_trust_dialog_button_trust" />
-        </LinearLayout>
+                android:textSize="14sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintTop_toBottomOf="@id/certificate_trust_valid_until_label"
+                app:layout_constraintStart_toEndOf="@id/certificate_trust_valid_from"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
 
-    </LinearLayout>
-</ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

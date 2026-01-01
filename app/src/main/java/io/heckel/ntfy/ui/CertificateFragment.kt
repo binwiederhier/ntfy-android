@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -19,6 +21,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.tls.CertificateManager
 import io.heckel.ntfy.tls.ClientCertificate
 import io.heckel.ntfy.tls.TrustedCertificate
+import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.text.SimpleDateFormat
@@ -40,7 +43,10 @@ class CertificateFragment : DialogFragment() {
     private var keyPem: String? = null
     
     // Views
-    private lateinit var titleText: TextView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var saveMenuItem: MenuItem
+    private lateinit var deleteMenuItem: MenuItem
+    private lateinit var descriptionText: TextView
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: TextInputEditText
     private lateinit var certFileLayout: View
@@ -56,9 +62,6 @@ class CertificateFragment : DialogFragment() {
     private lateinit var validFromText: TextView
     private lateinit var validUntilText: TextView
     private lateinit var errorText: TextView
-    private lateinit var deleteButton: MaterialButton
-    private lateinit var cancelButton: MaterialButton
-    private lateinit var addButton: MaterialButton
     
     // File pickers
     private val certFilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -126,7 +129,27 @@ class CertificateFragment : DialogFragment() {
     }
 
     private fun setupView(view: View) {
-        titleText = view.findViewById(R.id.certificate_dialog_title)
+        // Setup toolbar
+        toolbar = view.findViewById(R.id.certificate_dialog_toolbar)
+        toolbar.setNavigationOnClickListener { dismiss() }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.certificate_dialog_action_save -> {
+                    saveClicked()
+                    true
+                }
+                R.id.certificate_dialog_action_delete -> {
+                    deleteClicked()
+                    true
+                }
+                else -> false
+            }
+        }
+        saveMenuItem = toolbar.menu.findItem(R.id.certificate_dialog_action_save)
+        deleteMenuItem = toolbar.menu.findItem(R.id.certificate_dialog_action_delete)
+        
+        // Setup views
+        descriptionText = view.findViewById(R.id.certificate_dialog_description)
         baseUrlLayout = view.findViewById(R.id.certificate_dialog_base_url_layout)
         baseUrlText = view.findViewById(R.id.certificate_dialog_base_url_text)
         certFileLayout = view.findViewById(R.id.certificate_dialog_cert_file_layout)
@@ -142,9 +165,14 @@ class CertificateFragment : DialogFragment() {
         validFromText = view.findViewById(R.id.certificate_dialog_valid_from)
         validUntilText = view.findViewById(R.id.certificate_dialog_valid_until)
         errorText = view.findViewById(R.id.certificate_dialog_error_text)
-        deleteButton = view.findViewById(R.id.certificate_dialog_delete_button)
-        cancelButton = view.findViewById(R.id.certificate_dialog_cancel_button)
-        addButton = view.findViewById(R.id.certificate_dialog_add_button)
+        
+        // Button handlers
+        selectCertButton.setOnClickListener { certFilePicker.launch("*/*") }
+        selectKeyButton.setOnClickListener { keyFilePicker.launch("*/*") }
+        
+        // Validate input when typing
+        val textWatcher = AfterChangedTextWatcher { validateInput() }
+        baseUrlText.addTextChangedListener(textWatcher)
         
         // Configure based on mode
         when (mode) {
@@ -154,34 +182,30 @@ class CertificateFragment : DialogFragment() {
             Mode.VIEW_CLIENT -> setupViewClientMode()
         }
         
-        // Common button handlers
-        cancelButton.setOnClickListener { dismiss() }
-        selectCertButton.setOnClickListener { certFilePicker.launch("*/*") }
-        selectKeyButton.setOnClickListener { keyFilePicker.launch("*/*") }
+        // Initial validation
+        validateInput()
     }
     
     private fun setupAddTrustedMode() {
-        titleText.text = getString(R.string.certificate_dialog_title_add_trusted)
+        toolbar.setTitle(R.string.certificate_dialog_title_add_trusted)
+        descriptionText.text = getString(R.string.certificate_dialog_description_add_trusted)
         baseUrlLayout.isVisible = true
         certFileLayout.isVisible = true
         keyFileLayout.isVisible = false
         detailsLayout.isVisible = false
-        deleteButton.isVisible = false
-        addButton.text = getString(R.string.certificate_dialog_button_add)
-        
-        addButton.setOnClickListener { addTrustedCertificate() }
+        saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
+        deleteMenuItem.isVisible = false
     }
     
     private fun setupAddClientMode() {
-        titleText.text = getString(R.string.certificate_dialog_title_add_client)
+        toolbar.setTitle(R.string.certificate_dialog_title_add_client)
+        descriptionText.text = getString(R.string.certificate_dialog_description_add_client)
         baseUrlLayout.isVisible = true
         certFileLayout.isVisible = true
         keyFileLayout.isVisible = true
         detailsLayout.isVisible = false
-        deleteButton.isVisible = false
-        addButton.text = getString(R.string.certificate_dialog_button_add)
-        
-        addButton.setOnClickListener { addClientCertificate() }
+        saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
+        deleteMenuItem.isVisible = false
     }
     
     private fun setupViewTrustedMode() {
@@ -190,13 +214,14 @@ class CertificateFragment : DialogFragment() {
             return
         }
         
-        titleText.text = getString(R.string.certificate_dialog_title_view)
+        toolbar.setTitle(R.string.certificate_dialog_title_view)
+        descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
         certFileLayout.isVisible = false
         keyFileLayout.isVisible = false
         detailsLayout.isVisible = true
-        deleteButton.isVisible = true
-        addButton.isVisible = false
+        saveMenuItem.isVisible = false
+        deleteMenuItem.isVisible = true
         
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         subjectText.text = cert.subject
@@ -204,8 +229,6 @@ class CertificateFragment : DialogFragment() {
         fingerprintText.text = cert.fingerprint
         validFromText.text = dateFormat.format(Date(cert.notBefore))
         validUntilText.text = dateFormat.format(Date(cert.notAfter))
-        
-        deleteButton.setOnClickListener { confirmDeleteTrustedCertificate(cert) }
     }
     
     private fun setupViewClientMode() {
@@ -214,13 +237,14 @@ class CertificateFragment : DialogFragment() {
             return
         }
         
-        titleText.text = getString(R.string.certificate_dialog_title_view)
+        toolbar.setTitle(R.string.certificate_dialog_title_view)
+        descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
         certFileLayout.isVisible = false
         keyFileLayout.isVisible = false
         detailsLayout.isVisible = true
-        deleteButton.isVisible = true
-        addButton.isVisible = false
+        saveMenuItem.isVisible = false
+        deleteMenuItem.isVisible = true
         
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         subjectText.text = cert.subject
@@ -228,8 +252,24 @@ class CertificateFragment : DialogFragment() {
         fingerprintText.text = cert.fingerprint
         validFromText.text = dateFormat.format(Date(cert.notBefore))
         validUntilText.text = dateFormat.format(Date(cert.notAfter))
+    }
+    
+    private fun validateInput() {
+        if (!this::saveMenuItem.isInitialized) return
         
-        deleteButton.setOnClickListener { confirmDeleteClientCertificate(cert) }
+        val baseUrl = baseUrlText.text?.toString()?.trim() ?: ""
+        
+        when (mode) {
+            Mode.ADD_TRUSTED -> {
+                saveMenuItem.isEnabled = validUrl(baseUrl) && certPem != null
+            }
+            Mode.ADD_CLIENT -> {
+                saveMenuItem.isEnabled = validUrl(baseUrl) && certPem != null && keyPem != null
+            }
+            else -> {
+                // View modes don't need save validation
+            }
+        }
     }
     
     private fun handleCertFileSelected(uri: Uri) {
@@ -239,8 +279,9 @@ class CertificateFragment : DialogFragment() {
             }
             if (content != null && content.contains("-----BEGIN CERTIFICATE-----")) {
                 certPem = content
-                certFileName.text = getString(R.string.certificate_dialog_cert_file_selected, uri.lastPathSegment ?: "certificate.pem")
+                certFileName.text = uri.lastPathSegment ?: "certificate.pem"
                 errorText.isVisible = false
+                validateInput()
             } else {
                 showError(getString(R.string.certificate_dialog_error_invalid_cert))
             }
@@ -259,14 +300,31 @@ class CertificateFragment : DialogFragment() {
                         content.contains("-----BEGIN RSA PRIVATE KEY-----") ||
                         content.contains("-----BEGIN EC PRIVATE KEY-----"))) {
                 keyPem = content
-                keyFileName.text = getString(R.string.certificate_dialog_key_file_selected, uri.lastPathSegment ?: "key.pem")
+                keyFileName.text = uri.lastPathSegment ?: "key.pem"
                 errorText.isVisible = false
+                validateInput()
             } else {
                 showError(getString(R.string.certificate_dialog_error_invalid_key))
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to read key file", e)
             showError(getString(R.string.certificate_dialog_error_invalid_key))
+        }
+    }
+    
+    private fun saveClicked() {
+        when (mode) {
+            Mode.ADD_TRUSTED -> addTrustedCertificate()
+            Mode.ADD_CLIENT -> addClientCertificate()
+            else -> { /* View modes don't have save */ }
+        }
+    }
+    
+    private fun deleteClicked() {
+        when (mode) {
+            Mode.VIEW_TRUSTED -> trustedCertificate?.let { confirmDeleteTrustedCertificate(it) }
+            Mode.VIEW_CLIENT -> clientCertificate?.let { confirmDeleteClientCertificate(it) }
+            else -> { /* Add modes don't have delete */ }
         }
     }
     
@@ -415,4 +473,3 @@ class CertificateFragment : DialogFragment() {
         }
     }
 }
-

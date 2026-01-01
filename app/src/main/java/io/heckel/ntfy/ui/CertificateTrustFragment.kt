@@ -3,12 +3,12 @@ package io.heckel.ntfy.ui
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.View
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.appbar.MaterialToolbar
 import io.heckel.ntfy.R
 import io.heckel.ntfy.tls.CertificateManager
 import io.heckel.ntfy.tls.TrustedCertificate
@@ -24,6 +24,9 @@ class CertificateTrustFragment : DialogFragment() {
     private lateinit var listener: CertificateTrustListener
     private lateinit var certificate: X509Certificate
     private lateinit var baseUrl: String
+
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var trustMenuItem: MenuItem
 
     interface CertificateTrustListener {
         fun onCertificateTrusted(baseUrl: String, certificate: X509Certificate)
@@ -57,7 +60,25 @@ class CertificateTrustFragment : DialogFragment() {
 
         // Build the view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_certificate_trust_dialog, null)
-        setupView(view)
+        
+        // Setup toolbar
+        toolbar = view.findViewById(R.id.certificate_trust_toolbar)
+        toolbar.setNavigationOnClickListener {
+            listener.onCertificateRejected()
+            dismiss()
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.certificate_trust_action_trust -> {
+                    trustCertificate()
+                    true
+                }
+                else -> false
+            }
+        }
+        trustMenuItem = toolbar.menu.findItem(R.id.certificate_trust_action_trust)
+        
+        setupCertificateDetails(view)
 
         // Build dialog
         val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
@@ -77,15 +98,13 @@ class CertificateTrustFragment : DialogFragment() {
         }
     }
 
-    private fun setupView(view: View) {
+    private fun setupCertificateDetails(view: android.view.View) {
         val subjectText = view.findViewById<TextView>(R.id.certificate_trust_subject)
         val issuerText = view.findViewById<TextView>(R.id.certificate_trust_issuer)
         val fingerprintText = view.findViewById<TextView>(R.id.certificate_trust_fingerprint)
         val validFromText = view.findViewById<TextView>(R.id.certificate_trust_valid_from)
         val validUntilText = view.findViewById<TextView>(R.id.certificate_trust_valid_until)
         val warningText = view.findViewById<TextView>(R.id.certificate_trust_warning)
-        val trustButton = view.findViewById<MaterialButton>(R.id.certificate_trust_button)
-        val cancelButton = view.findViewById<MaterialButton>(R.id.certificate_trust_cancel_button)
 
         // Format dates
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
@@ -112,20 +131,14 @@ class CertificateTrustFragment : DialogFragment() {
                 warningText.isVisible = false
             }
         }
-
-        // Button handlers
-        trustButton.setOnClickListener {
-            // Save the certificate
-            val certManager = CertificateManager.getInstance(requireContext())
-            certManager.addTrustedCertificate(baseUrl, certificate)
-            listener.onCertificateTrusted(baseUrl, certificate)
-            dismiss()
-        }
-
-        cancelButton.setOnClickListener {
-            listener.onCertificateRejected()
-            dismiss()
-        }
+    }
+    
+    private fun trustCertificate() {
+        // Save the certificate
+        val certManager = CertificateManager.getInstance(requireContext())
+        certManager.addTrustedCertificate(baseUrl, certificate)
+        listener.onCertificateTrusted(baseUrl, certificate)
+        dismiss()
     }
 
     companion object {
@@ -143,4 +156,3 @@ class CertificateTrustFragment : DialogFragment() {
         }
     }
 }
-
