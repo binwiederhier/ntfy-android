@@ -10,7 +10,6 @@ import io.heckel.ntfy.db.User
 import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.*
 import okhttp3.*
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.net.URLEncoder
@@ -249,13 +248,6 @@ class ApiService(private val context: Context) {
                 }
             }
             return builder
-        }
-
-        private fun extractBaseUrl(url: String): String {
-            val httpUrl = url.toHttpUrlOrNull() ?: return ""
-            val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
-            val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
-            return schemeAndHost + maybePort
         }
     }
 }

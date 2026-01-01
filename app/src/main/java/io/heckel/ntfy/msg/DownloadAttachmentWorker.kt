@@ -16,7 +16,7 @@ import io.heckel.ntfy.db.*
 import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -35,13 +35,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
-    
-    private fun extractBaseUrl(url: String): String {
-        val httpUrl = url.toHttpUrlOrNull() ?: return ""
-        val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
-        val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
-        return schemeAndHost + maybePort
-    }
+
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
