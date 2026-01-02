@@ -66,7 +66,7 @@ data class TrustedCertificate(
      */
     fun isValid(): Boolean {
         val now = System.currentTimeMillis()
-        return now >= notBefore && now <= notAfter
+        return now in notBefore..notAfter
     }
 
     /**
