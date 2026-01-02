@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import io.heckel.ntfy.util.Log
 import okhttp3.OkHttpClient
-import java.io.File
 import java.io.FileInputStream
 import java.security.KeyStore
 import java.security.SecureRandom
@@ -31,7 +30,6 @@ import javax.net.ssl.X509TrustManager
 class SSLManager private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
     private val certManager: CertificateManager by lazy { CertificateManager.getInstance(appContext) }
-    private val filesDir: File = appContext.filesDir
 
     /**
      * Get an OkHttpClient.Builder configured with custom SSL for a specific server
@@ -135,7 +133,7 @@ class SSLManager private constructor(context: Context) {
      * Uses KeyManagerFactory (standard approach).
      */
     private fun createKeyManagers(clientCert: ClientCertificate): Array<KeyManager>? {
-        val p12File = File(filesDir, "${clientCert.alias}.p12")
+        val p12File = certManager.getClientCertificatePath(clientCert.alias)
         if (!p12File.exists()) {
             Log.w(TAG, "PKCS#12 file not found: ${p12File.absolutePath}")
             return null

@@ -2,12 +2,11 @@ package io.heckel.ntfy.tls
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.heckel.ntfy.util.Log
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.security.KeyStore
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
@@ -15,13 +14,17 @@ import java.security.cert.X509Certificate
 /**
  * Manages trusted server certificates and client certificates for mTLS.
  * 
- * - Trusted server certificates are stored in SharedPreferences as JSON
- * - Client certificates (PKCS#12) are stored in app's private files directory
- * - Client certificate metadata is stored in SharedPreferences
+ * All certificates are stored in app's private files directory:
+ * - Trusted certificates: certs/trusted/{fingerprint}.pem + metadata in certs/trusted.json
+ * - Client certificates: certs/client/{alias}.p12 + metadata in certs/client.json
  */
 class CertificateManager private constructor(private val context: Context) {
-    private val sharedPrefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     private val gson = Gson()
+    private val certsDir = File(context.filesDir, CERTS_DIR).apply { mkdirs() }
+    private val trustedDir = File(certsDir, TRUSTED_DIR).apply { mkdirs() }
+    private val clientDir = File(certsDir, CLIENT_DIR).apply { mkdirs() }
+    private val trustedMetadataFile = File(certsDir, TRUSTED_METADATA_FILE)
+    private val clientMetadataFile = File(certsDir, CLIENT_METADATA_FILE)
 
     // ==================== Trusted Server Certificates ====================
 
@@ -29,8 +32,9 @@ class CertificateManager private constructor(private val context: Context) {
      * Get all trusted server certificates
      */
     fun getTrustedCertificates(): List<TrustedCertificate> {
-        val json = sharedPrefs.getString(PREF_TRUSTED_CERTS, null) ?: return emptyList()
+        if (!trustedMetadataFile.exists()) return emptyList()
         return try {
+            val json = trustedMetadataFile.readText()
             val type = object : TypeToken<List<TrustedCertificate>>() {}.type
             gson.fromJson(json, type) ?: emptyList()
         } catch (e: Exception) {
@@ -50,11 +54,15 @@ class CertificateManager private constructor(private val context: Context) {
      * Add a trusted certificate
      */
     fun addTrustedCertificate(cert: TrustedCertificate) {
+        // Save PEM file
+        val pemFile = File(trustedDir, "${cert.fingerprint.replace(":", "")}.pem")
+        pemFile.writeText(cert.pemEncoded)
+
+        // Update metadata
         val certs = getTrustedCertificates().toMutableList()
-        // Remove existing cert with same fingerprint for same baseUrl
         certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
         certs.add(cert)
-        saveTrustedCertificates(certs)
+        saveTrustedMetadata(certs)
     }
 
     /**
@@ -68,9 +76,16 @@ class CertificateManager private constructor(private val context: Context) {
      * Remove a trusted certificate
      */
     fun removeTrustedCertificate(cert: TrustedCertificate) {
+        // Delete PEM file
+        val pemFile = File(trustedDir, "${cert.fingerprint.replace(":", "")}.pem")
+        if (pemFile.exists()) {
+            pemFile.delete()
+        }
+
+        // Update metadata
         val certs = getTrustedCertificates().toMutableList()
         certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
-        saveTrustedCertificates(certs)
+        saveTrustedMetadata(certs)
     }
 
     /**
@@ -86,13 +101,11 @@ class CertificateManager private constructor(private val context: Context) {
         return factory.generateCertificate(ByteArrayInputStream(decoded)) as X509Certificate
     }
 
-    private fun saveTrustedCertificates(certs: List<TrustedCertificate>) {
-        sharedPrefs.edit {
-            if (certs.isEmpty()) {
-                remove(PREF_TRUSTED_CERTS)
-            } else {
-                putString(PREF_TRUSTED_CERTS, gson.toJson(certs))
-            }
+    private fun saveTrustedMetadata(certs: List<TrustedCertificate>) {
+        if (certs.isEmpty()) {
+            trustedMetadataFile.delete()
+        } else {
+            trustedMetadataFile.writeText(gson.toJson(certs))
         }
     }
 
@@ -102,8 +115,9 @@ class CertificateManager private constructor(private val context: Context) {
      * Get all client certificate metadata
      */
     fun getClientCertificates(): List<ClientCertificate> {
-        val json = sharedPrefs.getString(PREF_CLIENT_CERTS, null) ?: return emptyList()
+        if (!clientMetadataFile.exists()) return emptyList()
         return try {
+            val json = clientMetadataFile.readText()
             val type = object : TypeToken<List<ClientCertificate>>() {}.type
             gson.fromJson(json, type) ?: emptyList()
         } catch (e: Exception) {
@@ -124,15 +138,15 @@ class CertificateManager private constructor(private val context: Context) {
      */
     fun removeClientCertificate(cert: ClientCertificate) {
         // Remove PKCS#12 file
-        val p12File = java.io.File(context.filesDir, "${cert.alias}.p12")
+        val p12File = File(clientDir, "${cert.alias}.p12")
         if (p12File.exists()) {
             p12File.delete()
         }
 
-        // Remove metadata
+        // Update metadata
         val certs = getClientCertificates().toMutableList()
         certs.removeAll { it.alias == cert.alias }
-        saveClientCertificates(certs)
+        saveClientMetadata(certs)
     }
 
     /**
@@ -154,11 +168,11 @@ class CertificateManager private constructor(private val context: Context) {
         // Generate a unique alias for storage
         val storageAlias = ClientCertificate.generateAlias(baseUrl)
 
-        // Save the PKCS#12 file to app's private storage
-        val p12File = java.io.File(context.filesDir, "$storageAlias.p12")
-        java.io.FileOutputStream(p12File).use { it.write(pkcs12Data) }
+        // Save the PKCS#12 file
+        val p12File = File(clientDir, "$storageAlias.p12")
+        p12File.writeBytes(pkcs12Data)
 
-        // Store metadata (including password for PKCS#12)
+        // Update metadata
         val clientCert = ClientCertificate.fromX509Certificate(baseUrl, storageAlias, cert, password)
         val certs = getClientCertificates().toMutableList()
         
@@ -170,24 +184,31 @@ class CertificateManager private constructor(private val context: Context) {
         }
         
         certs.add(clientCert)
-        saveClientCertificates(certs)
+        saveClientMetadata(certs)
     }
 
-    private fun saveClientCertificates(certs: List<ClientCertificate>) {
-        sharedPrefs.edit {
-            if (certs.isEmpty()) {
-                remove(PREF_CLIENT_CERTS)
-            } else {
-                putString(PREF_CLIENT_CERTS, gson.toJson(certs))
-            }
+    /**
+     * Get the path to a client certificate's PKCS#12 file
+     */
+    fun getClientCertificatePath(alias: String): File {
+        return File(clientDir, "$alias.p12")
+    }
+
+    private fun saveClientMetadata(certs: List<ClientCertificate>) {
+        if (certs.isEmpty()) {
+            clientMetadataFile.delete()
+        } else {
+            clientMetadataFile.writeText(gson.toJson(certs))
         }
     }
 
     companion object {
         private const val TAG = "NtfyCertManager"
-        private const val PREFS_NAME = "NtfyCertificates"
-        private const val PREF_TRUSTED_CERTS = "trusted_certificates"
-        private const val PREF_CLIENT_CERTS = "client_certificates"
+        private const val CERTS_DIR = "certs"
+        private const val TRUSTED_DIR = "trusted"
+        private const val CLIENT_DIR = "client"
+        private const val TRUSTED_METADATA_FILE = "trusted.json"
+        private const val CLIENT_METADATA_FILE = "client.json"
 
         @SuppressLint("StaticFieldLeak") // Using applicationContext, so no leak
         @Volatile
