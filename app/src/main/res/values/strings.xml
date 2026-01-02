@@ -511,28 +511,28 @@
     <string name="settings_certificates_prefs_client_add_summary">Import PEM certificate and key files for mutual TLS authentication</string>
     <string name="settings_certificates_prefs_expires">Expires: %1$s</string>
     <string name="settings_certificates_prefs_expired">Expired</string>
-
     <!-- Certificate dialog -->
     <string name="certificate_dialog_title_view">Certificate details</string>
     <string name="certificate_dialog_title_add_trusted">Add trusted certificate</string>
     <string name="certificate_dialog_title_add_client">Add client certificate</string>
     <string name="certificate_dialog_description_add_trusted">Add a trusted server or CA certificate. Connections to the service URL will trust this certificate.</string>
-    <string name="certificate_dialog_description_add_client">Add a client certificate for mTLS authentication. The certificate and private key will be used when connecting to the service.</string>
+    <string name="certificate_dialog_description_add_client">Add a PKCS#12 client certificate (.p12) for mTLS authentication. The certificate will be used when connecting to the service.</string>
     <string name="certificate_dialog_base_url_hint">Service URL (e.g. https://ntfy.example.com)</string>
     <string name="certificate_dialog_select_cert_file">Select certificate file (.pem, .crt)</string>
-    <string name="certificate_dialog_select_key_file">Select private key file (.pem, .key)</string>
-    <string name="certificate_dialog_cert_file_selected">Certificate: %1$s</string>
-    <string name="certificate_dialog_key_file_selected">Key: %1$s</string>
+    <string name="certificate_dialog_select_p12_file">Select client certificate (.p12)</string>
+    <string name="certificate_dialog_password_hint">Certificate password</string>
     <string name="certificate_dialog_no_file_selected">No file selected</string>
     <string name="certificate_dialog_button_add">Add</string>
     <string name="certificate_dialog_button_delete">Delete</string>
     <string name="certificate_dialog_button_cancel">Cancel</string>
     <string name="certificate_dialog_error_invalid_cert">Invalid certificate file</string>
-    <string name="certificate_dialog_error_invalid_key">Invalid private key file. Ensure it\'s in PKCS#8 PEM format.</string>
+    <string name="certificate_dialog_error_invalid_p12">Invalid PKCS#12 file</string>
+    <string name="certificate_dialog_error_invalid_p12_password">Invalid password or corrupted PKCS#12 file</string>
     <string name="certificate_dialog_error_missing_url">Please enter a service URL</string>
     <string name="certificate_dialog_error_invalid_url">Invalid service URL</string>
     <string name="certificate_dialog_error_missing_cert">Please select a certificate file</string>
-    <string name="certificate_dialog_error_missing_key">Please select a private key file</string>
+    <string name="certificate_dialog_error_missing_p12">Please select a PKCS#12 file</string>
+    <string name="certificate_dialog_error_missing_password">Please enter the certificate password</string>
     <string name="certificate_dialog_delete_confirm">Delete this certificate?</string>
     <string name="certificate_dialog_added_toast">Certificate added</string>
     <string name="certificate_dialog_deleted_toast">Certificate deleted</string>

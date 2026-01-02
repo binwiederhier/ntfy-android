@@ -80,16 +80,17 @@ data class TrustedCertificate(
 
 /**
  * Represents metadata for a client certificate used for mTLS.
- * The actual private key is stored in Android KeyStore.
+ * The actual private key is stored in Android KeyStore or a PKCS#12 file.
  */
 data class ClientCertificate(
     val baseUrl: String,           // Server URL this client cert is used for
-    val alias: String,             // KeyStore alias for the private key and cert
+    val alias: String,             // KeyStore alias or filename prefix for PKCS#12
     val fingerprint: String,       // SHA-256 fingerprint of the certificate
     val subject: String,           // Subject DN
     val issuer: String,            // Issuer DN
     val notBefore: Long,           // Validity start (Unix timestamp in millis)
-    val notAfter: Long             // Validity end (Unix timestamp in millis)
+    val notAfter: Long,            // Validity end (Unix timestamp in millis)
+    val password: String? = null   // Password for PKCS#12 files (null for Android KeyStore)
 ) {
     companion object {
         /**
@@ -104,7 +105,12 @@ data class ClientCertificate(
         /**
          * Create ClientCertificate metadata from an X509Certificate
          */
-        fun fromX509Certificate(baseUrl: String, alias: String, cert: X509Certificate): ClientCertificate {
+        fun fromX509Certificate(
+            baseUrl: String,
+            alias: String,
+            cert: X509Certificate,
+            password: String? = null
+        ): ClientCertificate {
             return ClientCertificate(
                 baseUrl = baseUrl,
                 alias = alias,
@@ -112,7 +118,8 @@ data class ClientCertificate(
                 subject = cert.subjectX500Principal.name,
                 issuer = cert.issuerX500Principal.name,
                 notBefore = cert.notBefore.time,
-                notAfter = cert.notAfter.time
+                notAfter = cert.notAfter.time,
+                password = password
             )
         }
     }

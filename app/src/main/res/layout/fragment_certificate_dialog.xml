@@ -101,34 +101,27 @@
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
-            <!-- Key file selector (for adding client certs) -->
-            <LinearLayout
-                android:id="@+id/certificate_dialog_key_file_layout"
+            <!-- Password field (for PKCS#12 client certs) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/certificate_dialog_password_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp"
+                app:endIconMode="password_toggle"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 app:layout_constraintTop_toBottomOf="@id/certificate_dialog_cert_file_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/certificate_dialog_select_key_button"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/certificate_dialog_password_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/certificate_dialog_select_key_file" />
-
-                <TextView
-                    android:id="@+id/certificate_dialog_key_file_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/certificate_dialog_no_file_selected"
-                    android:textColor="?android:textColorSecondary"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
-            </LinearLayout>
+                    android:hint="@string/certificate_dialog_password_hint"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Certificate details (for viewing) -->
             <LinearLayout
@@ -138,7 +131,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/certificate_dialog_key_file_layout"
+                app:layout_constraintTop_toBottomOf="@id/certificate_dialog_password_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 

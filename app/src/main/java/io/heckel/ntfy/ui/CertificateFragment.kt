@@ -40,7 +40,7 @@ class CertificateFragment : DialogFragment() {
     
     // File contents
     private var certPem: String? = null
-    private var keyPem: String? = null
+    private var pkcs12Data: ByteArray? = null
     
     // Views
     private lateinit var toolbar: MaterialToolbar
@@ -52,9 +52,8 @@ class CertificateFragment : DialogFragment() {
     private lateinit var certFileLayout: View
     private lateinit var selectCertButton: MaterialButton
     private lateinit var certFileName: TextView
-    private lateinit var keyFileLayout: View
-    private lateinit var selectKeyButton: MaterialButton
-    private lateinit var keyFileName: TextView
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var passwordText: TextInputEditText
     private lateinit var detailsLayout: View
     private lateinit var subjectText: TextView
     private lateinit var issuerText: TextView
@@ -68,8 +67,8 @@ class CertificateFragment : DialogFragment() {
         uri?.let { handleCertFileSelected(it) }
     }
     
-    private val keyFilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { handleKeyFileSelected(it) }
+    private val pkcs12FilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { handlePkcs12FileSelected(it) }
     }
 
     interface CertificateDialogListener {
@@ -155,9 +154,8 @@ class CertificateFragment : DialogFragment() {
         certFileLayout = view.findViewById(R.id.certificate_dialog_cert_file_layout)
         selectCertButton = view.findViewById(R.id.certificate_dialog_select_cert_button)
         certFileName = view.findViewById(R.id.certificate_dialog_cert_file_name)
-        keyFileLayout = view.findViewById(R.id.certificate_dialog_key_file_layout)
-        selectKeyButton = view.findViewById(R.id.certificate_dialog_select_key_button)
-        keyFileName = view.findViewById(R.id.certificate_dialog_key_file_name)
+        passwordLayout = view.findViewById(R.id.certificate_dialog_password_layout)
+        passwordText = view.findViewById(R.id.certificate_dialog_password_text)
         detailsLayout = view.findViewById(R.id.certificate_dialog_details_layout)
         subjectText = view.findViewById(R.id.certificate_dialog_subject)
         issuerText = view.findViewById(R.id.certificate_dialog_issuer)
@@ -166,13 +164,10 @@ class CertificateFragment : DialogFragment() {
         validUntilText = view.findViewById(R.id.certificate_dialog_valid_until)
         errorText = view.findViewById(R.id.certificate_dialog_error_text)
         
-        // Button handlers
-        selectCertButton.setOnClickListener { certFilePicker.launch("*/*") }
-        selectKeyButton.setOnClickListener { keyFilePicker.launch("*/*") }
-        
         // Validate input when typing
         val textWatcher = AfterChangedTextWatcher { validateInput() }
         baseUrlText.addTextChangedListener(textWatcher)
+        passwordText.addTextChangedListener(textWatcher)
         
         // Configure based on mode
         when (mode) {
@@ -191,10 +186,13 @@ class CertificateFragment : DialogFragment() {
         descriptionText.text = getString(R.string.certificate_dialog_description_add_trusted)
         baseUrlLayout.isVisible = true
         certFileLayout.isVisible = true
-        keyFileLayout.isVisible = false
+        passwordLayout.isVisible = false
         detailsLayout.isVisible = false
         saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
         deleteMenuItem.isVisible = false
+        
+        selectCertButton.text = getString(R.string.certificate_dialog_select_cert_file)
+        selectCertButton.setOnClickListener { certFilePicker.launch("*/*") }
     }
     
     private fun setupAddClientMode() {
@@ -202,10 +200,13 @@ class CertificateFragment : DialogFragment() {
         descriptionText.text = getString(R.string.certificate_dialog_description_add_client)
         baseUrlLayout.isVisible = true
         certFileLayout.isVisible = true
-        keyFileLayout.isVisible = true
+        passwordLayout.isVisible = true
         detailsLayout.isVisible = false
         saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
         deleteMenuItem.isVisible = false
+        
+        selectCertButton.text = getString(R.string.certificate_dialog_select_p12_file)
+        selectCertButton.setOnClickListener { pkcs12FilePicker.launch("*/*") }
     }
     
     private fun setupViewTrustedMode() {
@@ -218,7 +219,7 @@ class CertificateFragment : DialogFragment() {
         descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
         certFileLayout.isVisible = false
-        keyFileLayout.isVisible = false
+        passwordLayout.isVisible = false
         detailsLayout.isVisible = true
         saveMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
@@ -241,7 +242,7 @@ class CertificateFragment : DialogFragment() {
         descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
         certFileLayout.isVisible = false
-        keyFileLayout.isVisible = false
+        passwordLayout.isVisible = false
         detailsLayout.isVisible = true
         saveMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
@@ -258,13 +259,14 @@ class CertificateFragment : DialogFragment() {
         if (!this::saveMenuItem.isInitialized) return
         
         val baseUrl = baseUrlText.text?.toString()?.trim() ?: ""
+        val password = passwordText.text?.toString() ?: ""
         
         when (mode) {
             Mode.ADD_TRUSTED -> {
                 saveMenuItem.isEnabled = validUrl(baseUrl) && certPem != null
             }
             Mode.ADD_CLIENT -> {
-                saveMenuItem.isEnabled = validUrl(baseUrl) && certPem != null && keyPem != null
+                saveMenuItem.isEnabled = validUrl(baseUrl) && pkcs12Data != null && password.isNotEmpty()
             }
             else -> {
                 // View modes don't need save validation
@@ -291,24 +293,22 @@ class CertificateFragment : DialogFragment() {
         }
     }
     
-    private fun handleKeyFileSelected(uri: Uri) {
+    private fun handlePkcs12FileSelected(uri: Uri) {
         try {
-            val content = requireContext().contentResolver.openInputStream(uri)?.use { 
-                it.bufferedReader().readText() 
+            val data = requireContext().contentResolver.openInputStream(uri)?.use { 
+                it.readBytes() 
             }
-            if (content != null && (content.contains("-----BEGIN PRIVATE KEY-----") ||
-                        content.contains("-----BEGIN RSA PRIVATE KEY-----") ||
-                        content.contains("-----BEGIN EC PRIVATE KEY-----"))) {
-                keyPem = content
-                keyFileName.text = uri.lastPathSegment ?: "key.pem"
+            if (data != null && data.isNotEmpty()) {
+                pkcs12Data = data
+                certFileName.text = uri.lastPathSegment ?: "client.p12"
                 errorText.isVisible = false
                 validateInput()
             } else {
-                showError(getString(R.string.certificate_dialog_error_invalid_key))
+                showError(getString(R.string.certificate_dialog_error_invalid_p12))
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to read key file", e)
-            showError(getString(R.string.certificate_dialog_error_invalid_key))
+            Log.w(TAG, "Failed to read PKCS#12 file", e)
+            showError(getString(R.string.certificate_dialog_error_invalid_p12))
         }
     }
     
@@ -360,8 +360,8 @@ class CertificateFragment : DialogFragment() {
     
     private fun addClientCertificate() {
         val baseUrl = baseUrlText.text.toString().trim()
-        val certContent = certPem
-        val keyContent = keyPem
+        val data = pkcs12Data
+        val password = passwordText.text.toString()
         
         // Validate
         if (baseUrl.isEmpty()) {
@@ -372,23 +372,23 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_invalid_url))
             return
         }
-        if (certContent == null) {
-            showError(getString(R.string.certificate_dialog_error_missing_cert))
+        if (data == null) {
+            showError(getString(R.string.certificate_dialog_error_missing_p12))
             return
         }
-        if (keyContent == null) {
-            showError(getString(R.string.certificate_dialog_error_missing_key))
+        if (password.isEmpty()) {
+            showError(getString(R.string.certificate_dialog_error_missing_password))
             return
         }
         
         try {
-            certManager.addClientCertificate(baseUrl, certContent, keyContent)
+            certManager.addClientCertificatePkcs12(baseUrl, data, password)
             Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
             listener.onCertificateAdded()
             dismiss()
         } catch (e: Exception) {
             Log.w(TAG, "Failed to add client certificate", e)
-            showError(getString(R.string.certificate_dialog_error_invalid_key))
+            showError(getString(R.string.certificate_dialog_error_invalid_p12_password))
         }
     }
     
