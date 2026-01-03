@@ -23,6 +23,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
+    private val trustedCertificateDao = database.trustedCertificateDao()
+    private val clientCertificateDao = database.clientCertificateDao()
 
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
@@ -190,6 +192,38 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     suspend fun deleteUser(baseUrl: String) {
         userDao.delete(baseUrl)
+    }
+
+    // Trusted certificates
+
+    suspend fun getTrustedCertificates(): List<TrustedCertificate> {
+        return trustedCertificateDao.list()
+    }
+
+    suspend fun addTrustedCertificate(fingerprint: String, pem: String) {
+        trustedCertificateDao.insert(TrustedCertificate(fingerprint, pem))
+    }
+
+    suspend fun removeTrustedCertificate(fingerprint: String) {
+        trustedCertificateDao.delete(fingerprint)
+    }
+
+    // Client certificates
+
+    suspend fun getClientCertificates(): List<ClientCertificate> {
+        return clientCertificateDao.list()
+    }
+
+    suspend fun getClientCertificate(baseUrl: String): ClientCertificate? {
+        return clientCertificateDao.get(baseUrl)
+    }
+
+    suspend fun addClientCertificate(baseUrl: String, p12Base64: String, password: String) {
+        clientCertificateDao.insert(ClientCertificate(baseUrl, p12Base64, password))
+    }
+
+    suspend fun removeClientCertificate(baseUrl: String) {
+        clientCertificateDao.delete(baseUrl)
     }
 
     fun getPollWorkerVersion(): Int {

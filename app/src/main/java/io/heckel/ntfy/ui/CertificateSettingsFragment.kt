@@ -5,14 +5,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import io.heckel.ntfy.R
-import io.heckel.ntfy.tls.CertificateManager
-import io.heckel.ntfy.tls.ClientCertificate
-import io.heckel.ntfy.tls.calculateFingerprint
-import io.heckel.ntfy.tls.displaySubject
+import io.heckel.ntfy.db.ClientCertificate
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.TrustedCertificate
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.shortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,22 +19,19 @@ import java.util.*
  * Fragment for managing trusted certificates and client certificates.
  */
 class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragment.CertificateDialogListener {
-    private lateinit var certManager: CertificateManager
+    private lateinit var repository: Repository
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.certificate_preferences, rootKey)
-        certManager = CertificateManager.getInstance(requireActivity())
+        repository = Repository.getInstance(requireActivity())
         reload()
     }
 
     fun reload() {
         preferenceScreen.removeAll()
         lifecycleScope.launch(Dispatchers.IO) {
-            val trustedCerts = certManager.getTrustedCertificates()
-
-            val clientCerts = certManager.getClientCertificates()
-                .groupBy { it.baseUrl }
-                .toSortedMap()
+            val trustedCerts = repository.getTrustedCertificates()
+            val clientCerts = repository.getClientCertificates()
 
             activity?.runOnUiThread {
                 addTrustedCertPreferences(trustedCerts)
@@ -44,7 +40,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         }
     }
 
-    private fun addTrustedCertPreferences(certs: List<X509Certificate>) {
+    private fun addTrustedCertPreferences(certs: List<TrustedCertificate>) {
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
         // Trusted certificates header
@@ -58,21 +54,25 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
             emptyPref.isEnabled = false
             trustedCategory.addPreference(emptyPref)
         } else {
-            certs.forEach { cert ->
-                val fingerprint = calculateFingerprint(cert)
-                val pref = Preference(preferenceScreen.context)
-                pref.title = displaySubject(cert)
-                pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(cert.notAfter))
-                } else {
-                    getString(R.string.settings_certificates_prefs_expired)
+            certs.forEach { trustedCert ->
+                try {
+                    val x509Cert = SSLManager.parsePemCertificate(trustedCert.pem)
+                    val pref = Preference(preferenceScreen.context)
+                    pref.title = getDisplaySubject(x509Cert)
+                    pref.summary = if (isValid(x509Cert)) {
+                        getString(R.string.settings_certificates_prefs_expires, dateFormat.format(x509Cert.notAfter))
+                    } else {
+                        getString(R.string.settings_certificates_prefs_expired)
+                    }
+                    pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                        CertificateFragment.newInstanceViewTrusted(trustedCert.fingerprint)
+                            .show(childFragmentManager, CertificateFragment.TAG)
+                        true
+                    }
+                    trustedCategory.addPreference(pref)
+                } catch (e: Exception) {
+                    // Skip invalid certificates
                 }
-                pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                    CertificateFragment.newInstanceViewTrusted(fingerprint)
-                        .show(childFragmentManager, CertificateFragment.TAG)
-                    true
-                }
-                trustedCategory.addPreference(pref)
             }
         }
 
@@ -88,36 +88,28 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         trustedCategory.addPreference(addTrustedPref)
     }
 
-    private fun addClientCertPreferences(certsByBaseUrl: Map<String, List<ClientCertificate>>) {
-        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-
+    private fun addClientCertPreferences(certs: List<ClientCertificate>) {
         // Client certificates header
         val clientCategory = PreferenceCategory(preferenceScreen.context)
         clientCategory.title = getString(R.string.settings_certificates_prefs_client_header)
         preferenceScreen.addPreference(clientCategory)
 
-        if (certsByBaseUrl.isEmpty()) {
+        if (certs.isEmpty()) {
             val emptyPref = Preference(preferenceScreen.context)
             emptyPref.title = getString(R.string.settings_certificates_prefs_client_empty)
             emptyPref.isEnabled = false
             clientCategory.addPreference(emptyPref)
         } else {
-            certsByBaseUrl.forEach { (baseUrl, certs) ->
-                certs.forEach { cert ->
-                    val pref = Preference(preferenceScreen.context)
-                    pref.title = "${cert.displaySubject()} (${shortUrl(baseUrl)})"
-                    pref.summary = if (cert.isValid()) {
-                        getString(R.string.settings_certificates_prefs_expires, dateFormat.format(Date(cert.notAfter)))
-                    } else {
-                        getString(R.string.settings_certificates_prefs_expired)
-                    }
-                    pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        CertificateFragment.newInstanceViewClient(cert)
-                            .show(childFragmentManager, CertificateFragment.TAG)
-                        true
-                    }
-                    clientCategory.addPreference(pref)
+            certs.forEach { cert ->
+                val pref = Preference(preferenceScreen.context)
+                pref.title = shortUrl(cert.baseUrl)
+                pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
+                pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                    CertificateFragment.newInstanceViewClient(cert.baseUrl)
+                        .show(childFragmentManager, CertificateFragment.TAG)
+                    true
                 }
+                clientCategory.addPreference(pref)
             }
         }
 
@@ -133,7 +125,13 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         clientCategory.addPreference(addClientPref)
     }
 
-    private fun isValid(cert: X509Certificate): Boolean {
+    private fun getDisplaySubject(cert: java.security.cert.X509Certificate): String {
+        val subject = cert.subjectX500Principal.name
+        val cnMatch = Regex("CN=([^,]+)").find(subject)
+        return cnMatch?.groupValues?.get(1) ?: subject
+    }
+
+    private fun isValid(cert: java.security.cert.X509Certificate): Boolean {
         val now = Date()
         return now.after(cert.notBefore) && now.before(cert.notAfter)
     }

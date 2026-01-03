@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import io.heckel.ntfy.R
-import io.heckel.ntfy.tls.CertificateManager
-import io.heckel.ntfy.tls.calculateFingerprint
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.tls.SSLManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,6 +27,7 @@ class CertificateTrustFragment : DialogFragment() {
     private lateinit var listener: CertificateTrustListener
     private lateinit var certificate: X509Certificate
     private lateinit var baseUrl: String
+    private lateinit var repository: Repository
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var trustMenuItem: MenuItem
@@ -48,6 +52,8 @@ class CertificateTrustFragment : DialogFragment() {
             throw IllegalStateException("Activity cannot be null")
         }
 
+        repository = Repository.getInstance(requireContext())
+
         // Get certificate data from arguments
         val certBytes = arguments?.getByteArray(ARG_CERTIFICATE)
             ?: throw IllegalArgumentException("Certificate bytes required")
@@ -60,7 +66,7 @@ class CertificateTrustFragment : DialogFragment() {
 
         // Build the view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_certificate_trust_dialog, null)
-        
+
         // Setup toolbar
         toolbar = view.findViewById(R.id.certificate_trust_toolbar)
         toolbar.setNavigationOnClickListener {
@@ -77,7 +83,7 @@ class CertificateTrustFragment : DialogFragment() {
             }
         }
         trustMenuItem = toolbar.menu.findItem(R.id.certificate_trust_action_trust)
-        
+
         setupCertificateDetails(view)
 
         // Build dialog
@@ -112,7 +118,7 @@ class CertificateTrustFragment : DialogFragment() {
         // Populate certificate details
         subjectText.text = certificate.subjectX500Principal.name
         issuerText.text = certificate.issuerX500Principal.name
-        fingerprintText.text = calculateFingerprint(certificate)
+        fingerprintText.text = SSLManager.calculateFingerprint(certificate)
         validFromText.text = dateFormat.format(certificate.notBefore)
         validUntilText.text = dateFormat.format(certificate.notAfter)
 
@@ -132,11 +138,13 @@ class CertificateTrustFragment : DialogFragment() {
             }
         }
     }
-    
+
     private fun trustCertificate() {
-        // Save the certificate to global trust store
-        val certManager = CertificateManager.getInstance(requireContext())
-        certManager.addTrustedCertificate(certificate)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val fingerprint = SSLManager.calculateFingerprint(certificate)
+            val pem = SSLManager.encodeToPem(certificate)
+            repository.addTrustedCertificate(fingerprint, pem)
+        }
         listener.onCertificateTrusted(baseUrl, certificate)
         dismiss()
     }

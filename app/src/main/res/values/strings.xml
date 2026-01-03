@@ -508,7 +508,8 @@
     <string name="settings_certificates_prefs_client_empty">No client certificates</string>
     <string name="settings_certificates_prefs_client_add">Add client certificate</string>
     <string name="settings_certificates_prefs_client_add_title">Add a client certificate</string>
-    <string name="settings_certificates_prefs_client_add_summary">Import PEM certificate and key files for mutual TLS authentication</string>
+    <string name="settings_certificates_prefs_client_add_summary">Import PKCS#12 certificate for mutual TLS authentication</string>
+    <string name="settings_certificates_prefs_client_configured">Client certificate configured</string>
     <string name="settings_certificates_prefs_expires">Expires: %1$s</string>
     <string name="settings_certificates_prefs_expired">Expired</string>
     <!-- Certificate dialog -->

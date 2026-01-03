@@ -10,7 +10,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.tls.CertificateManager
+import io.heckel.ntfy.tls.SSLManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -21,7 +21,6 @@ class Backuper(val context: Context) {
     private val repository = (context.applicationContext as Application).repository
     private val messenger = FirebaseMessenger()
     private val notifier = NotificationService(context)
-    private val certManager = CertificateManager.getInstance(context)
 
     suspend fun backup(uri: Uri, withSettings: Boolean = true, withSubscriptions: Boolean = true, withUsers: Boolean = true) {
         Log.d(TAG, "Backing up settings to file $uri")
@@ -53,6 +52,7 @@ class Backuper(val context: Context) {
         applyNotifications(backupFile.notifications)
         applyUsers(backupFile.users)
         applyTrustedCertificates(backupFile.trustedCertificates)
+        applyClientCertificates(backupFile.clientCertificates)
     }
 
     private fun applySettings(settings: Settings?) {
@@ -223,16 +223,31 @@ class Backuper(val context: Context) {
         }
     }
 
-    private fun applyTrustedCertificates(certificates: List<TrustedCertificateBackup>?) {
+    private suspend fun applyTrustedCertificates(certificates: List<TrustedCertificateBackup>?) {
         if (certificates == null) {
             return
         }
         certificates.forEach { c ->
             try {
-                val cert = certManager.parsePemCertificate(c.pemEncoded)
-                certManager.addTrustedCertificate(cert)
+                val pem = c.pem
+                val x509Cert = SSLManager.parsePemCertificate(pem)
+                val fingerprint = SSLManager.calculateFingerprint(x509Cert)
+                repository.addTrustedCertificate(fingerprint, pem)
             } catch (e: Exception) {
-                Log.w(TAG, "Unable to restore trusted certificate ${c.fingerprint}: ${e.message}. Ignoring.", e)
+                Log.w(TAG, "Unable to restore trusted certificate: ${e.message}. Ignoring.", e)
+            }
+        }
+    }
+
+    private suspend fun applyClientCertificates(certificates: List<ClientCertificateBackup>?) {
+        if (certificates == null) {
+            return
+        }
+        certificates.forEach { c ->
+            try {
+                repository.addClientCertificate(c.baseUrl, c.p12Base64, c.password)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to restore client certificate for ${c.baseUrl}: ${e.message}. Ignoring.", e)
             }
         }
     }
@@ -245,7 +260,8 @@ class Backuper(val context: Context) {
             subscriptions = if (withSubscriptions) createSubscriptionList() else null,
             notifications = if (withSubscriptions) createNotificationList() else null,
             users = if (withUsers) createUserList() else null,
-            trustedCertificates = if (withSettings) createTrustedCertificateList() else null
+            trustedCertificates = if (withSettings) createTrustedCertificateList() else null,
+            clientCertificates = if (withSettings) createClientCertificateList() else null
         )
     }
 
@@ -358,15 +374,18 @@ class Backuper(val context: Context) {
         }
     }
 
-    private fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
-        return certManager.getTrustedCertificates().map { cert ->
-            TrustedCertificateBackup(
-                fingerprint = io.heckel.ntfy.tls.calculateFingerprint(cert),
-                subject = cert.subjectX500Principal.name,
-                issuer = cert.issuerX500Principal.name,
-                notBefore = cert.notBefore.time,
-                notAfter = cert.notAfter.time,
-                pemEncoded = io.heckel.ntfy.tls.encodeToPem(cert)
+    private suspend fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
+        return repository.getTrustedCertificates().map { trustedCert ->
+            TrustedCertificateBackup(pem = trustedCert.pem)
+        }
+    }
+
+    private suspend fun createClientCertificateList(): List<ClientCertificateBackup> {
+        return repository.getClientCertificates().map { clientCert ->
+            ClientCertificateBackup(
+                baseUrl = clientCert.baseUrl,
+                p12Base64 = clientCert.p12Base64,
+                password = clientCert.password
             )
         }
     }
@@ -385,7 +404,8 @@ data class BackupFile(
     val subscriptions: List<Subscription>?,
     val notifications: List<Notification>?,
     val users: List<User>?,
-    val trustedCertificates: List<TrustedCertificateBackup>? = null
+    val trustedCertificates: List<TrustedCertificateBackup>? = null,
+    val clientCertificates: List<ClientCertificateBackup>? = null
 )
 
 data class Settings(
@@ -473,12 +493,13 @@ data class User(
 )
 
 data class TrustedCertificateBackup(
-    val fingerprint: String,
-    val subject: String,
-    val issuer: String,
-    val notBefore: Long,
-    val notAfter: Long,
-    val pemEncoded: String
+    val pem: String
+)
+
+data class ClientCertificateBackup(
+    val baseUrl: String,
+    val p12Base64: String,
+    val password: String
 )
 
 class InvalidBackupFileException : Exception("Invalid backup file format")

@@ -2,11 +2,18 @@ package io.heckel.ntfy.tls
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Base64
+import io.heckel.ntfy.db.ClientCertificate
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.TrustedCertificate
 import io.heckel.ntfy.util.Log
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
-import java.io.FileInputStream
+import java.io.ByteArrayInputStream
 import java.security.KeyStore
+import java.security.MessageDigest
 import java.security.SecureRandom
+import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
@@ -27,7 +34,7 @@ import javax.net.ssl.X509TrustManager
  */
 class SSLManager private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
-    private val certManager: CertificateManager by lazy { CertificateManager.getInstance(appContext) }
+    private val repository: Repository by lazy { Repository.getInstance(appContext) }
 
     /**
      * Get an OkHttpClient.Builder configured with custom SSL for a specific server
@@ -46,15 +53,15 @@ class SSLManager private constructor(context: Context) {
             val trustManagers = mutableListOf<TrustManager>()
             val keyManagers = mutableListOf<KeyManager>()
 
-            // Get all user-trusted certificates
-            val trustedCerts = certManager.getTrustedCertificates()
-            val trustedFingerprints = trustedCerts.map { calculateFingerprint(it) }.toSet()
+            // Get all user-trusted certificates from database
+            val trustedCerts = runBlocking { repository.getTrustedCertificates() }
+            val trustedFingerprints = trustedCerts.map { it.fingerprint }.toSet()
             if (trustedCerts.isNotEmpty()) {
                 trustManagers.addAll(createCombinedTrustManagers(trustedCerts))
             }
 
             // Get client certificate for mTLS
-            val clientCert = certManager.getClientCertificateForServer(baseUrl)
+            val clientCert = runBlocking { repository.getClientCertificate(baseUrl) }
             if (clientCert != null) {
                 createKeyManagers(clientCert)?.let { keyManagers.addAll(it.toList()) }
             }
@@ -165,13 +172,18 @@ class SSLManager private constructor(context: Context) {
      * Create TrustManagers that trust both user-added certs and system CAs.
      * Uses TrustManagerFactory (standard approach).
      */
-    private fun createCombinedTrustManagers(userCerts: List<X509Certificate>): Array<TrustManager> {
+    private fun createCombinedTrustManagers(trustedCerts: List<TrustedCertificate>): Array<TrustManager> {
         // Create a KeyStore with all certificates
         val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply { load(null) }
 
         // Add user-trusted certificates
-        userCerts.forEachIndexed { index, cert ->
-            keyStore.setCertificateEntry("user$index", cert)
+        trustedCerts.forEachIndexed { index, trustedCert ->
+            try {
+                val cert = parsePemCertificate(trustedCert.pem)
+                keyStore.setCertificateEntry("user$index", cert)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse trusted certificate: ${trustedCert.fingerprint}", e)
+            }
         }
 
         // Add system CA certificates for combined trust
@@ -187,29 +199,20 @@ class SSLManager private constructor(context: Context) {
     }
 
     /**
-     * Create KeyManagers for mTLS client authentication using PKCS#12 file.
+     * Create KeyManagers for mTLS client authentication using PKCS#12 data from database.
      * Uses KeyManagerFactory (standard approach).
      */
     private fun createKeyManagers(clientCert: ClientCertificate): Array<KeyManager>? {
-        val p12File = certManager.getClientCertificatePath(clientCert.alias)
-        if (!p12File.exists()) {
-            Log.w(TAG, "PKCS#12 file not found: ${p12File.absolutePath}")
-            return null
-        }
-        if (clientCert.password == null) {
-            Log.w(TAG, "No password for PKCS#12 client certificate: ${clientCert.alias}")
-            return null
-        }
-
         return try {
+            val p12Data = Base64.decode(clientCert.p12Base64, Base64.DEFAULT)
             val keyStore = KeyStore.getInstance("PKCS12")
-            FileInputStream(p12File).use { keyStore.load(it, clientCert.password.toCharArray()) }
+            ByteArrayInputStream(p12Data).use { keyStore.load(it, clientCert.password.toCharArray()) }
 
             val keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
             keyManagerFactory.init(keyStore, clientCert.password.toCharArray())
             keyManagerFactory.keyManagers
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to load PKCS#12 client certificate", e)
+            Log.e(TAG, "Failed to load PKCS#12 client certificate for ${clientCert.baseUrl}", e)
             null
         }
     }
@@ -243,6 +246,46 @@ class SSLManager private constructor(context: Context) {
             return instance ?: synchronized(this) {
                 instance ?: SSLManager(context).also { instance = it }
             }
+        }
+
+        /**
+         * Calculate SHA-256 fingerprint of a certificate
+         */
+        fun calculateFingerprint(cert: X509Certificate): String {
+            val md = MessageDigest.getInstance("SHA-256")
+            val digest = md.digest(cert.encoded)
+            return digest.joinToString(":") { "%02X".format(it) }
+        }
+
+        /**
+         * Encode certificate to PEM format
+         */
+        fun encodeToPem(cert: X509Certificate): String {
+            val base64 = Base64.encodeToString(cert.encoded, Base64.NO_WRAP)
+            val sb = StringBuilder()
+            sb.append("-----BEGIN CERTIFICATE-----\n")
+            var i = 0
+            while (i < base64.length) {
+                val end = minOf(i + 64, base64.length)
+                sb.append(base64.substring(i, end))
+                sb.append("\n")
+                i += 64
+            }
+            sb.append("-----END CERTIFICATE-----")
+            return sb.toString()
+        }
+
+        /**
+         * Parse a PEM-encoded certificate string to X509Certificate
+         */
+        fun parsePemCertificate(pem: String): X509Certificate {
+            val cleanPem = pem
+                .replace("-----BEGIN CERTIFICATE-----", "")
+                .replace("-----END CERTIFICATE-----", "")
+                .replace("\\s".toRegex(), "")
+            val decoded = Base64.decode(cleanPem, Base64.DEFAULT)
+            val factory = CertificateFactory.getInstance("X.509")
+            return factory.generateCertificate(ByteArrayInputStream(decoded)) as X509Certificate
         }
     }
 }
