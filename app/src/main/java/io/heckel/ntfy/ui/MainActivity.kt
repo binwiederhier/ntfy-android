@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         wsEnableButton.setOnClickListener {
             repository.setConnectionProtocol(Repository.CONNECTION_PROTOCOL_WS)
-            SubscriberServiceManager(this).restart()
+            SubscriberServiceManager(this).refresh()
             wsBanner.visibility = View.GONE
 
             // Maybe show WebSocketReconnectBanner

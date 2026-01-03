@@ -700,7 +700,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 override fun putString(key: String?, value: String?) {
                     val proto = value ?: repository.getConnectionProtocol()
                     repository.setConnectionProtocol(proto)
-                    restartService()
+                    serviceManager.refresh() // Refresh to switch connections between WS and JSON stream
                 }
                 override fun getString(key: String?, defValue: String?): String {
                     return repository.getConnectionProtocol()
@@ -735,10 +735,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
             autoDownload?.value = autoDownloadSelectionCopy.toString()
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
-        }
-
-        private fun restartService() {
-            serviceManager.restart() // Service will auto-restart
         }
 
         private fun copyLogsToClipboard(scrub: Boolean) {
@@ -1056,7 +1052,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onUpdateUser(dialog: DialogFragment, user: User) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateUser(user)
-            serviceManager.restart() // Editing does not change the user ID
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::userSettingsFragment.isInitialized) {
                     userSettingsFragment.reload()
@@ -1068,7 +1064,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onDeleteUser(dialog: DialogFragment, baseUrl: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.deleteUser(baseUrl)
-            serviceManager.restart()
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::userSettingsFragment.isInitialized) {
                     userSettingsFragment.reload()
@@ -1080,7 +1076,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onAddCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.addCustomHeader(header)
-            serviceManager.restart() // Restart to apply new headers
+            serviceManager.refresh() // Refresh to apply new headers
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()
@@ -1092,7 +1088,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onUpdateCustomHeader(dialog: DialogFragment, oldHeader: io.heckel.ntfy.db.CustomHeader, newHeader: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateCustomHeader(oldHeader, newHeader)
-            serviceManager.restart() // Restart to apply header changes
+            serviceManager.refresh() // Refresh to apply header changes
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()
@@ -1104,7 +1100,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onDeleteCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.deleteCustomHeader(header)
-            serviceManager.restart()
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()

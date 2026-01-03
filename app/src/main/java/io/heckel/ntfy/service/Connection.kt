@@ -6,7 +6,14 @@ interface Connection {
     fun since(): String?
 }
 
+/**
+ * Represents a unique connection identifier that changes every time a
+ * connection needs to be re-established.
+ */
 data class ConnectionId(
     val baseUrl: String,
-    val topicsToSubscriptionIds: Map<String, Long>
+    val topicsToSubscriptionIds: Map<String, Long>,
+    val connectionProtocol: String,
+    val credentialsHash: Int,    // Hash of "username:password" or 0 if no user
+    val headersHash: Int         // Hash of sorted headers or 0 if none
 )
