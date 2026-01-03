@@ -1,4 +1,4 @@
-package io.heckel.ntfy.tls
+package io.heckel.ntfy.util
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,22 +6,25 @@ import android.util.Base64
 import io.heckel.ntfy.db.ClientCertificate
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.TrustedCertificate
-import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import java.io.ByteArrayInputStream
+import java.net.URL
 import java.security.KeyStore
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLException
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
+import kotlin.collections.addAll
 
 /**
  * Manages SSL/TLS configuration for OkHttpClient instances.
@@ -32,9 +35,9 @@ import javax.net.ssl.X509TrustManager
  *
  * Uses standard TrustManagerFactory and KeyManagerFactory (not custom implementations).
  */
-class SSLManager private constructor(context: Context) {
+class CertUtil private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
-    private val repository: Repository by lazy { Repository.getInstance(appContext) }
+    private val repository: Repository by lazy { Repository.Companion.getInstance(appContext) }
 
     /**
      * Get an OkHttpClient.Builder configured with custom SSL for a specific server
@@ -87,7 +90,7 @@ class SSLManager private constructor(context: Context) {
                 // Custom hostname verifier that bypasses only for user-trusted certs
                 if (trustedFingerprints.isNotEmpty()) {
                     builder.hostnameVerifier { hostname, session ->
-                        val defaultVerifier = javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier()
+                        val defaultVerifier = HttpsURLConnection.getDefaultHostnameVerifier()
                         if (defaultVerifier.verify(hostname, session)) {
                             return@hostnameVerifier true
                         }
@@ -134,7 +137,7 @@ class SSLManager private constructor(context: Context) {
                     capturedCert = chain[0]
                 }
                 // Always throw to prevent actual connection
-                throw javax.net.ssl.SSLException("Certificate captured for inspection")
+                throw SSLException("Certificate captured for inspection")
             }
 
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
@@ -144,7 +147,7 @@ class SSLManager private constructor(context: Context) {
         sslContext.init(null, arrayOf(trustManager), null)
 
         try {
-            val url = java.net.URL(baseUrl)
+            val url = URL(baseUrl)
             val host = url.host
             val port = when {
                 url.port != -1 -> url.port
@@ -179,7 +182,7 @@ class SSLManager private constructor(context: Context) {
         // Add user-trusted certificates
         trustedCerts.forEachIndexed { index, trustedCert ->
             try {
-                val cert = parsePemCertificate(trustedCert.pem)
+                val cert = parseCertificate(trustedCert.pem)
                 keyStore.setCertificateEntry("user$index", cert)
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to parse trusted certificate: ${trustedCert.fingerprint}", e)
@@ -240,42 +243,21 @@ class SSLManager private constructor(context: Context) {
 
         @Volatile
         @SuppressLint("StaticFieldLeak") // Only holds applicationContext
-        private var instance: SSLManager? = null
+        private var instance: CertUtil? = null
 
-        fun getInstance(context: Context): SSLManager {
+        fun getInstance(context: Context): CertUtil {
             return instance ?: synchronized(this) {
-                instance ?: SSLManager(context).also { instance = it }
+                instance ?: CertUtil(context).also { instance = it }
             }
         }
 
-        /**
-         * Calculate SHA-256 fingerprint of a certificate
-         */
         fun calculateFingerprint(cert: X509Certificate): String {
             val md = MessageDigest.getInstance("SHA-256")
             val digest = md.digest(cert.encoded)
             return digest.joinToString(":") { "%02X".format(it) }
         }
 
-        /**
-         * Encode certificate to PEM format
-         */
-        fun encodeToPem(cert: X509Certificate): String {
-            val base64 = Base64.encodeToString(cert.encoded, Base64.NO_WRAP)
-            val sb = StringBuilder()
-            sb.append("-----BEGIN CERTIFICATE-----\n")
-            var i = 0
-            while (i < base64.length) {
-                val end = minOf(i + 64, base64.length)
-                sb.append(base64.substring(i, end))
-                sb.append("\n")
-                i += 64
-            }
-            sb.append("-----END CERTIFICATE-----")
-            return sb.toString()
-        }
-
-        fun parsePemCertificate(pem: String): X509Certificate {
+        fun parseCertificate(pem: String): X509Certificate {
             val factory = CertificateFactory.getInstance("X.509")
             return factory.generateCertificate(pem.byteInputStream()) as X509Certificate
         }

@@ -10,7 +10,7 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.NotificationService
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -229,8 +229,8 @@ class Backuper(val context: Context) {
         }
         certificates.forEach { c ->
             try {
-                val x509Cert = SSLManager.parsePemCertificate(c.pem)
-                val fingerprint = SSLManager.calculateFingerprint(x509Cert)
+                val cert = CertUtil.parseCertificate(c.pem)
+                val fingerprint = CertUtil.calculateFingerprint(cert)
                 repository.addTrustedCertificate(fingerprint, c.pem)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore trusted certificate: ${e.message}. Ignoring.", e)

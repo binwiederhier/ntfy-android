@@ -12,8 +12,15 @@ import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DONE
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_FAILED
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_INDETERMINATE
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_NONE
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
@@ -24,11 +31,11 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val sslManager = SSLManager.getInstance(context)
+    private val certUtil = CertUtil.getInstance(context)
     
     private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return sslManager.getOkHttpClientBuilder(baseUrl)
+        return certUtil.getOkHttpClientBuilder(baseUrl)
             .callTimeout(15, TimeUnit.MINUTES)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)

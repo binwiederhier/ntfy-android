@@ -3,11 +3,14 @@ package io.heckel.ntfy.service
 import android.app.AlarmManager
 import android.content.Context
 import android.os.Build
-import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.db.ConnectionState
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -15,7 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.util.*
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
@@ -42,9 +45,9 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val sslManager = SSLManager.getInstance(context)
+    private val certUtil = CertUtil.getInstance(context)
     private val client: OkHttpClient by lazy {
-        sslManager.getOkHttpClientBuilder(connectionId.baseUrl)
+        certUtil.getOkHttpClientBuilder(connectionId.baseUrl)
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
         .connectTimeout(10, TimeUnit.SECONDS)

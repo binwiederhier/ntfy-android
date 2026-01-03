@@ -8,7 +8,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ClientCertificate
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.TrustedCertificate
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.shortUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,11 +50,11 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
 
         certs.forEach { trustedCert ->
             try {
-                val x509Cert = SSLManager.parsePemCertificate(trustedCert.pem)
+                val cert = CertUtil.parseCertificate(trustedCert.pem)
                 val pref = Preference(preferenceScreen.context)
-                pref.title = getDisplaySubject(x509Cert)
-                pref.summary = if (isValid(x509Cert)) {
-                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(x509Cert.notAfter))
+                pref.title = getDisplaySubject(cert)
+                pref.summary = if (isValid(cert)) {
+                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(cert.notAfter))
                 } else {
                     getString(R.string.settings_certificates_prefs_expired)
                 }

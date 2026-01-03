@@ -7,7 +7,7 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.*
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -19,7 +19,7 @@ import kotlin.random.Random
 
 class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
-    private val sslManager = SSLManager.getInstance(context)
+    private val sslManager = CertUtil.getInstance(context)
     private val gson = Gson()
     private val parser = NotificationParser()
     

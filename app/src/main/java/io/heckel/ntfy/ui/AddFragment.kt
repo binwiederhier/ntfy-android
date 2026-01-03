@@ -19,7 +19,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -271,10 +271,9 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
     
     private fun handleSSLException(baseUrl: String) {
         // Try to fetch the server's certificate
-        val sslManager = SSLManager.getInstance(requireContext())
-        val certificate = sslManager.fetchServerCertificate(baseUrl)
-        
         val activity = activity ?: return
+        val certUtil = CertUtil.getInstance(requireContext())
+        val certificate = certUtil.fetchServerCertificate(baseUrl)
         activity.runOnUiThread {
             if (certificate != null) {
                 showCertificateTrustDialog(baseUrl, certificate)

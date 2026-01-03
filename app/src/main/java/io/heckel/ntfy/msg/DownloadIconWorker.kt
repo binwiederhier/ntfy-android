@@ -7,8 +7,11 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.db.Icon
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.extractBaseUrl
 import io.heckel.ntfy.util.sha256
@@ -20,11 +23,11 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val sslManager = SSLManager.getInstance(context)
+    private val certUtil = CertUtil.getInstance(context)
     
     private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return sslManager.getOkHttpClientBuilder(baseUrl)
+        return certUtil.getOkHttpClientBuilder(baseUrl)
             .callTimeout(1, TimeUnit.MINUTES)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)

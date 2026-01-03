@@ -5,24 +5,30 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
+import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
+import io.heckel.ntfy.db.ACTION_PROGRESS_SUCCESS
+import io.heckel.ntfy.db.Action
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val sslManager = SSLManager.getInstance(context)
+    private val certUtil = CertUtil.getInstance(context)
     
     private fun createClient(url: String): OkHttpClient {
         val baseUrl = extractBaseUrl(url)
-        return sslManager.getOkHttpClientBuilder(baseUrl)
+        return certUtil.getOkHttpClientBuilder(baseUrl)
             .callTimeout(60, TimeUnit.SECONDS)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)

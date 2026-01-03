@@ -22,7 +22,7 @@ import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.TrustedCertificate
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.security.KeyStore
-import java.security.cert.X509Certificate
 import java.io.ByteArrayInputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -244,13 +243,13 @@ class CertificateFragment : DialogFragment() {
         deleteMenuItem.isVisible = true
 
         try {
-            val x509Cert = SSLManager.parsePemCertificate(trustedCert.pem)
+            val cert = CertUtil.parseCertificate(trustedCert.pem)
             val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-            subjectText.text = x509Cert.subjectX500Principal.name
-            issuerText.text = x509Cert.issuerX500Principal.name
+            subjectText.text = cert.subjectX500Principal.name
+            issuerText.text = cert.issuerX500Principal.name
             fingerprintText.text = trustedCert.fingerprint
-            validFromText.text = dateFormat.format(x509Cert.notBefore)
-            validUntilText.text = dateFormat.format(x509Cert.notAfter)
+            validFromText.text = dateFormat.format(cert.notBefore)
+            validUntilText.text = dateFormat.format(cert.notAfter)
         } catch (e: Exception) {
             fingerprintText.text = trustedCert.fingerprint
         }
@@ -359,8 +358,8 @@ class CertificateFragment : DialogFragment() {
         }
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val x509Cert = SSLManager.parsePemCertificate(certPem!!)
-                val fingerprint = SSLManager.calculateFingerprint(x509Cert)
+                val cert = CertUtil.parseCertificate(certPem!!)
+                val fingerprint = CertUtil.calculateFingerprint(cert)
                 repository.addTrustedCertificate(fingerprint, certPem!!)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()

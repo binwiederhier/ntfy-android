@@ -12,9 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
-import io.heckel.ntfy.tls.SSLManager
+import io.heckel.ntfy.util.CertUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,6 +27,7 @@ import java.util.*
 class CertificateTrustFragment : DialogFragment() {
     private lateinit var listener: CertificateTrustListener
     private lateinit var certificate: X509Certificate
+    private lateinit var certificatePem: String
     private lateinit var baseUrl: String
     private lateinit var repository: Repository
 
@@ -61,8 +63,9 @@ class CertificateTrustFragment : DialogFragment() {
             ?: throw IllegalArgumentException("Base URL required")
 
         // Parse the certificate
-        val certFactory = java.security.cert.CertificateFactory.getInstance("X.509")
+        val certFactory = CertificateFactory.getInstance("X.509")
         certificate = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
+        certificatePem = certBytes.toString()
 
         // Build the view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_certificate_trust_dialog, null)
@@ -118,7 +121,7 @@ class CertificateTrustFragment : DialogFragment() {
         // Populate certificate details
         subjectText.text = certificate.subjectX500Principal.name
         issuerText.text = certificate.issuerX500Principal.name
-        fingerprintText.text = SSLManager.calculateFingerprint(certificate)
+        fingerprintText.text = CertUtil.calculateFingerprint(certificate)
         validFromText.text = dateFormat.format(certificate.notBefore)
         validUntilText.text = dateFormat.format(certificate.notAfter)
 
@@ -141,9 +144,8 @@ class CertificateTrustFragment : DialogFragment() {
 
     private fun trustCertificate() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val fingerprint = SSLManager.calculateFingerprint(certificate)
-            val pem = SSLManager.encodeToPem(certificate)
-            repository.addTrustedCertificate(fingerprint, pem)
+            val fingerprint = CertUtil.calculateFingerprint(certificate)
+            repository.addTrustedCertificate(fingerprint, certificatePem)
         }
         listener.onCertificateTrusted(baseUrl, certificate)
         dismiss()
