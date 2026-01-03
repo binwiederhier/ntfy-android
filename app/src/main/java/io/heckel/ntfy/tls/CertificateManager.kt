@@ -64,13 +64,6 @@ class CertificateManager private constructor(private val context: Context) {
     }
 
     /**
-     * Remove a trusted certificate
-     */
-    fun removeTrustedCertificate(cert: X509Certificate) {
-        removeTrustedCertificate(calculateFingerprint(cert))
-    }
-
-    /**
      * Parse a PEM-encoded certificate string to X509Certificate
      */
     fun parsePemCertificate(pem: String): X509Certificate {
