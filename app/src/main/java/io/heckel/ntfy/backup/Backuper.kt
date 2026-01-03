@@ -229,15 +229,8 @@ class Backuper(val context: Context) {
         }
         certificates.forEach { c ->
             try {
-                val trustedCert = io.heckel.ntfy.tls.TrustedCertificate(
-                    fingerprint = c.fingerprint,
-                    subject = c.subject,
-                    issuer = c.issuer,
-                    notBefore = c.notBefore,
-                    notAfter = c.notAfter,
-                    pemEncoded = c.pemEncoded
-                )
-                certManager.addTrustedCertificate(trustedCert)
+                val cert = certManager.parsePemCertificate(c.pemEncoded)
+                certManager.addTrustedCertificate(cert)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore trusted certificate ${c.fingerprint}: ${e.message}. Ignoring.", e)
             }
@@ -366,14 +359,14 @@ class Backuper(val context: Context) {
     }
 
     private fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
-        return certManager.getTrustedCertificates().map { c ->
+        return certManager.getTrustedCertificates().map { cert ->
             TrustedCertificateBackup(
-                fingerprint = c.fingerprint,
-                subject = c.subject,
-                issuer = c.issuer,
-                notBefore = c.notBefore,
-                notAfter = c.notAfter,
-                pemEncoded = c.pemEncoded
+                fingerprint = io.heckel.ntfy.tls.calculateFingerprint(cert),
+                subject = cert.subjectX500Principal.name,
+                issuer = cert.issuerX500Principal.name,
+                notBefore = cert.notBefore.time,
+                notAfter = cert.notAfter.time,
+                pemEncoded = io.heckel.ntfy.tls.encodeToPem(cert)
             )
         }
     }

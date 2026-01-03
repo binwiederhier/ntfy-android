@@ -20,10 +20,11 @@ import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.tls.CertificateManager
 import io.heckel.ntfy.tls.ClientCertificate
-import io.heckel.ntfy.tls.TrustedCertificate
+import io.heckel.ntfy.tls.calculateFingerprint
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
+import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,15 +34,16 @@ import java.util.*
 class CertificateFragment : DialogFragment() {
     private lateinit var listener: CertificateDialogListener
     private lateinit var certManager: CertificateManager
-    
+
     private var mode: Mode = Mode.ADD_TRUSTED
-    private var trustedCertificate: TrustedCertificate? = null
+    private var trustedCertificate: X509Certificate? = null
+    private var trustedCertFingerprint: String? = null
     private var clientCertificate: ClientCertificate? = null
-    
+
     // File contents
     private var certPem: String? = null
     private var pkcs12Data: ByteArray? = null
-    
+
     // Views
     private lateinit var toolbar: MaterialToolbar
     private lateinit var saveMenuItem: MenuItem
@@ -61,12 +63,12 @@ class CertificateFragment : DialogFragment() {
     private lateinit var validFromText: TextView
     private lateinit var validUntilText: TextView
     private lateinit var errorText: TextView
-    
+
     // File pickers
     private val certFilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { handleCertFileSelected(it) }
     }
-    
+
     private val pkcs12FilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { handlePkcs12FileSelected(it) }
     }
@@ -89,29 +91,30 @@ class CertificateFragment : DialogFragment() {
         if (activity == null) {
             throw IllegalStateException("Activity cannot be null")
         }
-        
+
         certManager = CertificateManager.getInstance(requireContext())
-        
+
         // Determine mode from arguments
         mode = Mode.valueOf(arguments?.getString(ARG_MODE) ?: Mode.ADD_TRUSTED.name)
-        
+
         // Get existing certificate data if viewing
         arguments?.getString(ARG_TRUSTED_CERT_FINGERPRINT)?.let { fingerprint ->
+            trustedCertFingerprint = fingerprint
             trustedCertificate = certManager.getTrustedCertificates()
-                .find { it.fingerprint == fingerprint }
+                .find { calculateFingerprint(it) == fingerprint }
         }
         arguments?.getString(ARG_CLIENT_CERT_ALIAS)?.let { alias ->
             clientCertificate = certManager.getClientCertificates().find { it.alias == alias }
         }
-        
+
         // Build the view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_certificate_dialog, null)
         setupView(view)
-        
+
         // Build dialog
         val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
         dialog.setContentView(view)
-        
+
         return dialog
     }
 
@@ -144,7 +147,7 @@ class CertificateFragment : DialogFragment() {
         }
         saveMenuItem = toolbar.menu.findItem(R.id.certificate_dialog_action_save)
         deleteMenuItem = toolbar.menu.findItem(R.id.certificate_dialog_action_delete)
-        
+
         // Setup views
         descriptionText = view.findViewById(R.id.certificate_dialog_description)
         baseUrlLayout = view.findViewById(R.id.certificate_dialog_base_url_layout)
@@ -161,12 +164,12 @@ class CertificateFragment : DialogFragment() {
         validFromText = view.findViewById(R.id.certificate_dialog_valid_from)
         validUntilText = view.findViewById(R.id.certificate_dialog_valid_until)
         errorText = view.findViewById(R.id.certificate_dialog_error_text)
-        
+
         // Validate input when typing
         val textWatcher = AfterChangedTextWatcher { validateInput() }
         baseUrlText.addTextChangedListener(textWatcher)
         passwordText.addTextChangedListener(textWatcher)
-        
+
         // Configure based on mode
         when (mode) {
             Mode.ADD_TRUSTED -> setupAddTrustedMode()
@@ -174,11 +177,11 @@ class CertificateFragment : DialogFragment() {
             Mode.VIEW_TRUSTED -> setupViewTrustedMode()
             Mode.VIEW_CLIENT -> setupViewClientMode()
         }
-        
+
         // Initial validation
         validateInput()
     }
-    
+
     private fun setupAddTrustedMode() {
         toolbar.setTitle(R.string.certificate_dialog_title_add_trusted)
         descriptionText.text = getString(R.string.certificate_dialog_description_add_trusted)
@@ -188,11 +191,11 @@ class CertificateFragment : DialogFragment() {
         detailsLayout.isVisible = false
         saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
         deleteMenuItem.isVisible = false
-        
+
         selectCertButton.text = getString(R.string.certificate_dialog_select_cert_file)
         selectCertButton.setOnClickListener { certFilePicker.launch("*/*") }
     }
-    
+
     private fun setupAddClientMode() {
         toolbar.setTitle(R.string.certificate_dialog_title_add_client)
         descriptionText.text = getString(R.string.certificate_dialog_description_add_client)
@@ -202,17 +205,17 @@ class CertificateFragment : DialogFragment() {
         detailsLayout.isVisible = false
         saveMenuItem.setTitle(R.string.certificate_dialog_button_add)
         deleteMenuItem.isVisible = false
-        
+
         selectCertButton.text = getString(R.string.certificate_dialog_select_p12_file)
         selectCertButton.setOnClickListener { pkcs12FilePicker.launch("*/*") }
     }
-    
+
     private fun setupViewTrustedMode() {
         val cert = trustedCertificate ?: run {
             dismiss()
             return
         }
-        
+
         toolbar.setTitle(R.string.certificate_dialog_title_view)
         descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
@@ -221,21 +224,21 @@ class CertificateFragment : DialogFragment() {
         detailsLayout.isVisible = true
         saveMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
-        
+
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-        subjectText.text = cert.subject
-        issuerText.text = cert.issuer
-        fingerprintText.text = cert.fingerprint
-        validFromText.text = dateFormat.format(Date(cert.notBefore))
-        validUntilText.text = dateFormat.format(Date(cert.notAfter))
+        subjectText.text = cert.subjectX500Principal.name
+        issuerText.text = cert.issuerX500Principal.name
+        fingerprintText.text = calculateFingerprint(cert)
+        validFromText.text = dateFormat.format(cert.notBefore)
+        validUntilText.text = dateFormat.format(cert.notAfter)
     }
-    
+
     private fun setupViewClientMode() {
         val cert = clientCertificate ?: run {
             dismiss()
             return
         }
-        
+
         toolbar.setTitle(R.string.certificate_dialog_title_view)
         descriptionText.isVisible = false
         baseUrlLayout.isVisible = false
@@ -244,7 +247,7 @@ class CertificateFragment : DialogFragment() {
         detailsLayout.isVisible = true
         saveMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
-        
+
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         subjectText.text = cert.subject
         issuerText.text = cert.issuer
@@ -252,13 +255,13 @@ class CertificateFragment : DialogFragment() {
         validFromText.text = dateFormat.format(Date(cert.notBefore))
         validUntilText.text = dateFormat.format(Date(cert.notAfter))
     }
-    
+
     private fun validateInput() {
         if (!this::saveMenuItem.isInitialized) return
-        
+
         val baseUrl = baseUrlText.text?.toString()?.trim() ?: ""
         val password = passwordText.text?.toString() ?: ""
-        
+
         when (mode) {
             Mode.ADD_TRUSTED -> {
                 saveMenuItem.isEnabled = certPem != null
@@ -271,11 +274,11 @@ class CertificateFragment : DialogFragment() {
             }
         }
     }
-    
+
     private fun handleCertFileSelected(uri: Uri) {
         try {
-            val content = requireContext().contentResolver.openInputStream(uri)?.use { 
-                it.bufferedReader().readText() 
+            val content = requireContext().contentResolver.openInputStream(uri)?.use {
+                it.bufferedReader().readText()
             }
             if (content != null && content.contains("-----BEGIN CERTIFICATE-----")) {
                 certPem = content
@@ -290,11 +293,11 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_invalid_cert))
         }
     }
-    
+
     private fun handlePkcs12FileSelected(uri: Uri) {
         try {
-            val data = requireContext().contentResolver.openInputStream(uri)?.use { 
-                it.readBytes() 
+            val data = requireContext().contentResolver.openInputStream(uri)?.use {
+                it.readBytes()
             }
             if (data != null && data.isNotEmpty()) {
                 pkcs12Data = data
@@ -309,7 +312,7 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_invalid_p12))
         }
     }
-    
+
     private fun saveClicked() {
         when (mode) {
             Mode.ADD_TRUSTED -> addTrustedCertificate()
@@ -317,24 +320,24 @@ class CertificateFragment : DialogFragment() {
             else -> { /* View modes don't have save */ }
         }
     }
-    
+
     private fun deleteClicked() {
         when (mode) {
-            Mode.VIEW_TRUSTED -> trustedCertificate?.let { confirmDeleteTrustedCertificate(it) }
+            Mode.VIEW_TRUSTED -> trustedCertFingerprint?.let { confirmDeleteTrustedCertificate(it) }
             Mode.VIEW_CLIENT -> clientCertificate?.let { confirmDeleteClientCertificate(it) }
             else -> { /* Add modes don't have delete */ }
         }
     }
-    
+
     private fun addTrustedCertificate() {
         val certContent = certPem
-        
+
         // Validate
         if (certContent == null) {
             showError(getString(R.string.certificate_dialog_error_missing_cert))
             return
         }
-        
+
         try {
             val cert = certManager.parsePemCertificate(certContent)
             certManager.addTrustedCertificate(cert)
@@ -346,12 +349,12 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_invalid_cert))
         }
     }
-    
+
     private fun addClientCertificate() {
         val baseUrl = baseUrlText.text.toString().trim()
         val data = pkcs12Data
         val password = passwordText.text.toString()
-        
+
         // Validate
         if (baseUrl.isEmpty()) {
             showError(getString(R.string.certificate_dialog_error_missing_url))
@@ -369,7 +372,7 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_missing_password))
             return
         }
-        
+
         try {
             certManager.addClientCertificatePkcs12(baseUrl, data, password)
             Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
@@ -380,12 +383,12 @@ class CertificateFragment : DialogFragment() {
             showError(getString(R.string.certificate_dialog_error_invalid_p12_password))
         }
     }
-    
-    private fun confirmDeleteTrustedCertificate(cert: TrustedCertificate) {
+
+    private fun confirmDeleteTrustedCertificate(fingerprint: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.certificate_dialog_delete_confirm)
             .setPositiveButton(R.string.certificate_dialog_button_delete) { _, _ ->
-                certManager.removeTrustedCertificate(cert)
+                certManager.removeTrustedCertificate(fingerprint)
                 Toast.makeText(context, R.string.certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
                 listener.onCertificateDeleted()
                 dismiss()
@@ -393,7 +396,7 @@ class CertificateFragment : DialogFragment() {
             .setNegativeButton(R.string.certificate_dialog_button_cancel, null)
             .show()
     }
-    
+
     private fun confirmDeleteClientCertificate(cert: ClientCertificate) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.certificate_dialog_delete_confirm)
@@ -406,7 +409,7 @@ class CertificateFragment : DialogFragment() {
             .setNegativeButton(R.string.certificate_dialog_button_cancel, null)
             .show()
     }
-    
+
     private fun showError(message: String) {
         errorText.text = message
         errorText.isVisible = true
@@ -424,7 +427,7 @@ class CertificateFragment : DialogFragment() {
         private const val ARG_MODE = "mode"
         private const val ARG_TRUSTED_CERT_FINGERPRINT = "trusted_cert_fingerprint"
         private const val ARG_CLIENT_CERT_ALIAS = "client_cert_alias"
-        
+
         fun newInstanceAddTrusted(): CertificateFragment {
             return CertificateFragment().apply {
                 arguments = Bundle().apply {
@@ -432,7 +435,7 @@ class CertificateFragment : DialogFragment() {
                 }
             }
         }
-        
+
         fun newInstanceAddClient(): CertificateFragment {
             return CertificateFragment().apply {
                 arguments = Bundle().apply {
@@ -440,16 +443,16 @@ class CertificateFragment : DialogFragment() {
                 }
             }
         }
-        
-        fun newInstanceViewTrusted(cert: TrustedCertificate): CertificateFragment {
+
+        fun newInstanceViewTrusted(fingerprint: String): CertificateFragment {
             return CertificateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.VIEW_TRUSTED.name)
-                    putString(ARG_TRUSTED_CERT_FINGERPRINT, cert.fingerprint)
+                    putString(ARG_TRUSTED_CERT_FINGERPRINT, fingerprint)
                 }
             }
         }
-        
+
         fun newInstanceViewClient(cert: ClientCertificate): CertificateFragment {
             return CertificateFragment().apply {
                 arguments = Bundle().apply {

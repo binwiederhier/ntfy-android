@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.appbar.MaterialToolbar
 import io.heckel.ntfy.R
 import io.heckel.ntfy.tls.CertificateManager
-import io.heckel.ntfy.tls.TrustedCertificate
+import io.heckel.ntfy.tls.calculateFingerprint
 import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
 import java.util.*
@@ -112,7 +112,7 @@ class CertificateTrustFragment : DialogFragment() {
         // Populate certificate details
         subjectText.text = certificate.subjectX500Principal.name
         issuerText.text = certificate.issuerX500Principal.name
-        fingerprintText.text = TrustedCertificate.calculateFingerprint(certificate)
+        fingerprintText.text = calculateFingerprint(certificate)
         validFromText.text = dateFormat.format(certificate.notBefore)
         validUntilText.text = dateFormat.format(certificate.notAfter)
 

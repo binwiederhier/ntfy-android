@@ -48,7 +48,7 @@ class SSLManager private constructor(context: Context) {
 
             // Get all user-trusted certificates
             val trustedCerts = certManager.getTrustedCertificates()
-            val trustedFingerprints = trustedCerts.map { it.fingerprint }.toSet()
+            val trustedFingerprints = trustedCerts.map { calculateFingerprint(it) }.toSet()
             if (trustedCerts.isNotEmpty()) {
                 trustManagers.addAll(createCombinedTrustManagers(trustedCerts))
             }
@@ -91,7 +91,7 @@ class SSLManager private constructor(context: Context) {
                             if (serverCerts.isNotEmpty()) {
                                 val serverCert = serverCerts[0] as? X509Certificate
                                 if (serverCert != null) {
-                                    val serverFingerprint = TrustedCertificate.calculateFingerprint(serverCert)
+                                    val serverFingerprint = calculateFingerprint(serverCert)
                                     if (trustedFingerprints.contains(serverFingerprint)) {
                                         Log.d(TAG, "Hostname verification bypassed for $hostname - certificate is user-trusted")
                                         return@hostnameVerifier true
@@ -165,18 +165,13 @@ class SSLManager private constructor(context: Context) {
      * Create TrustManagers that trust both user-added certs and system CAs.
      * Uses TrustManagerFactory (standard approach).
      */
-    private fun createCombinedTrustManagers(userCerts: List<TrustedCertificate>): Array<TrustManager> {
+    private fun createCombinedTrustManagers(userCerts: List<X509Certificate>): Array<TrustManager> {
         // Create a KeyStore with all certificates
         val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply { load(null) }
 
         // Add user-trusted certificates
-        userCerts.forEachIndexed { index, trustedCert ->
-            try {
-                val cert = certManager.parsePemCertificate(trustedCert.pemEncoded)
-                keyStore.setCertificateEntry("user$index", cert)
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to parse trusted certificate: ${trustedCert.fingerprint}", e)
-            }
+        userCerts.forEachIndexed { index, cert ->
+            keyStore.setCertificateEntry("user$index", cert)
         }
 
         // Add system CA certificates for combined trust

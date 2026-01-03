@@ -13,9 +13,9 @@ import java.security.cert.X509Certificate
 
 /**
  * Manages trusted server certificates and client certificates for mTLS.
- * 
+ *
  * All certificates are stored in app's private files directory:
- * - Trusted certificates: certs/trusted/{fingerprint}.pem + metadata in certs/trusted.json
+ * - Trusted certificates: certs/trusted/<fingerprint>.pem (loaded directly from files)
  * - Client certificates: certs/client/{alias}.p12 + metadata in certs/client.json
  */
 class CertificateManager private constructor(private val context: Context) {
@@ -23,62 +23,51 @@ class CertificateManager private constructor(private val context: Context) {
     private val certsDir = File(context.filesDir, CERTS_DIR).apply { mkdirs() }
     private val trustedDir = File(certsDir, TRUSTED_DIR).apply { mkdirs() }
     private val clientDir = File(certsDir, CLIENT_DIR).apply { mkdirs() }
-    private val trustedMetadataFile = File(certsDir, TRUSTED_METADATA_FILE)
     private val clientMetadataFile = File(certsDir, CLIENT_METADATA_FILE)
 
     // ==================== Trusted Server Certificates ====================
 
     /**
-     * Get all trusted server certificates
+     * Get all trusted server certificates by loading PEM files from disk
      */
-    fun getTrustedCertificates(): List<TrustedCertificate> {
-        if (!trustedMetadataFile.exists()) return emptyList()
-        return try {
-            val json = trustedMetadataFile.readText()
-            val type = object : TypeToken<List<TrustedCertificate>>() {}.type
-            gson.fromJson(json, type) ?: emptyList()
-        } catch (e: Exception) {
-            Log.w(TAG, "Failed to parse trusted certificates", e)
-            emptyList()
+    fun getTrustedCertificates(): List<X509Certificate> {
+        val pemFiles = trustedDir.listFiles { file -> file.extension == "pem" } ?: return emptyList()
+        return pemFiles.mapNotNull { file ->
+            try {
+                parsePemCertificate(file.readText())
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse certificate file: ${file.name}", e)
+                null
+            }
         }
     }
 
     /**
-     * Add a trusted certificate
+     * Add a trusted certificate (saves as PEM file)
      */
-    fun addTrustedCertificate(cert: TrustedCertificate) {
-        // Save PEM file
-        val pemFile = File(trustedDir, "${cert.fingerprint.replace(":", "")}.pem")
-        pemFile.writeText(cert.pemEncoded)
-
-        // Update metadata
-        val certs = getTrustedCertificates().toMutableList()
-        certs.removeAll { it.fingerprint == cert.fingerprint }
-        certs.add(cert)
-        saveTrustedMetadata(certs)
+    fun addTrustedCertificate(cert: X509Certificate) {
+        val fingerprint = calculateFingerprint(cert)
+        val filename = fingerprint.replace(":", "") + ".pem"
+        val pemFile = File(trustedDir, filename)
+        pemFile.writeText(encodeToPem(cert))
     }
 
     /**
-     * Add a trusted certificate from X509Certificate
+     * Remove a trusted certificate by fingerprint
      */
-    fun addTrustedCertificate(cert: X509Certificate) {
-        addTrustedCertificate(TrustedCertificate.fromX509Certificate(cert))
+    fun removeTrustedCertificate(fingerprint: String) {
+        val filename = fingerprint.replace(":", "") + ".pem"
+        val pemFile = File(trustedDir, filename)
+        if (pemFile.exists()) {
+            pemFile.delete()
+        }
     }
 
     /**
      * Remove a trusted certificate
      */
-    fun removeTrustedCertificate(cert: TrustedCertificate) {
-        // Delete PEM file
-        val pemFile = File(trustedDir, "${cert.fingerprint.replace(":", "")}.pem")
-        if (pemFile.exists()) {
-            pemFile.delete()
-        }
-
-        // Update metadata
-        val certs = getTrustedCertificates().toMutableList()
-        certs.removeAll { it.fingerprint == cert.fingerprint }
-        saveTrustedMetadata(certs)
+    fun removeTrustedCertificate(cert: X509Certificate) {
+        removeTrustedCertificate(calculateFingerprint(cert))
     }
 
     /**
@@ -92,14 +81,6 @@ class CertificateManager private constructor(private val context: Context) {
         val decoded = android.util.Base64.decode(cleanPem, android.util.Base64.DEFAULT)
         val factory = CertificateFactory.getInstance("X.509")
         return factory.generateCertificate(ByteArrayInputStream(decoded)) as X509Certificate
-    }
-
-    private fun saveTrustedMetadata(certs: List<TrustedCertificate>) {
-        if (certs.isEmpty()) {
-            trustedMetadataFile.delete()
-        } else {
-            trustedMetadataFile.writeText(gson.toJson(certs))
-        }
     }
 
     // ==================== Client Certificates (mTLS) ====================
@@ -144,7 +125,7 @@ class CertificateManager private constructor(private val context: Context) {
 
     /**
      * Add a client certificate from a PKCS#12 file
-     * 
+     *
      * @param baseUrl Server URL this certificate is for
      * @param pkcs12Data PKCS#12 file contents
      * @param password Password for the PKCS#12 file
@@ -168,14 +149,14 @@ class CertificateManager private constructor(private val context: Context) {
         // Update metadata
         val clientCert = ClientCertificate.fromX509Certificate(baseUrl, storageAlias, cert, password)
         val certs = getClientCertificates().toMutableList()
-        
+
         // Remove existing cert for same baseUrl
         val oldCert = certs.find { it.baseUrl == baseUrl }
         if (oldCert != null) {
             removeClientCertificate(oldCert)
             certs.removeAll { it.baseUrl == baseUrl }
         }
-        
+
         certs.add(clientCert)
         saveClientMetadata(certs)
     }
@@ -200,7 +181,6 @@ class CertificateManager private constructor(private val context: Context) {
         private const val CERTS_DIR = "certs"
         private const val TRUSTED_DIR = "trusted"
         private const val CLIENT_DIR = "client"
-        private const val TRUSTED_METADATA_FILE = "trusted.json"
         private const val CLIENT_METADATA_FILE = "client.json"
 
         @SuppressLint("StaticFieldLeak") // Using applicationContext, so no leak
