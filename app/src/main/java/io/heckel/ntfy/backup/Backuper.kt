@@ -229,10 +229,9 @@ class Backuper(val context: Context) {
         }
         certificates.forEach { c ->
             try {
-                val pem = c.pem
-                val x509Cert = SSLManager.parsePemCertificate(pem)
+                val x509Cert = SSLManager.parsePemCertificate(c.pem)
                 val fingerprint = SSLManager.calculateFingerprint(x509Cert)
-                repository.addTrustedCertificate(fingerprint, pem)
+                repository.addTrustedCertificate(fingerprint, c.pem)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore trusted certificate: ${e.message}. Ignoring.", e)
             }

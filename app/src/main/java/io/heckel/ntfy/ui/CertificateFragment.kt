@@ -353,20 +353,15 @@ class CertificateFragment : DialogFragment() {
     }
 
     private fun addTrustedCertificate() {
-        val certContent = certPem
-
-        // Validate
-        if (certContent == null) {
+        if (certPem == null) {
             showError(getString(R.string.certificate_dialog_error_missing_cert))
             return
         }
-
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val x509Cert = SSLManager.parsePemCertificate(certContent)
+                val x509Cert = SSLManager.parsePemCertificate(certPem!!)
                 val fingerprint = SSLManager.calculateFingerprint(x509Cert)
-                val pem = SSLManager.encodeToPem(x509Cert)
-                repository.addTrustedCertificate(fingerprint, pem)
+                repository.addTrustedCertificate(fingerprint, certPem!!)
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
                     listener.onCertificateAdded()

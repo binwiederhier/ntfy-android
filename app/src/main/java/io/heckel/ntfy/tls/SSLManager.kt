@@ -275,17 +275,9 @@ class SSLManager private constructor(context: Context) {
             return sb.toString()
         }
 
-        /**
-         * Parse a PEM-encoded certificate string to X509Certificate
-         */
         fun parsePemCertificate(pem: String): X509Certificate {
-            val cleanPem = pem
-                .replace("-----BEGIN CERTIFICATE-----", "")
-                .replace("-----END CERTIFICATE-----", "")
-                .replace("\\s".toRegex(), "")
-            val decoded = Base64.decode(cleanPem, Base64.DEFAULT)
             val factory = CertificateFactory.getInstance("X.509")
-            return factory.generateCertificate(ByteArrayInputStream(decoded)) as X509Certificate
+            return factory.generateCertificate(pem.byteInputStream()) as X509Certificate
         }
     }
 }

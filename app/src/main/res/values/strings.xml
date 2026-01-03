@@ -500,18 +500,17 @@
     <string name="settings_advanced_certificates_summary">Trust self-signed server certificates and manage client certificates for mTLS</string>
     <string name="settings_certificates_prefs_title">Certificates</string>
     <string name="settings_certificates_prefs_trusted_header">Trusted server certificates</string>
-    <string name="settings_certificates_prefs_trusted_empty">No trusted certificates</string>
     <string name="settings_certificates_prefs_trusted_add">Add certificate</string>
     <string name="settings_certificates_prefs_trusted_add_title">Add a trusted certificate</string>
     <string name="settings_certificates_prefs_trusted_add_summary">Import a PEM-formatted server or CA certificate file to trust</string>
     <string name="settings_certificates_prefs_client_header">Client certificates (mTLS)</string>
-    <string name="settings_certificates_prefs_client_empty">No client certificates</string>
     <string name="settings_certificates_prefs_client_add">Add client certificate</string>
     <string name="settings_certificates_prefs_client_add_title">Add a client certificate</string>
     <string name="settings_certificates_prefs_client_add_summary">Import PKCS#12 certificate for mutual TLS authentication</string>
     <string name="settings_certificates_prefs_client_configured">Client certificate configured</string>
-    <string name="settings_certificates_prefs_expires">Expires: %1$s</string>
+    <string name="settings_certificates_prefs_expires">Expires %1$s</string>
     <string name="settings_certificates_prefs_expired">Expired</string>
+
     <!-- Certificate dialog -->
     <string name="certificate_dialog_title_view">Certificate details</string>
     <string name="certificate_dialog_title_add_trusted">Add trusted certificate</string>

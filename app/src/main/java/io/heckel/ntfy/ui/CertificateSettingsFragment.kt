@@ -48,31 +48,24 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         trustedCategory.title = getString(R.string.settings_certificates_prefs_trusted_header)
         preferenceScreen.addPreference(trustedCategory)
 
-        if (certs.isEmpty()) {
-            val emptyPref = Preference(preferenceScreen.context)
-            emptyPref.title = getString(R.string.settings_certificates_prefs_trusted_empty)
-            emptyPref.isEnabled = false
-            trustedCategory.addPreference(emptyPref)
-        } else {
-            certs.forEach { trustedCert ->
-                try {
-                    val x509Cert = SSLManager.parsePemCertificate(trustedCert.pem)
-                    val pref = Preference(preferenceScreen.context)
-                    pref.title = getDisplaySubject(x509Cert)
-                    pref.summary = if (isValid(x509Cert)) {
-                        getString(R.string.settings_certificates_prefs_expires, dateFormat.format(x509Cert.notAfter))
-                    } else {
-                        getString(R.string.settings_certificates_prefs_expired)
-                    }
-                    pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        CertificateFragment.newInstanceViewTrusted(trustedCert.fingerprint)
-                            .show(childFragmentManager, CertificateFragment.TAG)
-                        true
-                    }
-                    trustedCategory.addPreference(pref)
-                } catch (e: Exception) {
-                    // Skip invalid certificates
+        certs.forEach { trustedCert ->
+            try {
+                val x509Cert = SSLManager.parsePemCertificate(trustedCert.pem)
+                val pref = Preference(preferenceScreen.context)
+                pref.title = getDisplaySubject(x509Cert)
+                pref.summary = if (isValid(x509Cert)) {
+                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(x509Cert.notAfter))
+                } else {
+                    getString(R.string.settings_certificates_prefs_expired)
                 }
+                pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                    CertificateFragment.newInstanceViewTrusted(trustedCert.fingerprint)
+                        .show(childFragmentManager, CertificateFragment.TAG)
+                    true
+                }
+                trustedCategory.addPreference(pref)
+            } catch (e: Exception) {
+                // Skip invalid certificates
             }
         }
 
@@ -94,23 +87,16 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         clientCategory.title = getString(R.string.settings_certificates_prefs_client_header)
         preferenceScreen.addPreference(clientCategory)
 
-        if (certs.isEmpty()) {
-            val emptyPref = Preference(preferenceScreen.context)
-            emptyPref.title = getString(R.string.settings_certificates_prefs_client_empty)
-            emptyPref.isEnabled = false
-            clientCategory.addPreference(emptyPref)
-        } else {
-            certs.forEach { cert ->
-                val pref = Preference(preferenceScreen.context)
-                pref.title = shortUrl(cert.baseUrl)
-                pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
-                pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                    CertificateFragment.newInstanceViewClient(cert.baseUrl)
-                        .show(childFragmentManager, CertificateFragment.TAG)
-                    true
-                }
-                clientCategory.addPreference(pref)
+        certs.forEach { cert ->
+            val pref = Preference(preferenceScreen.context)
+            pref.title = shortUrl(cert.baseUrl)
+            pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
+            pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                CertificateFragment.newInstanceViewClient(cert.baseUrl)
+                    .show(childFragmentManager, CertificateFragment.TAG)
+                true
             }
+            clientCategory.addPreference(pref)
         }
 
         // Add client certificate
