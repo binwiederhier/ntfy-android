@@ -1,2 +1,3 @@
 Maintenance + bug fixes:
 * Hide "Exact alarms" setting if battery optimization exemption has been granted (#1456, thanks for reporting @HappyLer)
+* Fix ForegroundServiceDidNotStartInTimeException (#1520, attempt 3, d064e75)
