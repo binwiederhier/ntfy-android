@@ -11,20 +11,18 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 
 /**
  * Manages SSL/TLS configuration for OkHttpClient instances.
- * 
- * This is a thin wrapper around SSLUtils that handles Context-dependent operations
- * like accessing CertificateManager for certificate trust.
- * 
+ *
  * Supports:
  * 1. Global trusted CA certificates (for self-signed servers)
  * 2. Per-URL client certificates for mTLS (PKCS#12 format)
- * 
+ *
  * Uses standard TrustManagerFactory and KeyManagerFactory (not custom implementations).
  */
 class SSLManager private constructor(context: Context) {
@@ -47,13 +45,12 @@ class SSLManager private constructor(context: Context) {
         try {
             val trustManagers = mutableListOf<TrustManager>()
             val keyManagers = mutableListOf<KeyManager>()
-            var bypassHostnameVerification = false
 
-            // Get all user-trusted CA certificates
+            // Get all user-trusted certificates
             val trustedCerts = certManager.getTrustedCertificates()
+            val trustedFingerprints = trustedCerts.map { it.fingerprint }.toSet()
             if (trustedCerts.isNotEmpty()) {
                 trustManagers.addAll(createCombinedTrustManagers(trustedCerts))
-                bypassHostnameVerification = true
             }
 
             // Get client certificate for mTLS
@@ -66,7 +63,7 @@ class SSLManager private constructor(context: Context) {
             if (trustManagers.isNotEmpty() || keyManagers.isNotEmpty()) {
                 // Fall back to system trust if no custom trust managers
                 if (trustManagers.isEmpty()) {
-                    trustManagers.addAll(SSLUtils.getSystemTrustManagers().toList())
+                    trustManagers.addAll(getSystemTrustManagers().toList())
                 }
 
                 val sslContext = SSLContext.getInstance("TLS")
@@ -80,22 +77,88 @@ class SSLManager private constructor(context: Context) {
                     trustManagers.filterIsInstance<X509TrustManager>().first()
                 )
 
-                // Bypass hostname verification for user-trusted certs
-                if (bypassHostnameVerification) {
+                // Custom hostname verifier that bypasses only for user-trusted certs
+                if (trustedFingerprints.isNotEmpty()) {
                     builder.hostnameVerifier { hostname, session ->
                         val defaultVerifier = javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier()
                         if (defaultVerifier.verify(hostname, session)) {
-                            true
-                        } else {
-                            Log.d(TAG, "Hostname verification bypassed for $baseUrl due to user-trusted certificate")
-                            true
+                            return@hostnameVerifier true
                         }
+
+                        // Check if the server's certificate is user-trusted
+                        try {
+                            val serverCerts = session.peerCertificates
+                            if (serverCerts.isNotEmpty()) {
+                                val serverCert = serverCerts[0] as? X509Certificate
+                                if (serverCert != null) {
+                                    val serverFingerprint = TrustedCertificate.calculateFingerprint(serverCert)
+                                    if (trustedFingerprints.contains(serverFingerprint)) {
+                                        Log.d(TAG, "Hostname verification bypassed for $hostname - certificate is user-trusted")
+                                        return@hostnameVerifier true
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Failed to check server certificate fingerprint", e)
+                        }
+
+                        false
                     }
                 }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to configure SSL for $baseUrl", e)
         }
+    }
+
+    /**
+     * Fetch the server certificate without trusting it.
+     * Used to display certificate details before user decides to trust.
+     */
+    @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
+    fun fetchServerCertificate(baseUrl: String): X509Certificate? {
+        var capturedCert: X509Certificate? = null
+
+        val trustManager = object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                if (!chain.isNullOrEmpty()) {
+                    capturedCert = chain[0]
+                }
+                // Always throw to prevent actual connection
+                throw javax.net.ssl.SSLException("Certificate captured for inspection")
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        }
+
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null, arrayOf(trustManager), null)
+
+        try {
+            val url = java.net.URL(baseUrl)
+            val host = url.host
+            val port = when {
+                url.port != -1 -> url.port
+                url.protocol == "https" -> 443
+                else -> 80
+            }
+
+            val socket = sslContext.socketFactory.createSocket(host, port) as SSLSocket
+            socket.soTimeout = 10000
+            try {
+                socket.startHandshake()
+            } catch (_: Exception) {
+                // Expected - we throw from the trust manager
+            } finally {
+                socket.close()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to fetch certificate from $baseUrl", e)
+        }
+
+        return capturedCert
     }
 
     /**
@@ -117,7 +180,7 @@ class SSLManager private constructor(context: Context) {
         }
 
         // Add system CA certificates for combined trust
-        SSLUtils.getSystemTrustManager().acceptedIssuers.forEachIndexed { index, cert ->
+        getSystemTrustManager().acceptedIssuers.forEachIndexed { index, cert ->
             keyStore.setCertificateEntry("system$index", cert)
         }
 
@@ -157,11 +220,21 @@ class SSLManager private constructor(context: Context) {
     }
 
     /**
-     * Fetch the server certificate without trusting it.
-     * Used to display certificate details before user decides to trust.
+     * Get the default system TrustManagers
      */
-    fun fetchServerCertificate(baseUrl: String): X509Certificate? {
-        return SSLUtils.fetchServerCertificate(baseUrl)
+    private fun getSystemTrustManagers(): Array<TrustManager> {
+        val trustManagerFactory = TrustManagerFactory.getInstance(
+            TrustManagerFactory.getDefaultAlgorithm()
+        )
+        trustManagerFactory.init(null as KeyStore?)
+        return trustManagerFactory.trustManagers
+    }
+
+    /**
+     * Get the system X509TrustManager
+     */
+    private fun getSystemTrustManager(): X509TrustManager {
+        return getSystemTrustManagers().filterIsInstance<X509TrustManager>().first()
     }
 
     companion object {
