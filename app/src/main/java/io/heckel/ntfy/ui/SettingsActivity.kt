@@ -845,7 +845,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         fun updateExactAlarmsPref() {
-            val exactAlarmsPrefId = context?.getString(R.string.settings_advanced_exact_alarms_key) ?: return
+            val context = context ?: return
+            val exactAlarmsPrefId = context.getString(R.string.settings_advanced_exact_alarms_key)
             val exactAlarmsPref: Preference? = findPreference(exactAlarmsPrefId)
             val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 (activity?.getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
@@ -859,6 +860,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
                 true
             }
+            // Android doesn't show "ntfy" in the "Alarms & reminders" list if battery optimizations are disabled.
+            //
+            // In fact, if the user has granted the battery optimization exemption (see battery banner in MainActivity),
+            // the alarm manager's canScheduleExactAlarms() method will return true.
+            //
+            // This is undocumented behavior. See https://github.com/binwiederhier/ntfy/issues/1456#issuecomment-3707174262
+            exactAlarmsPref?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && !isIgnoringBatteryOptimizations(context)
         }
 
         @Keep
