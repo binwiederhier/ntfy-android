@@ -97,10 +97,8 @@ class CertificateFragment : DialogFragment() {
         
         // Get existing certificate data if viewing
         arguments?.getString(ARG_TRUSTED_CERT_FINGERPRINT)?.let { fingerprint ->
-            arguments?.getString(ARG_TRUSTED_CERT_BASE_URL)?.let { baseUrl ->
-                trustedCertificate = certManager.getTrustedCertificatesForServer(baseUrl)
-                    .find { it.fingerprint == fingerprint }
-            }
+            trustedCertificate = certManager.getTrustedCertificates()
+                .find { it.fingerprint == fingerprint }
         }
         arguments?.getString(ARG_CLIENT_CERT_ALIAS)?.let { alias ->
             clientCertificate = certManager.getClientCertificates().find { it.alias == alias }
@@ -184,7 +182,7 @@ class CertificateFragment : DialogFragment() {
     private fun setupAddTrustedMode() {
         toolbar.setTitle(R.string.certificate_dialog_title_add_trusted)
         descriptionText.text = getString(R.string.certificate_dialog_description_add_trusted)
-        baseUrlLayout.isVisible = true
+        baseUrlLayout.isVisible = false
         certFileLayout.isVisible = true
         passwordLayout.isVisible = false
         detailsLayout.isVisible = false
@@ -263,7 +261,7 @@ class CertificateFragment : DialogFragment() {
         
         when (mode) {
             Mode.ADD_TRUSTED -> {
-                saveMenuItem.isEnabled = validUrl(baseUrl) && certPem != null
+                saveMenuItem.isEnabled = certPem != null
             }
             Mode.ADD_CLIENT -> {
                 saveMenuItem.isEnabled = validUrl(baseUrl) && pkcs12Data != null && password.isNotEmpty()
@@ -329,18 +327,9 @@ class CertificateFragment : DialogFragment() {
     }
     
     private fun addTrustedCertificate() {
-        val baseUrl = baseUrlText.text.toString().trim()
         val certContent = certPem
         
         // Validate
-        if (baseUrl.isEmpty()) {
-            showError(getString(R.string.certificate_dialog_error_missing_url))
-            return
-        }
-        if (!validUrl(baseUrl)) {
-            showError(getString(R.string.certificate_dialog_error_invalid_url))
-            return
-        }
         if (certContent == null) {
             showError(getString(R.string.certificate_dialog_error_missing_cert))
             return
@@ -348,7 +337,7 @@ class CertificateFragment : DialogFragment() {
         
         try {
             val cert = certManager.parsePemCertificate(certContent)
-            certManager.addTrustedCertificate(baseUrl, cert)
+            certManager.addTrustedCertificate(cert)
             Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
             listener.onCertificateAdded()
             dismiss()
@@ -434,7 +423,6 @@ class CertificateFragment : DialogFragment() {
         const val TAG = "NtfyCertFragment"
         private const val ARG_MODE = "mode"
         private const val ARG_TRUSTED_CERT_FINGERPRINT = "trusted_cert_fingerprint"
-        private const val ARG_TRUSTED_CERT_BASE_URL = "trusted_cert_base_url"
         private const val ARG_CLIENT_CERT_ALIAS = "client_cert_alias"
         
         fun newInstanceAddTrusted(): CertificateFragment {
@@ -458,7 +446,6 @@ class CertificateFragment : DialogFragment() {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.VIEW_TRUSTED.name)
                     putString(ARG_TRUSTED_CERT_FINGERPRINT, cert.fingerprint)
-                    putString(ARG_TRUSTED_CERT_BASE_URL, cert.baseUrl)
                 }
             }
         }

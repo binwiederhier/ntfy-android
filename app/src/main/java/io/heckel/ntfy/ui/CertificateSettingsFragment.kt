@@ -30,8 +30,6 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         preferenceScreen.removeAll()
         lifecycleScope.launch(Dispatchers.IO) {
             val trustedCerts = certManager.getTrustedCertificates()
-                .groupBy { it.baseUrl }
-                .toSortedMap()
             
             val clientCerts = certManager.getClientCertificates()
                 .groupBy { it.baseUrl }
@@ -44,7 +42,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         }
     }
 
-    private fun addTrustedCertPreferences(certsByBaseUrl: Map<String, List<TrustedCertificate>>) {
+    private fun addTrustedCertPreferences(certs: List<TrustedCertificate>) {
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         
         // Trusted certificates header
@@ -52,28 +50,26 @@ class CertificateSettingsFragment : BasePreferenceFragment(), CertificateFragmen
         trustedCategory.title = getString(R.string.settings_certificates_prefs_trusted_header)
         preferenceScreen.addPreference(trustedCategory)
         
-        if (certsByBaseUrl.isEmpty()) {
+        if (certs.isEmpty()) {
             val emptyPref = Preference(preferenceScreen.context)
             emptyPref.title = getString(R.string.settings_certificates_prefs_trusted_empty)
             emptyPref.isEnabled = false
             trustedCategory.addPreference(emptyPref)
         } else {
-            certsByBaseUrl.forEach { (baseUrl, certs) ->
-                certs.forEach { cert ->
-                    val pref = Preference(preferenceScreen.context)
-                    pref.title = "${cert.displaySubject()} (${shortUrl(baseUrl)})"
-                    pref.summary = if (cert.isValid()) {
-                        getString(R.string.settings_certificates_prefs_expires, dateFormat.format(Date(cert.notAfter)))
-                    } else {
-                        getString(R.string.settings_certificates_prefs_expired)
-                    }
-                    pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                        CertificateFragment.newInstanceViewTrusted(cert)
-                            .show(childFragmentManager, CertificateFragment.TAG)
-                        true
-                    }
-                    trustedCategory.addPreference(pref)
+            certs.forEach { cert ->
+                val pref = Preference(preferenceScreen.context)
+                pref.title = cert.displaySubject()
+                pref.summary = if (cert.isValid()) {
+                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(Date(cert.notAfter)))
+                } else {
+                    getString(R.string.settings_certificates_prefs_expired)
                 }
+                pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                    CertificateFragment.newInstanceViewTrusted(cert)
+                        .show(childFragmentManager, CertificateFragment.TAG)
+                    true
+                }
+                trustedCategory.addPreference(pref)
             }
         }
         

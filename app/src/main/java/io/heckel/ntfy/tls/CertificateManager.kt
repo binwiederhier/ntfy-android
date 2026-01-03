@@ -44,13 +44,6 @@ class CertificateManager private constructor(private val context: Context) {
     }
 
     /**
-     * Get trusted certificates for a specific server
-     */
-    fun getTrustedCertificatesForServer(baseUrl: String): List<TrustedCertificate> {
-        return getTrustedCertificates().filter { it.baseUrl == baseUrl }
-    }
-
-    /**
      * Add a trusted certificate
      */
     fun addTrustedCertificate(cert: TrustedCertificate) {
@@ -60,7 +53,7 @@ class CertificateManager private constructor(private val context: Context) {
 
         // Update metadata
         val certs = getTrustedCertificates().toMutableList()
-        certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
+        certs.removeAll { it.fingerprint == cert.fingerprint }
         certs.add(cert)
         saveTrustedMetadata(certs)
     }
@@ -68,8 +61,8 @@ class CertificateManager private constructor(private val context: Context) {
     /**
      * Add a trusted certificate from X509Certificate
      */
-    fun addTrustedCertificate(baseUrl: String, cert: X509Certificate) {
-        addTrustedCertificate(TrustedCertificate.fromX509Certificate(baseUrl, cert))
+    fun addTrustedCertificate(cert: X509Certificate) {
+        addTrustedCertificate(TrustedCertificate.fromX509Certificate(cert))
     }
 
     /**
@@ -84,7 +77,7 @@ class CertificateManager private constructor(private val context: Context) {
 
         // Update metadata
         val certs = getTrustedCertificates().toMutableList()
-        certs.removeAll { it.baseUrl == cert.baseUrl && it.fingerprint == cert.fingerprint }
+        certs.removeAll { it.fingerprint == cert.fingerprint }
         saveTrustedMetadata(certs)
     }
 

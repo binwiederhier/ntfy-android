@@ -19,10 +19,10 @@ import javax.net.ssl.X509TrustManager
  * Manages SSL/TLS configuration for OkHttpClient instances.
  * 
  * This is a thin wrapper around SSLUtils that handles Context-dependent operations
- * like accessing CertificateManager for per-URL certificate trust.
+ * like accessing CertificateManager for certificate trust.
  * 
  * Supports:
- * 1. Per-URL trusted CA certificates (for self-signed servers)
+ * 1. Global trusted CA certificates (for self-signed servers)
  * 2. Per-URL client certificates for mTLS (PKCS#12 format)
  * 
  * Uses standard TrustManagerFactory and KeyManagerFactory (not custom implementations).
@@ -49,8 +49,8 @@ class SSLManager private constructor(context: Context) {
             val keyManagers = mutableListOf<KeyManager>()
             var bypassHostnameVerification = false
 
-            // Get user-trusted CA certificates for this URL
-            val trustedCerts = certManager.getTrustedCertificatesForServer(baseUrl)
+            // Get all user-trusted CA certificates
+            val trustedCerts = certManager.getTrustedCertificates()
             if (trustedCerts.isNotEmpty()) {
                 trustManagers.addAll(createCombinedTrustManagers(trustedCerts))
                 bypassHostnameVerification = true

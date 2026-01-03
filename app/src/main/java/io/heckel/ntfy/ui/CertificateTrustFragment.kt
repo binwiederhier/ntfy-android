@@ -134,9 +134,9 @@ class CertificateTrustFragment : DialogFragment() {
     }
     
     private fun trustCertificate() {
-        // Save the certificate
+        // Save the certificate to global trust store
         val certManager = CertificateManager.getInstance(requireContext())
-        certManager.addTrustedCertificate(baseUrl, certificate)
+        certManager.addTrustedCertificate(certificate)
         listener.onCertificateTrusted(baseUrl, certificate)
         dismiss()
     }

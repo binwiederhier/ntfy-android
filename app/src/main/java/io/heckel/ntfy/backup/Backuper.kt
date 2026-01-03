@@ -230,7 +230,6 @@ class Backuper(val context: Context) {
         certificates.forEach { c ->
             try {
                 val trustedCert = io.heckel.ntfy.tls.TrustedCertificate(
-                    baseUrl = c.baseUrl,
                     fingerprint = c.fingerprint,
                     subject = c.subject,
                     issuer = c.issuer,
@@ -369,7 +368,6 @@ class Backuper(val context: Context) {
     private fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
         return certManager.getTrustedCertificates().map { c ->
             TrustedCertificateBackup(
-                baseUrl = c.baseUrl,
                 fingerprint = c.fingerprint,
                 subject = c.subject,
                 issuer = c.issuer,
@@ -482,7 +480,6 @@ data class User(
 )
 
 data class TrustedCertificateBackup(
-    val baseUrl: String,
     val fingerprint: String,
     val subject: String,
     val issuer: String,

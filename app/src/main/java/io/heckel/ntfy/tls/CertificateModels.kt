@@ -5,10 +5,9 @@ import java.security.MessageDigest
 
 /**
  * Represents a trusted server certificate (self-signed or custom CA)
- * stored in SharedPreferences as JSON.
+ * stored in the app's certificate trust store.
  */
 data class TrustedCertificate(
-    val baseUrl: String,           // Server URL this certificate is trusted for
     val fingerprint: String,       // SHA-256 fingerprint of the certificate
     val subject: String,           // Subject DN (e.g., "CN=example.com")
     val issuer: String,            // Issuer DN
@@ -20,9 +19,8 @@ data class TrustedCertificate(
         /**
          * Create a TrustedCertificate from an X509Certificate
          */
-        fun fromX509Certificate(baseUrl: String, cert: X509Certificate): TrustedCertificate {
+        fun fromX509Certificate(cert: X509Certificate): TrustedCertificate {
             return TrustedCertificate(
-                baseUrl = baseUrl,
                 fingerprint = calculateFingerprint(cert),
                 subject = cert.subjectX500Principal.name,
                 issuer = cert.issuerX500Principal.name,
