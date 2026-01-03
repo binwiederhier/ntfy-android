@@ -206,9 +206,27 @@ class SubscriberService : Service() {
         val instantSubscriptions = repository.getSubscriptions()
             .filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
+        val connectionProtocol = repository.getConnectionProtocol()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
-            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
+            .groupBy { s -> s.baseUrl }
+            .map { (baseUrl, subs) ->
+                // Create a unique connection ID for each base URL. Each change in the connection ID will
+                // trigger a new connection, and close existing connections. We want to make sure that when the
+                // connection protocol (JSON/WS), the user or the custom headers are updated, that we kill existing
+                // connections and start new ones.
+                val credentialsHash = repository.getUser(baseUrl)?.let { "${it.username}:${it.password}".hashCode() } ?: 0
+                val headersHash = repository.getCustomHeadersForServer(baseUrl)
+                    .sortedBy { "${it.name}:${it.value}" }
+                    .joinToString(",") { "${it.name}:${it.value}" }
+                    .hashCode()
+                ConnectionId(
+                    baseUrl = baseUrl,
+                    topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
+                    connectionProtocol = connectionProtocol,
+                    credentialsHash = credentialsHash,
+                    headersHash = headersHash
+                )
+            }
             .toSet()
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
@@ -237,7 +255,7 @@ class SubscriberService : Service() {
             val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
-            val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
+            val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 WsConnection(this, connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {

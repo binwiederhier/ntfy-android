@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 // Update battery banner + WebSocket banner + websocket reconnect banner
                 showHideBatteryBanner(subscriptions)
                 showHideWebSocketBanner(subscriptions)
-                showHideWebSocketReconnectBanner(subscriptions)
+                showHideWebSocketReconnectBanner()
             }
         }
 
@@ -304,13 +304,13 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         wsEnableButton.setOnClickListener {
             repository.setConnectionProtocol(Repository.CONNECTION_PROTOCOL_WS)
-            SubscriberServiceManager(this).restart()
+            SubscriberServiceManager(this).refresh()
             wsBanner.visibility = View.GONE
 
             // Maybe show WebSocketReconnectBanner
             viewModel.list().observe(this) {
                 it?.let { subscriptions ->
-                    showHideWebSocketReconnectBanner(subscriptions)
+                    showHideWebSocketReconnectBanner()
                 }
             }
         }
@@ -404,15 +404,14 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
     }
 
-    private fun showHideWebSocketReconnectBanner(subscriptions: List<Subscription>) {
+    private fun showHideWebSocketReconnectBanner() {
         val wsReconnectBanner = findViewById<View>(R.id.main_banner_websocket_reconnect)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val hasSelfHostedSubscriptions = subscriptions.count { it.baseUrl != appBaseUrl } > 0
             val usingWebSockets = repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS
             val wsReconnectRemindTimeReached = repository.getWebSocketReconnectRemindTime() < System.currentTimeMillis()
             val canScheduleExactAlarms = (getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
-            val showBanner = hasSelfHostedSubscriptions && wsReconnectRemindTimeReached && usingWebSockets && !canScheduleExactAlarms
-            Log.d(TAG, "hasSelfHostedSubscriptions: ${hasSelfHostedSubscriptions}, wsReconnectRemindTimeReached: ${wsReconnectRemindTimeReached}, usingWebSockets: ${usingWebSockets}, canScheduleExactAlarms: ${canScheduleExactAlarms}")
+            val showBanner = wsReconnectRemindTimeReached && usingWebSockets && !canScheduleExactAlarms
+            Log.d(TAG, "wsReconnectRemindTimeReached: ${wsReconnectRemindTimeReached}, usingWebSockets: ${usingWebSockets}, canScheduleExactAlarms: ${canScheduleExactAlarms}")
             wsReconnectBanner.visibility = if (showBanner) View.VISIBLE else View.GONE
         } else {
             wsReconnectBanner.visibility = View.GONE
