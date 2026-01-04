@@ -13,7 +13,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/client_certificate_action_delete"
-        android:title="@string/certificate_dialog_button_delete"
+        android:title="@string/client_certificate_dialog_button_delete"
         android:visible="false"
         app:showAsAction="always" />
 </menu>

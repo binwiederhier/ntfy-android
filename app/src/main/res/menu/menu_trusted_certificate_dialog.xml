@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/trusted_certificate_action_trust"
-        android:title="@string/certificate_trust_dialog_button_trust"
+        android:title="@string/trusted_certificate_dialog_button_trust"
         android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/trusted_certificate_action_delete"
-        android:title="@string/certificate_dialog_button_delete"
+        android:title="@string/trusted_certificate_dialog_button_delete"
         android:visible="false"
         app:showAsAction="always" />
 </menu>

@@ -260,7 +260,7 @@ class ClientCertificateFragment : DialogFragment() {
         val pwd = passwordText.text?.toString() ?: ""
 
         if (!validUrl(url)) {
-            showError(getString(R.string.certificate_dialog_error_invalid_url))
+            showError(getString(R.string.client_certificate_dialog_error_invalid_url))
             return
         }
 
@@ -289,13 +289,13 @@ class ClientCertificateFragment : DialogFragment() {
                 val p12Base64 = Base64.encodeToString(data, Base64.NO_WRAP)
                 repository.addClientCertificate(url, p12Base64, pwd)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.client_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
                     listener?.onCertificateAdded()
                     dismiss()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showError(getString(R.string.certificate_dialog_error_invalid_p12_password))
+                    showError(getString(R.string.client_certificate_dialog_error_invalid_p12_password))
                 }
             }
         }
@@ -304,18 +304,18 @@ class ClientCertificateFragment : DialogFragment() {
     private fun confirmDeleteCertificate() {
         val url = baseUrl ?: return
         MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.certificate_dialog_delete_confirm)
-            .setPositiveButton(R.string.certificate_dialog_button_delete) { _, _ ->
+            .setMessage(R.string.client_certificate_dialog_delete_confirm)
+            .setPositiveButton(R.string.client_certificate_dialog_button_delete) { _, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     repository.removeClientCertificate(url)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, R.string.certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.client_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
                         listener?.onCertificateDeleted()
                         dismiss()
                     }
                 }
             }
-            .setNegativeButton(R.string.certificate_dialog_button_cancel, null)
+            .setNegativeButton(R.string.client_certificate_dialog_button_cancel, null)
             .show()
     }
 

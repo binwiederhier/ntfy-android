@@ -215,11 +215,11 @@ class TrustedCertificateFragment : DialogFragment() {
         val now = Date()
         when {
             now.after(certificate.notAfter) -> {
-                warningText.text = getString(R.string.certificate_trust_dialog_expired_warning)
+                warningText.text = getString(R.string.trusted_certificate_dialog_expired_warning)
                 warningText.isVisible = true
             }
             now.before(certificate.notBefore) -> {
-                warningText.text = getString(R.string.certificate_trust_dialog_not_yet_valid_warning)
+                warningText.text = getString(R.string.trusted_certificate_dialog_not_yet_valid_warning)
                 warningText.isVisible = true
             }
             else -> {
@@ -235,7 +235,7 @@ class TrustedCertificateFragment : DialogFragment() {
             val pem = CertUtil.encodeToPem(certificate)
             repository.addTrustedCertificate(fp, pem)
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, R.string.certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.trusted_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateTrusted(certificate)
                 dismiss()
             }
@@ -247,7 +247,7 @@ class TrustedCertificateFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.removeTrustedCertificate(fp)
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, R.string.certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.trusted_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateDeleted()
                 dismiss()
             }

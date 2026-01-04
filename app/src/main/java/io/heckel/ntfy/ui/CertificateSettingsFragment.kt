@@ -63,19 +63,19 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         // Trusted certificates header
         val trustedCategory = PreferenceCategory(preferenceScreen.context)
-        trustedCategory.title = getString(R.string.settings_certificates_prefs_trusted_header)
+        trustedCategory.title = getString(R.string.settings_advanced_certificates_trusted_header)
         preferenceScreen.addPreference(trustedCategory)
 
         certs.forEach { trustedCert ->
             try {
                 val cert = CertUtil.parseCertificate(trustedCert.pem)
+                val issuer = parseCommonName(cert.issuerX500Principal.name)
                 val pref = Preference(preferenceScreen.context)
-                pref.title = getDisplaySubject(cert)
+                pref.title = parseCommonName(cert.subjectX500Principal.name)
                 pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_certificates_prefs_expires_after,
-                        dateFormat.format(cert.notAfter))
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary_not_expired, issuer, dateFormat.format(cert.notAfter))
                 } else {
-                    getString(R.string.settings_certificates_prefs_expired)
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, issuer)
                 }
                 pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                     TrustedCertificateFragment.newInstanceView(trustedCert.fingerprint)
@@ -90,8 +90,8 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         // Add trusted certificate - launches file picker directly
         val addTrustedPref = Preference(preferenceScreen.context)
-        addTrustedPref.title = getString(R.string.settings_certificates_prefs_trusted_add_title)
-        addTrustedPref.summary = getString(R.string.settings_certificates_prefs_trusted_add_summary)
+        addTrustedPref.title = getString(R.string.settings_advanced_certificates_trusted_add_title)
+        addTrustedPref.summary = getString(R.string.settings_advanced_certificates_trusted_add_summary)
         addTrustedPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             trustedCertFilePicker.launch("*/*")
             true
@@ -104,25 +104,22 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         // Client certificates header
         val clientCategory = PreferenceCategory(preferenceScreen.context)
-        clientCategory.title = getString(R.string.settings_certificates_prefs_client_header)
+        clientCategory.title = getString(R.string.settings_advanced_certificates_client_header)
         preferenceScreen.addPreference(clientCategory)
 
         certs.forEach { clientCert ->
             val pref = Preference(preferenceScreen.context)
             try {
-                val x509Cert = CertUtil.parsePkcs12Certificate(clientCert.p12Base64, clientCert.password)
-                pref.title = getDisplaySubject(x509Cert)
-                val expires = if (isValid(x509Cert)) {
-                    getString(R.string.settings_certificates_prefs_expires_after,
-                        dateFormat.format(x509Cert.notAfter))
+                val cert = CertUtil.parsePkcs12Certificate(clientCert.p12Base64, clientCert.password)
+                val issuer = parseCommonName(cert.issuerX500Principal.name)
+                pref.title = parseCommonName(cert.subjectX500Principal.name)
+                pref.summary = if (isValid(cert)) {
+                    getString(R.string.settings_advanced_certificates_client_item_summary_not_expired, issuer, dateFormat.format(cert.notAfter), shortUrl(clientCert.baseUrl))
                 } else {
-                    getString(R.string.settings_certificates_prefs_expired)
+                    getString(R.string.settings_advanced_certificates_client_item_summary_expired, issuer, shortUrl(clientCert.baseUrl))
                 }
-                pref.summary = getString(R.string.settings_certificates_prefs_client_summary,
-                    shortUrl(clientCert.baseUrl), expires)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 pref.title = shortUrl(clientCert.baseUrl)
-                pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
             }
             pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 ClientCertificateFragment.newInstanceView(clientCert.baseUrl)
@@ -134,8 +131,8 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         // Add client certificate - launches file picker directly
         val addClientPref = Preference(preferenceScreen.context)
-        addClientPref.title = getString(R.string.settings_certificates_prefs_client_add_title)
-        addClientPref.summary = getString(R.string.settings_certificates_prefs_client_add_summary)
+        addClientPref.title = getString(R.string.settings_advanced_certificates_client_add_title)
+        addClientPref.summary = getString(R.string.settings_advanced_certificates_client_add_summary)
         addClientPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             clientCertFilePicker.launch("*/*")
             true
@@ -153,11 +150,11 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 TrustedCertificateFragment.newInstanceAdd(cert)
                     .show(childFragmentManager, TrustedCertificateFragment.TAG)
             } else {
-                Toast.makeText(context, R.string.certificate_dialog_error_invalid_cert, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.settings_advanced_certificates_error_invalid_cert, Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to read certificate file", e)
-            Toast.makeText(context, R.string.certificate_dialog_error_invalid_cert, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.settings_advanced_certificates_error_invalid_cert, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -170,18 +167,17 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 ClientCertificateFragment.newInstance(data)
                     .show(childFragmentManager, ClientCertificateFragment.TAG)
             } else {
-                Toast.makeText(context, R.string.certificate_dialog_error_invalid_p12, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.settings_advanced_certificates_error_invalid_p12, Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to read PKCS#12 file", e)
-            Toast.makeText(context, R.string.certificate_dialog_error_invalid_p12, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.settings_advanced_certificates_error_invalid_p12, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun getDisplaySubject(cert: X509Certificate): String {
-        val subject = cert.subjectX500Principal.name
-        val cnMatch = Regex("CN=([^,]+)").find(subject)
-        return cnMatch?.groupValues?.get(1) ?: subject
+    private fun parseCommonName(name: String): String {
+        val cnMatch = Regex("CN=([^,]+)").find(name)
+        return cnMatch?.groupValues?.get(1) ?: name
     }
 
     private fun isValid(cert: X509Certificate): Boolean {
