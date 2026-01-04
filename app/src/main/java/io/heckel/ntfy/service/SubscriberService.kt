@@ -28,7 +28,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
-import androidx.core.content.edit
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -215,7 +214,7 @@ class SubscriberService : Service() {
                 // connection protocol (JSON/WS), the user or the custom headers are updated, that we kill existing
                 // connections and start new ones.
                 val credentialsHash = repository.getUser(baseUrl)?.let { "${it.username}:${it.password}".hashCode() } ?: 0
-                val headersHash = repository.getCustomHeadersForServer(baseUrl)
+                val headersHash = repository.getCustomHeaders(baseUrl)
                     .sortedBy { "${it.name}:${it.value}" }
                     .joinToString(",") { "${it.name}:${it.value}" }
                     .hashCode()

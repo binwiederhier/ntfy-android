@@ -233,7 +233,7 @@ class ApiService(context: Context) {
             }
             if (repository != null) {
                 val baseUrl = extractBaseUrl(url)
-                repository.getCustomHeadersForServer(baseUrl).forEach { header ->
+                repository.getCustomHeadersSync(baseUrl).forEach { header ->
                     builder.addHeader(header.name, header.value)
                 }
             }

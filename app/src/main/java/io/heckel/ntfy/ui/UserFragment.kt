@@ -187,7 +187,7 @@ class UserFragment : DialogFragment() {
         if (user == null) {
             // Check if Authorization header already exists in custom headers
             val hasAuthorizationHeader = if (this::repository.isInitialized && validUrl(baseUrl)) {
-                repository.getCustomHeadersForServer(baseUrl)
+                repository.getCustomHeadersSync(baseUrl)
                     .any { it.name.equals("Authorization", ignoreCase = true) }
             } else {
                 false
