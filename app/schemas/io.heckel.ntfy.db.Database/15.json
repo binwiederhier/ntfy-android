@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "1e2fa6a6cd2ed5146905f38f71f3c904",
+    "identityHash": "0237b3d54f6ed50fddf325bf56407ac9",
     "entities": [
       {
         "tableName": "Subscription",
@@ -283,6 +283,37 @@
         }
       },
       {
+        "tableName": "CustomHeader",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`baseUrl` TEXT NOT NULL, `name` TEXT NOT NULL, `value` TEXT NOT NULL, PRIMARY KEY(`baseUrl`, `name`))",
+        "fields": [
+          {
+            "fieldPath": "baseUrl",
+            "columnName": "baseUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "value",
+            "columnName": "value",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "baseUrl",
+            "name"
+          ]
+        }
+      },
+      {
         "tableName": "Log",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `tag` TEXT NOT NULL, `level` INTEGER NOT NULL, `message` TEXT NOT NULL, `exception` TEXT)",
         "fields": [
@@ -328,96 +359,11 @@
             "id"
           ]
         }
-      },
-      {
-        "tableName": "CustomHeader",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`baseUrl` TEXT NOT NULL, `name` TEXT NOT NULL, `value` TEXT NOT NULL, PRIMARY KEY(`baseUrl`, `name`))",
-        "fields": [
-          {
-            "fieldPath": "baseUrl",
-            "columnName": "baseUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "value",
-            "columnName": "value",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "baseUrl",
-            "name"
-          ]
-        }
-      },
-      {
-        "tableName": "TrustedCertificate",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fingerprint` TEXT NOT NULL, `pem` TEXT NOT NULL, PRIMARY KEY(`fingerprint`))",
-        "fields": [
-          {
-            "fieldPath": "fingerprint",
-            "columnName": "fingerprint",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "pem",
-            "columnName": "pem",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "fingerprint"
-          ]
-        }
-      },
-      {
-        "tableName": "ClientCertificate",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`baseUrl` TEXT NOT NULL, `p12Base64` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`baseUrl`))",
-        "fields": [
-          {
-            "fieldPath": "baseUrl",
-            "columnName": "baseUrl",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "p12Base64",
-            "columnName": "p12Base64",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "password",
-            "columnName": "password",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "baseUrl"
-          ]
-        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e2fa6a6cd2ed5146905f38f71f3c904')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0237b3d54f6ed50fddf325bf56407ac9')"
     ]
   }
 }
