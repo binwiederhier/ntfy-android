@@ -10,4 +10,5 @@ Maintenance + bug fixes:
 * Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
 * Unify "copy to clipboard" notifications, use Android 13 style (ntfy-android#61, thanks to @thgoebel)
 * Fix crash in user add dialog (onAddUser)
-* Fix ForegroundServiceDidNotStartInTimeException (attempt 2, see #1520)
+* Fix ForegroundServiceDidNotStartInTimeException (attempt 2+3, see #1520)
+* Hide "Exact alarms" setting if battery optimization exemption has been granted (#1456, thanks for reporting @HappyLer)
