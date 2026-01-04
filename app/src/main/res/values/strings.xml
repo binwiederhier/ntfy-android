@@ -115,6 +115,7 @@
     <string name="add_dialog_login_new_user">New user</string>
     <string name="add_dialog_base_urls_dropdown_choose">Choose service URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">Clear service URL</string>
+    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
 
     <!-- Detail activity -->
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
@@ -483,9 +484,11 @@
     <string name="custom_headers_dialog_button_delete">Delete</string>
 
     <!-- Certificate trust dialog -->
-    <string name="certificate_trust_dialog_title">Trust this certificate?</string>
     <string name="trusted_certificate_dialog_title">Certificate details</string>
-    <string name="trusted_certificate_dialog_title_add">Trust certificate</string>
+    <string name="trusted_certificate_dialog_title_unknown">Unknown certificate</string>
+    <string name="trusted_certificate_dialog_title_add">Add trusted certificate</string>
+    <string name="trusted_certificate_dialog_description_unknown">The server\'s certificate could not be verified. This may happen with self-signed certificates or custom Certificate Authorities. Review the details below before trusting.</string>
+    <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Please review the details below before adding it to your trusted certificates.</string>
     <string name="certificate_trust_dialog_description">The server\'s certificate could not be verified. This may happen with self-signed certificates or custom Certificate Authorities. Review the details below before trusting.</string>
     <string name="certificate_trust_dialog_subject">Subject</string>
     <string name="certificate_trust_dialog_issuer">Issuer</string>
@@ -508,10 +511,12 @@
     <string name="settings_certificates_prefs_client_header">Client certificates (mTLS)</string>
     <string name="settings_certificates_prefs_client_add">Add client certificate</string>
     <string name="settings_certificates_prefs_client_add_title">Add a client certificate</string>
-    <string name="settings_certificates_prefs_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12 format). The app will use this certificate when connecting to the server.</string>
+    <string name="settings_certificates_prefs_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12 format). ntfy will use this certificate when connecting to the server.</string>
     <string name="settings_certificates_prefs_client_configured">Client certificate configured</string>
     <string name="settings_certificates_prefs_expires">Expires %1$s</string>
     <string name="settings_certificates_prefs_expired">Expired</string>
+    <string name="settings_certificates_prefs_expires_after">Expires %1$s</string>
+    <string name="settings_certificates_prefs_client_summary">Used by %1$s, %2$s</string>
 
     <!-- Certificate dialog -->
     <string name="certificate_dialog_title_view">Certificate details</string>
@@ -547,7 +552,4 @@
     <string name="certificate_dialog_delete_confirm">Delete this certificate?</string>
     <string name="certificate_dialog_added_toast">Certificate added</string>
     <string name="certificate_dialog_deleted_toast">Certificate deleted</string>
-
-    <!-- Add dialog SSL error -->
-    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
 </resources>

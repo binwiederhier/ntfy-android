@@ -72,7 +72,8 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 val pref = Preference(preferenceScreen.context)
                 pref.title = getDisplaySubject(cert)
                 pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_certificates_prefs_expires, dateFormat.format(cert.notAfter))
+                    getString(R.string.settings_certificates_prefs_expires_after,
+                        dateFormat.format(cert.notAfter))
                 } else {
                     getString(R.string.settings_certificates_prefs_expired)
                 }
@@ -99,17 +100,32 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
     }
 
     private fun addClientCertPreferences(certs: List<ClientCertificate>) {
+        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
         // Client certificates header
         val clientCategory = PreferenceCategory(preferenceScreen.context)
         clientCategory.title = getString(R.string.settings_certificates_prefs_client_header)
         preferenceScreen.addPreference(clientCategory)
 
-        certs.forEach { cert ->
+        certs.forEach { clientCert ->
             val pref = Preference(preferenceScreen.context)
-            pref.title = shortUrl(cert.baseUrl)
-            pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
+            try {
+                val x509Cert = CertUtil.parsePkcs12Certificate(clientCert.p12Base64, clientCert.password)
+                pref.title = getDisplaySubject(x509Cert)
+                val expires = if (isValid(x509Cert)) {
+                    getString(R.string.settings_certificates_prefs_expires_after,
+                        dateFormat.format(x509Cert.notAfter))
+                } else {
+                    getString(R.string.settings_certificates_prefs_expired)
+                }
+                pref.summary = getString(R.string.settings_certificates_prefs_client_summary,
+                    shortUrl(clientCert.baseUrl), expires)
+            } catch (e: Exception) {
+                pref.title = shortUrl(clientCert.baseUrl)
+                pref.summary = getString(R.string.settings_certificates_prefs_client_configured)
+            }
             pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                ClientCertificateFragment.newInstanceView(cert.baseUrl)
+                ClientCertificateFragment.newInstanceView(clientCert.baseUrl)
                     .show(childFragmentManager, ClientCertificateFragment.TAG)
                 true
             }
@@ -134,7 +150,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
             }
             if (content != null && content.contains("-----BEGIN CERTIFICATE-----")) {
                 val cert = CertUtil.parseCertificate(content)
-                TrustedCertificateFragment.newInstance(cert)
+                TrustedCertificateFragment.newInstanceAdd(cert)
                     .show(childFragmentManager, TrustedCertificateFragment.TAG)
             } else {
                 Toast.makeText(context, R.string.certificate_dialog_error_invalid_cert, Toast.LENGTH_SHORT).show()

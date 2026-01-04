@@ -276,5 +276,13 @@ class CertUtil private constructor(context: Context) {
             sb.append("-----END CERTIFICATE-----")
             return sb.toString()
         }
+
+        fun parsePkcs12Certificate(p12Base64: String, password: String): X509Certificate {
+            val p12Data = Base64.decode(p12Base64, Base64.DEFAULT)
+            val keyStore = KeyStore.getInstance("PKCS12")
+            ByteArrayInputStream(p12Data).use { keyStore.load(it, password.toCharArray()) }
+            val alias = keyStore.aliases().nextElement()
+            return keyStore.getCertificate(alias) as X509Certificate
+        }
     }
 }

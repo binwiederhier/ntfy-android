@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.CertUtil
@@ -28,7 +27,8 @@ import java.util.Locale
  * Full-screen dialog fragment for viewing and trusting/deleting server certificates.
  *
  * Modes:
- * - ADD: Shows certificate details with "Trust" action (from AddFragment or file picker)
+ * - UNKNOWN: Shows certificate from SSL error with "Trust" action (from AddFragment)
+ * - ADD: Shows certificate from file picker with "Trust" action (from CertificateSettingsFragment)
  * - VIEW: Shows certificate details with "Delete" action (from CertificateSettingsFragment)
  */
 class TrustedCertificateFragment : DialogFragment() {
@@ -77,9 +77,9 @@ class TrustedCertificateFragment : DialogFragment() {
 
         // Get certificate data based on mode
         when (mode) {
-            Mode.ADD -> {
+            Mode.UNKNOWN, Mode.ADD -> {
                 val certBytes = arguments?.getByteArray(ARG_CERTIFICATE)
-                    ?: throw IllegalArgumentException("Certificate bytes required for ADD mode")
+                    ?: throw IllegalArgumentException("Certificate bytes required for ADD/UNKNOWN mode")
                 val certFactory = CertificateFactory.getInstance("X.509")
                 cert = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
                 fingerprint = CertUtil.calculateFingerprint(cert!!)
@@ -116,7 +116,7 @@ class TrustedCertificateFragment : DialogFragment() {
         // Setup toolbar
         toolbar = view.findViewById(R.id.trusted_certificate_toolbar)
         toolbar.setNavigationOnClickListener {
-            if (mode == Mode.ADD) {
+            if (mode == Mode.ADD || mode == Mode.UNKNOWN) {
                 listener?.onCertificateRejected()
             }
             dismiss()
@@ -128,7 +128,7 @@ class TrustedCertificateFragment : DialogFragment() {
                     true
                 }
                 R.id.trusted_certificate_action_delete -> {
-                    confirmDeleteCertificate()
+                    deleteCertificate()
                     true
                 }
                 else -> false
@@ -147,13 +147,25 @@ class TrustedCertificateFragment : DialogFragment() {
         validUntilText = view.findViewById(R.id.trusted_certificate_valid_until)
 
         when (mode) {
+            Mode.UNKNOWN -> setupUnknownMode()
             Mode.ADD -> setupAddMode()
             Mode.VIEW -> setupViewMode()
         }
     }
 
+    private fun setupUnknownMode() {
+        toolbar.setTitle(R.string.trusted_certificate_dialog_title_unknown)
+        descriptionText.setText(R.string.trusted_certificate_dialog_description_unknown)
+        descriptionText.isVisible = true
+        trustMenuItem.isVisible = true
+        deleteMenuItem.isVisible = false
+
+        displayCertificateDetails(cert!!)
+    }
+
     private fun setupAddMode() {
         toolbar.setTitle(R.string.trusted_certificate_dialog_title_add)
+        descriptionText.setText(R.string.trusted_certificate_dialog_description_add)
         descriptionText.isVisible = true
         trustMenuItem.isVisible = true
         deleteMenuItem.isVisible = false
@@ -230,25 +242,20 @@ class TrustedCertificateFragment : DialogFragment() {
         }
     }
 
-    private fun confirmDeleteCertificate() {
+    private fun deleteCertificate() {
         val fp = fingerprint ?: return
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.certificate_dialog_delete_confirm)
-            .setPositiveButton(R.string.certificate_dialog_button_delete) { _, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    repository.removeTrustedCertificate(fp)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, R.string.certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
-                        listener?.onCertificateDeleted()
-                        dismiss()
-                    }
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.removeTrustedCertificate(fp)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                listener?.onCertificateDeleted()
+                dismiss()
             }
-            .setNegativeButton(R.string.certificate_dialog_button_cancel, null)
-            .show()
+        }
     }
 
     enum class Mode {
+        UNKNOWN,
         ADD,
         VIEW
     }
@@ -260,9 +267,23 @@ class TrustedCertificateFragment : DialogFragment() {
         private const val ARG_FINGERPRINT = "fingerprint"
 
         /**
-         * Create fragment for ADD mode - showing certificate details with Trust action
+         * Create fragment for UNKNOWN mode - showing unknown server certificate with Trust action
+         * Used when connecting to a server with an untrusted certificate (from AddFragment)
          */
-        fun newInstance(certificate: X509Certificate): TrustedCertificateFragment {
+        fun newInstanceUnknown(certificate: X509Certificate): TrustedCertificateFragment {
+            return TrustedCertificateFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_MODE, Mode.UNKNOWN.name)
+                    putByteArray(ARG_CERTIFICATE, certificate.encoded)
+                }
+            }
+        }
+
+        /**
+         * Create fragment for ADD mode - showing certificate details with Trust action
+         * Used when adding a certificate from file picker (from CertificateSettingsFragment)
+         */
+        fun newInstanceAdd(certificate: X509Certificate): TrustedCertificateFragment {
             return TrustedCertificateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.ADD.name)
@@ -284,4 +305,3 @@ class TrustedCertificateFragment : DialogFragment() {
         }
     }
 }
-
