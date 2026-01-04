@@ -188,6 +188,19 @@ data class User(
     override fun toString(): String = username
 }
 
+@Entity(tableName = "TrustedCertificate")
+data class TrustedCertificate(
+    @PrimaryKey @ColumnInfo(name = "fingerprint") val fingerprint: String,
+    @ColumnInfo(name = "pem") val pem: String
+)
+
+@Entity(tableName = "ClientCertificate")
+data class ClientCertificate(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "p12Base64") val p12Base64: String,
+    @ColumnInfo(name = "password") val password: String
+)
+
 @Entity(tableName = "Log")
 data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
@@ -201,13 +214,15 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class, TrustedCertificate::class, ClientCertificate::class], version = 15)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
     abstract fun userDao(): UserDao
     abstract fun logDao(): LogDao
+    abstract fun trustedCertificateDao(): TrustedCertificateDao
+    abstract fun clientCertificateDao(): ClientCertificateDao
 
     companion object {
         @Volatile
@@ -230,6 +245,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
+                    .addMigrations(MIGRATION_14_15)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -339,6 +355,13 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_13_14 = object : Migration(13, 14) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
+            }
+        }
+
+        private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE TrustedCertificate (fingerprint TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(fingerprint))")
+                db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }
     }
@@ -509,4 +532,31 @@ interface LogDao {
 
     @Query("DELETE FROM log")
     fun deleteAll()
+}
+
+@Dao
+interface TrustedCertificateDao {
+    @Query("SELECT * FROM TrustedCertificate")
+    suspend fun list(): List<TrustedCertificate>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: TrustedCertificate)
+
+    @Query("DELETE FROM TrustedCertificate WHERE fingerprint = :fingerprint")
+    suspend fun delete(fingerprint: String)
+}
+
+@Dao
+interface ClientCertificateDao {
+    @Query("SELECT * FROM ClientCertificate")
+    suspend fun list(): List<ClientCertificate>
+
+    @Query("SELECT * FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): ClientCertificate?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: ClientCertificate)
+
+    @Query("DELETE FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
 }

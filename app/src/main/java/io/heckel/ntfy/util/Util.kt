@@ -35,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -76,6 +77,13 @@ fun displayName(appBaseUrl: String?, subscription: Subscription) : String {
 fun shortUrl(url: String) = url
     .replace("http://", "")
     .replace("https://", "")
+
+fun extractBaseUrl(url: String): String {
+    val httpUrl = url.toHttpUrlOrNull() ?: return ""
+    val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
+    val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
+    return schemeAndHost + maybePort
+}
 
 fun splitTopicUrl(topicUrl: String): Pair<String, String> {
     if (topicUrl.lastIndexOf("/") == -1) throw Exception("Invalid argument $topicUrl")
