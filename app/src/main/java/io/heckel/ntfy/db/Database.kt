@@ -532,10 +532,7 @@ interface CustomHeaderDao {
     suspend fun list(): List<CustomHeader>
 
     @Query("SELECT * FROM CustomHeader WHERE baseUrl = :baseUrl ORDER BY name")
-    suspend fun getForServer(baseUrl: String): List<CustomHeader>
-
-    @Query("SELECT * FROM CustomHeader WHERE baseUrl = :baseUrl ORDER BY name")
-    fun getForServerSync(baseUrl: String): List<CustomHeader>
+    suspend fun get(baseUrl: String): List<CustomHeader>
 
     @Insert
     suspend fun insert(header: CustomHeader)

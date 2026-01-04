@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
+import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
@@ -37,7 +38,7 @@ class ApiService(context: Context) {
         .build()
     private val parser = NotificationParser()
 
-    fun publish(
+    suspend fun publish(
         baseUrl: String,
         topic: String,
         user: User? = null,
@@ -95,7 +96,8 @@ class ApiService(context: Context) {
         } else {
             url
         }
-        val request = requestBuilder(urlWithQuery, user, repository)
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(urlWithQuery, user, customHeaders)
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
@@ -123,12 +125,13 @@ class ApiService(context: Context) {
         }
     }
 
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
+    suspend fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
         val sinceVal = since ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
@@ -144,7 +147,7 @@ class ApiService(context: Context) {
         }
     }
 
-    fun subscribe(
+    suspend fun subscribe(
         baseUrl: String,
         topics: String,
         since: String?,
@@ -155,7 +158,8 @@ class ApiService(context: Context) {
         val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         val call = subscriberClient.newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -184,14 +188,15 @@ class ApiService(context: Context) {
         return call
     }
 
-    fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
+    suspend fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
         if (user == null) {
             Log.d(TAG, "Checking anonymous read against ${topicUrl(baseUrl, topic)}")
         } else {
             Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
         }
         val url = topicUrlAuth(baseUrl, topic)
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         client.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
@@ -224,27 +229,17 @@ class ApiService(context: Context) {
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
 
-        fun requestBuilder(url: String, user: User?, repository: Repository? = null): Request.Builder {
+        fun requestBuilder(url: String, user: User?, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
             val builder = Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", USER_AGENT)
             if (user != null) {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
             }
-            if (repository != null) {
-                val baseUrl = extractBaseUrl(url)
-                repository.getCustomHeadersSync(baseUrl).forEach { header ->
-                    builder.addHeader(header.name, header.value)
-                }
+            customHeaders.forEach { header ->
+                builder.addHeader(header.name, header.value)
             }
             return builder
-        }
-
-        private fun extractBaseUrl(url: String): String {
-            val httpUrl = url.toHttpUrlOrNull() ?: return ""
-            val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
-            val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
-            return schemeAndHost + maybePort
         }
     }
 }

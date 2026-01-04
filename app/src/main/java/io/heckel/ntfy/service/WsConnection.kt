@@ -3,7 +3,6 @@ package io.heckel.ntfy.service
 import android.app.AlarmManager
 import android.os.Build
 import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.Log
@@ -33,6 +32,7 @@ class WsConnection(
     private val connectionId: ConnectionId,
     private val repository: Repository,
     private val user: User?,
+    private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
@@ -77,7 +77,7 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user, repository).build()
+        val request = requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }

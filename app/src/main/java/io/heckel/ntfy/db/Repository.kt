@@ -402,11 +402,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     suspend fun getCustomHeaders(baseUrl: String): List<CustomHeader> {
-        return customHeaderDao.getForServer(baseUrl)
-    }
-
-    fun getCustomHeadersSync(baseUrl: String): List<CustomHeader> {
-        return customHeaderDao.getForServerSync(baseUrl)
+        return customHeaderDao.get(baseUrl)
     }
 
     suspend fun addCustomHeader(header: CustomHeader) {
