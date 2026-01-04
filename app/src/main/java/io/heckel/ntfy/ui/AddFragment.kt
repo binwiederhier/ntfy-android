@@ -35,7 +35,6 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private lateinit var subscribeListener: SubscribeListener
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
-    private var pendingCertTrustBaseUrl: String? = null
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var actionMenuItem: MenuItem
@@ -289,9 +288,6 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         subscribeProgress.visibility = View.GONE
         enableSubscribeView(true)
         
-        // Store the baseUrl for use after trust is confirmed
-        pendingCertTrustBaseUrl = baseUrl
-        
         TrustedCertificateFragment
             .newInstance(certificate)
             .show(childFragmentManager, TrustedCertificateFragment.TAG)
@@ -299,16 +295,13 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     
     // TrustedCertificateFragment.TrustedCertificateListener implementation
     override fun onCertificateTrusted(certificate: X509Certificate) {
-        val baseUrl = pendingCertTrustBaseUrl ?: return
-        pendingCertTrustBaseUrl = null
-        Log.d(TAG, "Certificate trusted for $baseUrl, retrying connection")
-        // Retry the connection now that the certificate is trusted
+        val baseUrl = getBaseUrl()
         val topic = subscribeTopicText.text.toString()
+        Log.d(TAG, "Certificate trusted for $baseUrl, retrying connection")
         checkReadAndMaybeShowLogin(baseUrl, topic)
     }
     
     override fun onCertificateRejected() {
-        pendingCertTrustBaseUrl = null
         Log.d(TAG, "Certificate rejected by user")
         showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
     }
@@ -434,8 +427,8 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         Log.d(TAG, "Closing dialog and calling onSubscribe handler")
         val activity = activity?: return // We may have pressed "Cancel"
         activity.runOnUiThread {
-            val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
+            val topic = subscribeTopicText.text.toString()
             val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
             subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()
