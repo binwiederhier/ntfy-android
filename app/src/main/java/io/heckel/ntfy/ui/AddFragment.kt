@@ -29,12 +29,13 @@ import java.security.cert.X509Certificate
 import javax.net.ssl.SSLHandshakeException
 import javax.net.ssl.SSLPeerUnverifiedException
 
-class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustListener {
+class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertificateListener {
     private lateinit var repository: Repository
     private lateinit var api: ApiService
     private lateinit var subscribeListener: SubscribeListener
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
+    private var pendingCertTrustBaseUrl: String? = null
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var actionMenuItem: MenuItem
@@ -288,13 +289,18 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
         subscribeProgress.visibility = View.GONE
         enableSubscribeView(true)
         
-        CertificateTrustFragment
-            .newInstance(baseUrl, certificate)
-            .show(childFragmentManager, CertificateTrustFragment.TAG)
+        // Store the baseUrl for use after trust is confirmed
+        pendingCertTrustBaseUrl = baseUrl
+        
+        TrustedCertificateFragment
+            .newInstance(certificate)
+            .show(childFragmentManager, TrustedCertificateFragment.TAG)
     }
     
-    // CertificateTrustFragment.CertificateTrustListener implementation
-    override fun onCertificateTrusted(baseUrl: String, certificate: X509Certificate) {
+    // TrustedCertificateFragment.TrustedCertificateListener implementation
+    override fun onCertificateTrusted(certificate: X509Certificate) {
+        val baseUrl = pendingCertTrustBaseUrl ?: return
+        pendingCertTrustBaseUrl = null
         Log.d(TAG, "Certificate trusted for $baseUrl, retrying connection")
         // Retry the connection now that the certificate is trusted
         val topic = subscribeTopicText.text.toString()
@@ -302,8 +308,13 @@ class AddFragment : DialogFragment(), CertificateTrustFragment.CertificateTrustL
     }
     
     override fun onCertificateRejected() {
+        pendingCertTrustBaseUrl = null
         Log.d(TAG, "Certificate rejected by user")
         showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
+    }
+    
+    override fun onCertificateDeleted() {
+        // Not used in AddFragment - this is only for the settings screen
     }
 
     private fun showErrorAndReenableSubscribeView(message: String?) {

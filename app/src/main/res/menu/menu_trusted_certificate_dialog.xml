@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/certificate_dialog_action_save"
-        android:title="@string/certificate_dialog_button_add"
-        android:enabled="false"
+        android:id="@+id/trusted_certificate_action_trust"
+        android:title="@string/certificate_trust_dialog_button_trust"
+        android:visible="false"
         app:showAsAction="always" />
     <item
-        android:id="@+id/certificate_dialog_action_delete"
+        android:id="@+id/trusted_certificate_action_delete"
         android:title="@string/certificate_dialog_button_delete"
         android:visible="false"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>
 
