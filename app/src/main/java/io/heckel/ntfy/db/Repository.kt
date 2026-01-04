@@ -12,8 +12,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -23,6 +21,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
+    private val customHeaderDao = database.customHeaderDao()
 
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
@@ -398,60 +397,25 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
-    fun getCustomHeaders(): List<CustomHeader> {
-        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
-        return if (json != null) {
-            try {
-                val type = object : TypeToken<List<CustomHeader>>() {}.type
-                Gson().fromJson(json, type) ?: emptyList()
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to parse custom headers", e)
-                emptyList()
-            }
-        } else {
-            emptyList()
-        }
+    suspend fun getCustomHeaders(): List<CustomHeader> {
+        return customHeaderDao.list()
     }
 
-    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
-        return getCustomHeaders().filter { it.baseUrl == baseUrl }
+    suspend fun getCustomHeaders(baseUrl: String): List<CustomHeader> {
+        return customHeaderDao.get(baseUrl)
     }
 
-    fun addCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.add(header)
-        setCustomHeaders(currentHeaders)
+    suspend fun addCustomHeader(header: CustomHeader) {
+        customHeaderDao.insert(header)
     }
 
-    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        val index = currentHeaders.indexOfFirst {
-            it.baseUrl == oldHeader.baseUrl && it.name == oldHeader.name
-        }
-        if (index >= 0) {
-            currentHeaders[index] = newHeader
-            setCustomHeaders(currentHeaders)
-        }
+    suspend fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
+        customHeaderDao.delete(oldHeader.baseUrl, oldHeader.name)
+        customHeaderDao.insert(newHeader)
     }
 
-    fun deleteCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.removeAll {
-            it.baseUrl == header.baseUrl && it.name == header.name
-        }
-        setCustomHeaders(currentHeaders)
-    }
-
-    private fun setCustomHeaders(headers: List<CustomHeader>) {
-        if (headers.isEmpty()) {
-            sharedPrefs.edit {
-                remove(SHARED_PREFS_CUSTOM_HEADERS)
-            }
-        } else {
-            sharedPrefs.edit {
-                putString(SHARED_PREFS_CUSTOM_HEADERS, Gson().toJson(headers))
-            }
-        }
+    suspend fun deleteCustomHeader(header: CustomHeader) {
+        customHeaderDao.delete(header.baseUrl, header.name)
     }
 
     fun isGlobalMuted(): Boolean {
@@ -590,7 +554,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
-        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 
@@ -649,12 +612,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 }
-
-data class CustomHeader(
-    val baseUrl: String,
-    val name: String,
-    val value: String
-)
 
 /* https://stackoverflow.com/a/57079290/1440785 */
 fun <T, K, R> LiveData<T>.combineWith(

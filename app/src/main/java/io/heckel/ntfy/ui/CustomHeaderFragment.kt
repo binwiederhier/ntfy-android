@@ -250,7 +250,7 @@ class CustomHeaderFragment : DialogFragment() {
             return false
         }
         val existingHeaders = withContext(Dispatchers.IO) {
-            repository.getCustomHeadersForServer(baseUrl)
+            repository.getCustomHeaders(baseUrl)
         }
         return existingHeaders.any { existingHeader ->
             // When editing, exclude the current header being edited
