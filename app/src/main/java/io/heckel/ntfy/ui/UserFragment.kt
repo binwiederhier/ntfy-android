@@ -191,11 +191,9 @@ class UserFragment : DialogFragment() {
         if (user == null) {
             CoroutineScope(Dispatchers.Main).launch {
                 val hasAuthorizationHeader = hasAuthorizationHeader(baseUrl)
-                
                 if (hasAuthorizationHeader) {
                     baseUrlViewLayout.error = getString(R.string.user_dialog_base_url_error_authorization_header_exists)
                 }
-                
                 saveMenuItem.isEnabled = validUrl(baseUrl)
                         && !baseUrlsInUse.contains(baseUrl)
                         && !hasAuthorizationHeader
