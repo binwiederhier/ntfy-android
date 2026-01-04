@@ -587,6 +587,7 @@ interface ClientCertificateDao {
     suspend fun delete(baseUrl: String)
 }
 
+@Dao
 interface CustomHeaderDao {
     @Query("SELECT * FROM CustomHeader ORDER BY baseUrl, name")
     suspend fun list(): List<CustomHeader>
