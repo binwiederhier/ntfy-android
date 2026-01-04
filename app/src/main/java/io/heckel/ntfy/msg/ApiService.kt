@@ -4,13 +4,26 @@ import android.content.Context
 import android.os.Build
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
+import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.util.ALL_PRIORITIES
 import io.heckel.ntfy.util.CertUtil
-import io.heckel.ntfy.util.*
-import okhttp3.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.PRIORITY_DEFAULT
+import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.util.topicUrlAuth
+import io.heckel.ntfy.util.topicUrlJson
+import io.heckel.ntfy.util.topicUrlJsonPoll
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Credentials
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
@@ -22,7 +35,7 @@ class ApiService(private val context: Context) {
     private val sslManager = CertUtil.getInstance(context)
     private val gson = Gson()
     private val parser = NotificationParser()
-    
+
     private fun createClient(baseUrl: String): OkHttpClient {
         return sslManager.getOkHttpClientBuilder(baseUrl)
             .callTimeout(15, TimeUnit.SECONDS)
@@ -31,7 +44,7 @@ class ApiService(private val context: Context) {
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
-    
+
     private fun createPublishClient(baseUrl: String): OkHttpClient {
         return sslManager.getOkHttpClientBuilder(baseUrl)
             .callTimeout(5, TimeUnit.MINUTES)
@@ -40,14 +53,14 @@ class ApiService(private val context: Context) {
             .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
-    
+
     private fun createSubscriberClient(baseUrl: String): OkHttpClient {
         return sslManager.getOkHttpClientBuilder(baseUrl)
             .readTimeout(77, TimeUnit.SECONDS)
             .build()
     }
 
-    fun publish(
+    suspend fun publish(
         baseUrl: String,
         topic: String,
         user: User? = null,
@@ -105,7 +118,8 @@ class ApiService(private val context: Context) {
         } else {
             url
         }
-        val request = requestBuilder(urlWithQuery, user, repository)
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(urlWithQuery, user, customHeaders)
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
@@ -133,12 +147,13 @@ class ApiService(private val context: Context) {
         }
     }
 
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
+    suspend fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
         val sinceVal = since ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         createClient(baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
@@ -154,7 +169,7 @@ class ApiService(private val context: Context) {
         }
     }
 
-    fun subscribe(
+    suspend fun subscribe(
         baseUrl: String,
         topics: String,
         since: String?,
@@ -165,7 +180,8 @@ class ApiService(private val context: Context) {
         val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         val call = createSubscriberClient(baseUrl).newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -176,7 +192,8 @@ class ApiService(private val context: Context) {
                     val source = response.body.source()
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
+                        val notification =
+                            parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
                         if (notification != null) {
                             notify(notification.topic, notification.notification)
                         }
@@ -186,6 +203,7 @@ class ApiService(private val context: Context) {
                     fail(e)
                 }
             }
+
             override fun onFailure(call: Call, e: IOException) {
                 Log.e(TAG, "Connection to $url failed (2): ${e.message}", e)
                 fail(e)
@@ -194,14 +212,15 @@ class ApiService(private val context: Context) {
         return call
     }
 
-    fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
+    suspend fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
         if (user == null) {
             Log.d(TAG, "Checking anonymous read against ${topicUrl(baseUrl, topic)}")
         } else {
             Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
         }
         val url = topicUrlAuth(baseUrl, topic)
-        val request = requestBuilder(url, user, repository).build()
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = requestBuilder(url, user, customHeaders).build()
         createClient(baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
@@ -234,18 +253,15 @@ class ApiService(private val context: Context) {
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
 
-        fun requestBuilder(url: String, user: User?, repository: Repository? = null): Request.Builder {
+        fun requestBuilder(url: String, user: User?, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
             val builder = Request.Builder()
                 .url(url)
                 .addHeader("User-Agent", USER_AGENT)
             if (user != null) {
                 builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
             }
-            if (repository != null) {
-                val baseUrl = extractBaseUrl(url)
-                repository.getCustomHeadersForServer(baseUrl).forEach { header ->
-                    builder.addHeader(header.name, header.value)
-                }
+            customHeaders.forEach { header ->
+                builder.addHeader(header.name, header.value)
             }
             return builder
         }

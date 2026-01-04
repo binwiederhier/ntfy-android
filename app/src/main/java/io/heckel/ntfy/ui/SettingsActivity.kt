@@ -32,6 +32,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.backup.Backuper
+import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.service.SubscriberServiceManager
@@ -963,31 +964,20 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             reload()
         }
 
-        data class CustomHeaderWithMetadata(
-            val baseUrl: String,
-            val headers: List<io.heckel.ntfy.db.CustomHeader>
-        )
-
         fun reload() {
             preferenceScreen.removeAll()
             lifecycleScope.launch(Dispatchers.IO) {
                 val headersByBaseUrl = repository.getCustomHeaders()
                     .groupBy { it.baseUrl }
-                    .map { entry ->
-                        CustomHeaderWithMetadata(entry.key, entry.value)
-                    }
-                    .sortedBy { it.baseUrl }
-
+                    .toSortedMap()
                 activity?.runOnUiThread {
                     addCustomHeaderPreferences(headersByBaseUrl)
                 }
             }
         }
 
-        private fun addCustomHeaderPreferences(headersByBaseUrl: List<CustomHeaderWithMetadata>) {
-            headersByBaseUrl.forEach { serverHeaders ->
-                val baseUrl = serverHeaders.baseUrl
-                val headers = serverHeaders.headers
+        private fun addCustomHeaderPreferences(headersByBaseUrl: Map<String, List<CustomHeader>>) {
+            headersByBaseUrl.forEach { (baseUrl, headers) ->
 
                 val preferenceCategory = PreferenceCategory(preferenceScreen.context)
                 preferenceCategory.title = shortUrl(baseUrl)

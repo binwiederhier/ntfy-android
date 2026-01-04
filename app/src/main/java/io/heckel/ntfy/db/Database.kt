@@ -201,6 +201,13 @@ data class ClientCertificate(
     @ColumnInfo(name = "password") val password: String
 )
 
+@Entity(primaryKeys = ["baseUrl", "name"])
+data class CustomHeader(
+    @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "value") val value: String
+)
+
 @Entity(tableName = "Log")
 data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
@@ -214,12 +221,24 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class, TrustedCertificate::class, ClientCertificate::class], version = 15)
+@androidx.room.Database(
+    version = 16,
+    entities = [
+        Subscription::class,
+        Notification::class,
+        User::class,
+        LogEntry::class,
+        CustomHeader::class,
+        TrustedCertificate::class,
+        ClientCertificate::class
+   ]
+)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
     abstract fun userDao(): UserDao
+    abstract fun customHeaderDao(): CustomHeaderDao
     abstract fun logDao(): LogDao
     abstract fun trustedCertificateDao(): TrustedCertificateDao
     abstract fun clientCertificateDao(): ClientCertificateDao
@@ -246,6 +265,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
                     .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_15_16)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -359,6 +379,12 @@ abstract class Database : RoomDatabase() {
         }
 
         private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE CustomHeader (baseUrl TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY(baseUrl, name))")
+            }
+        }
+
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE TrustedCertificate (fingerprint TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(fingerprint))")
                 db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
@@ -559,4 +585,21 @@ interface ClientCertificateDao {
 
     @Query("DELETE FROM ClientCertificate WHERE baseUrl = :baseUrl")
     suspend fun delete(baseUrl: String)
+}
+
+interface CustomHeaderDao {
+    @Query("SELECT * FROM CustomHeader ORDER BY baseUrl, name")
+    suspend fun list(): List<CustomHeader>
+
+    @Query("SELECT * FROM CustomHeader WHERE baseUrl = :baseUrl ORDER BY name")
+    suspend fun get(baseUrl: String): List<CustomHeader>
+
+    @Insert
+    suspend fun insert(header: CustomHeader)
+
+    @Update
+    suspend fun update(header: CustomHeader)
+
+    @Query("DELETE FROM CustomHeader WHERE baseUrl = :baseUrl AND name = :name")
+    suspend fun delete(baseUrl: String, name: String)
 }

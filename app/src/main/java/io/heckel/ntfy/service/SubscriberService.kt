@@ -28,7 +28,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
-import androidx.core.content.edit
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -41,7 +40,6 @@ import androidx.core.content.edit
  * - Incoming notifications are immediately forwarded and broadcasted
  *
  * "Trying to keep the service running" cliff notes:
- * - Manages the service SHOULD-BE state in a SharedPref, so that we know whether or not to restart the service
  * - The foreground service is STICKY, so it is restarted by Android if it's killed
  * - On destroy (onDestroy), we send a broadcast to AutoRestartReceiver (see AndroidManifest.xml) which will schedule
  *   a one-off AutoRestartWorker to restart the service (this is weird, but necessary because services started from
@@ -215,7 +213,7 @@ class SubscriberService : Service() {
                 // connection protocol (JSON/WS), the user or the custom headers are updated, that we kill existing
                 // connections and start new ones.
                 val credentialsHash = repository.getUser(baseUrl)?.let { "${it.username}:${it.password}".hashCode() } ?: 0
-                val headersHash = repository.getCustomHeadersForServer(baseUrl)
+                val headersHash = repository.getCustomHeaders(baseUrl)
                     .sortedBy { "${it.name}:${it.value}" }
                     .joinToString(",") { "${it.name}:${it.value}" }
                     .hashCode()
@@ -255,9 +253,10 @@ class SubscriberService : Service() {
             val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
+            val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(this, connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(this, connectionId, repository, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {
                 JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
             }
@@ -361,7 +360,8 @@ class SubscriberService : Service() {
         val restartServiceIntent = Intent(applicationContext, SubscriberService::class.java).also {
             it.setPackage(packageName)
         }
-        val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        val restartServicePendingIntent: PendingIntent =
+            PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
         applicationContext.getSystemService(ALARM_SERVICE)
         val alarmService: AlarmManager = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
@@ -400,6 +400,6 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
-        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
+        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
     }
 }
