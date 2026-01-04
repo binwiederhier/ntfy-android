@@ -156,6 +156,8 @@ data class Action(
     @ColumnInfo(name = "body") val body: String?, // used in "http" action
     @ColumnInfo(name = "intent") val intent: String?, // used in "broadcast" action
     @ColumnInfo(name = "extras") val extras: Map<String,String>?, // used in "broadcast" action
+    @ColumnInfo(name = "intent_class") val intent_class: String?, // used in "broadcast" action
+    @ColumnInfo(name = "intent_package") val intent_package: String?, // used in "broadcast" action
     @ColumnInfo(name = "progress") val progress: Int?, // used to indicate progress in popup
     @ColumnInfo(name = "error") val error: String?, // used to indicate errors in popup
 )

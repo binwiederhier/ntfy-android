@@ -48,10 +48,24 @@ class BroadcastService(private val ctx: Context) {
     fun sendUserAction(action: Action) {
         val intent = Intent()
         intent.action = action.intent ?: USER_ACTION_ACTION
+        if (action.intent_class != null && action.intent_package != null) {
+            intent.setClassName(action.intent_package, action.intent_class)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            Log.d(
+                TAG,
+                "Sending user action intent to start activity: ${intent.action} to ${action.intent_package}:${action.intent_class} with extras ${intent.extras}"
+            )
+            ctx.startActivity(intent)
+            return
+        }
         action.extras?.forEach { (key, value) ->
             intent.putExtra(key, value)
         }
-        Log.d(TAG, "Sending user action intent broadcast: ${intent.action} with extras ${intent.extras}")
+        Log.d(
+            TAG,
+            "Sending user action intent broadcast: ${intent.action} with extras ${intent.extras}"
+        )
         ctx.sendBroadcast(intent)
     }
 
