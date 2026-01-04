@@ -261,5 +261,20 @@ class CertUtil private constructor(context: Context) {
             val factory = CertificateFactory.getInstance("X.509")
             return factory.generateCertificate(pem.byteInputStream()) as X509Certificate
         }
+
+        fun encodeToPem(cert: X509Certificate): String {
+            val base64 = Base64.encodeToString(cert.encoded, Base64.NO_WRAP)
+            val sb = StringBuilder()
+            sb.append("-----BEGIN CERTIFICATE-----\n")
+            var i = 0
+            while (i < base64.length) {
+                val end = minOf(i + 64, base64.length)
+                sb.append(base64.substring(i, end))
+                sb.append("\n")
+                i += 64
+            }
+            sb.append("-----END CERTIFICATE-----")
+            return sb.toString()
+        }
     }
 }

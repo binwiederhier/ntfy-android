@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Dialog fragment for trusting a server's SSL certificate.
@@ -26,8 +27,7 @@ import java.util.*
  */
 class CertificateTrustFragment : DialogFragment() {
     private lateinit var listener: CertificateTrustListener
-    private lateinit var certificate: X509Certificate
-    private lateinit var certificatePem: String
+    private lateinit var cert: X509Certificate
     private lateinit var baseUrl: String
     private lateinit var repository: Repository
 
@@ -64,8 +64,7 @@ class CertificateTrustFragment : DialogFragment() {
 
         // Parse the certificate
         val certFactory = CertificateFactory.getInstance("X.509")
-        certificate = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
-        certificatePem = certBytes.toString()
+        cert = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
 
         // Build the view
         val view = requireActivity().layoutInflater.inflate(R.layout.fragment_certificate_trust_dialog, null)
@@ -119,20 +118,20 @@ class CertificateTrustFragment : DialogFragment() {
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
         // Populate certificate details
-        subjectText.text = certificate.subjectX500Principal.name
-        issuerText.text = certificate.issuerX500Principal.name
-        fingerprintText.text = CertUtil.calculateFingerprint(certificate)
-        validFromText.text = dateFormat.format(certificate.notBefore)
-        validUntilText.text = dateFormat.format(certificate.notAfter)
+        subjectText.text = cert.subjectX500Principal.name
+        issuerText.text = cert.issuerX500Principal.name
+        fingerprintText.text = CertUtil.calculateFingerprint(cert)
+        validFromText.text = dateFormat.format(cert.notBefore)
+        validUntilText.text = dateFormat.format(cert.notAfter)
 
         // Show warning if certificate is expired or not yet valid
         val now = Date()
         when {
-            now.after(certificate.notAfter) -> {
+            now.after(cert.notAfter) -> {
                 warningText.text = getString(R.string.certificate_trust_dialog_expired_warning)
                 warningText.isVisible = true
             }
-            now.before(certificate.notBefore) -> {
+            now.before(cert.notBefore) -> {
                 warningText.text = getString(R.string.certificate_trust_dialog_not_yet_valid_warning)
                 warningText.isVisible = true
             }
@@ -144,10 +143,11 @@ class CertificateTrustFragment : DialogFragment() {
 
     private fun trustCertificate() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val fingerprint = CertUtil.calculateFingerprint(certificate)
-            repository.addTrustedCertificate(fingerprint, certificatePem)
+            val fingerprint = CertUtil.calculateFingerprint(cert)
+            val pem = CertUtil.encodeToPem(cert)
+            repository.addTrustedCertificate(fingerprint, pem)
         }
-        listener.onCertificateTrusted(baseUrl, certificate)
+        listener.onCertificateTrusted(baseUrl, cert)
         dismiss()
     }
 

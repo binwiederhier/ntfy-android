@@ -502,11 +502,11 @@
     <string name="settings_certificates_prefs_trusted_header">Trusted server certificates</string>
     <string name="settings_certificates_prefs_trusted_add">Add certificate</string>
     <string name="settings_certificates_prefs_trusted_add_title">Add a trusted certificate</string>
-    <string name="settings_certificates_prefs_trusted_add_summary">Import a server or CA certificate to the trust store (PEM format)</string>
+    <string name="settings_certificates_prefs_trusted_add_summary">Import a server or CA certificate into the trust store (PEM format). HTTPS and WebSocket connections will trust this certificate.</string>
     <string name="settings_certificates_prefs_client_header">Client certificates (mTLS)</string>
     <string name="settings_certificates_prefs_client_add">Add client certificate</string>
     <string name="settings_certificates_prefs_client_add_title">Add a client certificate</string>
-    <string name="settings_certificates_prefs_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12 format)</string>
+    <string name="settings_certificates_prefs_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12 format). The app will use this certificate when connecting to the server.</string>
     <string name="settings_certificates_prefs_client_configured">Client certificate configured</string>
     <string name="settings_certificates_prefs_expires">Expires %1$s</string>
     <string name="settings_certificates_prefs_expired">Expired</string>
@@ -516,7 +516,7 @@
     <string name="certificate_dialog_title_add_trusted">Add trusted certificate</string>
     <string name="certificate_dialog_title_add_client">Add client certificate</string>
     <string name="certificate_dialog_description_add_trusted">Add a trusted server or CA certificate. Connections to the service URL will trust this certificate.</string>
-    <string name="certificate_dialog_description_add_client">Add a PKCS#12 client certificate (.p12) for mTLS authentication. The certificate will be used when connecting to the service.</string>
+    <string name="certificate_dialog_description_add_client">Add a client certificate for mTLS authentication (PEM). The certificate will be used when connecting to the service.</string>
     <string name="certificate_dialog_base_url_hint">Service URL (e.g. https://ntfy.example.com)</string>
     <string name="certificate_dialog_select_cert_file">Select certificate file (.pem, .crt)</string>
     <string name="certificate_dialog_select_p12_file">Select client certificate (.p12)</string>
