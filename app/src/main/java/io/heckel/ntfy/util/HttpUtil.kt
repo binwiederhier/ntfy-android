@@ -58,7 +58,7 @@ object HttpUtil {
 
     fun defaultBuilder(context: Context, baseUrl: String): OkHttpClient.Builder {
         return emptyBuilder(context, baseUrl)
-            .callTimeout(60, TimeUnit.SECONDS) // Increased to 60s (from 15s) to reduce client variance
+            .callTimeout(1, TimeUnit.MINUTES) // Increased to 1min (from 15s) to reduce client variance
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)

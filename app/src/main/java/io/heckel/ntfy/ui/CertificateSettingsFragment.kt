@@ -68,7 +68,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         certs.forEach { trustedCert ->
             try {
-                val cert = CertUtil.parseCertificate(trustedCert.pem)
+                val cert = CertUtil.parsePemCertificate(trustedCert.pem)
                 val issuer = parseCommonName(cert.issuerX500Principal.name)
                 val pref = Preference(preferenceScreen.context)
                 pref.title = parseCommonName(cert.subjectX500Principal.name)
@@ -146,7 +146,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 it.bufferedReader().readText()
             }
             if (content != null && content.contains("-----BEGIN CERTIFICATE-----")) {
-                val cert = CertUtil.parseCertificate(content)
+                val cert = CertUtil.parsePemCertificate(content)
                 TrustedCertificateFragment.newInstanceAdd(cert)
                     .show(childFragmentManager, TrustedCertificateFragment.TAG)
             } else {

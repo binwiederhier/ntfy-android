@@ -229,7 +229,7 @@ class Backuper(val context: Context) {
         }
         certificates.forEach { c ->
             try {
-                val cert = CertUtil.parseCertificate(c.pem)
+                val cert = CertUtil.parsePemCertificate(c.pem)
                 val fingerprint = CertUtil.calculateFingerprint(cert)
                 repository.addTrustedCertificate(fingerprint, c.pem)
             } catch (e: Exception) {

@@ -184,7 +184,7 @@ class TrustedCertificateFragment : DialogFragment() {
             val trustedCert = repository.getTrustedCertificates().find { it.fingerprint == fingerprint }
             if (trustedCert != null) {
                 try {
-                    val x509Cert = CertUtil.parseCertificate(trustedCert.pem)
+                    val x509Cert = CertUtil.parsePemCertificate(trustedCert.pem)
                     cert = x509Cert
                     withContext(Dispatchers.Main) {
                         displayCertificateDetails(x509Cert)
@@ -231,9 +231,9 @@ class TrustedCertificateFragment : DialogFragment() {
     private fun trustCertificate() {
         val certificate = cert ?: return
         lifecycleScope.launch(Dispatchers.IO) {
-            val fp = CertUtil.calculateFingerprint(certificate)
-            val pem = CertUtil.encodeToPem(certificate)
-            repository.addTrustedCertificate(fp, pem)
+            val fingerprint = CertUtil.calculateFingerprint(certificate)
+            val pem = CertUtil.encodeCertificateToPem(certificate)
+            repository.addTrustedCertificate(fingerprint, pem)
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, R.string.trusted_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateTrusted(certificate)
