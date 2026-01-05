@@ -1109,7 +1109,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         private const val EXPORT_LOGS_UPLOAD_ORIGINAL = "upload_original"
         private const val EXPORT_LOGS_UPLOAD_SCRUBBED = "upload_scrubbed"
         private const val EXPORT_LOGS_UPLOAD_URL = "https://nopaste.net/?f=json" // Run by binwiederhier; see https://github.com/binwiederhier/pcopy
-        private const val EXPORT_LOGS_UPLOAD_TIMEOUT_MINUTES = 1L
         private const val EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD = 100 * 1024 // Show "Uploading ..." if log larger than X
     }
 }
