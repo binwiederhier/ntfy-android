@@ -2,6 +2,8 @@
            tools:ignore="MissingTranslation">
 
     <!-- Common strings -->
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
 
     <!-- Notification channels -->
@@ -424,8 +426,8 @@
     <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
     <string name="settings_advanced_certificates_title">Manage certificates</string>
-    <string name="settings_advanced_certificates_summary">Trust self-signed server certificates and manage client certificates for mTLS</string>
-    <string name="settings_advanced_certificates_trusted_header">Trusted server certificates</string>
+    <string name="settings_advanced_certificates_summary">Add certificates to the trust store and manage client certificates for mTLS</string>
+    <string name="settings_advanced_certificates_trusted_header">Trusted certificates</string>
     <string name="settings_advanced_certificates_trusted_item_summary_leaf">Leaf certificate, issued by %1$s\nExpires %2$s</string>
     <string name="settings_advanced_certificates_trusted_item_summary_leaf_expired">Leaf certificate, issued by %1$s\nExpired</string>
     <string name="settings_advanced_certificates_trusted_item_summary_ca">CA certificate, self-signed\nExpires %1$s</string>
@@ -434,7 +436,7 @@
     <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). HTTPS and WebSocket connections will trust this certificate.</string>
     <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
     <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s\nExpires %2$s, used by %3$s</string>
-    <string name="settings_advanced_certificates_client_item_summary_expired">EClient certificate, issued by %1$s\nExpired, used by %2$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s\nExpired, used by %2$s</string>
     <string name="settings_advanced_certificates_client_add_title">Add a client certificate</string>
     <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
     <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>
@@ -511,6 +513,8 @@
     <string name="trusted_certificate_dialog_fingerprint">SHA-256 fingerprint</string>
     <string name="trusted_certificate_dialog_valid_from">Valid from</string>
     <string name="trusted_certificate_dialog_valid_until">Valid until</string>
+    <string name="trusted_certificate_dialog_ca">Certificate Authority (CA)</string>
+    <string name="trusted_certificate_dialog_ca_info">All certificates signed by this Certificate Authority will be trusted.</string>
     <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
     <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
     <string name="trusted_certificate_dialog_button_trust">Trust</string>
@@ -521,10 +525,11 @@
     <!-- Client certificate dialog (ClientCertificateFragment) -->
     <string name="client_certificate_dialog_title">Client certificate</string>
     <string name="client_certificate_dialog_title_add">Add client certificate</string>
-    <string name="client_certificate_dialog_description_page1">Enter the password for the PKCS#12 file and the server URL this certificate should be used for.</string>
+    <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
     <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate.</string>
     <string name="client_certificate_dialog_password_hint">Password</string>
-    <string name="client_certificate_dialog_base_url_hint">Server URL (e.g. https://example.com)</string>
+    <string name="client_certificate_dialog_base_url_hint">Service URL</string>
+    <string name="client_certificate_dialog_base_url_placeholder">e.g. https://ntfy.example.com</string>
     <string name="client_certificate_dialog_subject">Subject</string>
     <string name="client_certificate_dialog_issuer">Issuer</string>
     <string name="client_certificate_dialog_fingerprint">SHA-256 Fingerprint</string>
@@ -533,8 +538,6 @@
     <string name="client_certificate_dialog_button_next">Next</string>
     <string name="client_certificate_dialog_button_save">Save</string>
     <string name="client_certificate_dialog_button_delete">Delete</string>
-    <string name="client_certificate_dialog_button_cancel">Cancel</string>
-    <string name="client_certificate_dialog_delete_confirm">Delete this certificate?</string>
     <string name="client_certificate_dialog_added_toast">Certificate added</string>
     <string name="client_certificate_dialog_deleted_toast">Certificate deleted</string>
     <string name="client_certificate_dialog_error_wrong_password">Wrong password or invalid PKCS#12 file</string>

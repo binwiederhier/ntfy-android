@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
@@ -64,6 +63,7 @@ class ClientCertificateFragment : DialogFragment() {
 
     // Page 2 views
     private lateinit var page2Layout: LinearLayout
+    private lateinit var descriptionPage2Text: TextView
     private lateinit var baseUrlValueText: TextView
     private lateinit var subjectText: TextView
     private lateinit var issuerText: TextView
@@ -143,7 +143,7 @@ class ClientCertificateFragment : DialogFragment() {
                     true
                 }
                 R.id.client_certificate_action_delete -> {
-                    confirmDeleteCertificate()
+                    deleteCertificate()
                     true
                 }
                 else -> false
@@ -163,6 +163,7 @@ class ClientCertificateFragment : DialogFragment() {
 
         // Page 2 views
         page2Layout = view.findViewById(R.id.client_certificate_page2)
+        descriptionPage2Text = view.findViewById(R.id.client_certificate_description_page2)
         baseUrlValueText = view.findViewById(R.id.client_certificate_base_url_value)
         subjectText = view.findViewById(R.id.client_certificate_subject)
         issuerText = view.findViewById(R.id.client_certificate_issuer)
@@ -197,7 +198,7 @@ class ClientCertificateFragment : DialogFragment() {
         deleteMenuItem.isVisible = true
 
         // Hide description for view mode
-        view?.findViewById<TextView>(R.id.client_certificate_description_page2)?.isVisible = false
+        descriptionPage2Text.isVisible = false
 
         // Load certificate from repository
         lifecycleScope.launch(Dispatchers.IO) {
@@ -301,22 +302,16 @@ class ClientCertificateFragment : DialogFragment() {
         }
     }
 
-    private fun confirmDeleteCertificate() {
+    private fun deleteCertificate() {
         val url = baseUrl ?: return
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.client_certificate_dialog_delete_confirm)
-            .setPositiveButton(R.string.client_certificate_dialog_button_delete) { _, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    repository.removeClientCertificate(url)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, R.string.client_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
-                        listener?.onCertificateDeleted()
-                        dismiss()
-                    }
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.removeClientCertificate(url)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.client_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                listener?.onCertificateDeleted()
+                dismiss()
             }
-            .setNegativeButton(R.string.client_certificate_dialog_button_cancel, null)
-            .show()
+        }
     }
 
     private fun handleBack() {
@@ -357,7 +352,7 @@ class ClientCertificateFragment : DialogFragment() {
         /**
          * Create fragment for ADD mode - two-page flow to add a client certificate
          */
-        fun newInstance(pkcs12Data: ByteArray): ClientCertificateFragment {
+        fun newInstanceAdd(pkcs12Data: ByteArray): ClientCertificateFragment {
             return ClientCertificateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.ADD.name)

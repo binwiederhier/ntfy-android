@@ -49,6 +49,8 @@ class TrustedCertificateFragment : DialogFragment() {
     private lateinit var fingerprintText: TextView
     private lateinit var validFromText: TextView
     private lateinit var validUntilText: TextView
+    private lateinit var caText: TextView
+    private lateinit var caInfoText: TextView
 
     interface TrustedCertificateListener {
         fun onCertificateTrusted(certificate: X509Certificate)
@@ -145,6 +147,8 @@ class TrustedCertificateFragment : DialogFragment() {
         fingerprintText = view.findViewById(R.id.trusted_certificate_fingerprint)
         validFromText = view.findViewById(R.id.trusted_certificate_valid_from)
         validUntilText = view.findViewById(R.id.trusted_certificate_valid_until)
+        caText = view.findViewById(R.id.trusted_certificate_ca)
+        caInfoText = view.findViewById(R.id.trusted_certificate_ca_info)
 
         when (mode) {
             Mode.UNKNOWN -> setupUnknownMode()
@@ -210,6 +214,11 @@ class TrustedCertificateFragment : DialogFragment() {
         fingerprintText.text = CertUtil.calculateFingerprint(certificate)
         validFromText.text = dateFormat.format(certificate.notBefore)
         validUntilText.text = dateFormat.format(certificate.notAfter)
+
+        // Determine if this is a CA certificate (self-signed)
+        val isCa = certificate.subjectX500Principal == certificate.issuerX500Principal
+        caText.text = if (isCa) getString(R.string.common_yes) else getString(R.string.common_no)
+        caInfoText.isVisible = isCa
 
         // Show warning if certificate is expired or not yet valid
         val now = Date()

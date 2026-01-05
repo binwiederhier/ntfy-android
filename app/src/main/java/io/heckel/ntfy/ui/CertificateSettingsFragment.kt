@@ -169,7 +169,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 it.readBytes()
             }
             if (data != null && data.isNotEmpty()) {
-                ClientCertificateFragment.newInstance(data)
+                ClientCertificateFragment.newInstanceAdd(data)
                     .show(childFragmentManager, ClientCertificateFragment.TAG)
             } else {
                 Toast.makeText(context, R.string.settings_advanced_certificates_error_invalid_p12, Toast.LENGTH_SHORT).show()

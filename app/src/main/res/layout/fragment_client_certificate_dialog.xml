@@ -64,9 +64,25 @@
                     android:paddingBottom="16dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/client_certificate_base_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/client_certificate_dialog_base_url_hint"
+                    app:placeholderText="@string/client_certificate_dialog_base_url_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/client_certificate_base_url_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textUri" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/client_certificate_password_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:hint="@string/client_certificate_dialog_password_hint"
                     app:passwordToggleEnabled="true">
 
@@ -75,21 +91,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/client_certificate_base_url_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:hint="@string/client_certificate_dialog_base_url_hint">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/client_certificate_base_url_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textUri" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
