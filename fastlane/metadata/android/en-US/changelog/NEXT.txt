@@ -1,0 +1,5 @@
+Features:
+* Support for self-signed certs, custom CAs and client certs for mTLS (#215, #530, ntfy-android#149)
+
+Maintenance + bug fixes:
+* Use server-specific user for attachment downloads (#1529, thanks to @ManInDark for reporting)

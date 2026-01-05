@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Base64
 import io.heckel.ntfy.db.ClientCertificate
 import io.heckel.ntfy.db.Repository
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.internal.tls.OkHostnameVerifier
 import java.io.ByteArrayInputStream
@@ -38,8 +37,7 @@ class CertUtil private constructor(context: Context) {
 
     suspend fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder {
         try {
-            val trustedCerts = repository.getTrustedCertificates()
-            val userX509 = trustedCerts.mapNotNull {
+            val trustedCerts = repository.getTrustedCertificates().mapNotNull {
                 try {
                     parsePemCertificate(it.pem)
                 } catch (e: Exception) {
@@ -47,25 +45,24 @@ class CertUtil private constructor(context: Context) {
                     null
                 }
             }
-
             val clientCert = repository.getClientCertificate(baseUrl)
-            val keyManagers = clientCert?.let { createKeyManagers(it) }
+            val clientCertKeyManagers = clientCert?.let { clientCertKeyManagers(it) }
 
             // Always include system trust; add user trust if present.
             val systemTm = systemTrustManager()
-            val customTm = if (userX509.isNotEmpty()) trustManagerForAddedCerts(userX509) else null
-            val compositeTm = if (customTm != null) compositeTrustManager(systemTm, customTm) else systemTm
+            val userTm = if (trustedCerts.isNotEmpty()) trustManagerForUserCerts(trustedCerts) else null
+            val compositeTm = if (userTm != null) compositeTrustManager(systemTm, userTm) else systemTm
 
             // Only override SSL config if we actually have something to add (user trust or mTLS).
-            if (customTm != null || keyManagers != null) {
+            if (userTm != null || clientCertKeyManagers != null) {
                 val sslContext = SSLContext.getInstance("TLS").apply {
-                    init(keyManagers, arrayOf<TrustManager>(compositeTm), SecureRandom())
+                    init(clientCertKeyManagers, arrayOf<TrustManager>(compositeTm), SecureRandom())
                 }
                 builder.sslSocketFactory(sslContext.socketFactory, compositeTm)
 
                 // Hostname rules only matter if we have custom trust. If not, keep default verifier.
-                if (customTm != null) {
-                    builder.hostnameVerifier(selectiveHostnameVerifier(systemTm, customTm))
+                if (userTm != null) {
+                    builder.hostnameVerifier(selectiveHostnameVerifier(systemTm, userTm))
                 }
             }
         } catch (e: Exception) {
@@ -124,7 +121,7 @@ class CertUtil private constructor(context: Context) {
     /**
      * mTLS client auth via PKCS#12 from DB.
      */
-    private fun createKeyManagers(clientCert: ClientCertificate): Array<KeyManager>? {
+    private fun clientCertKeyManagers(clientCert: ClientCertificate): Array<KeyManager>? {
         return try {
             val p12Data = Base64.decode(clientCert.p12Base64, Base64.DEFAULT)
             val keyStore = KeyStore.getInstance("PKCS12").apply {
@@ -147,9 +144,9 @@ class CertUtil private constructor(context: Context) {
         return tmf.trustManagers.first { it is X509TrustManager } as X509TrustManager
     }
 
-    private fun trustManagerForAddedCerts(added: List<X509Certificate>): X509TrustManager {
+    private fun trustManagerForUserCerts(trustedCerts: List<X509Certificate>): X509TrustManager {
         val ks = KeyStore.getInstance(KeyStore.getDefaultType()).apply { load(null, null) }
-        added.forEachIndexed { idx, cert ->
+        trustedCerts.forEachIndexed { idx, cert ->
             ks.setCertificateEntry("added-$idx", cert)
         }
         val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
@@ -161,26 +158,26 @@ class CertUtil private constructor(context: Context) {
     /**
      * Trust if either system OR custom accepts the chain.
      */
-    private fun compositeTrustManager(system: X509TrustManager, custom: X509TrustManager): X509TrustManager =
+    private fun compositeTrustManager(systemTm: X509TrustManager, userTm: X509TrustManager): X509TrustManager =
         object : X509TrustManager {
             override fun getAcceptedIssuers(): Array<X509Certificate> =
-                (system.acceptedIssuers + custom.acceptedIssuers)
+                (systemTm.acceptedIssuers + userTm.acceptedIssuers)
                     .distinctBy { it.subjectX500Principal.name }
                     .toTypedArray()
 
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
                 try {
-                    system.checkClientTrusted(chain, authType)
+                    systemTm.checkClientTrusted(chain, authType)
                 } catch (_: Exception) {
-                    custom.checkClientTrusted(chain, authType)
+                    userTm.checkClientTrusted(chain, authType)
                 }
             }
 
             override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
                 try {
-                    system.checkServerTrusted(chain, authType)
+                    systemTm.checkServerTrusted(chain, authType)
                 } catch (_: Exception) {
-                    custom.checkServerTrusted(chain, authType)
+                    userTm.checkServerTrusted(chain, authType)
                 }
             }
         }
@@ -191,28 +188,29 @@ class CertUtil private constructor(context: Context) {
      * - else if custom-trusted => skip hostname verification
      * - else => fail
      */
-    private fun selectiveHostnameVerifier(system: X509TrustManager, custom: X509TrustManager) =
+    private fun selectiveHostnameVerifier(systemTm: X509TrustManager, userTm: X509TrustManager) =
         HostnameVerifier { hostname, session ->
             val chain = try {
                 session.peerCertificates.map { it as X509Certificate }.toTypedArray()
             } catch (_: Exception) {
                 return@HostnameVerifier false
             }
-
-            if (isTrustedBy(system, chain)) {
+            if (isTrustedBy(systemTm, chain)) {
                 OkHostnameVerifier.verify(hostname, session)
             } else {
-                isTrustedBy(custom, chain)
+                isTrustedBy(userTm, chain)
             }
         }
 
     private fun isTrustedBy(tm: X509TrustManager, chain: Array<X509Certificate>): Boolean {
         // authType not reliably available here; try common ones.
         return try {
-            tm.checkServerTrusted(chain, "RSA"); true
+            tm.checkServerTrusted(chain, "RSA")
+            true
         } catch (_: Exception) {
             try {
-                tm.checkServerTrusted(chain, "EC"); true
+                tm.checkServerTrusted(chain, "EC")
+                true
             } catch (_: Exception) {
                 false
             }
