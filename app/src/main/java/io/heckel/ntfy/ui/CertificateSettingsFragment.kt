@@ -69,13 +69,18 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
         certs.forEach { trustedCert ->
             try {
                 val cert = CertUtil.parsePemCertificate(trustedCert.pem)
+                val subject = parseCommonName(cert.subjectX500Principal.name)
                 val issuer = parseCommonName(cert.issuerX500Principal.name)
+                val isSelfSigned = cert.subjectX500Principal == cert.issuerX500Principal
+                val isExpired = !isValid(cert)
+
                 val pref = Preference(preferenceScreen.context)
-                pref.title = parseCommonName(cert.subjectX500Principal.name)
-                pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_advanced_certificates_trusted_item_summary_not_expired, dateFormat.format(cert.notAfter), issuer)
-                } else {
-                    getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, issuer)
+                pref.title = subject
+                pref.summary = when {
+                    isSelfSigned && isExpired -> getString(R.string.settings_advanced_certificates_trusted_item_summary_ca_expired)
+                    isSelfSigned -> getString(R.string.settings_advanced_certificates_trusted_item_summary_ca, dateFormat.format(cert.notAfter))
+                    isExpired -> getString(R.string.settings_advanced_certificates_trusted_item_summary_leaf_expired, issuer)
+                    else -> getString(R.string.settings_advanced_certificates_trusted_item_summary_leaf, issuer, dateFormat.format(cert.notAfter))
                 }
                 pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                     TrustedCertificateFragment.newInstanceView(trustedCert.fingerprint)
@@ -114,7 +119,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 val issuer = parseCommonName(cert.issuerX500Principal.name)
                 pref.title = parseCommonName(cert.subjectX500Principal.name)
                 pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_advanced_certificates_client_item_summary_not_expired, dateFormat.format(cert.notAfter), issuer, shortUrl(clientCert.baseUrl))
+                    getString(R.string.settings_advanced_certificates_client_item_summary, issuer, dateFormat.format(cert.notAfter), shortUrl(clientCert.baseUrl))
                 } else {
                     getString(R.string.settings_advanced_certificates_client_item_summary_expired, issuer, shortUrl(clientCert.baseUrl))
                 }
