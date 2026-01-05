@@ -1,10 +1,7 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.os.Build
 import com.google.gson.Gson
-import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
@@ -18,14 +15,11 @@ import io.heckel.ntfy.util.topicUrlJson
 import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.Credentials
-import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets.UTF_8
 import kotlin.random.Random
 
 class ApiService(private val context: Context) {
@@ -92,7 +86,7 @@ class ApiService(private val context: Context) {
             url
         }
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(urlWithQuery, user, customHeaders)
+        val request = HttpUtil.requestBuilder(urlWithQuery, user, customHeaders)
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
@@ -126,7 +120,7 @@ class ApiService(private val context: Context) {
         Log.d(TAG, "Polling topic $url")
 
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
@@ -154,7 +148,7 @@ class ApiService(private val context: Context) {
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -193,7 +187,7 @@ class ApiService(private val context: Context) {
         }
         val url = topicUrlAuth(baseUrl, topic)
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
@@ -217,7 +211,6 @@ class ApiService(private val context: Context) {
     )
 
     companion object {
-        val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
         private const val TAG = "NtfyApiService"
 
         // These constants have corresponding values in the server codebase!
@@ -225,18 +218,5 @@ class ApiService(private val context: Context) {
         const val EVENT_MESSAGE = "message"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
-
-        fun requestBuilder(url: String, user: User?, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
-            val builder = Request.Builder()
-                .url(url)
-                .addHeader("User-Agent", USER_AGENT)
-            if (user != null) {
-                builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
-            }
-            customHeaders.forEach { header ->
-                builder.addHeader(header.name, header.value)
-            }
-            return builder
-        }
     }
 }

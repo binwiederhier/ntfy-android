@@ -24,7 +24,6 @@ import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
-import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -63,12 +62,8 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         try {
-            val request = Request.Builder()
-                .url(attachment.url)
-                .addHeader("User-Agent", ApiService.USER_AGENT)
-                .build()
-            val client = HttpUtil
-                .longCallClient(context, extractBaseUrl(attachment.url))
+            val request = HttpUtil.requestBuilder(attachment.url).build()
+            val client = HttpUtil.longCallClient(context, extractBaseUrl(attachment.url))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
                 if (!response.isSuccessful) {

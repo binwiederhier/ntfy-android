@@ -426,13 +426,13 @@
     <string name="settings_advanced_certificates_title">Manage certificates</string>
     <string name="settings_advanced_certificates_summary">Trust self-signed server certificates and manage client certificates for mTLS</string>
     <string name="settings_advanced_certificates_trusted_header">Trusted server certificates</string>
-    <string name="settings_advanced_certificates_trusted_item_summary_not_expired">Issued by %1$s, expires %2$s</string>
-    <string name="settings_advanced_certificates_trusted_item_summary_expired">Issued by %1$s, expired</string>
+    <string name="settings_advanced_certificates_trusted_item_summary_not_expired">Expires %1$s, issued by %2$s</string>
+    <string name="settings_advanced_certificates_trusted_item_summary_expired">Expired, issued by %1$s, </string>
     <string name="settings_advanced_certificates_trusted_add_title">Add a trusted certificate</string>
     <string name="settings_advanced_certificates_trusted_add_summary">Import a server or CA certificate into the trust store (PEM). HTTPS and WebSocket connections will trust this certificate.</string>
     <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
-    <string name="settings_advanced_certificates_client_item_summary_not_expired">Issued by %1$s, expires %2$s, used by %3$s</string>
-    <string name="settings_advanced_certificates_client_item_summary_expired">Issued by %1$s, expired, used by %2$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_not_expired">Expires %1$s, issued by %2$s, used by %3$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Expired, issued by %1$s, used by %2$s</string>
     <string name="settings_advanced_certificates_client_add_title">Add a client certificate</string>
     <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
     <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>

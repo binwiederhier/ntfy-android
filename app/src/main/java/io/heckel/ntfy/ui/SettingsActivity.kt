@@ -39,7 +39,6 @@ import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
@@ -769,12 +768,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 }
                 val gson = Gson()
-                val request = Request.Builder()
-                    .url(EXPORT_LOGS_UPLOAD_URL)
+                val request = HttpUtil.requestBuilder(EXPORT_LOGS_UPLOAD_URL)
                     .put(log.toRequestBody())
                     .build()
-                val client = HttpUtil
-                    .longCallClient(context, extractBaseUrl(EXPORT_LOGS_UPLOAD_URL))
+                val client = HttpUtil.longCallClient(context, extractBaseUrl(EXPORT_LOGS_UPLOAD_URL))
                 try {
                     client.newCall(request).execute().use { response ->
                         if (!response.isSuccessful) {

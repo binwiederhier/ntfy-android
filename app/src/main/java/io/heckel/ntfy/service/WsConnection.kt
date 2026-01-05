@@ -9,7 +9,6 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
@@ -82,7 +81,7 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user, customHeaders).build()
+        val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = client.newWebSocket(request, Listener(nextListenerId))
     }

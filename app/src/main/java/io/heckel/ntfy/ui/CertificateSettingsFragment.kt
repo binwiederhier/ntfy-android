@@ -73,7 +73,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 val pref = Preference(preferenceScreen.context)
                 pref.title = parseCommonName(cert.subjectX500Principal.name)
                 pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_advanced_certificates_trusted_item_summary_not_expired, issuer, dateFormat.format(cert.notAfter))
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary_not_expired, dateFormat.format(cert.notAfter), issuer)
                 } else {
                     getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, issuer)
                 }
@@ -114,7 +114,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                 val issuer = parseCommonName(cert.issuerX500Principal.name)
                 pref.title = parseCommonName(cert.subjectX500Principal.name)
                 pref.summary = if (isValid(cert)) {
-                    getString(R.string.settings_advanced_certificates_client_item_summary_not_expired, issuer, dateFormat.format(cert.notAfter), shortUrl(clientCert.baseUrl))
+                    getString(R.string.settings_advanced_certificates_client_item_summary_not_expired, dateFormat.format(cert.notAfter), issuer, shortUrl(clientCert.baseUrl))
                 } else {
                     getString(R.string.settings_advanced_certificates_client_item_summary_expired, issuer, shortUrl(clientCert.baseUrl))
                 }

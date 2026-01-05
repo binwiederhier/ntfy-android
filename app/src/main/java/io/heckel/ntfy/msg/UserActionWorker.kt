@@ -17,7 +17,6 @@ import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.extractBaseUrl
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Locale
 
@@ -71,10 +70,8 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         val method = action.method ?: DEFAULT_HTTP_ACTION_METHOD
         val defaultBody = if (listOf("GET", "HEAD").contains(method)) null else ""
         val body = action.body ?: defaultBody
-        val builder = Request.Builder()
-            .url(url)
+        val builder = HttpUtil.requestBuilder(url)
             .method(method, body?.toRequestBody())
-            .addHeader("User-Agent", ApiService.USER_AGENT)
         action.headers?.forEach { (key, value) ->
             builder.addHeader(key, value)
         }

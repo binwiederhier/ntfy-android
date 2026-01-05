@@ -15,7 +15,6 @@ import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.extractBaseUrl
 import io.heckel.ntfy.util.sha256
-import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 import java.util.Date
@@ -61,10 +60,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     private fun downloadIcon(iconFile: File) {
         Log.d(TAG, "Downloading icon from ${icon.url}")
         try {
-            val request = Request.Builder()
-                .url(icon.url)
-                .addHeader("User-Agent", ApiService.USER_AGENT)
-                .build()
+            val request = HttpUtil.requestBuilder(icon.url).build()
             val client = HttpUtil.defaultClient(context, extractBaseUrl(icon.url))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Headers received: $response, Content-Length: ${response.headers["Content-Length"]}")

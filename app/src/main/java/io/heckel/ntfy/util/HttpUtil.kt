@@ -1,14 +1,23 @@
 package io.heckel.ntfy.util
 
 import android.content.Context
+import android.os.Build
+import io.heckel.ntfy.BuildConfig
+import io.heckel.ntfy.db.CustomHeader
+import io.heckel.ntfy.db.User
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
 
 /**
- * Utility class for creating OkHttpClient instances with appropriate configurations.
+ * Utility class for creating OkHttpClient instances and Request builders.
  * All clients are configured with SSL/TLS settings from CertUtil for custom certificate support.
  */
 object HttpUtil {
+    val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
+
     /**
      * Client for regular API calls (auth, poll, etc.).
      */
@@ -59,6 +68,19 @@ object HttpUtil {
         return CertUtil
             .getInstance(context)
             .withTLSConfig(OkHttpClient.Builder(), baseUrl)
+    }
+
+    fun requestBuilder(url: String, user: User? = null, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
+        val builder = Request.Builder()
+            .url(url)
+            .addHeader("User-Agent", USER_AGENT)
+        if (user != null) {
+            builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
+        }
+        customHeaders.forEach { header ->
+            builder.addHeader(header.name, header.value)
+        }
+        return builder
     }
 }
 
