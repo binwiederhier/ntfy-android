@@ -21,16 +21,16 @@ object HttpUtil {
     /**
      * Client for regular API calls (auth, poll, etc.).
      */
-    fun defaultClient(context: Context, baseUrl: String): OkHttpClient {
-        return defaultBuilder(context, baseUrl).build()
+    suspend fun defaultClient(context: Context, baseUrl: String): OkHttpClient {
+        return defaultClientBuilder(context, baseUrl).build()
     }
 
     /**
      * Client with a longer call timeout (5 minutes).
      * Allows for large file uploads or downloads.
      */
-    fun longCallClient(context: Context, baseUrl: String): OkHttpClient {
-        return defaultBuilder(context, baseUrl)
+    suspend fun longCallClient(context: Context, baseUrl: String): OkHttpClient {
+        return defaultClientBuilder(context, baseUrl)
             .callTimeout(5, TimeUnit.MINUTES)
             .build()
     }
@@ -38,8 +38,8 @@ object HttpUtil {
     /**
      * Client for long-polling/streaming subscriptions.
      */
-    fun subscriberClient(context: Context, baseUrl: String): OkHttpClient {
-        return emptyBuilder(context, baseUrl)
+    suspend fun subscriberClient(context: Context, baseUrl: String): OkHttpClient {
+        return emptyClientBuilder(context, baseUrl)
             .readTimeout(77, TimeUnit.SECONDS) // Long enough to allow for server-side keepalive messages
             .build()
     }
@@ -48,26 +48,12 @@ object HttpUtil {
      * Client for WebSocket connections.
      * No read timeout, 1 minute ping interval, 10s connect timeout.
      */
-    fun wsClient(context: Context, baseUrl: String): OkHttpClient {
-        return emptyBuilder(context, baseUrl)
+    suspend fun wsClient(context: Context, baseUrl: String): OkHttpClient {
+        return emptyClientBuilder(context, baseUrl)
             .readTimeout(0, TimeUnit.MILLISECONDS)
             .pingInterval(1, TimeUnit.MINUTES) // Technically not necessary, the server also pings us
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
-    }
-
-    fun defaultBuilder(context: Context, baseUrl: String): OkHttpClient.Builder {
-        return emptyBuilder(context, baseUrl)
-            .callTimeout(1, TimeUnit.MINUTES) // Increased to 1min (from 15s) to reduce client variance
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-    }
-
-    fun emptyBuilder(context: Context, baseUrl: String): OkHttpClient.Builder {
-        return CertUtil
-            .getInstance(context)
-            .withTLSConfig(OkHttpClient.Builder(), baseUrl)
     }
 
     fun requestBuilder(url: String, user: User? = null, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
@@ -81,6 +67,20 @@ object HttpUtil {
             builder.addHeader(header.name, header.value)
         }
         return builder
+    }
+
+    private suspend fun emptyClientBuilder(context: Context, baseUrl: String): OkHttpClient.Builder {
+        return CertUtil
+            .getInstance(context)
+            .withTLSConfig(OkHttpClient.Builder(), baseUrl)
+    }
+
+    private suspend fun defaultClientBuilder(context: Context, baseUrl: String): OkHttpClient.Builder {
+        return emptyClientBuilder(context, baseUrl)
+            .callTimeout(1, TimeUnit.MINUTES) // Increased to 1min (from 15s) to reduce client variance
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
     }
 }
 

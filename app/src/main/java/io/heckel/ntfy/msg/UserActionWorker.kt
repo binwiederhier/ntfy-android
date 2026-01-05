@@ -1,7 +1,7 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -20,7 +20,7 @@ import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Locale
 
-class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+class UserActionWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private val broadcaster = BroadcastService(context)
     private lateinit var repository: Repository
@@ -28,7 +28,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
     private lateinit var notification: Notification
     private lateinit var action: Action
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_NOTIFICATION_ID) ?: return Result.failure()
         val actionId = inputData.getString(INPUT_DATA_ACTION_ID) ?: return Result.failure()
@@ -63,7 +63,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         }
     }
 
-    private fun performHttpAction(action: Action) {
+    private suspend fun performHttpAction(action: Action) {
         save(action.copy(progress = ACTION_PROGRESS_ONGOING, error = null))
 
         val url = action.url ?: return

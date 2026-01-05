@@ -7,7 +7,7 @@ import android.os.Looper
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -27,8 +27,9 @@ import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.Response
 import java.io.File
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
 
-class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
@@ -36,7 +37,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
     private lateinit var attachment: Attachment
     private var uri: Uri? = null
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_ID) ?: return Result.failure()
         val userAction = inputData.getBoolean(INPUT_DATA_USER_ACTION, false)
@@ -47,18 +48,17 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         attachment = notification.attachment ?: return Result.failure()
         try {
             downloadAttachment(userAction)
+        } catch (e: CancellationException) {
+            Log.d(TAG, "Attachment download was canceled")
+            maybeDeleteFile()
+            throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
             failed(e)
         }
         return Result.success()
     }
 
-    override fun onStopped() {
-        Log.d(TAG, "Attachment download was canceled")
-        maybeDeleteFile()
-    }
-
-    private fun downloadAttachment(userAction: Boolean) {
+    private suspend fun downloadAttachment(userAction: Boolean) {
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         try {

@@ -20,6 +20,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
@@ -205,6 +206,9 @@ class SubscriberService : Service() {
             .filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val connectionProtocol = repository.getConnectionProtocol()
+        val trustedCertsHash = repository.getTrustedCertificates()
+            .joinToString(",") { it.fingerprint }
+            .hashCode()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
             .groupBy { s -> s.baseUrl }
             .map { (baseUrl, subs) ->
@@ -217,12 +221,15 @@ class SubscriberService : Service() {
                     .sortedBy { "${it.name}:${it.value}" }
                     .joinToString(",") { "${it.name}:${it.value}" }
                     .hashCode()
+                val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
                 ConnectionId(
                     baseUrl = baseUrl,
                     topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
                     connectionProtocol = connectionProtocol,
                     credentialsHash = credentialsHash,
-                    headersHash = headersHash
+                    headersHash = headersHash,
+                    trustedCertsHash = trustedCertsHash,
+                    clientCertHash = clientCertHash
                 )
             }
             .toSet()
@@ -256,7 +263,8 @@ class SubscriberService : Service() {
             val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(this, connectionId, repository, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {
                 JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
             }

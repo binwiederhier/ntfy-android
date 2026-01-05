@@ -3,7 +3,7 @@ package io.heckel.ntfy.msg
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.app.Application
@@ -18,8 +18,9 @@ import io.heckel.ntfy.util.sha256
 import okhttp3.Response
 import java.io.File
 import java.util.Date
+import kotlin.coroutines.cancellation.CancellationException
 
-class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
+class DownloadIconWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
@@ -27,7 +28,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     private lateinit var icon: Icon
     private var uri: Uri? = null
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_ID) ?: return Result.failure()
         val app = context.applicationContext as Application
@@ -43,21 +44,20 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
             } else {
                 Log.d(TAG, "Loading icon from cache: $iconFile")
                 val iconUri = createIconUri(iconFile)
-                this.uri = iconUri // Required for cleanup in onStopped()
+                this.uri = iconUri
                 save(icon.copy(contentUri = iconUri.toString()))
             }
+        } catch (e: CancellationException) {
+            Log.d(TAG, "Icon download was canceled")
+            maybeDeleteFile()
+            throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
             failed(e)
         }
         return Result.success()
     }
 
-    override fun onStopped() {
-        Log.d(TAG, "Icon download was canceled")
-        maybeDeleteFile()
-    }
-
-    private fun downloadIcon(iconFile: File) {
+    private suspend fun downloadIcon(iconFile: File) {
         Log.d(TAG, "Downloading icon from ${icon.url}")
         try {
             val request = HttpUtil.requestBuilder(icon.url).build()

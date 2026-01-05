@@ -36,9 +36,9 @@ class CertUtil private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
     private val repository: Repository by lazy { Repository.getInstance(appContext) }
 
-    fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder {
+    suspend fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder {
         try {
-            val trustedCerts = runBlocking { repository.getTrustedCertificates() }
+            val trustedCerts = repository.getTrustedCertificates()
             val userX509 = trustedCerts.mapNotNull {
                 try {
                     parsePemCertificate(it.pem)
@@ -48,7 +48,7 @@ class CertUtil private constructor(context: Context) {
                 }
             }
 
-            val clientCert = runBlocking { repository.getClientCertificate(baseUrl) }
+            val clientCert = repository.getClientCertificate(baseUrl)
             val keyManagers = clientCert?.let { createKeyManagers(it) }
 
             // Always include system trust; add user trust if present.

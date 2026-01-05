@@ -34,9 +34,9 @@ import kotlin.random.Random
  * https://github.com/gotify/android/blob/master/app/src/main/java/com/github/gotify/service/WebSocketConnection.java
  */
 class WsConnection(
-    private val context: Context,
     private val connectionId: ConnectionId,
     private val repository: Repository,
+    private val httpClient: OkHttpClient,
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
@@ -45,9 +45,6 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val client: OkHttpClient by lazy {
-        HttpUtil.wsClient(context, connectionId.baseUrl)
-    }
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
@@ -83,7 +80,7 @@ class WsConnection(
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
         val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
-        webSocket = client.newWebSocket(request, Listener(nextListenerId))
+        webSocket = httpClient.newWebSocket(request, Listener(nextListenerId))
     }
 
     @Synchronized
