@@ -37,21 +37,9 @@ import kotlin.collections.addAll
  */
 class CertUtil private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
-    private val repository: Repository by lazy { Repository.Companion.getInstance(appContext) }
+    private val repository: Repository by lazy { Repository.getInstance(appContext) }
 
-    /**
-     * Get an OkHttpClient.Builder configured with custom SSL for a specific server
-     */
-    fun getOkHttpClientBuilder(baseUrl: String): OkHttpClient.Builder {
-        val builder = OkHttpClient.Builder()
-        applySSLConfiguration(builder, baseUrl)
-        return builder
-    }
-
-    /**
-     * Apply SSL configuration to an OkHttpClient.Builder for a specific server
-     */
-    fun applySSLConfiguration(builder: OkHttpClient.Builder, baseUrl: String) {
+    fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder  {
         try {
             val trustManagers = mutableListOf<TrustManager>()
             val keyManagers = mutableListOf<KeyManager>()
@@ -119,6 +107,7 @@ class CertUtil private constructor(context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to configure SSL for $baseUrl", e)
         }
+        return builder
     }
 
     /**

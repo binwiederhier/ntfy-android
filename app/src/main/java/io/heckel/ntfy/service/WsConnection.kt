@@ -11,7 +11,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
 import io.heckel.ntfy.msg.NotificationParser
-import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -20,7 +20,6 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import java.util.Calendar
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.random.Random
@@ -47,13 +46,8 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val certUtil = CertUtil.getInstance(context)
     private val client: OkHttpClient by lazy {
-        certUtil.getOkHttpClientBuilder(connectionId.baseUrl)
-        .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .build()
+        HttpUtil.wsClient(context, connectionId.baseUrl)
     }
     private var errorCount = 0
     private var webSocket: WebSocket? = null

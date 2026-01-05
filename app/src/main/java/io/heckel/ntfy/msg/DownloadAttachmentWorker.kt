@@ -20,29 +20,16 @@ import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 import java.util.concurrent.TimeUnit
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val certUtil = CertUtil.getInstance(context)
-    
-    private fun createClient(url: String): OkHttpClient {
-        val baseUrl = extractBaseUrl(url)
-        return certUtil.getOkHttpClientBuilder(baseUrl)
-            .callTimeout(15, TimeUnit.MINUTES)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-    }
-
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
@@ -80,7 +67,9 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
                 .url(attachment.url)
                 .addHeader("User-Agent", ApiService.USER_AGENT)
                 .build()
-            createClient(attachment.url).newCall(request).execute().use { response ->
+            val client = HttpUtil
+                .longCallClient(context, extractBaseUrl(attachment.url))
+            client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
                 if (!response.isSuccessful) {
                     throw Exception("Unexpected response: ${response.code}")

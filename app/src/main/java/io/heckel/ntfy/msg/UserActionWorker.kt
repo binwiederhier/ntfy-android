@@ -14,28 +14,14 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
-import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.extractBaseUrl
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val certUtil = CertUtil.getInstance(context)
-    
-    private fun createClient(url: String): OkHttpClient {
-        val baseUrl = extractBaseUrl(url)
-        return certUtil.getOkHttpClientBuilder(baseUrl)
-            .callTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-    }
-
     private val notifier = NotificationService(context)
     private val broadcaster = BroadcastService(context)
     private lateinit var repository: Repository
@@ -93,9 +79,10 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
             builder.addHeader(key, value)
         }
         val request = builder.build()
+        val client = HttpUtil.defaultClient(context, extractBaseUrl(url))
 
         Log.d(TAG, "Executing HTTP request: ${method.uppercase(Locale.getDefault())} ${action.url}")
-        createClient(url).newCall(request).execute().use { response ->
+        client.newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 save(action.copy(progress = ACTION_PROGRESS_SUCCESS, error = null))
                 return

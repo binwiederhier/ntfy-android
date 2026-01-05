@@ -39,7 +39,6 @@ import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
@@ -774,12 +773,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     .url(EXPORT_LOGS_UPLOAD_URL)
                     .put(log.toRequestBody())
                     .build()
-                val client = OkHttpClient.Builder()
-                    .callTimeout(1, TimeUnit.MINUTES) // Total timeout for entire request
-                    .connectTimeout(15, TimeUnit.SECONDS)
-                    .readTimeout(15, TimeUnit.SECONDS)
-                    .writeTimeout(15, TimeUnit.SECONDS)
-                    .build()
+                val client = HttpUtil
+                    .longCallClient(context, extractBaseUrl(EXPORT_LOGS_UPLOAD_URL))
                 try {
                     client.newCall(request).execute().use { response ->
                         if (!response.isSuccessful) {
@@ -1117,6 +1112,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         private const val EXPORT_LOGS_UPLOAD_ORIGINAL = "upload_original"
         private const val EXPORT_LOGS_UPLOAD_SCRUBBED = "upload_scrubbed"
         private const val EXPORT_LOGS_UPLOAD_URL = "https://nopaste.net/?f=json" // Run by binwiederhier; see https://github.com/binwiederhier/pcopy
+        private const val EXPORT_LOGS_UPLOAD_TIMEOUT_MINUTES = 1L
         private const val EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD = 100 * 1024 // Show "Uploading ..." if log larger than X
     }
 }

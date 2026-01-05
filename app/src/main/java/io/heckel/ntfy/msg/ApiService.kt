@@ -9,7 +9,7 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.ALL_PRIORITIES
-import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.PRIORITY_DEFAULT
 import io.heckel.ntfy.util.topicUrl
@@ -19,7 +19,6 @@ import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Credentials
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,38 +26,12 @@ import okhttp3.Response
 import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
-    private val sslManager = CertUtil.getInstance(context)
     private val gson = Gson()
     private val parser = NotificationParser()
-
-    private fun createClient(baseUrl: String): OkHttpClient {
-        return sslManager.getOkHttpClientBuilder(baseUrl)
-            .callTimeout(15, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-    }
-
-    private fun createPublishClient(baseUrl: String): OkHttpClient {
-        return sslManager.getOkHttpClientBuilder(baseUrl)
-            .callTimeout(5, TimeUnit.MINUTES)
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .build()
-    }
-
-    private fun createSubscriberClient(baseUrl: String): OkHttpClient {
-        return sslManager.getOkHttpClientBuilder(baseUrl)
-            .readTimeout(77, TimeUnit.SECONDS)
-            .build()
-    }
 
     suspend fun publish(
         baseUrl: String,
@@ -123,7 +96,7 @@ class ApiService(private val context: Context) {
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
-        val httpCall = createPublishClient(baseUrl).newCall(request)
+        val httpCall = HttpUtil.longCallClient(context, baseUrl).newCall(request)
         onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
         httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
@@ -154,7 +127,7 @@ class ApiService(private val context: Context) {
 
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = requestBuilder(url, user, customHeaders).build()
-        createClient(baseUrl).newCall(request).execute().use { response ->
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
@@ -182,7 +155,7 @@ class ApiService(private val context: Context) {
         Log.d(TAG, "Opening subscription connection to $url")
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = requestBuilder(url, user, customHeaders).build()
-        val call = createSubscriberClient(baseUrl).newCall(request)
+        val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 try {
@@ -221,7 +194,7 @@ class ApiService(private val context: Context) {
         val url = topicUrlAuth(baseUrl, topic)
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = requestBuilder(url, user, customHeaders).build()
-        createClient(baseUrl).newCall(request).execute().use { response ->
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
             } else if (user == null && response.code == 404) {
