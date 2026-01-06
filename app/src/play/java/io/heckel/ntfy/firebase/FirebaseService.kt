@@ -100,6 +100,7 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()?.nullIfZero()
         val attachmentUrl = data["attachment_url"]
         val sid = data["sid"]
+        val deleted = data["deleted"]?.toBooleanStrictOrNull() == true
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
@@ -129,6 +130,7 @@ class FirebaseService : FirebaseMessagingService() {
             } else null
             val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
             val actualSid = sid ?: id
+            val notificationId = if (deleted) 0 else deriveNotificationId(actualSid)
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
@@ -144,8 +146,8 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = deriveNotificationId(actualSid),
-                deleted = false
+                notificationId = notificationId,
+                deleted = deleted
             )
             if (repository.addNotification(notification)) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")

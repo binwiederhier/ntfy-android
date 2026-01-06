@@ -10,6 +10,7 @@ data class Message(
     val id: String,
     val time: Long,
     val sid: String?, // Sequence ID for updating notifications
+    val deleted: Boolean?, // true if the notification sequence is deleted
     val event: String,
     val topic: String,
     val priority: Int?,

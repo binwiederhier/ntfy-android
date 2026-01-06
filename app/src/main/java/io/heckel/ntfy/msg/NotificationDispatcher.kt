@@ -7,6 +7,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.decodeBytesMessage
+import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.util.safeLet
 
 /**
@@ -24,6 +25,12 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
 
     fun dispatch(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Dispatching $notification for subscription $subscription")
+
+        // Cancel existing notification if this is a delete message
+        if (notification.deleted) {
+            Log.d(TAG, "Cancelling notification for deleted message with sid ${notification.sid}, notificationId ${notification.notificationId}")
+            notifier.cancel(notification.notificationId)
+        }
 
         val muted = getMuted(subscription)
         val notify = shouldNotify(subscription, notification, muted)
@@ -76,6 +83,9 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
+        if (notification.deleted) {
+            return false
+        }
         if (subscription.upAppId != null) {
             return false
         }

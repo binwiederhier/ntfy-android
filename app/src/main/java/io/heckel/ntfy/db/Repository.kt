@@ -152,6 +152,11 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         if (maybeExistingNotification != null) {
             return false
         }
+        // If this is a delete notification, mark existing notifications with this sid as deleted
+        if (notification.deleted) {
+            notificationDao.markAsDeletedBySid(notification.subscriptionId, notification.sid)
+            // Still add the delete notification to the database for proper sequence tracking
+        }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
         return true

@@ -68,7 +68,7 @@ class NotificationParser {
             actions = actions,
             attachment = attachment,
             notificationId = notificationId,
-            deleted = false
+            deleted = message.deleted ?: false
         )
         return NotificationWithTopic(message.topic, notification)
     }
