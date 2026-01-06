@@ -60,7 +60,9 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     private suspend fun downloadIcon(iconFile: File) {
         Log.d(TAG, "Downloading icon from ${icon.url}")
         try {
-            val request = HttpUtil.requestBuilder(icon.url).build()
+            val user = repository.getUser(extractBaseUrl(icon.url))
+            val customHeaders = repository.getCustomHeaders(extractBaseUrl(icon.url))
+            val request = HttpUtil.requestBuilder(icon.url, user, customHeaders).build()
             val client = HttpUtil.defaultClient(context, extractBaseUrl(icon.url))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Headers received: $response, Content-Length: ${response.headers["Content-Length"]}")

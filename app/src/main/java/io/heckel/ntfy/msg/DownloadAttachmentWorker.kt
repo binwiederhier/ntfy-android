@@ -26,7 +26,6 @@ import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.Response
 import java.io.File
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.cancellation.CancellationException
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -62,7 +61,9 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         try {
-            val request = HttpUtil.requestBuilder(attachment.url).build()
+            val user = repository.getUser(extractBaseUrl(attachment.url))
+            val customHeaders = repository.getCustomHeaders(extractBaseUrl(attachment.url))
+            val request = HttpUtil.requestBuilder(attachment.url, user, customHeaders).build()
             val client = HttpUtil.longCallClient(context, extractBaseUrl(attachment.url))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
