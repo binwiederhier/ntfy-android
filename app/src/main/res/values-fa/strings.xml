@@ -130,4 +130,6 @@
     <string name="detail_item_menu_copy_url">رونوشت از نشانی</string>
     <string name="detail_item_menu_copy_contents">رونوشت از آگاهی</string>
     <string name="detail_item_download_info_not_downloaded">بارگیری نشده</string>
+    <string name="common_copied_to_clipboard">در تخته‌گیره رونوشت شد</string>
+    <string name="publish_dialog_title_placeholder">نمونه: کسی پشت در است</string>
 </resources>
