@@ -51,7 +51,6 @@ class NotificationParser {
         }
         val icon: Icon? = if (message.icon != null && message.icon != "") Icon(url = message.icon) else null
         val sid = message.sid ?: message.id // Default to id if sid not provided
-        // Derive notificationId from sid so updates replace the existing Android notification
         val notificationId = if (notify) deriveNotificationId(sid) else 0
         val notification = Notification(
             id = message.id,

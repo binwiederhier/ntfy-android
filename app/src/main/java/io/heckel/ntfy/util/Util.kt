@@ -511,6 +511,5 @@ fun Long.nullIfZero(): Long? {
  */
 fun deriveNotificationId(sid: String): Int {
     val hash = sid.hashCode()
-    // Ensure the ID is positive and non-zero
-    return if (hash == 0 || hash == Int.MIN_VALUE) 1 else kotlin.math.abs(hash)
+    return if (hash == 0 || hash == Int.MIN_VALUE) 1 else abs(hash)
 }
