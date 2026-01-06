@@ -503,3 +503,14 @@ fun Button.dangerButton() {
 fun Long.nullIfZero(): Long? {
     return if (this == 0L) return null else this
 }
+
+/**
+ * Derives a stable notification ID from a string (typically the sid or id).
+ * This allows Android to update existing notifications when a new version arrives.
+ * The result is always positive and never zero (0 means "no notification").
+ */
+fun deriveNotificationId(sid: String): Int {
+    val hash = sid.hashCode()
+    // Ensure the ID is positive and non-zero
+    return if (hash == 0 || hash == Int.MIN_VALUE) 1 else kotlin.math.abs(hash)
+}

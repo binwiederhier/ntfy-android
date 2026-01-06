@@ -16,7 +16,6 @@ import java.io.IOException
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 class ApiService(context: Context) {
     private val repository = Repository.getInstance(context)
@@ -139,7 +138,7 @@ class ApiService(context: Context) {
             val body = response.body.string().trim()
             if (body.isEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
+                parser.parse(line, subscriptionId = subscriptionId) // No notification when we poll
             }
 
             Log.d(TAG, "Notifications: $notifications")
@@ -170,7 +169,7 @@ class ApiService(context: Context) {
                     val source = response.body.source()
                     while (!source.exhausted()) {
                         val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
+                        val notification = parser.parseWithTopic(line, notify = true, subscriptionId = 0) // subscriptionId to be set downstream
                         if (notification != null) {
                             notify(notification.topic, notification.notification)
                         }

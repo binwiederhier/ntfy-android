@@ -8,9 +8,9 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.deriveNotificationId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
     // IMPORTANT:
@@ -49,7 +49,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
                     )
                     val newNotifications = repository
                         .onlyNewNotifications(subscription.id, notifications)
-                        .map { it.copy(notificationId = Random.nextInt()) }
+                        .map { it.copy(notificationId = deriveNotificationId(it.sid)) }
                     newNotifications.forEach { notification ->
                         if (repository.addNotification(notification)) {
                             dispatcher.dispatch(subscription, notification)

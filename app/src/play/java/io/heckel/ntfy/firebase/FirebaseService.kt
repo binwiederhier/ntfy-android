@@ -14,6 +14,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.util.nullIfZero
 import io.heckel.ntfy.util.toPriority
 import io.heckel.ntfy.util.topicShortUrl
@@ -21,7 +22,6 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class FirebaseService : FirebaseMessagingService() {
     private val repository by lazy { (application as Application).repository }
@@ -128,11 +128,12 @@ class FirebaseService : FirebaseMessagingService() {
                 )
             } else null
             val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
+            val actualSid = sid ?: id
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
-                sid = sid ?: id,
+                sid = actualSid,
                 title = title ?: "",
                 message = message,
                 contentType = contentType ?: "",
@@ -143,7 +144,7 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = Random.nextInt(),
+                notificationId = deriveNotificationId(actualSid),
                 deleted = false
             )
             if (repository.addNotification(notification)) {

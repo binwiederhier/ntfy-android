@@ -67,13 +67,13 @@ import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.DeleteWorker
+import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
@@ -709,7 +709,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                     val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
                     newNotifications.forEach { notification ->
                         newNotificationsCount++
-                        val notificationWithId = notification.copy(notificationId = Random.nextInt())
+                        val notificationWithId = notification.copy(notificationId = deriveNotificationId(notification.sid))
                         if (repository.addNotification(notificationWithId)) {
                             dispatcher?.dispatch(subscription, notificationWithId)
                         }
