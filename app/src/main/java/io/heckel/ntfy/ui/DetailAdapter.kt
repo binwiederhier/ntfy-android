@@ -114,7 +114,15 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
-            dateView.text = formatDateShort(notification.timestamp)
+            val isModified = notification.originalTime != 0L && notification.originalTime != notification.timestamp
+            val dateText = if (isModified) {
+                val originalDate = formatDateShort(notification.originalTime)
+                val modifiedDate = formatDateShort(notification.timestamp)
+                context.getString(R.string.detail_item_date_modified, originalDate, modifiedDate)
+            } else {
+                formatDateShort(notification.timestamp)
+            }
+            dateView.text = dateText
             if (notification.isMarkdown()) {
                 messageView.autoLinkMask = 0
                 markwon.setMarkdown(messageView, message.toString())

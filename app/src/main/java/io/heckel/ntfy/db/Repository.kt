@@ -111,7 +111,37 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
-        return notificationDao.listFlow(subscriptionId).asLiveData()
+        return notificationDao.listFlow(subscriptionId).asLiveData().map { notifications ->
+            groupNotificationsBySid(notifications)
+        }
+    }
+
+    /**
+     * Group notifications by sid (sequence ID) and return only the latest version of each.
+     * Also tracks the original time (earliest timestamp) for each sequence.
+     * Notifications are already sorted by timestamp DESC from the DAO query.
+     */
+    private fun groupNotificationsBySid(notifications: List<Notification>): List<Notification> {
+        val latestBySid = mutableMapOf<String, Notification>()
+        val originalTimeBySid = mutableMapOf<String, Long>()
+
+        for (notification in notifications) {
+            // Track the latest notification for each sid (first one since sorted DESC)
+            if (!latestBySid.containsKey(notification.sid)) {
+                latestBySid[notification.sid] = notification
+            }
+            // Track the original (earliest) time for each sid
+            val currentOriginal = originalTimeBySid[notification.sid]
+            if (currentOriginal == null || notification.timestamp < currentOriginal) {
+                originalTimeBySid[notification.sid] = notification.timestamp
+            }
+        }
+
+        // Return latest notifications with originalTime set, sorted by timestamp descending
+        return latestBySid.values.map { notification ->
+            val originalTime = originalTimeBySid[notification.sid] ?: notification.timestamp
+            notification.copy(originalTime = originalTime)
+        }.sortedByDescending { it.timestamp }.toMutableList()
     }
 
     fun clearAllNotificationIds(subscriptionId: Long) {
@@ -149,6 +179,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAsDeleted(notificationId: String) {
         notificationDao.markAsDeleted(notificationId)
+    }
+
+    fun markAsDeletedBySid(subscriptionId: Long, sid: String) {
+        notificationDao.markAsDeletedBySid(subscriptionId, sid)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {

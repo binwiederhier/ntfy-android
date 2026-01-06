@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class Message(
     val id: String,
     val time: Long,
+    val sid: String?, // Sequence ID for updating notifications
     val event: String,
     val topic: String,
     val priority: Int?,

@@ -96,7 +96,8 @@ data class SubscriptionWithMetadata(
 data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
-    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp in seconds
+    @ColumnInfo(name = "sid") val sid: String, // Sequence ID for updating notifications
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
@@ -109,7 +110,32 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-)
+    @Ignore val originalTime: Long = 0 // Original time of the notification sequence (computed, not stored)
+) {
+    // Secondary constructor for Room (without ignored fields)
+    constructor(
+        id: String,
+        subscriptionId: Long,
+        timestamp: Long,
+        sid: String,
+        title: String,
+        message: String,
+        contentType: String,
+        encoding: String,
+        notificationId: Int,
+        priority: Int,
+        tags: String,
+        click: String,
+        icon: Icon?,
+        actions: List<Action>?,
+        attachment: Attachment?,
+        deleted: Boolean
+    ) : this(
+        id, subscriptionId, timestamp, sid, title, message, contentType, encoding,
+        notificationId, priority, tags, click, icon, actions, attachment, deleted,
+        originalTime = 0
+    )
+}
 
 fun Notification.isMarkdown(): Boolean {
     return contentType == "text/markdown"
@@ -208,7 +234,7 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, CustomHeader::class, LogEntry::class], version = 15)
+@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, CustomHeader::class, LogEntry::class], version = 16)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -239,6 +265,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
                     .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_15_16)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -354,6 +381,14 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_14_15 = object : Migration(14, 15) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE CustomHeader (baseUrl TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY(baseUrl, name))")
+            }
+        }
+
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Add sid column, defaulting to the id value
+                db.execSQL("ALTER TABLE Notification ADD COLUMN sid TEXT NOT NULL DEFAULT ''")
+                db.execSQL("UPDATE Notification SET sid = id WHERE sid = ''")
             }
         }
     }
@@ -473,6 +508,9 @@ interface NotificationDao {
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)
+
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sid = :sid")
+    fun markAsDeletedBySid(subscriptionId: Long, sid: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)

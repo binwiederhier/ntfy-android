@@ -99,6 +99,7 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentSize = data["attachment_size"]?.toLongOrNull()?.nullIfZero()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()?.nullIfZero()
         val attachmentUrl = data["attachment_url"]
+        val sid = data["sid"]
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
@@ -131,6 +132,7 @@ class FirebaseService : FirebaseMessagingService() {
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
+                sid = sid ?: id,
                 title = title ?: "",
                 message = message,
                 contentType = contentType ?: "",

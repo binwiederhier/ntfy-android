@@ -32,29 +32,29 @@ class NotificationParser {
                 url = message.attachment.url,
             )
         } else null
-        val actions = if (message.actions != null) {
-            message.actions.map { a ->
-                Action(
-                    id = a.id,
-                    action = a.action,
-                    label = a.label,
-                    clear = a.clear,
-                    url = a.url,
-                    method = a.method,
-                    headers = a.headers,
-                    body = a.body,
-                    intent = a.intent,
-                    extras = a.extras,
-                    progress = null,
-                    error = null
-                )
-            }
-        } else null
+        val actions = message.actions?.map { a ->
+            Action(
+                id = a.id,
+                action = a.action,
+                label = a.label,
+                clear = a.clear,
+                url = a.url,
+                method = a.method,
+                headers = a.headers,
+                body = a.body,
+                intent = a.intent,
+                extras = a.extras,
+                progress = null,
+                error = null
+            )
+        }
         val icon: Icon? = if (message.icon != null && message.icon != "") Icon(url = message.icon) else null
+        val sid = message.sid ?: message.id // Default to id if sid not provided
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,
             timestamp = message.time,
+            sid = sid,
             title = message.title ?: "",
             message = message.message,
             contentType = message.contentType ?: "",

@@ -145,6 +145,7 @@
     <string name="detail_instant_delivery_disabled">Instant delivery off</string>
     <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
     <string name="detail_item_tags">Tags: %1$s</string>
+    <string name="detail_item_date_modified">%1$s (modified %2$s)</string>
     <string name="detail_item_snack_deleted">Notification deleted</string>
     <string name="detail_item_snack_undo">Undo</string>
     <string name="detail_item_menu_open">Open file</string>
