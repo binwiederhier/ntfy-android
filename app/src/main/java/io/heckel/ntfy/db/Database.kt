@@ -110,32 +110,7 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-    @Ignore val originalTime: Long = 0 // Original time of the notification sequence (computed, not stored)
-) {
-    // Secondary constructor for Room (without ignored fields)
-    constructor(
-        id: String,
-        subscriptionId: Long,
-        timestamp: Long,
-        sid: String,
-        title: String,
-        message: String,
-        contentType: String,
-        encoding: String,
-        notificationId: Int,
-        priority: Int,
-        tags: String,
-        click: String,
-        icon: Icon?,
-        actions: List<Action>?,
-        attachment: Attachment?,
-        deleted: Boolean
-    ) : this(
-        id, subscriptionId, timestamp, sid, title, message, contentType, encoding,
-        notificationId, priority, tags, click, icon, actions, attachment, deleted,
-        originalTime = 0
-    )
-}
+)
 
 fun Notification.isMarkdown(): Boolean {
     return contentType == "text/markdown"
