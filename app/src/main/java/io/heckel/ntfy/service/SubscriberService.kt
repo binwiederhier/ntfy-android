@@ -312,7 +312,16 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $notification")
         GlobalScope.launch(Dispatchers.IO) {
-            if (repository.addNotification(notification)) {
+            // Note: This logic is duplicated in the FirebaseService::handleMessage() method
+            //       and the web app hooks.js:handleNotification().
+
+            // Delete existing notification with same sid, if any
+            if (notification.sid.isNotEmpty()) {
+                repository.deleteBySid(subscription.id, notification.sid)
+            }
+            // Add notification to database and dispatch to be displayed/canceled
+            val added = repository.addNotification(notification)
+            if (added || notification.deleted) {
                 Log.d(TAG, "[$url] Dispatching notification $notification")
                 dispatcher.dispatch(subscription, notification)
             }

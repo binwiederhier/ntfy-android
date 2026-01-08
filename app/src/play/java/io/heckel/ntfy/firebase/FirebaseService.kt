@@ -1,7 +1,12 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
@@ -9,11 +14,11 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.util.nullIfZero
 import io.heckel.ntfy.util.toPriority
@@ -148,7 +153,17 @@ class FirebaseService : FirebaseMessagingService() {
                 notificationId = deriveNotificationId(actualSid),
                 deleted = deleted
             )
-            if (repository.addNotification(notification)) {
+
+            // Note: This logic is duplicated in the SubscriberService::onNotificationReceived() method
+            //       and the web app hooks.js:handleNotification().
+
+            // Delete existing notification with same sid, if any
+            if (notification.sid.isNotEmpty()) {
+                repository.deleteBySid(subscription.id, notification.sid)
+            }
+            // Add notification to database and dispatch to be displayed/canceled
+            val added = repository.addNotification(notification)
+            if (added || notification.deleted) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)
             }
