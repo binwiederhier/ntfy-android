@@ -137,7 +137,7 @@
     <string name="detail_clear_dialog_message">Видалити всі сповіщення в цій темі\?</string>
     <string name="detail_item_cannot_save">Неможливо зберегти вкладення: %1$s</string>
     <string name="detail_item_download_failed">Не вдалося завантажити вкладений файл: %1$s</string>
-    <string name="detail_how_to_example">Приклад (з використанням curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Приклад (з використанням curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не завантажено, закінчується %1$s</string>
     <string name="detail_test_message_error_too_large">Не вдається надіслати повідомлення: вкладення завелике.</string>
     <string name="detail_instant_delivery_enabled">Миттєва доставка включена</string>
@@ -339,4 +339,27 @@
     <string name="settings_advanced_unifiedpush_title">Увімкнути UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy буде виступати в якості дистриб\'ютора UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy не буде виступати в ролі дистриб\'ютора UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Запитати пізніше</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Закрити</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Надати зараз</string>
+    <string name="publish_dialog_title">Опублікувати до %1$s</string>
+    <string name="publish_dialog_title_hint">Назва</string>
+    <string name="publish_dialog_title_placeholder">наприклад, Хтось стоїть біля дверей</string>
+    <string name="publish_dialog_message_hint">Повідомлення</string>
+    <string name="publish_dialog_tags_hint">Теги</string>
+    <string name="publish_dialog_tags_placeholder">напр., попередження, череп</string>
+    <string name="publish_dialog_priority_hint">Пріоритет</string>
+    <string name="publish_dialog_button_publish">Опублікувати</string>
+    <string name="publish_dialog_error_sending">Не вдається опублікувати повідомлення: %1$s</string>
+    <string name="publish_dialog_error_server">Не вдається опублікувати повідомлення: %1$s (код %2$d)</string>
+    <string name="publish_dialog_message_published">Повідомлення опубліковано</string>
+    <string name="publish_dialog_uploading">Завантаження: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Завантаження скасовано</string>
+    <string name="publish_dialog_chip_title">Назва</string>
+    <string name="publish_dialog_chip_tags">Теги</string>
+    <string name="publish_dialog_chip_priority">Пріоритет</string>
+    <string name="publish_dialog_chip_click_url">Натисніть на URL</string>
+    <string name="publish_dialog_chip_delay">Затримка</string>
+    <string name="publish_dialog_chip_attach_url">Додати за URL-адресою</string>
+    <string name="publish_dialog_chip_attach_file">Додати локальний файл</string>
 </resources>
