@@ -317,7 +317,7 @@ class SubscriberService : Service() {
 
             // Delete existing notification with same sequenceId, if any
             if (notification.sequenceId.isNotEmpty()) {
-                repository.deleteBySequenceId(subscription.id, notification.sequenceId)
+                repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
             }
             // Add notification to database and dispatch to be displayed/canceled
             val added = repository.addNotification(notification)

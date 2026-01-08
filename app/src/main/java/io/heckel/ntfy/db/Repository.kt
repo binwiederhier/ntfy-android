@@ -129,9 +129,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         if (maybeExistingNotification != null) {
             return false
         }
-        // Delete old notifications with the same sequence ID (this is an update to an existing sequence)
+        // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
         if (notification.sequenceId.isNotEmpty()) {
-            notificationDao.deleteBySequenceId(notification.subscriptionId, notification.sequenceId)
+            notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
         }
         // If this is a delete notification, don't add it to the database
         if (notification.deleted) {
@@ -154,8 +154,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         notificationDao.markAsDeleted(notificationId)
     }
 
-    fun deleteBySequenceId(subscriptionId: Long, sequenceId: String) {
-        notificationDao.deleteBySequenceId(subscriptionId, sequenceId)
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsDeletedBySequenceId(subscriptionId, sequenceId)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {

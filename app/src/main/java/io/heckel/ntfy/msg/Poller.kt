@@ -62,7 +62,7 @@ class Poller(
         latestBySequenceId.filter { it.deleted }.forEach { notification ->
             val sequenceId = notification.sequenceId.ifEmpty { notification.id }
             Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
-            repository.deleteBySequenceId(subscriptionId, sequenceId)
+            repository.markAsDeletedBySequenceId(subscriptionId, sequenceId)
         }
 
         // Add only non-deleted latest notifications

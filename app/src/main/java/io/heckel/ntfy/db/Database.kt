@@ -484,9 +484,6 @@ interface NotificationDao {
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
     fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String)
 
-    @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
-    fun deleteBySequenceId(subscriptionId: Long, sequenceId: String)
-
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)
 
