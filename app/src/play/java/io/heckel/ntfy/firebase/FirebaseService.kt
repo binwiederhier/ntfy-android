@@ -130,7 +130,6 @@ class FirebaseService : FirebaseMessagingService() {
             } else null
             val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
             val actualSid = sid ?: id
-            val notificationId = if (deleted) 0 else deriveNotificationId(actualSid)
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
@@ -146,7 +145,7 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = notificationId,
+                notificationId = deriveNotificationId(actualSid),
                 deleted = deleted
             )
             if (repository.addNotification(notification)) {

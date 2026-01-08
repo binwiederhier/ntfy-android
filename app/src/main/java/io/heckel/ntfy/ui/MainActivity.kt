@@ -54,6 +54,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
@@ -67,7 +68,6 @@ import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.DeleteWorker
-import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
     private val repository by lazy { (application as Application).repository }
     private val api by lazy { ApiService(this) }
+    private val poller by lazy { Poller(api, repository) }
     private val messenger = FirebaseMessenger()
 
     // UI elements
@@ -663,9 +664,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
-                notifications.forEach { notification ->
-                    repository.addNotification(notification)
+                val addedNotifications = poller.poll(subscription, user)
+                addedNotifications.forEach { notification ->
                     if (notification.icon != null) {
                         DownloadManager.enqueue(this@MainActivity, notification.id, userAction = false, DownloadType.ICON)
                     }
@@ -705,14 +705,15 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 Log.d(TAG, "subscription: $subscription")
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
-                    val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
-                    newNotifications.forEach { notification ->
-                        newNotificationsCount++
-                        val notificationWithId = notification.copy(notificationId = deriveNotificationId(notification.sid))
-                        if (repository.addNotification(notificationWithId)) {
-                            dispatcher?.dispatch(subscription, notificationWithId)
-                        }
+                    val addedNotifications = poller.poll(
+                        subscription = subscription,
+                        user = user,
+                        since = subscription.lastNotificationId,
+                        notify = true
+                    )
+                    newNotificationsCount += addedNotifications.size
+                    addedNotifications.forEach { notification ->
+                        dispatcher?.dispatch(subscription, notification)
                     }
                 } catch (e: Exception) {
                     val topic = displayName(appBaseUrl, subscription)

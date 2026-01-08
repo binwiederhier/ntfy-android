@@ -7,8 +7,8 @@ import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.deriveNotificationId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -27,6 +27,7 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             val repository = Repository.getInstance(applicationContext)
             val dispatcher = NotificationDispatcher(applicationContext, repository)
             val api = ApiService(applicationContext)
+            val poller = Poller(api, repository)
 
             val baseUrl = inputData.getString(INPUT_DATA_BASE_URL)
             val topic = inputData.getString(INPUT_DATA_TOPIC)
@@ -40,20 +41,14 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             subscriptions.forEach{ subscription ->
                 try {
                     val user = repository.getUser(subscription.baseUrl)
-                    val notifications = api.poll(
-                        subscriptionId = subscription.id,
-                        baseUrl = subscription.baseUrl,
-                        topic = subscription.topic,
+                    val addedNotifications = poller.poll(
+                        subscription = subscription,
                         user = user,
-                        since = subscription.lastNotificationId
+                        since = subscription.lastNotificationId,
+                        notify = true
                     )
-                    val newNotifications = repository
-                        .onlyNewNotifications(subscription.id, notifications)
-                        .map { it.copy(notificationId = deriveNotificationId(it.sid)) }
-                    newNotifications.forEach { notification ->
-                        if (repository.addNotification(notification)) {
-                            dispatcher.dispatch(subscription, notification)
-                        }
+                    addedNotifications.forEach { notification ->
+                        dispatcher.dispatch(subscription, notification)
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed checking messages: ${e.message}", e)

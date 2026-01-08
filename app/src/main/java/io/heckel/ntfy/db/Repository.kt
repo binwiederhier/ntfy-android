@@ -152,10 +152,13 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         if (maybeExistingNotification != null) {
             return false
         }
-        // If this is a delete notification, mark existing notifications with this sid as deleted
+        // Delete old notifications with the same SID (this is an update to an existing sequence)
+        if (notification.sid.isNotEmpty()) {
+            notificationDao.deleteBySid(notification.subscriptionId, notification.sid)
+        }
+        // If this is a delete notification, don't add it to the database
         if (notification.deleted) {
-            notificationDao.markAsDeletedBySid(notification.subscriptionId, notification.sid)
-            // Still add the delete notification to the database for proper sequence tracking
+            return false
         }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
@@ -176,6 +179,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAsDeletedBySid(subscriptionId: Long, sid: String) {
         notificationDao.markAsDeletedBySid(subscriptionId, sid)
+    }
+
+    fun deleteBySid(subscriptionId: Long, sid: String) {
+        notificationDao.deleteBySid(subscriptionId, sid)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {

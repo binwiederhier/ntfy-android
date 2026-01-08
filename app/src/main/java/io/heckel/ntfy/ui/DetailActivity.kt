@@ -36,6 +36,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.copyToClipboard
@@ -67,6 +68,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
     private val repository by lazy { (application as Application).repository }
     private val api by lazy { ApiService(this) }
+    private val poller by lazy { Poller(api, repository) }
     private val messenger = FirebaseMessenger()
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -231,8 +233,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 // Fetch cached messages
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
-                    notifications.forEach { notification -> repository.addNotification(notification) }
+                    poller.poll(subscription, user)
                 } catch (e: Exception) {
                     Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
                 }
@@ -707,14 +708,16 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             try {
                 val subscription = repository.getSubscription(subscriptionId) ?: return@launch
                 val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
-                val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
-                val toastMessage = if (newNotifications.isEmpty()) {
+                val addedNotifications = poller.poll(
+                    subscription = subscription,
+                    user = user,
+                    since = subscription.lastNotificationId
+                )
+                val toastMessage = if (addedNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)
                 } else {
-                    getString(R.string.refresh_message_result, newNotifications.size)
+                    getString(R.string.refresh_message_result, addedNotifications.size)
                 }
-                newNotifications.forEach { notification -> repository.addNotification(notification) }
                 runOnUiThread {
                     Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show()
                     mainListContainer.isRefreshing = false

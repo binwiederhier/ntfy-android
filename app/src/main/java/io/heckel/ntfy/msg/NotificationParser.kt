@@ -14,12 +14,12 @@ import java.lang.reflect.Type
 class NotificationParser {
     private val gson = Gson()
 
-    fun parse(s: String, subscriptionId: Long = 0, notify: Boolean = false): Notification? {
-        val notificationWithTopic = parseWithTopic(s, subscriptionId = subscriptionId, notify = notify)
+    fun parse(s: String, subscriptionId: Long = 0,): Notification? {
+        val notificationWithTopic = parseWithTopic(s, subscriptionId = subscriptionId)
         return notificationWithTopic?.notification
     }
 
-    fun parseWithTopic(s: String, subscriptionId: Long = 0, notify: Boolean = false): NotificationWithTopic? {
+    fun parseWithTopic(s: String, subscriptionId: Long = 0): NotificationWithTopic? {
         val message = gson.fromJson(s, Message::class.java)
         if (message.event != ApiService.EVENT_MESSAGE) {
             return null
@@ -51,7 +51,6 @@ class NotificationParser {
         }
         val icon: Icon? = if (message.icon != null && message.icon != "") Icon(url = message.icon) else null
         val sid = message.sid ?: message.id // Default to id if sid not provided
-        val notificationId = if (notify) deriveNotificationId(sid) else 0
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,
@@ -67,7 +66,7 @@ class NotificationParser {
             icon = icon,
             actions = actions,
             attachment = attachment,
-            notificationId = notificationId,
+            notificationId = deriveNotificationId(sid),
             deleted = message.deleted ?: false
         )
         return NotificationWithTopic(message.topic, notification)
