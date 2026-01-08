@@ -97,7 +97,7 @@ data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp in seconds
-    @ColumnInfo(name = "sid") val sid: String, // Sequence ID for updating notifications
+    @ColumnInfo(name = "sequence_id") val sequenceId: String, // Sequence ID for updating notifications
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
@@ -361,9 +361,9 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_15_16 = object : Migration(15, 16) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                // Add sid column, defaulting to the id value
-                db.execSQL("ALTER TABLE Notification ADD COLUMN sid TEXT NOT NULL DEFAULT ''")
-                db.execSQL("UPDATE Notification SET sid = id WHERE sid = ''")
+                // Add sequence_id column, defaulting to the id value
+                db.execSQL("ALTER TABLE Notification ADD COLUMN sequence_id TEXT NOT NULL DEFAULT ''")
+                db.execSQL("UPDATE Notification SET sequence_id = id WHERE sequence_id = ''")
             }
         }
     }
@@ -457,9 +457,6 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
-    @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId") // Includes deleted
-    fun listIds(subscriptionId: Long): List<String>
-
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
@@ -484,11 +481,11 @@ interface NotificationDao {
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)
 
-    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sid = :sid")
-    fun markAsDeletedBySid(subscriptionId: Long, sid: String)
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String)
 
-    @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId AND sid = :sid")
-    fun deleteBySid(subscriptionId: Long, sid: String)
+    @Query("DELETE FROM notification WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
+    fun deleteBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)

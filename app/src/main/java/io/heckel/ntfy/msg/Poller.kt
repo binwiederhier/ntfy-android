@@ -9,7 +9,7 @@ import io.heckel.ntfy.util.deriveNotificationId
 
 /**
  * Polls the server for notifications and updates the repository.
- * Groups notifications by SID and only keeps the latest for each sequence.
+ * Groups notifications by sequenceId and only keeps the latest for each sequence.
  * Deletes sequences where the latest notification is marked as deleted.
  */
 class Poller(
@@ -42,7 +42,7 @@ class Poller(
     }
 
     /**
-     * Processes a list of notifications: groups by SID, deletes deleted sequences,
+     * Processes a list of notifications: groups by sequenceId, deletes deleted sequences,
      * and adds only non-deleted latest notifications.
      * Returns the list of notifications that were added.
      */
@@ -51,24 +51,24 @@ class Poller(
         notifications: List<Notification>,
         notify: Boolean
     ): List<Notification> {
-        // Group by SID and only keep the latest notification for each sequence
-        val latestBySid = notifications
-            .groupBy { it.sid.ifEmpty { it.id } }
+        // Group by sequenceId and only keep the latest notification for each sequence
+        val latestBySequenceId = notifications
+            .groupBy { it.sequenceId.ifEmpty { it.id } }
             .mapValues { (_, notifs) -> notifs.maxByOrNull { it.timestamp } }
             .values
             .filterNotNull()
 
         // Delete sequences where the latest notification is marked as deleted
-        latestBySid.filter { it.deleted }.forEach { notification ->
-            val sid = notification.sid.ifEmpty { notification.id }
-            Log.d(TAG, "Deleting notifications with sid $sid")
-            repository.deleteBySid(subscriptionId, sid)
+        latestBySequenceId.filter { it.deleted }.forEach { notification ->
+            val sequenceId = notification.sequenceId.ifEmpty { notification.id }
+            Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
+            repository.deleteBySequenceId(subscriptionId, sequenceId)
         }
 
         // Add only non-deleted latest notifications
-        val notificationsToAdd = latestBySid
+        val notificationsToAdd = latestBySequenceId
             .filter { !it.deleted }
-            .map { if (notify) it.copy(notificationId = deriveNotificationId(it.sid)) else it }
+            .map { if (notify) it.copy(notificationId = deriveNotificationId(it.sequenceId)) else it }
 
         val addedNotifications = mutableListOf<Notification>()
         notificationsToAdd.forEach { notification ->

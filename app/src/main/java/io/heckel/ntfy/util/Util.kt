@@ -505,11 +505,11 @@ fun Long.nullIfZero(): Long? {
 }
 
 /**
- * Derives a stable notification ID from a string (typically the sid or id).
+ * Derives a stable notification ID from a string (typically the sequenceId or id).
  * This allows Android to update existing notifications when a new version arrives.
  * The result is always positive and never zero (0 means "no notification").
  */
-fun deriveNotificationId(sid: String): Int {
-    val hash = sid.hashCode()
+fun deriveNotificationId(sequenceId: String): Int {
+    val hash = sequenceId.hashCode()
     return if (hash == 0 || hash == Int.MIN_VALUE) 1 else abs(hash)
 }

@@ -111,25 +111,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun getNotificationsLiveData(subscriptionId: Long): LiveData<List<Notification>> {
-        return notificationDao.listFlow(subscriptionId).asLiveData().map { notifications ->
-            groupNotificationsBySid(notifications)
-        }
-    }
-
-    /**
-     * Group notifications by sid (sequence ID) and return only the latest version of each.
-     * Notifications are already sorted by timestamp DESC from the DAO query.
-     */
-    private fun groupNotificationsBySid(notifications: List<Notification>): List<Notification> {
-        val latestBySid = mutableMapOf<String, Notification>()
-        for (notification in notifications) {
-            // Keep only the first (latest by timestamp) notification for each sid
-            if (!latestBySid.containsKey(notification.sid)) {
-                latestBySid[notification.sid] = notification
-            }
-        }
-        // Return sorted by timestamp descending (latest first)
-        return latestBySid.values.sortedByDescending { it.timestamp }.toMutableList()
+        return notificationDao.listFlow(subscriptionId).asLiveData()
     }
 
     fun clearAllNotificationIds(subscriptionId: Long) {
@@ -140,11 +122,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.get(notificationId)
     }
 
-    fun onlyNewNotifications(subscriptionId: Long, notifications: List<Notification>): List<Notification> {
-        val existingIds = notificationDao.listIds(subscriptionId)
-        return notifications.filterNot { existingIds.contains(it.id) }
-    }
-
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun addNotification(notification: Notification): Boolean {
@@ -152,9 +129,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         if (maybeExistingNotification != null) {
             return false
         }
-        // Delete old notifications with the same SID (this is an update to an existing sequence)
-        if (notification.sid.isNotEmpty()) {
-            notificationDao.deleteBySid(notification.subscriptionId, notification.sid)
+        // Delete old notifications with the same sequence ID (this is an update to an existing sequence)
+        if (notification.sequenceId.isNotEmpty()) {
+            notificationDao.deleteBySequenceId(notification.subscriptionId, notification.sequenceId)
         }
         // If this is a delete notification, don't add it to the database
         if (notification.deleted) {
@@ -177,12 +154,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         notificationDao.markAsDeleted(notificationId)
     }
 
-    fun markAsDeletedBySid(subscriptionId: Long, sid: String) {
-        notificationDao.markAsDeletedBySid(subscriptionId, sid)
-    }
-
-    fun deleteBySid(subscriptionId: Long, sid: String) {
-        notificationDao.deleteBySid(subscriptionId, sid)
+    fun deleteBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.deleteBySequenceId(subscriptionId, sequenceId)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {

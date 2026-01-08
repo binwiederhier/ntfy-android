@@ -50,12 +50,12 @@ class NotificationParser {
             )
         }
         val icon: Icon? = if (message.icon != null && message.icon != "") Icon(url = message.icon) else null
-        val sid = message.sid ?: message.id // Default to id if sid not provided
+        val sequenceId = message.sequenceId ?: message.id // Default to id if sequenceId not provided
         val notification = Notification(
             id = message.id,
             subscriptionId = subscriptionId,
             timestamp = message.time,
-            sid = sid,
+            sequenceId = sequenceId,
             title = message.title ?: "",
             message = message.message,
             contentType = message.contentType ?: "",
@@ -66,7 +66,7 @@ class NotificationParser {
             icon = icon,
             actions = actions,
             attachment = attachment,
-            notificationId = deriveNotificationId(sid),
+            notificationId = deriveNotificationId(sequenceId),
             deleted = message.deleted ?: false
         )
         return NotificationWithTopic(message.topic, notification)

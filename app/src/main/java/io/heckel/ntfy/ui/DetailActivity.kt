@@ -333,8 +333,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val notification = adapter.get(viewHolder.absoluteAdapterPosition)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    // Delete all notifications in the sequence (same sid)
-                    repository.markAsDeletedBySid(notification.subscriptionId, notification.sid)
+                    repository.markAsDeleted(notification.id)
                 }
                 val snackbar = Snackbar.make(mainList, R.string.detail_item_snack_deleted, Snackbar.LENGTH_SHORT)
                 snackbar.setAction(R.string.detail_item_snack_undo) {

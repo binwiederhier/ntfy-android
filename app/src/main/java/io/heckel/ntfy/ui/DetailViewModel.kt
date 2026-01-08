@@ -15,14 +15,7 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun markAsDeleted(notificationId: String) = viewModelScope.launch(Dispatchers.IO) {
-        // Look up the notification to get its subscriptionId and sid, then delete the entire sequence
-        val notification = repository.getNotification(notificationId)
-        if (notification != null) {
-            repository.markAsDeletedBySid(notification.subscriptionId, notification.sid)
-        } else {
-            // Fallback to deleting by id if notification not found
-            repository.markAsDeleted(notificationId)
-        }
+        repository.markAsDeleted(notificationId)
     }
 }
 

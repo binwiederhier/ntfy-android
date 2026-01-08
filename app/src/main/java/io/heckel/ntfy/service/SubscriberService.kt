@@ -315,9 +315,9 @@ class SubscriberService : Service() {
             // Note: This logic is duplicated in the FirebaseService::handleMessage() method
             //       and the web app hooks.js:handleNotification().
 
-            // Delete existing notification with same sid, if any
-            if (notification.sid.isNotEmpty()) {
-                repository.deleteBySid(subscription.id, notification.sid)
+            // Delete existing notification with same sequenceId, if any
+            if (notification.sequenceId.isNotEmpty()) {
+                repository.deleteBySequenceId(subscription.id, notification.sequenceId)
             }
             // Add notification to database and dispatch to be displayed/canceled
             val added = repository.addNotification(notification)

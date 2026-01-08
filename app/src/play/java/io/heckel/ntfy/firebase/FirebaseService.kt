@@ -104,7 +104,7 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentSize = data["attachment_size"]?.toLongOrNull()?.nullIfZero()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()?.nullIfZero()
         val attachmentUrl = data["attachment_url"]
-        val sid = data["sid"]
+        val sequenceId = data["sequence_id"]
         val deleted = data["deleted"]?.toBooleanStrictOrNull() == true
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
@@ -134,12 +134,12 @@ class FirebaseService : FirebaseMessagingService() {
                 )
             } else null
             val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
-            val actualSid = sid ?: id
+            val actualSequenceId = sequenceId ?: id
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
-                sid = actualSid,
+                sequenceId = actualSequenceId,
                 title = title ?: "",
                 message = message,
                 contentType = contentType ?: "",
@@ -150,16 +150,16 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = deriveNotificationId(actualSid),
+                notificationId = deriveNotificationId(actualSequenceId),
                 deleted = deleted
             )
 
             // Note: This logic is duplicated in the SubscriberService::onNotificationReceived() method
             //       and the web app hooks.js:handleNotification().
 
-            // Delete existing notification with same sid, if any
-            if (notification.sid.isNotEmpty()) {
-                repository.deleteBySid(subscription.id, notification.sid)
+            // Delete existing notification with same sequenceId, if any
+            if (notification.sequenceId.isNotEmpty()) {
+                repository.deleteBySequenceId(subscription.id, notification.sequenceId)
             }
             // Add notification to database and dispatch to be displayed/canceled
             val added = repository.addNotification(notification)

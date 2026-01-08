@@ -28,7 +28,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
 
         // Cancel existing notification if this is a delete message
         if (notification.deleted) {
-            Log.d(TAG, "Cancelling notification for deleted message with sid ${notification.sid}, notificationId ${notification.notificationId}")
+            Log.d(TAG, "Cancelling notification for deleted message with sequenceId ${notification.sequenceId}, notificationId ${notification.notificationId}")
             notifier.cancel(notification.notificationId)
         }
 

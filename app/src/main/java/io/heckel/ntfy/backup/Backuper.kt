@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
@@ -184,7 +185,7 @@ class Backuper(val context: Context) {
                     id = n.id,
                     subscriptionId = n.subscriptionId,
                     timestamp = n.timestamp,
-                    sid = n.sid ?: n.id,
+                    sequenceId = n.sequenceId ?: n.id,
                     title = n.title,
                     message = n.message,
                     contentType = n.contentType,
@@ -316,7 +317,7 @@ class Backuper(val context: Context) {
                 id = n.id,
                 subscriptionId = n.subscriptionId,
                 timestamp = n.timestamp,
-                sid = n.sid,
+                sequenceId = n.sequenceId,
                 title = n.title,
                 message = n.message,
                 contentType = n.contentType,
@@ -393,7 +394,7 @@ data class Notification(
     val id: String,
     val subscriptionId: Long,
     val timestamp: Long,
-    val sid: String?, // Sequence ID for updating notifications
+    @SerializedName("sequence_id") val sequenceId: String?, // Sequence ID for updating notifications
     val title: String,
     val message: String,
     val contentType: String, // "" or "text/markdown" (empty assumes "text/plain")
