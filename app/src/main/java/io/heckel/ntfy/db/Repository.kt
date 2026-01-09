@@ -203,8 +203,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return trustedCertificateDao.get(baseUrl)
     }
 
-    suspend fun addTrustedCertificate(baseUrl: String, fingerprint: String, pem: String) {
-        trustedCertificateDao.insert(TrustedCertificate(baseUrl, fingerprint, pem))
+    suspend fun addTrustedCertificate(baseUrl: String, pem: String) {
+        trustedCertificateDao.insert(TrustedCertificate(baseUrl, pem))
     }
 
     suspend fun removeTrustedCertificate(baseUrl: String) {

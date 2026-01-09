@@ -249,7 +249,7 @@ class TrustedCertificateFragment : DialogFragment() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        fingerprintText.text = trustedCert.fingerprint
+                        showError(getString(R.string.trusted_certificate_dialog_error_parse, e.message ?: "Unknown error"))
                     }
                 }
             } else {
@@ -354,9 +354,8 @@ class TrustedCertificateFragment : DialogFragment() {
         val certificate = cert ?: return
         val url = baseUrl ?: return
         lifecycleScope.launch(Dispatchers.IO) {
-            val fingerprint = CertUtil.calculateFingerprint(certificate)
             val pem = CertUtil.encodeCertificateToPem(certificate)
-            repository.addTrustedCertificate(url, fingerprint, pem)
+            repository.addTrustedCertificate(url, pem)
             withContext(Dispatchers.Main) {
                 if (mode != Mode.UNKNOWN) {
                     Toast.makeText(context, R.string.trusted_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()

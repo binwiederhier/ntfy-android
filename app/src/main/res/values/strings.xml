@@ -519,6 +519,7 @@
     <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
     <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
     <string name="trusted_certificate_dialog_error_invalid_url">Invalid URL</string>
+    <string name="trusted_certificate_dialog_error_parse">Unable to load certificate: %1$s</string>
     <string name="trusted_certificate_dialog_button_next">Next</string>
     <string name="trusted_certificate_dialog_button_trust">Trust</string>
     <string name="trusted_certificate_dialog_button_delete">Delete</string>

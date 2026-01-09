@@ -229,9 +229,8 @@ class Backuper(val context: Context) {
         }
         certificates.forEach { c ->
             try {
-                val cert = CertUtil.parsePemCertificate(c.pem)
-                val fingerprint = CertUtil.calculateFingerprint(cert)
-                repository.addTrustedCertificate(c.baseUrl, fingerprint, c.pem)
+                CertUtil.parsePemCertificate(c.pem) // Validate the certificate
+                repository.addTrustedCertificate(c.baseUrl, c.pem)
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore trusted certificate for ${c.baseUrl}: ${e.message}. Ignoring.", e)
             }
@@ -303,25 +302,21 @@ class Backuper(val context: Context) {
 
     private suspend fun createNotificationList(): List<Notification> {
         return repository.getNotifications().map { n ->
-            val actions = if (n.actions != null) {
-                n.actions.map { a ->
-                    Action(
-                        id = a.id,
-                        action = a.action,
-                        label = a.label,
-                        clear = a.clear,
-                        url = a.url,
-                        method = a.method,
-                        headers = a.headers,
-                        body = a.body,
-                        intent = a.intent,
-                        extras = a.extras,
-                        progress = a.progress,
-                        error = a.error
-                    )
-                }
-            } else {
-                null
+            val actions = n.actions?.map { a ->
+                Action(
+                    id = a.id,
+                    action = a.action,
+                    label = a.label,
+                    clear = a.clear,
+                    url = a.url,
+                    method = a.method,
+                    headers = a.headers,
+                    body = a.body,
+                    intent = a.intent,
+                    extras = a.extras,
+                    progress = a.progress,
+                    error = a.error
+                )
             }
             val attachment = if (n.attachment != null) {
                 Attachment(

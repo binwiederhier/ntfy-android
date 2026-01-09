@@ -191,7 +191,6 @@ data class User(
 @Entity(tableName = "TrustedCertificate")
 data class TrustedCertificate(
     @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
-    @ColumnInfo(name = "fingerprint") val fingerprint: String,
     @ColumnInfo(name = "pem") val pem: String
 )
 
@@ -387,7 +386,7 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_15_16 = object : Migration(15, 16) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, fingerprint TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
+                db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
                 db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }

@@ -202,13 +202,9 @@ class SubscriberService : Service() {
      */
     private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
         // Group INSTANT subscriptions by base URL, there is only one connection per base URL
-        val instantSubscriptions = repository.getSubscriptions()
-            .filter { s -> s.instant }
+        val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val connectionProtocol = repository.getConnectionProtocol()
-        val trustedCertsHash = repository.getTrustedCertificates()
-            .joinToString(",") { it.fingerprint }
-            .hashCode()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
             .groupBy { s -> s.baseUrl }
             .map { (baseUrl, subs) ->
@@ -221,6 +217,7 @@ class SubscriberService : Service() {
                     .sortedBy { "${it.name}:${it.value}" }
                     .joinToString(",") { "${it.name}:${it.value}" }
                     .hashCode()
+                val trustedCertsHash = repository.getTrustedCertificate(baseUrl)?.hashCode() ?: 0
                 val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
                 ConnectionId(
                     baseUrl = baseUrl,
