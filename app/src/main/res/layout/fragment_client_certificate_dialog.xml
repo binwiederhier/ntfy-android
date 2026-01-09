@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/common_service_url"
-                    app:placeholderText="@string/client_certificate_dialog_base_url_placeholder">
+                    app:placeholderText="@string/common_service_url_placeholder">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/client_certificate_base_url_text"

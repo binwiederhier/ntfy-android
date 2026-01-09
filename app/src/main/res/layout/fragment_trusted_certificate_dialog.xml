@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="@string/common_service_url"
-                    app:placeholderText="@string/trusted_certificate_dialog_base_url_placeholder">
+                    app:placeholderText="@string/common_service_url_placeholder">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/trusted_certificate_base_url_text"
