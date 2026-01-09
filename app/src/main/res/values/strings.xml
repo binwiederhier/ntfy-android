@@ -431,7 +431,7 @@
     <string name="settings_advanced_certificates_trusted_item_summary">%1$s, expires %2$s</string>
     <string name="settings_advanced_certificates_trusted_item_summary_expired">%1$s, expired</string>
     <string name="settings_advanced_certificates_trusted_add_title">Add a trusted certificate</string>
-    <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). When connecting to the specified ntfy server, this certificate will be trusted.</string>
+    <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). When connecting to the ntfy server, this certificate will be trusted.</string>
     <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
     <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s\nExpires %2$s, used by %3$s</string>
     <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s\nExpired, used by %2$s</string>
@@ -505,11 +505,11 @@
     <string name="trusted_certificate_dialog_title_add">Add trusted certificate</string>
     <string name="trusted_certificate_dialog_description">The server\'s certificate could not be verified. Review the details below before trusting.</string>
     <string name="trusted_certificate_dialog_security_title">Your connection is not private</string>
-    <string name="trusted_certificate_dialog_security_description">Attackers might be trying to steal your information. You should not proceed unless you know why this certificate is not trusted.</string>
+    <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
     <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
     <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
     <string name="trusted_certificate_dialog_base_url_hint">Service URL</string>
-    <string name="trusted_certificate_dialog_base_url_placeholder">https://ntfy.example.com</string>
+    <string name="trusted_certificate_dialog_base_url_placeholder">e.g. https://ntfy.example.com</string>
     <string name="trusted_certificate_dialog_service_url">Service URL</string>
     <string name="trusted_certificate_dialog_subject">Subject</string>
     <string name="trusted_certificate_dialog_issuer">Issuer</string>
@@ -529,7 +529,7 @@
     <string name="client_certificate_dialog_title">Client certificate</string>
     <string name="client_certificate_dialog_title_add">Add client certificate</string>
     <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
-    <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate.</string>
+    <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate. This certificate will be used to authenticate with the server.</string>
     <string name="client_certificate_dialog_password_hint">Password</string>
     <string name="client_certificate_dialog_base_url_hint">Service URL</string>
     <string name="client_certificate_dialog_base_url_placeholder">e.g. https://ntfy.example.com</string>

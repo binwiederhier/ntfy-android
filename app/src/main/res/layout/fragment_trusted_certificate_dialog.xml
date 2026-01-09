@@ -64,14 +64,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="@string/trusted_certificate_dialog_base_url_hint">
+                    android:hint="@string/trusted_certificate_dialog_base_url_hint"
+                    app:placeholderText="@string/trusted_certificate_dialog_base_url_placeholder">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/trusted_certificate_base_url_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textUri"
-                        android:text="@string/trusted_certificate_dialog_base_url_placeholder" />
+                        android:inputType="textUri" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

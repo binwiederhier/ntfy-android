@@ -94,16 +94,32 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/client_certificate_error_text"
+                <LinearLayout
+                    android:id="@+id/client_certificate_error_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:textSize="14sp"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
+                    android:orientation="horizontal"
                     android:paddingTop="16dp"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/client_certificate_error_image"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="1dp"
+                        app:srcCompat="@drawable/ic_error_red_24dp"
+                        android:importantForAccessibility="no" />
+
+                    <TextView
+                        android:id="@+id/client_certificate_error_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/DangerText"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

@@ -59,6 +59,7 @@ class ClientCertificateFragment : DialogFragment() {
     private lateinit var passwordText: TextInputEditText
     private lateinit var baseUrlLayout: TextInputLayout
     private lateinit var baseUrlText: TextInputEditText
+    private lateinit var errorLayout: LinearLayout
     private lateinit var errorText: TextView
 
     // Page 2 views
@@ -159,6 +160,7 @@ class ClientCertificateFragment : DialogFragment() {
         passwordText = view.findViewById(R.id.client_certificate_password_text)
         baseUrlLayout = view.findViewById(R.id.client_certificate_base_url_layout)
         baseUrlText = view.findViewById(R.id.client_certificate_base_url_text)
+        errorLayout = view.findViewById(R.id.client_certificate_error_layout)
         errorText = view.findViewById(R.id.client_certificate_error_text)
 
         // Page 2 views
@@ -273,7 +275,7 @@ class ClientCertificateFragment : DialogFragment() {
             extractedCert = keyStore.getCertificate(alias) as X509Certificate
             baseUrl = url
             password = pwd
-            errorText.isVisible = false
+            errorLayout.isVisible = false
             showPage2()
         } catch (e: Exception) {
             showError(getString(R.string.client_certificate_dialog_error_wrong_password))
@@ -335,7 +337,7 @@ class ClientCertificateFragment : DialogFragment() {
 
     private fun showError(message: String) {
         errorText.text = message
-        errorText.isVisible = true
+        errorLayout.isVisible = true
     }
 
     enum class Mode {
