@@ -114,10 +114,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }
 
-    fun clearAllNotificationIds(subscriptionId: Long) {
-        return notificationDao.clearAllNotificationIds(subscriptionId)
-    }
-
     fun getNotification(notificationId: String): Notification? {
         return notificationDao.get(notificationId)
     }
@@ -160,6 +156,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAllAsDeleted(subscriptionId: Long) {
         notificationDao.markAllAsDeleted(subscriptionId)
+    }
+
+    fun markAllAsRead(subscriptionId: Long) {
+        return notificationDao.markAllAsRead(subscriptionId)
     }
 
     fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {

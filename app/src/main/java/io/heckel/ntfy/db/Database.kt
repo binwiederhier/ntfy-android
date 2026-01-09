@@ -476,7 +476,7 @@ interface NotificationDao {
     fun get(notificationId: String): Notification?
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
-    fun clearAllNotificationIds(subscriptionId: Long)
+    fun markAllAsRead(subscriptionId: Long)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)

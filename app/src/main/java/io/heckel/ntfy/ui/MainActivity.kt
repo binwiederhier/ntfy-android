@@ -762,7 +762,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
     private fun handleActionModeClick(subscription: Subscription) {
         adapter.toggleSelection(subscription.id)
-        if (adapter.selected.size == 0) {
+        if (adapter.selected.isEmpty()) {
             finishActionMode()
         } else {
             actionMode!!.title = adapter.selected.size.toString()

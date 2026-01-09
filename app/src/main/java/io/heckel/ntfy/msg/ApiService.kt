@@ -236,6 +236,8 @@ class ApiService(context: Context) {
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"
         const val EVENT_MESSAGE = "message"
+        const val EVENT_MESSAGE_DELETE = "message_delete"
+        const val EVENT_MESSAGE_READ = "message_read"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
 

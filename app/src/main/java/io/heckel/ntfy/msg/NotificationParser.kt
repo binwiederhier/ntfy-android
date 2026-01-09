@@ -14,16 +14,22 @@ import java.lang.reflect.Type
 class NotificationParser {
     private val gson = Gson()
 
-    fun parse(s: String, subscriptionId: Long = 0,): Notification? {
+    fun parse(s: String, subscriptionId: Long = 0): Notification? {
         val notificationWithTopic = parseWithTopic(s, subscriptionId = subscriptionId)
         return notificationWithTopic?.notification
     }
 
     fun parseWithTopic(s: String, subscriptionId: Long = 0): NotificationWithTopic? {
         val message = gson.fromJson(s, Message::class.java)
-        if (message.event != ApiService.EVENT_MESSAGE) {
+        // Accept message, message_delete, and message_read events
+        val isValidEvent = message.event == ApiService.EVENT_MESSAGE ||
+                message.event == ApiService.EVENT_MESSAGE_DELETE ||
+                message.event == ApiService.EVENT_MESSAGE_READ
+        if (!isValidEvent) {
             return null
         }
+        // Set deleted flag based on event type
+        val deleted = message.event == ApiService.EVENT_MESSAGE_DELETE
         val attachment = if (message.attachment?.url != null) {
             Attachment(
                 name = message.attachment.name,
@@ -67,7 +73,7 @@ class NotificationParser {
             actions = actions,
             attachment = attachment,
             notificationId = deriveNotificationId(sequenceId),
-            deleted = message.deleted ?: false
+            deleted = deleted
         )
         return NotificationWithTopic(message.topic, notification)
     }

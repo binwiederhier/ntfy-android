@@ -520,7 +520,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         GlobalScope.launch(Dispatchers.IO) {
             // Note: This is here and not in onDestroy/onStop, because we want to clear notifications as early
             // as possible, so that we don't see the "new" bubble in the main list anymore.
-            repository.clearAllNotificationIds(subscriptionId)
+            repository.markAllAsRead(subscriptionId)
         }
         Log.d(TAG, "onPause hook: Marking subscription $subscriptionId as 'not open'")
         repository.detailViewSubscriptionId.set(0) // Mark as closed

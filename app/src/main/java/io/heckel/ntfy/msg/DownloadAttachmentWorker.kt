@@ -177,8 +177,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
     }
 
     private fun shouldAbortDownload(): Boolean {
-        val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()
-        when (maxAutoDownloadSize) {
+        when (val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()) {
             Repository.AUTO_DOWNLOAD_NEVER -> return true
             Repository.AUTO_DOWNLOAD_ALWAYS -> return false
             else -> {
