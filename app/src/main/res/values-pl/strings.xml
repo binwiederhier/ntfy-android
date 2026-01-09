@@ -20,7 +20,7 @@
     <string name="settings_general_dark_mode_title">Tryb ciemny</string>
     <string name="settings_backup_restore_restore_failed">Przywracanie nie powiodło się: %1$s</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logi usunięte</string>
-    <string name="user_dialog_base_url_hint">Adres URL usługi</string>
+    <string name="common_service_url">Adres URL usługi</string>
     <string name="detail_settings_appearance_display_name_title">Nazwa wyświetlana</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (domyślny)</string>
     <string name="user_dialog_title_edit">Edytuj użytkownika</string>

@@ -307,7 +307,7 @@
     <string name="settings_advanced_clear_logs_deleted_toast">日誌已刪除</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s （默認）</string>
     <string name="user_dialog_title_edit">編輯用戶</string>
-    <string name="user_dialog_base_url_hint">服務 URL</string>
+    <string name="common_service_url">服務 URL</string>
     <string name="user_dialog_password_hint_edit">密碼 (留空不變)</string>
     <string name="settings_general_dark_mode_entry_dark">暗色模式</string>
     <string name="settings_backup_restore_backup_title">備份到文件</string>

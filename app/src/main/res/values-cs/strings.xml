@@ -220,7 +220,7 @@
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_title_add">Přidat uživatele</string>
     <string name="user_dialog_description_edit">Uživatelské jméno a heslo vybraného uživatele můžete upravit nebo odstranit.</string>
-    <string name="user_dialog_base_url_hint">URL služby</string>
+    <string name="common_service_url">URL služby</string>
     <string name="user_dialog_username_hint">Uživatelské jméno</string>
     <string name="user_dialog_password_hint_add">Heslo</string>
     <string name="user_dialog_password_hint_edit">Heslo (nezměněno, pokud zůstane prázdné)</string>

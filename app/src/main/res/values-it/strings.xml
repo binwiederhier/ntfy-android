@@ -166,7 +166,7 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Stream JSON over HTTP</string>
     <string name="user_dialog_description_add">Puoi aggiungere un utente qui. Tutti gli argomenti per il server specificato utilizzeranno questo utente.</string>
     <string name="user_dialog_description_edit">Puoi modificare nome utente/password per l\'utente selezionato, oppure eliminarlo.</string>
-    <string name="user_dialog_base_url_hint">URL del servizio</string>
+    <string name="common_service_url">URL del servizio</string>
     <string name="user_dialog_username_hint">Nome utente</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (non modificata se il campo viene lasciato vuoto)</string>

@@ -96,7 +96,7 @@
     <string name="detail_settings_about_topic_url_title">தலைப்பு முகவரி</string>
     <string name="user_dialog_description_add">நீங்கள் இங்கே ஒரு பயனரைச் சேர்க்கலாம். கொடுக்கப்பட்ட சேவையகத்திற்கான அனைத்து தலைப்புகளும் இந்த பயனரைப் பயன்படுத்தும்.</string>
     <string name="user_dialog_description_edit">தேர்ந்தெடுக்கப்பட்ட பயனருக்கான பயனர்பெயர்/கடவுச்சொல்லை நீங்கள் திருத்தலாம் அல்லது நீக்கலாம்.</string>
-    <string name="user_dialog_base_url_hint">பணி முகவரி</string>
+    <string name="common_service_url">பணி முகவரி</string>
     <string name="user_dialog_username_hint">பயனர்பெயர்</string>
     <string name="main_item_status_text_not_one">%1$d அறிவிப்புகள்</string>
     <string name="main_item_status_reconnecting">மீண்டும் இணைத்தல்…</string>

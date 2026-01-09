@@ -293,7 +293,7 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Загрузить и скопировать ссылку</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Загрузить и скопировать ссылку (с цензурой)</string>
     <string name="user_dialog_description_edit">Вы можете изменить имя или пароль выбранного пользователя, или удалить его.</string>
-    <string name="user_dialog_base_url_hint">Базовый URL службы</string>
+    <string name="common_service_url">Базовый URL службы</string>
     <string name="user_dialog_password_hint_add">Пароль</string>
     <string name="user_dialog_password_hint_edit">Пароль (не изменится, если оставить пустым)</string>
     <string name="user_dialog_button_add">Добавить пользователя</string>

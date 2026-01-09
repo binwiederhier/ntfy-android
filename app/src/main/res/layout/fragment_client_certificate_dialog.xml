@@ -67,7 +67,7 @@
                     android:id="@+id/client_certificate_base_url_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/client_certificate_dialog_base_url_hint"
+                    android:hint="@string/common_service_url"
                     app:placeholderText="@string/client_certificate_dialog_base_url_placeholder">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -150,7 +150,7 @@
                     android:id="@+id/client_certificate_base_url_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/client_certificate_dialog_base_url_hint"
+                    android:text="@string/common_service_url"
                     android:textSize="12sp"
                     android:textColor="?android:textColorSecondary"
                     android:paddingStart="4dp"

@@ -284,7 +284,7 @@
     <string name="user_dialog_title_edit">עריכת משתמש</string>
     <string name="user_dialog_description_add">כאן אפשר להוסיף משתמש. כל הנושאים לשרת שצוין ישתמשו במשתמש הזה.</string>
     <string name="user_dialog_description_edit">אפשר לערוך שם משתמש/סיסמה למשתמש הנבחר או למחוק אותו.</string>
-    <string name="user_dialog_base_url_hint">כתובת שירות</string>
+    <string name="common_service_url">כתובת שירות</string>
     <string name="user_dialog_username_hint">שם משתמש</string>
     <string name="user_dialog_button_cancel">ביטול</string>
     <string name="user_dialog_button_delete">מחיקת משתמש</string>

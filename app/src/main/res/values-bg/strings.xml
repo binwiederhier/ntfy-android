@@ -211,7 +211,7 @@
     <string name="user_dialog_description_edit">Можете да променяте избрания потребител или да го премахнете.</string>
     <string name="settings_about_version_title">Издание</string>
     <string name="settings_about_header">Относно</string>
-    <string name="user_dialog_base_url_hint">Адрес на услугата</string>
+    <string name="common_service_url">Адрес на услугата</string>
     <string name="detail_item_cannot_open">Прикаченият файл не може да бъде отворен: %1$s</string>
     <string name="detail_item_snack_deleted">Известието е премахнато</string>
     <string name="detail_item_snack_undo">Отменяне</string>

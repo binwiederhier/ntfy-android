@@ -284,7 +284,7 @@
     <string name="user_dialog_description_add">您可以在此添加用户。所有该服务器上的主题订阅都将使用该用户。</string>
     <string name="user_dialog_button_delete">删除用户</string>
     <string name="user_dialog_description_edit">您可以编辑该用户的用户名和密码，或删除该用户。</string>
-    <string name="user_dialog_base_url_hint">服务 URL</string>
+    <string name="common_service_url">服务 URL</string>
     <string name="user_dialog_username_hint">用户名</string>
     <string name="user_dialog_password_hint_add">密码</string>
     <string name="user_dialog_password_hint_edit">密码 (留空不变)</string>

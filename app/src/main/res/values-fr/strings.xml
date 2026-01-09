@@ -254,7 +254,7 @@
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_title_add">Ajouter utilisateur</string>
     <string name="user_dialog_title_edit">Éditer utilisateur</string>
-    <string name="user_dialog_base_url_hint">URL du service</string>
+    <string name="common_service_url">URL du service</string>
     <string name="user_dialog_username_hint">Nom d\'utilisateur</string>
     <string name="user_dialog_button_add">Ajouter utilisateur</string>
     <string name="user_dialog_button_cancel">Annuler</string>

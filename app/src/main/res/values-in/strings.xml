@@ -207,7 +207,7 @@
     <string name="user_dialog_title_edit">Edit pengguna</string>
     <string name="user_dialog_description_add">Anda dapat menambahkan sebuah pengguna di sini. Semua topik untuk server yang dicantumkan akan menggunakan pengguna ini.</string>
     <string name="user_dialog_description_edit">Anda dapat mengubah nama pengguna/kata sandi untuk pengguna yang dipilih, atau hapus pengguna itu.</string>
-    <string name="user_dialog_base_url_hint">URL Layanan</string>
+    <string name="common_service_url">URL Layanan</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Berlangganan ke satu topik</string>
     <string name="detail_item_cannot_open_url">Tidak dapat membuka URL: %1$s</string>
     <string name="settings_notifications_min_priority_summary_any">Menampilkan semua notifikasi</string>

@@ -129,7 +129,7 @@
     <string name="user_dialog_title_edit">Modifică utilizator</string>
     <string name="user_dialog_description_add">Poți adaugă un utilizator aici. Toate topicele pentru serverul specificat vor folosi acest utilizator.</string>
     <string name="user_dialog_description_edit">Puteți edita numele de utilizator/parola pentru utilizatorul selectat, sau îl puteți șterge.</string>
-    <string name="user_dialog_base_url_hint">URL-ul serviciului</string>
+    <string name="common_service_url">URL-ul serviciului</string>
     <string name="user_dialog_username_hint">Nume de utilizator</string>
     <string name="user_dialog_password_hint_add">Parolă</string>
     <string name="user_dialog_button_add">Adaugă utilizator</string>

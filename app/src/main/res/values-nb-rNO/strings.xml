@@ -197,7 +197,7 @@
     <string name="settings_about_header">Om</string>
     <string name="user_dialog_title_add">Legg til bruker</string>
     <string name="user_dialog_title_edit">Rediger bruker</string>
-    <string name="user_dialog_base_url_hint">Tjeneste-URL</string>
+    <string name="common_service_url">Tjeneste-URL</string>
     <string name="user_dialog_description_edit">Du kan redigere brukernavn/passord for valgt bruker, eller slette den helt.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON-strøm over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">Vev-sockets</string>

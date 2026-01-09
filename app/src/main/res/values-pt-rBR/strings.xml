@@ -188,7 +188,7 @@
     <string name="user_dialog_title_add">Adicionar usuário</string>
     <string name="user_dialog_title_edit">Editar usuário</string>
     <string name="user_dialog_description_edit">Você pode editar nome de usuário/senha para o usuário selecionado ou apagá-lo.</string>
-    <string name="user_dialog_base_url_hint">URL do Serviço</string>
+    <string name="common_service_url">URL do Serviço</string>
     <string name="user_dialog_button_add">Adicionar usuário</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_delete">Apagar usuário</string>

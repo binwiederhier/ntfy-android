@@ -332,7 +332,7 @@
     <string name="user_dialog_title_add">Thêm tài khoản</string>
     <string name="user_dialog_title_edit">Chỉnh sửa tài khoản</string>
     <string name="user_dialog_description_add">Thêm tài khoản cho server này. Tất cả chủ đề của server sẽ dùng tài khoản này.</string>
-    <string name="user_dialog_base_url_hint">URL dịch vụ</string>
+    <string name="common_service_url">URL dịch vụ</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>

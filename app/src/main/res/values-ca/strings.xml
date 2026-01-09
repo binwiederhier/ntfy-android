@@ -230,7 +230,7 @@
     <string name="detail_settings_about_topic_url_title">URL del tema</string>
     <string name="user_dialog_title_add">Afegir usuari</string>
     <string name="user_dialog_description_edit">Pots editar el nom d\'usuari o la contrasenya de l\'usuari seleccionat, o eliminar-lo.</string>
-    <string name="user_dialog_base_url_hint">URL de servei</string>
+    <string name="common_service_url">URL de servei</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="settings_notifications_auto_delete_one_month">Al cap d\'un mes</string>
     <string name="settings_general_users_prefs_title">Usuaris</string>

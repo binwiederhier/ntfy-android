@@ -335,7 +335,7 @@
     <string name="user_dialog_title_edit">Editar usuaria</string>
     <string name="user_dialog_description_add">Podes engadir aquí unha usuaria. Todos os temas do servidor indicado usarán esta usuaria.</string>
     <string name="user_dialog_description_edit">Podes editar as credenciais da usuaria seleccionada, ou eliminala.</string>
-    <string name="user_dialog_base_url_hint">URL do servizo</string>
+    <string name="common_service_url">URL do servizo</string>
     <string name="user_dialog_username_hint">Identificador</string>
     <string name="user_dialog_password_hint_add">Contrasinal</string>
     <string name="user_dialog_password_hint_edit">Contrasinal (baleiro para non cambiar)</string>

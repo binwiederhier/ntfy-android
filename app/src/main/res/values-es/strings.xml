@@ -282,7 +282,7 @@
     <string name="settings_general_users_prefs_user_add_summary">Crear un nuevo usuario para un nuevo servidor</string>
     <string name="settings_general_dark_mode_summary_system">Usando el determinado por el sistema</string>
     <string name="settings_about_header">Acerca de</string>
-    <string name="user_dialog_base_url_hint">URL de servicio</string>
+    <string name="common_service_url">URL de servicio</string>
     <string name="main_menu_rate_title">Califica la aplicación ⭐</string>
     <string name="main_unified_push_toast">Esta suscripción es gestionada por %1$s a través de UnifiedPush</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>

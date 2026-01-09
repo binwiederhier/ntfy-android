@@ -308,7 +308,7 @@
     <string name="user_dialog_title_edit">Muuda kasutajat</string>
     <string name="user_dialog_description_edit">Sa võid muuta valitud kasutaja kasutajanime või salasõna, aga ta ka sootuks kustutada.</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="user_dialog_base_url_hint">Teenuse võrguaadress</string>
+    <string name="common_service_url">Teenuse võrguaadress</string>
     <string name="user_dialog_username_hint">Kasutajanimi</string>
     <string name="user_dialog_password_hint_add">Salasõna</string>
     <string name="user_dialog_password_hint_edit">Salasõna (kui jääb tühjaks, siis ei muutu)</string>

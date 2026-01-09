@@ -284,7 +284,7 @@
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">サーバーへの接続に JSON stream over HTTP を使用します。このメソッドは様々な場面で使われていますが、バッテリーをより多く消費します。</string>
     <string name="user_dialog_title_add">ユーザーを追加</string>
     <string name="user_dialog_description_edit">選択されたユーザーのユーザー名/パスワードを変更または削除できます。</string>
-    <string name="user_dialog_base_url_hint">サービスURL</string>
+    <string name="common_service_url">サービスURL</string>
     <string name="user_dialog_username_hint">ユーザー名</string>
     <string name="user_dialog_button_add">ユーザー追加</string>
     <string name="user_dialog_button_delete">ユーザー削除</string>

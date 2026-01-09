@@ -149,7 +149,7 @@
     <string name="settings_general_users_prefs_user_add_summary">Lisää uusi käyttäjä uudelle palvelimelle</string>
     <string name="settings_general_dark_mode_entry_system">Käytä oletusasetusta</string>
     <string name="notification_dialog_save">Tallenna</string>
-    <string name="user_dialog_base_url_hint">Palvelun URL</string>
+    <string name="common_service_url">Palvelun URL</string>
     <string name="detail_item_download_info_download_failed_expires_x">Lataus epäonnistunut, linkki vanhentunut %1$s</string>
     <string name="settings_notifications_priority_max">max</string>
     <string name="user_dialog_password_hint_add">Salasana</string>

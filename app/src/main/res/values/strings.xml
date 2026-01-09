@@ -2,9 +2,8 @@
            tools:ignore="MissingTranslation">
 
     <!-- Common strings -->
-    <string name="common_yes">Yes</string>
-    <string name="common_no">No</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
+    <string name="common_service_url">Service URL</string>
 
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Min priority</string>
@@ -473,7 +472,6 @@
     <string name="user_dialog_title_edit">Edit user</string>
     <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
-    <string name="user_dialog_base_url_hint">Service URL</string>
     <string name="user_dialog_base_url_error_authorization_header_exists">Cannot add user if custom Authorization header is set for this server</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
@@ -486,7 +484,6 @@
     <!-- Custom headers dialog (CustomHeaderFragment) -->
     <string name="custom_headers_dialog_title_add">Add custom header</string>
     <string name="custom_headers_dialog_title_edit">Edit custom header</string>
-    <string name="custom_headers_dialog_base_url_hint">Service URL</string>
     <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Header value (e.g. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
@@ -508,9 +505,7 @@
     <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
     <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
     <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
-    <string name="trusted_certificate_dialog_base_url_hint">Service URL</string>
     <string name="trusted_certificate_dialog_base_url_placeholder">e.g. https://ntfy.example.com</string>
-    <string name="trusted_certificate_dialog_service_url">Service URL</string>
     <string name="trusted_certificate_dialog_subject">Subject</string>
     <string name="trusted_certificate_dialog_issuer">Issuer</string>
     <string name="trusted_certificate_dialog_fingerprint">SHA-256 fingerprint</string>
@@ -532,7 +527,6 @@
     <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
     <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate. This certificate will be used to authenticate with the server.</string>
     <string name="client_certificate_dialog_password_hint">Password</string>
-    <string name="client_certificate_dialog_base_url_hint">Service URL</string>
     <string name="client_certificate_dialog_base_url_placeholder">e.g. https://ntfy.example.com</string>
     <string name="client_certificate_dialog_subject">Subject</string>
     <string name="client_certificate_dialog_issuer">Issuer</string>

@@ -11,7 +11,7 @@
     <string name="detail_settings_appearance_display_name_title">Відображуване ім\'я</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (за умовчанням)</string>
     <string name="detail_settings_appearance_display_name_message">Встановіть спеціальну відображувану назву для цієї підписки. Залиште поле порожнім для умовчання (%1$s).</string>
-    <string name="user_dialog_base_url_hint">URL служби</string>
+    <string name="common_service_url">URL служби</string>
     <string name="add_dialog_use_another_server_description">Введіть URL-адресу сервісу нижче, щоб підписатися на теми з інших серверів.</string>
     <string name="detail_item_cannot_open_url">Неможливо відкрити URL: %1$s</string>
     <string name="detail_item_menu_cancel">Скасувати завантаження</string>

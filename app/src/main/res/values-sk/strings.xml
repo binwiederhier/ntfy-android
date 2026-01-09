@@ -250,7 +250,7 @@
     <string name="user_dialog_title_add">Pridať používateľa</string>
     <string name="user_dialog_button_add">Pridať používateľa</string>
     <string name="user_dialog_description_edit">Môžete upraviť používateľské meno/heslo vybraného používateľa alebo ho vymazať.</string>
-    <string name="user_dialog_base_url_hint">URL Adresa služby</string>
+    <string name="common_service_url">URL Adresa služby</string>
     <string name="user_dialog_username_hint">Používateľské meno</string>
     <string name="user_dialog_password_hint_add">Heslo</string>
     <string name="user_dialog_password_hint_edit">Heslo (nezmenené, ak zostane prázdne)</string>

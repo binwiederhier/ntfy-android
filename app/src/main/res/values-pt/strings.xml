@@ -314,7 +314,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ícone exibido nas notificações deste tópico</string>
     <string name="detail_settings_appearance_display_name_title">Nome de exibição</string>
     <string name="user_dialog_description_edit">Pode editar o nome/palavra-passe do utilizador selecionado ou eliminá-lo.</string>
-    <string name="user_dialog_base_url_hint">URL do serviço</string>
+    <string name="common_service_url">URL do serviço</string>
     <string name="user_dialog_title_edit">Editar utilizador</string>
     <string name="user_dialog_description_add">Pode adicionar um utilizador aqui. Todos os tópicos para o servidor fornecido usarão esse utilizador.</string>
     <string name="user_dialog_username_hint">Nome de utilizador</string>

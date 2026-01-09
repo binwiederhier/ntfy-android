@@ -222,7 +222,7 @@
     <string name="user_dialog_title_edit">Benutzer bearbeiten</string>
     <string name="user_dialog_description_add">Du kannst hier einen Benutzer hinzufügen. Alle Themen auf dem angegebenen Server verwenden dann diesen Benutzer.</string>
     <string name="user_dialog_description_edit">Du kannst Benutzernamen/Kennwort für den gewählten Benutzer ändern oder löschen.</string>
-    <string name="user_dialog_base_url_hint">Service-URL</string>
+    <string name="common_service_url">Service-URL</string>
     <string name="user_dialog_base_url_error_authorization_header_exists">Benutzer kann nicht hinzugefügt werden, wenn ein benutzerdefinierter Authorization-Header für diesen Server gesetzt ist</string>
     <string name="user_dialog_username_hint">Benutzername</string>
     <string name="user_dialog_password_hint_add">Kennwort</string>
