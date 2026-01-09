@@ -232,7 +232,7 @@
     <string name="settings_advanced_export_logs_summary">Скопировать журналы в буфер обмена, или загрузить на nopaste.net (под управлением разработчика ntfy). Доменные имена и темы можно скрыть, уведомления - нет.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Скопировать в буфер обмена</string>
     <string name="user_dialog_username_hint">Имя пользователя</string>
-    <string name="user_dialog_button_save">Сохранить</string>
+    <string name="common_button_save">Сохранить</string>
     <string name="settings_general_default_base_url_message">Введите базовый URL вашего сервера, чтобы использовать его по умолчанию при подписке на новые темы и/или публикацию в темы.</string>
     <string name="settings_general_users_title">Управление пользователями</string>
     <string name="settings_general_users_summary">Добавить/удалить пользователей из защищённых тем</string>

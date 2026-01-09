@@ -29,7 +29,7 @@
     <string name="share_content_image_text">ஒரு படம் உங்களுடன் பகிரப்பட்டது</string>
     <string name="notification_dialog_30min">30 நிமிடங்கள்</string>
     <string name="settings_advanced_header">மேம்பட்ட</string>
-    <string name="user_dialog_button_save">சேமி</string>
+    <string name="common_button_save">சேமி</string>
     <string name="channel_notifications_group_default_name">இயல்புநிலை</string>
     <string name="channel_subscriber_notification_instant_text_one">ஒரு உடனடி விநியோக தலைப்புக்கு குழுசேர்ந்தது</string>
     <string name="channel_subscriber_notification_instant_text_three">மூன்று உடனடி விநியோக தலைப்புகளுக்கு குழுசேர்ந்தது</string>

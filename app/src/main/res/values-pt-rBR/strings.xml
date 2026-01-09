@@ -194,7 +194,7 @@
     <string name="user_dialog_button_delete">Apagar usuário</string>
     <string name="channel_notifications_low_name">Prioridade baixa</string>
     <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois tópicos de entrega instantânea</string>
-    <string name="user_dialog_button_save">Salvar</string>
+    <string name="common_button_save">Salvar</string>
     <string name="main_item_status_text_one">%1$d notificação</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tópico</string>
     <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>

@@ -207,7 +207,7 @@
     <string name="user_dialog_button_add">Legg til bruker</string>
     <string name="user_dialog_button_cancel">Avbryt</string>
     <string name="user_dialog_button_delete">Slett bruker</string>
-    <string name="user_dialog_button_save">Lagre</string>
+    <string name="common_button_save">Lagre</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonnert på tre emner med umiddelbar levering</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Abonnert på %1$d emner</string>
     <string name="main_menu_settings_title">Innstillinger</string>

@@ -96,7 +96,7 @@
     <string name="user_dialog_username_hint">نام کاربری</string>
     <string name="user_dialog_password_hint_add">گذرواژه</string>
     <string name="user_dialog_button_cancel">لغو</string>
-    <string name="user_dialog_button_save">ذخیره</string>
+    <string name="common_button_save">ذخیره</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">رد کردن</string>
     <string name="publish_dialog_title_hint">عنوان</string>
     <string name="publish_dialog_message_hint">پیام</string>

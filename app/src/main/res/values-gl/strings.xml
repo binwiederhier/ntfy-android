@@ -330,7 +330,7 @@
     <string name="user_dialog_title_add">Engadir usuaria</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_delete">Eliminar usuaria</string>
-    <string name="user_dialog_button_save">Gardar</string>
+    <string name="common_button_save">Gardar</string>
     <string name="settings_advanced_unifiedpush_title">Activar UnifiedPush</string>
     <string name="user_dialog_title_edit">Editar usuaria</string>
     <string name="user_dialog_description_add">Podes engadir aquí unha usuaria. Todos os temas do servidor indicado usarán esta usuaria.</string>
@@ -412,7 +412,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Esta cabeceira está reservada e establecida por ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Non se pode engadir unha cabeceira de Autenticación se unha usuaria está configurada neste servidor</string>
     <string name="custom_headers_dialog_error_duplicate">Xa existe unha cabeceira con este nome para este servidor</string>
-    <string name="custom_headers_dialog_button_add">Engadir</string>
-    <string name="custom_headers_dialog_button_save">Gardar</string>
-    <string name="custom_headers_dialog_button_delete">Eliminar</string>
+    <string name="common_button_add">Engadir</string>
+    <string name="common_button_save">Gardar</string>
+    <string name="common_button_delete">Eliminar</string>
 </resources>

@@ -178,7 +178,7 @@
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocket</string>
     <string name="detail_settings_about_topic_url_title">主題 URL</string>
     <string name="user_dialog_password_hint_add">密碼</string>
-    <string name="user_dialog_button_save">儲存</string>
+    <string name="common_button_save">儲存</string>
     <string name="user_dialog_button_add">新增使用者</string>
     <string name="user_dialog_button_cancel">取消</string>
     <string name="user_dialog_username_hint">使用者名稱</string>
@@ -411,8 +411,8 @@
     <string name="custom_headers_dialog_error_reserved_name">此標頭為保留項目，並由 ntfy 設定</string>
     <string name="custom_headers_dialog_error_user_exists">若此伺服器已設定使用者，則無法新增 Authorization 標頭</string>
     <string name="custom_headers_dialog_error_duplicate">此伺服器已存在相同名稱的標頭</string>
-    <string name="custom_headers_dialog_button_add">新增</string>
-    <string name="custom_headers_dialog_button_save">儲存</string>
-    <string name="custom_headers_dialog_button_delete">刪除</string>
+    <string name="common_button_add">新增</string>
+    <string name="common_button_save">儲存</string>
+    <string name="common_button_delete">刪除</string>
     <string name="publish_dialog_docs_text">如需範例與所有發佈功能的詳細說明，請參考 <a href="https://docs.ntfy.sh/publish/">說明文件</a>。</string>
 </resources>

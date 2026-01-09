@@ -199,7 +199,7 @@
     <string name="settings_notifications_auto_delete_summary_one_month">Премахват се автоматично след един месец</string>
     <string name="settings_notifications_auto_delete_summary_three_months">Премахват се автоматично след три месеца</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="user_dialog_button_save">Запазване</string>
+    <string name="common_button_save">Запазване</string>
     <string name="user_dialog_button_delete">Премахване</string>
     <string name="user_dialog_button_add">Добавяне</string>
     <string name="user_dialog_password_hint_edit">Парола (без промяна ако е празна)</string>
@@ -412,7 +412,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Тази заглавка е запазена и се задава от ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Не може да бъде добавена заглавка Authorization ако за сървъра е зададен потребител</string>
     <string name="custom_headers_dialog_error_duplicate">Заглавка с това име вече има за този сървър</string>
-    <string name="custom_headers_dialog_button_add">Добавяне</string>
-    <string name="custom_headers_dialog_button_save">Запазване</string>
-    <string name="custom_headers_dialog_button_delete">Премахване</string>
+    <string name="common_button_add">Добавяне</string>
+    <string name="common_button_save">Запазване</string>
+    <string name="common_button_delete">Премахване</string>
 </resources>

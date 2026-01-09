@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/trusted_certificate_action_next"
-        android:title="@string/trusted_certificate_dialog_button_next"
+        android:title="@string/common_button_next"
         android:visible="false"
         app:showAsAction="always" />
     <item
@@ -13,7 +13,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/trusted_certificate_action_delete"
-        android:title="@string/trusted_certificate_dialog_button_delete"
+        android:title="@string/common_button_delete"
         android:visible="false"
         app:showAsAction="always" />
 </menu>

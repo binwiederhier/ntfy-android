@@ -7,7 +7,7 @@
     <string name="user_dialog_button_add">Thêm tài khoản</string>
     <string name="add_dialog_login_error_not_authorized">Đăng nhập thất bại. Tài khoản %1$s không được cấp quyền.</string>
     <string name="user_dialog_description_edit">Bạn có thể chỉnh sửa tên tài khoản hoặc mật khẩu của người dùng này, hoặc xóa người dùng này khỏi hệ thống.</string>
-    <string name="user_dialog_button_save">Lưu</string>
+    <string name="common_button_save">Lưu</string>
     <string name="user_dialog_password_hint_add">Mật khẩu</string>
     <string name="add_dialog_topic_name_hint">Tên chủ đề, ví dụ: phils_alerts</string>
     <string name="user_dialog_button_delete">Xóa tài khoản</string>

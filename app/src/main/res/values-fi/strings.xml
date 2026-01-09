@@ -72,7 +72,7 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Tallenna ja kopioi linkki</string>
     <string name="main_banner_battery_button_fix_now">Korjaa nyt</string>
     <string name="detail_item_download_info_not_downloaded">Ei ladattu</string>
-    <string name="user_dialog_button_save">Tallenna</string>
+    <string name="common_button_save">Tallenna</string>
     <string name="detail_delete_dialog_cancel">Peruuta</string>
     <string name="notification_popup_action_download">Lataa</string>
     <string name="detail_item_cannot_download">Liitettä ei voi avata tai ladata. Linkki vanhentui, eikä paikallista tiedostoa löytynyt.</string>

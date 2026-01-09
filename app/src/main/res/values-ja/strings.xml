@@ -288,7 +288,7 @@
     <string name="user_dialog_username_hint">ユーザー名</string>
     <string name="user_dialog_button_add">ユーザー追加</string>
     <string name="user_dialog_button_delete">ユーザー削除</string>
-    <string name="user_dialog_button_save">保存</string>
+    <string name="common_button_save">保存</string>
     <string name="user_dialog_password_hint_add">パスワード</string>
     <string name="user_dialog_button_cancel">キャンセル</string>
     <string name="settings_notifications_min_priority_low">優先度低 およびそれ以上</string>
@@ -412,7 +412,7 @@
     <string name="custom_headers_dialog_error_reserved_name">このヘッダはntfyによって予約・設定されています</string>
     <string name="custom_headers_dialog_error_user_exists">このサーバでユーザが設定されている場合はAuthorizationヘッダを追加できません</string>
     <string name="custom_headers_dialog_error_duplicate">このヘッダ名はこのサーバで既に存在します</string>
-    <string name="custom_headers_dialog_button_add">追加</string>
-    <string name="custom_headers_dialog_button_save">保存</string>
-    <string name="custom_headers_dialog_button_delete">削除</string>
+    <string name="common_button_add">追加</string>
+    <string name="common_button_save">保存</string>
+    <string name="common_button_delete">削除</string>
 </resources>

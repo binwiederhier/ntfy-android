@@ -219,7 +219,7 @@
     <string name="user_dialog_password_hint_edit">Contraseña (no se modifica si lo deja vacío)</string>
     <string name="user_dialog_button_add">Añadir usuario</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
-    <string name="user_dialog_button_save">Guardar</string>
+    <string name="common_button_save">Guardar</string>
     <string name="channel_notifications_high_name">Prioridad alta</string>
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
@@ -389,7 +389,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Esta cabecera está reservada para uso por ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">No se puede añadir una cabecera \"Authorization\" si ya hay un usuario configurado para este servidor</string>
     <string name="custom_headers_dialog_error_duplicate">Una cabecera con este nombre ya existe para este servidor</string>
-    <string name="custom_headers_dialog_button_add">Añadir</string>
-    <string name="custom_headers_dialog_button_save">Guardar</string>
-    <string name="custom_headers_dialog_button_delete">Borrar</string>
+    <string name="common_button_add">Añadir</string>
+    <string name="common_button_save">Guardar</string>
+    <string name="common_button_delete">Borrar</string>
 </resources>

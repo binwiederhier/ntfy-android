@@ -259,7 +259,7 @@
     <string name="user_dialog_button_add">Ajouter utilisateur</string>
     <string name="user_dialog_button_cancel">Annuler</string>
     <string name="user_dialog_button_delete">Supprimer utilisateur</string>
-    <string name="user_dialog_button_save">Enregistrer</string>
+    <string name="common_button_save">Enregistrer</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Journaux supprimés</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Affiche les notifications si la priorité est %1$d (%2$s) ou supérieure</string>
     <string name="settings_notifications_auto_delete_never">Jamais</string>
@@ -409,9 +409,9 @@
     <string name="custom_headers_dialog_error_reserved_name">Cet en-tête est réservé et défini par ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Impossible d\'ajouter l\'en-tête d\'autorisation si un utilisateur est configuré pour ce serveur</string>
     <string name="custom_headers_dialog_error_duplicate">Un en-tête avec ce nom existe déjà pour ce serveur</string>
-    <string name="custom_headers_dialog_button_add">Ajouter</string>
-    <string name="custom_headers_dialog_button_save">Sauvegarder</string>
-    <string name="custom_headers_dialog_button_delete">Supprimer</string>
+    <string name="common_button_add">Ajouter</string>
+    <string name="common_button_save">Sauvegarder</string>
+    <string name="common_button_delete">Supprimer</string>
     <string name="publish_dialog_title">Publier sur %1$s</string>
     <string name="publish_dialog_title_hint">Titre</string>
     <string name="publish_dialog_delay_placeholder">e.g. 30m, 1h, today 9pm (en anglais uniquement)</string>

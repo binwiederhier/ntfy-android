@@ -227,7 +227,7 @@
     <string name="user_dialog_button_add">Přidat uživatele</string>
     <string name="user_dialog_button_cancel">Zrušit</string>
     <string name="user_dialog_button_delete">Odstranit uživatele</string>
-    <string name="user_dialog_button_save">Uložit</string>
+    <string name="common_button_save">Uložit</string>
     <string name="refresh_message_error_one">Nepodařilo se obnovit odběr: %1$s</string>
     <string name="channel_subscriber_notification_instant_text_four">Přihlášeno k odběru čtyř témat okamžitého doručení</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Odběr tří témat</string>

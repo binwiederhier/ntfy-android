@@ -125,7 +125,7 @@
     <string name="detail_item_cannot_open_apk">Appar kan inte installeras längre. Ladda ned dem via webbläsaren istället. See Problem #531 för detaljer.</string>
     <string name="add_dialog_topic_name_hint">Ämnesnamn, t. ex. phils_alerts</string>
     <string name="detail_item_cannot_open">Kan inte öppna bifogat dokument: %1$s</string>
-    <string name="user_dialog_button_save">Spara</string>
+    <string name="common_button_save">Spara</string>
     <string name="detail_item_tags">Taggar: %1$s</string>
     <string name="detail_item_saved_successfully">Sparad som \"%1$s\" inuti \"Downloads\" mappen</string>
     <string name="detail_item_cannot_download">Kan inte öppna eller ladda ned bifogat dokument. Länken har uphört och ingen lokal fil hittades.</string>

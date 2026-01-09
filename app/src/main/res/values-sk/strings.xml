@@ -241,7 +241,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ikona zobrazená v oznámeniach pre túto tému</string>
     <string name="detail_settings_appearance_icon_error_saving">Ikonu sa nepodarilo uložiť: %1$s</string>
     <string name="user_dialog_button_cancel">Zrušiť</string>
-    <string name="user_dialog_button_save">Uložiť</string>
+    <string name="common_button_save">Uložiť</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predvolené)</string>
     <string name="detail_settings_about_header">O programe</string>
     <string name="detail_settings_global_setting_title">Použiť globálne nastavenie</string>

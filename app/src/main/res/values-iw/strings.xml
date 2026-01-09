@@ -288,7 +288,7 @@
     <string name="user_dialog_username_hint">שם משתמש</string>
     <string name="user_dialog_button_cancel">ביטול</string>
     <string name="user_dialog_button_delete">מחיקת משתמש</string>
-    <string name="user_dialog_button_save">שמירה</string>
+    <string name="common_button_save">שמירה</string>
     <string name="detail_item_cannot_delete">לא ניתן למחוק צרופה: %1$s</string>
     <string name="detail_item_download_failed">לא ניתן להוריד צרופה: %1$s</string>
     <string name="detail_item_download_info_not_downloaded_expired">לא ירדה, תוקף הקישור פג</string>
@@ -386,9 +386,9 @@
     <string name="settings_general_language_summary_system">להשתמש בברירת המחדל של המערכת</string>
     <string name="settings_general_language_system_default">ברירת המחדל של המערכת</string>
     <string name="settings_general_dynamic_colors_title">צבעים דינמיים</string>
-    <string name="custom_headers_dialog_button_delete">מחיקה</string>
-    <string name="custom_headers_dialog_button_save">שמירה</string>
-    <string name="custom_headers_dialog_button_add">הוספה</string>
+    <string name="common_button_delete">מחיקה</string>
+    <string name="common_button_save">שמירה</string>
+    <string name="common_button_add">הוספה</string>
     <string name="custom_headers_dialog_error_duplicate">כבר יש כותרת בשם הזה בשרת הזה</string>
     <string name="custom_headers_dialog_error_reserved_name">הכותרת הזאת שמורה ומוגדרת על ידי ntfy</string>
     <string name="custom_headers_dialog_error_invalid_name">שם הכותרת מכיל תווים שגויים</string>

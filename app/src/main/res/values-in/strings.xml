@@ -214,7 +214,7 @@
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>
     <string name="settings_notifications_auto_download_500k">Jika di bawah 500 kB</string>
-    <string name="user_dialog_button_save">Simpan</string>
+    <string name="common_button_save">Simpan</string>
     <string name="channel_notifications_high_name">Prioritas tinggi</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>
     <string name="add_dialog_button_subscribe">Berlangganan</string>
@@ -412,7 +412,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Header ini disediakan dan diatur oleh ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Tidak dapat menambahkan header Otorisasi jika pengguna diatur untuk server ini</string>
     <string name="custom_headers_dialog_error_duplicate">Header dengan nama ini sudah ada untuk server ini</string>
-    <string name="custom_headers_dialog_button_add">Tambah</string>
-    <string name="custom_headers_dialog_button_save">Simpan</string>
-    <string name="custom_headers_dialog_button_delete">Hapus</string>
+    <string name="common_button_add">Tambah</string>
+    <string name="common_button_save">Simpan</string>
+    <string name="common_button_delete">Hapus</string>
 </resources>

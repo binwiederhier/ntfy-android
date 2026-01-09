@@ -202,7 +202,7 @@
     <string name="settings_advanced_export_logs_copied_logs">Журнали скопійовано в буфер обміну</string>
     <string name="settings_advanced_clear_logs_summary">Видаліть раніше записані журнали та почніть спочатку</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Використовуйте WebSockets для підключення до сервера. Це рекомендований метод, але може знадобитися додаткова конфігурація вашого проксі.</string>
-    <string name="user_dialog_button_save">Зберегти</string>
+    <string name="common_button_save">Зберегти</string>
     <string name="detail_settings_appearance_icon_set_title">Значок підписки</string>
     <string name="detail_settings_notifications_instant_summary_on">Сповіщення надходять миттєво. Потрібна служба переднього плану та споживає більше акумулятора.</string>
     <string name="detail_settings_notifications_instant_summary_off">Сповіщення доставляються за допомогою Firebase. Доставка може бути відкладена, але споживає менше акумулятора.</string>

@@ -173,7 +173,7 @@
     <string name="user_dialog_button_add">Aggiungi utente</string>
     <string name="user_dialog_button_cancel">Annulla</string>
     <string name="user_dialog_button_delete">Elimina utente</string>
-    <string name="user_dialog_button_save">Salva</string>
+    <string name="common_button_save">Salva</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Iscritto a %1$d argomenti</string>
     <string name="channel_notifications_default_name">Priorità predefinita</string>
     <string name="channel_notifications_min_name">Priorità minima</string>

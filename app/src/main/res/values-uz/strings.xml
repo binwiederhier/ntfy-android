@@ -338,5 +338,5 @@
     <string name="detail_settings_about_header">Haqida</string>
     <string name="user_dialog_button_delete">Foydalanuvchini o‘chirish</string>
     <string name="user_dialog_title_add">Foydalanuvchi qo‘shish</string>
-    <string name="user_dialog_button_save">Saqlash</string>
+    <string name="common_button_save">Saqlash</string>
 </resources>

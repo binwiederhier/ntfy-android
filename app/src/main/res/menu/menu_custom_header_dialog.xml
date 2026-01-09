@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/custom_header_dialog_action_save"
-        android:title="@string/custom_headers_dialog_button_add"
+        android:title="@string/common_button_add"
         android:enabled="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/custom_header_dialog_action_delete"
-        android:title="@string/custom_headers_dialog_button_delete"
+        android:title="@string/common_button_delete"
         android:visible="false"
         app:showAsAction="never" />
 </menu>

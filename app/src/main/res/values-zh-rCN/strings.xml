@@ -290,7 +290,7 @@
     <string name="user_dialog_password_hint_edit">密码 (留空不变)</string>
     <string name="user_dialog_button_add">添加用户</string>
     <string name="user_dialog_button_cancel">取消</string>
-    <string name="user_dialog_button_save">保存</string>
+    <string name="common_button_save">保存</string>
     <string name="settings_notifications_channel_prefs_title">频道设置</string>
     <string name="detail_deep_link_subscribed_toast_message">订阅%1$s 主题</string>
     <string name="settings_notifications_priority_min">分钟</string>
@@ -412,7 +412,7 @@
     <string name="custom_headers_dialog_error_reserved_name">此标头由 ntfy 保留并设置</string>
     <string name="custom_headers_dialog_error_user_exists">如果为该服务器配置了用户，则无法添加授权标头</string>
     <string name="custom_headers_dialog_error_duplicate">此服务器上已存在同名标头</string>
-    <string name="custom_headers_dialog_button_add">添加</string>
-    <string name="custom_headers_dialog_button_save">保存</string>
-    <string name="custom_headers_dialog_button_delete">删除</string>
+    <string name="common_button_add">添加</string>
+    <string name="common_button_save">保存</string>
+    <string name="common_button_delete">删除</string>
 </resources>

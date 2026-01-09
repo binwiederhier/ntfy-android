@@ -176,7 +176,7 @@
     <string name="user_dialog_password_hint_add">Hasło</string>
     <string name="user_dialog_password_hint_edit">Hasło (niezmienione, jeśli pozostawiono puste)</string>
     <string name="user_dialog_button_delete">Usuń użytkownika</string>
-    <string name="user_dialog_button_save">Zapisz</string>
+    <string name="common_button_save">Zapisz</string>
     <string name="main_menu_notifications_disabled_until">Powiadomienia wyciszone przez %1$s</string>
     <string name="main_action_mode_delete_dialog_cancel">Anuluj</string>
     <string name="main_menu_docs_title">Przeczytaj dokumentację</string>

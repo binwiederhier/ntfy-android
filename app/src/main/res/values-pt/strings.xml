@@ -323,7 +323,7 @@
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_add">Adicionar utilizador</string>
     <string name="user_dialog_button_delete">Eliminar utilizador</string>
-    <string name="user_dialog_button_save">Guardar</string>
+    <string name="common_button_save">Guardar</string>
     <string name="settings_notifications_insistent_max_priority_title">Continuar a alertar para a prioridade máxima</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continuar a alertar</string>
     <string name="channel_notifications_group_default_name">Padrão</string>

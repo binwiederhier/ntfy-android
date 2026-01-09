@@ -135,7 +135,7 @@
     <string name="user_dialog_button_add">Adaugă utilizator</string>
     <string name="user_dialog_button_cancel">Anulează</string>
     <string name="user_dialog_button_delete">Șterge utilizator</string>
-    <string name="user_dialog_button_save">Salvează</string>
+    <string name="common_button_save">Salvează</string>
     <string name="channel_notifications_default_name">Prioritate normală</string>
     <string name="channel_subscriber_notification_title">Ascultând pentru notificări primite</string>
     <string name="channel_notifications_max_name">Prioritate maximă</string>

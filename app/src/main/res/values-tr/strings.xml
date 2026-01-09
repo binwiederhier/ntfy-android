@@ -190,7 +190,7 @@
     <string name="user_dialog_button_add">Kullanıcı ekle</string>
     <string name="user_dialog_button_cancel">İptal</string>
     <string name="user_dialog_button_delete">Kullanıcı sil</string>
-    <string name="user_dialog_button_save">Kaydet</string>
+    <string name="common_button_save">Kaydet</string>
     <string name="channel_notifications_high_name">Yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Üç konuya abone olundu</string>
     <string name="refresh_message_result">%1$d bildirim alındı</string>

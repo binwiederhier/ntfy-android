@@ -2,9 +2,22 @@
            tools:ignore="MissingTranslation">
 
     <!-- Common strings -->
+    <string name="common_button_next">Next</string>
+    <string name="common_button_add">Add</string>
+    <string name="common_button_save">Save</string>
+    <string name="common_button_delete">Delete</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
     <string name="common_service_url">Service URL</string>
     <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
+
+    <!-- Common certificate strings -->
+    <string name="common_certificate_subject">Subject</string>
+    <string name="common_certificate_issuer">Issuer</string>
+    <string name="common_certificate_fingerprint">SHA-256 fingerprint</string>
+    <string name="common_certificate_valid_from">Valid from</string>
+    <string name="common_certificate_valid_until">Valid until</string>
+    <string name="common_certificate_added_toast">Certificate added</string>
+    <string name="common_certificate_deleted_toast">Certificate deleted</string>
 
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Min priority</string>
@@ -480,7 +493,6 @@
     <string name="user_dialog_button_add">Add user</string>
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
-    <string name="user_dialog_button_save">Save</string>
 
     <!-- Custom headers dialog (CustomHeaderFragment) -->
     <string name="custom_headers_dialog_title_add">Add custom header</string>
@@ -493,9 +505,6 @@
     <string name="custom_headers_dialog_error_reserved_name">This header is reserved and set by ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Cannot add Authorization header if a user is configured for this server</string>
     <string name="custom_headers_dialog_error_duplicate">A header with this name already exists for this server</string>
-    <string name="custom_headers_dialog_button_add">Add</string>
-    <string name="custom_headers_dialog_button_save">Save</string>
-    <string name="custom_headers_dialog_button_delete">Delete</string>
 
     <!-- Trusted certificate dialog (TrustedCertificateFragment) -->
     <string name="trusted_certificate_dialog_title">Certificate details</string>
@@ -506,20 +515,11 @@
     <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
     <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
     <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
-    <string name="trusted_certificate_dialog_subject">Subject</string>
-    <string name="trusted_certificate_dialog_issuer">Issuer</string>
-    <string name="trusted_certificate_dialog_fingerprint">SHA-256 fingerprint</string>
-    <string name="trusted_certificate_dialog_valid_from">Valid from</string>
-    <string name="trusted_certificate_dialog_valid_until">Valid until</string>
     <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
     <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
     <string name="trusted_certificate_dialog_error_invalid_url">Invalid URL</string>
     <string name="trusted_certificate_dialog_error_parse">Unable to load certificate: %1$s</string>
-    <string name="trusted_certificate_dialog_button_next">Next</string>
     <string name="trusted_certificate_dialog_button_trust">Trust</string>
-    <string name="trusted_certificate_dialog_button_delete">Delete</string>
-    <string name="trusted_certificate_dialog_added_toast">Certificate added</string>
-    <string name="trusted_certificate_dialog_deleted_toast">Certificate deleted</string>
 
     <!-- Client certificate dialog (ClientCertificateFragment) -->
     <string name="client_certificate_dialog_title">Client certificate</string>
@@ -527,16 +527,6 @@
     <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
     <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate. This certificate will be used to authenticate with the server.</string>
     <string name="client_certificate_dialog_password_hint">Password</string>
-    <string name="client_certificate_dialog_subject">Subject</string>
-    <string name="client_certificate_dialog_issuer">Issuer</string>
-    <string name="client_certificate_dialog_fingerprint">SHA-256 Fingerprint</string>
-    <string name="client_certificate_dialog_valid_from">Valid from</string>
-    <string name="client_certificate_dialog_valid_until">Valid until</string>
-    <string name="client_certificate_dialog_button_next">Next</string>
-    <string name="client_certificate_dialog_button_save">Save</string>
-    <string name="client_certificate_dialog_button_delete">Delete</string>
-    <string name="client_certificate_dialog_added_toast">Certificate added</string>
-    <string name="client_certificate_dialog_deleted_toast">Certificate deleted</string>
     <string name="client_certificate_dialog_error_wrong_password">Wrong password or invalid PKCS#12 file</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Invalid password or corrupted PKCS#12 file</string>
     <string name="client_certificate_dialog_error_invalid_url">Invalid service URL</string>

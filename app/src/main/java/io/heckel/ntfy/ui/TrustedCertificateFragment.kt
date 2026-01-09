@@ -358,7 +358,7 @@ class TrustedCertificateFragment : DialogFragment() {
             repository.addTrustedCertificate(url, pem)
             withContext(Dispatchers.Main) {
                 if (mode != Mode.UNKNOWN) {
-                    Toast.makeText(context, R.string.trusted_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.common_certificate_added_toast, Toast.LENGTH_SHORT).show()
                 }
                 listener?.onCertificateTrusted(certificate)
                 dismiss()
@@ -371,7 +371,7 @@ class TrustedCertificateFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.removeTrustedCertificate(url)
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, R.string.trusted_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.common_certificate_deleted_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateDeleted()
                 dismiss()
             }

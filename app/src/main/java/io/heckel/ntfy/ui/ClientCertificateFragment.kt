@@ -292,7 +292,7 @@ class ClientCertificateFragment : DialogFragment() {
                 val p12Base64 = Base64.encodeToString(data, Base64.NO_WRAP)
                 repository.addClientCertificate(url, p12Base64, pwd)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, R.string.client_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.common_certificate_added_toast, Toast.LENGTH_SHORT).show()
                     listener?.onCertificateAdded()
                     dismiss()
                 }
@@ -309,7 +309,7 @@ class ClientCertificateFragment : DialogFragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.removeClientCertificate(url)
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, R.string.client_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.common_certificate_deleted_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateDeleted()
                 dismiss()
             }

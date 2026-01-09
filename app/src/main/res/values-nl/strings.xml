@@ -28,7 +28,7 @@
     <string name="user_dialog_password_hint_edit">Wachtwoord(ongewijzigd indien leeg gelaten)</string>
     <string name="user_dialog_username_hint">Gebruikersnaam</string>
     <string name="common_service_url">Server URL</string>
-    <string name="user_dialog_button_save">Opslaan</string>
+    <string name="common_button_save">Opslaan</string>
     <string name="detail_delete_dialog_permanently_delete">Permanent verwijderen</string>
     <string name="detail_delete_dialog_cancel">Annuleren</string>
     <string name="detail_clear_dialog_cancel">Annuleren</string>

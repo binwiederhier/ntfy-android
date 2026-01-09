@@ -167,7 +167,7 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="detail_settings_appearance_header">표시 설정</string>
     <string name="channel_notifications_low_name">우선순위 낮음</string>
-    <string name="user_dialog_button_save">저장</string>
+    <string name="common_button_save">저장</string>
     <string name="channel_notifications_min_name">우선순위 최하</string>
     <string name="channel_subscriber_notification_instant_text_two">즉시 전달 주제 2개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_five">즉시 전달 주제 5개 구독중</string>
