@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 16,
-    "identityHash": "1e2fa6a6cd2ed5146905f38f71f3c904",
+    "identityHash": "af6e656e277e4390d3ebbbca1c4bb845",
     "entities": [
       {
         "tableName": "Subscription",
@@ -362,8 +362,14 @@
       },
       {
         "tableName": "TrustedCertificate",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fingerprint` TEXT NOT NULL, `pem` TEXT NOT NULL, PRIMARY KEY(`fingerprint`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`baseUrl` TEXT NOT NULL, `fingerprint` TEXT NOT NULL, `pem` TEXT NOT NULL, PRIMARY KEY(`baseUrl`))",
         "fields": [
+          {
+            "fieldPath": "baseUrl",
+            "columnName": "baseUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "fingerprint",
             "columnName": "fingerprint",
@@ -380,7 +386,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "fingerprint"
+            "baseUrl"
           ]
         }
       },
@@ -417,7 +423,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1e2fa6a6cd2ed5146905f38f71f3c904')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'af6e656e277e4390d3ebbbca1c4bb845')"
     ]
   }
 }

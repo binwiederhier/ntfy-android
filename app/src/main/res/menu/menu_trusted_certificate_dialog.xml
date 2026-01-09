@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/trusted_certificate_action_next"
+        android:title="@string/trusted_certificate_dialog_button_next"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/trusted_certificate_action_trust"
         android:title="@string/trusted_certificate_dialog_button_trust"
         android:visible="false"
@@ -12,4 +17,3 @@
         android:visible="false"
         app:showAsAction="always" />
 </menu>
-

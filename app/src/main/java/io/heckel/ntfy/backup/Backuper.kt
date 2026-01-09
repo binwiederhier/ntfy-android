@@ -231,9 +231,9 @@ class Backuper(val context: Context) {
             try {
                 val cert = CertUtil.parsePemCertificate(c.pem)
                 val fingerprint = CertUtil.calculateFingerprint(cert)
-                repository.addTrustedCertificate(fingerprint, c.pem)
+                repository.addTrustedCertificate(c.baseUrl, fingerprint, c.pem)
             } catch (e: Exception) {
-                Log.w(TAG, "Unable to restore trusted certificate: ${e.message}. Ignoring.", e)
+                Log.w(TAG, "Unable to restore trusted certificate for ${c.baseUrl}: ${e.message}. Ignoring.", e)
             }
         }
     }
@@ -375,7 +375,10 @@ class Backuper(val context: Context) {
 
     private suspend fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
         return repository.getTrustedCertificates().map { trustedCert ->
-            TrustedCertificateBackup(pem = trustedCert.pem)
+            TrustedCertificateBackup(
+                baseUrl = trustedCert.baseUrl,
+                pem = trustedCert.pem
+            )
         }
     }
 
@@ -492,6 +495,7 @@ data class User(
 )
 
 data class TrustedCertificateBackup(
+    val baseUrl: String,
     val pem: String
 )
 

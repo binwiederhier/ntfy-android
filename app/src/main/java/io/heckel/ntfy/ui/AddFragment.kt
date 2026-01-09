@@ -289,7 +289,7 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         enableSubscribeView(true)
         
         TrustedCertificateFragment
-            .newInstanceUnknown(certificate)
+            .newInstanceUnknown(certificate, baseUrl)
             .show(childFragmentManager, TrustedCertificateFragment.TAG)
     }
     

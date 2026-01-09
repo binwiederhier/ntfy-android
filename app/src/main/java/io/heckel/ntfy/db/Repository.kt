@@ -199,12 +199,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return trustedCertificateDao.list()
     }
 
-    suspend fun addTrustedCertificate(fingerprint: String, pem: String) {
-        trustedCertificateDao.insert(TrustedCertificate(fingerprint, pem))
+    suspend fun getTrustedCertificate(baseUrl: String): TrustedCertificate? {
+        return trustedCertificateDao.get(baseUrl)
     }
 
-    suspend fun removeTrustedCertificate(fingerprint: String) {
-        trustedCertificateDao.delete(fingerprint)
+    suspend fun addTrustedCertificate(baseUrl: String, fingerprint: String, pem: String) {
+        trustedCertificateDao.insert(TrustedCertificate(baseUrl, fingerprint, pem))
+    }
+
+    suspend fun removeTrustedCertificate(baseUrl: String) {
+        trustedCertificateDao.delete(baseUrl)
     }
 
     // Client certificates

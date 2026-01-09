@@ -4,16 +4,22 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.validUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,30 +33,44 @@ import java.util.Locale
  * Full-screen dialog fragment for viewing and trusting/deleting server certificates.
  *
  * Modes:
- * - UNKNOWN: Shows certificate from SSL error with "Trust" action (from AddFragment)
- * - ADD: Shows certificate from file picker with "Trust" action (from CertificateSettingsFragment)
- * - VIEW: Shows certificate details with "Delete" action (from CertificateSettingsFragment)
+ * - UNKNOWN: Shows certificate from SSL error with "Trust" action (from AddFragment).
+ *            baseUrl is passed as argument, goes directly to page 2.
+ * - ADD: Two-page flow - first enter Service URL, then view details and trust.
+ *        Certificate is passed as argument.
+ * - VIEW: Shows certificate details with "Delete" action (from CertificateSettingsFragment).
+ *         baseUrl is passed as argument.
  */
 class TrustedCertificateFragment : DialogFragment() {
     private lateinit var repository: Repository
     private var listener: TrustedCertificateListener? = null
 
     private var mode: Mode = Mode.ADD
+    private var currentPage: Int = 1
     private var cert: X509Certificate? = null
-    private var fingerprint: String? = null
+    private var baseUrl: String? = null
 
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var nextMenuItem: MenuItem
     private lateinit var trustMenuItem: MenuItem
     private lateinit var deleteMenuItem: MenuItem
+
+    // Page 1 views
+    private lateinit var page1Layout: LinearLayout
+    private lateinit var baseUrlLayout: TextInputLayout
+    private lateinit var baseUrlText: TextInputEditText
+    private lateinit var errorText: TextView
+
+    // Page 2 views
+    private lateinit var page2Layout: LinearLayout
     private lateinit var descriptionText: TextView
     private lateinit var warningText: TextView
+    private lateinit var baseUrlValueLabel: TextView
+    private lateinit var baseUrlValueText: TextView
     private lateinit var subjectText: TextView
     private lateinit var issuerText: TextView
     private lateinit var fingerprintText: TextView
     private lateinit var validFromText: TextView
     private lateinit var validUntilText: TextView
-    private lateinit var caText: TextView
-    private lateinit var caInfoText: TextView
 
     interface TrustedCertificateListener {
         fun onCertificateTrusted(certificate: X509Certificate)
@@ -77,18 +97,25 @@ class TrustedCertificateFragment : DialogFragment() {
         // Determine mode from arguments
         mode = Mode.valueOf(arguments?.getString(ARG_MODE) ?: Mode.ADD.name)
 
-        // Get certificate data based on mode
+        // Get data based on mode
         when (mode) {
-            Mode.UNKNOWN, Mode.ADD -> {
+            Mode.UNKNOWN -> {
                 val certBytes = arguments?.getByteArray(ARG_CERTIFICATE)
-                    ?: throw IllegalArgumentException("Certificate bytes required for ADD/UNKNOWN mode")
+                    ?: throw IllegalArgumentException("Certificate bytes required for UNKNOWN mode")
+                baseUrl = arguments?.getString(ARG_BASE_URL)
+                    ?: throw IllegalArgumentException("Base URL required for UNKNOWN mode")
                 val certFactory = CertificateFactory.getInstance("X.509")
                 cert = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
-                fingerprint = CertUtil.calculateFingerprint(cert!!)
+            }
+            Mode.ADD -> {
+                val certBytes = arguments?.getByteArray(ARG_CERTIFICATE)
+                    ?: throw IllegalArgumentException("Certificate bytes required for ADD mode")
+                val certFactory = CertificateFactory.getInstance("X.509")
+                cert = certFactory.generateCertificate(java.io.ByteArrayInputStream(certBytes)) as X509Certificate
             }
             Mode.VIEW -> {
-                fingerprint = arguments?.getString(ARG_FINGERPRINT)
-                    ?: throw IllegalArgumentException("Fingerprint required for VIEW mode")
+                baseUrl = arguments?.getString(ARG_BASE_URL)
+                    ?: throw IllegalArgumentException("Base URL required for VIEW mode")
             }
         }
 
@@ -114,17 +141,16 @@ class TrustedCertificateFragment : DialogFragment() {
         }
     }
 
-    private fun setupView(view: android.view.View) {
+    private fun setupView(view: View) {
         // Setup toolbar
         toolbar = view.findViewById(R.id.trusted_certificate_toolbar)
-        toolbar.setNavigationOnClickListener {
-            if (mode == Mode.ADD || mode == Mode.UNKNOWN) {
-                listener?.onCertificateRejected()
-            }
-            dismiss()
-        }
+        toolbar.setNavigationOnClickListener { handleBack() }
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.trusted_certificate_action_next -> {
+                    nextClicked()
+                    true
+                }
                 R.id.trusted_certificate_action_trust -> {
                     trustCertificate()
                     true
@@ -136,19 +162,31 @@ class TrustedCertificateFragment : DialogFragment() {
                 else -> false
             }
         }
+        nextMenuItem = toolbar.menu.findItem(R.id.trusted_certificate_action_next)
         trustMenuItem = toolbar.menu.findItem(R.id.trusted_certificate_action_trust)
         deleteMenuItem = toolbar.menu.findItem(R.id.trusted_certificate_action_delete)
 
-        // Setup views
+        // Page 1 views
+        page1Layout = view.findViewById(R.id.trusted_certificate_page1)
+        baseUrlLayout = view.findViewById(R.id.trusted_certificate_base_url_layout)
+        baseUrlText = view.findViewById(R.id.trusted_certificate_base_url_text)
+        errorText = view.findViewById(R.id.trusted_certificate_error_text)
+
+        // Page 2 views
+        page2Layout = view.findViewById(R.id.trusted_certificate_page2)
         descriptionText = view.findViewById(R.id.trusted_certificate_description)
         warningText = view.findViewById(R.id.trusted_certificate_warning)
+        baseUrlValueLabel = view.findViewById(R.id.trusted_certificate_base_url_value_label)
+        baseUrlValueText = view.findViewById(R.id.trusted_certificate_base_url_value)
         subjectText = view.findViewById(R.id.trusted_certificate_subject)
         issuerText = view.findViewById(R.id.trusted_certificate_issuer)
         fingerprintText = view.findViewById(R.id.trusted_certificate_fingerprint)
         validFromText = view.findViewById(R.id.trusted_certificate_valid_from)
         validUntilText = view.findViewById(R.id.trusted_certificate_valid_until)
-        caText = view.findViewById(R.id.trusted_certificate_ca)
-        caInfoText = view.findViewById(R.id.trusted_certificate_ca_info)
+
+        // Validate input when typing
+        val textWatcher = AfterChangedTextWatcher { validatePage1() }
+        baseUrlText.addTextChangedListener(textWatcher)
 
         when (mode) {
             Mode.UNKNOWN -> setupUnknownMode()
@@ -158,34 +196,47 @@ class TrustedCertificateFragment : DialogFragment() {
     }
 
     private fun setupUnknownMode() {
+        // Go directly to page 2 with details
         toolbar.setTitle(R.string.trusted_certificate_dialog_title_unknown)
-        descriptionText.setText(R.string.trusted_certificate_dialog_description_unknown)
-        descriptionText.isVisible = true
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        page1Layout.isVisible = false
+        page2Layout.isVisible = true
+        nextMenuItem.isVisible = false
         trustMenuItem.isVisible = true
         deleteMenuItem.isVisible = false
+
+        descriptionText.setText(R.string.trusted_certificate_dialog_description_unknown)
+        descriptionText.isVisible = true
+        baseUrlValueLabel.isVisible = true
+        baseUrlValueText.isVisible = true
+        baseUrlValueText.text = baseUrl
 
         displayCertificateDetails(cert!!)
     }
 
     private fun setupAddMode() {
         toolbar.setTitle(R.string.trusted_certificate_dialog_title_add)
-        descriptionText.setText(R.string.trusted_certificate_dialog_description_add)
-        descriptionText.isVisible = true
-        trustMenuItem.isVisible = true
-        deleteMenuItem.isVisible = false
-
-        displayCertificateDetails(cert!!)
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        showPage1()
     }
 
     private fun setupViewMode() {
         toolbar.setTitle(R.string.trusted_certificate_dialog_title)
-        descriptionText.isVisible = false
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        page1Layout.isVisible = false
+        page2Layout.isVisible = true
+        nextMenuItem.isVisible = false
         trustMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
 
+        descriptionText.isVisible = false
+        baseUrlValueLabel.isVisible = true
+        baseUrlValueText.isVisible = true
+        baseUrlValueText.text = baseUrl
+
         // Load certificate from repository
         lifecycleScope.launch(Dispatchers.IO) {
-            val trustedCert = repository.getTrustedCertificates().find { it.fingerprint == fingerprint }
+            val trustedCert = repository.getTrustedCertificate(baseUrl!!)
             if (trustedCert != null) {
                 try {
                     val x509Cert = CertUtil.parsePemCertificate(trustedCert.pem)
@@ -195,7 +246,7 @@ class TrustedCertificateFragment : DialogFragment() {
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        fingerprintText.text = fingerprint
+                        fingerprintText.text = trustedCert.fingerprint
                     }
                 }
             } else {
@@ -203,6 +254,65 @@ class TrustedCertificateFragment : DialogFragment() {
                     dismiss()
                 }
             }
+        }
+    }
+
+    private fun showPage1() {
+        currentPage = 1
+        page1Layout.isVisible = true
+        page2Layout.isVisible = false
+        toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
+        nextMenuItem.isVisible = true
+        trustMenuItem.isVisible = false
+        deleteMenuItem.isVisible = false
+        validatePage1()
+    }
+
+    private fun showPage2() {
+        currentPage = 2
+        page1Layout.isVisible = false
+        page2Layout.isVisible = true
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        nextMenuItem.isVisible = false
+        trustMenuItem.isVisible = true
+        deleteMenuItem.isVisible = false
+
+        descriptionText.setText(R.string.trusted_certificate_dialog_description_add)
+        descriptionText.isVisible = true
+        baseUrlValueLabel.isVisible = true
+        baseUrlValueText.isVisible = true
+        baseUrlValueText.text = baseUrl
+
+        displayCertificateDetails(cert!!)
+    }
+
+    private fun validatePage1() {
+        val url = baseUrlText.text?.toString()?.trim() ?: ""
+        nextMenuItem.isEnabled = validUrl(url)
+    }
+
+    private fun nextClicked() {
+        val url = baseUrlText.text?.toString()?.trim() ?: ""
+
+        if (!validUrl(url)) {
+            showError(getString(R.string.trusted_certificate_dialog_error_invalid_url))
+            return
+        }
+
+        baseUrl = url
+        errorText.isVisible = false
+        showPage2()
+    }
+
+    private fun handleBack() {
+        when {
+            mode == Mode.VIEW -> dismiss()
+            mode == Mode.UNKNOWN -> {
+                listener?.onCertificateRejected()
+                dismiss()
+            }
+            currentPage == 2 -> showPage1()
+            else -> dismiss()
         }
     }
 
@@ -214,11 +324,6 @@ class TrustedCertificateFragment : DialogFragment() {
         fingerprintText.text = CertUtil.calculateFingerprint(certificate)
         validFromText.text = dateFormat.format(certificate.notBefore)
         validUntilText.text = dateFormat.format(certificate.notAfter)
-
-        // Determine if this is a CA certificate (self-signed)
-        val isCa = certificate.subjectX500Principal == certificate.issuerX500Principal
-        caText.text = if (isCa) getString(R.string.common_yes) else getString(R.string.common_no)
-        caInfoText.isVisible = isCa
 
         // Show warning if certificate is expired or not yet valid
         val now = Date()
@@ -237,12 +342,18 @@ class TrustedCertificateFragment : DialogFragment() {
         }
     }
 
+    private fun showError(message: String) {
+        errorText.text = message
+        errorText.isVisible = true
+    }
+
     private fun trustCertificate() {
         val certificate = cert ?: return
+        val url = baseUrl ?: return
         lifecycleScope.launch(Dispatchers.IO) {
             val fingerprint = CertUtil.calculateFingerprint(certificate)
             val pem = CertUtil.encodeCertificateToPem(certificate)
-            repository.addTrustedCertificate(fingerprint, pem)
+            repository.addTrustedCertificate(url, fingerprint, pem)
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, R.string.trusted_certificate_dialog_added_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateTrusted(certificate)
@@ -252,9 +363,9 @@ class TrustedCertificateFragment : DialogFragment() {
     }
 
     private fun deleteCertificate() {
-        val fp = fingerprint ?: return
+        val url = baseUrl ?: return
         lifecycleScope.launch(Dispatchers.IO) {
-            repository.removeTrustedCertificate(fp)
+            repository.removeTrustedCertificate(url)
             withContext(Dispatchers.Main) {
                 Toast.makeText(context, R.string.trusted_certificate_dialog_deleted_toast, Toast.LENGTH_SHORT).show()
                 listener?.onCertificateDeleted()
@@ -273,24 +384,28 @@ class TrustedCertificateFragment : DialogFragment() {
         const val TAG = "NtfyTrustedCertFragment"
         private const val ARG_MODE = "mode"
         private const val ARG_CERTIFICATE = "certificate"
-        private const val ARG_FINGERPRINT = "fingerprint"
+        private const val ARG_BASE_URL = "base_url"
 
         /**
-         * Create fragment for UNKNOWN mode - showing unknown server certificate with Trust action
-         * Used when connecting to a server with an untrusted certificate (from AddFragment)
+         * Create fragment for UNKNOWN mode - showing unknown server certificate with Trust action.
+         * Used when connecting to a server with an untrusted certificate (from AddFragment).
+         * The baseUrl is provided so it goes directly to the details page.
          */
-        fun newInstanceUnknown(certificate: X509Certificate): TrustedCertificateFragment {
+        fun newInstanceUnknown(certificate: X509Certificate, baseUrl: String): TrustedCertificateFragment {
             return TrustedCertificateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.UNKNOWN.name)
                     putByteArray(ARG_CERTIFICATE, certificate.encoded)
+                    putString(ARG_BASE_URL, baseUrl)
                 }
             }
         }
 
         /**
-         * Create fragment for ADD mode - showing certificate details with Trust action
-         * Used when adding a certificate from file picker (from CertificateSettingsFragment)
+         * Create fragment for ADD mode - two-page flow to add a trusted certificate.
+         * Page 1: Enter Service URL
+         * Page 2: View certificate details and trust
+         * Used when adding a certificate from file picker (from CertificateSettingsFragment).
          */
         fun newInstanceAdd(certificate: X509Certificate): TrustedCertificateFragment {
             return TrustedCertificateFragment().apply {
@@ -302,13 +417,14 @@ class TrustedCertificateFragment : DialogFragment() {
         }
 
         /**
-         * Create fragment for VIEW mode - showing certificate details with Delete action
+         * Create fragment for VIEW mode - showing certificate details with Delete action.
+         * baseUrl is used to look up the certificate from the repository.
          */
-        fun newInstanceView(fingerprint: String): TrustedCertificateFragment {
+        fun newInstanceView(baseUrl: String): TrustedCertificateFragment {
             return TrustedCertificateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_MODE, Mode.VIEW.name)
-                    putString(ARG_FINGERPRINT, fingerprint)
+                    putString(ARG_BASE_URL, baseUrl)
                 }
             }
         }

@@ -6,15 +6,14 @@ import android.util.Base64
 import io.heckel.ntfy.db.ClientCertificate
 import io.heckel.ntfy.db.Repository
 import okhttp3.OkHttpClient
-import okhttp3.internal.tls.OkHostnameVerifier
 import java.io.ByteArrayInputStream
 import java.net.URL
 import java.security.KeyStore
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.KeyManager
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
@@ -22,13 +21,14 @@ import javax.net.ssl.SSLException
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManager
 import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.X509TrustManager
 
 /**
  * TLS config:
- * - Trust system roots
- * - Also trust user-added certs (leaf and/or CA; chains to user-added CAs)
- * - Hostname verify ONLY when chain is system-trusted; skip when only user-trusted
+ * - For each baseUrl, either use the pinned certificate (if one exists) OR system trust
+ * - Pinned cert = ONLY that exact certificate is trusted (strict pinning)
+ * - Hostname verification is bypassed for pinned certificates (the fingerprint match is the trust anchor)
  * - Optional mTLS via per-baseUrl PKCS#12 client cert
  */
 class CertUtil private constructor(context: Context) {
@@ -37,32 +37,35 @@ class CertUtil private constructor(context: Context) {
 
     suspend fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder {
         try {
-            val trustedCerts = repository.getTrustedCertificates().mapNotNull {
-                try {
-                    parsePemCertificate(it.pem)
-                } catch (e: Exception) {
-                    Log.w(TAG, "Failed to parse trusted certificate: ${it.fingerprint}", e)
-                    null
-                }
-            }
+            val pinnedCert = repository.getTrustedCertificate(baseUrl)
             val clientCert = repository.getClientCertificate(baseUrl)
             val clientCertKeyManagers = clientCert?.let { clientCertKeyManagers(it) }
 
-            // Always include system trust; add user trust if present.
-            val systemTm = systemTrustManager()
-            val userTm = if (trustedCerts.isNotEmpty()) trustManagerForUserCerts(trustedCerts) else null
-            val compositeTm = if (userTm != null) compositeTrustManager(systemTm, userTm) else systemTm
-
-            // Only override SSL config if we actually have something to add (user trust or mTLS).
-            if (userTm != null || clientCertKeyManagers != null) {
-                val sslContext = SSLContext.getInstance("TLS").apply {
-                    init(clientCertKeyManagers, arrayOf<TrustManager>(compositeTm), SecureRandom())
+            // Determine which trust manager to use
+            val trustManager: X509TrustManager = if (pinnedCert != null) {
+                // Strict pinning: only trust the exact pinned certificate
+                try {
+                    val cert = parsePemCertificate(pinnedCert.pem)
+                    pinnedCertTrustManager(cert)
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to parse pinned certificate for $baseUrl, falling back to system trust", e)
+                    systemTrustManager()
                 }
-                builder.sslSocketFactory(sslContext.socketFactory, compositeTm)
+            } else {
+                systemTrustManager()
+            }
 
-                // Hostname rules only matter if we have custom trust. If not, keep default verifier.
-                if (userTm != null) {
-                    builder.hostnameVerifier(selectiveHostnameVerifier(systemTm, userTm))
+            // Only override SSL config if we have a pinned cert or client cert
+            if (pinnedCert != null || clientCertKeyManagers != null) {
+                val sslContext = SSLContext.getInstance("TLS").apply {
+                    init(clientCertKeyManagers, arrayOf<TrustManager>(trustManager), SecureRandom())
+                }
+                builder.sslSocketFactory(sslContext.socketFactory, trustManager)
+
+                // Bypass hostname verification for pinned certificates
+                // The certificate fingerprint match is the trust anchor, not the hostname
+                if (pinnedCert != null) {
+                    builder.hostnameVerifier(trustAllHostnameVerifier())
                 }
             }
         } catch (e: Exception) {
@@ -144,81 +147,48 @@ class CertUtil private constructor(context: Context) {
         return tmf.trustManagers.first { it is X509TrustManager } as X509TrustManager
     }
 
-    private fun trustManagerForUserCerts(trustedCerts: List<X509Certificate>): X509TrustManager {
-        val ks = KeyStore.getInstance(KeyStore.getDefaultType()).apply { load(null, null) }
-        trustedCerts.forEachIndexed { idx, cert ->
-            ks.setCertificateEntry("added-$idx", cert)
-        }
-        val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
-            init(ks)
-        }
-        return tmf.trustManagers.first { it is X509TrustManager } as X509TrustManager
+    /**
+     * Hostname verifier that accepts any hostname.
+     * Used for pinned certificates where the fingerprint match is the trust anchor.
+     */
+    @SuppressLint("BadHostnameVerifier")
+    private fun trustAllHostnameVerifier(): HostnameVerifier {
+        return HostnameVerifier { _, _ -> true }
     }
 
     /**
-     * Trust if either system OR custom accepts the chain.
+     * Create a trust manager that ONLY trusts the exact pinned certificate.
+     * This implements strict certificate pinning - system CAs are not trusted.
      */
-    private fun compositeTrustManager(systemTm: X509TrustManager, userTm: X509TrustManager): X509TrustManager =
-        object : X509TrustManager {
-            override fun getAcceptedIssuers(): Array<X509Certificate> =
-                (systemTm.acceptedIssuers + userTm.acceptedIssuers)
-                    .distinctBy { it.subjectX500Principal.name }
-                    .toTypedArray()
+    @SuppressLint("CustomX509TrustManager")
+    private fun pinnedCertTrustManager(pinnedCert: X509Certificate): X509TrustManager {
+        val pinnedFingerprint = calculateFingerprint(pinnedCert)
+        return object : X509TrustManager {
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf(pinnedCert)
 
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-                try {
-                    systemTm.checkClientTrusted(chain, authType)
-                } catch (_: Exception) {
-                    userTm.checkClientTrusted(chain, authType)
-                }
+                throw CertificateException("Client authentication not supported with pinned certificate")
             }
 
             override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-                try {
-                    systemTm.checkServerTrusted(chain, authType)
-                } catch (_: Exception) {
-                    userTm.checkServerTrusted(chain, authType)
+                if (chain.isNullOrEmpty()) {
+                    throw CertificateException("Empty certificate chain")
                 }
-            }
-        }
-
-    /**
-     * Hostname verification:
-     * - if system-trusted => enforce hostname verification
-     * - else if custom-trusted => skip hostname verification
-     * - else => fail
-     */
-    private fun selectiveHostnameVerifier(systemTm: X509TrustManager, userTm: X509TrustManager) =
-        HostnameVerifier { hostname, session ->
-            val chain = try {
-                session.peerCertificates.map { it as X509Certificate }.toTypedArray()
-            } catch (_: Exception) {
-                return@HostnameVerifier false
-            }
-            if (isTrustedBy(systemTm, chain)) {
-                OkHostnameVerifier.verify(hostname, session)
-            } else {
-                isTrustedBy(userTm, chain)
-            }
-        }
-
-    private fun isTrustedBy(tm: X509TrustManager, chain: Array<X509Certificate>): Boolean {
-        // authType not reliably available here; try common ones.
-        return try {
-            tm.checkServerTrusted(chain, "RSA")
-            true
-        } catch (_: Exception) {
-            try {
-                tm.checkServerTrusted(chain, "EC")
-                true
-            } catch (_: Exception) {
-                false
+                val serverCert = chain[0]
+                val serverFingerprint = calculateFingerprint(serverCert)
+                if (serverFingerprint != pinnedFingerprint) {
+                    throw CertificateException(
+                        "Certificate fingerprint mismatch. Expected: $pinnedFingerprint, Got: $serverFingerprint"
+                    )
+                }
+                // Optionally verify certificate validity
+                serverCert.checkValidity()
             }
         }
     }
 
     companion object {
-        private const val TAG = "NtfySSLManager"
+        private const val TAG = "NtfyCertUtil"
 
         @Volatile
         @SuppressLint("StaticFieldLeak")

@@ -70,20 +70,19 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
             try {
                 val cert = CertUtil.parsePemCertificate(trustedCert.pem)
                 val subject = parseCommonName(cert.subjectX500Principal.name)
-                val issuer = parseCommonName(cert.issuerX500Principal.name)
-                val isSelfSigned = cert.subjectX500Principal == cert.issuerX500Principal
                 val isExpired = !isValid(cert)
 
                 val pref = Preference(preferenceScreen.context)
-                pref.title = subject
-                pref.summary = when {
-                    isSelfSigned && isExpired -> getString(R.string.settings_advanced_certificates_trusted_item_summary_ca_expired)
-                    isSelfSigned -> getString(R.string.settings_advanced_certificates_trusted_item_summary_ca, dateFormat.format(cert.notAfter))
-                    isExpired -> getString(R.string.settings_advanced_certificates_trusted_item_summary_leaf_expired, issuer)
-                    else -> getString(R.string.settings_advanced_certificates_trusted_item_summary_leaf, issuer, dateFormat.format(cert.notAfter))
+                // Title is the short URL (baseUrl)
+                pref.title = shortUrl(trustedCert.baseUrl)
+                // Summary shows certificate subject and expiry
+                pref.summary = if (isExpired) {
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, subject)
+                } else {
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary, subject, dateFormat.format(cert.notAfter))
                 }
                 pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                    TrustedCertificateFragment.newInstanceView(trustedCert.fingerprint)
+                    TrustedCertificateFragment.newInstanceView(trustedCert.baseUrl)
                         .show(childFragmentManager, TrustedCertificateFragment.TAG)
                     true
                 }

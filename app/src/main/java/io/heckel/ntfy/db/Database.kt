@@ -190,7 +190,8 @@ data class User(
 
 @Entity(tableName = "TrustedCertificate")
 data class TrustedCertificate(
-    @PrimaryKey @ColumnInfo(name = "fingerprint") val fingerprint: String,
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "fingerprint") val fingerprint: String,
     @ColumnInfo(name = "pem") val pem: String
 )
 
@@ -386,7 +387,7 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_15_16 = object : Migration(15, 16) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("CREATE TABLE TrustedCertificate (fingerprint TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(fingerprint))")
+                db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, fingerprint TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
                 db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }
@@ -565,11 +566,14 @@ interface TrustedCertificateDao {
     @Query("SELECT * FROM TrustedCertificate")
     suspend fun list(): List<TrustedCertificate>
 
+    @Query("SELECT * FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): TrustedCertificate?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cert: TrustedCertificate)
 
-    @Query("DELETE FROM TrustedCertificate WHERE fingerprint = :fingerprint")
-    suspend fun delete(fingerprint: String)
+    @Query("DELETE FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
 }
 
 @Dao
