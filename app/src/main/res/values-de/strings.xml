@@ -230,7 +230,6 @@
     <string name="user_dialog_button_add">Benutzer hinzufügen</string>
     <string name="user_dialog_button_cancel">Abbrechen</string>
     <string name="user_dialog_button_delete">Benutzer löschen</string>
-    <string name="common_button_save">Speichern</string>
     <string name="main_menu_notifications_disabled_until">Benachrichtigungen stummgeschaltet bis %1$s</string>
     <string name="main_menu_settings_title">Einstellungen</string>
     <string name="main_banner_battery_button_remind_later">Später fragen</string>
@@ -365,7 +364,6 @@
     <string name="custom_headers_dialog_value_hint">Header-Wert (z.B. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Einen benutzerdefinierten HTTP-Header hinzufügen, der mit jeder Anfrage an den angegebenen Server gesendet wird.</string>
     <string name="custom_headers_dialog_description_edit">Den Header-Namen/Wert bearbeiten oder löschen.</string>
-    <string name="custom_headers_dialog_base_url_hint">Service-URL</string>
     <string name="settings_general_dynamic_colors_title">Dynamische Farben</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Verwendung der dynamischen Systemfarben</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Verwendung der ntfy-Themenfarben</string>

@@ -288,7 +288,6 @@
     <string name="user_dialog_username_hint">שם משתמש</string>
     <string name="user_dialog_button_cancel">ביטול</string>
     <string name="user_dialog_button_delete">מחיקת משתמש</string>
-    <string name="common_button_save">שמירה</string>
     <string name="detail_item_cannot_delete">לא ניתן למחוק צרופה: %1$s</string>
     <string name="detail_item_download_failed">לא ניתן להוריד צרופה: %1$s</string>
     <string name="detail_item_download_info_not_downloaded_expired">לא ירדה, תוקף הקישור פג</string>
@@ -394,7 +393,6 @@
     <string name="custom_headers_dialog_error_invalid_name">שם הכותרת מכיל תווים שגויים</string>
     <string name="custom_headers_dialog_value_hint">ערך כותרת (למשל: 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_name_hint">שם כותרת (למשל: CF-Access-Client-Id)</string>
-    <string name="custom_headers_dialog_base_url_hint">כתובת שירות</string>
     <string name="custom_headers_dialog_title_edit">עריכת כותרת מותאמת אישית</string>
     <string name="custom_headers_dialog_title_add">הוספת כותרת מותאמת אישית</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_title">הוספת כותרת לשרת</string>

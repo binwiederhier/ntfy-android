@@ -214,7 +214,6 @@
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>
     <string name="settings_notifications_auto_download_500k">Jika di bawah 500 kB</string>
-    <string name="common_button_save">Simpan</string>
     <string name="channel_notifications_high_name">Prioritas tinggi</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>
     <string name="add_dialog_button_subscribe">Berlangganan</string>
@@ -403,7 +402,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Tidak dapat menambahkan pengguna jika header Otorisasi khusus diatur untuk server ini</string>
     <string name="custom_headers_dialog_title_add">Tambah header khusus</string>
     <string name="custom_headers_dialog_title_edit">Edit header khusus</string>
-    <string name="custom_headers_dialog_base_url_hint">URL Layanan</string>
     <string name="custom_headers_dialog_name_hint">Nama header (contoh: Id-Klien-Akses-CF)</string>
     <string name="custom_headers_dialog_value_hint">Nilai header (contoh: 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Tambah header HTTP khusus yang akan dikirim dengan setiap permintaan ke server yang ditentukan.</string>

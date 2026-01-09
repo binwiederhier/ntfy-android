@@ -178,7 +178,6 @@
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocket</string>
     <string name="detail_settings_about_topic_url_title">主題 URL</string>
     <string name="user_dialog_password_hint_add">密碼</string>
-    <string name="common_button_save">儲存</string>
     <string name="user_dialog_button_add">新增使用者</string>
     <string name="user_dialog_button_cancel">取消</string>
     <string name="user_dialog_username_hint">使用者名稱</string>
@@ -402,7 +401,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">若此伺服器已設定自訂 Authorization 標頭，則無法新增使用者</string>
     <string name="custom_headers_dialog_title_add">新增自訂標頭</string>
     <string name="custom_headers_dialog_title_edit">編輯自訂標頭</string>
-    <string name="custom_headers_dialog_base_url_hint">服務網址</string>
     <string name="custom_headers_dialog_name_hint">標頭名稱（例如：CF-Access-Client-Id）</string>
     <string name="custom_headers_dialog_value_hint">標頭值（例如：9f3c2e4a1b2d4e）</string>
     <string name="custom_headers_dialog_description_add">新增一個會隨每次請求傳送至指定伺服器的自訂 HTTP 標頭。</string>

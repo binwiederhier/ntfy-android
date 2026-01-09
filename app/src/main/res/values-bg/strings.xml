@@ -199,7 +199,6 @@
     <string name="settings_notifications_auto_delete_summary_one_month">Премахват се автоматично след един месец</string>
     <string name="settings_notifications_auto_delete_summary_three_months">Премахват се автоматично след три месеца</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="common_button_save">Запазване</string>
     <string name="user_dialog_button_delete">Премахване</string>
     <string name="user_dialog_button_add">Добавяне</string>
     <string name="user_dialog_password_hint_edit">Парола (без промяна ако е празна)</string>
@@ -403,7 +402,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Не може да бъде добавен потребител ако за сървъра е зададена потребителска заглавка Authorization</string>
     <string name="custom_headers_dialog_title_add">Добавяна на заглавка по избор</string>
     <string name="custom_headers_dialog_title_edit">Променяне на заглавка по избор</string>
-    <string name="custom_headers_dialog_base_url_hint">Адрес на услугата</string>
     <string name="custom_headers_dialog_name_hint">Име на заглавката (напр. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Стойност на заглавката (напр. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Добавяне на заглавка на HTTP по избор, която да бъде изпращана с всяка заявка към избрания сървър.</string>

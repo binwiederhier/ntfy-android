@@ -288,7 +288,6 @@
     <string name="user_dialog_username_hint">ユーザー名</string>
     <string name="user_dialog_button_add">ユーザー追加</string>
     <string name="user_dialog_button_delete">ユーザー削除</string>
-    <string name="common_button_save">保存</string>
     <string name="user_dialog_password_hint_add">パスワード</string>
     <string name="user_dialog_button_cancel">キャンセル</string>
     <string name="settings_notifications_min_priority_low">優先度低 およびそれ以上</string>
@@ -403,7 +402,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">カスタムAuthorizationヘッダがこのサーバに設定されている場合はユーザーを追加できません</string>
     <string name="custom_headers_dialog_title_add">カスタムヘッダを追加</string>
     <string name="custom_headers_dialog_title_edit">カスタムヘッダを編集</string>
-    <string name="custom_headers_dialog_base_url_hint">サービスURL</string>
     <string name="custom_headers_dialog_name_hint">ヘッダ名 (例: CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">ヘッダ値 (例: 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">特定のサーバに送信する全てのリクエストに付加するカスタムHTTPヘッダを追加します。</string>

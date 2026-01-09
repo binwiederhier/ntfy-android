@@ -259,7 +259,6 @@
     <string name="user_dialog_button_add">Ajouter utilisateur</string>
     <string name="user_dialog_button_cancel">Annuler</string>
     <string name="user_dialog_button_delete">Supprimer utilisateur</string>
-    <string name="common_button_save">Enregistrer</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Journaux supprimés</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Affiche les notifications si la priorité est %1$d (%2$s) ou supérieure</string>
     <string name="settings_notifications_auto_delete_never">Jamais</string>
@@ -400,7 +399,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Impossible d\'ajouter un utilisateur si un en-tête d\'authentification personnalisé est défini pour ce serveur</string>
     <string name="custom_headers_dialog_title_add">Ajouter un en-tête personnalité</string>
     <string name="custom_headers_dialog_title_edit">Modifier un en-tête personnalisé</string>
-    <string name="custom_headers_dialog_base_url_hint">URL du service</string>
     <string name="custom_headers_dialog_name_hint">Nom de l\'en-tête (e.g. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Valeur de l\'en-tête (e.g. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Ajoutez un en-tête HTTP personnalisé qui sera envoyé avec chaque demande au serveur spécifié.</string>

@@ -290,7 +290,6 @@
     <string name="user_dialog_password_hint_edit">密码 (留空不变)</string>
     <string name="user_dialog_button_add">添加用户</string>
     <string name="user_dialog_button_cancel">取消</string>
-    <string name="common_button_save">保存</string>
     <string name="settings_notifications_channel_prefs_title">频道设置</string>
     <string name="detail_deep_link_subscribed_toast_message">订阅%1$s 主题</string>
     <string name="settings_notifications_priority_min">分钟</string>
@@ -403,7 +402,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">如果为此服务器设置了自定义授权标头，则无法添加用户</string>
     <string name="custom_headers_dialog_title_add">添加自定义标头</string>
     <string name="custom_headers_dialog_title_edit">编辑自定义标头</string>
-    <string name="custom_headers_dialog_base_url_hint">服务 URL</string>
     <string name="custom_headers_dialog_name_hint">标头名称（如：CF-Access-Client-Id）</string>
     <string name="custom_headers_dialog_value_hint">标头值（如 9f3c2e4a1b2d4e）</string>
     <string name="custom_headers_dialog_description_add">添加随每一个到指定服务器的请求一同发送的 HTTP 标头。</string>
