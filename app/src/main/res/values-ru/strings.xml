@@ -110,7 +110,6 @@
     <string name="detail_item_cannot_open_not_found">Вложение не открывается: Возможно файл был удалёл, либо нет установленного приложения, способного открыть файл.</string>
     <string name="detail_menu_notifications_enabled">Уведомления включены</string>
     <string name="detail_menu_notifications_disabled_forever">Уведомления отключены</string>
-    <string name="notification_dialog_save">Сохранить</string>
     <string name="notification_dialog_muted_until_toast_message">Уведомления отключены до %1$s</string>
     <string name="notification_popup_action_open">Открыть</string>
     <string name="notification_popup_action_download">Скачать</string>

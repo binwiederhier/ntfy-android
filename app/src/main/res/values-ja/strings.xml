@@ -160,7 +160,6 @@
     <string name="settings_notifications_header">通知</string>
     <string name="share_successful">メッセージが送信されました</string>
     <string name="notification_dialog_cancel">キャンセル</string>
-    <string name="notification_dialog_save">保存</string>
     <string name="notification_dialog_title">通知をミュート</string>
     <string name="share_suggested_topics">提案されたトピック</string>
     <string name="notification_dialog_muted_forever_toast_message">通知をミュートしました</string>

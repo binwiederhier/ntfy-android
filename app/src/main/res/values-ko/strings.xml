@@ -255,7 +255,6 @@
     <string name="notification_dialog_2h">2시간 후</string>
     <string name="notification_dialog_8h">8시간 후</string>
     <string name="notification_dialog_forever">해제시</string>
-    <string name="notification_dialog_save">저장</string>
     <string name="notification_dialog_enabled_toast_message">알림 음소거 해제됨</string>
     <string name="notification_dialog_tomorrow">내일</string>
     <string name="settings_general_users_prefs_user_used_by_many">주제 %1$s에서 사용됨</string>

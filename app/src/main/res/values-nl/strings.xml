@@ -214,7 +214,6 @@
     <string name="detail_instant_delivery_enabled">Directe levering aan</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notificatie verwijderd</string>
-    <string name="notification_dialog_save">Opslaan</string>
     <string name="notification_popup_action_cancel">Annuleren</string>
     <string name="notification_popup_file">%1$s
 \nBestand: %2$s</string>

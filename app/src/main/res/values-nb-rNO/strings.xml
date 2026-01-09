@@ -104,7 +104,6 @@
     <string name="share_content_file_text">En fil ble delt med deg</string>
     <string name="share_topic_title">Del til</string>
     <string name="notification_dialog_cancel">Avbryt</string>
-    <string name="notification_dialog_save">Lagre</string>
     <string name="notification_dialog_show_all">Vis alle merknader</string>
     <string name="notification_dialog_30min">30 minutter</string>
     <string name="notification_dialog_2h">2 timer</string>

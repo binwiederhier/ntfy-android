@@ -254,7 +254,6 @@
     <string name="share_successful">Повідомлення опубліковано</string>
     <string name="notification_dialog_title">Вимкнути сповіщення</string>
     <string name="notification_dialog_cancel">Скасувати</string>
-    <string name="notification_dialog_save">Зберегти</string>
     <string name="notification_dialog_enabled_toast_message">Сповіщення відновлено</string>
     <string name="notification_dialog_muted_forever_toast_message">Сповіщення вимкнено</string>
     <string name="notification_dialog_muted_until_toast_message">Сповіщення вимкнено до %1$s</string>

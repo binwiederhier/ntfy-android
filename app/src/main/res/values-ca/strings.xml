@@ -55,7 +55,6 @@
     <string name="detail_instant_delivery_disabled">Entrega instantània desactivada</string>
     <string name="detail_item_menu_copy_contents">Copiar la notificació</string>
     <string name="detail_menu_test">Enviar notificació de prova</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="main_banner_battery_button_remind_later">Preguntar més endavant</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
     <string name="main_banner_battery_button_fix_now">Arreglar ara</string>

@@ -115,7 +115,6 @@
     <string name="share_suggested_topics">Tópicos sugeridos</string>
     <string name="share_successful">Mensagem publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="notification_dialog_enabled_toast_message">Notificações retomadas</string>
     <string name="notification_dialog_muted_until_toast_message">Notificações silenciadas até %1$s</string>
     <string name="notification_dialog_show_all">Mostrar todas as notificações</string>

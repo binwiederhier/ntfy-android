@@ -189,7 +189,6 @@
     <string name="notification_dialog_enabled_toast_message">Notifikationer aktiverat</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifikationer inaktiverat</string>
     <string name="notification_dialog_muted_until_toast_message">Notifikationer inaktiverat till %1$s</string>
-    <string name="notification_dialog_save">Spara</string>
     <string name="notification_popup_action_browse">Bläddra</string>
     <string name="notification_dialog_forever">Tills återaktiverad</string>
     <string name="notification_popup_action_open">Öppna</string>

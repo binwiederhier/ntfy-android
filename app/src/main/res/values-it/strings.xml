@@ -241,7 +241,6 @@
     <string name="share_content_file_text">Un file è stato condiviso con te</string>
     <string name="share_suggested_topics">Argomenti suggeriti</string>
     <string name="notification_dialog_title">Disattivare le notifiche</string>
-    <string name="notification_dialog_save">Salva</string>
     <string name="notification_dialog_enabled_toast_message">Notifiche ripristinate</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifiche disattivate</string>
     <string name="notification_dialog_muted_until_toast_message">Notifiche disattivate fino a %1$s</string>

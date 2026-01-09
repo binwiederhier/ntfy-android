@@ -126,7 +126,6 @@
     <string name="share_menu_send">Споделяне</string>
     <string name="share_successful">Съобщението е публикувано</string>
     <string name="notification_dialog_cancel">Отказ</string>
-    <string name="notification_dialog_save">Запазване</string>
     <string name="notification_dialog_enabled_toast_message">Известията са включени</string>
     <string name="notification_dialog_30min">30 минути</string>
     <string name="notification_dialog_1h">1 час</string>

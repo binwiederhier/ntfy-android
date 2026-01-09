@@ -109,7 +109,6 @@
     <string name="share_successful">Nachricht veröffentlicht</string>
     <string name="notification_dialog_title">Benachrichtigungen stummschalten</string>
     <string name="notification_dialog_cancel">Abbrechen</string>
-    <string name="notification_dialog_save">Speichern</string>
     <string name="notification_dialog_enabled_toast_message">Benachrichtigungen reaktiviert</string>
     <string name="notification_dialog_muted_forever_toast_message">Benachrichtigungen stummgeschaltet</string>
     <string name="notification_dialog_muted_until_toast_message">Benachrichtigungen stummgeschaltet bis %1$s</string>

@@ -124,7 +124,6 @@
     <string name="detail_action_mode_delete_dialog_cancel">Katkesta</string>
     <string name="notification_dialog_8h">8 tundi</string>
     <string name="detail_item_download_info_download_failed_expires_x">allalaadimine ei õnnestunud, link aegub %1$s</string>
-    <string name="notification_dialog_save">Salvesta</string>
     <string name="share_successful">Sõnum on saadetud</string>
     <string name="main_banner_websocket_text">WebSocketi andmevahetusprotokoll on meie esimene soovitus serveriga suhtlemiseks ja ta võib ka parandada aku kasutust, kuid võib vajada <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">proksiserveri täiendavat seadistamist</a>. Seda saad muuta seadistustest.</string>
     <string name="notification_dialog_title">Summuta teavitused</string>

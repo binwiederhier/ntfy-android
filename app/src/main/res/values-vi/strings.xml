@@ -51,7 +51,6 @@
     <string name="main_item_status_text_not_one">%1$d thông báo</string>
     <string name="main_action_bar_title">Chủ đề đăng kí</string>
     <string name="main_menu_notifications_disabled_until">Thông báo bị tắt cho đến %1$s</string>
-    <string name="notification_dialog_save">Lưu</string>
     <string name="add_dialog_login_new_user">Thêm người dùng</string>
     <string name="detail_delete_dialog_cancel">Hủy</string>
     <string name="detail_clear_dialog_cancel">Hủy</string>

@@ -107,7 +107,6 @@
     <string name="share_suggested_topics">Tópicos sugeridos</string>
     <string name="share_successful">Mensagem publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Salvar</string>
     <string name="notification_dialog_muted_forever_toast_message">Notificações silenciadas</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_dialog_1h">1 hora</string>

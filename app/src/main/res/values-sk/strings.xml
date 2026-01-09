@@ -110,7 +110,6 @@
     <string name="notification_dialog_cancel">Zrušiť</string>
     <string name="notification_dialog_muted_forever_toast_message">Oznámenia stlmené</string>
     <string name="notification_dialog_muted_until_toast_message">Oznámenia stlmené do %1$s</string>
-    <string name="notification_dialog_save">Uložiť</string>
     <string name="notification_dialog_enabled_toast_message">Oznámenia boli obnovené</string>
     <string name="notification_dialog_1h">1 hodina</string>
     <string name="notification_dialog_2h">2 hodiny</string>

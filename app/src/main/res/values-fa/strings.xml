@@ -69,7 +69,6 @@
     <string name="share_title">هم‌رسانی</string>
     <string name="share_menu_send">هم‌رسانی</string>
     <string name="notification_dialog_cancel">لغو</string>
-    <string name="notification_dialog_save">ذخیره</string>
     <string name="notification_popup_action_open">گشودن</string>
     <string name="notification_popup_action_browse">مرور</string>
     <string name="notification_popup_action_download">بارگیری</string>

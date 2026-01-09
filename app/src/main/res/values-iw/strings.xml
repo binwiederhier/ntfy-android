@@ -136,7 +136,6 @@
     <string name="share_topic_title">שיתוף אל</string>
     <string name="share_suggested_topics">נושאים מוצעים</string>
     <string name="notification_dialog_title">השתקת התראות</string>
-    <string name="notification_dialog_save">שמירה</string>
     <string name="notification_dialog_enabled_toast_message">ההתראות נמשכות</string>
     <string name="notification_dialog_muted_forever_toast_message">ההתראות מושתקות</string>
     <string name="notification_dialog_30min">חצי שעה</string>

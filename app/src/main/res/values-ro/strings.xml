@@ -207,7 +207,6 @@
     <string name="share_topic_title">Distribuie la</string>
     <string name="notification_dialog_title">Oprește notificările</string>
     <string name="share_successful">Mesaj publicat</string>
-    <string name="notification_dialog_save">Salvează</string>
     <string name="notification_dialog_enabled_toast_message">Notificări reactivate</string>
     <string name="notification_dialog_show_all">Arată toate notificările</string>
     <string name="notification_dialog_muted_forever_toast_message">Notificări oprite</string>

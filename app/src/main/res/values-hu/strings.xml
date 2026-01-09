@@ -118,7 +118,6 @@
     <string name="notification_dialog_1h">1 óra</string>
     <string name="notification_popup_action_cancel">Mégse</string>
     <string name="detail_action_mode_delete_dialog_cancel">Mégse</string>
-    <string name="notification_dialog_save">Mentés</string>
     <string name="notification_dialog_show_all">Összes értesítés mutatása</string>
     <string name="notification_dialog_muted_forever_toast_message">Értesítések lenémítva</string>
     <string name="notification_dialog_2h">2 óra</string>

@@ -283,7 +283,6 @@
     <!-- Notification dialog -->
     <string name="notification_dialog_title">Mute notifications</string>
     <string name="notification_dialog_cancel">Cancel</string>
-    <string name="notification_dialog_save">Save</string>
     <string name="notification_dialog_enabled_toast_message">Notifications resumed</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifications muted</string>
     <string name="notification_dialog_muted_until_toast_message">Notifications muted until %1$s</string>

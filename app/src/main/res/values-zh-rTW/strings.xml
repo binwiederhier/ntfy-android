@@ -118,7 +118,6 @@
     <string name="share_menu_send">傳送</string>
     <string name="share_content_title">預覽</string>
     <string name="notification_dialog_cancel">取消</string>
-    <string name="notification_dialog_save">儲存</string>
     <string name="notification_dialog_30min">30 分鐘</string>
     <string name="notification_dialog_1h">1 小時</string>
     <string name="notification_dialog_2h">2 小時</string>

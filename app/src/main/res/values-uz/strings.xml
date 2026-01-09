@@ -131,7 +131,6 @@
     <string name="share_content_file_error">Fayl ma’lumotlarini o‘qib bo‘lmadi: %1$s</string>
     <string name="share_suggested_topics">Taklif etilgan mavzular</string>
     <string name="notification_dialog_cancel">Bekor qilish</string>
-    <string name="notification_dialog_save">Saqlash</string>
     <string name="notification_dialog_enabled_toast_message">Bildirishnomalar davom ettirildi</string>
     <string name="notification_dialog_1h">1 soat</string>
     <string name="notification_popup_action_open">Ochish</string>

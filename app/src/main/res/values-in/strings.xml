@@ -114,7 +114,6 @@
     <string name="share_successful">Pesan dipublikasikan</string>
     <string name="notification_dialog_title">Bisukan notifikasi</string>
     <string name="notification_dialog_cancel">Batal</string>
-    <string name="notification_dialog_save">Simpan</string>
     <string name="notification_dialog_show_all">Tampilkan semua notifikasi</string>
     <string name="notification_dialog_30min">30 menit</string>
     <string name="notification_dialog_1h">1 jam</string>

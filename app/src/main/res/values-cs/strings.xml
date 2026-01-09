@@ -117,7 +117,6 @@
     <string name="share_successful">Zpráva zveřejněna</string>
     <string name="notification_dialog_title">Ztlumit oznámení</string>
     <string name="notification_dialog_cancel">Zrušit</string>
-    <string name="notification_dialog_save">Uložit</string>
     <string name="notification_dialog_enabled_toast_message">Oznámení byla obnovena</string>
     <string name="notification_dialog_muted_forever_toast_message">Oznámení ztlumena</string>
     <string name="notification_dialog_show_all">Zobrazit všechna oznámení</string>

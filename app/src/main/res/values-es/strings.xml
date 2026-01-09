@@ -107,7 +107,6 @@
     <string name="share_successful">Mensaje publicado</string>
     <string name="notification_dialog_title">Silenciar notificaciones</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="notification_dialog_muted_until_toast_message">Notificaciones silenciadas hasta %1$s</string>
     <string name="notification_dialog_show_all">Mostrar todas las notificaciones</string>
     <string name="notification_dialog_30min">30 minutos</string>

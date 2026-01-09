@@ -152,7 +152,6 @@
     <string name="share_successful">Message publié</string>
     <string name="notification_dialog_title">Mettre en sourdine les notifications</string>
     <string name="notification_dialog_cancel">Annuler</string>
-    <string name="notification_dialog_save">Enregistrer</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifications en sourdine</string>
     <string name="notification_dialog_muted_until_toast_message">Notifications en sourdine jusqu\'à %1$s</string>
     <string name="notification_dialog_show_all">Afficher toutes les notifications</string>

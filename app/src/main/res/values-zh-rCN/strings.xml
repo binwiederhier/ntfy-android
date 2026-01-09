@@ -113,7 +113,6 @@
     <string name="share_topic_title">分享给</string>
     <string name="share_suggested_topics">推荐的主题</string>
     <string name="notification_dialog_cancel">取消</string>
-    <string name="notification_dialog_save">保存</string>
     <string name="notification_dialog_enabled_toast_message">通知已恢复</string>
     <string name="notification_dialog_muted_until_toast_message">通知已暂停至 %1$s</string>
     <string name="notification_dialog_show_all">显示所有通知</string>

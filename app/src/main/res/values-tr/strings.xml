@@ -99,7 +99,6 @@
     <string name="share_topic_title">Paylaş</string>
     <string name="share_suggested_topics">Önerilen konular</string>
     <string name="share_successful">Mesaj yayınlandı</string>
-    <string name="notification_dialog_save">Kaydet</string>
     <string name="notification_dialog_enabled_toast_message">Bildirimler devam ettirildi</string>
     <string name="notification_dialog_muted_forever_toast_message">Bildirimler sessize alındı</string>
     <string name="notification_dialog_muted_until_toast_message">Bildirimler şu zamana kadar sessize alındı: %1$s</string>

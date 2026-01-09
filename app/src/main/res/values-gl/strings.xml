@@ -151,7 +151,6 @@
     <string name="share_suggested_topics">Temas suxeridos</string>
     <string name="share_successful">Mensaxe publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Gardar</string>
     <string name="notification_dialog_enabled_toast_message">Reactivadas as notificacións</string>
     <string name="notification_popup_file_download_successful">%1$s
 \nFicheiro: %2$s, descargado</string>
