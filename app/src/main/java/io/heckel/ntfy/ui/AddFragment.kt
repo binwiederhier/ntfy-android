@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.core.view.isGone
+import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLHandshakeException
 import javax.net.ssl.SSLPeerUnverifiedException
@@ -245,8 +246,9 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
                 
-                // Check if this is an SSL certificate error
-                if (isSSLException(e)) {
+                // If this is an SSL certificate error, show the trust cert dialog
+                // Never show the dialog for the app base URL
+                if (isSSLException(e) && baseUrl != appBaseUrl) {
                     Log.d(TAG, "SSL certificate error detected, attempting to fetch certificate for user review")
                     handleSSLException(baseUrl)
                 } else {
@@ -259,9 +261,7 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private fun isSSLException(e: Exception): Boolean {
         var cause: Throwable? = e
         while (cause != null) {
-            if (cause is SSLHandshakeException || 
-                cause is SSLPeerUnverifiedException ||
-                cause is java.security.cert.CertificateException) {
+            if (cause is SSLHandshakeException || cause is SSLPeerUnverifiedException || cause is CertificateException) {
                 return true
             }
             cause = cause.cause

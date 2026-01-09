@@ -35,6 +35,10 @@ class CertUtil private constructor(context: Context) {
     private val appContext: Context = context.applicationContext
     private val repository: Repository by lazy { Repository.getInstance(appContext) }
 
+    /**
+     * Configure OkHttp client with TLS config, using the pinned certificate if available as well as
+     * a client certificate if available. If neither are available, system trust is used.
+     */
     suspend fun withTLSConfig(builder: OkHttpClient.Builder, baseUrl: String): OkHttpClient.Builder {
         try {
             val pinnedCert = repository.getTrustedCertificate(baseUrl)
@@ -79,24 +83,12 @@ class CertUtil private constructor(context: Context) {
      * Fetch the server certificate without trusting it.
      * Used to display certificate details before user decides to trust.
      */
-    @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
     fun fetchServerCertificate(baseUrl: String): X509Certificate? {
         var capturedCert: X509Certificate? = null
-
-        val trustManager = object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-                if (!chain.isNullOrEmpty()) capturedCert = chain[0]
-                throw SSLException("Certificate captured for inspection")
-            }
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        }
-
+        val trustManager = capturingTrustManager { capturedCert = it }
         val sslContext = SSLContext.getInstance("TLS").apply {
             init(null, arrayOf(trustManager), null)
         }
-
         try {
             val url = URL(baseUrl)
             val host = url.host
@@ -123,7 +115,8 @@ class CertUtil private constructor(context: Context) {
     }
 
     /**
-     * mTLS client auth via PKCS#12 from DB.
+     * Create a key managers list using a specific client certificate (PKCS#12).
+     * This is used for mTLS client auth.
      */
     private fun clientCertKeyManagers(clientCert: ClientCertificate): Array<KeyManager>? {
         return try {
@@ -141,6 +134,9 @@ class CertUtil private constructor(context: Context) {
         }
     }
 
+    /**
+     * Create a trust manager that uses the system trust store.
+     */
     private fun systemTrustManager(): X509TrustManager {
         val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
             init(null as KeyStore?)
@@ -149,12 +145,19 @@ class CertUtil private constructor(context: Context) {
     }
 
     /**
-     * Hostname verifier that accepts any hostname.
-     * Used for pinned certificates where the fingerprint match is the trust anchor.
+     * Create a trust manager that captures the server certificate and then throws an exception.
+     * Used to inspect certificates before deciding to trust them.
      */
-    @SuppressLint("BadHostnameVerifier")
-    private fun trustAllHostnameVerifier(): HostnameVerifier {
-        return HostnameVerifier { _, _ -> true }
+    @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
+    private fun capturingTrustManager(onCertificate: (X509Certificate) -> Unit): X509TrustManager {
+        return object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                if (!chain.isNullOrEmpty()) onCertificate(chain[0])
+                throw SSLException("Certificate captured for inspection")
+            }
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        }
     }
 
     /**
@@ -182,10 +185,18 @@ class CertUtil private constructor(context: Context) {
                         "Certificate fingerprint mismatch. Expected: $pinnedFingerprint, Got: $serverFingerprint"
                     )
                 }
-                // Optionally verify certificate validity
                 serverCert.checkValidity()
             }
         }
+    }
+
+    /**
+     * Hostname verifier that accepts any hostname. Used for pinned certificates where the
+     * fingerprint match is the trust anchor.
+     */
+    @SuppressLint("BadHostnameVerifier")
+    private fun trustAllHostnameVerifier(): HostnameVerifier {
+        return HostnameVerifier { _, _ -> true }
     }
 
     companion object {
