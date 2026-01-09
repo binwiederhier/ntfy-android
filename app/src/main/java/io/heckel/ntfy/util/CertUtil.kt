@@ -41,12 +41,12 @@ class CertUtil private constructor(context: Context) {
             val clientCert = repository.getClientCertificate(baseUrl)
             val clientCertKeyManagers = clientCert?.let { clientCertKeyManagers(it) }
 
-            // Determine which trust manager to use
+            // Determine which trust manager to use:
+            // - If there is a en exception and a pinned cert, use it
+            // - Otherwise, use system trust
             val trustManager: X509TrustManager = if (pinnedCert != null) {
-                // Strict pinning: only trust the exact pinned certificate
                 try {
-                    val cert = parsePemCertificate(pinnedCert.pem)
-                    pinnedCertTrustManager(cert)
+                    pinnedCertTrustManager(parsePemCertificate(pinnedCert.pem))
                 } catch (e: Exception) {
                     Log.w(TAG, "Failed to parse pinned certificate for $baseUrl, falling back to system trust", e)
                     systemTrustManager()
@@ -55,18 +55,19 @@ class CertUtil private constructor(context: Context) {
                 systemTrustManager()
             }
 
+            // Bypass hostname verification for pinned certificates. We specifically added this certificate
+            // for a base URL and trusted the exception, so the CN does not have to match the hostname.
+            // We do, however, still verify the certificate validity and ensure that the fingerprint matches.
+            if (pinnedCert != null) {
+                builder.hostnameVerifier(trustAllHostnameVerifier())
+            }
+
             // Only override SSL config if we have a pinned cert or client cert
             if (pinnedCert != null || clientCertKeyManagers != null) {
                 val sslContext = SSLContext.getInstance("TLS").apply {
                     init(clientCertKeyManagers, arrayOf<TrustManager>(trustManager), SecureRandom())
                 }
                 builder.sslSocketFactory(sslContext.socketFactory, trustManager)
-
-                // Bypass hostname verification for pinned certificates
-                // The certificate fingerprint match is the trust anchor, not the hostname
-                if (pinnedCert != null) {
-                    builder.hostnameVerifier(trustAllHostnameVerifier())
-                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to configure SSL for $baseUrl", e)
