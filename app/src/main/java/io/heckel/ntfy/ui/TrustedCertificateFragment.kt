@@ -62,6 +62,7 @@ class TrustedCertificateFragment : DialogFragment() {
 
     // Page 2 views
     private lateinit var page2Layout: LinearLayout
+    private lateinit var securityWarningLayout: LinearLayout
     private lateinit var descriptionText: TextView
     private lateinit var warningText: TextView
     private lateinit var baseUrlValueLabel: TextView
@@ -174,6 +175,7 @@ class TrustedCertificateFragment : DialogFragment() {
 
         // Page 2 views
         page2Layout = view.findViewById(R.id.trusted_certificate_page2)
+        securityWarningLayout = view.findViewById(R.id.trusted_certificate_security_warning)
         descriptionText = view.findViewById(R.id.trusted_certificate_description)
         warningText = view.findViewById(R.id.trusted_certificate_warning)
         baseUrlValueLabel = view.findViewById(R.id.trusted_certificate_base_url_value_label)
@@ -196,7 +198,7 @@ class TrustedCertificateFragment : DialogFragment() {
     }
 
     private fun setupUnknownMode() {
-        // Go directly to page 2 with details
+        // Go directly to page 2 with details and security warning
         toolbar.setTitle(R.string.trusted_certificate_dialog_title_unknown)
         toolbar.setNavigationIcon(R.drawable.ic_close_white_24dp)
         page1Layout.isVisible = false
@@ -205,8 +207,9 @@ class TrustedCertificateFragment : DialogFragment() {
         trustMenuItem.isVisible = true
         deleteMenuItem.isVisible = false
 
-        descriptionText.setText(R.string.trusted_certificate_dialog_description_unknown)
-        descriptionText.isVisible = true
+        // Show security warning banner instead of description
+        securityWarningLayout.isVisible = true
+        descriptionText.isVisible = false
         baseUrlValueLabel.isVisible = true
         baseUrlValueText.isVisible = true
         baseUrlValueText.text = baseUrl

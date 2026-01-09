@@ -96,7 +96,50 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <!-- Description (shown in ADD and UNKNOWN modes) -->
+                <!-- Security warning banner (UNKNOWN mode only) -->
+                <LinearLayout
+                    android:id="@+id/trusted_certificate_security_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="8dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_warning_amber_24dp"
+                        android:importantForAccessibility="no" />
+
+                    <TextView
+                        android:id="@+id/trusted_certificate_security_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/trusted_certificate_dialog_security_title"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_orange_dark"
+                        android:gravity="center"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:layout_marginTop="12dp" />
+
+                    <TextView
+                        android:id="@+id/trusted_certificate_security_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/trusted_certificate_dialog_security_description"
+                        android:textSize="14sp"
+                        android:gravity="center"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+
+                <!-- Description (shown in ADD mode) -->
                 <TextView
                     android:id="@+id/trusted_certificate_description"
                     android:layout_width="match_parent"
