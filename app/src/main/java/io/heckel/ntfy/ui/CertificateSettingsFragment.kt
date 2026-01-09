@@ -31,11 +31,11 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
     private lateinit var repository: Repository
 
     // File pickers
-    private val trustedCertFilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    private val trustedCertFilePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { handleTrustedCertFileSelected(it) }
     }
 
-    private val clientCertFilePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+    private val clientCertFilePicker = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { handleClientCertFileSelected(it) }
     }
 
@@ -97,7 +97,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
         addTrustedPref.title = getString(R.string.settings_advanced_certificates_trusted_add_title)
         addTrustedPref.summary = getString(R.string.settings_advanced_certificates_trusted_add_summary)
         addTrustedPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            trustedCertFilePicker.launch("*/*")
+            trustedCertFilePicker.launch(arrayOf("application/x-pem-file", "application/x-x509-ca-cert", "application/pem-certificate-chain"))
             true
         }
         trustedCategory.addPreference(addTrustedPref)
@@ -138,7 +138,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
         addClientPref.title = getString(R.string.settings_advanced_certificates_client_add_title)
         addClientPref.summary = getString(R.string.settings_advanced_certificates_client_add_summary)
         addClientPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            clientCertFilePicker.launch("*/*")
+            clientCertFilePicker.launch(arrayOf("application/x-pkcs12"))
             true
         }
         clientCategory.addPreference(addClientPref)
