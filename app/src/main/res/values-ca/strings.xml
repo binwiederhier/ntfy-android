@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Prioritat mínima</string>
-    <string name="channel_notifications_low_name">Prioritat baixa</string>
-    <string name="channel_notifications_default_name">Prioritat per defecte</string>
-    <string name="channel_notifications_high_name">Prioritat alta</string>
-    <string name="channel_notifications_max_name">Prioritat màxima</string>
+    <string name="common_priority_min_name">Prioritat mínima</string>
+    <string name="common_priority_low_name">Prioritat baixa</string>
+    <string name="common_priority_default_name">Prioritat per defecte</string>
+    <string name="common_priority_high_name">Prioritat alta</string>
+    <string name="common_priority_max_name">Prioritat màxima</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
     <string name="main_item_status_reconnecting">reconnectant…</string>
     <string name="channel_subscriber_notification_title">Escoltant notificacions entrants</string>

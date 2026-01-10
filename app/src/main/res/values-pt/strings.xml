@@ -20,8 +20,8 @@
     <string name="main_action_bar_title">Tópicos subscritos</string>
     <string name="main_menu_notifications_enabled">Notificações ativadas</string>
     <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>
-    <string name="channel_notifications_min_name">Prioridade mínima</string>
-    <string name="channel_notifications_low_name">Prioridade baixa</string>
+    <string name="common_priority_min_name">Prioridade mínima</string>
+    <string name="common_priority_low_name">Prioridade baixa</string>
     <string name="channel_subscriber_service_name">Serviço de subscrição</string>
     <string name="channel_subscriber_notification_title">À escuta de novas notificações</string>
     <string name="channel_subscriber_notification_instant_text">Tópicos de entrega instantânea subscritos</string>
@@ -52,11 +52,11 @@
     <string name="channel_subscriber_notification_noinstant_text_four">Quatro tópicos subscritos</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Cinco tópicos subscritos</string>
     <string name="main_how_to_intro">Clique no + para subscrever um tópico. Depois, receberá notificações no seu dispositivo quando enviar mensagens via PUT ou POST.</string>
-    <string name="channel_notifications_max_name">Prioridade máxima</string>
+    <string name="common_priority_max_name">Prioridade máxima</string>
     <string name="main_banner_websocket_text">Trocar para WebSockets é a forma recomendada de se ligar ao seu servidor, podendo melhorar a duração da bateria, mas pode necessitar <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">configurações adicionais no seu \"proxy\"</a>. Isto pode ser alterado nas Configurações.</string>
     <string name="main_banner_websocket_button_dismiss">Dispensar</string>
-    <string name="channel_notifications_default_name">Prioridade padrão</string>
-    <string name="channel_notifications_high_name">Prioridade alta</string>
+    <string name="common_priority_default_name">Prioridade padrão</string>
+    <string name="common_priority_high_name">Prioridade alta</string>
     <string name="channel_subscriber_notification_instant_text_one">Um tópico de entrega instantânea subscrito</string>
     <string name="main_banner_websocket_button_enable_now">Ativar agora</string>
     <string name="channel_subscriber_notification_instant_text_two">Dois tópicos de entrega instantânea subscritos</string>

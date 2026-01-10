@@ -136,9 +136,9 @@
     <string name="user_dialog_button_cancel">Anulează</string>
     <string name="user_dialog_button_delete">Șterge utilizator</string>
     <string name="common_button_save">Salvează</string>
-    <string name="channel_notifications_default_name">Prioritate normală</string>
+    <string name="common_priority_default_name">Prioritate normală</string>
     <string name="channel_subscriber_notification_title">Ascultând pentru notificări primite</string>
-    <string name="channel_notifications_max_name">Prioritate maximă</string>
+    <string name="common_priority_max_name">Prioritate maximă</string>
     <string name="channel_notifications_group_default_name">Implicit</string>
     <string name="channel_subscriber_notification_instant_text_one">Abonat la un subiect cu livrare instantanee</string>
     <string name="channel_subscriber_notification_instant_text_four">Abonat la patru topice cu livrare instantanee</string>
@@ -236,9 +236,9 @@
     <string name="settings_notifications_priority_default">implicită</string>
     <string name="settings_notifications_auto_download_summary_smaller_than_x">Descărcare automată a atașamentelor până la %1$s</string>
     <string name="settings_notifications_auto_download_never">Niciodată să nu se descarce automat ceva</string>
-    <string name="channel_notifications_min_name">Prioritate minimă</string>
-    <string name="channel_notifications_low_name">Prioritate mică</string>
-    <string name="channel_notifications_high_name">Prioritate mare</string>
+    <string name="common_priority_min_name">Prioritate minimă</string>
+    <string name="common_priority_low_name">Prioritate mică</string>
+    <string name="common_priority_high_name">Prioritate mare</string>
     <string name="main_menu_notifications_enabled">Notificări pornite</string>
     <string name="main_menu_settings_title">Setări</string>
     <string name="main_action_mode_menu_unsubscribe">Dezabonează-te</string>

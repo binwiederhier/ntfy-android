@@ -22,8 +22,8 @@
 \n%2$s</string>
     <string name="main_action_bar_title">Odebíraná témata</string>
     <string name="main_menu_notifications_enabled">Oznámení zapnuta</string>
-    <string name="channel_notifications_default_name">Výchozí priorita</string>
-    <string name="channel_notifications_high_name">Vysoká priorita</string>
+    <string name="common_priority_default_name">Výchozí priorita</string>
+    <string name="common_priority_high_name">Vysoká priorita</string>
     <string name="main_menu_notifications_disabled_until">Oznámení ztlumena do %1$s</string>
     <string name="main_menu_settings_title">Nastavení</string>
     <string name="main_menu_docs_title">Přečíst dokumentaci</string>
@@ -252,9 +252,9 @@
     <string name="detail_menu_test">Odeslat testovací oznámení</string>
     <string name="detail_menu_clear">Vymazat všechna oznámení</string>
     <string name="settings_notifications_muted_until_forever">Oznámení ztlumena až do obnovení</string>
-    <string name="channel_notifications_low_name">Malá priorita</string>
-    <string name="channel_notifications_min_name">Nejnižší priorita</string>
-    <string name="channel_notifications_max_name">Nejvyšší priorita</string>
+    <string name="common_priority_low_name">Malá priorita</string>
+    <string name="common_priority_min_name">Nejnižší priorita</string>
+    <string name="common_priority_max_name">Nejvyšší priorita</string>
     <string name="detail_menu_copy_url">Kopírovat adresu tématu</string>
     <string name="detail_settings_title">Nastavení odběru</string>
     <string name="detail_action_mode_delete_dialog_cancel">Zrušit</string>

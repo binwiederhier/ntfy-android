@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Prioridad mínima</string>
+    <string name="common_priority_min_name">Prioridad mínima</string>
     <string name="detail_item_menu_copy_url">Copiar URL</string>
     <string name="notification_popup_action_open">Abrir</string>
-    <string name="channel_notifications_low_name">Prioridad baja</string>
-    <string name="channel_notifications_default_name">Prioridad predeterminada</string>
-    <string name="channel_notifications_max_name">Prioridad máxima</string>
+    <string name="common_priority_low_name">Prioridad baja</string>
+    <string name="common_priority_default_name">Prioridad predeterminada</string>
+    <string name="common_priority_max_name">Prioridad máxima</string>
     <string name="channel_subscriber_service_name">Servicio de Suscripciones</string>
     <string name="channel_subscriber_notification_title">Escuchando por notificaciones entrantes</string>
     <string name="channel_subscriber_notification_instant_text_one">Suscrito a un tópico de entrega instantánea</string>
@@ -218,7 +218,7 @@
     <string name="user_dialog_password_hint_edit">Contraseña (no se modifica si lo deja vacío)</string>
     <string name="user_dialog_button_add">Añadir usuario</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
-    <string name="channel_notifications_high_name">Prioridad alta</string>
+    <string name="common_priority_high_name">Prioridad alta</string>
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="add_dialog_use_another_server_description">Introduzca las URL de servicio para suscribirse a los tópicos de otros servidores.</string>

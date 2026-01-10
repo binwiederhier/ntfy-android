@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_action_mode_delete_dialog_cancel">Отмена</string>
-    <string name="channel_notifications_default_name">Стандартный приоритет</string>
-    <string name="channel_notifications_high_name">Высокий приоритет</string>
-    <string name="channel_notifications_max_name">Максимальный приоритет</string>
+    <string name="common_priority_default_name">Стандартный приоритет</string>
+    <string name="common_priority_high_name">Высокий приоритет</string>
+    <string name="common_priority_max_name">Максимальный приоритет</string>
     <string name="channel_subscriber_service_name">Сервис подписки</string>
-    <string name="channel_notifications_min_name">Минимальный приоритет</string>
-    <string name="channel_notifications_low_name">Низкий приоритет</string>
+    <string name="common_priority_min_name">Минимальный приоритет</string>
+    <string name="common_priority_low_name">Низкий приоритет</string>
     <string name="main_menu_notifications_disabled_forever">Уведомления отключены</string>
     <string name="main_menu_notifications_enabled">Уведомления включены</string>
     <string name="main_menu_report_bug_title">Сообщить об ошибке</string>

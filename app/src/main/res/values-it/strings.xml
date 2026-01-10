@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Priorità bassa</string>
+    <string name="common_priority_low_name">Priorità bassa</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Iscritto a tre argomenti</string>
-    <string name="channel_notifications_high_name">Priorità alta</string>
-    <string name="channel_notifications_max_name">Priorità massima</string>
+    <string name="common_priority_high_name">Priorità alta</string>
+    <string name="common_priority_max_name">Priorità massima</string>
     <string name="channel_subscriber_service_name">Servizio di iscrizione</string>
     <string name="channel_subscriber_notification_instant_text">Iscritto ad argomenti a consegna istantanea</string>
     <string name="channel_subscriber_notification_instant_text_two">Iscritto a due argomenti a consegna istantanea</string>
@@ -175,8 +175,8 @@
     <string name="user_dialog_button_delete">Elimina utente</string>
     <string name="common_button_save">Salva</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Iscritto a %1$d argomenti</string>
-    <string name="channel_notifications_default_name">Priorità predefinita</string>
-    <string name="channel_notifications_min_name">Priorità minima</string>
+    <string name="common_priority_default_name">Priorità predefinita</string>
+    <string name="common_priority_min_name">Priorità minima</string>
     <string name="channel_subscriber_notification_instant_text_one">Iscritto ad un argomento a consegna istantanea</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Iscritto a quattro argomenti</string>
     <string name="main_menu_docs_title">Leggi la documentazione</string>

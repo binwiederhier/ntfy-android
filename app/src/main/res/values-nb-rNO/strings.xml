@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_dialog_login_new_user">Ny bruker</string>
-    <string name="channel_notifications_low_name">Lav prioritet</string>
-    <string name="channel_notifications_default_name">Standard prioritet</string>
+    <string name="common_priority_low_name">Lav prioritet</string>
+    <string name="common_priority_default_name">Standard prioritet</string>
     <string name="channel_subscriber_service_name">Abonnementstjeneste</string>
     <string name="channel_subscriber_notification_title">Lytter etter innkommende varsler</string>
     <string name="channel_subscriber_notification_instant_text">Abonnert på emner med umiddelbar levering</string>
@@ -15,7 +15,7 @@
     <string name="channel_subscriber_notification_noinstant_text_three">Abonnert på tre emner</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Abonnert på fire emner</string>
     <string name="refresh_message_result">%1$d varsling(er) mottatt</string>
-    <string name="channel_notifications_max_name">Maks prioritet</string>
+    <string name="common_priority_max_name">Maks prioritet</string>
     <string name="refresh_message_error_one">Kunne ikke oppdatere abonnement: %1$s</string>
     <string name="main_menu_notifications_enabled">Varsler påslått</string>
     <string name="main_menu_notifications_disabled_forever">Varsler dempet</string>
@@ -210,8 +210,8 @@
     <string name="channel_subscriber_notification_instant_text_three">Abonnert på tre emner med umiddelbar levering</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Abonnert på %1$d emner</string>
     <string name="main_menu_settings_title">Innstillinger</string>
-    <string name="channel_notifications_min_name">Minste prioritet</string>
-    <string name="channel_notifications_high_name">Høy prioritet</string>
+    <string name="common_priority_min_name">Minste prioritet</string>
+    <string name="common_priority_high_name">Høy prioritet</string>
     <string name="channel_subscriber_notification_instant_text_two">Abonnert på to emner med umiddelbar levering</string>
     <string name="refresh_message_error">Kunne ikke oppdatere %1$d abonnement(er)
 \n

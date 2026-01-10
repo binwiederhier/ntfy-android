@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_subscriber_notification_noinstant_text_six">已訂閱 6 個主題</string>
-    <string name="channel_notifications_default_name">預設優先</string>
+    <string name="common_priority_default_name">預設優先</string>
     <string name="main_menu_report_bug_title">問題回報</string>
     <string name="channel_subscriber_notification_title">正在接收通知</string>
     <string name="channel_subscriber_notification_instant_text">已訂閱即時推送主題</string>
@@ -47,10 +47,10 @@
     <string name="add_dialog_description_below">因為主題不能受密碼保護，請盡量取一個難以猜測的主題名稱。在訂閱之後你就可以使用 PUT/POST 來發送通知。</string>
     <string name="add_dialog_use_another_server">使用其他伺服器</string>
     <string name="add_dialog_use_another_server_description">在下方輸入自訂的網址來訂閱主題。</string>
-    <string name="channel_notifications_min_name">最低優先</string>
-    <string name="channel_notifications_low_name">較低優先</string>
-    <string name="channel_notifications_high_name">較高優先</string>
-    <string name="channel_notifications_max_name">最高優先</string>
+    <string name="common_priority_min_name">最低優先</string>
+    <string name="common_priority_low_name">較低優先</string>
+    <string name="common_priority_high_name">較高優先</string>
+    <string name="common_priority_max_name">最高優先</string>
     <string name="channel_subscriber_service_name">訂閱服務</string>
     <string name="channel_subscriber_notification_instant_text_three">已訂閱 3 個即時推送主題</string>
     <string name="main_menu_docs_title">閱讀技術文件</string>

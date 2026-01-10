@@ -2,8 +2,8 @@
 <resources>
     <string name="main_item_status_text_one">%1$d bildirim</string>
     <string name="detail_how_to_intro">Bu konuya bildirim göndermek için konu URL\'sine PUT veya POST göndermeniz yeterlidir.</string>
-    <string name="channel_notifications_low_name">Düşük öncelik</string>
-    <string name="channel_notifications_default_name">Öntanımlı öncelik</string>
+    <string name="common_priority_low_name">Düşük öncelik</string>
+    <string name="common_priority_default_name">Öntanımlı öncelik</string>
     <string name="channel_subscriber_service_name">Abonelik Hizmeti</string>
     <string name="channel_subscriber_notification_title">Gelen bildirimler için dinleniyor</string>
     <string name="channel_subscriber_notification_instant_text">Anında teslimat konularına abone olundu</string>
@@ -13,7 +13,7 @@
     <string name="channel_subscriber_notification_instant_text_more">%1$d anında teslimat konusuna abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text">Konulara abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Bir konuya abone olundu</string>
-    <string name="channel_notifications_min_name">En düşük öncelik</string>
+    <string name="common_priority_min_name">En düşük öncelik</string>
     <string name="channel_subscriber_notification_instant_text_four">Dört anında teslimat konusuna abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Dört konuya abone olundu</string>
     <string name="refresh_message_no_results">Her şey güncel</string>
@@ -170,7 +170,7 @@
     <string name="settings_advanced_connection_protocol_title">Bağlantı protokolü</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Sunucuya bağlanmak için HTTP üzerinden bir JSON akışı kullanın. Bu yöntem iyi test edilmiştir, ancak daha fazla pil tüketebilir.</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Sunucuya bağlanmak için WebSockets kullanın. Bu tavsiye edilen yöntemdir, ancak vekilinizde ek yapılandırma gerektirebilir.</string>
-    <string name="channel_notifications_max_name">En yüksek öncelik</string>
+    <string name="common_priority_max_name">En yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_two">İki konuya abone olundu</string>
     <string name="main_add_button_description">Abonelik ekle</string>
     <string name="detail_clear_dialog_message">Bu konudaki tüm bildirimler silinsin mi\?</string>
@@ -190,7 +190,7 @@
     <string name="user_dialog_button_cancel">İptal</string>
     <string name="user_dialog_button_delete">Kullanıcı sil</string>
     <string name="common_button_save">Kaydet</string>
-    <string name="channel_notifications_high_name">Yüksek öncelik</string>
+    <string name="common_priority_high_name">Yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Üç konuya abone olundu</string>
     <string name="refresh_message_result">%1$d bildirim alındı</string>
     <string name="main_action_mode_delete_dialog_cancel">İptal</string>
