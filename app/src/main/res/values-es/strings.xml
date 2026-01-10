@@ -390,4 +390,20 @@
     <string name="common_button_add">Añadir</string>
     <string name="common_button_save">Guardar</string>
     <string name="common_button_delete">Borrar</string>
+    <string name="common_button_next">Siguiente</string>
+    <string name="common_certificate_issuer">Emisor</string>
+    <string name="common_certificate_fingerprint">Huella digital SHA-256</string>
+    <string name="common_certificate_valid_from">Válido desde</string>
+    <string name="common_certificate_valid_until">Válido hasta</string>
+    <string name="common_certificate_added_toast">Certificado añadido</string>
+    <string name="common_certificate_deleted_toast">Certificado eliminado</string>
+    <string name="add_dialog_error_ssl_untrusted">No se confía en el certificado del servidor</string>
+    <string name="settings_advanced_custom_headers_title">Cabeceras personalizadas</string>
+    <string name="settings_advanced_custom_headers_summary">Define cabeceras HTTP personalizadas que se enviarán con cada petición, p.e. si tu servidor ntfy está tras un proxy o tunel con autentificación.</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Añadir cabecera</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Añadir cabecera a un servidor</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Las cabeceras se incluyen en cada petición HTTP. Cada servidor ntfy puede tener su propio set de cabeceras personalizadas.</string>
+    <string name="settings_advanced_certificates_title">Administrar certificados</string>
+    <string name="settings_advanced_certificates_summary">Añadir certificados a la lista de confiados y administrar certificados de cliente para mTLS</string>
+    <string name="settings_advanced_certificates_trusted_header">Certificados confiados</string>
 </resources>
