@@ -509,7 +509,6 @@
     <string name="trusted_certificate_dialog_title">Certificate details</string>
     <string name="trusted_certificate_dialog_title_unknown">Security warning</string>
     <string name="trusted_certificate_dialog_title_add">Add trusted certificate</string>
-    <string name="trusted_certificate_dialog_description">The server\'s certificate could not be verified. Review the details below before trusting.</string>
     <string name="trusted_certificate_dialog_security_title">Your connection is not private</string>
     <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
     <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>

@@ -144,7 +144,6 @@
                     android:id="@+id/trusted_certificate_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/trusted_certificate_dialog_description"
                     android:textSize="14sp"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"
