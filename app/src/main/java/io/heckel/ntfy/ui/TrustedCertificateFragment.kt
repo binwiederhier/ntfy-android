@@ -357,7 +357,7 @@ class TrustedCertificateFragment : DialogFragment() {
             val pem = CertUtil.encodeCertificateToPem(certificate)
             repository.addTrustedCertificate(url, pem)
             withContext(Dispatchers.Main) {
-                if (mode != Mode.UNKNOWN) {
+                if (mode == Mode.ADD) {
                     Toast.makeText(context, R.string.common_certificate_added_toast, Toast.LENGTH_SHORT).show()
                 }
                 listener?.onCertificateTrusted(certificate)

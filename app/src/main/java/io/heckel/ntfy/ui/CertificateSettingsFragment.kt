@@ -68,18 +68,15 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
 
         certs.forEach { trustedCert ->
             try {
-                val cert = CertUtil.parsePemCertificate(trustedCert.pem)
-                val subject = parseCommonName(cert.subjectX500Principal.name)
-                val isExpired = !isValid(cert)
-
                 val pref = Preference(preferenceScreen.context)
-                // Title is the short URL (baseUrl)
-                pref.title = shortUrl(trustedCert.baseUrl)
-                // Summary shows certificate subject and expiry
+                val cert = CertUtil.parsePemCertificate(trustedCert.pem)
+                val issuer = parseCommonName(cert.issuerX500Principal.name)
+                val isExpired = !isValid(cert)
+                pref.title = parseCommonName(cert.subjectX500Principal.name)
                 pref.summary = if (isExpired) {
-                    getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, subject)
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary_expired, issuer, shortUrl(trustedCert.baseUrl))
                 } else {
-                    getString(R.string.settings_advanced_certificates_trusted_item_summary, subject, dateFormat.format(cert.notAfter))
+                    getString(R.string.settings_advanced_certificates_trusted_item_summary, issuer, dateFormat.format(cert.notAfter), shortUrl(trustedCert.baseUrl))
                 }
                 pref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                     TrustedCertificateFragment.newInstanceView(trustedCert.baseUrl)
@@ -87,7 +84,7 @@ class CertificateSettingsFragment : BasePreferenceFragment(),
                     true
                 }
                 trustedCategory.addPreference(pref)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Skip invalid certificates
             }
         }

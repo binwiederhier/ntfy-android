@@ -440,13 +440,13 @@
     <string name="settings_advanced_certificates_title">Manage certificates</string>
     <string name="settings_advanced_certificates_summary">Add certificates to the trust store and manage client certificates for mTLS</string>
     <string name="settings_advanced_certificates_trusted_header">Trusted certificates</string>
-    <string name="settings_advanced_certificates_trusted_item_summary">%1$s, expires %2$s</string>
-    <string name="settings_advanced_certificates_trusted_item_summary_expired">%1$s, expired</string>
+    <string name="settings_advanced_certificates_trusted_item_summary">Pinned certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_trusted_item_summary_expired">Pinned certificate, issued by %1$s, expired, used for connections to %2$s</string>
     <string name="settings_advanced_certificates_trusted_add_title">Add a trusted certificate</string>
     <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). When connecting to the ntfy server, this certificate will be trusted.</string>
     <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
-    <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s\nExpires %2$s, used by %3$s</string>
-    <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s\nExpired, used by %2$s</string>
+    <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s, expired, used for connections to %2$s</string>
     <string name="settings_advanced_certificates_client_add_title">Add a client certificate</string>
     <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
     <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>
