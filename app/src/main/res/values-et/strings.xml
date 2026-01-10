@@ -337,9 +337,7 @@
     <string name="settings_general_dynamic_colors_title">Kasuta dünaamilist värvivalikut</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Kasutan dünaamilist süsteemi värvide valikut</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Kasutan ntfy kujunduste valikut</string>
-    <string name="publish_dialog_message_placeholder">\@string/message_bar_hint</string>
     <string name="publish_dialog_tags_placeholder">nt. hoiatus, kiirsõnum, jne</string>
-    <string name="publish_dialog_priority_low">\@string/channel_notifications_low_name</string>
     <string name="publish_dialog_message_published">Sõnum on avaldatud</string>
     <string name="publish_dialog_title">Avalda kanalis %1$s</string>
     <string name="publish_dialog_title_hint">Pealkiri</string>
