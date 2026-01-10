@@ -232,7 +232,8 @@ class TrustedCertificateFragment : DialogFragment() {
         trustMenuItem.isVisible = false
         deleteMenuItem.isVisible = true
 
-        descriptionText.isVisible = false
+        descriptionText.setText(R.string.trusted_certificate_dialog_description_view)
+        descriptionText.isVisible = true
         baseUrlValueLabel.isVisible = true
         baseUrlValueText.isVisible = true
         baseUrlValueText.text = baseUrl

@@ -513,6 +513,7 @@
     <string name="trusted_certificate_dialog_security_title">Your connection is not private</string>
     <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
     <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
+    <string name="trusted_certificate_dialog_description_view">This certificate is used for connections to the service URL below. You manually added this exception.</string>
     <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
     <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
     <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
