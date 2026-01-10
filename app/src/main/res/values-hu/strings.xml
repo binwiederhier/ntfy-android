@@ -95,6 +95,7 @@
     <string name="common_copied_to_clipboard">Vágólapra másolva</string>
     <string name="detail_instant_delivery_enabled">Azonnali küldés bekapcsolva</string>
     <string name="detail_instant_delivery_disabled">Azonnali küldés kikapcsolva</string>
+    <string name="common_button_save">Mentés</string>
     <string name="detail_item_menu_open">Fájl megnyitása</string>
     <string name="detail_item_menu_delete">Fájl törlése</string>
     <string name="detail_item_menu_copy_url">URL másolása</string>

@@ -46,7 +46,7 @@ class CertUtil private constructor(context: Context) {
             val clientCertKeyManagers = clientCert?.let { clientCertKeyManagers(it) }
 
             // Determine which trust manager to use:
-            // - If there is a en exception and a pinned cert, use it
+            // - If there is a pinned cert (manually added cert exception), use it
             // - Otherwise, use system trust
             val trustManager: X509TrustManager = if (pinnedCert != null) {
                 try {
@@ -59,8 +59,7 @@ class CertUtil private constructor(context: Context) {
                 systemTrustManager()
             }
 
-            // Bypass hostname verification for pinned certificates. We specifically added this certificate
-            // for a base URL and trusted the exception, so the CN does not have to match the hostname.
+            // We selected the pinned certificate by hostname, so we can bypass hostname verification.
             // We do, however, still verify the certificate validity and ensure that the fingerprint matches.
             if (pinnedCert != null) {
                 builder.hostnameVerifier(trustAllHostnameVerifier())
