@@ -115,7 +115,6 @@
     <string name="share_suggested_topics">Tópicos sugeridos</string>
     <string name="share_successful">Mensagem publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="notification_dialog_enabled_toast_message">Notificações retomadas</string>
     <string name="notification_dialog_muted_until_toast_message">Notificações silenciadas até %1$s</string>
     <string name="notification_dialog_show_all">Mostrar todas as notificações</string>
@@ -314,7 +313,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ícone exibido nas notificações deste tópico</string>
     <string name="detail_settings_appearance_display_name_title">Nome de exibição</string>
     <string name="user_dialog_description_edit">Pode editar o nome/palavra-passe do utilizador selecionado ou eliminá-lo.</string>
-    <string name="user_dialog_base_url_hint">URL do serviço</string>
+    <string name="common_service_url">URL do serviço</string>
     <string name="user_dialog_title_edit">Editar utilizador</string>
     <string name="user_dialog_description_add">Pode adicionar um utilizador aqui. Todos os tópicos para o servidor fornecido usarão esse utilizador.</string>
     <string name="user_dialog_username_hint">Nome de utilizador</string>
@@ -323,7 +322,7 @@
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_add">Adicionar utilizador</string>
     <string name="user_dialog_button_delete">Eliminar utilizador</string>
-    <string name="user_dialog_button_save">Guardar</string>
+    <string name="common_button_save">Guardar</string>
     <string name="settings_notifications_insistent_max_priority_title">Continuar a alertar para a prioridade máxima</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Continuar a alertar</string>
     <string name="channel_notifications_group_default_name">Padrão</string>

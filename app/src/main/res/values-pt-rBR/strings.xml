@@ -107,7 +107,6 @@
     <string name="share_suggested_topics">Tópicos sugeridos</string>
     <string name="share_successful">Mensagem publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Salvar</string>
     <string name="notification_dialog_muted_forever_toast_message">Notificações silenciadas</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_dialog_1h">1 hora</string>
@@ -188,13 +187,13 @@
     <string name="user_dialog_title_add">Adicionar usuário</string>
     <string name="user_dialog_title_edit">Editar usuário</string>
     <string name="user_dialog_description_edit">Você pode editar nome de usuário/senha para o usuário selecionado ou apagá-lo.</string>
-    <string name="user_dialog_base_url_hint">URL do Serviço</string>
+    <string name="common_service_url">URL do Serviço</string>
     <string name="user_dialog_button_add">Adicionar usuário</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_delete">Apagar usuário</string>
     <string name="channel_notifications_low_name">Prioridade baixa</string>
     <string name="channel_subscriber_notification_instant_text_two">Inscrito em dois tópicos de entrega instantânea</string>
-    <string name="user_dialog_button_save">Salvar</string>
+    <string name="common_button_save">Salvar</string>
     <string name="main_item_status_text_one">%1$d notificação</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Inscrito em um tópico</string>
     <string name="main_menu_notifications_disabled_forever">Notificações silenciadas</string>

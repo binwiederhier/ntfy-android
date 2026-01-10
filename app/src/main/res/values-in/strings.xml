@@ -114,7 +114,6 @@
     <string name="share_successful">Pesan dipublikasikan</string>
     <string name="notification_dialog_title">Bisukan notifikasi</string>
     <string name="notification_dialog_cancel">Batal</string>
-    <string name="notification_dialog_save">Simpan</string>
     <string name="notification_dialog_show_all">Tampilkan semua notifikasi</string>
     <string name="notification_dialog_30min">30 menit</string>
     <string name="notification_dialog_1h">1 jam</string>
@@ -207,14 +206,13 @@
     <string name="user_dialog_title_edit">Edit pengguna</string>
     <string name="user_dialog_description_add">Anda dapat menambahkan sebuah pengguna di sini. Semua topik untuk server yang dicantumkan akan menggunakan pengguna ini.</string>
     <string name="user_dialog_description_edit">Anda dapat mengubah nama pengguna/kata sandi untuk pengguna yang dipilih, atau hapus pengguna itu.</string>
-    <string name="user_dialog_base_url_hint">URL Layanan</string>
+    <string name="common_service_url">URL Layanan</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Berlangganan ke satu topik</string>
     <string name="detail_item_cannot_open_url">Tidak dapat membuka URL: %1$s</string>
     <string name="settings_notifications_min_priority_summary_any">Menampilkan semua notifikasi</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>
     <string name="settings_notifications_auto_download_500k">Jika di bawah 500 kB</string>
-    <string name="user_dialog_button_save">Simpan</string>
     <string name="channel_notifications_high_name">Prioritas tinggi</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>
     <string name="add_dialog_button_subscribe">Berlangganan</string>
@@ -403,7 +401,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Tidak dapat menambahkan pengguna jika header Otorisasi khusus diatur untuk server ini</string>
     <string name="custom_headers_dialog_title_add">Tambah header khusus</string>
     <string name="custom_headers_dialog_title_edit">Edit header khusus</string>
-    <string name="custom_headers_dialog_base_url_hint">URL Layanan</string>
     <string name="custom_headers_dialog_name_hint">Nama header (contoh: Id-Klien-Akses-CF)</string>
     <string name="custom_headers_dialog_value_hint">Nilai header (contoh: 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Tambah header HTTP khusus yang akan dikirim dengan setiap permintaan ke server yang ditentukan.</string>
@@ -412,7 +409,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Header ini disediakan dan diatur oleh ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Tidak dapat menambahkan header Otorisasi jika pengguna diatur untuk server ini</string>
     <string name="custom_headers_dialog_error_duplicate">Header dengan nama ini sudah ada untuk server ini</string>
-    <string name="custom_headers_dialog_button_add">Tambah</string>
-    <string name="custom_headers_dialog_button_save">Simpan</string>
-    <string name="custom_headers_dialog_button_delete">Hapus</string>
+    <string name="common_button_add">Tambah</string>
+    <string name="common_button_save">Simpan</string>
+    <string name="common_button_delete">Hapus</string>
 </resources>

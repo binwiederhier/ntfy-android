@@ -117,7 +117,6 @@
     <string name="share_successful">Zpráva zveřejněna</string>
     <string name="notification_dialog_title">Ztlumit oznámení</string>
     <string name="notification_dialog_cancel">Zrušit</string>
-    <string name="notification_dialog_save">Uložit</string>
     <string name="notification_dialog_enabled_toast_message">Oznámení byla obnovena</string>
     <string name="notification_dialog_muted_forever_toast_message">Oznámení ztlumena</string>
     <string name="notification_dialog_show_all">Zobrazit všechna oznámení</string>
@@ -220,14 +219,14 @@
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
     <string name="user_dialog_title_add">Přidat uživatele</string>
     <string name="user_dialog_description_edit">Uživatelské jméno a heslo vybraného uživatele můžete upravit nebo odstranit.</string>
-    <string name="user_dialog_base_url_hint">URL služby</string>
+    <string name="common_service_url">URL služby</string>
     <string name="user_dialog_username_hint">Uživatelské jméno</string>
     <string name="user_dialog_password_hint_add">Heslo</string>
     <string name="user_dialog_password_hint_edit">Heslo (nezměněno, pokud zůstane prázdné)</string>
     <string name="user_dialog_button_add">Přidat uživatele</string>
     <string name="user_dialog_button_cancel">Zrušit</string>
     <string name="user_dialog_button_delete">Odstranit uživatele</string>
-    <string name="user_dialog_button_save">Uložit</string>
+    <string name="common_button_save">Uložit</string>
     <string name="refresh_message_error_one">Nepodařilo se obnovit odběr: %1$s</string>
     <string name="channel_subscriber_notification_instant_text_four">Přihlášeno k odběru čtyř témat okamžitého doručení</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Odběr tří témat</string>

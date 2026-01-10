@@ -110,7 +110,6 @@
     <string name="notification_dialog_cancel">Zrušiť</string>
     <string name="notification_dialog_muted_forever_toast_message">Oznámenia stlmené</string>
     <string name="notification_dialog_muted_until_toast_message">Oznámenia stlmené do %1$s</string>
-    <string name="notification_dialog_save">Uložiť</string>
     <string name="notification_dialog_enabled_toast_message">Oznámenia boli obnovené</string>
     <string name="notification_dialog_1h">1 hodina</string>
     <string name="notification_dialog_2h">2 hodiny</string>
@@ -241,7 +240,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ikona zobrazená v oznámeniach pre túto tému</string>
     <string name="detail_settings_appearance_icon_error_saving">Ikonu sa nepodarilo uložiť: %1$s</string>
     <string name="user_dialog_button_cancel">Zrušiť</string>
-    <string name="user_dialog_button_save">Uložiť</string>
+    <string name="common_button_save">Uložiť</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predvolené)</string>
     <string name="detail_settings_about_header">O programe</string>
     <string name="detail_settings_global_setting_title">Použiť globálne nastavenie</string>
@@ -250,7 +249,7 @@
     <string name="user_dialog_title_add">Pridať používateľa</string>
     <string name="user_dialog_button_add">Pridať používateľa</string>
     <string name="user_dialog_description_edit">Môžete upraviť používateľské meno/heslo vybraného používateľa alebo ho vymazať.</string>
-    <string name="user_dialog_base_url_hint">URL Adresa služby</string>
+    <string name="common_service_url">URL Adresa služby</string>
     <string name="user_dialog_username_hint">Používateľské meno</string>
     <string name="user_dialog_password_hint_add">Heslo</string>
     <string name="user_dialog_password_hint_edit">Heslo (nezmenené, ak zostane prázdne)</string>

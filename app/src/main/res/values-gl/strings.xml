@@ -151,7 +151,6 @@
     <string name="share_suggested_topics">Temas suxeridos</string>
     <string name="share_successful">Mensaxe publicada</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Gardar</string>
     <string name="notification_dialog_enabled_toast_message">Reactivadas as notificacións</string>
     <string name="notification_popup_file_download_successful">%1$s
 \nFicheiro: %2$s, descargado</string>
@@ -330,12 +329,11 @@
     <string name="user_dialog_title_add">Engadir usuaria</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
     <string name="user_dialog_button_delete">Eliminar usuaria</string>
-    <string name="user_dialog_button_save">Gardar</string>
     <string name="settings_advanced_unifiedpush_title">Activar UnifiedPush</string>
     <string name="user_dialog_title_edit">Editar usuaria</string>
     <string name="user_dialog_description_add">Podes engadir aquí unha usuaria. Todos os temas do servidor indicado usarán esta usuaria.</string>
     <string name="user_dialog_description_edit">Podes editar as credenciais da usuaria seleccionada, ou eliminala.</string>
-    <string name="user_dialog_base_url_hint">URL do servizo</string>
+    <string name="common_service_url">URL do servizo</string>
     <string name="user_dialog_username_hint">Identificador</string>
     <string name="user_dialog_password_hint_add">Contrasinal</string>
     <string name="user_dialog_password_hint_edit">Contrasinal (baleiro para non cambiar)</string>
@@ -403,7 +401,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Non se pode engadir usuaria se está establecida a cabeceira de Autenticación para este servidor</string>
     <string name="custom_headers_dialog_title_add">Engadir cabeceira persoal</string>
     <string name="custom_headers_dialog_title_edit">Editar cabeceira persoal</string>
-    <string name="custom_headers_dialog_base_url_hint">URL de servizo</string>
     <string name="custom_headers_dialog_name_hint">Nome da cabeceira (ex. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Valor da cabeceira (ex. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Engade unha cabeceira HTTP persoal que se enviará con cada petición ao servidor indicado.</string>
@@ -412,7 +409,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Esta cabeceira está reservada e establecida por ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Non se pode engadir unha cabeceira de Autenticación se unha usuaria está configurada neste servidor</string>
     <string name="custom_headers_dialog_error_duplicate">Xa existe unha cabeceira con este nome para este servidor</string>
-    <string name="custom_headers_dialog_button_add">Engadir</string>
-    <string name="custom_headers_dialog_button_save">Gardar</string>
-    <string name="custom_headers_dialog_button_delete">Eliminar</string>
+    <string name="common_button_add">Engadir</string>
+    <string name="common_button_save">Gardar</string>
+    <string name="common_button_delete">Eliminar</string>
 </resources>

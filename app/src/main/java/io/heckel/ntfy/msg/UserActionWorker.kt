@@ -1,27 +1,26 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ACTION_PROGRESS_FAILED
+import io.heckel.ntfy.db.ACTION_PROGRESS_ONGOING
+import io.heckel.ntfy.db.ACTION_PROGRESS_SUCCESS
+import io.heckel.ntfy.db.Action
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.Locale
 
-class UserActionWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val client = OkHttpClient.Builder()
-        .callTimeout(60, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+class UserActionWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private val broadcaster = BroadcastService(context)
     private lateinit var repository: Repository
@@ -29,7 +28,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
     private lateinit var notification: Notification
     private lateinit var action: Action
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_NOTIFICATION_ID) ?: return Result.failure()
         val actionId = inputData.getString(INPUT_DATA_ACTION_ID) ?: return Result.failure()
@@ -64,21 +63,20 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         }
     }
 
-    private fun performHttpAction(action: Action) {
+    private suspend fun performHttpAction(action: Action) {
         save(action.copy(progress = ACTION_PROGRESS_ONGOING, error = null))
 
         val url = action.url ?: return
         val method = action.method ?: DEFAULT_HTTP_ACTION_METHOD
         val defaultBody = if (listOf("GET", "HEAD").contains(method)) null else ""
         val body = action.body ?: defaultBody
-        val builder = Request.Builder()
-            .url(url)
+        val builder = HttpUtil.requestBuilder(url)
             .method(method, body?.toRequestBody())
-            .addHeader("User-Agent", ApiService.USER_AGENT)
         action.headers?.forEach { (key, value) ->
             builder.addHeader(key, value)
         }
         val request = builder.build()
+        val client = HttpUtil.defaultClient(context, extractBaseUrl(url))
 
         Log.d(TAG, "Executing HTTP request: ${method.uppercase(Locale.getDefault())} ${action.url}")
         client.newCall(request).execute().use { response ->

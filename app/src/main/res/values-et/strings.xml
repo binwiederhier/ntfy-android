@@ -124,7 +124,6 @@
     <string name="detail_action_mode_delete_dialog_cancel">Katkesta</string>
     <string name="notification_dialog_8h">8 tundi</string>
     <string name="detail_item_download_info_download_failed_expires_x">allalaadimine ei õnnestunud, link aegub %1$s</string>
-    <string name="notification_dialog_save">Salvesta</string>
     <string name="share_successful">Sõnum on saadetud</string>
     <string name="main_banner_websocket_text">WebSocketi andmevahetusprotokoll on meie esimene soovitus serveriga suhtlemiseks ja ta võib ka parandada aku kasutust, kuid võib vajada <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">proksiserveri täiendavat seadistamist</a>. Seda saad muuta seadistustest.</string>
     <string name="notification_dialog_title">Summuta teavitused</string>
@@ -308,14 +307,13 @@
     <string name="user_dialog_title_edit">Muuda kasutajat</string>
     <string name="user_dialog_description_edit">Sa võid muuta valitud kasutaja kasutajanime või salasõna, aga ta ka sootuks kustutada.</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
-    <string name="user_dialog_base_url_hint">Teenuse võrguaadress</string>
+    <string name="common_service_url">Teenuse võrguaadress</string>
     <string name="user_dialog_username_hint">Kasutajanimi</string>
     <string name="user_dialog_password_hint_add">Salasõna</string>
     <string name="user_dialog_password_hint_edit">Salasõna (kui jääb tühjaks, siis ei muutu)</string>
     <string name="user_dialog_button_add">Lisa kasutaja</string>
     <string name="user_dialog_button_cancel">Katkesta</string>
     <string name="user_dialog_button_delete">Kustuta kasutaja</string>
-    <string name="user_dialog_button_save">Salvesta</string>
     <string name="settings_advanced_exact_alarms_title">Täpsed äratused</string>
     <string name="settings_advanced_exact_alarms_true">ntfy võib ajastada täpseid äratusi. Need on vajalikud WebSocketsi toimimiseks taustal. Klõpsa selle õiguse keelamiseks.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy ei või ajastada täpseid äratusi. Need on vajalikud WebSocketsi toimimiseks taustal. Klõpsa selle õiguse lubamiseks.</string>
@@ -392,14 +390,13 @@
     <string name="settings_advanced_custom_headers_prefs_header_add">Lisa päisekirje</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_title">Lisa päisekirje serveri jaoks</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_summary">Päisekirjed lisatakse igale HTTP-päringule. Igal serveril saavad olla omad päisekirjed.</string>
-    <string name="custom_headers_dialog_base_url_hint">Teenuse võrguaadress</string>
     <string name="custom_headers_dialog_name_hint">Päise nimi (nt. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Päise väärtus (nt. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_error_invalid_name">Päisenimes on kelatud väärtusi</string>
     <string name="custom_headers_dialog_error_reserved_name">Selle päisekirje kasutamine on piiratud ning määratud vaid ntfy poolt</string>
-    <string name="custom_headers_dialog_button_add">Lisa</string>
-    <string name="custom_headers_dialog_button_save">Salvesta</string>
-    <string name="custom_headers_dialog_button_delete">Kustuta</string>
+    <string name="common_button_add">Lisa</string>
+    <string name="common_button_save">Salvesta</string>
+    <string name="common_button_delete">Kustuta</string>
     <string name="custom_headers_dialog_error_duplicate">Sellise nimega päisekirje on selle serveri jaoks juba olemas</string>
     <string name="custom_headers_dialog_error_user_exists">Kui kasutaja on seadistatud selle serveri jaoks, siis „Authorization“ kirjet väärtustada ei saa</string>
     <string name="custom_headers_dialog_description_edit">Sa võid valitud päisekirje nime ja väärtust muuta või kustutada.</string>

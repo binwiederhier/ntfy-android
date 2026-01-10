@@ -188,6 +188,19 @@ data class User(
     override fun toString(): String = username
 }
 
+@Entity(tableName = "TrustedCertificate")
+data class TrustedCertificate(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "pem") val pem: String
+)
+
+@Entity(tableName = "ClientCertificate")
+data class ClientCertificate(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "p12Base64") val p12Base64: String,
+    @ColumnInfo(name = "password") val password: String
+)
+
 @Entity(primaryKeys = ["baseUrl", "name"])
 data class CustomHeader(
     @ColumnInfo(name = "baseUrl") val baseUrl: String,
@@ -208,7 +221,18 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, CustomHeader::class, LogEntry::class], version = 15)
+@androidx.room.Database(
+    version = 16,
+    entities = [
+        Subscription::class,
+        Notification::class,
+        User::class,
+        LogEntry::class,
+        CustomHeader::class,
+        TrustedCertificate::class,
+        ClientCertificate::class
+   ]
+)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
@@ -216,6 +240,8 @@ abstract class Database : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun customHeaderDao(): CustomHeaderDao
     abstract fun logDao(): LogDao
+    abstract fun trustedCertificateDao(): TrustedCertificateDao
+    abstract fun clientCertificateDao(): ClientCertificateDao
 
     companion object {
         @Volatile
@@ -239,6 +265,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
                     .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_15_16)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -354,6 +381,13 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_14_15 = object : Migration(14, 15) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE CustomHeader (baseUrl TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY(baseUrl, name))")
+            }
+        }
+
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
+                db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
             }
         }
     }
@@ -524,6 +558,36 @@ interface LogDao {
 
     @Query("DELETE FROM log")
     fun deleteAll()
+}
+
+@Dao
+interface TrustedCertificateDao {
+    @Query("SELECT * FROM TrustedCertificate")
+    suspend fun list(): List<TrustedCertificate>
+
+    @Query("SELECT * FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): TrustedCertificate?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: TrustedCertificate)
+
+    @Query("DELETE FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
+}
+
+@Dao
+interface ClientCertificateDao {
+    @Query("SELECT * FROM ClientCertificate")
+    suspend fun list(): List<ClientCertificate>
+
+    @Query("SELECT * FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): ClientCertificate?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: ClientCertificate)
+
+    @Query("DELETE FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
 }
 
 @Dao

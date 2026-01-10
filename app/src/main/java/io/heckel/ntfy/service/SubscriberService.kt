@@ -20,6 +20,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap
  * - Incoming notifications are immediately forwarded and broadcasted
  *
  * "Trying to keep the service running" cliff notes:
- * - Manages the service SHOULD-BE state in a SharedPref, so that we know whether or not to restart the service
  * - The foreground service is STICKY, so it is restarted by Android if it's killed
  * - On destroy (onDestroy), we send a broadcast to AutoRestartReceiver (see AndroidManifest.xml) which will schedule
  *   a one-off AutoRestartWorker to restart the service (this is weird, but necessary because services started from
@@ -202,8 +202,7 @@ class SubscriberService : Service() {
      */
     private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
         // Group INSTANT subscriptions by base URL, there is only one connection per base URL
-        val instantSubscriptions = repository.getSubscriptions()
-            .filter { s -> s.instant }
+        val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val connectionProtocol = repository.getConnectionProtocol()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
@@ -218,12 +217,16 @@ class SubscriberService : Service() {
                     .sortedBy { "${it.name}:${it.value}" }
                     .joinToString(",") { "${it.name}:${it.value}" }
                     .hashCode()
+                val trustedCertsHash = repository.getTrustedCertificate(baseUrl)?.hashCode() ?: 0
+                val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
                 ConnectionId(
                     baseUrl = baseUrl,
                     topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
                     connectionProtocol = connectionProtocol,
                     credentialsHash = credentialsHash,
-                    headersHash = headersHash
+                    headersHash = headersHash,
+                    trustedCertsHash = trustedCertsHash,
+                    clientCertHash = clientCertHash
                 )
             }
             .toSet()
@@ -257,7 +260,8 @@ class SubscriberService : Service() {
             val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(connectionId, repository, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
             } else {
                 JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
             }
@@ -361,7 +365,8 @@ class SubscriberService : Service() {
         val restartServiceIntent = Intent(applicationContext, SubscriberService::class.java).also {
             it.setPackage(packageName)
         }
-        val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        val restartServicePendingIntent: PendingIntent =
+            PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
         applicationContext.getSystemService(ALARM_SERVICE)
         val alarmService: AlarmManager = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
@@ -400,6 +405,6 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
-        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
+        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
     }
 }

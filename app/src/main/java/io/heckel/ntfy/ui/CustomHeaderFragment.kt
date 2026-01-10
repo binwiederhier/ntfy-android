@@ -102,7 +102,7 @@ class CustomHeaderFragment : DialogFragment() {
             toolbar.setTitle(R.string.custom_headers_dialog_title_add)
             descriptionView.text = getString(R.string.custom_headers_dialog_description_add)
             baseUrlViewLayout.visibility = View.VISIBLE
-            saveMenuItem.setTitle(R.string.custom_headers_dialog_button_add)
+            saveMenuItem.setTitle(R.string.common_button_add)
             deleteMenuItem.isVisible = false
         } else {
             toolbar.setTitle(R.string.custom_headers_dialog_title_edit)
@@ -111,7 +111,7 @@ class CustomHeaderFragment : DialogFragment() {
             baseUrlView.setText(header!!.baseUrl)
             headerNameView.setText(header!!.name)
             headerValueView.setText(header!!.value)
-            saveMenuItem.setTitle(R.string.custom_headers_dialog_button_save)
+            saveMenuItem.setTitle(R.string.common_button_save)
             deleteMenuItem.isVisible = true
         }
 

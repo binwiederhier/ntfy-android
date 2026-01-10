@@ -27,8 +27,8 @@
     <string name="user_dialog_title_edit">Bewerk gebruiker</string>
     <string name="user_dialog_password_hint_edit">Wachtwoord(ongewijzigd indien leeg gelaten)</string>
     <string name="user_dialog_username_hint">Gebruikersnaam</string>
-    <string name="user_dialog_base_url_hint">Server URL</string>
-    <string name="user_dialog_button_save">Opslaan</string>
+    <string name="common_service_url">Server URL</string>
+    <string name="common_button_save">Opslaan</string>
     <string name="detail_delete_dialog_permanently_delete">Permanent verwijderen</string>
     <string name="detail_delete_dialog_cancel">Annuleren</string>
     <string name="detail_clear_dialog_cancel">Annuleren</string>
@@ -214,7 +214,6 @@
     <string name="detail_instant_delivery_enabled">Directe levering aan</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notificatie verwijderd</string>
-    <string name="notification_dialog_save">Opslaan</string>
     <string name="notification_popup_action_cancel">Annuleren</string>
     <string name="notification_popup_file">%1$s
 \nBestand: %2$s</string>

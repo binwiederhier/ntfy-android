@@ -7,27 +7,28 @@ import android.os.Looper
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_DONE
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_FAILED
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_INDETERMINATE
+import io.heckel.ntfy.db.ATTACHMENT_PROGRESS_NONE
+import io.heckel.ntfy.db.Attachment
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.ensureSafeNewFile
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.Response
 import java.io.File
-import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
 
-class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.MINUTES) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
@@ -35,7 +36,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
     private lateinit var attachment: Attachment
     private var uri: Uri? = null
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_ID) ?: return Result.failure()
         val userAction = inputData.getBoolean(INPUT_DATA_USER_ACTION, false)
@@ -46,25 +47,24 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         attachment = notification.attachment ?: return Result.failure()
         try {
             downloadAttachment(userAction)
+        } catch (e: CancellationException) {
+            Log.d(TAG, "Attachment download was canceled")
+            maybeDeleteFile()
+            throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
             failed(e)
         }
         return Result.success()
     }
 
-    override fun onStopped() {
-        Log.d(TAG, "Attachment download was canceled")
-        maybeDeleteFile()
-    }
-
-    private fun downloadAttachment(userAction: Boolean) {
+    private suspend fun downloadAttachment(userAction: Boolean) {
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
         try {
-            val request = Request.Builder()
-                .url(attachment.url)
-                .addHeader("User-Agent", ApiService.USER_AGENT)
-                .build()
+            val user = repository.getUser(extractBaseUrl(attachment.url))
+            val customHeaders = repository.getCustomHeaders(extractBaseUrl(attachment.url))
+            val request = HttpUtil.requestBuilder(attachment.url, user, customHeaders).build()
+            val client = HttpUtil.longCallClient(context, extractBaseUrl(attachment.url))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Download: headers received: $response")
                 if (!response.isSuccessful) {

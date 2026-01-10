@@ -11,7 +11,6 @@
     <string name="add_dialog_login_username_hint">Nazwa użytkownika</string>
     <string name="detail_action_mode_delete_dialog_message">Usunąć wybrane powiadomienie(a) trwale\?</string>
     <string name="detail_action_mode_delete_dialog_cancel">Anuluj</string>
-    <string name="notification_dialog_save">Zapisz</string>
     <string name="settings_title">Ustawienia</string>
     <string name="settings_notifications_muted_until_title">Wycisz powiadomienia</string>
     <string name="settings_notifications_muted_until_forever">Powiadomienia wyciszone do wznowienia</string>
@@ -20,7 +19,7 @@
     <string name="settings_general_dark_mode_title">Tryb ciemny</string>
     <string name="settings_backup_restore_restore_failed">Przywracanie nie powiodło się: %1$s</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logi usunięte</string>
-    <string name="user_dialog_base_url_hint">Adres URL usługi</string>
+    <string name="common_service_url">Adres URL usługi</string>
     <string name="detail_settings_appearance_display_name_title">Nazwa wyświetlana</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (domyślny)</string>
     <string name="user_dialog_title_edit">Edytuj użytkownika</string>
@@ -176,7 +175,7 @@
     <string name="user_dialog_password_hint_add">Hasło</string>
     <string name="user_dialog_password_hint_edit">Hasło (niezmienione, jeśli pozostawiono puste)</string>
     <string name="user_dialog_button_delete">Usuń użytkownika</string>
-    <string name="user_dialog_button_save">Zapisz</string>
+    <string name="common_button_save">Zapisz</string>
     <string name="main_menu_notifications_disabled_until">Powiadomienia wyciszone przez %1$s</string>
     <string name="main_action_mode_delete_dialog_cancel">Anuluj</string>
     <string name="main_menu_docs_title">Przeczytaj dokumentację</string>

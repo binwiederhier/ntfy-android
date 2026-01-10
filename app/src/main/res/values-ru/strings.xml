@@ -110,7 +110,6 @@
     <string name="detail_item_cannot_open_not_found">Вложение не открывается: Возможно файл был удалёл, либо нет установленного приложения, способного открыть файл.</string>
     <string name="detail_menu_notifications_enabled">Уведомления включены</string>
     <string name="detail_menu_notifications_disabled_forever">Уведомления отключены</string>
-    <string name="notification_dialog_save">Сохранить</string>
     <string name="notification_dialog_muted_until_toast_message">Уведомления отключены до %1$s</string>
     <string name="notification_popup_action_open">Открыть</string>
     <string name="notification_popup_action_download">Скачать</string>
@@ -232,7 +231,7 @@
     <string name="settings_advanced_export_logs_summary">Скопировать журналы в буфер обмена, или загрузить на nopaste.net (под управлением разработчика ntfy). Доменные имена и темы можно скрыть, уведомления - нет.</string>
     <string name="settings_advanced_export_logs_entry_copy_original">Скопировать в буфер обмена</string>
     <string name="user_dialog_username_hint">Имя пользователя</string>
-    <string name="user_dialog_button_save">Сохранить</string>
+    <string name="common_button_save">Сохранить</string>
     <string name="settings_general_default_base_url_message">Введите базовый URL вашего сервера, чтобы использовать его по умолчанию при подписке на новые темы и/или публикацию в темы.</string>
     <string name="settings_general_users_title">Управление пользователями</string>
     <string name="settings_general_users_summary">Добавить/удалить пользователей из защищённых тем</string>
@@ -293,7 +292,7 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Загрузить и скопировать ссылку</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">Загрузить и скопировать ссылку (с цензурой)</string>
     <string name="user_dialog_description_edit">Вы можете изменить имя или пароль выбранного пользователя, или удалить его.</string>
-    <string name="user_dialog_base_url_hint">Базовый URL службы</string>
+    <string name="common_service_url">Базовый URL службы</string>
     <string name="user_dialog_password_hint_add">Пароль</string>
     <string name="user_dialog_password_hint_edit">Пароль (не изменится, если оставить пустым)</string>
     <string name="user_dialog_button_add">Добавить пользователя</string>
