@@ -1,10 +1,16 @@
 package io.heckel.ntfy.service
 
 import android.app.AlarmManager
+import android.content.Context
 import android.os.Build
-import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
+import io.heckel.ntfy.db.ConnectionState
+import io.heckel.ntfy.db.CustomHeader
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -12,8 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 
@@ -30,6 +35,7 @@ import java.util.concurrent.atomic.AtomicReference
 class WsConnection(
     private val connectionId: ConnectionId,
     private val repository: Repository,
+    private val httpClient: OkHttpClient,
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
@@ -38,11 +44,6 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val client = OkHttpClient.Builder()
-        .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
@@ -76,9 +77,9 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user, customHeaders).build()
+        val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
-        webSocket = client.newWebSocket(request, Listener(nextListenerId))
+        webSocket = httpClient.newWebSocket(request, Listener(nextListenerId))
     }
 
     @Synchronized

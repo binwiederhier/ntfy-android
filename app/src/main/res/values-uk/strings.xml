@@ -11,7 +11,7 @@
     <string name="detail_settings_appearance_display_name_title">Відображуване ім\'я</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (за умовчанням)</string>
     <string name="detail_settings_appearance_display_name_message">Встановіть спеціальну відображувану назву для цієї підписки. Залиште поле порожнім для умовчання (%1$s).</string>
-    <string name="user_dialog_base_url_hint">URL служби</string>
+    <string name="common_service_url">URL служби</string>
     <string name="add_dialog_use_another_server_description">Введіть URL-адресу сервісу нижче, щоб підписатися на теми з інших серверів.</string>
     <string name="detail_item_cannot_open_url">Неможливо відкрити URL: %1$s</string>
     <string name="detail_item_menu_cancel">Скасувати завантаження</string>
@@ -137,7 +137,7 @@
     <string name="detail_clear_dialog_message">Видалити всі сповіщення в цій темі\?</string>
     <string name="detail_item_cannot_save">Неможливо зберегти вкладення: %1$s</string>
     <string name="detail_item_download_failed">Не вдалося завантажити вкладений файл: %1$s</string>
-    <string name="detail_how_to_example">Приклад (з використанням curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Приклад (з використанням curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не завантажено, закінчується %1$s</string>
     <string name="detail_test_message_error_too_large">Не вдається надіслати повідомлення: вкладення завелике.</string>
     <string name="detail_instant_delivery_enabled">Миттєва доставка включена</string>
@@ -202,7 +202,7 @@
     <string name="settings_advanced_export_logs_copied_logs">Журнали скопійовано в буфер обміну</string>
     <string name="settings_advanced_clear_logs_summary">Видаліть раніше записані журнали та почніть спочатку</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Використовуйте WebSockets для підключення до сервера. Це рекомендований метод, але може знадобитися додаткова конфігурація вашого проксі.</string>
-    <string name="user_dialog_button_save">Зберегти</string>
+    <string name="common_button_save">Зберегти</string>
     <string name="detail_settings_appearance_icon_set_title">Значок підписки</string>
     <string name="detail_settings_notifications_instant_summary_on">Сповіщення надходять миттєво. Потрібна служба переднього плану та споживає більше акумулятора.</string>
     <string name="detail_settings_notifications_instant_summary_off">Сповіщення доставляються за допомогою Firebase. Доставка може бути відкладена, але споживає менше акумулятора.</string>
@@ -254,7 +254,6 @@
     <string name="share_successful">Повідомлення опубліковано</string>
     <string name="notification_dialog_title">Вимкнути сповіщення</string>
     <string name="notification_dialog_cancel">Скасувати</string>
-    <string name="notification_dialog_save">Зберегти</string>
     <string name="notification_dialog_enabled_toast_message">Сповіщення відновлено</string>
     <string name="notification_dialog_muted_forever_toast_message">Сповіщення вимкнено</string>
     <string name="notification_dialog_muted_until_toast_message">Сповіщення вимкнено до %1$s</string>
@@ -339,4 +338,27 @@
     <string name="settings_advanced_unifiedpush_title">Увімкнути UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy буде виступати в якості дистриб\'ютора UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy не буде виступати в ролі дистриб\'ютора UnifiedPush</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Запитати пізніше</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Закрити</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Надати зараз</string>
+    <string name="publish_dialog_title">Опублікувати до %1$s</string>
+    <string name="publish_dialog_title_hint">Назва</string>
+    <string name="publish_dialog_title_placeholder">наприклад, Хтось стоїть біля дверей</string>
+    <string name="publish_dialog_message_hint">Повідомлення</string>
+    <string name="publish_dialog_tags_hint">Теги</string>
+    <string name="publish_dialog_tags_placeholder">напр., попередження, череп</string>
+    <string name="publish_dialog_priority_hint">Пріоритет</string>
+    <string name="publish_dialog_button_publish">Опублікувати</string>
+    <string name="publish_dialog_error_sending">Не вдається опублікувати повідомлення: %1$s</string>
+    <string name="publish_dialog_error_server">Не вдається опублікувати повідомлення: %1$s (код %2$d)</string>
+    <string name="publish_dialog_message_published">Повідомлення опубліковано</string>
+    <string name="publish_dialog_uploading">Завантаження: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Завантаження скасовано</string>
+    <string name="publish_dialog_chip_title">Назва</string>
+    <string name="publish_dialog_chip_tags">Теги</string>
+    <string name="publish_dialog_chip_priority">Пріоритет</string>
+    <string name="publish_dialog_chip_click_url">Натисніть на URL</string>
+    <string name="publish_dialog_chip_delay">Затримка</string>
+    <string name="publish_dialog_chip_attach_url">Додати за URL-адресою</string>
+    <string name="publish_dialog_chip_attach_file">Додати локальний файл</string>
 </resources>

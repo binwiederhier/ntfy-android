@@ -1,14 +1,12 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.os.Build
 import com.google.gson.Gson
-import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.ALL_PRIORITIES
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.PRIORITY_DEFAULT
 import io.heckel.ntfy.util.topicUrl
@@ -17,35 +15,15 @@ import io.heckel.ntfy.util.topicUrlJson
 import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.Credentials
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets.UTF_8
-import java.util.concurrent.TimeUnit
 
-class ApiService(context: Context) {
+class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
     private val gson = Gson()
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val publishClient = OkHttpClient.Builder()
-        .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val subscriberClient = OkHttpClient.Builder()
-        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
-        .build()
     private val parser = NotificationParser()
 
     suspend fun publish(
@@ -107,11 +85,11 @@ class ApiService(context: Context) {
             url
         }
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(urlWithQuery, user, customHeaders)
+        val request = HttpUtil.requestBuilder(urlWithQuery, user, customHeaders)
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
-        val httpCall = publishClient.newCall(request)
+        val httpCall = HttpUtil.longCallClient(context, baseUrl).newCall(request)
         onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
         httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
@@ -141,8 +119,8 @@ class ApiService(context: Context) {
         Log.d(TAG, "Polling topic $url")
 
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
-        client.newCall(request).execute().use { response ->
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
@@ -169,8 +147,8 @@ class ApiService(context: Context) {
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
-        val call = subscriberClient.newCall(request)
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
         call.enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 try {
@@ -190,6 +168,7 @@ class ApiService(context: Context) {
                     fail(e)
                 }
             }
+
             override fun onFailure(call: Call, e: IOException) {
                 Log.e(TAG, "Connection to $url failed (2): ${e.message}", e)
                 fail(e)
@@ -206,8 +185,8 @@ class ApiService(context: Context) {
         }
         val url = topicUrlAuth(baseUrl, topic)
         val customHeaders = repository.getCustomHeaders(baseUrl)
-        val request = requestBuilder(url, user, customHeaders).build()
-        client.newCall(request).execute().use { response ->
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
             } else if (user == null && response.code == 404) {
@@ -230,7 +209,6 @@ class ApiService(context: Context) {
     )
 
     companion object {
-        val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
         private const val TAG = "NtfyApiService"
 
         // These constants have corresponding values in the server codebase!
@@ -240,18 +218,5 @@ class ApiService(context: Context) {
         const val EVENT_MESSAGE_READ = "message_read"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
-
-        fun requestBuilder(url: String, user: User?, customHeaders: List<CustomHeader> = emptyList()): Request.Builder {
-            val builder = Request.Builder()
-                .url(url)
-                .addHeader("User-Agent", USER_AGENT)
-            if (user != null) {
-                builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
-            }
-            customHeaders.forEach { header ->
-                builder.addHeader(header.name, header.value)
-            }
-            return builder
-        }
     }
 }

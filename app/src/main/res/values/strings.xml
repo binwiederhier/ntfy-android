@@ -2,7 +2,22 @@
            tools:ignore="MissingTranslation">
 
     <!-- Common strings -->
+    <string name="common_button_next">Next</string>
+    <string name="common_button_add">Add</string>
+    <string name="common_button_save">Save</string>
+    <string name="common_button_delete">Delete</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
+    <string name="common_service_url">Service URL</string>
+    <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
+
+    <!-- Common certificate strings -->
+    <string name="common_certificate_subject">Subject</string>
+    <string name="common_certificate_issuer">Issuer</string>
+    <string name="common_certificate_fingerprint">SHA-256 fingerprint</string>
+    <string name="common_certificate_valid_from">Valid from</string>
+    <string name="common_certificate_valid_until">Valid until</string>
+    <string name="common_certificate_added_toast">Certificate added</string>
+    <string name="common_certificate_deleted_toast">Certificate deleted</string>
 
     <!-- Notification channels -->
     <string name="channel_notifications_min_name">Min priority</string>
@@ -115,6 +130,7 @@
     <string name="add_dialog_login_new_user">New user</string>
     <string name="add_dialog_base_urls_dropdown_choose">Choose service URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">Clear service URL</string>
+    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
 
     <!-- Detail activity -->
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
@@ -267,7 +283,6 @@
     <!-- Notification dialog -->
     <string name="notification_dialog_title">Mute notifications</string>
     <string name="notification_dialog_cancel">Cancel</string>
-    <string name="notification_dialog_save">Save</string>
     <string name="notification_dialog_enabled_toast_message">Notifications resumed</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifications muted</string>
     <string name="notification_dialog_muted_until_toast_message">Notifications muted until %1$s</string>
@@ -422,6 +437,20 @@
     <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
     <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
+    <string name="settings_advanced_certificates_title">Manage certificates</string>
+    <string name="settings_advanced_certificates_summary">Add certificates to the trust store and manage client certificates for mTLS</string>
+    <string name="settings_advanced_certificates_trusted_header">Trusted certificates</string>
+    <string name="settings_advanced_certificates_trusted_item_summary">Pinned certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_trusted_item_summary_expired">Pinned certificate, issued by %1$s, expired, used for connections to %2$s</string>
+    <string name="settings_advanced_certificates_trusted_add_title">Add a trusted certificate</string>
+    <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). When connecting to the ntfy server, this certificate will be trusted.</string>
+    <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
+    <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s, expired, used for connections to %2$s</string>
+    <string name="settings_advanced_certificates_client_add_title">Add a client certificate</string>
+    <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
+    <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>
+    <string name="settings_advanced_certificates_error_invalid_p12">Invalid PKCS#12 file</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -451,12 +480,11 @@
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">Topic URL</string>
 
-    <!-- User add/edit dialog -->
+    <!-- User add/edit dialog (UserFragment) -->
     <string name="user_dialog_title_add">Add user</string>
     <string name="user_dialog_title_edit">Edit user</string>
     <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
     <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
-    <string name="user_dialog_base_url_hint">Service URL</string>
     <string name="user_dialog_base_url_error_authorization_header_exists">Cannot add user if custom Authorization header is set for this server</string>
     <string name="user_dialog_username_hint">Username</string>
     <string name="user_dialog_password_hint_add">Password</string>
@@ -464,12 +492,10 @@
     <string name="user_dialog_button_add">Add user</string>
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
-    <string name="user_dialog_button_save">Save</string>
 
-    <!-- Custom headers dialog  -->
+    <!-- Custom headers dialog (CustomHeaderFragment) -->
     <string name="custom_headers_dialog_title_add">Add custom header</string>
     <string name="custom_headers_dialog_title_edit">Edit custom header</string>
-    <string name="custom_headers_dialog_base_url_hint">Service URL</string>
     <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Header value (e.g. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
@@ -478,7 +504,29 @@
     <string name="custom_headers_dialog_error_reserved_name">This header is reserved and set by ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Cannot add Authorization header if a user is configured for this server</string>
     <string name="custom_headers_dialog_error_duplicate">A header with this name already exists for this server</string>
-    <string name="custom_headers_dialog_button_add">Add</string>
-    <string name="custom_headers_dialog_button_save">Save</string>
-    <string name="custom_headers_dialog_button_delete">Delete</string>
+
+    <!-- Trusted certificate dialog (TrustedCertificateFragment) -->
+    <string name="trusted_certificate_dialog_title">Certificate details</string>
+    <string name="trusted_certificate_dialog_title_unknown">Security warning</string>
+    <string name="trusted_certificate_dialog_title_add">Add trusted certificate</string>
+    <string name="trusted_certificate_dialog_security_title">Your connection is not private</string>
+    <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
+    <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
+    <string name="trusted_certificate_dialog_description_view">This certificate is used for connections to the service URL below. You manually added this exception.</string>
+    <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
+    <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
+    <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
+    <string name="trusted_certificate_dialog_error_invalid_url">Invalid URL</string>
+    <string name="trusted_certificate_dialog_error_parse">Unable to load certificate: %1$s</string>
+    <string name="trusted_certificate_dialog_button_trust">Trust</string>
+
+    <!-- Client certificate dialog (ClientCertificateFragment) -->
+    <string name="client_certificate_dialog_title">Client certificate</string>
+    <string name="client_certificate_dialog_title_add">Add client certificate</string>
+    <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
+    <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate. This certificate will be used to authenticate with the server.</string>
+    <string name="client_certificate_dialog_password_hint">Password</string>
+    <string name="client_certificate_dialog_error_wrong_password">Wrong password or invalid PKCS#12 file</string>
+    <string name="client_certificate_dialog_error_invalid_p12_password">Invalid password or corrupted PKCS#12 file</string>
+    <string name="client_certificate_dialog_error_invalid_url">Invalid service URL</string>
 </resources>

@@ -113,7 +113,7 @@ class UserFragment : DialogFragment() {
             baseUrlViewLayout.visibility = View.GONE
             usernameView.setText(user!!.username)
             passwordView.hint = getString(R.string.user_dialog_password_hint_edit)
-            saveMenuItem.setTitle(R.string.user_dialog_button_save)
+            saveMenuItem.setTitle(R.string.common_button_save)
             deleteMenuItem.isVisible = true
         }
 

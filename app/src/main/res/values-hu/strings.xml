@@ -95,6 +95,7 @@
     <string name="common_copied_to_clipboard">Vágólapra másolva</string>
     <string name="detail_instant_delivery_enabled">Azonnali küldés bekapcsolva</string>
     <string name="detail_instant_delivery_disabled">Azonnali küldés kikapcsolva</string>
+    <string name="common_button_save">Mentés</string>
     <string name="detail_item_menu_open">Fájl megnyitása</string>
     <string name="detail_item_menu_delete">Fájl törlése</string>
     <string name="detail_item_menu_copy_url">URL másolása</string>
@@ -118,7 +119,6 @@
     <string name="notification_dialog_1h">1 óra</string>
     <string name="notification_popup_action_cancel">Mégse</string>
     <string name="detail_action_mode_delete_dialog_cancel">Mégse</string>
-    <string name="notification_dialog_save">Mentés</string>
     <string name="notification_dialog_show_all">Összes értesítés mutatása</string>
     <string name="notification_dialog_muted_forever_toast_message">Értesítések lenémítva</string>
     <string name="notification_dialog_2h">2 óra</string>

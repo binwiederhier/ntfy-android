@@ -126,7 +126,6 @@
     <string name="share_menu_send">Споделяне</string>
     <string name="share_successful">Съобщението е публикувано</string>
     <string name="notification_dialog_cancel">Отказ</string>
-    <string name="notification_dialog_save">Запазване</string>
     <string name="notification_dialog_enabled_toast_message">Известията са включени</string>
     <string name="notification_dialog_30min">30 минути</string>
     <string name="notification_dialog_1h">1 час</string>
@@ -199,7 +198,6 @@
     <string name="settings_notifications_auto_delete_summary_one_month">Премахват се автоматично след един месец</string>
     <string name="settings_notifications_auto_delete_summary_three_months">Премахват се автоматично след три месеца</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
-    <string name="user_dialog_button_save">Запазване</string>
     <string name="user_dialog_button_delete">Премахване</string>
     <string name="user_dialog_button_add">Добавяне</string>
     <string name="user_dialog_password_hint_edit">Парола (без промяна ако е празна)</string>
@@ -211,7 +209,7 @@
     <string name="user_dialog_description_edit">Можете да променяте избрания потребител или да го премахнете.</string>
     <string name="settings_about_version_title">Издание</string>
     <string name="settings_about_header">Относно</string>
-    <string name="user_dialog_base_url_hint">Адрес на услугата</string>
+    <string name="common_service_url">Адрес на услугата</string>
     <string name="detail_item_cannot_open">Прикаченият файл не може да бъде отворен: %1$s</string>
     <string name="detail_item_snack_deleted">Известието е премахнато</string>
     <string name="detail_item_snack_undo">Отменяне</string>
@@ -403,7 +401,6 @@
     <string name="user_dialog_base_url_error_authorization_header_exists">Не може да бъде добавен потребител ако за сървъра е зададена потребителска заглавка Authorization</string>
     <string name="custom_headers_dialog_title_add">Добавяна на заглавка по избор</string>
     <string name="custom_headers_dialog_title_edit">Променяне на заглавка по избор</string>
-    <string name="custom_headers_dialog_base_url_hint">Адрес на услугата</string>
     <string name="custom_headers_dialog_name_hint">Име на заглавката (напр. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Стойност на заглавката (напр. 9f3c2e4a1b2d4e)</string>
     <string name="custom_headers_dialog_description_add">Добавяне на заглавка на HTTP по избор, която да бъде изпращана с всяка заявка към избрания сървър.</string>
@@ -412,7 +409,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Тази заглавка е запазена и се задава от ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">Не може да бъде добавена заглавка Authorization ако за сървъра е зададен потребител</string>
     <string name="custom_headers_dialog_error_duplicate">Заглавка с това име вече има за този сървър</string>
-    <string name="custom_headers_dialog_button_add">Добавяне</string>
-    <string name="custom_headers_dialog_button_save">Запазване</string>
-    <string name="custom_headers_dialog_button_delete">Премахване</string>
+    <string name="common_button_add">Добавяне</string>
+    <string name="common_button_save">Запазване</string>
+    <string name="common_button_delete">Премахване</string>
 </resources>

@@ -99,7 +99,6 @@
     <string name="share_topic_title">Paylaş</string>
     <string name="share_suggested_topics">Önerilen konular</string>
     <string name="share_successful">Mesaj yayınlandı</string>
-    <string name="notification_dialog_save">Kaydet</string>
     <string name="notification_dialog_enabled_toast_message">Bildirimler devam ettirildi</string>
     <string name="notification_dialog_muted_forever_toast_message">Bildirimler sessize alındı</string>
     <string name="notification_dialog_muted_until_toast_message">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
@@ -183,14 +182,14 @@
     <string name="user_dialog_title_edit">Kullanıcıyı düzenle</string>
     <string name="user_dialog_description_add">Buraya bir kullanıcı ekleyebilirsiniz. Verilen sunucu için tüm konular bu kullanıcıyı kullanacaktır.</string>
     <string name="user_dialog_description_edit">Seçilen kullanıcı için kullanıcı adını/parolayı düzenleyebilir veya onu silebilirsiniz.</string>
-    <string name="user_dialog_base_url_hint">Hizmet URL\'si</string>
+    <string name="common_service_url">Hizmet URL\'si</string>
     <string name="user_dialog_username_hint">Kullanıcı adı</string>
     <string name="user_dialog_password_hint_add">Parola</string>
     <string name="user_dialog_password_hint_edit">Parola (boş bırakılırsa değiştirilmez)</string>
     <string name="user_dialog_button_add">Kullanıcı ekle</string>
     <string name="user_dialog_button_cancel">İptal</string>
     <string name="user_dialog_button_delete">Kullanıcı sil</string>
-    <string name="user_dialog_button_save">Kaydet</string>
+    <string name="common_button_save">Kaydet</string>
     <string name="channel_notifications_high_name">Yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Üç konuya abone olundu</string>
     <string name="refresh_message_result">%1$d bildirim alındı</string>

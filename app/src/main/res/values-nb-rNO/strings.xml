@@ -104,7 +104,6 @@
     <string name="share_content_file_text">En fil ble delt med deg</string>
     <string name="share_topic_title">Del til</string>
     <string name="notification_dialog_cancel">Avbryt</string>
-    <string name="notification_dialog_save">Lagre</string>
     <string name="notification_dialog_show_all">Vis alle merknader</string>
     <string name="notification_dialog_30min">30 minutter</string>
     <string name="notification_dialog_2h">2 timer</string>
@@ -197,7 +196,7 @@
     <string name="settings_about_header">Om</string>
     <string name="user_dialog_title_add">Legg til bruker</string>
     <string name="user_dialog_title_edit">Rediger bruker</string>
-    <string name="user_dialog_base_url_hint">Tjeneste-URL</string>
+    <string name="common_service_url">Tjeneste-URL</string>
     <string name="user_dialog_description_edit">Du kan redigere brukernavn/passord for valgt bruker, eller slette den helt.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON-strøm over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">Vev-sockets</string>
@@ -207,7 +206,7 @@
     <string name="user_dialog_button_add">Legg til bruker</string>
     <string name="user_dialog_button_cancel">Avbryt</string>
     <string name="user_dialog_button_delete">Slett bruker</string>
-    <string name="user_dialog_button_save">Lagre</string>
+    <string name="common_button_save">Lagre</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonnert på tre emner med umiddelbar levering</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Abonnert på %1$d emner</string>
     <string name="main_menu_settings_title">Innstillinger</string>

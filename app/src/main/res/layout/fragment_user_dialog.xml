@@ -65,7 +65,7 @@
                     android:id="@+id/user_dialog_base_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/user_dialog_base_url_hint"
+                    android:hint="@string/common_service_url"
                     android:importantForAutofill="no"
                     android:maxLines="1"
                     android:inputType="text"/>

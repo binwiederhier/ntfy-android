@@ -69,7 +69,6 @@
     <string name="share_title">هم‌رسانی</string>
     <string name="share_menu_send">هم‌رسانی</string>
     <string name="notification_dialog_cancel">لغو</string>
-    <string name="notification_dialog_save">ذخیره</string>
     <string name="notification_popup_action_open">گشودن</string>
     <string name="notification_popup_action_browse">مرور</string>
     <string name="notification_popup_action_download">بارگیری</string>
@@ -96,7 +95,7 @@
     <string name="user_dialog_username_hint">نام کاربری</string>
     <string name="user_dialog_password_hint_add">گذرواژه</string>
     <string name="user_dialog_button_cancel">لغو</string>
-    <string name="user_dialog_button_save">ذخیره</string>
+    <string name="common_button_save">ذخیره</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">رد کردن</string>
     <string name="publish_dialog_title_hint">عنوان</string>
     <string name="publish_dialog_message_hint">پیام</string>
@@ -130,4 +129,6 @@
     <string name="detail_item_menu_copy_url">رونوشت از نشانی</string>
     <string name="detail_item_menu_copy_contents">رونوشت از آگاهی</string>
     <string name="detail_item_download_info_not_downloaded">بارگیری نشده</string>
+    <string name="common_copied_to_clipboard">در تخته‌گیره رونوشت شد</string>
+    <string name="publish_dialog_title_placeholder">نمونه: کسی پشت در است</string>
 </resources>

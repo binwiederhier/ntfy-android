@@ -107,7 +107,6 @@
     <string name="share_successful">Mensaje publicado</string>
     <string name="notification_dialog_title">Silenciar notificaciones</string>
     <string name="notification_dialog_cancel">Cancelar</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="notification_dialog_muted_until_toast_message">Notificaciones silenciadas hasta %1$s</string>
     <string name="notification_dialog_show_all">Mostrar todas las notificaciones</string>
     <string name="notification_dialog_30min">30 minutos</string>
@@ -219,7 +218,6 @@
     <string name="user_dialog_password_hint_edit">Contraseña (no se modifica si lo deja vacío)</string>
     <string name="user_dialog_button_add">Añadir usuario</string>
     <string name="user_dialog_button_cancel">Cancelar</string>
-    <string name="user_dialog_button_save">Guardar</string>
     <string name="channel_notifications_high_name">Prioridad alta</string>
     <string name="channel_subscriber_notification_instant_text">Suscrito a tópicos de entrega instantánea</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
@@ -282,7 +280,7 @@
     <string name="settings_general_users_prefs_user_add_summary">Crear un nuevo usuario para un nuevo servidor</string>
     <string name="settings_general_dark_mode_summary_system">Usando el determinado por el sistema</string>
     <string name="settings_about_header">Acerca de</string>
-    <string name="user_dialog_base_url_hint">URL de servicio</string>
+    <string name="common_service_url">URL de servicio</string>
     <string name="main_menu_rate_title">Califica la aplicación ⭐</string>
     <string name="main_unified_push_toast">Esta suscripción es gestionada por %1$s a través de UnifiedPush</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
@@ -389,7 +387,7 @@
     <string name="custom_headers_dialog_error_reserved_name">Esta cabecera está reservada para uso por ntfy</string>
     <string name="custom_headers_dialog_error_user_exists">No se puede añadir una cabecera \"Authorization\" si ya hay un usuario configurado para este servidor</string>
     <string name="custom_headers_dialog_error_duplicate">Una cabecera con este nombre ya existe para este servidor</string>
-    <string name="custom_headers_dialog_button_add">Añadir</string>
-    <string name="custom_headers_dialog_button_save">Guardar</string>
-    <string name="custom_headers_dialog_button_delete">Borrar</string>
+    <string name="common_button_add">Añadir</string>
+    <string name="common_button_save">Guardar</string>
+    <string name="common_button_delete">Borrar</string>
 </resources>

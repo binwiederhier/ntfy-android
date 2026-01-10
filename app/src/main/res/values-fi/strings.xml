@@ -72,7 +72,7 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Tallenna ja kopioi linkki</string>
     <string name="main_banner_battery_button_fix_now">Korjaa nyt</string>
     <string name="detail_item_download_info_not_downloaded">Ei ladattu</string>
-    <string name="user_dialog_button_save">Tallenna</string>
+    <string name="common_button_save">Tallenna</string>
     <string name="detail_delete_dialog_cancel">Peruuta</string>
     <string name="notification_popup_action_download">Lataa</string>
     <string name="detail_item_cannot_download">Liitettä ei voi avata tai ladata. Linkki vanhentui, eikä paikallista tiedostoa löytynyt.</string>
@@ -148,8 +148,7 @@
     <string name="settings_general_dark_mode_summary_dark">Tumma tila päällä. Oletko vampyyri \?</string>
     <string name="settings_general_users_prefs_user_add_summary">Lisää uusi käyttäjä uudelle palvelimelle</string>
     <string name="settings_general_dark_mode_entry_system">Käytä oletusasetusta</string>
-    <string name="notification_dialog_save">Tallenna</string>
-    <string name="user_dialog_base_url_hint">Palvelun URL</string>
+    <string name="common_service_url">Palvelun URL</string>
     <string name="detail_item_download_info_download_failed_expires_x">Lataus epäonnistunut, linkki vanhentunut %1$s</string>
     <string name="settings_notifications_priority_max">max</string>
     <string name="user_dialog_password_hint_add">Salasana</string>

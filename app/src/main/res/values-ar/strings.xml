@@ -22,7 +22,7 @@
     <string name="detail_item_menu_cancel">إلغاء التنزيل</string>
     <string name="detail_item_menu_save_file">حفظ الملف</string>
     <string name="detail_item_menu_copy_url">إنسخ الرابط</string>
-    <string name="user_dialog_button_save">حفظ</string>
+    <string name="common_button_save">حفظ</string>
     <string name="add_dialog_base_urls_dropdown_choose">اختر عنوان URL للخدمة</string>
     <string name="add_dialog_login_title">تسجيل الدخول مطلوب</string>
     <string name="common_copied_to_clipboard">تم نسخه إلى الحافظة</string>
@@ -87,7 +87,6 @@
     <string name="detail_menu_unsubscribe">الغاء الاشتراك</string>
     <string name="detail_action_mode_menu_copy">نسخ</string>
     <string name="detail_action_mode_menu_delete">حذف</string>
-    <string name="notification_dialog_save">حفظ</string>
     <string name="notification_popup_action_open">فتح</string>
     <string name="notification_popup_action_download">تنزيل</string>
     <string name="notification_popup_action_cancel">إلغاﺀ</string>
