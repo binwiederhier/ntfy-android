@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Nízka priorita</string>
-    <string name="channel_notifications_default_name">Predvolená priorita</string>
-    <string name="channel_notifications_high_name">Vysoká priorita</string>
-    <string name="channel_notifications_max_name">Maximálna priorita</string>
+    <string name="common_priority_low_name">Nízka priorita</string>
+    <string name="common_priority_default_name">Predvolená priorita</string>
+    <string name="common_priority_high_name">Vysoká priorita</string>
+    <string name="common_priority_max_name">Maximálna priorita</string>
     <string name="channel_subscriber_service_name">Služba odberu</string>
     <string name="channel_subscriber_notification_title">Počúvanie prichádzajúcich oznámení</string>
     <string name="channel_subscriber_notification_instant_text">Prihlásený na okamžité doručovanie tém</string>
@@ -255,7 +255,7 @@
     <string name="user_dialog_password_hint_edit">Heslo (nezmenené, ak zostane prázdne)</string>
     <string name="user_dialog_button_delete">Odstrániť používateľa</string>
     <string name="detail_settings_appearance_display_name_title">Zobrazený názov</string>
-    <string name="channel_notifications_min_name">Minimálna priorita</string>
+    <string name="common_priority_min_name">Minimálna priorita</string>
     <string name="channel_subscriber_notification_instant_text_four">Prihlásený na odber štyroch tém pre okamžité doručovanie</string>
     <string name="channel_subscriber_notification_noinstant_text">Prihlásený na odber tém</string>
     <string name="channel_subscriber_notification_instant_text_five">Prihlásený na odber piatich tém pre okamžité doručovanie</string>

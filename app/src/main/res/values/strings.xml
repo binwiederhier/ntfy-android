@@ -9,6 +9,11 @@
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
     <string name="common_service_url">Service URL</string>
     <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
+    <string name="common_priority_min_name">Min priority</string>
+    <string name="common_priority_low_name">Low priority</string>
+    <string name="common_priority_default_name">Default priority</string>
+    <string name="common_priority_high_name">High priority</string>
+    <string name="common_priority_max_name">Max priority</string>
 
     <!-- Common certificate strings -->
     <string name="common_certificate_subject">Subject</string>
@@ -20,11 +25,6 @@
     <string name="common_certificate_deleted_toast">Certificate deleted</string>
 
     <!-- Notification channels -->
-    <string name="channel_notifications_min_name">Min priority</string>
-    <string name="channel_notifications_low_name">Low priority</string>
-    <string name="channel_notifications_default_name">Default priority</string>
-    <string name="channel_notifications_high_name">High priority</string>
-    <string name="channel_notifications_max_name">Max priority</string>
     <string name="channel_notifications_group_default_name">Default</string>
     <string name="channel_subscriber_service_name">Subscription Service</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
@@ -220,15 +220,9 @@
     <string name="publish_dialog_title_hint">Title</string>
     <string name="publish_dialog_title_placeholder">e.g. Someone is at the door</string>
     <string name="publish_dialog_message_hint">Message</string>
-    <string name="publish_dialog_message_placeholder" translatable="false">@string/message_bar_hint</string>
     <string name="publish_dialog_tags_hint">Tags</string>
     <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
     <string name="publish_dialog_priority_hint">Priority</string>
-    <string name="publish_dialog_priority_default" translatable="false">@string/channel_notifications_default_name</string>
-    <string name="publish_dialog_priority_min" translatable="false">@string/channel_notifications_min_name</string>
-    <string name="publish_dialog_priority_low" translatable="false">@string/channel_notifications_low_name</string>
-    <string name="publish_dialog_priority_high" translatable="false">@string/channel_notifications_high_name</string>
-    <string name="publish_dialog_priority_max" translatable="false">@string/channel_notifications_max_name</string>
     <string name="publish_dialog_button_publish">Publish</string>
     <string name="publish_dialog_error_sending">Cannot publish message: %1$s</string>
     <string name="publish_dialog_error_server">Cannot publish message: %1$s (code %2$d)</string>

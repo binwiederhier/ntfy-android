@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_menu_settings_title">Ρυθμίσεις</string>
-    <string name="channel_notifications_max_name">Μέγιστη προτεραιότητα</string>
+    <string name="common_priority_max_name">Μέγιστη προτεραιότητα</string>
     <string name="channel_subscriber_notification_title">Ακρόαση για εισερχόμενες ειδοποιήσεις</string>
     <string name="main_menu_report_bug_title">Αναφέρετε ένα σφάλμα</string>
     <string name="main_menu_rate_title">Βαθμολογήστε την εφαρμογή ⭐</string>
@@ -13,15 +13,15 @@
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="main_item_date_yesterday">εχθές</string>
     <string name="main_add_button_description">Προσθήκη συνδρομής</string>
-    <string name="channel_notifications_min_name">Ελάχιστη προτεραιότητα</string>
-    <string name="channel_notifications_low_name">Χαμηλή προτεραιότητα</string>
+    <string name="common_priority_min_name">Ελάχιστη προτεραιότητα</string>
+    <string name="common_priority_low_name">Χαμηλή προτεραιότητα</string>
     <string name="channel_subscriber_notification_instant_text">Έχει γίνει εγγραφή σε θέματα άμεσης παράδοσης</string>
     <string name="channel_subscriber_notification_instant_text_two">Έχει γίνει εγγραφή σε δύο θέματα άμεσης παράδοσης</string>
     <string name="channel_subscriber_notification_instant_text_more">Έχει γίνει εγγραφή σε %1$d θέματα άμεσης παράδοσης</string>
     <string name="channel_subscriber_notification_noinstant_text_two">Έχει γίνει εγγραφή σε δύο θέματα</string>
-    <string name="channel_notifications_high_name">Υψηλή προτεραιότητα</string>
+    <string name="common_priority_high_name">Υψηλή προτεραιότητα</string>
     <string name="channel_subscriber_notification_instant_text_four">Έχει γίνει εγγραφή σε τέσσερα θέματα άμεσης παράδοσης</string>
-    <string name="channel_notifications_default_name">Προκαθορισμένη προτεραιότητα</string>
+    <string name="common_priority_default_name">Προκαθορισμένη προτεραιότητα</string>
     <string name="channel_subscriber_notification_instant_text_five">Έχει γίνει εγγραφή σε πέντε θέματα άμεσης παράδοσης</string>
     <string name="channel_subscriber_service_name">Συνδρομητική υπηρεσία</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Έχει γίνει εγγραφή σε τρία θέματα</string>

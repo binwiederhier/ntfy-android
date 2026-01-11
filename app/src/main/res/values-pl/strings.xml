@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Minimalny priorytet</string>
-    <string name="channel_notifications_low_name">Niski priorytet</string>
-    <string name="channel_notifications_default_name">Domyślny priorytet</string>
-    <string name="channel_notifications_max_name">Maksymalny priorytet</string>
+    <string name="common_priority_min_name">Minimalny priorytet</string>
+    <string name="common_priority_low_name">Niski priorytet</string>
+    <string name="common_priority_default_name">Domyślny priorytet</string>
+    <string name="common_priority_max_name">Maksymalny priorytet</string>
     <string name="channel_subscriber_notification_title">Oczekiwanie na przychodzące powiadomienia</string>
     <string name="channel_subscriber_notification_instant_text">Subskrybujesz tematy z natychmiastowym dostarczaniem</string>
-    <string name="channel_notifications_high_name">Wysoki priorytet</string>
+    <string name="common_priority_high_name">Wysoki priorytet</string>
     <string name="channel_subscriber_service_name">Usługa subskrypcji</string>
     <string name="add_dialog_login_username_hint">Nazwa użytkownika</string>
     <string name="detail_action_mode_delete_dialog_message">Usunąć wybrane powiadomienie(a) trwale\?</string>

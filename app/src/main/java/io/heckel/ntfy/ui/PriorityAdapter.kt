@@ -47,11 +47,11 @@ class PriorityAdapter(
     companion object {
         fun createPriorityItems(context: Context): List<PriorityItem> {
             return listOf(
-                PriorityItem(5, context.getString(R.string.publish_dialog_priority_max), R.drawable.ic_priority_5_24dp),
-                PriorityItem(4, context.getString(R.string.publish_dialog_priority_high), R.drawable.ic_priority_4_24dp),
-                PriorityItem(3, context.getString(R.string.publish_dialog_priority_default), R.drawable.ic_priority_3_24dp),
-                PriorityItem(2, context.getString(R.string.publish_dialog_priority_low), R.drawable.ic_priority_2_24dp),
-                PriorityItem(1, context.getString(R.string.publish_dialog_priority_min), R.drawable.ic_priority_1_24dp)
+                PriorityItem(5, context.getString(R.string.common_priority_max_name), R.drawable.ic_priority_5_24dp),
+                PriorityItem(4, context.getString(R.string.common_priority_high_name), R.drawable.ic_priority_4_24dp),
+                PriorityItem(3, context.getString(R.string.common_priority_default_name), R.drawable.ic_priority_3_24dp),
+                PriorityItem(2, context.getString(R.string.common_priority_low_name), R.drawable.ic_priority_2_24dp),
+                PriorityItem(1, context.getString(R.string.common_priority_min_name), R.drawable.ic_priority_1_24dp)
             )
         }
     }

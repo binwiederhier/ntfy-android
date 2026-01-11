@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Minimal ustuvorlik</string>
-    <string name="channel_notifications_low_name">Kam ustuvorlik</string>
-    <string name="channel_notifications_default_name">Standart ustuvorlik</string>
-    <string name="channel_notifications_high_name">Yuqori ustuvorlik</string>
-    <string name="channel_notifications_max_name">Maksimal ustuvorlik</string>
+    <string name="common_priority_min_name">Minimal ustuvorlik</string>
+    <string name="common_priority_low_name">Kam ustuvorlik</string>
+    <string name="common_priority_default_name">Standart ustuvorlik</string>
+    <string name="common_priority_high_name">Yuqori ustuvorlik</string>
+    <string name="common_priority_max_name">Maksimal ustuvorlik</string>
     <string name="channel_notifications_group_default_name">Standart</string>
     <string name="channel_subscriber_service_name">Obuna xizmati</string>
     <string name="channel_subscriber_notification_title">Kiruvchi bildirishnomalar tinglanmoqda</string>

@@ -371,10 +371,10 @@ class NotificationService(val context: Context) {
         val channelId = toChannelId(group, priority)
         val pause = 300L
         val channel = when (priority) {
-            PRIORITY_MIN -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_min_name), NotificationManager.IMPORTANCE_MIN)
-            PRIORITY_LOW -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_low_name), NotificationManager.IMPORTANCE_LOW)
+            PRIORITY_MIN -> NotificationChannel(channelId, context.getString(R.string.common_priority_min_name), NotificationManager.IMPORTANCE_MIN)
+            PRIORITY_LOW -> NotificationChannel(channelId, context.getString(R.string.common_priority_low_name), NotificationManager.IMPORTANCE_LOW)
             PRIORITY_HIGH -> {
-                val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_high_name), NotificationManager.IMPORTANCE_HIGH)
+                val channel = NotificationChannel(channelId, context.getString(R.string.common_priority_high_name), NotificationManager.IMPORTANCE_HIGH)
                 channel.enableVibration(true)
                 channel.vibrationPattern = longArrayOf(
                     pause, 100, pause, 100, pause, 100,
@@ -383,7 +383,7 @@ class NotificationService(val context: Context) {
                 channel
             }
             PRIORITY_MAX -> {
-                val channel = NotificationChannel(channelId, context.getString(R.string.channel_notifications_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
+                val channel = NotificationChannel(channelId, context.getString(R.string.common_priority_max_name), NotificationManager.IMPORTANCE_HIGH) // IMPORTANCE_MAX does not exist
                 channel.enableLights(true)
                 channel.enableVibration(true)
                 channel.setBypassDnd(true)
@@ -397,7 +397,7 @@ class NotificationService(val context: Context) {
                 )
                 channel
             }
-            else -> NotificationChannel(channelId, context.getString(R.string.channel_notifications_default_name), NotificationManager.IMPORTANCE_DEFAULT)
+            else -> NotificationChannel(channelId, context.getString(R.string.common_priority_default_name), NotificationManager.IMPORTANCE_DEFAULT)
         }
         channel.group = group
         notificationManager.createNotificationChannel(channel)

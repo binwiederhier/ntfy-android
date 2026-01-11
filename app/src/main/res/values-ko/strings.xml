@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="detail_how_to_link">자세한 설명은 ntfy.sh와 docs 페이지에서 찾으실 수 있습니다.</string>
-    <string name="channel_notifications_high_name">우선순위 높음</string>
+    <string name="common_priority_high_name">우선순위 높음</string>
     <string name="main_menu_notifications_disabled_forever">알림 음소거됨</string>
     <string name="channel_subscriber_notification_instant_text_three">즉시 전달 주제 3개 구독중</string>
     <string name="add_dialog_use_another_server">다른 서버 사용</string>
     <string name="main_menu_notifications_enabled">알림 켜짐</string>
-    <string name="channel_notifications_default_name">우선순위 기본</string>
-    <string name="channel_notifications_max_name">우선순위 최상</string>
+    <string name="common_priority_default_name">우선순위 기본</string>
+    <string name="common_priority_max_name">우선순위 최상</string>
     <string name="channel_subscriber_service_name">구독 서비스</string>
     <string name="channel_subscriber_notification_title">알림 수신중</string>
     <string name="channel_subscriber_notification_instant_text">즉시 전달 주제를 구독함</string>
@@ -166,9 +166,9 @@
     <string name="settings_advanced_connection_protocol_title">연결 프로토콜</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="detail_settings_appearance_header">표시 설정</string>
-    <string name="channel_notifications_low_name">우선순위 낮음</string>
+    <string name="common_priority_low_name">우선순위 낮음</string>
     <string name="common_button_save">저장</string>
-    <string name="channel_notifications_min_name">우선순위 최하</string>
+    <string name="common_priority_min_name">우선순위 최하</string>
     <string name="channel_subscriber_notification_instant_text_two">즉시 전달 주제 2개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_five">즉시 전달 주제 5개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_four">즉시 전달 주제 4개 구독중</string>

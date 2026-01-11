@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Нисък приоритет</string>
-    <string name="channel_notifications_default_name">Подразбиран приоритет</string>
-    <string name="channel_notifications_high_name">Висок приоритет</string>
-    <string name="channel_notifications_max_name">Най-висок приоритет</string>
+    <string name="common_priority_low_name">Нисък приоритет</string>
+    <string name="common_priority_default_name">Подразбиран приоритет</string>
+    <string name="common_priority_high_name">Висок приоритет</string>
+    <string name="common_priority_max_name">Най-висок приоритет</string>
     <string name="channel_subscriber_service_name">Абонаментна услуга</string>
     <string name="channel_subscriber_notification_instant_text">Има абонамент за теми с незабавно доставяне</string>
     <string name="channel_subscriber_notification_instant_text_three">Има абонамент за три теми с незабавно доставяне</string>
@@ -51,7 +51,7 @@
 \nПаролите са премахнати, но не са изброени тук.</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Не са променени никакви теми/имена на хостове. Абонирани ли сте\?</string>
     <string name="user_dialog_description_add">Тук можете да добавите потребител. Всички теми на сървъра ще използват този потребител.</string>
-    <string name="channel_notifications_min_name">Най-нисък приоритет</string>
+    <string name="common_priority_min_name">Най-нисък приоритет</string>
     <string name="channel_subscriber_notification_instant_text_one">Има абонамент за тема с незабавно доставяне</string>
     <string name="notification_dialog_muted_forever_toast_message">Известията са заглушени</string>
     <string name="channel_subscriber_notification_title">Очаква входящи известия</string>

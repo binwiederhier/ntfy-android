@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Niedrige Priorität</string>
-    <string name="channel_notifications_default_name">Standard-Priorität</string>
-    <string name="channel_notifications_high_name">Hohe Priorität</string>
-    <string name="channel_notifications_max_name">Höchste Priorität</string>
+    <string name="common_priority_low_name">Niedrige Priorität</string>
+    <string name="common_priority_default_name">Standard-Priorität</string>
+    <string name="common_priority_high_name">Hohe Priorität</string>
+    <string name="common_priority_max_name">Höchste Priorität</string>
     <string name="channel_subscriber_service_name">Abo Service</string>
-    <string name="channel_notifications_min_name">Niedrigste Priorität</string>
+    <string name="common_priority_min_name">Niedrigste Priorität</string>
     <string name="channel_subscriber_notification_title">Warte auf eingehende Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Ein Sofortnachrichten-Thema abonniert</string>
     <string name="channel_subscriber_notification_instant_text_two">Zwei Sofortnachrichten-Themen abonniert</string>

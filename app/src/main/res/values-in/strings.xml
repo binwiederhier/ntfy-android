@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_subscriber_notification_noinstant_text">Berlangganan ke topik</string>
-    <string name="channel_notifications_default_name">Prioritas bawaan</string>
-    <string name="channel_notifications_max_name">Prioritas maks</string>
-    <string name="channel_notifications_min_name">Prioritas min</string>
-    <string name="channel_notifications_low_name">Prioritas rendah</string>
+    <string name="common_priority_default_name">Prioritas bawaan</string>
+    <string name="common_priority_max_name">Prioritas maks</string>
+    <string name="common_priority_min_name">Prioritas min</string>
+    <string name="common_priority_low_name">Prioritas rendah</string>
     <string name="channel_subscriber_service_name">Layanan Langganan</string>
     <string name="channel_subscriber_notification_title">Mendengarkan notifikasi masuk</string>
     <string name="channel_subscriber_notification_instant_text">Berlangganan ke topik pengiriman instan</string>
@@ -213,7 +213,7 @@
     <string name="settings_notifications_min_priority_summary_x_or_higher">Tampilkan notifikasi jika prioritas adalah %1$d (%2$s) atau di atas</string>
     <string name="settings_notifications_auto_download_summary_always">Unduh semua lampiran secara otomatis</string>
     <string name="settings_notifications_auto_download_500k">Jika di bawah 500 kB</string>
-    <string name="channel_notifications_high_name">Prioritas tinggi</string>
+    <string name="common_priority_high_name">Prioritas tinggi</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>
     <string name="add_dialog_button_subscribe">Berlangganan</string>
     <string name="channel_subscriber_notification_instant_text_more">Berlangganan ke %1$d topik pengiriman instan</string>

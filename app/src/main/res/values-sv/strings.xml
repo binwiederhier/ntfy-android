@@ -87,11 +87,11 @@
     <string name="detail_instant_delivery_enabled">Omedelbar leverans på</string>
     <string name="detail_instant_delivery_disabled">Omedelbar leverans av</string>
     <string name="detail_deep_link_subscribed_toast_message">Prenumererar på ämne %1$s</string>
-    <string name="channel_notifications_min_name">Lägsta prioritet</string>
-    <string name="channel_notifications_low_name">Låg prioritet</string>
-    <string name="channel_notifications_high_name">Hög prioritet</string>
-    <string name="channel_notifications_default_name">Standard prioritet</string>
-    <string name="channel_notifications_max_name">Högsta prioritet</string>
+    <string name="common_priority_min_name">Lägsta prioritet</string>
+    <string name="common_priority_low_name">Låg prioritet</string>
+    <string name="common_priority_high_name">Hög prioritet</string>
+    <string name="common_priority_default_name">Standard prioritet</string>
+    <string name="common_priority_max_name">Högsta prioritet</string>
     <string name="channel_subscriber_notification_instant_text_more">Prenumererar på %1$d ämnen med omedelbar leverans</string>
     <string name="main_menu_report_bug_title">Rapportera ett fel</string>
     <string name="main_action_mode_delete_dialog_message">Avregistrera mig från de valda ämnena och radera alla meddelanden permanent\?</string>
