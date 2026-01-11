@@ -17,14 +17,14 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
-import io.heckel.ntfy.db.ConnectionError
+import io.heckel.ntfy.db.ConnectionDetails
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.copyToClipboard
 
 class ConnectionErrorFragment : DialogFragment() {
     private lateinit var repository: Repository
-    private var connectionErrors: Map<String, ConnectionError> = emptyMap()
+    private var connectionDetails: Map<String, ConnectionDetails> = emptyMap()
     private var selectedBaseUrl: String? = null
     private var filterBaseUrl: String? = null
 
@@ -57,12 +57,12 @@ class ConnectionErrorFragment : DialogFragment() {
         // Dependencies
         repository = Repository.getInstance(requireContext())
         
-        // Get connection errors, optionally filtered by baseUrl
-        val allErrors = repository.getConnectionErrors()
-        connectionErrors = if (filterBaseUrl != null) {
-            allErrors.filterKeys { it == filterBaseUrl }
+        // Get connection details with errors, optionally filtered by baseUrl
+        val allDetails = repository.getConnectionDetails()
+        connectionDetails = if (filterBaseUrl != null) {
+            allDetails.filterKeys { it == filterBaseUrl }.filterValues { it.hasError() }
         } else {
-            allErrors
+            allDetails.filterValues { it.hasError() }
         }
 
         // Build root view
@@ -97,7 +97,7 @@ class ConnectionErrorFragment : DialogFragment() {
         stackTraceTextView = view.findViewById(R.id.connection_error_dialog_stack_trace)
 
         // Setup server dropdown if multiple errors
-        val baseUrls = connectionErrors.keys.toList()
+        val baseUrls = connectionDetails.keys.toList()
         if (baseUrls.size > 1) {
             serverLayout.visibility = View.VISIBLE
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, baseUrls)
@@ -126,12 +126,12 @@ class ConnectionErrorFragment : DialogFragment() {
             dismiss()
         }
 
-        // Observe connection errors to update countdown when it changes
-        repository.getConnectionErrorsLiveData().observe(this) { errors ->
-            connectionErrors = if (filterBaseUrl != null) {
-                errors.filterKeys { it == filterBaseUrl }
+        // Observe connection details to update countdown when it changes
+        repository.getConnectionDetailsLiveData().observe(this) { details ->
+            connectionDetails = if (filterBaseUrl != null) {
+                details.filterKeys { it == filterBaseUrl }.filterValues { it.hasError() }
             } else {
-                errors
+                details.filterValues { it.hasError() }
             }
             updateErrorDisplay()
         }
@@ -162,10 +162,10 @@ class ConnectionErrorFragment : DialogFragment() {
     }
 
     private fun updateErrorDisplay() {
-        val error = selectedBaseUrl?.let { connectionErrors[it] }
-        if (error != null) {
-            errorTextView.text = error.message
-            stackTraceTextView.text = error.getStackTraceString().ifEmpty { 
+        val details = selectedBaseUrl?.let { connectionDetails[it] }
+        if (details != null && details.hasError()) {
+            errorTextView.text = details.error
+            stackTraceTextView.text = details.getStackTraceString().ifEmpty { 
                 getString(R.string.connection_error_dialog_no_stack_trace)
             }
         } else {
@@ -177,9 +177,9 @@ class ConnectionErrorFragment : DialogFragment() {
     }
 
     private fun updateCountdown() {
-        val error = selectedBaseUrl?.let { connectionErrors[it] }
-        if (error != null && error.nextRetryTime > 0) {
-            val remainingMillis = error.nextRetryTime - System.currentTimeMillis()
+        val details = selectedBaseUrl?.let { connectionDetails[it] }
+        if (details != null && details.nextRetryTime > 0) {
+            val remainingMillis = details.nextRetryTime - System.currentTimeMillis()
             if (remainingMillis > 0) {
                 val remainingSeconds = (remainingMillis / 1000).toInt()
                 countdownTextView.text = getString(R.string.connection_error_dialog_retry_countdown, remainingSeconds)
@@ -198,13 +198,14 @@ class ConnectionErrorFragment : DialogFragment() {
     }
 
     private fun copyErrorToClipboard() {
-        val error = selectedBaseUrl?.let { connectionErrors[it] } ?: return
+        val baseUrl = selectedBaseUrl ?: return
+        val details = connectionDetails[baseUrl] ?: return
         val text = buildString {
-            appendLine("Server: ${error.baseUrl}")
-            appendLine("Error: ${error.message}")
+            appendLine("Server: $baseUrl")
+            appendLine("Error: ${details.error}")
             appendLine()
             appendLine("Stack trace:")
-            append(error.getStackTraceString().ifEmpty { "No stack trace available" })
+            append(details.getStackTraceString().ifEmpty { "No stack trace available" })
         }
         copyToClipboard(requireContext(), "connection error", text)
     }

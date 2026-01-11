@@ -253,9 +253,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             SubscriberServiceManager.refresh(this)
         }
 
-        // Observe connection errors and update menu item visibility
-        repository.getConnectionErrorsLiveData().observe(this) { errors ->
-            showHideConnectionErrorMenuItem(errors)
+        // Observe connection details and update menu item visibility
+        repository.getConnectionDetailsLiveData().observe(this) { details ->
+            showHideConnectionErrorMenuItem(details)
         }
 
         // Battery banner
@@ -375,7 +375,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     override fun onResume() {
         super.onResume()
         showHideNotificationMenuItems()
-        showHideConnectionErrorMenuItem(repository.getConnectionErrors())
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
         redrawList()
     }
 
@@ -493,7 +493,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         
         showHideNotificationMenuItems()
-        showHideConnectionErrorMenuItem(repository.getConnectionErrors())
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
         checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true
     }
@@ -557,13 +557,14 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
     }
 
-    private fun showHideConnectionErrorMenuItem(errors: Map<String, io.heckel.ntfy.db.ConnectionError>) {
+    private fun showHideConnectionErrorMenuItem(details: Map<String, io.heckel.ntfy.db.ConnectionDetails>) {
         if (!this::menu.isInitialized) {
             return
         }
         runOnUiThread {
             val connectionErrorItem = menu.findItem(R.id.main_menu_connection_error)
-            connectionErrorItem?.isVisible = errors.isNotEmpty()
+            val hasErrors = details.values.any { it.hasError() }
+            connectionErrorItem?.isVisible = hasErrors
         }
     }
 

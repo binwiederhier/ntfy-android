@@ -92,7 +92,7 @@ class MainAdapter(
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
             }
-            if (subscription.instant && subscription.state == ConnectionState.CONNECTING) {
+            if (subscription.instant && subscription.connectionDetails.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
             val date = Date(subscription.lastActive * 1000)
@@ -120,7 +120,7 @@ class MainAdapter(
             statusView.text = statusMessage
             dateView.text = dateText
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
-            val showConnectionError = subscription.instant && subscription.state == ConnectionState.CONNECTING
+            val showConnectionError = subscription.instant && subscription.connectionDetails.hasError()
             connectionErrorImageView.visibility = if (showConnectionError) View.VISIBLE else View.GONE
             notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
             notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE

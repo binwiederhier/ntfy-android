@@ -262,9 +262,9 @@ class SubscriberService : Service() {
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, ::onConnectionError, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, ::onConnectionError, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -305,22 +305,12 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
-        repository.updateState(subscriptionIds, state)
-        // Clear connection error when successfully connected
-        if (state == ConnectionState.CONNECTED) {
-            subscriptionIds.firstOrNull()?.let { subscriptionId ->
-                val subscription = repository.getSubscription(subscriptionId)
-                if (subscription != null) {
-                    repository.clearConnectionError(subscription.baseUrl)
-                }
-            }
-        }
-    }
-
-    private fun onConnectionError(baseUrl: String, throwable: Throwable, nextRetryTime: Long) {
-        val message = throwable.message ?: "Unknown error"
-        repository.updateConnectionError(baseUrl, message, throwable, nextRetryTime)
+    private fun onConnectionDetailsChanged(subscriptionIds: Collection<Long>, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
+        val subscriptionId = subscriptionIds.firstOrNull() ?: return
+        val subscription = repository.getSubscription(subscriptionId) ?: return
+        val baseUrl = subscription.baseUrl
+        val errorMessage = throwable?.message
+        repository.updateConnectionDetails(baseUrl, state, errorMessage, throwable, nextRetryTime)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {

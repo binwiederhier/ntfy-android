@@ -15,9 +15,8 @@ class JsonConnection(
     private val api: ApiService,
     private val user: User?,
     private val sinceId: String?,
-    private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
+    private val connectionDetailsListener: (Collection<Long>, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
-    private val errorListener: (String, Throwable, Long) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
@@ -51,9 +50,6 @@ class JsonConnection(
                 val fail = { e: Exception ->
                     failed.set(true)
                     lastError = e
-                    if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
-                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
-                    }
                 }
 
                 // Call /json subscribe endpoint and loop until the call fails, is canceled,
@@ -61,23 +57,20 @@ class JsonConnection(
                 try {
                     call = api.subscribe(baseUrl, topicsStr, since, user, notify, fail)
                     while (!failed.get() && !call.isCanceled() && isActive && serviceActive()) {
-                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
+                        connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTED, null, 0L)
                         Log.d(TAG,"[$url] Connection is active (failed=$failed, callCanceled=${call.isCanceled()}, jobActive=$isActive, serviceStarted=${serviceActive()}")
                         delay(CONNECTION_LOOP_DELAY_MILLIS) // Resumes immediately if job is cancelled
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
                     lastError = e
-                    if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
-                        stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
-                    }
                 }
 
                 // If we're not cancelled yet, wait little before retrying (incremental back-off)
-                if (isActive && serviceActive()) {
+                if (isActive && serviceActive() && lastError != null) {
                     retryMillis = nextRetryMillis(retryMillis, startTime)
                     val nextRetryTime = System.currentTimeMillis() + retryMillis
-                    lastError?.let { errorListener(baseUrl, it, nextRetryTime) }
+                    connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, lastError, nextRetryTime)
                     Log.d(TAG, "[$url] Connection failed, retrying connection in ${retryMillis / 1000}s ...")
                     delay(retryMillis)
                 }

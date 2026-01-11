@@ -28,7 +28,7 @@ data class Subscription(
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
-    @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
+    @Ignore val connectionDetails: ConnectionDetails = ConnectionDetails()
 ) {
     constructor(
         id: Long,
@@ -64,7 +64,7 @@ data class Subscription(
                 totalCount = 0,
                 newCount = 0,
                 lastActive = 0,
-                state = ConnectionState.NOT_APPLICABLE
+                connectionDetails = ConnectionDetails()
             )
 }
 
@@ -73,18 +73,21 @@ enum class ConnectionState {
 }
 
 /**
- * Represents a connection error for a specific baseUrl.
+ * Represents connection details for a specific baseUrl, including state and error info.
  * This is not persisted to the database, but kept in memory.
  */
-data class ConnectionError(
-    val baseUrl: String,
-    val message: String,
-    val throwable: Throwable?,
-    val timestamp: Long = System.currentTimeMillis(),
+data class ConnectionDetails(
+    val state: ConnectionState = ConnectionState.NOT_APPLICABLE,
+    val error: String? = null,
+    val throwable: Throwable? = null,
     val nextRetryTime: Long = 0L
 ) {
     fun getStackTraceString(): String {
         return throwable?.stackTraceToString() ?: ""
+    }
+    
+    fun hasError(): Boolean {
+        return error != null
     }
 }
 

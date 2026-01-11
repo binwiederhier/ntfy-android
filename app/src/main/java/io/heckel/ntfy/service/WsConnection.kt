@@ -40,9 +40,8 @@ class WsConnection(
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
-    private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
+    private val connectionDetailsListener: (Collection<Long>, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
-    private val errorListener: (String, Throwable, Long) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
@@ -143,7 +142,7 @@ class WsConnection(
                 if (errorCount > 0) {
                     errorCount = 0
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
+                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTED, null, 0L)
             }
         }
 
@@ -183,12 +182,11 @@ class WsConnection(
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection marked as closed. Not retrying.")
                     return@synchronize
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                 state = State.Disconnected
                 errorCount++
                 val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
                 val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
-                errorListener(baseUrl, t, nextRetryTime)
+                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, t, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }

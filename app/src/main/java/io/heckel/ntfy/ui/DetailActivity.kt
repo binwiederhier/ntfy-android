@@ -361,9 +361,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             SubscriberServiceManager.refresh(this)
         }
 
-        // Observe connection errors and update menu item visibility
-        repository.getConnectionErrorsLiveData().observe(this) { errors ->
-            showHideConnectionErrorMenuItem(errors)
+        // Observe connection details and update menu item visibility
+        repository.getConnectionDetailsLiveData().observe(this) { details ->
+            showHideConnectionErrorMenuItem(details)
         }
 
         // Mark this subscription as "open" so we don't receive notifications for it
@@ -513,7 +513,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
             showHideCopyMenuItems(subscription.baseUrl)
-            showHideConnectionErrorMenuItem(repository.getConnectionErrors())
+            showHideConnectionErrorMenuItem(repository.getConnectionDetails())
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -556,7 +556,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
         showHideCopyMenuItems(subscriptionBaseUrl)
-        showHideConnectionErrorMenuItem(repository.getConnectionErrors())
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -817,14 +817,15 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
     }
 
-    private fun showHideConnectionErrorMenuItem(errors: Map<String, io.heckel.ntfy.db.ConnectionError>) {
+    private fun showHideConnectionErrorMenuItem(details: Map<String, io.heckel.ntfy.db.ConnectionDetails>) {
         if (!this::menu.isInitialized) {
             return
         }
         runOnUiThread {
             val connectionErrorItem = menu.findItem(R.id.detail_menu_connection_error)
             // Only show if there's an error for this subscription's base URL
-            connectionErrorItem?.isVisible = errors.containsKey(subscriptionBaseUrl)
+            val hasError = details[subscriptionBaseUrl]?.hasError() == true
+            connectionErrorItem?.isVisible = hasError
         }
     }
 
