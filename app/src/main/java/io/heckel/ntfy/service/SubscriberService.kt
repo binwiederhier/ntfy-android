@@ -262,9 +262,9 @@ class SubscriberService : Service() {
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, ::onConnectionError, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, ::onConnectionError, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -307,6 +307,20 @@ class SubscriberService : Service() {
 
     private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
         repository.updateState(subscriptionIds, state)
+        // Clear connection error when successfully connected
+        if (state == ConnectionState.CONNECTED) {
+            subscriptionIds.firstOrNull()?.let { subscriptionId ->
+                val subscription = repository.getSubscription(subscriptionId)
+                if (subscription != null) {
+                    repository.clearConnectionError(subscription.baseUrl)
+                }
+            }
+        }
+    }
+
+    private fun onConnectionError(baseUrl: String, throwable: Throwable) {
+        val message = throwable.message ?: "Unknown error"
+        repository.updateConnectionError(baseUrl, message, throwable)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {

@@ -17,6 +17,7 @@ class JsonConnection(
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
+    private val errorListener: (String, Throwable) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
@@ -46,10 +47,11 @@ class JsonConnection(
                     notificationListener(subscription, notificationWithSubscriptionId)
                 }
                 val failed = AtomicBoolean(false)
-                val fail = { _: Exception ->
+                val fail = { e: Exception ->
                     failed.set(true)
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
+                        errorListener(baseUrl, e)
                     }
                 }
 
@@ -66,6 +68,7 @@ class JsonConnection(
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
+                        errorListener(baseUrl, e)
                     }
                 }
 

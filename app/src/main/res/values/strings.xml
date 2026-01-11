@@ -60,6 +60,7 @@
     <string name="main_menu_report_bug_title">Report a bug</string>
     <string name="main_menu_docs_title">Read the docs</string>
     <string name="main_menu_rate_title">Rate the app ⭐</string>
+    <string name="main_menu_connection_error">Connection error</string>
 
     <!-- Main activity: Action mode -->
     <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
@@ -287,6 +288,15 @@
     <string name="notification_dialog_8h">8 hours</string>
     <string name="notification_dialog_tomorrow">Until tomorrow</string>
     <string name="notification_dialog_forever">Until resumed</string>
+
+    <!-- Connection error dialog -->
+    <string name="connection_error_dialog_title">Connection Error</string>
+    <string name="connection_error_dialog_message">There was a problem connecting to the server. The app will keep trying to reconnect.</string>
+    <string name="connection_error_dialog_show_details">Show details</string>
+    <string name="connection_error_dialog_hide_details">Hide details</string>
+    <string name="connection_error_dialog_no_stack_trace">No additional details available</string>
+    <string name="connection_error_dialog_no_error">No error</string>
+    <string name="connection_error_dialog_dismiss">Dismiss</string>
 
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>

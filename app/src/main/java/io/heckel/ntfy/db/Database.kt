@@ -72,6 +72,21 @@ enum class ConnectionState {
     NOT_APPLICABLE, CONNECTING, CONNECTED
 }
 
+/**
+ * Represents a connection error for a specific baseUrl.
+ * This is not persisted to the database, but kept in memory.
+ */
+data class ConnectionError(
+    val baseUrl: String,
+    val message: String,
+    val throwable: Throwable?,
+    val timestamp: Long = System.currentTimeMillis()
+) {
+    fun getStackTraceString(): String {
+        return throwable?.stackTraceToString() ?: ""
+    }
+}
+
 data class SubscriptionWithMetadata(
     val id: Long,
     val baseUrl: String,

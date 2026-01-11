@@ -28,6 +28,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
     private val connectionStatesLiveData = MutableLiveData(connectionStates)
 
+    private val connectionErrors = ConcurrentHashMap<String, ConnectionError>()
+    private val connectionErrorsLiveData = MutableLiveData<Map<String, ConnectionError>>(emptyMap())
+
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
     val mediaPlayer = MediaPlayer()
@@ -567,6 +570,36 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     private fun getState(subscriptionId: Long): ConnectionState {
         return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+    }
+
+    fun getConnectionErrorsLiveData(): LiveData<Map<String, ConnectionError>> {
+        return connectionErrorsLiveData
+    }
+
+    fun getConnectionErrors(): Map<String, ConnectionError> {
+        return connectionErrors.toMap()
+    }
+
+    fun updateConnectionError(baseUrl: String, message: String, throwable: Throwable?) {
+        val error = ConnectionError(baseUrl, message, throwable)
+        connectionErrors[baseUrl] = error
+        connectionErrorsLiveData.postValue(connectionErrors.toMap())
+        Log.d(TAG, "Connection error updated for $baseUrl: $message")
+    }
+
+    fun clearConnectionError(baseUrl: String) {
+        if (connectionErrors.remove(baseUrl) != null) {
+            connectionErrorsLiveData.postValue(connectionErrors.toMap())
+            Log.d(TAG, "Connection error cleared for $baseUrl")
+        }
+    }
+
+    fun clearAllConnectionErrors() {
+        if (connectionErrors.isNotEmpty()) {
+            connectionErrors.clear()
+            connectionErrorsLiveData.postValue(emptyMap())
+            Log.d(TAG, "All connection errors cleared")
+        }
     }
 
     companion object {
