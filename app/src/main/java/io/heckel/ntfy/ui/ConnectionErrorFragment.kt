@@ -164,7 +164,7 @@ class ConnectionErrorFragment : DialogFragment() {
     private fun updateErrorDisplay() {
         val details = selectedBaseUrl?.let { connectionDetails[it] }
         if (details != null && details.hasError()) {
-            errorTextView.text = details.error
+            errorTextView.text = details.error?.message ?: getString(R.string.connection_error_dialog_no_error)
             stackTraceTextView.text = details.getStackTraceString().ifEmpty { 
                 getString(R.string.connection_error_dialog_no_stack_trace)
             }
@@ -202,7 +202,7 @@ class ConnectionErrorFragment : DialogFragment() {
         val details = connectionDetails[baseUrl] ?: return
         val text = buildString {
             appendLine("Server: $baseUrl")
-            appendLine("Error: ${details.error}")
+            appendLine("Error: ${details.error?.message ?: "Unknown error"}")
             appendLine()
             appendLine("Stack trace:")
             append(details.getStackTraceString().ifEmpty { "No stack trace available" })

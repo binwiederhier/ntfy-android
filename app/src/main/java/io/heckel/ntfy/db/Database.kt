@@ -78,12 +78,11 @@ enum class ConnectionState {
  */
 data class ConnectionDetails(
     val state: ConnectionState = ConnectionState.NOT_APPLICABLE,
-    val error: String? = null,
-    val throwable: Throwable? = null,
+    val error: Throwable? = null,
     val nextRetryTime: Long = 0L
 ) {
     fun getStackTraceString(): String {
-        return throwable?.stackTraceToString() ?: ""
+        return error?.stackTraceToString() ?: ""
     }
     
     fun hasError(): Boolean {

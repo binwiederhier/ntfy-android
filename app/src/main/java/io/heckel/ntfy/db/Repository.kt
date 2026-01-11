@@ -546,8 +546,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         )
     }
 
-    fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: String? = null, throwable: Throwable? = null, nextRetryTime: Long = 0L) {
-        val details = ConnectionDetails(state, error, throwable, nextRetryTime)
+    fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: Throwable? = null, nextRetryTime: Long = 0L) {
+        val details = ConnectionDetails(state, error, nextRetryTime)
         val current = connectionDetails[baseUrl]
         if (current != details) {
             if (state == ConnectionState.NOT_APPLICABLE && error == null) {
@@ -556,7 +556,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
                 connectionDetails[baseUrl] = details
             }
             connectionDetailsLiveData.postValue(connectionDetails.toMap())
-            Log.d(TAG, "Connection details updated for $baseUrl: state=$state, error=$error, nextRetry=$nextRetryTime")
+            Log.d(TAG, "Connection details updated for $baseUrl: state=$state, error=${error?.message}, nextRetry=$nextRetryTime")
         }
     }
 

@@ -309,8 +309,7 @@ class SubscriberService : Service() {
         val subscriptionId = subscriptionIds.firstOrNull() ?: return
         val subscription = repository.getSubscription(subscriptionId) ?: return
         val baseUrl = subscription.baseUrl
-        val errorMessage = throwable?.message
-        repository.updateConnectionDetails(baseUrl, state, errorMessage, throwable, nextRetryTime)
+        repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
