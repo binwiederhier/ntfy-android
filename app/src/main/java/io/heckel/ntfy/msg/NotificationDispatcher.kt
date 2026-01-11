@@ -72,7 +72,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
     }
     private fun shouldDownloadIcon(notification: Notification): Boolean {
-        return notification.icon != null
+        return notification.icon?.hasValidUrl() == true
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {

@@ -5,3 +5,4 @@ Maintenance + bug fixes:
 * Use server-specific user for attachment downloads (#1529, thanks to @ManInDark for reporting)
 * Fix crash in sharing dialog (thanks to @rogeliodh)
 * Fix crash when exiting multi-delete in detail view
+* Fix potential crashes with icon downloader and backuper

@@ -115,11 +115,12 @@ class SubscriberService : Service() {
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
+        val notification = serviceNotification ?: return
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                startForeground(NOTIFICATION_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
             } else {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+                startForeground(NOTIFICATION_SERVICE_ID, notification)
             }
         } catch (e: Exception) {
             // On Android 12+, starting a foreground service from the background is restricted.

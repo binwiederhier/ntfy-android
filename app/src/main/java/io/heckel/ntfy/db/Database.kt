@@ -137,11 +137,13 @@ const val ATTACHMENT_PROGRESS_DONE = 100
 
 @Entity
 data class Icon(
-    @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
+    @ColumnInfo(name = "url") val url: String?, // URL (nullable to handle corrupt data from backup restore)
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
 ) {
-    @Ignore constructor(url:String) :
+    @Ignore constructor(url: String) :
             this(url, null)
+
+    fun hasValidUrl(): Boolean = !url.isNullOrEmpty()
 }
 
 @Entity
@@ -222,7 +224,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(
-    version = 16,
+    version = 17,
     entities = [
         Subscription::class,
         Notification::class,
@@ -266,6 +268,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_13_14)
                     .addMigrations(MIGRATION_14_15)
                     .addMigrations(MIGRATION_15_16)
+                    .addMigrations(MIGRATION_16_17)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -388,6 +391,15 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
                 db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
+            }
+        }
+
+        // Fix corrupt icon data where icon_url is NULL but icon_contentUri is not NULL
+        // This caused IllegalStateException in CursorWindow.nativeGetString when Room tried to
+        // construct an Icon object with a null URL (Icon.url is non-nullable in Kotlin)
+        private val MIGRATION_16_17 = object : Migration(16, 17) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("UPDATE Notification SET icon_contentUri = NULL WHERE icon_url IS NULL AND icon_contentUri IS NOT NULL")
             }
         }
     }
