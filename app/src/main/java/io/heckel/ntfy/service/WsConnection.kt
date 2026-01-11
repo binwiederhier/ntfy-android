@@ -42,7 +42,7 @@ class WsConnection(
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
-    private val errorListener: (String, Throwable) -> Unit,
+    private val errorListener: (String, Throwable, Long) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
@@ -184,10 +184,11 @@ class WsConnection(
                     return@synchronize
                 }
                 stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
-                errorListener(baseUrl, t)
                 state = State.Disconnected
                 errorCount++
                 val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
+                val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
+                errorListener(baseUrl, t, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }

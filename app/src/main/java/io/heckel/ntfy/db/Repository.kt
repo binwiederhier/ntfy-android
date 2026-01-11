@@ -580,11 +580,11 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return connectionErrors.toMap()
     }
 
-    fun updateConnectionError(baseUrl: String, message: String, throwable: Throwable?) {
-        val error = ConnectionError(baseUrl, message, throwable)
+    fun updateConnectionError(baseUrl: String, message: String, throwable: Throwable?, nextRetryTime: Long = 0L) {
+        val error = ConnectionError(baseUrl, message, throwable, System.currentTimeMillis(), nextRetryTime)
         connectionErrors[baseUrl] = error
         connectionErrorsLiveData.postValue(connectionErrors.toMap())
-        Log.d(TAG, "Connection error updated for $baseUrl: $message")
+        Log.d(TAG, "Connection error updated for $baseUrl: $message (next retry at $nextRetryTime)")
     }
 
     fun clearConnectionError(baseUrl: String) {

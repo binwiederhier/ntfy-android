@@ -298,6 +298,9 @@
     <string name="connection_error_dialog_no_stack_trace">No additional details available</string>
     <string name="connection_error_dialog_no_error">No error</string>
     <string name="connection_error_dialog_copy">Copy</string>
+    <string name="connection_error_dialog_retry_now">Retry now</string>
+    <string name="connection_error_dialog_retry_countdown">Retrying in %1$ds…</string>
+    <string name="connection_error_dialog_retrying">Retrying…</string>
 
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>

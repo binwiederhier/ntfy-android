@@ -17,7 +17,7 @@ class JsonConnection(
     private val sinceId: String?,
     private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
-    private val errorListener: (String, Throwable) -> Unit,
+    private val errorListener: (String, Throwable, Long) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
@@ -47,11 +47,12 @@ class JsonConnection(
                     notificationListener(subscription, notificationWithSubscriptionId)
                 }
                 val failed = AtomicBoolean(false)
+                var lastError: Exception? = null
                 val fail = { e: Exception ->
                     failed.set(true)
+                    lastError = e
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
-                        errorListener(baseUrl, e)
                     }
                 }
 
@@ -66,15 +67,17 @@ class JsonConnection(
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
+                    lastError = e
                     if (isActive && serviceActive()) { // Avoid UI update races if we're restarting a connection
                         stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
-                        errorListener(baseUrl, e)
                     }
                 }
 
                 // If we're not cancelled yet, wait little before retrying (incremental back-off)
                 if (isActive && serviceActive()) {
                     retryMillis = nextRetryMillis(retryMillis, startTime)
+                    val nextRetryTime = System.currentTimeMillis() + retryMillis
+                    lastError?.let { errorListener(baseUrl, it, nextRetryTime) }
                     Log.d(TAG, "[$url] Connection failed, retrying connection in ${retryMillis / 1000}s ...")
                     delay(retryMillis)
                 }

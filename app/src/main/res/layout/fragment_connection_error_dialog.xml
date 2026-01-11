@@ -99,6 +99,33 @@
                 app:layout_constraintStart_toEndOf="@id/connection_error_dialog_error_icon"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_server_layout" />
 
+            <!-- Countdown text -->
+            <TextView
+                android:id="@+id/connection_error_dialog_countdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="?android:attr/textColorSecondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_error_text" />
+
+            <!-- Retry now chip (left aligned) -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/connection_error_dialog_retry_chip"
+                style="@style/Widget.Material3.Chip.Assist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/connection_error_dialog_retry_now"
+                app:chipBackgroundColor="@color/chip_background_state"
+                app:chipStrokeWidth="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
+
             <!-- Details chip (right aligned) -->
             <com.google.android.material.chip.Chip
                 android:id="@+id/connection_error_dialog_details_chip"
@@ -111,7 +138,7 @@
                 app:chipStrokeWidth="0dp"
                 app:checkedIconVisible="false"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_error_text" />
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
 
             <!-- Stack trace (scrollable horizontally, no word wrap) -->
             <HorizontalScrollView
@@ -123,7 +150,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_details_chip">
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_retry_chip">
 
                 <ScrollView
                     android:layout_width="wrap_content"

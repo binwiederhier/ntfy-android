@@ -318,9 +318,9 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun onConnectionError(baseUrl: String, throwable: Throwable) {
+    private fun onConnectionError(baseUrl: String, throwable: Throwable, nextRetryTime: Long) {
         val message = throwable.message ?: "Unknown error"
-        repository.updateConnectionError(baseUrl, message, throwable)
+        repository.updateConnectionError(baseUrl, message, throwable, nextRetryTime)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {

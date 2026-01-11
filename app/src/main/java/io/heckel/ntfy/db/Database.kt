@@ -80,7 +80,8 @@ data class ConnectionError(
     val baseUrl: String,
     val message: String,
     val throwable: Throwable?,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val nextRetryTime: Long = 0L
 ) {
     fun getStackTraceString(): String {
         return throwable?.stackTraceToString() ?: ""

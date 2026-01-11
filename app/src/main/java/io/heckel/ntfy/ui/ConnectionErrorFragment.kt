@@ -3,6 +3,8 @@ package io.heckel.ntfy.ui
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -17,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.ConnectionError
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.copyToClipboard
 
 class ConnectionErrorFragment : DialogFragment() {
@@ -29,9 +32,19 @@ class ConnectionErrorFragment : DialogFragment() {
     private lateinit var serverLayout: TextInputLayout
     private lateinit var serverDropdown: AutoCompleteTextView
     private lateinit var errorTextView: TextView
+    private lateinit var countdownTextView: TextView
+    private lateinit var retryChip: Chip
     private lateinit var detailsChip: Chip
     private lateinit var detailsScrollView: HorizontalScrollView
     private lateinit var stackTraceTextView: TextView
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val countdownRunnable = object : Runnable {
+        override fun run() {
+            updateCountdown()
+            handler.postDelayed(this, 1000)
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity == null) {
@@ -77,6 +90,8 @@ class ConnectionErrorFragment : DialogFragment() {
         serverLayout = view.findViewById(R.id.connection_error_dialog_server_layout)
         serverDropdown = view.findViewById(R.id.connection_error_dialog_server_dropdown)
         errorTextView = view.findViewById(R.id.connection_error_dialog_error_text)
+        countdownTextView = view.findViewById(R.id.connection_error_dialog_countdown)
+        retryChip = view.findViewById(R.id.connection_error_dialog_retry_chip)
         detailsChip = view.findViewById(R.id.connection_error_dialog_details_chip)
         detailsScrollView = view.findViewById(R.id.connection_error_dialog_details_scroll)
         stackTraceTextView = view.findViewById(R.id.connection_error_dialog_stack_trace)
@@ -105,6 +120,22 @@ class ConnectionErrorFragment : DialogFragment() {
             updateDetailsVisibility(isChecked)
         }
 
+        // Retry now button
+        retryChip.setOnClickListener {
+            SubscriberServiceManager.refresh(requireContext())
+            dismiss()
+        }
+
+        // Observe connection errors to update countdown when it changes
+        repository.getConnectionErrorsLiveData().observe(this) { errors ->
+            connectionErrors = if (filterBaseUrl != null) {
+                errors.filterKeys { it == filterBaseUrl }
+            } else {
+                errors
+            }
+            updateErrorDisplay()
+        }
+
         // Build dialog
         val dialog = Dialog(requireContext(), R.style.Theme_App_FullScreenDialog)
         dialog.setContentView(view)
@@ -120,6 +151,14 @@ class ConnectionErrorFragment : DialogFragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
+        // Start countdown timer
+        handler.post(countdownRunnable)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Stop countdown timer
+        handler.removeCallbacks(countdownRunnable)
     }
 
     private fun updateErrorDisplay() {
@@ -134,6 +173,24 @@ class ConnectionErrorFragment : DialogFragment() {
             stackTraceTextView.text = ""
         }
         updateDetailsVisibility(detailsChip.isChecked)
+        updateCountdown()
+    }
+
+    private fun updateCountdown() {
+        val error = selectedBaseUrl?.let { connectionErrors[it] }
+        if (error != null && error.nextRetryTime > 0) {
+            val remainingMillis = error.nextRetryTime - System.currentTimeMillis()
+            if (remainingMillis > 0) {
+                val remainingSeconds = (remainingMillis / 1000).toInt()
+                countdownTextView.text = getString(R.string.connection_error_dialog_retry_countdown, remainingSeconds)
+                countdownTextView.visibility = View.VISIBLE
+            } else {
+                countdownTextView.text = getString(R.string.connection_error_dialog_retrying)
+                countdownTextView.visibility = View.VISIBLE
+            }
+        } else {
+            countdownTextView.visibility = View.GONE
+        }
     }
 
     private fun updateDetailsVisibility(visible: Boolean) {
