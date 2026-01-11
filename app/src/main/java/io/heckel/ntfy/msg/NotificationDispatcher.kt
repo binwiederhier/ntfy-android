@@ -4,10 +4,9 @@ import android.content.Context
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.decodeBytesMessage
-import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.util.safeLet
 
 /**
@@ -83,9 +82,6 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
-        if (notification.deleted) {
-            return false
-        }
         if (subscription.upAppId != null) {
             return false
         }
