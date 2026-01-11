@@ -943,7 +943,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
     private fun finishActionMode() {
-        actionMode!!.finish()
+        actionMode?.finish()
         endActionModeAndRedraw()
     }
 
