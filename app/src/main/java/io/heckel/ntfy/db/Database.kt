@@ -88,6 +88,19 @@ data class ConnectionDetails(
     fun hasError(): Boolean {
         return error != null
     }
+    
+    fun isConnectionRefused(): Boolean {
+        return hasCauseOfType<java.net.ConnectException>()
+    }
+    
+    private inline fun <reified T : Throwable> hasCauseOfType(): Boolean {
+        var current: Throwable? = error
+        while (current != null) {
+            if (current is T) return true
+            current = current.cause
+        }
+        return false
+    }
 }
 
 data class SubscriptionWithMetadata(

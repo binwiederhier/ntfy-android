@@ -41,19 +41,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="16dp">
 
-            <!-- Description text (left aligned like UserFragment) -->
-            <TextView
-                android:id="@+id/connection_error_dialog_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:paddingTop="16dp"
-                android:text="@string/connection_error_dialog_message"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <!-- Server dropdown (Material 3 style, only visible when multiple servers have errors) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/connection_error_dialog_server_layout"
@@ -65,7 +52,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_description">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <AutoCompleteTextView
                     android:id="@+id/connection_error_dialog_server_dropdown"
@@ -76,27 +63,16 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Error icon -->
-            <ImageView
-                android:id="@+id/connection_error_dialog_error_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="16dp"
-                app:srcCompat="@drawable/ic_error_red_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_server_layout" />
-
-            <!-- Error message text (red, like AddFragment) -->
+            <!-- Description text (left aligned like UserFragment) -->
             <TextView
-                android:id="@+id/connection_error_dialog_error_text"
-                android:layout_width="0dp"
+                android:id="@+id/connection_error_dialog_description"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
-                android:textAppearance="@style/DangerText"
+                android:paddingTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/connection_error_dialog_error_icon"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_server_layout" />
 
             <!-- Countdown text -->
@@ -104,40 +80,36 @@
                 android:id="@+id/connection_error_dialog_countdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_error_text" />
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_description" />
 
-            <!-- Retry now chip (left aligned) -->
-            <com.google.android.material.chip.Chip
-                android:id="@+id/connection_error_dialog_retry_chip"
-                style="@style/Widget.Material3.Chip.Assist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/connection_error_dialog_retry_now"
-                app:chipBackgroundColor="@color/chip_background_state"
-                app:chipStrokeWidth="0dp"
+            <!-- Error icon -->
+            <ImageView
+                android:id="@+id/connection_error_dialog_error_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                app:srcCompat="@drawable/ic_error_red_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
 
-            <!-- Details chip (right aligned) -->
-            <com.google.android.material.chip.Chip
-                android:id="@+id/connection_error_dialog_details_chip"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
+            <!-- Error message text (red, like AddFragment) -->
+            <TextView
+                android:id="@+id/connection_error_dialog_error_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/connection_error_dialog_details"
-                app:chipBackgroundColor="@color/chip_background_state"
-                app:chipStrokeWidth="0dp"
-                app:checkedIconVisible="false"
+                android:layout_marginTop="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textAppearance="@style/DangerText"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/connection_error_dialog_error_icon"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
 
             <!-- Stack trace (scrollable horizontally, no word wrap) -->
@@ -145,12 +117,12 @@
                 android:id="@+id/connection_error_dialog_details_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:fillViewport="true"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_retry_chip">
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_error_text">
 
                 <ScrollView
                     android:layout_width="wrap_content"

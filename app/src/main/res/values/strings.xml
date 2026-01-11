@@ -297,6 +297,7 @@
     <string name="connection_error_dialog_details">Details</string>
     <string name="connection_error_dialog_no_stack_trace">No additional details available</string>
     <string name="connection_error_dialog_no_error">No error</string>
+    <string name="connection_error_dialog_connection_refused">Connection refused. The server may be down or the address may be incorrect.</string>
     <string name="connection_error_dialog_copy">Copy</string>
     <string name="connection_error_dialog_retry_now">Retry now</string>
     <string name="connection_error_dialog_retry_countdown">Retrying in %1$ds…</string>

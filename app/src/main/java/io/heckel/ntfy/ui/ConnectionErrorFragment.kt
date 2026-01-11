@@ -13,7 +13,6 @@ import android.widget.HorizontalScrollView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textfield.TextInputLayout
 import io.heckel.ntfy.R
@@ -31,10 +30,9 @@ class ConnectionErrorFragment : DialogFragment() {
     private lateinit var toolbar: MaterialToolbar
     private lateinit var serverLayout: TextInputLayout
     private lateinit var serverDropdown: AutoCompleteTextView
+    private lateinit var descriptionTextView: TextView
     private lateinit var errorTextView: TextView
     private lateinit var countdownTextView: TextView
-    private lateinit var retryChip: Chip
-    private lateinit var detailsChip: Chip
     private lateinit var detailsScrollView: HorizontalScrollView
     private lateinit var stackTraceTextView: TextView
 
@@ -73,6 +71,11 @@ class ConnectionErrorFragment : DialogFragment() {
         toolbar.setNavigationOnClickListener { dismiss() }
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.connection_error_dialog_action_retry -> {
+                    SubscriberServiceManager.refresh(requireContext())
+                    dismiss()
+                    true
+                }
                 R.id.connection_error_dialog_action_copy -> {
                     copyErrorToClipboard()
                     true
@@ -83,16 +86,15 @@ class ConnectionErrorFragment : DialogFragment() {
 
         // Tint menu icons to match toolbar text color
         val iconColor = MaterialColors.getColor(requireContext(), R.attr.colorOnSurface, Color.BLACK)
-        val copyMenuItem = toolbar.menu.findItem(R.id.connection_error_dialog_action_copy)
-        copyMenuItem?.icon?.setTint(iconColor)
+        toolbar.menu.findItem(R.id.connection_error_dialog_action_retry)?.icon?.setTint(iconColor)
+        toolbar.menu.findItem(R.id.connection_error_dialog_action_copy)?.icon?.setTint(iconColor)
 
         // Get view references
         serverLayout = view.findViewById(R.id.connection_error_dialog_server_layout)
         serverDropdown = view.findViewById(R.id.connection_error_dialog_server_dropdown)
+        descriptionTextView = view.findViewById(R.id.connection_error_dialog_description)
         errorTextView = view.findViewById(R.id.connection_error_dialog_error_text)
         countdownTextView = view.findViewById(R.id.connection_error_dialog_countdown)
-        retryChip = view.findViewById(R.id.connection_error_dialog_retry_chip)
-        detailsChip = view.findViewById(R.id.connection_error_dialog_details_chip)
         detailsScrollView = view.findViewById(R.id.connection_error_dialog_details_scroll)
         stackTraceTextView = view.findViewById(R.id.connection_error_dialog_stack_trace)
 
@@ -114,17 +116,6 @@ class ConnectionErrorFragment : DialogFragment() {
         // Select first error by default
         selectedBaseUrl = baseUrls.firstOrNull()
         updateErrorDisplay()
-
-        // Toggle details visibility using chip checked state
-        detailsChip.setOnCheckedChangeListener { _, isChecked ->
-            updateDetailsVisibility(isChecked)
-        }
-
-        // Retry now button
-        retryChip.setOnClickListener {
-            SubscriberServiceManager.refresh(requireContext())
-            dismiss()
-        }
 
         // Observe connection details to update countdown when it changes
         repository.getConnectionDetailsLiveData().observe(this) { details ->
@@ -162,17 +153,26 @@ class ConnectionErrorFragment : DialogFragment() {
     }
 
     private fun updateErrorDisplay() {
-        val details = selectedBaseUrl?.let { connectionDetails[it] }
+        val baseUrl = selectedBaseUrl ?: return
+        descriptionTextView.text = getString(R.string.connection_error_dialog_message)
+        
+        val details = connectionDetails[baseUrl]
         if (details != null && details.hasError()) {
-            errorTextView.text = details.error?.message ?: getString(R.string.connection_error_dialog_no_error)
-            stackTraceTextView.text = details.getStackTraceString().ifEmpty { 
-                getString(R.string.connection_error_dialog_no_stack_trace)
+            errorTextView.text = when {
+                details.isConnectionRefused() -> getString(R.string.connection_error_dialog_connection_refused)
+                else -> details.error?.message ?: getString(R.string.connection_error_dialog_no_error)
+            }
+            val stackTrace = details.getStackTraceString()
+            if (stackTrace.isNotEmpty()) {
+                stackTraceTextView.text = stackTrace
+                detailsScrollView.visibility = View.VISIBLE
+            } else {
+                detailsScrollView.visibility = View.GONE
             }
         } else {
             errorTextView.text = getString(R.string.connection_error_dialog_no_error)
-            stackTraceTextView.text = ""
+            detailsScrollView.visibility = View.GONE
         }
-        updateDetailsVisibility(detailsChip.isChecked)
         updateCountdown()
     }
 
@@ -191,10 +191,6 @@ class ConnectionErrorFragment : DialogFragment() {
         } else {
             countdownTextView.visibility = View.GONE
         }
-    }
-
-    private fun updateDetailsVisibility(visible: Boolean) {
-        detailsScrollView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     private fun copyErrorToClipboard() {

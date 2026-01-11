@@ -202,7 +202,7 @@ class SubscriberService : Service() {
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
     private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
-        // Group INSTANT subscriptions by base URL, there is only one connection per base URL
+        // Group instant subscriptions by base URL, there is only one connection per base URL
         val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val connectionProtocol = repository.getConnectionProtocol()
