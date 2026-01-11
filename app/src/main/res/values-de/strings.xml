@@ -412,4 +412,6 @@
     <string name="settings_general_message_bar_summary_enabled">Nachrichtenleiste unten in der Themenansicht</string>
     <string name="settings_general_message_bar_summary_disabled">Knopf „Veröffentlichen“ unten in der Themenansicht</string>
     <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="common_button_next">Weiter</string>
+    <string name="common_service_url_placeholder">z.B. https://ntfy.example.com</string>
 </resources>
