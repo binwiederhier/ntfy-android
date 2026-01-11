@@ -292,11 +292,14 @@
     <!-- Connection error dialog -->
     <string name="connection_error_dialog_title">Connection Error</string>
     <string name="connection_error_dialog_message">There was a problem connecting to the server. The app will keep trying to reconnect.</string>
+    <string name="connection_error_dialog_server_label">Server</string>
+    <string name="connection_error_dialog_error_label">Error message</string>
     <string name="connection_error_dialog_show_details">Show details</string>
     <string name="connection_error_dialog_hide_details">Hide details</string>
     <string name="connection_error_dialog_no_stack_trace">No additional details available</string>
     <string name="connection_error_dialog_no_error">No error</string>
-    <string name="connection_error_dialog_dismiss">Dismiss</string>
+    <string name="connection_error_dialog_copy">Copy</string>
+    <string name="connection_error_dialog_copied">Error details copied to clipboard</string>
 
     <!-- Notification popup -->
     <string name="notification_popup_action_open">Open</string>

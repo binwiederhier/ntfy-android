@@ -375,6 +375,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     override fun onResume() {
         super.onResume()
         showHideNotificationMenuItems()
+        showHideConnectionErrorMenuItem(repository.getConnectionErrors())
         redrawList()
     }
 
@@ -492,6 +493,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         
         showHideNotificationMenuItems()
+        showHideConnectionErrorMenuItem(repository.getConnectionErrors())
         checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true
     }
@@ -628,7 +630,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
     private fun onConnectionErrorClick() {
         Log.d(TAG, "Showing connection error dialog")
-        val connectionErrorFragment = ConnectionErrorFragment()
+        val connectionErrorFragment = ConnectionErrorFragment.newInstance()
         connectionErrorFragment.show(supportFragmentManager, ConnectionErrorFragment.TAG)
     }
 

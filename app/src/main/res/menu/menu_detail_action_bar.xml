@@ -27,6 +27,12 @@
         android:title="@string/detail_menu_disable_instant"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/detail_menu_connection_error"
+        android:icon="@drawable/ic_warning_white_24dp"
+        android:title="@string/main_menu_connection_error"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/detail_menu_settings"
         android:title="@string/detail_menu_settings" />
     <item
