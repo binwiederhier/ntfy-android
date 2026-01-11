@@ -36,89 +36,82 @@
         android:paddingHorizontal="?dialogPreferredPadding"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- Server selector (only visible when multiple servers have errors) -->
+            <!-- Description text (left aligned like UserFragment) -->
             <TextView
-                android:id="@+id/connection_error_dialog_server_label"
+                android:id="@+id/connection_error_dialog_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/connection_error_dialog_server_label"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?android:attr/textColorSecondary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:paddingTop="16dp"
-                android:paddingBottom="4dp"
-                android:visibility="gone" />
+                android:text="@string/connection_error_dialog_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/connection_error_dialog_server_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <!-- Warning icon and message -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingTop="24dp"
-                android:paddingBottom="16dp">
-
-                <ImageView
-                    android:id="@+id/connection_error_dialog_icon"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_warning_amber_24dp"
-                    android:contentDescription="@string/connection_error_dialog_title" />
-
-                <TextView
-                    android:id="@+id/connection_error_dialog_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/connection_error_dialog_message"
-                    android:textAlignment="center"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:attr/textColorSecondary" />
-
-            </LinearLayout>
-
-            <!-- Error message -->
-            <TextView
-                android:id="@+id/connection_error_dialog_error_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/connection_error_dialog_error_label"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textStyle="bold"
-                android:paddingTop="8dp"
-                android:paddingBottom="4dp" />
-
-            <TextView
-                android:id="@+id/connection_error_dialog_error_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="?android:attr/textColorPrimary"
-                android:padding="8dp" />
-
-            <!-- Show/Hide details toggle -->
-            <TextView
-                android:id="@+id/connection_error_dialog_show_details"
+            <!-- Server dropdown (Material 3 style, only visible when multiple servers have errors) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/connection_error_dialog_server_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/connection_error_dialog_show_details"
-                android:textColor="?android:attr/colorAccent"
-                android:textStyle="bold"
-                android:padding="8dp"
-                android:background="?android:attr/selectableItemBackground" />
+                android:hint="@string/connection_error_dialog_server_label"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_description">
+
+                <AutoCompleteTextView
+                    android:id="@+id/connection_error_dialog_server_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:editable="false" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Error icon -->
+            <ImageView
+                android:id="@+id/connection_error_dialog_error_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="16dp"
+                app:srcCompat="@drawable/ic_error_red_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_server_layout" />
+
+            <!-- Error message text (red, like AddFragment) -->
+            <TextView
+                android:id="@+id/connection_error_dialog_error_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textAppearance="@style/DangerText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/connection_error_dialog_error_icon"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_server_layout" />
+
+            <!-- Details chip (right aligned) -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/connection_error_dialog_details_chip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/connection_error_dialog_details"
+                app:chipBackgroundColor="@color/chip_background_state"
+                app:chipStrokeWidth="0dp"
+                app:checkedIconVisible="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_error_text" />
 
             <!-- Stack trace (scrollable horizontally, no word wrap) -->
             <HorizontalScrollView
@@ -126,8 +119,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:fillViewport="true"
                 android:visibility="gone"
-                android:fillViewport="true">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_details_chip">
 
                 <ScrollView
                     android:layout_width="wrap_content"
@@ -138,20 +134,20 @@
                         android:id="@+id/connection_error_dialog_stack_trace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="12dp"
                         android:background="?attr/colorSurfaceVariant"
+                        android:fontFamily="monospace"
+                        android:padding="12dp"
+                        android:scrollHorizontally="true"
+                        android:singleLine="false"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
-                        android:fontFamily="monospace"
-                        android:textSize="10sp"
-                        android:scrollHorizontally="true"
-                        android:singleLine="false" />
+                        android:textSize="10sp" />
 
                 </ScrollView>
 
             </HorizontalScrollView>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
