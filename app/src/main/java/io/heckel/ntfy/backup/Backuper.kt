@@ -12,6 +12,7 @@ import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.topicHash
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
 
@@ -121,9 +122,9 @@ class Backuper(val context: Context) {
                 repository.addSubscription(subscription)
 
                 // Subscribe to Firebase topics
-                if (s.baseUrl == appBaseUrl) {
-                    messenger.subscribe(s.topic)
-                }
+                val firebaseTopic = if (s.baseUrl == appBaseUrl) s.topic else topicHash(s.baseUrl, s.topic)
+                Log.d(TAG, "Subscribing to Firebase topic $firebaseTopic")
+                messenger.subscribe(firebaseTopic)
 
                 // Create dedicated channels
                 if (s.dedicatedChannels) {
