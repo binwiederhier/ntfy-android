@@ -197,6 +197,8 @@ class ConnectionErrorFragment : DialogFragment() {
         if (details != null && details.hasError()) {
             errorTextView.text = when {
                 details.isConnectionRefused() -> getString(R.string.connection_error_dialog_connection_refused)
+                details.isWebSocketNotSupported() -> getString(R.string.connection_error_dialog_websocket_not_supported)
+                details.isNotAuthorized() -> getString(R.string.connection_error_dialog_not_authorized)
                 else -> getErrorDisplayText(details.error)
             }
             val stackTrace = details.getStackTraceString()

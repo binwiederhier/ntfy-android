@@ -185,7 +185,17 @@ class WsConnection(
                 errorCount++
                 val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
                 val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
-                val error = if (isConnectionBrokenException(t)) null else t
+                
+                // Special cases:
+                // - Ignore broken connections in the UI, we don't want to show warning icons
+                // - Handle authentication errors
+                // - Handle servers that do not support WebSockets
+                val error = when {
+                    isConnectionBrokenException(t) -> null
+                    isResponseCode(response, 401, 403) -> NotAuthorizedException(response!!.code, response.message, t)
+                    isResponseCode(response, 101) -> WebSocketNotSupportedException(response!!.code, response.message, t)
+                    else -> t
+                }
                 connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }

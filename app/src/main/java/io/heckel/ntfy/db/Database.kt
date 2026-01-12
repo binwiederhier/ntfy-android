@@ -20,9 +20,12 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.heckel.ntfy.service.isConnectionRefused
+import io.heckel.ntfy.service.NotAuthorizedException
+import io.heckel.ntfy.service.WebSocketNotSupportedException
+import io.heckel.ntfy.service.hasCause
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
+import java.net.ConnectException
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -105,7 +108,15 @@ data class ConnectionDetails(
     }
     
     fun isConnectionRefused(): Boolean {
-        return error?.let { isConnectionRefused(it) } ?: false
+        return error?.hasCause<ConnectException>() ?: false
+    }
+    
+    fun isWebSocketNotSupported(): Boolean {
+        return error?.hasCause<WebSocketNotSupportedException>() ?: false
+    }
+
+    fun isNotAuthorized(): Boolean {
+        return error?.hasCause<NotAuthorizedException>() ?: false
     }
 }
 

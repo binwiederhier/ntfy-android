@@ -80,6 +80,7 @@ class JsonConnection(
                     retryMillis = nextRetryMillis(retryMillis, startTime)
                     val nextRetryTime = System.currentTimeMillis() + retryMillis
                     val error = if (isConnectionBrokenException(e)) null else e
+                    // FIXME add NotAuthorizedException
                     connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
                     Log.w(TAG, "[$url] Retrying connection in ${retryMillis / 1000}s ...")
                     delay(retryMillis)

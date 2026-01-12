@@ -293,6 +293,8 @@
     <string name="connection_error_dialog_title">Connection error</string>
     <string name="connection_error_dialog_message">There was a problem connecting to %1$s. The app will keep trying to reconnect in the background.</string>
     <string name="connection_error_dialog_connection_refused">Connection refused. The server may be down or the address may be incorrect.</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket not supported. The server may not support WebSocket connections, or the address may be incorrect.</string>
+    <string name="connection_error_dialog_not_authorized">Not authorized. The server returned a HTTP 401/403 response. Please check if your username and password are correct.</string>
     <string name="connection_error_dialog_copy">Copy</string>
     <string name="connection_error_dialog_retry_now">Retry now</string>
     <string name="connection_error_dialog_retry_countdown">Retrying in %1$ds…</string>
