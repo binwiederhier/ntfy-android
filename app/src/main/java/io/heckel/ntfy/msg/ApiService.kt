@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.util.ALL_PRIORITIES
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
@@ -149,8 +150,13 @@ class ApiService(private val context: Context) {
         val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
         val response = call.execute()
         if (!response.isSuccessful) {
+            val code = response.code
+            val message = response.message
             response.close()
-            throw IOException("Unexpected response ${response.code} when subscribing to $url")
+            if (code == 401 || code == 403) {
+                throw NotAuthorizedException(code, message)
+            }
+            throw IOException("Unexpected response $code when subscribing to $url")
         }
         return Pair(call, response.body.source())
     }

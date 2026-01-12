@@ -75,7 +75,7 @@ class ConnectionErrorFragment : DialogFragment() {
             when (menuItem.itemId) {
                 R.id.connection_error_dialog_action_retry -> {
                     selectedBaseUrl?.let { baseUrl ->
-                        repository.incrementReconnectVersion(baseUrl)
+                        repository.incrementConnectionForceReconnectVersion(baseUrl)
                     }
                     SubscriberServiceManager.refresh(requireContext())
                     true

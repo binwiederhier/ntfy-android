@@ -220,7 +220,7 @@ class SubscriberService : Service() {
                     .hashCode()
                 val trustedCertsHash = repository.getTrustedCertificate(baseUrl)?.hashCode() ?: 0
                 val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
-                val reconnectVersion = repository.getReconnectVersion(baseUrl)
+                val connectionForceReconnectVersion = repository.getConnectionForceReconnectVersion(baseUrl)
                 ConnectionId(
                     baseUrl = baseUrl,
                     topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
@@ -229,7 +229,7 @@ class SubscriberService : Service() {
                     headersHash = headersHash,
                     trustedCertsHash = trustedCertsHash,
                     clientCertHash = clientCertHash,
-                    reconnectVersion = reconnectVersion
+                    connectionForceReconnectVersion = connectionForceReconnectVersion
                 )
             }
             .toSet()

@@ -183,7 +183,7 @@ class WsConnection(
                 }
                 state = State.Disconnected
                 errorCount++
-                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
+                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount-1) ?: RETRY_SECONDS.last()
                 val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
                 
                 // Special cases:

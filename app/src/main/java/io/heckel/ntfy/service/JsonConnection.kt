@@ -37,6 +37,7 @@ class JsonConnection(
     private val parser = NotificationParser()
 
     private var since: String? = sinceId
+    private var errorCount = 0
     private lateinit var call: Call
     private lateinit var job: Job
 
@@ -44,14 +45,15 @@ class JsonConnection(
         job = scope.launch(Dispatchers.IO) {
             Log.d(TAG, "[$url] Starting connection for subscriptions: $topicsToSubscriptionIds")
 
-            var retryMillis = 0L
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
-                val startTime = System.currentTimeMillis()
                 
                 try {
                     val (newCall, source) = api.subscribe(baseUrl, topicsStr, since, user)
                     call = newCall
+                    if (errorCount > 0) {
+                        errorCount = 0
+                    }
                     connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTED, null, 0L)
                     
                     // Blocking read loop: reads JSON lines until connection closes or is cancelled
@@ -68,8 +70,6 @@ class JsonConnection(
                         }
                     }
                     
-                    // Clean disconnect - reset backoff
-                    retryMillis = 0L
                     Log.d(TAG, "[$url] Connection closed cleanly")
                 } catch (e: Exception) {
                     if (!isActive) {
@@ -77,13 +77,13 @@ class JsonConnection(
                         break
                     }
                     Log.d(TAG, "[$url] Connection broken, reconnecting ...")
-                    retryMillis = nextRetryMillis(retryMillis, startTime)
-                    val nextRetryTime = System.currentTimeMillis() + retryMillis
+                    errorCount++
+                    val retrySeconds = RETRY_SECONDS.getOrNull(errorCount-1) ?: RETRY_SECONDS.last()
+                    val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
                     val error = if (isConnectionBrokenException(e)) null else e
-                    // FIXME add NotAuthorizedException
                     connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
-                    Log.w(TAG, "[$url] Retrying connection in ${retryMillis / 1000}s ...")
-                    delay(retryMillis)
+                    Log.w(TAG, "[$url] Retrying connection in ${retrySeconds}s ...")
+                    delay(retrySeconds * 1000L)
                 }
             }
             Log.d(TAG, "[$url] Connection job SHUT DOWN")
@@ -100,20 +100,8 @@ class JsonConnection(
         if (this::call.isInitialized) call.cancel()
     }
 
-    private fun nextRetryMillis(retryMillis: Long, startTime: Long): Long {
-        val connectionDurationMillis = System.currentTimeMillis() - startTime
-        if (connectionDurationMillis > RETRY_RESET_AFTER_MILLIS) {
-            return RETRY_STEP_MILLIS
-        } else if (retryMillis + RETRY_STEP_MILLIS >= RETRY_MAX_MILLIS) {
-            return RETRY_MAX_MILLIS
-        }
-        return retryMillis + RETRY_STEP_MILLIS
-    }
-
     companion object {
         private const val TAG = "NtfyJsonConnection"
-        private const val RETRY_STEP_MILLIS = 5_000L
-        private const val RETRY_MAX_MILLIS = 60_000L
-        private const val RETRY_RESET_AFTER_MILLIS = 60_000L
+        private val RETRY_SECONDS = listOf(5, 10, 15, 20, 30, 45, 60, 120)
     }
 }
