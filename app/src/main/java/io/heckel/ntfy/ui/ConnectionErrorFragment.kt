@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.HorizontalScrollView
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
@@ -20,6 +21,7 @@ import io.heckel.ntfy.db.ConnectionDetails
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.copyToClipboard
+import io.heckel.ntfy.util.shortUrl
 
 class ConnectionErrorFragment : DialogFragment() {
     private lateinit var repository: Repository
@@ -189,7 +191,7 @@ class ConnectionErrorFragment : DialogFragment() {
 
     private fun updateErrorDisplay() {
         val baseUrl = selectedBaseUrl ?: return
-        descriptionTextView.text = getString(R.string.connection_error_dialog_message)
+        descriptionTextView.text = getString(R.string.connection_error_dialog_message, baseUrl)
         
         val details = connectionDetails[baseUrl]
         if (details != null && details.hasError()) {
@@ -205,7 +207,7 @@ class ConnectionErrorFragment : DialogFragment() {
                 detailsScrollView.visibility = View.GONE
             }
         } else {
-            errorTextView.text = getString(R.string.connection_error_dialog_no_error)
+            errorTextView.visibility = View.GONE
             detailsScrollView.visibility = View.GONE
         }
         updateCountdown()
@@ -213,7 +215,7 @@ class ConnectionErrorFragment : DialogFragment() {
 
     private fun getErrorDisplayText(error: Throwable?): String {
         if (error == null) {
-            return getString(R.string.connection_error_dialog_no_error)
+            return "" // This should not happen
         }
         val message = error.message
         if (!message.isNullOrBlank()) {

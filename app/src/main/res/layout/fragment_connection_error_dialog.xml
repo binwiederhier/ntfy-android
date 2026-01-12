@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="@string/connection_error_dialog_server_label"
+                android:hint="@string/common_service_url"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +80,8 @@
                 android:id="@+id/connection_error_dialog_countdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -89,35 +90,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_description" />
 
-            <!-- Error icon -->
-            <ImageView
-                android:id="@+id/connection_error_dialog_error_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/ic_error_red_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
-
-            <!-- Error message text (red, like AddFragment) -->
+            <!-- Error message text (red) -->
             <TextView
                 android:id="@+id/connection_error_dialog_error_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:paddingStart="4dp"
+                android:layout_marginStart="28dp"
+                android:paddingStart="0dp"
                 android:paddingEnd="4dp"
-                android:textAppearance="@style/DangerText"
+                android:textColor="?attr/colorError"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/connection_error_dialog_error_icon"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/connection_error_dialog_countdown" />
+
+            <!-- Error icon (top-aligned with error text) -->
+            <ImageView
+                android:id="@+id/connection_error_dialog_error_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="2dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="0dp"
+                app:srcCompat="@drawable/ic_error_red_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/connection_error_dialog_error_text" />
 
             <!-- Stack trace (scrollable horizontally, no word wrap) -->
             <HorizontalScrollView
                 android:id="@+id/connection_error_dialog_details_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:fillViewport="true"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
