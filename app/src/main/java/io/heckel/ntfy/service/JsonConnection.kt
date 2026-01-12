@@ -71,7 +71,7 @@ class JsonConnection(
                     retryMillis = nextRetryMillis(retryMillis, startTime)
                     val nextRetryTime = System.currentTimeMillis() + retryMillis
                     connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, lastError, nextRetryTime)
-                    Log.d(TAG, "[$url] Connection failed, retrying connection in ${retryMillis / 1000}s ...")
+                    Log.w(TAG, "[$url] Connection failed, retrying connection in ${retryMillis / 1000}s ...")
                     delay(retryMillis)
                 }
             }
@@ -101,7 +101,7 @@ class JsonConnection(
     }
 
     companion object {
-        private const val TAG = "NtfySubscriberConn"
+        private const val TAG = "NtfyJsonConnection"
         private const val CONNECTION_LOOP_DELAY_MILLIS = 30_000L
         private const val RETRY_STEP_MILLIS = 5_000L
         private const val RETRY_MAX_MILLIS = 60_000L
