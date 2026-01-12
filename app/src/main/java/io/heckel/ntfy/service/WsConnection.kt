@@ -1,7 +1,6 @@
 package io.heckel.ntfy.service
 
 import android.app.AlarmManager
-import android.content.Context
 import android.os.Build
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.CustomHeader
@@ -18,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import java.io.EOFException
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
@@ -186,7 +186,8 @@ class WsConnection(
                 errorCount++
                 val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
                 val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
-                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, t, nextRetryTime)
+                val error = if (isConnectionBrokenException(t)) null else t
+                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }

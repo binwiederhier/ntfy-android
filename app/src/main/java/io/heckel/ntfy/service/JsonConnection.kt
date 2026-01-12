@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.Call
+import java.io.EOFException
 import kotlin.random.Random
 
 class JsonConnection(
@@ -76,10 +77,11 @@ class JsonConnection(
                         Log.d(TAG, "[$url] Connection cancelled")
                         break
                     }
-                    Log.e(TAG, "[$url] Connection failed: ${e.message}", e)
+                    Log.d(TAG, "[$url] Connection broken, reconnecting ...")
                     retryMillis = nextRetryMillis(retryMillis, startTime)
                     val nextRetryTime = System.currentTimeMillis() + retryMillis
-                    connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, e, nextRetryTime)
+                    val error = if (isConnectionBrokenException(e)) null else e
+                    connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
                     Log.w(TAG, "[$url] Retrying connection in ${retryMillis / 1000}s ...")
                     delay(retryMillis)
                 }

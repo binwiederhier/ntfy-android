@@ -1,5 +1,8 @@
 package io.heckel.ntfy.service
 
+import okhttp3.internal.http2.StreamResetException
+import java.io.EOFException
+
 interface Connection {
     fun start()
     fun close()
@@ -20,3 +23,10 @@ data class ConnectionId(
     val clientCertHash: Int,     // Hash of client certificate or 0 if none
     val reconnectVersion: Long   // Incremented to force reconnection for this baseUrl
 )
+
+fun isConnectionBrokenException(t: Throwable): Boolean {
+    return t is EOFException
+            || t.cause is EOFException
+            || t is StreamResetException
+            || t.cause is StreamResetException
+}
