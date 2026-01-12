@@ -412,4 +412,22 @@
     <string name="common_button_add">Добавяне</string>
     <string name="common_button_save">Запазване</string>
     <string name="common_button_delete">Премахване</string>
+    <string name="common_service_url_placeholder">напр. https://ntfy.example.com</string>
+    <string name="common_button_next">Напред</string>
+    <string name="common_certificate_subject">Обект</string>
+    <string name="common_certificate_issuer">Издател</string>
+    <string name="common_certificate_fingerprint">Отпечатък SHA-256</string>
+    <string name="common_certificate_valid_from">Валиден от</string>
+    <string name="common_certificate_valid_until">Валиден до</string>
+    <string name="common_certificate_added_toast">Серетификатът е добавен</string>
+    <string name="common_certificate_deleted_toast">Серетификатът е премахнат</string>
+    <string name="add_dialog_error_ssl_untrusted">Серетификатът на сървъра не е доверен</string>
+    <string name="settings_advanced_certificates_title">Управление на сертификати</string>
+    <string name="settings_advanced_certificates_trusted_header">Доверени сертификати</string>
+    <string name="settings_advanced_certificates_trusted_add_title">Добавяне на доверен сертификат</string>
+    <string name="settings_advanced_certificates_trusted_add_summary">Добавяне на сертификат в довереното хранилище (PEM). При свързване към сървър на ntfy сертификатът ще е доверен.</string>
+    <string name="settings_advanced_certificates_client_header">Клиентски сертификат (mTLS)</string>
+    <string name="settings_advanced_certificates_client_item_summary">Клиентски сертификат, издаден от %1$s, изтича на %2$s, използва се за връзка с %3$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Клиентски сертификат, издаден от %1$s, изтекъл, използва се за връзка с %2$s</string>
+    <string name="settings_advanced_certificates_client_add_title">Добавяне на клиентски сертификат</string>
 </resources>
