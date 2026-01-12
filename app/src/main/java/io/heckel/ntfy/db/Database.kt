@@ -20,9 +20,9 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.service.isConnectionRefused
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
-import java.net.ConnectException
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -105,16 +105,7 @@ data class ConnectionDetails(
     }
     
     fun isConnectionRefused(): Boolean {
-        return hasCauseOfType<ConnectException>()
-    }
-    
-    private inline fun <reified T : Throwable> hasCauseOfType(): Boolean {
-        var current: Throwable? = error
-        while (current != null) {
-            if (current is T) return true
-            current = current.cause
-        }
-        return false
+        return error?.let { isConnectionRefused(it) } ?: false
     }
 }
 

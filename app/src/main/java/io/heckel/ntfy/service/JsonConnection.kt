@@ -16,7 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.Call
-import java.io.EOFException
 import kotlin.random.Random
 
 class JsonConnection(
