@@ -27,6 +27,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     private val connectionDetails = ConcurrentHashMap<String, ConnectionDetails>()
     private val connectionDetailsLiveData = MutableLiveData<Map<String, ConnectionDetails>>(connectionDetails)
+    private val reconnectVersions = ConcurrentHashMap<String, Long>()
 
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -570,6 +571,15 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun getConnectionDetailsForBaseUrl(baseUrl: String): ConnectionDetails? {
         return connectionDetails[baseUrl]
+    }
+
+    fun getReconnectVersion(baseUrl: String): Long {
+        return reconnectVersions[baseUrl] ?: 0L
+    }
+
+    fun incrementReconnectVersion(baseUrl: String) {
+        reconnectVersions.compute(baseUrl) { _, current -> (current ?: 0L) + 1 }
+        Log.d(TAG, "Reconnect version incremented for $baseUrl: ${reconnectVersions[baseUrl]}")
     }
 
     companion object {
