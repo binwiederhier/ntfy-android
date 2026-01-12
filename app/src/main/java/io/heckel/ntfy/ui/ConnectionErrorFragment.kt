@@ -76,7 +76,6 @@ class ConnectionErrorFragment : DialogFragment() {
                         repository.incrementReconnectVersion(baseUrl)
                     }
                     SubscriberServiceManager.refresh(requireContext())
-                    dismiss()
                     true
                 }
                 R.id.connection_error_dialog_action_copy -> {
@@ -120,13 +119,32 @@ class ConnectionErrorFragment : DialogFragment() {
         selectedBaseUrl = baseUrls.firstOrNull()
         updateErrorDisplay()
 
-        // Observe connection details to update countdown when it changes
+        // Observe connection details to update when errors change
         repository.getConnectionDetailsLiveData().observe(this) { details ->
             connectionDetails = if (filterBaseUrl != null) {
                 details.filterKeys { it == filterBaseUrl }.filterValues { it.hasError() }
             } else {
                 details.filterValues { it.hasError() }
             }
+            
+            // Close dialog if no more errors
+            if (connectionDetails.isEmpty()) {
+                dismiss()
+                return@observe
+            }
+            
+            // Update dropdown if the list of errored URLs changed
+            val baseUrls = connectionDetails.keys.toList()
+            updateServerDropdown(baseUrls)
+            
+            // If selected URL no longer has an error, switch to first available
+            if (selectedBaseUrl == null || !connectionDetails.containsKey(selectedBaseUrl)) {
+                selectedBaseUrl = baseUrls.firstOrNull()
+                if (baseUrls.size > 1) {
+                    serverDropdown.setText(selectedBaseUrl ?: "", false)
+                }
+            }
+            
             updateErrorDisplay()
         }
 
@@ -155,6 +173,20 @@ class ConnectionErrorFragment : DialogFragment() {
         handler.removeCallbacks(countdownRunnable)
     }
 
+    private fun updateServerDropdown(baseUrls: List<String>) {
+        if (baseUrls.size > 1) {
+            serverLayout.visibility = View.VISIBLE
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, baseUrls)
+            serverDropdown.setAdapter(adapter)
+            serverDropdown.setOnItemClickListener { _, _, position, _ ->
+                selectedBaseUrl = baseUrls[position]
+                updateErrorDisplay()
+            }
+        } else {
+            serverLayout.visibility = View.GONE
+        }
+    }
+
     private fun updateErrorDisplay() {
         val baseUrl = selectedBaseUrl ?: return
         descriptionTextView.text = getString(R.string.connection_error_dialog_message)
@@ -163,7 +195,7 @@ class ConnectionErrorFragment : DialogFragment() {
         if (details != null && details.hasError()) {
             errorTextView.text = when {
                 details.isConnectionRefused() -> getString(R.string.connection_error_dialog_connection_refused)
-                else -> details.error?.message ?: getString(R.string.connection_error_dialog_no_error)
+                else -> getErrorDisplayText(details.error)
             }
             val stackTrace = details.getStackTraceString()
             if (stackTrace.isNotEmpty()) {
@@ -177,6 +209,18 @@ class ConnectionErrorFragment : DialogFragment() {
             detailsScrollView.visibility = View.GONE
         }
         updateCountdown()
+    }
+
+    private fun getErrorDisplayText(error: Throwable?): String {
+        if (error == null) {
+            return getString(R.string.connection_error_dialog_no_error)
+        }
+        val message = error.message
+        if (!message.isNullOrBlank()) {
+            return message
+        }
+        // If no message, return the simple class name (e.g., "IOException")
+        return error.javaClass.simpleName
     }
 
     private fun updateCountdown() {
@@ -201,7 +245,7 @@ class ConnectionErrorFragment : DialogFragment() {
         val details = connectionDetails[baseUrl] ?: return
         val text = buildString {
             appendLine("Server: $baseUrl")
-            appendLine("Error: ${details.error?.message ?: "Unknown error"}")
+            appendLine("Error: ${getErrorDisplayText(details.error)}")
             appendLine()
             appendLine("Stack trace:")
             append(details.getStackTraceString().ifEmpty { "No stack trace available" })

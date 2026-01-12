@@ -1,13 +1,28 @@
 package io.heckel.ntfy.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.Index
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import androidx.room.Update
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
+import java.net.ConnectException
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -90,7 +105,7 @@ data class ConnectionDetails(
     }
     
     fun isConnectionRefused(): Boolean {
-        return hasCauseOfType<java.net.ConnectException>()
+        return hasCauseOfType<ConnectException>()
     }
     
     private inline fun <reified T : Throwable> hasCauseOfType(): Boolean {
