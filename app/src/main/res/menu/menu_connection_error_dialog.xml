@@ -9,6 +9,6 @@
     <item
         android:id="@+id/connection_error_dialog_action_copy"
         android:icon="@drawable/ic_content_copy_white_24dp"
-        android:title="@string/connection_error_dialog_copy"
+        android:title="@string/common_button_copy"
         app:showAsAction="always" />
 </menu>

@@ -246,7 +246,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nachricht kann nicht gesendet werden: Anonymes Senden nicht erlaubt.</string>
     <string name="detail_menu_test">Test-Benachrichtigung senden</string>
     <string name="detail_menu_copy_url">Themen-Adresse kopieren</string>
-    <string name="detail_action_mode_menu_copy">Kopieren</string>
+    <string name="common_button_copy">Kopieren</string>
     <string name="detail_clear_dialog_permanently_delete">Endgültig löschen</string>
     <string name="detail_clear_dialog_cancel">Abbrechen</string>
     <string name="detail_item_cannot_open_not_found">Anhang kann nicht geöffnet werden: Datei wurde gelöscht, oder es ist keine App installiert die diese Datei öffnen kann.</string>

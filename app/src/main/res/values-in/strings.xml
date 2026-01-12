@@ -98,7 +98,7 @@
     <string name="detail_menu_clear">Hapus semua notifikasi</string>
     <string name="detail_menu_settings">Pengaturan langganan</string>
     <string name="detail_menu_unsubscribe">Batalkan langganan</string>
-    <string name="detail_action_mode_menu_copy">Salin</string>
+    <string name="common_button_copy">Salin</string>
     <string name="detail_action_mode_menu_delete">Hapus</string>
     <string name="detail_action_mode_delete_dialog_message">Hapus notifikasi yang dipilih secara permanen\?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Hapus secara permanen</string>

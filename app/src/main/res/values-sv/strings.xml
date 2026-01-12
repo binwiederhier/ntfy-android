@@ -104,7 +104,7 @@
     <string name="detail_item_cannot_open_url">Kan inte öppna URL: %1$s</string>
     <string name="detail_menu_clear">Rensa alla notifikationer</string>
     <string name="detail_menu_test">Skicka testnotifikation</string>
-    <string name="detail_action_mode_menu_copy">Kopiera</string>
+    <string name="common_button_copy">Kopiera</string>
     <string name="detail_action_mode_menu_delete">Ta bort</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Ta bort permanent</string>
     <string name="detail_action_mode_delete_dialog_cancel">Avbryt</string>

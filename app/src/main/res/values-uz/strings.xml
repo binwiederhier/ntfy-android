@@ -116,7 +116,7 @@
     <string name="detail_menu_copy_url">Mavzu manzilini nusxalash</string>
     <string name="detail_menu_settings">Obuna sozlamalari</string>
     <string name="detail_menu_unsubscribe">Obunani bekor qilish</string>
-    <string name="detail_action_mode_menu_copy">Nusxalash</string>
+    <string name="common_button_copy">Nusxalash</string>
     <string name="detail_action_mode_menu_delete">O‘chirish</string>
     <string name="detail_action_mode_delete_dialog_message">Tanlangan bildirishnoma(lar) butunlay o‘chirilsinmi?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Butunlay o‘chirish</string>

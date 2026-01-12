@@ -169,7 +169,7 @@
     <string name="detail_menu_clear">Limpar todas as notificacións</string>
     <string name="detail_menu_settings">Axustes da subscrición</string>
     <string name="detail_menu_unsubscribe">Retirar subscrición</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="detail_action_mode_menu_delete">Eliminar</string>
     <string name="share_menu_send">Compartir</string>
     <string name="notification_dialog_muted_forever_toast_message">Notificacións acaladas</string>

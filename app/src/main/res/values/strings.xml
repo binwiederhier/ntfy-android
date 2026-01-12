@@ -6,6 +6,7 @@
     <string name="common_button_add">Add</string>
     <string name="common_button_save">Save</string>
     <string name="common_button_delete">Delete</string>
+    <string name="common_button_copy">Copy</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
     <string name="common_service_url">Service URL</string>
     <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
@@ -204,7 +205,6 @@
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
 
     <!-- Detail activity: Action mode -->
-    <string name="detail_action_mode_menu_copy">Copy</string>
     <string name="detail_action_mode_menu_delete">Delete</string>
     <string name="detail_action_mode_delete_dialog_message">
         Delete the selected notification(s) permanently?
@@ -295,7 +295,6 @@
     <string name="connection_error_dialog_connection_refused">Connection refused. The server may be down or the address may be incorrect.</string>
     <string name="connection_error_dialog_websocket_not_supported">WebSocket not supported. The server may not support WebSocket connections, or the address may be incorrect.</string>
     <string name="connection_error_dialog_not_authorized">Not authorized. The server returned a HTTP 401/403 response. Please check if your username and password are correct.</string>
-    <string name="connection_error_dialog_copy">Copy</string>
     <string name="connection_error_dialog_retry_now">Retry now</string>
     <string name="connection_error_dialog_retry_countdown">Retrying in %1$ds…</string>
     <string name="connection_error_dialog_retrying">Retrying…</string>
