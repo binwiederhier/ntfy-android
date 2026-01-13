@@ -36,6 +36,10 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         notification = repository.getNotification(notificationId) ?: return Result.failure()
         subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
         icon = notification.icon ?: return Result.failure()
+        if (!icon.hasValidUrl()) {
+            Log.w(TAG, "Icon has no valid URL, skipping download")
+            return Result.failure()
+        }
         try {
             val iconFile = createIconFile(icon)
             val yesterdayTimestamp = Date().time - MAX_CACHE_MILLIS
@@ -58,12 +62,13 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     }
 
     private suspend fun downloadIcon(iconFile: File) {
-        Log.d(TAG, "Downloading icon from ${icon.url}")
+        val iconUrl = icon.url!! // Validated in doWork()
+        Log.d(TAG, "Downloading icon from $iconUrl")
         try {
-            val user = repository.getUser(extractBaseUrl(icon.url))
-            val customHeaders = repository.getCustomHeaders(extractBaseUrl(icon.url))
-            val request = HttpUtil.requestBuilder(icon.url, user, customHeaders).build()
-            val client = HttpUtil.defaultClient(context, extractBaseUrl(icon.url))
+            val user = repository.getUser(extractBaseUrl(iconUrl))
+            val customHeaders = repository.getCustomHeaders(extractBaseUrl(iconUrl))
+            val request = HttpUtil.requestBuilder(iconUrl, user, customHeaders).build()
+            val client = HttpUtil.defaultClient(context, extractBaseUrl(iconUrl))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Headers received: $response, Content-Length: ${response.headers["Content-Length"]}")
                 if (!response.isSuccessful) {
@@ -142,7 +147,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         if (!iconDir.exists() && !iconDir.mkdirs()) {
             throw Exception("Cannot create cache directory for icons: $iconDir")
         }
-        val hash = icon.url.sha256()
+        val hash = icon.url!!.sha256() // URL validated in doWork()
         return File(iconDir, hash)
     }
 

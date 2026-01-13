@@ -115,11 +115,12 @@ class SubscriberService : Service() {
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
+        val notification = serviceNotification ?: return
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                startForeground(NOTIFICATION_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
             } else {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+                startForeground(NOTIFICATION_SERVICE_ID, notification)
             }
         } catch (e: Exception) {
             // On Android 12+, starting a foreground service from the background is restricted.
@@ -201,7 +202,7 @@ class SubscriberService : Service() {
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
     private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
-        // Group INSTANT subscriptions by base URL, there is only one connection per base URL
+        // Group instant subscriptions by base URL, there is only one connection per base URL
         val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
         val connectionProtocol = repository.getConnectionProtocol()
@@ -219,6 +220,7 @@ class SubscriberService : Service() {
                     .hashCode()
                 val trustedCertsHash = repository.getTrustedCertificate(baseUrl)?.hashCode() ?: 0
                 val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
+                val connectionForceReconnectVersion = repository.getConnectionForceReconnectVersion(baseUrl)
                 ConnectionId(
                     baseUrl = baseUrl,
                     topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
@@ -226,7 +228,8 @@ class SubscriberService : Service() {
                     credentialsHash = credentialsHash,
                     headersHash = headersHash,
                     trustedCertsHash = trustedCertsHash,
-                    clientCertHash = clientCertHash
+                    clientCertHash = clientCertHash,
+                    connectionForceReconnectVersion = connectionForceReconnectVersion
                 )
             }
             .toSet()
@@ -261,9 +264,9 @@ class SubscriberService : Service() {
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -304,8 +307,8 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
-        repository.updateState(subscriptionIds, state)
+    private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
+        repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {

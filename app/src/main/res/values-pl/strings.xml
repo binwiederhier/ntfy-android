@@ -28,7 +28,7 @@
     <string name="user_dialog_username_hint">Nazwa użytkownika</string>
     <string name="notification_dialog_muted_until_toast_message">Powiadomienia wyciszone przez %1$s</string>
     <string name="detail_item_menu_download">Pobierz plik</string>
-    <string name="detail_action_mode_menu_copy">Kopiuj</string>
+    <string name="common_button_copy">Kopiuj</string>
     <string name="detail_menu_clear">Wyczyść powiadomienia</string>
     <string name="detail_item_menu_delete">Usuń plik</string>
     <string name="detail_item_menu_cancel">Anuluj pobieranie</string>

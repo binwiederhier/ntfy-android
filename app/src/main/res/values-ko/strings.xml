@@ -230,7 +230,7 @@
     <string name="detail_item_saved_successfully">\"Downloads\" 폴더에 \"%1$s\"로 저장됨</string>
     <string name="detail_item_cannot_open_url">URL을 열 수 없습니다: %1$s</string>
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% 다운로드됨</string>
-    <string name="detail_action_mode_menu_copy">복사</string>
+    <string name="common_button_copy">복사</string>
     <string name="detail_action_mode_menu_delete">삭제</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">영구 삭제</string>
     <string name="share_topic_title">공유하기</string>

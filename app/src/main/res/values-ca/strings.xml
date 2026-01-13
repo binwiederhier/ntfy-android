@@ -154,7 +154,7 @@
     <string name="detail_menu_enable_instant">Activar entrega instantània</string>
     <string name="detail_item_cannot_open_apk">Les aplicacions ja no poden ser instal·lades. Descarrega-les a través del navegador. Pots trobar més detalls a #531.</string>
     <string name="detail_menu_unsubscribe">Eliminar subscripció</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="detail_action_mode_delete_dialog_message">Eliminar definitivament la notificació\?</string>
     <string name="share_content_title">Vista prèvia del missatge</string>
     <string name="share_content_text_hint">Afegeix contingut per compartir aquí</string>

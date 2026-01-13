@@ -63,7 +63,7 @@
     <string name="detail_item_snack_undo">برگردان</string>
     <string name="detail_item_download_info_deleted">حذف شده</string>
     <string name="detail_menu_unsubscribe">لغو اشتراک</string>
-    <string name="detail_action_mode_menu_copy">رونوشت</string>
+    <string name="common_button_copy">رونوشت</string>
     <string name="detail_action_mode_menu_delete">حذف</string>
     <string name="detail_action_mode_delete_dialog_cancel">لغو</string>
     <string name="share_title">هم‌رسانی</string>

@@ -25,8 +25,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val clientCertificateDao = database.clientCertificateDao()
     private val customHeaderDao = database.customHeaderDao()
 
-    private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
-    private val connectionStatesLiveData = MutableLiveData(connectionStates)
+    private val connectionDetails = ConcurrentHashMap<String, ConnectionDetails>()
+    private val connectionDetailsLiveData = MutableLiveData<Map<String, ConnectionDetails>>(connectionDetails)
+    private val connectionForceReconnectVersions = ConcurrentHashMap<String, Long>()
 
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -40,7 +41,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return subscriptionDao
             .listFlow()
             .asLiveData()
-            .combineWith(connectionStatesLiveData) { subscriptionsWithMetadata, _ ->
+            .combineWith(connectionDetailsLiveData) { subscriptionsWithMetadata, _ ->
                 toSubscriptionList(subscriptionsWithMetadata.orEmpty())
             }
     }
@@ -504,7 +505,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
         return list.map { s ->
-            val connectionState = connectionStates.getOrElse(s.id) { ConnectionState.NOT_APPLICABLE }
             Subscription(
                 id = s.id,
                 baseUrl = s.baseUrl,
@@ -523,7 +523,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
-                state = connectionState
+                connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
             )
         }
     }
@@ -550,30 +550,43 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
-            state = getState(s.id)
+            connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
         )
     }
 
-    fun updateState(subscriptionIds: Collection<Long>, newState: ConnectionState) {
-        var changed = false
-        subscriptionIds.forEach { subscriptionId ->
-            val state = connectionStates.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
-            if (state !== newState) {
-                changed = true
-                if (newState == ConnectionState.NOT_APPLICABLE) {
-                    connectionStates.remove(subscriptionId)
-                } else {
-                    connectionStates[subscriptionId] = newState
-                }
+    fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: Throwable? = null, nextRetryTime: Long = 0L) {
+        val details = ConnectionDetails(state, error, nextRetryTime)
+        val current = connectionDetails[baseUrl]
+        if (current != details) {
+            if (state == ConnectionState.NOT_APPLICABLE && error == null) {
+                connectionDetails.remove(baseUrl)
+            } else {
+                connectionDetails[baseUrl] = details
             }
-        }
-        if (changed) {
-            connectionStatesLiveData.postValue(connectionStates)
+            connectionDetailsLiveData.postValue(connectionDetails.toMap())
+            Log.d(TAG, "Connection details updated for $baseUrl: state=$state, error=${error?.message}, nextRetry=$nextRetryTime")
         }
     }
 
-    private fun getState(subscriptionId: Long): ConnectionState {
-        return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+    fun getConnectionDetailsLiveData(): LiveData<Map<String, ConnectionDetails>> {
+        return connectionDetailsLiveData
+    }
+
+    fun getConnectionDetails(): Map<String, ConnectionDetails> {
+        return connectionDetails.toMap()
+    }
+
+    fun getConnectionDetailsForBaseUrl(baseUrl: String): ConnectionDetails? {
+        return connectionDetails[baseUrl]
+    }
+
+    fun getConnectionForceReconnectVersion(baseUrl: String): Long {
+        return connectionForceReconnectVersions[baseUrl] ?: 0L
+    }
+
+    fun incrementConnectionForceReconnectVersion(baseUrl: String) {
+        connectionForceReconnectVersions.compute(baseUrl) { _, current -> (current ?: 0L) + 1 }
+        Log.d(TAG, "Connection force reconnect version incremented for $baseUrl: ${connectionForceReconnectVersions[baseUrl]}")
     }
 
     companion object {

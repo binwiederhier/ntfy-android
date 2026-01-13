@@ -10,7 +10,7 @@
     <string name="detail_item_download_info_deleted">நீக்கப்பட்டது</string>
     <string name="channel_subscriber_service_name">சந்தா சேவை</string>
     <string name="common_priority_min_name">குறை முன்னுரிமை</string>
-    <string name="detail_action_mode_menu_copy">பிரதி</string>
+    <string name="common_button_copy">பிரதி</string>
     <string name="common_priority_default_name">இயல்புநிலை முன்னுரிமை</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">நிரந்தரமாக நீக்கு</string>
     <string name="notification_dialog_cancel">ரத்து செய்</string>

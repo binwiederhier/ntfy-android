@@ -85,7 +85,7 @@
     <string name="notification_dialog_cancel">إلغاﺀ</string>
     <string name="settings_notifications_header">الإشعارات</string>
     <string name="detail_menu_unsubscribe">الغاء الاشتراك</string>
-    <string name="detail_action_mode_menu_copy">نسخ</string>
+    <string name="common_button_copy">نسخ</string>
     <string name="detail_action_mode_menu_delete">حذف</string>
     <string name="notification_popup_action_open">فتح</string>
     <string name="notification_popup_action_download">تنزيل</string>

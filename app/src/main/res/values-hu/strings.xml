@@ -112,7 +112,7 @@
     <string name="detail_item_snack_undo">Visszavon</string>
     <string name="detail_item_download_info_deleted">törölve</string>
     <string name="detail_menu_unsubscribe">Leiratkozás</string>
-    <string name="detail_action_mode_menu_copy">Másolás</string>
+    <string name="common_button_copy">Másolás</string>
     <string name="detail_action_mode_menu_delete">Törlés</string>
     <string name="share_menu_send">Megosztás</string>
     <string name="notification_dialog_30min">30 perc</string>

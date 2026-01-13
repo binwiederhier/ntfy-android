@@ -195,7 +195,7 @@
     <string name="detail_menu_copy_url">Copiază adresa topicului</string>
     <string name="detail_menu_clear">Șterge toate notificările</string>
     <string name="detail_menu_unsubscribe">Dezabonează-te</string>
-    <string name="detail_action_mode_menu_copy">Copiază</string>
+    <string name="common_button_copy">Copiază</string>
     <string name="detail_menu_settings">Setări abonament</string>
     <string name="detail_action_mode_menu_delete">Șterge</string>
     <string name="detail_action_mode_delete_dialog_message">Șterge notificarea/notificările selectate permanent\?</string>

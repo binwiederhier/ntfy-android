@@ -93,7 +93,7 @@
     <string name="detail_menu_copy_url">Copiar la dirección del tópico</string>
     <string name="detail_menu_test">Enviar notificación de prueba</string>
     <string name="detail_menu_clear">Borrar todas las notificaciones</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="detail_action_mode_menu_delete">Eliminar</string>
     <string name="detail_action_mode_delete_dialog_message">¿Eliminar permanentemente la(s) notificación(es) seleccionada(s)\?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Eliminar permanentemente</string>

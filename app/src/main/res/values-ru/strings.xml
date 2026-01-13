@@ -34,7 +34,7 @@
     <string name="detail_menu_clear">Очистить все уведомления</string>
     <string name="detail_menu_settings">Настройки подписок</string>
     <string name="detail_menu_unsubscribe">Отписаться</string>
-    <string name="detail_action_mode_menu_copy">Скопировать</string>
+    <string name="common_button_copy">Скопировать</string>
     <string name="detail_action_mode_menu_delete">Удалить</string>
     <string name="detail_action_mode_delete_dialog_message">Удалить выбранные уведомления навсегда\?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Удалить навсегда</string>

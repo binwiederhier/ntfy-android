@@ -20,6 +20,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.core.view.size
 import androidx.core.view.get
 
@@ -150,25 +151,25 @@ class ShareActivity : AppCompatActivity() {
             } else {
                 baseUrlsRaw.filterNot { it == appBaseUrl }
             }
-            suggestedTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
-                try {
-                    val (baseUrl, topic) = splitTopicUrl(topicUrl)
-                    val defaultUrl = defaultBaseUrl ?: appBaseUrl
-                    topicText.text = topic
-                    if (baseUrl == defaultUrl) {
-                        useAnotherServerCheckbox.isChecked = false
-                    } else {
-                        useAnotherServerCheckbox.isChecked = true
-                        baseUrlText.setText(baseUrl)
+            
+            withContext(Dispatchers.Main) {
+                suggestedTopicsList.adapter = TopicAdapter(suggestedTopics) { topicUrl ->
+                    try {
+                        val (baseUrl, topic) = splitTopicUrl(topicUrl)
+                        val defaultUrl = defaultBaseUrl ?: appBaseUrl
+                        topicText.text = topic
+                        if (baseUrl == defaultUrl) {
+                            useAnotherServerCheckbox.isChecked = false
+                        } else {
+                            useAnotherServerCheckbox.isChecked = true
+                            baseUrlText.setText(baseUrl)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Invalid topicUrl $topicUrl", e)
                     }
-                } catch (e: Exception) {
-                    Log.w(TAG, "Invalid topicUrl $topicUrl", e)
                 }
-            }
 
-            // Add baseUrl auto-complete behavior
-            val activity = this@ShareActivity
-            activity.runOnUiThread {
+                // Add baseUrl auto-complete behavior
                 initBaseUrlDropdown(baseUrls, baseUrlText, baseUrlLayout)
                 useAnotherServerCheckbox.isChecked = if (suggestedTopics.isNotEmpty()) {
                     try {

@@ -176,7 +176,7 @@ class Backuper(val context: Context) {
                 } else {
                     null
                 }
-                val icon = if (n.icon != null) {
+                val icon = if (n.icon != null && !n.icon.url.isNullOrEmpty()) {
                     io.heckel.ntfy.db.Icon(
                         url = n.icon.url,
                         contentUri = n.icon.contentUri,
@@ -333,7 +333,7 @@ class Backuper(val context: Context) {
             } else {
                 null
             }
-            val icon = if (n.icon != null) {
+            val icon = if (n.icon != null && n.icon.hasValidUrl()) {
                 Icon(
                     url = n.icon.url,
                     contentUri = n.icon.contentUri,
@@ -483,7 +483,7 @@ data class Attachment(
 )
 
 data class Icon(
-    val url: String, // URL (mandatory, see ntfy server)
+    val url: String?, // URL (nullable to handle corrupt backup files)
     val contentUri: String?, // After it's downloaded, the content:// location
 )
 

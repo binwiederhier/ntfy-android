@@ -89,7 +89,7 @@
     <string name="detail_menu_clear">Limpar todas notificações</string>
     <string name="detail_menu_settings">Configurações de inscrição</string>
     <string name="detail_menu_unsubscribe">Desinscrever</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="detail_action_mode_menu_delete">Apagar</string>
     <string name="detail_action_mode_delete_dialog_message">Apagar as notificações selecionadas permanentemente?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Apagar permanentemente</string>

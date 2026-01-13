@@ -254,6 +254,11 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             SubscriberServiceManager.refresh(this)
         }
 
+        // Observe connection details and update menu item visibility
+        repository.getConnectionDetailsLiveData().observe(this) { details ->
+            showHideConnectionErrorMenuItem(details)
+        }
+
         // Battery banner
         val batteryBanner = findViewById<View>(R.id.main_banner_battery) // Banner visibility is toggled in onResume()
         val dontAskAgainButton = findViewById<Button>(R.id.main_banner_battery_dontaskagain)
@@ -371,6 +376,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     override fun onResume() {
         super.onResume()
         showHideNotificationMenuItems()
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
         redrawList()
     }
 
@@ -488,6 +494,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         
         showHideNotificationMenuItems()
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
         checkSubscriptionsMuted() // This is done here, because then we know that we've initialized the menu
         return true
     }
@@ -551,6 +558,17 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
     }
 
+    private fun showHideConnectionErrorMenuItem(details: Map<String, io.heckel.ntfy.db.ConnectionDetails>) {
+        if (!this::menu.isInitialized) {
+            return
+        }
+        runOnUiThread {
+            val connectionErrorItem = menu.findItem(R.id.main_menu_connection_error)
+            val hasErrors = details.values.any { it.hasError() }
+            connectionErrorItem?.isVisible = hasErrors
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.main_menu_notifications_enabled -> {
@@ -563,6 +581,10 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             }
             R.id.main_menu_notifications_disabled_until -> {
                 onNotificationSettingsClick(enable = true)
+                true
+            }
+            R.id.main_menu_connection_error -> {
+                onConnectionErrorClick()
                 true
             }
             R.id.main_menu_settings -> {
@@ -606,6 +628,12 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             Log.d(TAG, "Re-enabling global notifications")
             onNotificationMutedUntilChanged(Repository.MUTED_UNTIL_SHOW_ALL)
         }
+    }
+
+    private fun onConnectionErrorClick() {
+        Log.d(TAG, "Showing connection error dialog")
+        val connectionErrorFragment = ConnectionErrorFragment.newInstance()
+        connectionErrorFragment.show(supportFragmentManager, ConnectionErrorFragment.TAG)
     }
 
     override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {

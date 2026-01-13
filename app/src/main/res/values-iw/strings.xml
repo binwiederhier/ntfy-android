@@ -129,7 +129,7 @@
     <string name="detail_menu_notifications_disabled_until">ההתראות מושתקות עד %1$s</string>
     <string name="detail_menu_test">שליחת התראת בדיקה</string>
     <string name="detail_menu_copy_url">העתקת כתובת הנושא</string>
-    <string name="detail_action_mode_menu_copy">העתקה</string>
+    <string name="common_button_copy">העתקה</string>
     <string name="share_title">שיתוף</string>
     <string name="share_menu_send">שיתוף</string>
     <string name="share_content_text_hint">הוספת הקשר לשיתוף כאן</string>
