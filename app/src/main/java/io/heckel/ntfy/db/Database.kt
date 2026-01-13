@@ -20,6 +20,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.service.WebSocketNotSupportedException
 import io.heckel.ntfy.service.hasCause
@@ -158,7 +159,30 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-)
+    @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_read)
+) {
+    constructor(
+        id: String,
+        subscriptionId: Long,
+        timestamp: Long,
+        sequenceId: String,
+        title: String,
+        message: String,
+        contentType: String,
+        encoding: String,
+        notificationId: Int,
+        priority: Int,
+        tags: String,
+        click: String,
+        icon: Icon?,
+        actions: List<Action>?,
+        attachment: Attachment?,
+        deleted: Boolean
+    ) : this(
+        id, subscriptionId, timestamp, sequenceId, title, message, contentType, encoding,
+        notificationId, priority, tags, click, icon, actions, attachment, deleted, event = ApiService.EVENT_MESSAGE
+    )
+}
 
 fun Notification.isMarkdown(): Boolean {
     return contentType == "text/markdown"
@@ -570,6 +594,9 @@ interface NotificationDao {
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
     fun markAllAsRead(subscriptionId: Long)
+
+    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)

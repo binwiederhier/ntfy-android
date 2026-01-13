@@ -155,7 +155,7 @@ class ApiService(private val context: Context) {
             if (code == 401 || code == 403) {
                 throw NotAuthorizedException(code, message)
             }
-            throw IOException("Unexpected response $code when subscribing to $url")
+            throw IOException("Unexpected response $code when subscribing")
         }
         return Pair(call, response.body.source())
     }

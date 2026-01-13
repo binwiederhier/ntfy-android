@@ -12,6 +12,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -125,16 +126,12 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     @WorkerThread
     suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification != null) {
+        if (maybeExistingNotification != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
         }
         // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
         if (notification.sequenceId.isNotEmpty()) {
             notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
-        }
-        // If this is a delete notification, don't add it to the database
-        if (notification.deleted) {
-            return false
         }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
@@ -163,6 +160,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAllAsRead(subscriptionId: Long) {
         return notificationDao.markAllAsRead(subscriptionId)
+    }
+
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsReadBySequenceId(subscriptionId, sequenceId)
     }
 
     fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {

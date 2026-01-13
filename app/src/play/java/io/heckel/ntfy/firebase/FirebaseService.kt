@@ -118,10 +118,13 @@ class FirebaseService : FirebaseMessagingService() {
             val baseUrl = getString(R.string.app_base_url)
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
 
-            // Mark the notification as read (not new)
-            // Note: We don't have a "mark as read by sequenceId" method yet, so we just log for now
-            Log.d(TAG, "Marking notification with sequenceId $sequenceId as read")
-            // TODO: Implement markAsReadBySequenceId if needed
+            // Mark all notifications with this sequenceId as read
+            repository.markAsReadBySequenceId(subscription.id, sequenceId)
+
+            // Cancel the Android notification
+            val notificationId = deriveNotificationId(sequenceId)
+            val notifier = NotificationService(this@FirebaseService)
+            notifier.cancel(notificationId)
         }
     }
 
@@ -190,17 +193,13 @@ class FirebaseService : FirebaseMessagingService() {
                 actions = parser.parseActions(actions),
                 attachment = attachment,
                 notificationId = deriveNotificationId(actualSequenceId),
-                deleted = false
+                deleted = false,
+                event = ApiService.EVENT_MESSAGE
             )
 
             // Note: This logic is duplicated in the SubscriberService::onNotificationReceived() method
             //       and the web app hooks.js:handleNotification().
 
-            // Delete existing notification with same sequenceId, if any
-            if (notification.sequenceId.isNotEmpty()) {
-                repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
-            }
-            // Add notification to database and dispatch to be displayed/canceled
             val added = repository.addNotification(notification)
             if (added) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")

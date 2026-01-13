@@ -1,6 +1,12 @@
 package io.heckel.ntfy.service
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.ForegroundServiceStartNotAllowedException
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -322,21 +328,27 @@ class SubscriberService : Service() {
             // Note: This logic is duplicated in the FirebaseService::handleMessage() method
             //       and the web app hooks.js:handleNotification().
 
-            // Delete existing notification with same sequenceId, if any
-            if (notification.sequenceId.isNotEmpty()) {
-                repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
-            }
-            // Add notification to database and dispatch to be displayed/canceled
-            val added = repository.addNotification(notification)
-            if (added || notification.deleted) {
-                Log.d(TAG, "[$url] Dispatching notification $notification")
-                dispatcher.dispatch(subscription, notification)
-            }
-            wakeLock?.let {
-                if (it.isHeld) {
-                    it.release()
+            when (notification.event) {
+                ApiService.EVENT_MESSAGE_READ -> {
+                    if (notification.sequenceId.isNotEmpty()) {
+                        repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
+                    }
+                    dispatcher.dispatch(subscription, notification)
+                }
+                ApiService.EVENT_MESSAGE_DELETE -> {
+                    if (notification.sequenceId.isNotEmpty()) {
+                        repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
+                    }
+                    dispatcher.dispatch(subscription, notification)
+                }
+                ApiService.EVENT_MESSAGE -> {
+                    val added = repository.addNotification(notification)
+                    if (added) {
+                        dispatcher.dispatch(subscription, notification)
+                    }
                 }
             }
+            wakeLock?.let { if (it.isHeld) { it.release() } }
         }
     }
 

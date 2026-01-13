@@ -58,18 +58,27 @@ class Poller(
             .values
             .filterNotNull()
 
-        // Delete sequences where the latest notification is marked as deleted
-        latestBySequenceId.filter { it.deleted }.forEach { notification ->
-            val sequenceId = notification.sequenceId.ifEmpty { notification.id }
-            Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
-            repository.markAsDeletedBySequenceId(subscriptionId, sequenceId)
-        }
+        // Handle delete and read events
+        latestBySequenceId
+            .filter { it.event == ApiService.EVENT_MESSAGE_READ || it.event == ApiService.EVENT_MESSAGE_DELETE }
+            .forEach { notification ->
+                val sequenceId = notification.sequenceId.ifEmpty { notification.id }
+                when (notification.event) {
+                    ApiService.EVENT_MESSAGE_DELETE -> {
+                        Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
+                        repository.markAsDeletedBySequenceId(subscriptionId, sequenceId)
+                    }
+                    ApiService.EVENT_MESSAGE_READ -> {
+                        Log.d(TAG, "Marking notifications as read with sequenceId $sequenceId")
+                        repository.markAsReadBySequenceId(subscriptionId, sequenceId)
+                    }
+                }
+            }
 
-        // Add only non-deleted latest notifications
+        // Add only regular message notifications
         val notificationsToAdd = latestBySequenceId
-            .filter { !it.deleted }
+            .filter { it.event == ApiService.EVENT_MESSAGE }
             .map { if (notify) it.copy(notificationId = deriveNotificationId(it.sequenceId)) else it }
-
         val addedNotifications = mutableListOf<Notification>()
         notificationsToAdd.forEach { notification ->
             if (repository.addNotification(notification)) {
