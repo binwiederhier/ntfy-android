@@ -23,7 +23,7 @@ class NotificationParser {
         val message = gson.fromJson(s, Message::class.java)
         val validEvent = message.event == ApiService.EVENT_MESSAGE ||
                 message.event == ApiService.EVENT_MESSAGE_DELETE ||
-                message.event == ApiService.EVENT_MESSAGE_READ
+                message.event == ApiService.EVENT_MESSAGE_CLEAR
         if (!validEvent) {
             return null
         }
@@ -60,7 +60,7 @@ class NotificationParser {
             timestamp = message.time,
             sequenceId = sequenceId,
             title = message.title ?: "",
-            message = message.message,
+            message = message.message ?: "",
             contentType = message.contentType ?: "",
             encoding = message.encoding ?: "",
             priority = toPriority(message.priority),

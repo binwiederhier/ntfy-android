@@ -329,7 +329,7 @@ class SubscriberService : Service() {
             //       and the web app hooks.js:handleNotification().
 
             when (notification.event) {
-                ApiService.EVENT_MESSAGE_READ -> {
+                ApiService.EVENT_MESSAGE_CLEAR -> {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
                     }

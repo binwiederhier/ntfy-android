@@ -51,7 +51,7 @@ class FirebaseService : FirebaseMessagingService() {
         when (data["event"]) {
             ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)
             ApiService.EVENT_MESSAGE_DELETE -> handleMessageDelete(remoteMessage)
-            ApiService.EVENT_MESSAGE_READ -> handleMessageRead(remoteMessage)
+            ApiService.EVENT_MESSAGE_CLEAR -> handleMessageClear(remoteMessage)
             ApiService.EVENT_KEEPALIVE -> handleKeepalive(remoteMessage)
             ApiService.EVENT_POLL_REQUEST -> handlePollRequest(remoteMessage)
             else -> Log.d(TAG, "Discarding unexpected message (2): from=${remoteMessage.from}, data=${data}")
@@ -108,11 +108,11 @@ class FirebaseService : FirebaseMessagingService() {
         }
     }
 
-    private fun handleMessageRead(remoteMessage: RemoteMessage) {
+    private fun handleMessageClear(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
         val topic = data["topic"] ?: return
         val sequenceId = data["sequence_id"] ?: return
-        Log.d(TAG, "Received message_read: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
+        Log.d(TAG, "Received message_clear: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url)

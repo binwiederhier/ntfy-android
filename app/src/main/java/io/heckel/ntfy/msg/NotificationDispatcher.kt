@@ -79,7 +79,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldCancel(notification: Notification): Boolean {
-        return notification.event == ApiService.EVENT_MESSAGE_READ || notification.event == ApiService.EVENT_MESSAGE_DELETE
+        return notification.event == ApiService.EVENT_MESSAGE_CLEAR || notification.event == ApiService.EVENT_MESSAGE_DELETE
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {

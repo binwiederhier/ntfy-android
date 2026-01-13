@@ -198,7 +198,7 @@ class ApiService(private val context: Context) {
         const val CONTROL_TOPIC = "~control"
         const val EVENT_MESSAGE = "message"
         const val EVENT_MESSAGE_DELETE = "message_delete"
-        const val EVENT_MESSAGE_READ = "message_read"
+        const val EVENT_MESSAGE_CLEAR = "message_clear"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
     }

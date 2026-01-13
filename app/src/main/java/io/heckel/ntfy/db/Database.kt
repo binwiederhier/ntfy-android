@@ -146,7 +146,7 @@ data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
     @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp in seconds
-    @ColumnInfo(name = "sequence_id") val sequenceId: String, // Sequence ID for updating notifications
+    @ColumnInfo(name = "sequenceId") val sequenceId: String, // Sequence ID for updating notifications
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
@@ -159,7 +159,7 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-    @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_read)
+    @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
 ) {
     constructor(
         id: String,
@@ -479,8 +479,8 @@ abstract class Database : RoomDatabase() {
 
         private val MIGRATION_17_18 = object : Migration(17, 18) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE Notification ADD COLUMN sequence_id TEXT NOT NULL DEFAULT ''")
-                db.execSQL("UPDATE Notification SET sequence_id = id WHERE sequence_id = ''")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN sequenceId TEXT NOT NULL DEFAULT ''")
+                db.execSQL("UPDATE Notification SET sequenceId = id WHERE sequenceId = ''")
             }
         }
     }
@@ -595,13 +595,13 @@ interface NotificationDao {
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
     fun markAllAsRead(subscriptionId: Long)
 
-    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
+    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
     fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)
 
-    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequence_id = :sequenceId")
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
     fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")

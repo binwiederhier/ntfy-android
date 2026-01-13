@@ -60,7 +60,7 @@ class Poller(
 
         // Handle delete and read events
         latestBySequenceId
-            .filter { it.event == ApiService.EVENT_MESSAGE_READ || it.event == ApiService.EVENT_MESSAGE_DELETE }
+            .filter { it.event == ApiService.EVENT_MESSAGE_CLEAR || it.event == ApiService.EVENT_MESSAGE_DELETE }
             .forEach { notification ->
                 val sequenceId = notification.sequenceId.ifEmpty { notification.id }
                 when (notification.event) {
@@ -68,7 +68,7 @@ class Poller(
                         Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
                         repository.markAsDeletedBySequenceId(subscriptionId, sequenceId)
                     }
-                    ApiService.EVENT_MESSAGE_READ -> {
+                    ApiService.EVENT_MESSAGE_CLEAR -> {
                         Log.d(TAG, "Marking notifications as read with sequenceId $sequenceId")
                         repository.markAsReadBySequenceId(subscriptionId, sequenceId)
                     }

@@ -10,7 +10,6 @@ data class Message(
     val id: String,
     val time: Long,
     @SerializedName("sequence_id") val sequenceId: String?, // Sequence ID for updating notifications
-    val deleted: Boolean?, // true if the notification sequence is deleted
     val event: String,
     val topic: String,
     val priority: Int?,
@@ -19,7 +18,7 @@ data class Message(
     val icon: String?,
     val actions: List<MessageAction>?,
     val title: String?,
-    val message: String,
+    val message: String?,
     @SerializedName("content_type") val contentType: String?,
     val encoding: String?,
     val attachment: MessageAttachment?,
