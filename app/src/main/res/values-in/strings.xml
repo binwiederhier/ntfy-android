@@ -457,4 +457,13 @@
     <string name="client_certificate_dialog_error_wrong_password">Kata sandi salah atau berkas PKCS#12 tidak sah</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Kata sandi tidak sah atau berkas PKCS#12 rusak</string>
     <string name="client_certificate_dialog_error_invalid_url">URL layanan tidak sah</string>
+    <string name="main_menu_connection_error">Kesalahan sambungan</string>
+    <string name="connection_error_dialog_title">Kesalahan sambungan</string>
+    <string name="connection_error_dialog_message">Ada masalah saat menghubungkan ke %1$s. Aplikasi akan terus mencoba terhubung kembali di latar belakang.</string>
+    <string name="connection_error_dialog_connection_refused">Sambungan ditolak. Server mungkin sedang gangguan atau alamatnya mungkin salah.</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket tidak didukung. Server mungkin tidak mendukung sambungan WebSocket, atau alamatnya mungkin salah.</string>
+    <string name="connection_error_dialog_not_authorized">Tidak diizinkan. Server mengirimkan respons HTTP 401/403. Silakan periksa apakah nama pengguna dan kata sandi Anda benar.</string>
+    <string name="connection_error_dialog_retry_now">Coba lagi sekarang</string>
+    <string name="connection_error_dialog_retry_countdown">Mencoba dalam %1$ds…</string>
+    <string name="connection_error_dialog_retrying">Mencoba…</string>
 </resources>
