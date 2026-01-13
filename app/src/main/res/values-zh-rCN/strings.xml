@@ -457,4 +457,13 @@
     <string name="client_certificate_dialog_title_add">添加客户端证书</string>
     <string name="client_certificate_dialog_description_page1">输入使用该证书的服务 URL，以及 PKCS#12 文件的密码。</string>
     <string name="client_certificate_dialog_description_page2">查看证书详情并保存来添加该客户端证书。该证书会被用于服务器身份认证。</string>
+    <string name="main_menu_connection_error">连接错误</string>
+    <string name="connection_error_dialog_title">连接错误</string>
+    <string name="connection_error_dialog_message">连接到 %1$s 有问题。应用会在后台一直尝试连接。</string>
+    <string name="connection_error_dialog_connection_refused">连接被拒绝。服务器可能宕机，或者地址不正确。</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket 不受支持。服务器可能不支持 WebSocket 连接，或地址可能不正确。</string>
+    <string name="connection_error_dialog_not_authorized">未获授权。服务器返回了 HTTP 401/403 错误响应。请检查用户名和密码是否正确。</string>
+    <string name="connection_error_dialog_retry_now">立即重试</string>
+    <string name="connection_error_dialog_retry_countdown">%1$d 后重试…</string>
+    <string name="connection_error_dialog_retrying">重试中…</string>
 </resources>
