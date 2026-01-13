@@ -119,7 +119,7 @@
     <string name="detail_action_mode_delete_dialog_message">Наистина ли желаете избраните известия да бъдат безвъзвратно премахнати\?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Премахване</string>
     <string name="detail_menu_unsubscribe">Отписване</string>
-    <string name="detail_action_mode_menu_copy">Копиране</string>
+    <string name="common_button_copy">Копиране</string>
     <string name="detail_action_mode_menu_delete">Премахване</string>
     <string name="detail_action_mode_delete_dialog_cancel">Отказ</string>
     <string name="share_title">Споделяне</string>

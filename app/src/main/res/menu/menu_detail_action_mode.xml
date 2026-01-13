@@ -4,7 +4,7 @@
     <item
         android:id="@+id/detail_action_mode_copy"
         android:icon="@drawable/ic_content_copy_white_24dp"
-        android:title="@string/detail_action_mode_menu_copy"
+        android:title="@string/common_button_copy"
         app:iconTint="@android:color/white" />
     <item
         android:id="@+id/detail_action_mode_delete"

@@ -113,7 +113,7 @@
     <string name="detail_menu_enable_instant">啓用即時通知</string>
     <string name="detail_menu_disable_instant">關閉即時通知</string>
     <string name="detail_menu_clear">清除所有通知</string>
-    <string name="detail_action_mode_menu_copy">複製</string>
+    <string name="common_button_copy">複製</string>
     <string name="detail_action_mode_menu_delete">刪除</string>
     <string name="share_menu_send">傳送</string>
     <string name="share_content_title">預覽</string>

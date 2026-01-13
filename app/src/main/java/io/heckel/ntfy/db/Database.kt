@@ -1,13 +1,31 @@
 package io.heckel.ntfy.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.Index
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import androidx.room.Update
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.service.NotAuthorizedException
+import io.heckel.ntfy.service.WebSocketNotSupportedException
+import io.heckel.ntfy.service.hasCause
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
+import java.net.ConnectException
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -28,7 +46,7 @@ data class Subscription(
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
-    @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
+    @Ignore val connectionDetails: ConnectionDetails = ConnectionDetails()
 ) {
     constructor(
         id: Long,
@@ -64,12 +82,42 @@ data class Subscription(
                 totalCount = 0,
                 newCount = 0,
                 lastActive = 0,
-                state = ConnectionState.NOT_APPLICABLE
+                connectionDetails = ConnectionDetails()
             )
 }
 
 enum class ConnectionState {
     NOT_APPLICABLE, CONNECTING, CONNECTED
+}
+
+/**
+ * Represents connection details for a specific baseUrl, including state and error info.
+ * This is not persisted to the database, but kept in memory.
+ */
+data class ConnectionDetails(
+    val state: ConnectionState = ConnectionState.NOT_APPLICABLE,
+    val error: Throwable? = null,
+    val nextRetryTime: Long = 0L
+) {
+    fun getStackTraceString(): String {
+        return error?.stackTraceToString() ?: ""
+    }
+    
+    fun hasError(): Boolean {
+        return error != null
+    }
+    
+    fun isConnectionRefused(): Boolean {
+        return error?.hasCause<ConnectException>() ?: false
+    }
+    
+    fun isWebSocketNotSupported(): Boolean {
+        return error?.hasCause<WebSocketNotSupportedException>() ?: false
+    }
+
+    fun isNotAuthorized(): Boolean {
+        return error?.hasCause<NotAuthorizedException>() ?: false
+    }
 }
 
 data class SubscriptionWithMetadata(

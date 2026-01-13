@@ -152,7 +152,7 @@
     <string name="detail_menu_clear">Xóa tất cả thông báo</string>
     <string name="detail_menu_settings">Cài đặt đăng kí</string>
     <string name="detail_menu_unsubscribe">Hủy đăng kí</string>
-    <string name="detail_action_mode_menu_copy">Sao chép</string>
+    <string name="common_button_copy">Sao chép</string>
     <string name="detail_action_mode_menu_delete">Xóa</string>
     <string name="detail_action_mode_delete_dialog_message">Xóa vĩnh viễn thông báo đã chọn?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Xóa vĩnh viễn</string>

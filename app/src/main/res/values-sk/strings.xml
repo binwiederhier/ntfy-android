@@ -302,7 +302,7 @@
     <string name="detail_item_cannot_save">Nie je možné uložiť prílohu: %1$s</string>
     <string name="detail_item_download_info_not_downloaded_expires_x">nestiahnuté, vyprší %1$s</string>
     <string name="detail_menu_copy_url">Kopírovať adresu témy</string>
-    <string name="detail_action_mode_menu_copy">Kopírovať</string>
+    <string name="common_button_copy">Kopírovať</string>
     <string name="settings_notifications_priority_default">predvolená</string>
     <string name="notification_dialog_show_all">Zobraziť všetky oznámenia</string>
     <string name="notification_popup_file_download_successful">%1$s

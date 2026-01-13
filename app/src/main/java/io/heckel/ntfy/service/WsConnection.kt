@@ -1,7 +1,6 @@
 package io.heckel.ntfy.service
 
 import android.app.AlarmManager
-import android.content.Context
 import android.os.Build
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.CustomHeader
@@ -40,7 +39,7 @@ class WsConnection(
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
-    private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
+    private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
@@ -56,7 +55,6 @@ class WsConnection(
     private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
-    private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
@@ -142,7 +140,7 @@ class WsConnection(
                 if (errorCount > 0) {
                     errorCount = 0
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTED, null, 0L)
             }
         }
 
@@ -182,10 +180,22 @@ class WsConnection(
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection marked as closed. Not retrying.")
                     return@synchronize
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                 state = State.Disconnected
                 errorCount++
-                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
+                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount-1) ?: RETRY_SECONDS.last()
+                val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
+                
+                // Special cases:
+                // - Ignore broken connections in the UI, we don't want to show warning icons
+                // - Handle authentication errors
+                // - Handle servers that do not support WebSockets
+                val error = when {
+                    isConnectionBrokenException(t) -> null
+                    isResponseCode(response, 401, 403) -> NotAuthorizedException(response!!.code, response.message, t)
+                    isResponseCode(response, 101) -> WebSocketNotSupportedException(response!!.code, response.message, t)
+                    else -> t
+                }
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }

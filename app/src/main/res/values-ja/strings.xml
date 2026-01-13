@@ -142,7 +142,7 @@
     <string name="detail_menu_copy_url">トピックのアドレスをコピー</string>
     <string name="detail_menu_settings">購読設定</string>
     <string name="detail_menu_unsubscribe">購読解除</string>
-    <string name="detail_action_mode_menu_copy">コピー</string>
+    <string name="common_button_copy">コピー</string>
     <string name="detail_action_mode_delete_dialog_message">選択された通知を完全に削除しますか？</string>
     <string name="detail_action_mode_delete_dialog_cancel">キャンセル</string>
     <string name="detail_settings_title">購読設定</string>

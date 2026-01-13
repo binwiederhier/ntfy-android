@@ -131,7 +131,7 @@
     <string name="detail_menu_notifications_enabled">Notifications activées</string>
     <string name="detail_menu_enable_instant">Activer la livraison instantanée</string>
     <string name="detail_menu_clear">Effacer toutes les notifications</string>
-    <string name="detail_action_mode_menu_copy">Copier</string>
+    <string name="common_button_copy">Copier</string>
     <string name="detail_settings_title">Paramètres d\'abonnement</string>
     <string name="share_title">Partager</string>
     <string name="detail_menu_settings">Paramètres d\'abonnement</string>

@@ -128,7 +128,7 @@
     <string name="main_banner_websocket_text">Перехід на WebSockets є рекомендованим способом підключення до вашого сервера, який може подовжити час автономної роботи, але може вимагати <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">додаткової конфігурації вашого проксі</a>. Це можна вимкнути в налаштуваннях.</string>
     <string name="add_dialog_login_title">Необхідно ввійти</string>
     <string name="add_dialog_login_new_user">Новий користувач</string>
-    <string name="detail_action_mode_menu_copy">Копія</string>
+    <string name="common_button_copy">Копія</string>
     <string name="add_dialog_button_login">Авторизуватися</string>
     <string name="add_dialog_error_connection_failed">Помилка підключення: %1$s</string>
     <string name="add_dialog_login_description">Ця тема потребує авторизації. Будь ласка, введіть ім\'я користувача та пароль.</string>

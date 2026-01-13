@@ -163,7 +163,7 @@
     <string name="detail_menu_clear">Kustuta kõik teavitused</string>
     <string name="detail_menu_settings">Tellimuste seadistused</string>
     <string name="detail_menu_unsubscribe">Lõpeta tellimus</string>
-    <string name="detail_action_mode_menu_copy">Kopeeri</string>
+    <string name="common_button_copy">Kopeeri</string>
     <string name="detail_action_mode_menu_delete">Kustuta</string>
     <string name="detail_action_mode_delete_dialog_message">Kas kustutad valitud teavituse(d) jäädavalt?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Kustuta jäädavalt</string>

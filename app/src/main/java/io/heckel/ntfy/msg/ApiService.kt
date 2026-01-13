@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.util.ALL_PRIORITIES
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
@@ -14,10 +15,9 @@ import io.heckel.ntfy.util.topicUrlAuth
 import io.heckel.ntfy.util.topicUrlJson
 import io.heckel.ntfy.util.topicUrlJsonPoll
 import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
+import okio.BufferedSource
 import java.io.IOException
 import java.net.URLEncoder
 import kotlin.random.Random
@@ -140,43 +140,25 @@ class ApiService(private val context: Context) {
         baseUrl: String,
         topics: String,
         since: String?,
-        user: User?,
-        notify: (topic: String, Notification) -> Unit,
-        fail: (Exception) -> Unit
-    ): Call {
+        user: User?
+    ): Pair<Call, BufferedSource> {
         val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
-        call.enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (!response.isSuccessful) {
-                        throw Exception("Unexpected response ${response.code} when subscribing to topic $url")
-                    }
-                    val source = response.body.source()
-                    while (!source.exhausted()) {
-                        val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val notification =
-                            parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
-                        if (notification != null) {
-                            notify(notification.topic, notification.notification)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Connection to $url failed (1): ${e.message}", e)
-                    fail(e)
-                }
+        val response = call.execute()
+        if (!response.isSuccessful) {
+            val code = response.code
+            val message = response.message
+            response.close()
+            if (code == 401 || code == 403) {
+                throw NotAuthorizedException(code, message)
             }
-
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e(TAG, "Connection to $url failed (2): ${e.message}", e)
-                fail(e)
-            }
-        })
-        return call
+            throw IOException("Unexpected response $code when subscribing to $url")
+        }
+        return Pair(call, response.body.source())
     }
 
     suspend fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {

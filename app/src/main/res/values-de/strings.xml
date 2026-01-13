@@ -246,7 +246,7 @@
     <string name="detail_test_message_error_unauthorized_anon">Nachricht kann nicht gesendet werden: Anonymes Senden nicht erlaubt.</string>
     <string name="detail_menu_test">Test-Benachrichtigung senden</string>
     <string name="detail_menu_copy_url">Themen-Adresse kopieren</string>
-    <string name="detail_action_mode_menu_copy">Kopieren</string>
+    <string name="common_button_copy">Kopieren</string>
     <string name="detail_clear_dialog_permanently_delete">Endgültig löschen</string>
     <string name="detail_clear_dialog_cancel">Abbrechen</string>
     <string name="detail_item_cannot_open_not_found">Anhang kann nicht geöffnet werden: Datei wurde gelöscht, oder es ist keine App installiert die diese Datei öffnen kann.</string>
@@ -368,12 +368,12 @@
     <string name="settings_general_dynamic_colors_summary_disabled">Verwendung der ntfy-Themenfarben</string>
     <string name="publish_dialog_title">Veröffentlichen unter %1$s</string>
     <string name="publish_dialog_title_hint">Titel</string>
-    <string name="publish_dialog_title_placeholder">z. B. Jemand steht vor der Tür</string>
+    <string name="publish_dialog_title_placeholder">z.B. Jemand steht vor der Tür</string>
     <string name="settings_general_language_title">Sprache</string>
     <string name="settings_general_language_summary_system">Systemstandard verwenden</string>
     <string name="settings_general_language_system_default">Systemstandard</string>
     <string name="publish_dialog_message_hint">Nachricht</string>
-    <string name="publish_dialog_tags_placeholder">z. B. Warnung, Totenkopf</string>
+    <string name="publish_dialog_tags_placeholder">z.B. Warnung, Totenkopf</string>
     <string name="publish_dialog_priority_hint">Priorität</string>
     <string name="publish_dialog_button_publish">Veröffentlichen</string>
     <string name="publish_dialog_error_sending">Nachricht kann nicht veröffentlicht werden: %1$s</string>
@@ -392,17 +392,17 @@
     <string name="publish_dialog_chip_attach_file">Lokale Datei anhängen</string>
     <string name="publish_dialog_chip_phone_call">Telefonanruf</string>
     <string name="publish_dialog_click_url_hint">URL anklicken</string>
-    <string name="publish_dialog_click_url_placeholder">z. B. https://example.com/alerts/1234</string>
+    <string name="publish_dialog_click_url_placeholder">z.B. https://example.com/alerts/1234</string>
     <string name="publish_dialog_email_hint">E-Mail</string>
-    <string name="publish_dialog_email_placeholder">z. B. phil@example.com</string>
+    <string name="publish_dialog_email_placeholder">z.B. phil@example.com</string>
     <string name="publish_dialog_delay_hint">Übertragungsverzögerung</string>
-    <string name="publish_dialog_delay_placeholder">z. B. 30m, 1h, today 9pm (nur auf Englisch)</string>
+    <string name="publish_dialog_delay_placeholder">z.B. 30m, 1h, today 9pm (nur auf Englisch)</string>
     <string name="publish_dialog_attach_url_hint">Anhang-URL</string>
-    <string name="publish_dialog_attach_url_placeholder">z. B. https://example.com/flowers.jpg</string>
+    <string name="publish_dialog_attach_url_placeholder">z.B. https://example.com/flowers.jpg</string>
     <string name="publish_dialog_attach_filename_hint">Dateiname der Anlage</string>
-    <string name="publish_dialog_attach_filename_placeholder">z. B. Lilien.jpg</string>
+    <string name="publish_dialog_attach_filename_placeholder">z.B. Lilien.jpg</string>
     <string name="publish_dialog_phone_call_hint">Telefonanruf</string>
-    <string name="publish_dialog_phone_call_placeholder">z. B. +1234567890</string>
+    <string name="publish_dialog_phone_call_placeholder">z.B. +1234567890</string>
     <string name="publish_dialog_docs_text">Beispiele und eine detaillierte Beschreibung aller Veröffentlichungsfunktionen findest du in der <a href="https://docs.ntfy.sh/publish/">Dokumentation</a>.</string>
     <string name="message_bar_hint">Nachricht hier eingeben</string>
     <string name="message_bar_publish_button_description">Nachricht veröffentlichen</string>

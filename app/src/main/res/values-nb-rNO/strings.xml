@@ -236,7 +236,7 @@
     <string name="detail_item_download_info_not_downloaded_expires_x">ikke nedlastet, utløper %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Varsler avslått til %1$s</string>
     <string name="detail_item_cannot_save">Kan ikke lagre vedlegg: %1$s</string>
-    <string name="detail_action_mode_menu_copy">Kopier</string>
+    <string name="common_button_copy">Kopier</string>
     <string name="notification_popup_action_cancel">Avbryt</string>
     <string name="notification_popup_file">%1$s
 \nFil: %2$s</string>

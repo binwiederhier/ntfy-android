@@ -361,6 +361,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             SubscriberServiceManager.refresh(this)
         }
 
+        // Observe connection details and update menu item visibility
+        repository.getConnectionDetailsLiveData().observe(this) { details ->
+            showHideConnectionErrorMenuItem(details)
+        }
+
         // Mark this subscription as "open" so we don't receive notifications for it
         repository.detailViewSubscriptionId.set(subscriptionId)
 
@@ -508,6 +513,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
             showHideCopyMenuItems(subscription.baseUrl)
+            showHideConnectionErrorMenuItem(repository.getConnectionDetails())
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -550,6 +556,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
         showHideCopyMenuItems(subscriptionBaseUrl)
+        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
@@ -601,6 +608,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             }
             R.id.detail_menu_disable_instant -> {
                 onInstantEnableClick(enable = false)
+                true
+            }
+            R.id.detail_menu_connection_error -> {
+                onConnectionErrorClick()
                 true
             }
             R.id.detail_menu_copy_url -> {
@@ -666,6 +677,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             Log.d(TAG, "Re-enabling notifications ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
             onNotificationMutedUntilChanged(Repository.MUTED_UNTIL_SHOW_ALL)
         }
+    }
+
+    private fun onConnectionErrorClick() {
+        Log.d(TAG, "Showing connection error dialog for ${subscriptionBaseUrl}")
+        val connectionErrorFragment = ConnectionErrorFragment.newInstance(subscriptionBaseUrl)
+        connectionErrorFragment.show(supportFragmentManager, ConnectionErrorFragment.TAG)
     }
 
     override fun onNotificationMutedUntilChanged(mutedUntilTimestamp: Long) {
@@ -797,6 +814,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
             val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
             copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
+        }
+    }
+
+    private fun showHideConnectionErrorMenuItem(details: Map<String, io.heckel.ntfy.db.ConnectionDetails>) {
+        if (!this::menu.isInitialized) {
+            return
+        }
+        runOnUiThread {
+            val connectionErrorItem = menu.findItem(R.id.detail_menu_connection_error)
+            // Only show if there's an error for this subscription's base URL
+            val hasError = details[subscriptionBaseUrl]?.hasError() == true
+            connectionErrorItem?.isVisible = hasError
         }
     }
 

@@ -90,7 +90,7 @@
     <string name="detail_menu_test">Testmelding verzenden</string>
     <string name="detail_menu_clear">Alle meldingen wissen</string>
     <string name="detail_menu_settings">Abonnementsinstellingen</string>
-    <string name="detail_action_mode_menu_copy">Kopiëren</string>
+    <string name="common_button_copy">Kopiëren</string>
     <string name="detail_action_mode_menu_delete">Verwijderen</string>
     <string name="detail_action_mode_delete_dialog_message">De geselecteerde melding(en) definitief verwijderen\?</string>
     <string name="share_menu_send">Delen</string>

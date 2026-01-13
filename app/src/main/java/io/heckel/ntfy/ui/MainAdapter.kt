@@ -75,6 +75,7 @@ class MainAdapter(
         private val nameView: TextView = itemView.findViewById(R.id.main_item_text)
         private val statusView: TextView = itemView.findViewById(R.id.main_item_status)
         private val dateView: TextView = itemView.findViewById(R.id.main_item_date)
+        private val connectionErrorImageView: View = itemView.findViewById(R.id.main_item_connection_error_image)
         private val notificationDisabledUntilImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_until_image)
         private val notificationDisabledForeverImageView: View = itemView.findViewById(R.id.main_item_notification_disabled_forever_image)
         private val instantImageView: View = itemView.findViewById(R.id.main_item_instant_image)
@@ -91,7 +92,7 @@ class MainAdapter(
             } else {
                 context.getString(R.string.main_item_status_text_not_one, subscription.totalCount)
             }
-            if (subscription.instant && subscription.state == ConnectionState.CONNECTING) {
+            if (subscription.instant && subscription.connectionDetails.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
             val date = Date(subscription.lastActive * 1000)
@@ -119,6 +120,8 @@ class MainAdapter(
             statusView.text = statusMessage
             dateView.text = dateText
             dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
+            val showConnectionError = subscription.instant && subscription.connectionDetails.hasError()
+            connectionErrorImageView.visibility = if (showConnectionError) View.VISIBLE else View.GONE
             notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE
             notificationDisabledForeverImageView.visibility = if (showMutedForeverIcon) View.VISIBLE else View.GONE
             instantImageView.visibility = if (subscription.instant && BuildConfig.FIREBASE_AVAILABLE) View.VISIBLE else View.GONE

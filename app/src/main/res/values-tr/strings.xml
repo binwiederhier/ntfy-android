@@ -221,7 +221,7 @@
     <string name="settings_notifications_auto_delete_three_months">3 ay sonra</string>
     <string name="detail_menu_test">Test bildirimi gönder</string>
     <string name="detail_menu_unsubscribe">Abonelikten çık</string>
-    <string name="detail_action_mode_menu_copy">Kopyala</string>
+    <string name="common_button_copy">Kopyala</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="share_title">Paylaş</string>
     <string name="share_content_image_text">Sizinle bir resim paylaşıldı</string>

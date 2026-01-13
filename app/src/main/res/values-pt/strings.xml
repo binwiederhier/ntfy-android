@@ -244,7 +244,7 @@
     <string name="detail_item_menu_copy_contents">Copiar notificação</string>
     <string name="notification_dialog_30min">30 minutos</string>
     <string name="notification_popup_action_open">Abrir</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="share_content_text_hint">Adicione conteúdo a partilhar aqui</string>
     <string name="share_content_file_error">Não foi possível ler as informações do ficheiro: %1$s</string>
     <string name="notification_dialog_muted_forever_toast_message">Notificações silenciadas</string>

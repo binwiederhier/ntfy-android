@@ -102,7 +102,7 @@
     <string name="detail_menu_disable_instant">Vypnout okamžité doručení</string>
     <string name="detail_menu_settings">Nastavení odběru</string>
     <string name="detail_menu_unsubscribe">Odhlásit se z odběru</string>
-    <string name="detail_action_mode_menu_copy">Kopírovat</string>
+    <string name="common_button_copy">Kopírovat</string>
     <string name="detail_action_mode_menu_delete">Smazat</string>
     <string name="detail_action_mode_delete_dialog_message">Trvale odstranit vybraná oznámení\?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Odstranit natrvalo</string>
