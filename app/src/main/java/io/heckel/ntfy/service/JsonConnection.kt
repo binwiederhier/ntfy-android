@@ -25,13 +25,12 @@ class JsonConnection(
     private val api: ApiService,
     private val user: User?,
     private val sinceId: String?,
-    private val connectionDetailsListener: (Collection<Long>, ConnectionState, Throwable?, Long) -> Unit,
+    private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
 ) : Connection {
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
-    private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
     private val parser = NotificationParser()
@@ -54,7 +53,7 @@ class JsonConnection(
                     if (errorCount > 0) {
                         errorCount = 0
                     }
-                    connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTED, null, 0L)
+                    connectionDetailsListener(baseUrl, ConnectionState.CONNECTED, null, 0L)
                     
                     // Blocking read loop: reads JSON lines until connection closes or is cancelled
                     while (isActive && serviceActive() && !source.exhausted()) {
@@ -81,7 +80,7 @@ class JsonConnection(
                     val retrySeconds = RETRY_SECONDS.getOrNull(errorCount-1) ?: RETRY_SECONDS.last()
                     val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
                     val error = if (isConnectionBrokenException(e)) null else e
-                    connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
+                    connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)
                     Log.w(TAG, "[$url] Retrying connection in ${retrySeconds}s ...")
                     delay(retrySeconds * 1000L)
                 }

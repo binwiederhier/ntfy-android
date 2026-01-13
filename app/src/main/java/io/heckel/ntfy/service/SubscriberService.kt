@@ -307,10 +307,7 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun onConnectionDetailsChanged(subscriptionIds: Collection<Long>, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
-        val subscriptionId = subscriptionIds.firstOrNull() ?: return
-        val subscription = repository.getSubscription(subscriptionId) ?: return
-        val baseUrl = subscription.baseUrl
+    private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
         repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
     }
 

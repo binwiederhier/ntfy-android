@@ -39,7 +39,7 @@ class WsConnection(
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
-    private val connectionDetailsListener: (Collection<Long>, ConnectionState, Throwable?, Long) -> Unit,
+    private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
@@ -55,7 +55,6 @@ class WsConnection(
     private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
-    private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
@@ -141,7 +140,7 @@ class WsConnection(
                 if (errorCount > 0) {
                     errorCount = 0
                 }
-                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTED, null, 0L)
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTED, null, 0L)
             }
         }
 
@@ -196,7 +195,7 @@ class WsConnection(
                     isResponseCode(response, 101) -> WebSocketNotSupportedException(response!!.code, response.message, t)
                     else -> t
                 }
-                connectionDetailsListener(subscriptionIds, ConnectionState.CONNECTING, error, nextRetryTime)
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }
