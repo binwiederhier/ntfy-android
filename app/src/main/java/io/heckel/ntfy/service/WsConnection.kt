@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import java.net.ProtocolException
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
@@ -191,8 +192,8 @@ class WsConnection(
                 // - Handle servers that do not support WebSockets
                 val error = when {
                     isConnectionBrokenException(t) -> null
+                    isProtocolException(t) -> WebSocketNotSupportedException(response!!.code, response.message, t)
                     isResponseCode(response, 401, 403) -> NotAuthorizedException(response!!.code, response.message, t)
-                    isResponseCode(response, 101) -> WebSocketNotSupportedException(response!!.code, response.message, t)
                     else -> t
                 }
                 connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)

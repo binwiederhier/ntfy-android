@@ -2,6 +2,7 @@ package io.heckel.ntfy.service
 
 import okhttp3.internal.http2.StreamResetException
 import java.io.EOFException
+import java.net.ProtocolException
 
 interface Connection {
     fun start()
@@ -55,6 +56,13 @@ fun isResponseCode(response: okhttp3.Response?, vararg codes: Int): Boolean {
  */
 fun isConnectionBrokenException(t: Throwable): Boolean {
     return t.hasCause<EOFException>() || t.hasCause<StreamResetException>()
+}
+
+/**
+ * ProtocolException is thrown by the OkHttp library when the WebSocket handshake fails.
+ */
+fun isProtocolException(t: Throwable): Boolean {
+    return t.hasCause<ProtocolException>()
 }
 
 /**
