@@ -447,4 +447,13 @@
     <string name="client_certificate_dialog_error_wrong_password">Vale salasõna või vigane PKCS#12 fail</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Vale või vigane salasõna või katkine PKCS#12 fail</string>
     <string name="client_certificate_dialog_error_invalid_url">Vigane teenuse võrguaadress</string>
+    <string name="main_menu_connection_error">Ühenduse viga</string>
+    <string name="connection_error_dialog_title">Ühenduse viga</string>
+    <string name="connection_error_dialog_message">Ühendamisel „%1$s“ serveriga tekkis viga. Rakendus proovib taustal jätkata ühendamist.</string>
+    <string name="connection_error_dialog_connection_refused">Ühenduse loomine pole võimalik. Server võib olla seiskunud või aadress võib olla vale.</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket pole toetatud. Server ei pruugi toetada WebSocketi ühendusi või aadress võib olla vale.</string>
+    <string name="connection_error_dialog_not_authorized">Tuvastamine polnud võimalik. Serveri päringu vastus oli HTTP 401/403 olekukoodiga. Palun kontrolli, kas kasutajanimi ja salasõna on õiged.</string>
+    <string name="connection_error_dialog_retry_now">Proovi kohe uuesti</string>
+    <string name="connection_error_dialog_retry_countdown">Proovin uuesti %1$d sekundi pärast…</string>
+    <string name="connection_error_dialog_retrying">Proovin uuesti…</string>
 </resources>
