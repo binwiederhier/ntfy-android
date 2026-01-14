@@ -460,4 +460,10 @@
     <string name="trusted_certificate_dialog_button_trust">Доверяване</string>
     <string name="client_certificate_dialog_title">Клиентски сертификат</string>
     <string name="client_certificate_dialog_title_add">Добавяне на клиентски сертификат</string>
+    <string name="client_certificate_dialog_description_page1">Въведете адреса на услугата, за която е предназначен сертификата и паролата за PKCS#12 файла.</string>
+    <string name="client_certificate_dialog_description_page2">Прегледайте подробностите на сертификата и запазете, за да го добавите като клиентски. Сертификатът ще бъде използван за удостоверяване пред сървъра.</string>
+    <string name="client_certificate_dialog_password_hint">Парола</string>
+    <string name="client_certificate_dialog_error_wrong_password">Грешна парола или неприемлив PKCS#12 файл</string>
+    <string name="client_certificate_dialog_error_invalid_p12_password">Грешна парола или повреден PKCS#12 файл</string>
+    <string name="client_certificate_dialog_error_invalid_url">Неприемлив адрес на услуга</string>
 </resources>
