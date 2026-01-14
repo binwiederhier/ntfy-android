@@ -457,4 +457,13 @@
     <string name="client_certificate_dialog_error_wrong_password">パスワードあるいはPKCS#12ファイルが間違っています</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">パスワードが間違っているかPKCS#12ファイルが壊れています</string>
     <string name="client_certificate_dialog_error_invalid_url">サービスURLが不正です</string>
+    <string name="main_menu_connection_error">接続エラー</string>
+    <string name="connection_error_dialog_title">接続エラー</string>
+    <string name="connection_error_dialog_message">%1$sへの接続中に問題が発生しました。バックグラウンドで再接続の試行を継続します。</string>
+    <string name="connection_error_dialog_connection_refused">接続が拒否されました。サーバーがダウンしているかアドレスが間違っているかも知れません。</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocketがサポートされていません。サーバーがWebSocket接続をサポートしていないか、アドレスが間違っているかも知れません。</string>
+    <string name="connection_error_dialog_not_authorized">認証されていません。サーバーがHTTP 401/403を返しました。ユーザー名とパスワードが正しいか確認して下さい。</string>
+    <string name="connection_error_dialog_retry_now">再試行</string>
+    <string name="connection_error_dialog_retry_countdown">%1$d秒後に再試行…</string>
+    <string name="connection_error_dialog_retrying">再試行中…</string>
 </resources>
