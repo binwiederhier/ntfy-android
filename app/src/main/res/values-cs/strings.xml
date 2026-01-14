@@ -60,7 +60,7 @@
     <string name="add_dialog_login_error_not_authorized">Přihlášení se nezdařilo. Uživatel %1$s není autorizován.</string>
     <string name="detail_no_notifications_text">K tomuto tématu jste zatím neobdrželi žádné oznámení.</string>
     <string name="detail_how_to_intro">Pro odeslání oznámení k tomuto tématu, jednoduše odešlete PUT nebo POST dotaz na URL tématu.</string>
-    <string name="detail_how_to_example">Příklad (použití curl):<br></br><tt>$ curl -d \"Hi\" %1$s</tt></string>
+    <string name="detail_how_to_example">Příklad (použití curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt></string>
     <string name="detail_clear_dialog_message">Smazat všechna oznámení v tomto tématu\?</string>
     <string name="detail_clear_dialog_permanently_delete">Odstranit natrvalo</string>
     <string name="detail_delete_dialog_message">Odhlásit se z tohoto tématu a smazat všechna přijatá oznámení\?</string>
@@ -338,4 +338,15 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy bude fungovat jako distributor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_title">Povolit UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy nebude fungovat jako distributor UnifiedPush</string>
+    <string name="common_button_next">Další</string>
+    <string name="common_button_add">Přidat</string>
+    <string name="common_button_delete">Smazat</string>
+    <string name="common_service_url_placeholder">např. https://ntfy.example.com</string>
+    <string name="common_certificate_subject">Předmět</string>
+    <string name="common_certificate_issuer">Vydavatel</string>
+    <string name="common_certificate_fingerprint">SHA-256 otisk</string>
+    <string name="common_certificate_valid_from">Platný od</string>
+    <string name="common_certificate_valid_until">Platný do</string>
+    <string name="common_certificate_added_toast">Certifikát přidán</string>
+    <string name="common_certificate_deleted_toast">Certifikát smazán</string>
 </resources>
