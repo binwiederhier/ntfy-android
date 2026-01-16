@@ -1,7 +1,7 @@
 buildscript {
-    ext.kotlin_version = '2.2.0'
+    ext.kotlin_version = '2.2.10'
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.13.2'
+        classpath 'com.android.tools.build:gradle:9.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.4' // This is removed in the "fdroid" flavor
 
@@ -11,5 +11,5 @@ buildscript {
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '2.2.0-2.0.2'
+    id 'com.google.devtools.ksp' version '2.3.2'
 }
