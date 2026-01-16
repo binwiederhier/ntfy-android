@@ -16,7 +16,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.Call
-import kotlin.random.Random
 
 class JsonConnection(
     private val connectionId: ConnectionId,
@@ -58,7 +57,7 @@ class JsonConnection(
                     // Blocking read loop: reads JSON lines until connection closes or is cancelled
                     while (isActive && serviceActive() && !source.exhausted()) {
                         val line = source.readUtf8Line() ?: break
-                        val notificationWithTopic = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0)
+                        val notificationWithTopic = parser.parseWithTopic(line,  subscriptionId = 0)
                         if (notificationWithTopic != null) {
                             since = notificationWithTopic.notification.id
                             val topic = notificationWithTopic.topic

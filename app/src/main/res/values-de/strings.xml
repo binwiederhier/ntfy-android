@@ -447,4 +447,19 @@
     <string name="settings_advanced_certificates_error_invalid_p12">Ungültige PKCS#12-Datei</string>
     <string name="trusted_certificate_dialog_title">Zertifikatsdetails</string>
     <string name="trusted_certificate_dialog_title_unknown">Sicherheitswarnung</string>
+    <string name="trusted_certificate_dialog_title_add">Füge vertrauenswürdiges Zertifikat hinzu</string>
+    <string name="trusted_certificate_dialog_security_description">Dieses Zertifikat ist nicht vertrauenswürdig. Angreifer könnten deine Daten stehlen. Verwende dieses Zertifikat nur, wenn du weißt, warum es nicht vertrauenswürdig ist.</string>
+    <string name="trusted_certificate_dialog_description_add">Du hast ein Zertifikat ausgewählt. Überprüfe die untenstehenden Details, bevor du es hinzufügst.</string>
+    <string name="trusted_certificate_dialog_security_title">Deine Verbindung ist nicht privat</string>
+    <string name="trusted_certificate_dialog_expired_warning">Achtung: Dieses Zertifikat ist abgelaufen.</string>
+    <string name="trusted_certificate_dialog_not_yet_valid_warning">Achtung: Dieses Zertifikat ist noch nicht gültig.</string>
+    <string name="trusted_certificate_dialog_error_invalid_url">Unglültige URL</string>
+    <string name="trusted_certificate_dialog_error_parse">Das Zertifikat konnte nicht geladen werden: %1$s</string>
+    <string name="trusted_certificate_dialog_button_trust">Vertrauen</string>
+    <string name="client_certificate_dialog_title">Client-Zertifikat</string>
+    <string name="client_certificate_dialog_title_add">Füge Client-Zertifikat hinzu</string>
+    <string name="client_certificate_dialog_password_hint">Passwort</string>
+    <string name="client_certificate_dialog_error_wrong_password">Falsches Passwort oder ungültige PKCS#12-Datei</string>
+    <string name="client_certificate_dialog_error_invalid_p12_password">Ungültiges Passwort oder fehlerhafte PKCS#12-Datei</string>
+    <string name="client_certificate_dialog_error_invalid_url">Ungültige Service-URL</string>
 </resources>

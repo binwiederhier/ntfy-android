@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.util.ALL_PRIORITIES
@@ -20,7 +21,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.BufferedSource
 import java.io.IOException
 import java.net.URLEncoder
-import kotlin.random.Random
 
 class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
@@ -114,11 +114,15 @@ class ApiService(private val context: Context) {
         }
     }
 
-    suspend fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
-        val sinceVal = since ?: "all"
+    suspend fun poll(subscription: Subscription): List<Notification> {
+        val subscriptionId = subscription.id
+        val baseUrl = subscription.baseUrl
+        val topic = subscription.topic
+        val sinceVal = subscription.lastNotificationId ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
+        val user = repository.getUser(baseUrl)
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
@@ -128,7 +132,7 @@ class ApiService(private val context: Context) {
             val body = response.body.string().trim()
             if (body.isEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
+                parser.parse(line, subscriptionId = subscriptionId)
             }
 
             Log.d(TAG, "Notifications: $notifications")
@@ -156,7 +160,7 @@ class ApiService(private val context: Context) {
             if (code == 401 || code == 403) {
                 throw NotAuthorizedException(code, message)
             }
-            throw IOException("Unexpected response $code when subscribing to $url")
+            throw IOException("Unexpected response $code when subscribing")
         }
         return Pair(call, response.body.source())
     }
@@ -198,6 +202,8 @@ class ApiService(private val context: Context) {
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"
         const val EVENT_MESSAGE = "message"
+        const val EVENT_MESSAGE_DELETE = "message_delete"
+        const val EVENT_MESSAGE_CLEAR = "message_clear"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
     }

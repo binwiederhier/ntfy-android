@@ -20,6 +20,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.service.WebSocketNotSupportedException
 import io.heckel.ntfy.service.hasCause
@@ -144,7 +145,8 @@ data class SubscriptionWithMetadata(
 data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
-    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp in seconds
+    @ColumnInfo(name = "sequenceId") val sequenceId: String, // Sequence ID for updating notifications
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
@@ -157,7 +159,30 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-)
+    @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
+) {
+    constructor(
+        id: String,
+        subscriptionId: Long,
+        timestamp: Long,
+        sequenceId: String,
+        title: String,
+        message: String,
+        contentType: String,
+        encoding: String,
+        notificationId: Int,
+        priority: Int,
+        tags: String,
+        click: String,
+        icon: Icon?,
+        actions: List<Action>?,
+        attachment: Attachment?,
+        deleted: Boolean
+    ) : this(
+        id, subscriptionId, timestamp, sequenceId, title, message, contentType, encoding,
+        notificationId, priority, tags, click, icon, actions, attachment, deleted, event = ApiService.EVENT_MESSAGE
+    )
+}
 
 fun Notification.isMarkdown(): Boolean {
     return contentType == "text/markdown"
@@ -272,7 +297,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(
-    version = 17,
+    version = 18,
     entities = [
         Subscription::class,
         Notification::class,
@@ -317,6 +342,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_14_15)
                     .addMigrations(MIGRATION_15_16)
                     .addMigrations(MIGRATION_16_17)
+                    .addMigrations(MIGRATION_17_18)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -450,6 +476,13 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("UPDATE Notification SET icon_contentUri = NULL WHERE icon_url IS NULL AND icon_contentUri IS NOT NULL")
             }
         }
+
+        private val MIGRATION_17_18 = object : Migration(17, 18) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN sequenceId TEXT NOT NULL DEFAULT ''")
+                db.execSQL("UPDATE Notification SET sequenceId = id WHERE sequenceId = ''")
+            }
+        }
     }
 }
 
@@ -541,9 +574,6 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
-    @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId") // Includes deleted
-    fun listIds(subscriptionId: Long): List<String>
-
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
@@ -563,10 +593,16 @@ interface NotificationDao {
     fun get(notificationId: String): Notification?
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
-    fun clearAllNotificationIds(subscriptionId: Long)
+    fun markAllAsRead(subscriptionId: Long)
+
+    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)
+
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)

@@ -1,7 +1,12 @@
 package io.heckel.ntfy.firebase
 
 import android.content.Intent
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.heckel.ntfy.R
@@ -9,11 +14,13 @@ import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Attachment
 import io.heckel.ntfy.db.Icon
 import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberService
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.deriveNotificationId
 import io.heckel.ntfy.util.nullIfZero
 import io.heckel.ntfy.util.toPriority
 import io.heckel.ntfy.util.topicShortUrl
@@ -21,7 +28,6 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class FirebaseService : FirebaseMessagingService() {
     private val repository by lazy { (application as Application).repository }
@@ -41,9 +47,17 @@ class FirebaseService : FirebaseMessagingService() {
         }
 
         // Dispatch event
+        //
+        // This logic is (partially) duplicated in
+        // - Android: SubscriberService::onNotificationReceived()
+        // - Android: FirebaseService::onMessageReceived()
+        // - Web app: hooks.js:handleNotification()
+        // - Web app: sw.js:handleMessage(), sw.js:handleMessageClear(), ...
         val data = remoteMessage.data
         when (data["event"]) {
             ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)
+            ApiService.EVENT_MESSAGE_DELETE -> handleMessageDelete(remoteMessage)
+            ApiService.EVENT_MESSAGE_CLEAR -> handleMessageClear(remoteMessage)
             ApiService.EVENT_KEEPALIVE -> handleKeepalive(remoteMessage)
             ApiService.EVENT_POLL_REQUEST -> handlePollRequest(remoteMessage)
             else -> Log.d(TAG, "Discarding unexpected message (2): from=${remoteMessage.from}, data=${data}")
@@ -80,6 +94,46 @@ class FirebaseService : FirebaseMessagingService() {
         workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, workRequest)
     }
 
+    private fun handleMessageDelete(remoteMessage: RemoteMessage) {
+        val data = remoteMessage.data
+        val topic = data["topic"] ?: return
+        val sequenceId = data["sequence_id"] ?: return
+        Log.d(TAG, "Received message_delete: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
+
+        CoroutineScope(job).launch {
+            val baseUrl = getString(R.string.app_base_url)
+            val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
+
+            // Mark all notifications with this sequenceId as deleted
+            repository.markAsDeletedBySequenceId(subscription.id, sequenceId)
+
+            // Cancel the Android notification
+            val notificationId = deriveNotificationId(sequenceId)
+            val notifier = NotificationService(this@FirebaseService)
+            notifier.cancel(notificationId)
+        }
+    }
+
+    private fun handleMessageClear(remoteMessage: RemoteMessage) {
+        val data = remoteMessage.data
+        val topic = data["topic"] ?: return
+        val sequenceId = data["sequence_id"] ?: return
+        Log.d(TAG, "Received message_clear: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
+
+        CoroutineScope(job).launch {
+            val baseUrl = getString(R.string.app_base_url)
+            val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
+
+            // Mark all notifications with this sequenceId as read
+            repository.markAsReadBySequenceId(subscription.id, sequenceId)
+
+            // Cancel the Android notification
+            val notificationId = deriveNotificationId(sequenceId)
+            val notifier = NotificationService(this@FirebaseService)
+            notifier.cancel(notificationId)
+        }
+    }
+
     private fun handleMessage(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
         val id = data["id"]
@@ -99,6 +153,7 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentSize = data["attachment_size"]?.toLongOrNull()?.nullIfZero()
         val attachmentExpires = data["attachment_expires"]?.toLongOrNull()?.nullIfZero()
         val attachmentUrl = data["attachment_url"]
+        val sequenceId = data["sequence_id"]
         val truncated = (data["truncated"] ?: "") == "1"
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
@@ -127,10 +182,12 @@ class FirebaseService : FirebaseMessagingService() {
                 )
             } else null
             val icon: Icon? = if (iconUrl != null && iconUrl != "") Icon(url = iconUrl) else null
+            val actualSequenceId = sequenceId ?: id
             val notification = Notification(
                 id = id,
                 subscriptionId = subscription.id,
                 timestamp = timestamp,
+                sequenceId = actualSequenceId,
                 title = title ?: "",
                 message = message,
                 contentType = contentType ?: "",
@@ -141,10 +198,13 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = Random.nextInt(),
-                deleted = false
+                notificationId = deriveNotificationId(actualSequenceId),
+                deleted = false,
+                event = ApiService.EVENT_MESSAGE
             )
-            if (repository.addNotification(notification)) {
+
+            val added = repository.addNotification(notification)
+            if (added) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
                 dispatcher.dispatch(subscription, notification)
             }

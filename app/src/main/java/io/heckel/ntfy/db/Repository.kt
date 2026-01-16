@@ -12,6 +12,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -117,25 +118,20 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }
 
-    fun clearAllNotificationIds(subscriptionId: Long) {
-        return notificationDao.clearAllNotificationIds(subscriptionId)
-    }
-
     fun getNotification(notificationId: String): Notification? {
         return notificationDao.get(notificationId)
-    }
-
-    fun onlyNewNotifications(subscriptionId: Long, notifications: List<Notification>): List<Notification> {
-        val existingIds = notificationDao.listIds(subscriptionId)
-        return notifications.filterNot { existingIds.contains(it.id) }
     }
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification != null) {
+        if (maybeExistingNotification != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
+        }
+        // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
+        if (notification.sequenceId.isNotEmpty()) {
+            notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
         }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
@@ -154,8 +150,20 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         notificationDao.markAsDeleted(notificationId)
     }
 
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsDeletedBySequenceId(subscriptionId, sequenceId)
+    }
+
     fun markAllAsDeleted(subscriptionId: Long) {
         notificationDao.markAllAsDeleted(subscriptionId)
+    }
+
+    fun markAllAsRead(subscriptionId: Long) {
+        notificationDao.markAllAsRead(subscriptionId)
+    }
+
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsReadBySequenceId(subscriptionId, sequenceId)
     }
 
     fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {

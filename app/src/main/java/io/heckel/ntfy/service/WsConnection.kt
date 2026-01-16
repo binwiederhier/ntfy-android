@@ -21,7 +21,6 @@ import java.net.ProtocolException
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.random.Random
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
@@ -148,7 +147,7 @@ class WsConnection(
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
                 Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
-                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, notificationId = Random.nextInt())
+                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0)
                 if (notificationWithTopic == null) {
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                     return@synchronize

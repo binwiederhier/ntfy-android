@@ -406,4 +406,7 @@
     <string name="settings_advanced_certificates_title">Administrar certificados</string>
     <string name="settings_advanced_certificates_summary">Añadir certificados a la lista de confiados y administrar certificados de cliente para mTLS</string>
     <string name="settings_advanced_certificates_trusted_header">Certificados confiados</string>
+    <string name="common_service_url_placeholder">ej. https://ntfy.example.com</string>
+    <string name="common_certificate_subject">Subject</string>
+    <string name="main_menu_connection_error">Error de conexión</string>
 </resources>

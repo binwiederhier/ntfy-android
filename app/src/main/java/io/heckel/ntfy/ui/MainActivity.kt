@@ -54,6 +54,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
@@ -73,7 +74,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
     private val repository by lazy { (application as Application).repository }
     private val api by lazy { ApiService(this) }
+    private val poller by lazy { Poller(api, repository) }
     private val messenger = FirebaseMessenger()
 
     // UI elements
@@ -690,10 +691,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         // Fetch cached messages
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
+                val notifications = poller.poll(subscription)
                 notifications.forEach { notification ->
-                    repository.addNotification(notification)
                     if (notification.icon != null) {
                         DownloadManager.enqueue(this@MainActivity, notification.id, userAction = false, DownloadType.ICON)
                     }
@@ -730,17 +729,12 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             var errorMessage = "" // First error
             var newNotificationsCount = 0
             repository.getSubscriptions().forEach { subscription ->
-                Log.d(TAG, "subscription: $subscription")
+                Log.d(TAG, "Polling subscription: $subscription")
                 try {
-                    val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
-                    val newNotifications = repository.onlyNewNotifications(subscription.id, notifications)
+                    val newNotifications = poller.poll(subscription)
+                    newNotificationsCount += newNotifications.size
                     newNotifications.forEach { notification ->
-                        newNotificationsCount++
-                        val notificationWithId = notification.copy(notificationId = Random.nextInt())
-                        if (repository.addNotification(notificationWithId)) {
-                            dispatcher?.dispatch(subscription, notificationWithId)
-                        }
+                        dispatcher?.dispatch(subscription, notification)
                     }
                 } catch (e: Exception) {
                     val topic = displayName(appBaseUrl, subscription)
@@ -789,7 +783,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
     private fun handleActionModeClick(subscription: Subscription) {
         adapter.toggleSelection(subscription.id)
-        if (adapter.selected.size == 0) {
+        if (adapter.selected.isEmpty()) {
             finishActionMode()
         } else {
             actionMode!!.title = adapter.selected.size.toString()

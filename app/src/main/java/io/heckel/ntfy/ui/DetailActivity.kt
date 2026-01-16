@@ -36,6 +36,7 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.copyToClipboard
@@ -67,6 +68,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
     private val repository by lazy { (application as Application).repository }
     private val api by lazy { ApiService(this) }
+    private val poller by lazy { Poller(api, repository) }
     private val messenger = FirebaseMessenger()
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -230,9 +232,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
                 // Fetch cached messages
                 try {
-                    val user = repository.getUser(subscription.baseUrl) // May be null
-                    val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user)
-                    notifications.forEach { notification -> repository.addNotification(notification) }
+                    poller.poll(subscription)
                 } catch (e: Exception) {
                     Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
                 }
@@ -337,6 +337,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 val snackbar = Snackbar.make(mainList, R.string.detail_item_snack_deleted, Snackbar.LENGTH_SHORT)
                 snackbar.setAction(R.string.detail_item_snack_undo) {
                     lifecycleScope.launch(Dispatchers.IO) {
+                        // Note: undo only restores the latest notification, not the entire sequence
                         repository.undeleteNotification(notification.id)
                     }
                 }
@@ -524,7 +525,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         GlobalScope.launch(Dispatchers.IO) {
             // Note: This is here and not in onDestroy/onStop, because we want to clear notifications as early
             // as possible, so that we don't see the "new" bubble in the main list anymore.
-            repository.clearAllNotificationIds(subscriptionId)
+            repository.markAllAsRead(subscriptionId)
         }
         Log.d(TAG, "onPause hook: Marking subscription $subscriptionId as 'not open'")
         repository.detailViewSubscriptionId.set(0) // Mark as closed
@@ -721,15 +722,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val subscription = repository.getSubscription(subscriptionId) ?: return@launch
-                val user = repository.getUser(subscription.baseUrl) // May be null
-                val notifications = api.poll(subscription.id, subscription.baseUrl, subscription.topic, user, subscription.lastNotificationId)
-                val newNotifications = repository.onlyNewNotifications(subscriptionId, notifications)
+                val newNotifications = poller.poll(subscription)
                 val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)
                 } else {
                     getString(R.string.refresh_message_result, newNotifications.size)
                 }
-                newNotifications.forEach { notification -> repository.addNotification(notification) }
                 runOnUiThread {
                     Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show()
                     mainListContainer.isRefreshing = false
