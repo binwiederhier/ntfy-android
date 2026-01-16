@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.service.NotAuthorizedException
 import io.heckel.ntfy.util.ALL_PRIORITIES
@@ -113,11 +114,15 @@ class ApiService(private val context: Context) {
         }
     }
 
-    suspend fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
-        val sinceVal = since ?: "all"
+    suspend fun poll(subscription: Subscription): List<Notification> {
+        val subscriptionId = subscription.id
+        val baseUrl = subscription.baseUrl
+        val topic = subscription.topic
+        val sinceVal = subscription.lastNotificationId ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
+        val user = repository.getUser(baseUrl)
         val customHeaders = repository.getCustomHeaders(baseUrl)
         val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
         HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->

@@ -691,9 +691,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         // Fetch cached messages
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val user = repository.getUser(subscription.baseUrl) // May be null
-                val addedNotifications = poller.poll(subscription, user)
-                addedNotifications.forEach { notification ->
+                val notifications = poller.poll(subscription)
+                notifications.forEach { notification ->
                     if (notification.icon != null) {
                         DownloadManager.enqueue(this@MainActivity, notification.id, userAction = false, DownloadType.ICON)
                     }
@@ -732,14 +731,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             repository.getSubscriptions().forEach { subscription ->
                 Log.d(TAG, "Polling subscription: $subscription")
                 try {
-                    val user = repository.getUser(subscription.baseUrl) // May be null
-                    val addedNotifications = poller.poll(
-                        subscription = subscription,
-                        user = user,
-                        since = subscription.lastNotificationId
-                    )
-                    newNotificationsCount += addedNotifications.size
-                    addedNotifications.forEach { notification ->
+                    val newNotifications = poller.poll(subscription)
+                    newNotificationsCount += newNotifications.size
+                    newNotifications.forEach { notification ->
                         dispatcher?.dispatch(subscription, notification)
                     }
                 } catch (e: Exception) {

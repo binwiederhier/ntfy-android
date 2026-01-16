@@ -3,9 +3,7 @@ package io.heckel.ntfy.msg
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.Log
-import io.heckel.ntfy.util.deriveNotificationId
 
 /**
  * Polls the server for notifications and updates the repository.
@@ -21,21 +19,9 @@ class Poller(
      * Returns the list of new notifications that were added.
      *
      * @param subscription The subscription to poll
-     * @param user The user for authentication (may be null)
-     * @param since The message ID to poll since (null for all cached messages)
      */
-    suspend fun poll(
-        subscription: Subscription,
-        user: User?,
-        since: String? = null
-    ): List<Notification> {
-        val notifications = api.poll(
-            subscriptionId = subscription.id,
-            baseUrl = subscription.baseUrl,
-            topic = subscription.topic,
-            user = user,
-            since = since
-        )
+    suspend fun poll(subscription: Subscription): List<Notification> {
+        val notifications = api.poll(subscription)
         return processNotifications(subscription.id, notifications)
     }
 

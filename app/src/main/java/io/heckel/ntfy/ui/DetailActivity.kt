@@ -232,8 +232,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
                 // Fetch cached messages
                 try {
-                    val user = repository.getUser(subscription.baseUrl) // May be null
-                    poller.poll(subscription, user)
+                    poller.poll(subscription)
                 } catch (e: Exception) {
                     Log.e(TAG, "Unable to fetch notifications: ${e.message}", e)
                 }
@@ -723,16 +722,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val subscription = repository.getSubscription(subscriptionId) ?: return@launch
-                val user = repository.getUser(subscription.baseUrl) // May be null
-                val addedNotifications = poller.poll(
-                    subscription = subscription,
-                    user = user,
-                    since = subscription.lastNotificationId
-                )
-                val toastMessage = if (addedNotifications.isEmpty()) {
+                val newNotifications = poller.poll(subscription)
+                val toastMessage = if (newNotifications.isEmpty()) {
                     getString(R.string.refresh_message_no_results)
                 } else {
-                    getString(R.string.refresh_message_result, addedNotifications.size)
+                    getString(R.string.refresh_message_result, newNotifications.size)
                 }
                 runOnUiThread {
                     Toast.makeText(this@DetailActivity, toastMessage, Toast.LENGTH_LONG).show()
