@@ -447,4 +447,7 @@
     <string name="settings_advanced_certificates_error_invalid_p12">Ungültige PKCS#12-Datei</string>
     <string name="trusted_certificate_dialog_title">Zertifikatsdetails</string>
     <string name="trusted_certificate_dialog_title_unknown">Sicherheitswarnung</string>
+    <string name="trusted_certificate_dialog_title_add">Füge vertrauenswürdiges Zertifikat hinzu</string>
+    <string name="trusted_certificate_dialog_security_description">Dieses Zertifikat ist nicht vertrauenswürdig. Angreifer könnten deine Daten stehlen. Verwende dieses Zertifikat nur, wenn du weißt, warum es nicht vertrauenswürdig ist.</string>
+    <string name="trusted_certificate_dialog_description_add">Du hast ein Zertifikat ausgewählt. Überprüfe die untenstehenden Details, bevor du es hinzufügst.</string>
 </resources>
