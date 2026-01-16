@@ -730,14 +730,13 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             var errorMessage = "" // First error
             var newNotificationsCount = 0
             repository.getSubscriptions().forEach { subscription ->
-                Log.d(TAG, "subscription: $subscription")
+                Log.d(TAG, "Polling subscription: $subscription")
                 try {
                     val user = repository.getUser(subscription.baseUrl) // May be null
                     val addedNotifications = poller.poll(
                         subscription = subscription,
                         user = user,
-                        since = subscription.lastNotificationId,
-                        notify = true
+                        since = subscription.lastNotificationId
                     )
                     newNotificationsCount += addedNotifications.size
                     addedNotifications.forEach { notification ->

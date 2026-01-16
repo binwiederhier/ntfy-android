@@ -41,13 +41,12 @@ class PollWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, 
             subscriptions.forEach{ subscription ->
                 try {
                     val user = repository.getUser(subscription.baseUrl)
-                    val addedNotifications = poller.poll(
+                    val newNotifications = poller.poll(
                         subscription = subscription,
                         user = user,
-                        since = subscription.lastNotificationId,
-                        notify = true
+                        since = subscription.lastNotificationId
                     )
-                    addedNotifications.forEach { notification ->
+                    newNotifications.forEach { notification ->
                         dispatcher.dispatch(subscription, notification)
                     }
                 } catch (e: Exception) {

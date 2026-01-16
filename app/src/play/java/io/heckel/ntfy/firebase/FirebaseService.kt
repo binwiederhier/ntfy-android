@@ -203,9 +203,6 @@ class FirebaseService : FirebaseMessagingService() {
                 event = ApiService.EVENT_MESSAGE
             )
 
-            // Note: This logic is duplicated in the SubscriberService::onNotificationReceived() method
-            //       and the web app hooks.js:handleNotification().
-
             val added = repository.addNotification(notification)
             if (added) {
                 Log.d(TAG, "Dispatching notification: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")

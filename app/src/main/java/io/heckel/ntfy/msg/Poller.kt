@@ -23,13 +23,11 @@ class Poller(
      * @param subscription The subscription to poll
      * @param user The user for authentication (may be null)
      * @param since The message ID to poll since (null for all cached messages)
-     * @param notify Whether to derive notification IDs for popup notifications
      */
     suspend fun poll(
         subscription: Subscription,
         user: User?,
-        since: String? = null,
-        notify: Boolean = false
+        since: String? = null
     ): List<Notification> {
         val notifications = api.poll(
             subscriptionId = subscription.id,
@@ -38,7 +36,7 @@ class Poller(
             user = user,
             since = since
         )
-        return processNotifications(subscription.id, notifications, notify)
+        return processNotifications(subscription.id, notifications)
     }
 
     /**
@@ -48,8 +46,7 @@ class Poller(
      */
     private suspend fun processNotifications(
         subscriptionId: Long,
-        notifications: List<Notification>,
-        notify: Boolean
+        notifications: List<Notification>
     ): List<Notification> {
         // Group by sequenceId and only keep the latest notification for each sequence
         val latestBySequenceId = notifications
@@ -78,7 +75,6 @@ class Poller(
         // Add only regular message notifications
         val notificationsToAdd = latestBySequenceId
             .filter { it.event == ApiService.EVENT_MESSAGE }
-            .map { if (notify) it.copy(notificationId = deriveNotificationId(it.sequenceId)) else it }
         val addedNotifications = mutableListOf<Notification>()
         notificationsToAdd.forEach { notification ->
             if (repository.addNotification(notification)) {
