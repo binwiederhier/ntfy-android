@@ -47,6 +47,12 @@ class FirebaseService : FirebaseMessagingService() {
         }
 
         // Dispatch event
+        //
+        // This logic is (partially) duplicated in
+        // - Android: SubscriberService::onNotificationReceived()
+        // - Android: FirebaseService::onMessageReceived()
+        // - Web app: hooks.js:handleNotification()
+        // - Web app: sw.js:handleMessage(), sw.js:handleMessageClear(), ...
         val data = remoteMessage.data
         when (data["event"]) {
             ApiService.EVENT_MESSAGE -> handleMessage(remoteMessage)

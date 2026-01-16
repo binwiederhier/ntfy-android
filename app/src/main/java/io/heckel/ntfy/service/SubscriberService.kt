@@ -325,8 +325,11 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $notification")
         GlobalScope.launch(Dispatchers.IO) {
-            // Note: This logic is duplicated in the FirebaseService::handleMessage() method
-            //       and the web app hooks.js:handleNotification().
+            // This logic is (partially) duplicated in
+            // - Android: SubscriberService::onNotificationReceived()
+            // - Android: FirebaseService::onMessageReceived()
+            // - Web app: hooks.js:handleNotification()
+            // - Web app: sw.js:handleMessage(), sw.js:handleMessageClear(), ...
 
             when (notification.event) {
                 ApiService.EVENT_MESSAGE_CLEAR -> {

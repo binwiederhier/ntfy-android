@@ -159,7 +159,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun markAllAsRead(subscriptionId: Long) {
-        return notificationDao.markAllAsRead(subscriptionId)
+        notificationDao.markAllAsRead(subscriptionId)
     }
 
     fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String) {

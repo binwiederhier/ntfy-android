@@ -83,10 +83,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
-        if (subscription.upAppId != null) {
-            return false
-        }
-        if (notification.event != ApiService.EVENT_MESSAGE) {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
         }
         val priority = if (notification.priority > 0) notification.priority else 3
@@ -99,10 +96,10 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldBroadcast(subscription: Subscription, notification: Notification): Boolean {
-        if (subscription.upAppId != null) { // Never broadcast for UnifiedPush subscriptions
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) { // Never broadcast for UnifiedPush subscriptions
             return false
         }
-        return repository.getBroadcastEnabled() && notification.event == ApiService.EVENT_MESSAGE
+        return repository.getBroadcastEnabled()
     }
 
     private fun shouldDistribute(subscription: Subscription, notification: Notification): Boolean {
