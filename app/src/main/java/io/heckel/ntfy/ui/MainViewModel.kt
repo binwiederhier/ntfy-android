@@ -32,8 +32,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
             val distributor = Distributor(context)
             distributor.sendUnregistered(subscription.upAppId, subscription.upConnectorToken)
         }
-        repository.removeAllNotifications(subscriptionId)
-        repository.removeSubscription(subscriptionId)
+        repository.removeSubscription(subscription)
         if (subscription.icon != null) {
             val resolver = context.applicationContext.contentResolver
             try {

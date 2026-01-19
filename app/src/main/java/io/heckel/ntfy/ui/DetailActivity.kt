@@ -872,8 +872,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
                 Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
                 GlobalScope.launch(Dispatchers.IO) {
-                    repository.removeAllNotifications(subscriptionId)
-                    repository.removeSubscription(subscriptionId)
+                    val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+                    repository.removeSubscription(subscription)
                     if (subscriptionBaseUrl == appBaseUrl) {
                         messenger.unsubscribe(subscriptionTopic)
                     }

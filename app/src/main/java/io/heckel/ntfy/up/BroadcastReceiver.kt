@@ -209,7 +209,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
 
                 // Remove subscription
                 Log.d(TAG, "Removing subscription ${existingSubscription.id} with connectorToken $connectorToken")
-                repository.removeSubscription(existingSubscription.id)
+                repository.removeSubscription(existingSubscription)
                 existingSubscription.upAppId?.let { appId -> distributor.sendUnregistered(appId, connectorToken) }
 
                 // Refresh (and maybe stop) foreground service

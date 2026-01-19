@@ -231,9 +231,8 @@ class ConnectionErrorFragment : DialogFragment() {
     private fun updateCountdown() {
         val details = selectedBaseUrl?.let { connectionDetails[it] }
         if (details != null && details.nextRetryTime > 0) {
-            val remainingMillis = details.nextRetryTime - System.currentTimeMillis()
-            if (remainingMillis > 0) {
-                val remainingSeconds = (remainingMillis / 1000).toInt()
+            val remainingSeconds = ((details.nextRetryTime - System.currentTimeMillis()) / 1000).toInt()
+            if (remainingSeconds > 0) {
                 countdownTextView.text = getString(R.string.connection_error_dialog_retry_countdown, remainingSeconds)
                 countdownTextView.visibility = View.VISIBLE
             } else {

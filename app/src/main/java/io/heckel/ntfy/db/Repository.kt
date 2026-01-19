@@ -28,7 +28,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     private val connectionDetails = ConcurrentHashMap<String, ConnectionDetails>()
     private val connectionDetailsLiveData = MutableLiveData<Map<String, ConnectionDetails>>(connectionDetails)
-    private val connectionForceReconnectVersions = ConcurrentHashMap<String, Long>()
+    private val connectionForceReconnectVersions = ConcurrentHashMap<String, Long>() // Base URL -> Number of times "Retry" was pressed
 
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -94,8 +94,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun removeSubscription(subscriptionId: Long) {
-        subscriptionDao.remove(subscriptionId)
+    suspend fun removeSubscription(subscription: Subscription) {
+        notificationDao.removeAll(subscription.id)
+        subscriptionDao.remove(subscription.id)
+        updateConnectionDetails(subscription.baseUrl, ConnectionState.NOT_APPLICABLE)
     }
 
     suspend fun getNotifications(): List<Notification> {
@@ -172,10 +174,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun removeNotificationsIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {
         notificationDao.removeIfOlderThan(subscriptionId, olderThanTimestamp)
-    }
-
-    fun removeAllNotifications(subscriptionId: Long) {
-        notificationDao.removeAll(subscriptionId)
     }
 
     suspend fun getUsers(): List<User> {
@@ -575,10 +573,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun getConnectionDetails(): Map<String, ConnectionDetails> {
         return connectionDetails.toMap()
-    }
-
-    fun getConnectionDetailsForBaseUrl(baseUrl: String): ConnectionDetails? {
-        return connectionDetails[baseUrl]
     }
 
     fun getConnectionForceReconnectVersion(baseUrl: String): Long {
