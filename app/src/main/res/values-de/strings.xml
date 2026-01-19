@@ -462,4 +462,8 @@
     <string name="client_certificate_dialog_error_wrong_password">Falsches Passwort oder ungültige PKCS#12-Datei</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Ungültiges Passwort oder fehlerhafte PKCS#12-Datei</string>
     <string name="client_certificate_dialog_error_invalid_url">Ungültige Service-URL</string>
+    <string name="trusted_certificate_dialog_description_view">Dieses Zertifikat wird für die Verbindung zur untenstehenden Service-URL verwendet. Du hast diese Ausnahme manuell hinzugefügt.</string>
+    <string name="trusted_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat gepinnt werden soll. Das Zertifikat wird nur für diese URL als vertrauenswürdig eingestuft.</string>
+    <string name="client_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat verwendet werden soll, sowie das Passwort für die PKCS#12-Datei.</string>
+    <string name="client_certificate_dialog_description_page2">Überprüfe die Zertifikatsdetails und speichere, um dieses Client-Zertifikat hinzuzufügen. Dieses Zertifikat wird zur Authentifizierung beim Server verwendet.</string>
 </resources>
