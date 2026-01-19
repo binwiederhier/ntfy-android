@@ -132,7 +132,7 @@ class ApiService(private val context: Context) {
             val body = response.body.string().trim()
             if (body.isEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parse(line, subscriptionId = subscriptionId)
+                parser.parse(line, subscriptionId = subscriptionId, baseUrl = baseUrl)
             }
 
             Log.d(TAG, "Notifications: $notifications")

@@ -107,8 +107,8 @@ class FirebaseService : FirebaseMessagingService() {
             // Mark all notifications with this sequenceId as deleted
             repository.markAsDeletedBySequenceId(subscription.id, sequenceId)
 
-            // Cancel the Android notification
-            val notificationId = deriveNotificationId(sequenceId)
+            // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
+            val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)
             val notifier = NotificationService(this@FirebaseService)
             notifier.cancel(notificationId)
         }
@@ -127,8 +127,8 @@ class FirebaseService : FirebaseMessagingService() {
             // Mark all notifications with this sequenceId as read
             repository.markAsReadBySequenceId(subscription.id, sequenceId)
 
-            // Cancel the Android notification
-            val notificationId = deriveNotificationId(sequenceId)
+            // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
+            val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)
             val notifier = NotificationService(this@FirebaseService)
             notifier.cancel(notificationId)
         }
@@ -198,7 +198,7 @@ class FirebaseService : FirebaseMessagingService() {
                 icon = icon,
                 actions = parser.parseActions(actions),
                 attachment = attachment,
-                notificationId = deriveNotificationId(actualSequenceId),
+                notificationId = deriveNotificationId(baseUrl, topic, actualSequenceId),
                 deleted = false,
                 event = ApiService.EVENT_MESSAGE
             )

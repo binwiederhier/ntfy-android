@@ -513,11 +513,13 @@ fun Long.nullIfZero(): Long? {
 }
 
 /**
- * Derives a stable notification ID from a string (typically the sequenceId or id).
+ * Derives a stable notification ID from baseUrl, topic, and sequenceId.
  * This allows Android to update existing notifications when a new version arrives.
+ * The composite key ensures notifications from different topics don't collide.
  * The result is always positive and never zero (0 means "no notification").
  */
-fun deriveNotificationId(sequenceId: String): Int {
-    val hash = sequenceId.hashCode()
+fun deriveNotificationId(baseUrl: String, topic: String, sequenceId: String): Int {
+    val composite = "$baseUrl/$topic/$sequenceId"
+    val hash = composite.hashCode()
     return if (hash == 0 || hash == Int.MIN_VALUE) 1 else abs(hash)
 }

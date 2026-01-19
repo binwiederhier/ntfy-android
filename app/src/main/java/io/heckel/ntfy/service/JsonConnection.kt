@@ -57,7 +57,7 @@ class JsonConnection(
                     // Blocking read loop: reads JSON lines until connection closes or is cancelled
                     while (isActive && serviceActive() && !source.exhausted()) {
                         val line = source.readUtf8Line() ?: break
-                        val notificationWithTopic = parser.parseWithTopic(line,  subscriptionId = 0)
+                        val notificationWithTopic = parser.parseWithTopic(line, subscriptionId = 0, baseUrl = baseUrl)
                         if (notificationWithTopic != null) {
                             since = notificationWithTopic.notification.id
                             val topic = notificationWithTopic.topic

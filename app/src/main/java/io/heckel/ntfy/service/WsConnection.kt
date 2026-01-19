@@ -147,7 +147,7 @@ class WsConnection(
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
                 Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
-                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0)
+                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, baseUrl = baseUrl)
                 if (notificationWithTopic == null) {
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                     return@synchronize
