@@ -191,8 +191,8 @@ class WsConnection(
                 // - Handle servers that do not support WebSockets
                 val error = when {
                     isConnectionBrokenException(t) -> null
-                    isProtocolException(t) -> WebSocketNotSupportedException(response!!.code, response.message, t)
-                    isResponseCode(response, 401, 403) -> NotAuthorizedException(response!!.code, response.message, t)
+                    isProtocolException(t) && response != null -> WebSocketNotSupportedException(response.code, response.message, t)
+                    isResponseCode(response, 401, 403) && response != null -> NotAuthorizedException(response.code, response.message, t)
                     else -> t
                 }
                 connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)
