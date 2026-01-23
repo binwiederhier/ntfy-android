@@ -457,4 +457,13 @@
     <string name="client_certificate_dialog_error_wrong_password">Mot de passe incorrect ou fichier PKCS#12 invalide</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Mot de passe invalide ou fichier PKCS#12 corrompu</string>
     <string name="client_certificate_dialog_error_invalid_url">URL du service invalide</string>
+    <string name="connection_error_dialog_message">Un problème est survenu lors de la connexion à %1$s. L’application continuera d’essayer de se reconnecter en arrière-plan.</string>
+    <string name="connection_error_dialog_connection_refused">Connexion refusée. Le serveur peut être hors ligne ou l’adresse peut être incorrecte.</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket non pris en charge. Le serveur peut ne pas accepter les connexions WebSocket, ou l’adresse peut être incorrecte.</string>
+    <string name="connection_error_dialog_not_authorized">Non autorisé. Le serveur a renvoyé une réponse HTTP 401/403. Veuillez vérifier que votre nom d’utilisateur et votre mot de passe sont corrects.</string>
+    <string name="connection_error_dialog_retry_now">Réessayer maintenant</string>
+    <string name="connection_error_dialog_retry_countdown">Nouvelle tentative dans %1$ds…</string>
+    <string name="connection_error_dialog_retrying">Nouvelle tentative…</string>
+    <string name="main_menu_connection_error">Erreur de connexion</string>
+    <string name="connection_error_dialog_title">Erreur de connexion</string>
 </resources>
