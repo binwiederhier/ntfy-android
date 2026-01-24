@@ -203,6 +203,9 @@
     <string name="detail_menu_clear">Clear all notifications</string>
     <string name="detail_menu_settings">Subscription settings</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
+    <string name="detail_menu_search">Search notifications</string>
+    <string name="detail_search_hint">Search in notifications</string>
+    <string name="detail_no_search_results">No notifications match your search</string>
 
     <!-- Detail activity: Action mode -->
     <string name="detail_action_mode_menu_delete">Delete</string>

@@ -9,12 +9,15 @@ import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -91,6 +94,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var messageBarText: TextInputEditText
     private lateinit var messageBarPublishButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
+
+    // Search state
+    private var searchView: SearchView? = null
+    private var isSearchActive: Boolean = false
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -307,20 +314,39 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             insets
         }
 
-        viewModel.list(subscriptionId).observe(this) {
-            it?.let {
+        // Observe filtered notifications (filtered by search query)
+        val noSearchResultsText: TextView = findViewById(R.id.detail_no_notifications_text)
+        val howToIntro: View = findViewById(R.id.detail_how_to_intro)
+        val howToExampleView: View = findViewById(R.id.detail_how_to_example)
+        val howToLinkView: View = findViewById(R.id.detail_how_to_link)
+        viewModel.listFiltered(subscriptionId).observe(this) {
+            it?.let { notifications ->
                 // Show list view
-                adapter.submitList(it as MutableList<Notification>)
-                if (it.isEmpty()) {
+                adapter.submitList(notifications.toMutableList())
+                if (notifications.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
+                    // Show different text based on whether we're searching or not
+                    if (isSearchActive && viewModel.searchQuery.value?.isNotEmpty() == true) {
+                        noSearchResultsText.text = getString(R.string.detail_no_search_results)
+                        // Hide "how to" instructions when showing search results
+                        howToIntro.visibility = View.GONE
+                        howToExampleView.visibility = View.GONE
+                        howToLinkView.visibility = View.GONE
+                    } else {
+                        noSearchResultsText.text = getString(R.string.detail_no_notifications_text)
+                        // Show "how to" instructions for empty subscription
+                        howToIntro.visibility = View.VISIBLE
+                        howToExampleView.visibility = View.VISIBLE
+                        howToLinkView.visibility = if (BuildConfig.PAYMENT_LINKS_AVAILABLE) View.VISIBLE else View.GONE
+                    }
                 } else {
                     mainListContainer.visibility = View.VISIBLE
                     noEntriesText.visibility = View.GONE
                 }
 
                 // Cancel notifications that still have popups
-                maybeCancelNotificationPopups(it)
+                maybeCancelNotificationPopups(notifications)
             }
         }
 
@@ -553,6 +579,57 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             menu[i].icon?.setTint(toolbarTextColor)
         }
 
+        // Setup SearchView
+        val searchItem = menu.findItem(R.id.detail_menu_search)
+        searchView = searchItem?.actionView as? SearchView
+        searchView?.let { sv ->
+            sv.queryHint = getString(R.string.detail_search_hint)
+            
+            // Tint SearchView icons and text
+            val searchIcon = sv.findViewById<ImageView>(androidx.appcompat.R.id.search_button)
+            searchIcon?.setColorFilter(toolbarTextColor)
+            val closeIcon = sv.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+            closeIcon?.setColorFilter(toolbarTextColor)
+            val searchEditText = sv.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+            searchEditText?.setTextColor(toolbarTextColor)
+            searchEditText?.setHintTextColor(toolbarTextColor.and(0x80FFFFFF.toInt())) // 50% alpha
+            
+            // Handle query text changes
+            sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.setSearchQuery(newText ?: "")
+                    return true
+                }
+            })
+            
+            // Handle expand/collapse
+            searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    isSearchActive = true
+                    // Hide other menu items when search is expanded
+                    setMenuItemsVisibility(false)
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    isSearchActive = false
+                    // Clear search query when collapsed
+                    viewModel.setSearchQuery("")
+                    // Restore menu items visibility
+                    setMenuItemsVisibility(true)
+                    showHideInstantMenuItems(subscriptionInstant)
+                    showHideMutedUntilMenuItems(subscriptionMutedUntil)
+                    showHideCopyMenuItems(subscriptionBaseUrl)
+                    showHideConnectionErrorMenuItem(repository.getConnectionDetails())
+                    return true
+                }
+            })
+        }
+
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
@@ -564,6 +641,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         startNotificationMutedChecker()
 
         return true
+    }
+
+    private fun setMenuItemsVisibility(visible: Boolean) {
+        if (!this::menu.isInitialized) return
+        
+        // Hide/show all menu items except search
+        for (i in 0 until menu.size) {
+            val item = menu[i]
+            if (item.itemId != R.id.detail_menu_search) {
+                item.isVisible = visible
+            }
+        }
     }
 
     private fun startNotificationMutedChecker() {
