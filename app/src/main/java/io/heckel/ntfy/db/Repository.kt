@@ -120,6 +120,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }
 
+    fun getNotificationsFilteredLiveData(subscriptionId: Long, query: String): LiveData<List<Notification>> {
+        return notificationDao.listFlowFiltered(subscriptionId, query).asLiveData()
+    }
+
     fun getNotification(notificationId: String): Notification? {
         return notificationDao.get(notificationId)
     }

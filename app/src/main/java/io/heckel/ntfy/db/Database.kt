@@ -574,6 +574,19 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
+    @Query("""
+        SELECT * FROM notification 
+        WHERE subscriptionId = :subscriptionId 
+        AND deleted != 1 
+        AND (
+            title LIKE '%' || :query || '%' COLLATE NOCASE
+            OR message LIKE '%' || :query || '%' COLLATE NOCASE
+            OR tags LIKE '%' || :query || '%' COLLATE NOCASE
+        )
+        ORDER BY timestamp DESC
+    """)
+    fun listFlowFiltered(subscriptionId: Long, query: String): Flow<List<Notification>>
+
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
