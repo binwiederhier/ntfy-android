@@ -345,4 +345,26 @@
     <string name="settings_advanced_exact_alarms_title">Точные оповещения</string>
     <string name="settings_advanced_exact_alarms_true">ntfy может выставлять точные оповещения. Точные оповещения необходимы для переподключения WebSockets в фоновом режиме. Нажмите, чтобы отозвать разрешение.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy может выставлять точные оповещения. Точные оповещения необходимы для переподключения WebSockets в фоновом режиме. Нажмите, чтобы дать разрешение.</string>
+    <string name="common_button_next">Далее</string>
+    <string name="common_button_add">Добавить</string>
+    <string name="common_button_delete">Удалить</string>
+    <string name="common_service_url_placeholder">например, https://ntfy.example.com</string>
+    <string name="common_certificate_subject">Субъект</string>
+    <string name="common_certificate_issuer">Издатель</string>
+    <string name="common_certificate_fingerprint">SHA-256 отпечаток</string>
+    <string name="common_certificate_valid_from">Действителен с</string>
+    <string name="common_certificate_valid_until">Действителен по</string>
+    <string name="common_certificate_added_toast">Сертификат добавлен</string>
+    <string name="common_certificate_deleted_toast">Сертификат удален</string>
+    <string name="main_menu_connection_error">Ошибка подключения</string>
+    <string name="add_dialog_error_ssl_untrusted">Недоверенный сертификат сервера</string>
+    <string name="publish_dialog_title">Опубликовано в %1$s</string>
+    <string name="publish_dialog_title_hint">Заголовок</string>
+    <string name="publish_dialog_title_placeholder">например, Кто-то стоит за дверью</string>
+    <string name="publish_dialog_message_hint">Сообщение</string>
+    <string name="publish_dialog_tags_hint">Ярлыки</string>
+    <string name="publish_dialog_tags_placeholder">например: предупреждение, опасность</string>
+    <string name="publish_dialog_priority_hint">Приоритет</string>
+    <string name="publish_dialog_button_publish">Опубликовать</string>
+    <string name="publish_dialog_error_sending">Не удалось опубликовать сообщение: %1$s</string>
 </resources>
