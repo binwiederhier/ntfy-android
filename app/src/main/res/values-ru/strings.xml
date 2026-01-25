@@ -397,4 +397,10 @@
     <string name="message_bar_hint">Введите сообщение</string>
     <string name="message_bar_publish_button_description">Опубликовать сообщение</string>
     <string name="message_bar_expand_button_description">Дополнительно</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Использование динамических системных цветов</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Использование цветов темы ntfy</string>
+    <string name="detail_fab_publish_description">Опубликовать уведомление</string>
+    <string name="connection_error_dialog_title">Ошибка соединения</string>
+    <string name="connection_error_dialog_message">Ошибка подключения к %1$s. Приложение будет автоматически пытаться восстановить соединение в фоновом режиме.</string>
+    <string name="connection_error_dialog_connection_refused">Соединение отклонено. Сервер может быть недоступен или адрес указан неверно.</string>
 </resources>
