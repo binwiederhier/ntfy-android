@@ -367,4 +367,34 @@
     <string name="publish_dialog_priority_hint">Приоритет</string>
     <string name="publish_dialog_button_publish">Опубликовать</string>
     <string name="publish_dialog_error_sending">Не удалось опубликовать сообщение: %1$s</string>
+    <string name="publish_dialog_error_server">Не удалось опубликовать сообщение: %1$s (код %2$d)</string>
+    <string name="publish_dialog_message_published">Сообщение опубликовано</string>
+    <string name="publish_dialog_uploading">Загрузка: %1$s (%2$s из %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Загрузка отменена</string>
+    <string name="publish_dialog_chip_title">Заголовок</string>
+    <string name="publish_dialog_chip_tags">Ярлыки</string>
+    <string name="publish_dialog_chip_priority">Приоритет</string>
+    <string name="publish_dialog_chip_click_url">Перейти по URL</string>
+    <string name="publish_dialog_chip_email">Email</string>
+    <string name="publish_dialog_chip_delay">Задержка</string>
+    <string name="publish_dialog_chip_markdown">Markdown</string>
+    <string name="publish_dialog_chip_attach_url">Прикрепить по URL</string>
+    <string name="publish_dialog_chip_attach_file">Прикрепить локальный файл</string>
+    <string name="publish_dialog_chip_phone_call">Звонок</string>
+    <string name="publish_dialog_click_url_hint">Перейти по URL</string>
+    <string name="publish_dialog_click_url_placeholder">например, https://example.com/alerts/1234</string>
+    <string name="publish_dialog_email_hint">Email</string>
+    <string name="publish_dialog_email_placeholder">например, phil@example.com</string>
+    <string name="publish_dialog_delay_hint">Отложенная доставка</string>
+    <string name="publish_dialog_delay_placeholder">например, 30m, 1h, today 9pm (только на английском)</string>
+    <string name="publish_dialog_attach_url_hint">Ссылка на вложение</string>
+    <string name="publish_dialog_attach_url_placeholder">например, https://example.com/flowers.jpg</string>
+    <string name="publish_dialog_attach_filename_hint">Имя файла вложения</string>
+    <string name="publish_dialog_attach_filename_placeholder">например, lilies.jpg</string>
+    <string name="publish_dialog_phone_call_hint">Звонок</string>
+    <string name="publish_dialog_phone_call_placeholder">например, +7234561890</string>
+    <string name="publish_dialog_docs_text">С примерами и подробным описанием всех функций публикации ознакомьтесь в <a href="https://docs.ntfy.sh/publish/">документации</a>.</string>
+    <string name="message_bar_hint">Введите сообщение</string>
+    <string name="message_bar_publish_button_description">Опубликовать сообщение</string>
+    <string name="message_bar_expand_button_description">Дополнительно</string>
 </resources>
