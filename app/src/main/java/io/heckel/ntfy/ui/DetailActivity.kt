@@ -538,9 +538,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             subscriptionMutedUntil = subscription.mutedUntil
             subscriptionDisplayName = displayName(appBaseUrl, subscription)
 
-            showHideMutedUntilMenuItems()
-            showHideCopyMenuItems()
-            showHideConnectionErrorMenuItem()
+            showHideMenuItems()
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -631,14 +629,16 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
     private fun showHideMenuItems() {
         if (!this::menu.isInitialized) return
-        
-        // Tint menu icons based on theme
-        for (i in 0 until menu.size) {
-            menu[i].icon?.setTint(toolbarTextColor)
+
+        runOnUiThread {
+            // Tint menu icons based on theme
+            for (i in 0 until menu.size) {
+                menu[i].icon?.setTint(toolbarTextColor)
+            }
+            
+            // Ensure collapse icon is tinted (back arrow when search is expanded)
+            toolbar.collapseIcon?.setTint(toolbarTextColor)
         }
-        
-        // Ensure collapse icon is tinted (back arrow when search is expanded)
-        toolbar.collapseIcon?.setTint(toolbarTextColor)
         
         // Show/hide menu items based on state
         showHideMutedUntilMenuItems()
