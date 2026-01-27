@@ -49,6 +49,7 @@
 
         <item name="switchPreferenceCompatStyle">@style/MaterialSwitch</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="searchViewStyle">@style/AppSearchViewStyle</item>
 
         <item name="actionModeStyle">@style/ActionMode</item>
         <item name="actionModeCloseButtonStyle">@style/ActionModeCloseButtonStyle</item>
@@ -56,6 +57,11 @@
     </style>
 
     <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow" />
+
+    <!-- SearchView style without the hint icon -->
+    <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView.ActionBar">
+        <item name="searchHintIcon">@null</item>
+    </style>
 
     <style name="DangerText" parent="@android:style/TextAppearance">
         <item name="android:textColor">?attr/colorError</item>

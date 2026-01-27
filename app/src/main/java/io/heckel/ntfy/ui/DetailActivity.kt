@@ -9,12 +9,15 @@ import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -61,6 +64,7 @@ import androidx.core.net.toUri
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
+import com.google.android.material.color.MaterialColors
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -78,7 +82,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
     private var subscriptionDisplayName: String = "" // Set in onCreate() & updated by options menu!
-    private var subscriptionInstant: Boolean = false // Set in onCreate() & updated by options menu!
     private var subscriptionMutedUntil: Long = 0L // Set in onCreate() & updated by options menu!
 
     // UI elements
@@ -91,6 +94,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var messageBarText: TextInputEditText
     private lateinit var messageBarPublishButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
+
+    // Search state
+    private var searchView: SearchView? = null
+    private var isSearchActive: Boolean = false
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
+    private var toolbarTextColor: Int = 0
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -140,13 +149,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val dynamicColors = repository.getDynamicColorsEnabled()
         val darkMode = isDarkThemeOn(this)
         val statusBarColor = Colors.statusBarNormal(this, dynamicColors, darkMode)
-        val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
         toolbarLayout.setBackgroundColor(statusBarColor)
-        
-        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+
+        // Set collapse icon (back arrow when search is expanded) with proper tint
+        toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
+        val collapseIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_white_24dp)?.mutate()
+        collapseIcon?.setTint(toolbarTextColor)
+
+        toolbar = toolbarLayout.findViewById(R.id.toolbar)
         toolbar.setTitleTextColor(toolbarTextColor)
         toolbar.setNavigationIconTint(toolbarTextColor)
         toolbar.overflowIcon?.setTint(toolbarTextColor)
+        toolbar.collapseIcon = collapseIcon
         setSupportActionBar(toolbar)
         
         // Set system status bar appearance
@@ -157,7 +171,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val detailContentLayout = findViewById<View>(R.id.detail_content_layout)
         if (repository.getDynamicColorsEnabled()) {
             detailContentLayout.setBackgroundColor(
-                com.google.android.material.color.MaterialColors.getColor(
+                MaterialColors.getColor(
                     this,
                     android.R.attr.colorBackground,
                     ContextCompat.getColor(this, R.color.detail_activity_background)
@@ -270,7 +284,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         subscriptionTopic = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
         subscriptionDisplayName = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
-        subscriptionInstant = intent.getBooleanExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, false)
         subscriptionMutedUntil = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, 0L)
 
         // Set title
@@ -280,9 +293,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
         // Set "how to instructions"
         val howToExample: TextView = findViewById(R.id.detail_how_to_example)
-        howToExample.linksClickable = true
-
         val howToText = getString(R.string.detail_how_to_example, topicUrl)
+        howToExample.linksClickable = true
         howToExample.text = Html.fromHtml(howToText, Html.FROM_HTML_MODE_LEGACY)
 
         // Swipe to refresh
@@ -307,20 +319,36 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             insets
         }
 
-        viewModel.list(subscriptionId).observe(this) {
-            it?.let {
+        // Observe filtered notifications (filtered by search query)
+        val noSearchResultsText: TextView = findViewById(R.id.detail_no_notifications_text)
+        val howToIntro: View = findViewById(R.id.detail_how_to_intro)
+        val howToLink: View = findViewById(R.id.detail_how_to_link)
+        viewModel.listFiltered(subscriptionId).observe(this) {
+            it?.let { notifications ->
                 // Show list view
-                adapter.submitList(it as MutableList<Notification>)
-                if (it.isEmpty()) {
+                adapter.submitList(notifications.toMutableList())
+                if (notifications.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
+                    // Show different text based on whether we're searching or not
+                    if (isSearchActive && viewModel.hasSearchQuery()) {
+                        noSearchResultsText.text = getString(R.string.detail_no_search_results)
+                        howToIntro.visibility = View.GONE
+                        howToExample.visibility = View.GONE
+                        howToLink.visibility = View.GONE
+                    } else {
+                        noSearchResultsText.text = getString(R.string.detail_no_notifications_text)
+                        howToIntro.visibility = View.VISIBLE
+                        howToExample.visibility = View.VISIBLE
+                        howToLink.visibility = if (BuildConfig.PAYMENT_LINKS_AVAILABLE) View.VISIBLE else View.GONE
+                    }
                 } else {
                     mainListContainer.visibility = View.VISIBLE
                     noEntriesText.visibility = View.GONE
                 }
 
                 // Cancel notifications that still have popups
-                maybeCancelNotificationPopups(it)
+                maybeCancelNotificationPopups(notifications)
             }
         }
 
@@ -363,8 +391,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
 
         // Observe connection details and update menu item visibility
-        repository.getConnectionDetailsLiveData().observe(this) { details ->
-            showHideConnectionErrorMenuItem(details)
+        repository.getConnectionDetailsLiveData().observe(this) {
+            showHideConnectionErrorMenuItem()
         }
 
         // Mark this subscription as "open" so we don't receive notifications for it
@@ -507,14 +535,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         // Update buttons (this is for when we return from the preferences screen)
         lifecycleScope.launch(Dispatchers.IO) {
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
-            subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
             subscriptionDisplayName = displayName(appBaseUrl, subscription)
 
-            showHideInstantMenuItems(subscriptionInstant)
-            showHideMutedUntilMenuItems(subscriptionMutedUntil)
-            showHideCopyMenuItems(subscription.baseUrl)
-            showHideConnectionErrorMenuItem(repository.getConnectionDetails())
+            showHideMenuItems()
             updateTitle(subscriptionDisplayName)
         }
     }
@@ -547,23 +571,90 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         menuInflater.inflate(R.menu.menu_detail_action_bar, menu)
         this.menu = menu
         
-        // Tint menu icons based on theme
-        val toolbarTextColor = Colors.toolbarTextColor(this, repository.getDynamicColorsEnabled(), isDarkThemeOn(this))
-        for (i in 0 until menu.size) {
-            menu[i].icon?.setTint(toolbarTextColor)
-        }
-
-        // Show and hide buttons
-        showHideInstantMenuItems(subscriptionInstant)
-        showHideMutedUntilMenuItems(subscriptionMutedUntil)
-        showHideCopyMenuItems(subscriptionBaseUrl)
-        showHideConnectionErrorMenuItem(repository.getConnectionDetails())
+        setupSearchView()
+        showHideMenuItems()
 
         // Regularly check if "notification muted" time has passed
         // NOTE: This is done here, because then we know that we've initialized the menu items.
         startNotificationMutedChecker()
 
         return true
+    }
+
+    private fun setupSearchView() {
+        val searchItem = menu.findItem(R.id.detail_menu_search)
+        searchView = searchItem?.actionView as? SearchView
+        searchView?.let { sv ->
+            sv.queryHint = getString(R.string.detail_menu_search_hint)
+            sv.maxWidth = Integer.MAX_VALUE // Make SearchView expand fully
+            
+            // Tint SearchView icons and text
+            val searchIcon = sv.findViewById<ImageView>(androidx.appcompat.R.id.search_button)
+            val closeIcon = sv.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+            val searchEditText = sv.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+            searchIcon?.setColorFilter(toolbarTextColor)
+            closeIcon?.setColorFilter(toolbarTextColor)
+            searchEditText?.setTextColor(toolbarTextColor)
+            searchEditText?.setHintTextColor(toolbarTextColor.and(0x80FFFFFF.toInt())) // 50% alpha
+            
+            // Handle query text changes
+            sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.setSearchQuery(newText ?: "")
+                    return true
+                }
+            })
+            
+            // Handle expand/collapse
+            searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    isSearchActive = true
+                    showHideMenuItems()
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+                    viewModel.setSearchQuery("")
+                    isSearchActive = false
+                    showHideMenuItems()
+                    return true
+                }
+            })
+        }
+    }
+
+    private fun showHideMenuItems() {
+        if (!this::menu.isInitialized) return
+
+        runOnUiThread {
+            // Tint menu icons based on theme
+            for (i in 0 until menu.size) {
+                menu[i].icon?.setTint(toolbarTextColor)
+            }
+            
+            // Ensure collapse icon is tinted (back arrow when search is expanded)
+            toolbar.collapseIcon?.setTint(toolbarTextColor)
+        }
+        
+        // Show/hide menu items based on state
+        showHideMutedUntilMenuItems()
+        showHideCopyMenuItems()
+        showHideConnectionErrorMenuItem()
+        showHideOtherMenuItems()
+    }
+
+    private fun showHideOtherMenuItems() {
+        if (!this::menu.isInitialized) return
+        runOnUiThread {
+            menu.findItem(R.id.detail_menu_settings)?.isVisible = !isSearchActive
+            menu.findItem(R.id.detail_menu_clear)?.isVisible = !isSearchActive
+            menu.findItem(R.id.detail_menu_test)?.isVisible = !isSearchActive
+            menu.findItem(R.id.detail_menu_unsubscribe)?.isVisible = !isSearchActive
+        }
     }
 
     private fun startNotificationMutedChecker() {
@@ -578,7 +669,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 if (mutedUntilExpired) {
                     val newSubscription = subscription.copy(mutedUntil = 0L)
                     repository.updateSubscription(newSubscription)
-                    showHideMutedUntilMenuItems(0L)
+                    subscriptionMutedUntil = 0L
+                    showHideMutedUntilMenuItems()
                 }
                 delay(60_000)
             }
@@ -601,14 +693,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             }
             R.id.detail_menu_notifications_disabled_forever -> {
                 onMutedUntilClick(enable = true)
-                true
-            }
-            R.id.detail_menu_enable_instant -> {
-                onInstantEnableClick(enable = true)
-                true
-            }
-            R.id.detail_menu_disable_instant -> {
-                onInstantEnableClick(enable = false)
                 true
             }
             R.id.detail_menu_connection_error -> {
@@ -693,7 +777,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             val newSubscription = subscription?.copy(mutedUntil = mutedUntilTimestamp)
             newSubscription?.let { repository.updateSubscription(newSubscription) }
             subscriptionMutedUntil = mutedUntilTimestamp
-            showHideMutedUntilMenuItems(mutedUntilTimestamp)
+            showHideMutedUntilMenuItems()
             runOnUiThread {
                 when (mutedUntilTimestamp) {
                     0L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
@@ -744,86 +828,44 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
     }
 
-    private fun onInstantEnableClick(enable: Boolean) {
-        Log.d(TAG, "Toggling instant delivery setting for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val subscription = repository.getSubscription(subscriptionId)
-            val newSubscription = subscription?.copy(instant = enable)
-            newSubscription?.let { repository.updateSubscription(newSubscription) }
-            showHideInstantMenuItems(enable)
-            runOnUiThread {
-                if (enable) {
-                    Toast.makeText(this@DetailActivity, getString(R.string.detail_instant_delivery_enabled), Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(this@DetailActivity, getString(R.string.detail_instant_delivery_disabled), Toast.LENGTH_SHORT)
-                        .show()
+    private fun showHideMutedUntilMenuItems() {
+        if (!this::menu.isInitialized) return
+        runOnUiThread {
+            val notificationsEnabledItem = menu.findItem(R.id.detail_menu_notifications_enabled)
+            val notificationsDisabledUntilItem = menu.findItem(R.id.detail_menu_notifications_disabled_until)
+            val notificationsDisabledForeverItem = menu.findItem(R.id.detail_menu_notifications_disabled_forever)
+            if (isSearchActive) {
+                notificationsEnabledItem?.isVisible = false
+                notificationsDisabledUntilItem?.isVisible = false
+                notificationsDisabledForeverItem?.isVisible = false
+            } else {
+                notificationsEnabledItem?.isVisible = subscriptionMutedUntil == 0L
+                notificationsDisabledForeverItem?.isVisible = subscriptionMutedUntil == 1L
+                notificationsDisabledUntilItem?.isVisible = subscriptionMutedUntil > 1L
+                if (subscriptionMutedUntil > 1L) {
+                    val formattedDate = formatDateShort(subscriptionMutedUntil)
+                    notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
                 }
             }
         }
     }
 
-    private fun showHideInstantMenuItems(enable: Boolean) {
-        if (!this::menu.isInitialized) {
-            return
-        }
-        subscriptionInstant = enable
-        runOnUiThread {
-            val appBaseUrl = getString(R.string.app_base_url)
-            val enableInstantItem = menu.findItem(R.id.detail_menu_enable_instant)
-            val disableInstantItem = menu.findItem(R.id.detail_menu_disable_instant)
-            val allowToggleInstant = BuildConfig.FIREBASE_AVAILABLE && subscriptionBaseUrl == appBaseUrl
-            if (allowToggleInstant) {
-                enableInstantItem?.isVisible = !subscriptionInstant
-                disableInstantItem?.isVisible = subscriptionInstant
-            } else {
-                enableInstantItem?.isVisible = false
-                disableInstantItem?.isVisible = false
-            }
-        }
-    }
-
-    private fun showHideMutedUntilMenuItems(mutedUntilTimestamp: Long) {
-        if (!this::menu.isInitialized) {
-            return
-        }
-        subscriptionMutedUntil = mutedUntilTimestamp
-        runOnUiThread {
-            val notificationsEnabledItem = menu.findItem(R.id.detail_menu_notifications_enabled)
-            val notificationsDisabledUntilItem = menu.findItem(R.id.detail_menu_notifications_disabled_until)
-            val notificationsDisabledForeverItem = menu.findItem(R.id.detail_menu_notifications_disabled_forever)
-            notificationsEnabledItem?.isVisible = subscriptionMutedUntil == 0L
-            notificationsDisabledForeverItem?.isVisible = subscriptionMutedUntil == 1L
-            notificationsDisabledUntilItem?.isVisible = subscriptionMutedUntil > 1L
-            if (subscriptionMutedUntil > 1L) {
-                val formattedDate = formatDateShort(subscriptionMutedUntil)
-                notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
-            }
-        }
-    }
-
-
-    private fun showHideCopyMenuItems(subscriptionBaseUrl: String) {
-        if (!this::menu.isInitialized) {
-            return
-        }
+    private fun showHideCopyMenuItems() {
+        if (!this::menu.isInitialized) return
         runOnUiThread {
             // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
             val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
-            copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
+            copyUrlItem?.isVisible = !isSearchActive && (appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE)
         }
     }
 
-    private fun showHideConnectionErrorMenuItem(details: Map<String, io.heckel.ntfy.db.ConnectionDetails>) {
-        if (!this::menu.isInitialized) {
-            return
-        }
+    private fun showHideConnectionErrorMenuItem() {
+        if (!this::menu.isInitialized) return
         runOnUiThread {
-            val connectionErrorItem = menu.findItem(R.id.detail_menu_connection_error)
             // Only show if there's an error for this subscription's base URL
-            val hasError = details[subscriptionBaseUrl]?.hasError() == true
-            connectionErrorItem?.isVisible = hasError
+            val connectionErrorItem = menu.findItem(R.id.detail_menu_connection_error)
+            val hasError = repository.getConnectionDetails()[subscriptionBaseUrl]?.hasError() == true
+            connectionErrorItem?.isVisible = !isSearchActive && hasError
         }
     }
 

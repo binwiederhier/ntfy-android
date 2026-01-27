@@ -141,6 +141,7 @@
     <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Detailed instructions available on ntfy.sh, and in the docs.
     </string>
+    <string name="detail_no_search_results">Your search returned no results</string>
     <string name="detail_clear_dialog_message">Delete all of the notifications in this topic?
     </string>
     <string name="detail_clear_dialog_permanently_delete">Delete permanently</string>
@@ -203,6 +204,8 @@
     <string name="detail_menu_clear">Clear all notifications</string>
     <string name="detail_menu_settings">Subscription settings</string>
     <string name="detail_menu_unsubscribe">Unsubscribe</string>
+    <string name="detail_menu_search">Search notifications</string>
+    <string name="detail_menu_search_hint">Search in notifications</string>
 
     <!-- Detail activity: Action mode -->
     <string name="detail_action_mode_menu_delete">Delete</string>
