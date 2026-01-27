@@ -81,7 +81,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private var subscriptionBaseUrl: String = "" // Set in onCreate()
     private var subscriptionTopic: String = "" // Set in onCreate()
     private var subscriptionDisplayName: String = "" // Set in onCreate() & updated by options menu!
-    private var subscriptionInstant: Boolean = false // Set in onCreate() & updated by options menu!
     private var subscriptionMutedUntil: Long = 0L // Set in onCreate() & updated by options menu!
 
     // UI elements
@@ -283,7 +282,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         subscriptionBaseUrl = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL) ?: return
         subscriptionTopic = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC) ?: return
         subscriptionDisplayName = intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME) ?: return
-        subscriptionInstant = intent.getBooleanExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, false)
         subscriptionMutedUntil = intent.getLongExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, 0L)
 
         // Set title
@@ -539,7 +537,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         // Update buttons (this is for when we return from the preferences screen)
         lifecycleScope.launch(Dispatchers.IO) {
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
-            subscriptionInstant = subscription.instant
             subscriptionMutedUntil = subscription.mutedUntil
             subscriptionDisplayName = displayName(appBaseUrl, subscription)
 

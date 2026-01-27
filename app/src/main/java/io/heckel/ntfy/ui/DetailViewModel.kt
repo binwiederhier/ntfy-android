@@ -15,8 +15,6 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
     private val _searchQuery = MutableLiveData("")
     val searchQuery: LiveData<String> = _searchQuery
 
-    private var currentSubscriptionId: Long = 0
-
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
@@ -26,7 +24,6 @@ class DetailViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun listFiltered(subscriptionId: Long): LiveData<List<Notification>> {
-        currentSubscriptionId = subscriptionId
         return _searchQuery.switchMap { query ->
             if (query.isNullOrBlank()) {
                 repository.getNotificationsLiveData(subscriptionId)
