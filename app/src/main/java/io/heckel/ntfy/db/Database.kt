@@ -575,9 +575,9 @@ interface NotificationDao {
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
     @Query("""
-        SELECT * FROM notification 
-        WHERE subscriptionId = :subscriptionId 
-        AND deleted != 1 
+        SELECT * FROM notification
+        WHERE subscriptionId = :subscriptionId
+        AND deleted != 1
         AND (
             title LIKE '%' || :query || '%' COLLATE NOCASE
             OR message LIKE '%' || :query || '%' COLLATE NOCASE

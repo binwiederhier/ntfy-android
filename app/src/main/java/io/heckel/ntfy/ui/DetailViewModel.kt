@@ -12,19 +12,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: Repository) : ViewModel() {
-    private val _searchQuery = MutableLiveData("")
-    val searchQuery: LiveData<String> = _searchQuery
+    private val searchQuery = MutableLiveData("")
 
     fun setSearchQuery(query: String) {
-        _searchQuery.value = query
+        searchQuery.value = query
     }
+
+    fun hasSearchQuery(): Boolean = !searchQuery.value.isNullOrBlank()
 
     fun list(subscriptionId: Long): LiveData<List<Notification>> {
         return repository.getNotificationsLiveData(subscriptionId)
     }
 
     fun listFiltered(subscriptionId: Long): LiveData<List<Notification>> {
-        return _searchQuery.switchMap { query ->
+        return searchQuery.switchMap { query ->
             if (query.isNullOrBlank()) {
                 repository.getNotificationsLiveData(subscriptionId)
             } else {
