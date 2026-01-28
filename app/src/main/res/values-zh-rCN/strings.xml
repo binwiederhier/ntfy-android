@@ -466,4 +466,7 @@
     <string name="connection_error_dialog_retry_now">立即重试</string>
     <string name="connection_error_dialog_retry_countdown">%1$d 后重试…</string>
     <string name="connection_error_dialog_retrying">重试中…</string>
+    <string name="detail_no_search_results">搜索没有返回结果</string>
+    <string name="detail_menu_search">搜索通知</string>
+    <string name="detail_menu_search_hint">在通知中搜索</string>
 </resources>
