@@ -466,4 +466,7 @@
     <string name="connection_error_dialog_retry_now">Coba lagi sekarang</string>
     <string name="connection_error_dialog_retry_countdown">Mencoba dalam %1$ds…</string>
     <string name="connection_error_dialog_retrying">Mencoba…</string>
+    <string name="detail_no_search_results">Pencarian Anda tidak menemukan hasil apa pun</string>
+    <string name="detail_menu_search">Notifikasi pencarian</string>
+    <string name="detail_menu_search_hint">Cari di notifikasi</string>
 </resources>
