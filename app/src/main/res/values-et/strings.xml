@@ -456,4 +456,7 @@
     <string name="connection_error_dialog_retry_now">Proovi kohe uuesti</string>
     <string name="connection_error_dialog_retry_countdown">Proovin uuesti %1$d sekundi pärast…</string>
     <string name="connection_error_dialog_retrying">Proovin uuesti…</string>
+    <string name="detail_no_search_results">Sinu otsingul polnud tulemusi</string>
+    <string name="detail_menu_search">Otsi teavitusi</string>
+    <string name="detail_menu_search_hint">Otsi teavitustest</string>
 </resources>
