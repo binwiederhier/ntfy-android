@@ -466,4 +466,7 @@
     <string name="connection_error_dialog_retry_now">再試行</string>
     <string name="connection_error_dialog_retry_countdown">%1$d秒後に再試行…</string>
     <string name="connection_error_dialog_retrying">再試行中…</string>
+    <string name="detail_no_search_results">検索結果該当なし</string>
+    <string name="detail_menu_search">通知を検索</string>
+    <string name="detail_menu_search_hint">通知内容を検索します</string>
 </resources>
