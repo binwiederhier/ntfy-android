@@ -466,4 +466,7 @@
     <string name="client_certificate_dialog_error_wrong_password">密碼錯誤或 PKCS#12 檔案無效</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">密碼無效或 PKCS#12 檔案已損毀</string>
     <string name="client_certificate_dialog_error_invalid_url">無效的服務 URL</string>
+    <string name="detail_no_search_results">您的搜尋未找到任何結果</string>
+    <string name="detail_menu_search">搜尋通知</string>
+    <string name="detail_menu_search_hint">通知中的搜尋</string>
 </resources>
