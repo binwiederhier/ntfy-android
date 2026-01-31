@@ -133,6 +133,8 @@
     <string name="add_dialog_base_urls_dropdown_choose">Choose service URL</string>
     <string name="add_dialog_base_urls_dropdown_clear">Clear service URL</string>
     <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
+    <string name="add_dialog_qr_scan">Scan QR code</string>
+    <string name="add_dialog_qr_scan_prompt">Scan a QR code containing the topic name</string>
 
     <!-- Detail activity -->
     <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>

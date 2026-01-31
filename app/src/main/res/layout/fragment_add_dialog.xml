@@ -73,11 +73,11 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_dialog_subscribe_topic_layout"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_description"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/add_dialog_subscribe_qr_scan_button"
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +91,19 @@
                         android:maxLength="64"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/add_dialog_subscribe_qr_scan_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/add_dialog_qr_scan"
+                    android:src="@drawable/ic_qr_code_scanner_24dp"
+                    app:tint="?attr/colorOnSurface"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/add_dialog_subscribe_topic_layout"
+                    app:layout_constraintBottom_toBottomOf="@id/add_dialog_subscribe_topic_layout" />
 
                 <CheckBox
                     android:id="@+id/add_dialog_subscribe_use_another_server_checkbox"

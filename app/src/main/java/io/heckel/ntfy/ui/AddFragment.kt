@@ -9,11 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
@@ -55,6 +58,18 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private lateinit var subscribeProgress: ProgressBar
     private lateinit var subscribeErrorText: TextView
     private lateinit var subscribeErrorTextImage: View
+    private lateinit var qrScanButton: ImageButton
+
+    // QR code scanner launcher
+    private val barcodeLauncher: ActivityResultLauncher<ScanOptions> =
+        registerForActivityResult(ScanContract()) { result ->
+            result.contents?.let { contents ->
+                val topic = extractTopicFromScanResult(contents)
+                if (topic.isNotEmpty()) {
+                    subscribeTopicText.setText(topic)
+                }
+            }
+        }
 
     // Login page
     private lateinit var loginUsernameText: TextInputEditText
@@ -126,6 +141,12 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         subscribeErrorText.visibility = View.GONE
         subscribeErrorTextImage = view.findViewById(R.id.add_dialog_subscribe_error_text_image)
         subscribeErrorTextImage.visibility = View.GONE
+
+        // QR code scan button
+        qrScanButton = view.findViewById(R.id.add_dialog_subscribe_qr_scan_button)
+        qrScanButton.setOnClickListener {
+            launchQrCodeScanner()
+        }
 
         // Fields for "login page"
         loginUsernameText = view.findViewById(R.id.add_dialog_login_username)
@@ -479,6 +500,7 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         subscribeBaseUrlText.isEnabled = enable
         subscribeInstantDeliveryCheckbox.isEnabled = enable
         subscribeUseAnotherServerCheckbox.isEnabled = enable
+        qrScanButton.isEnabled = enable
         actionMenuItem.isEnabled = enable
     }
 
@@ -508,6 +530,27 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         loginPasswordText.visibility = View.VISIBLE
         loginPasswordText.text?.clear()
         enableLoginView(true)
+    }
+
+    private fun launchQrCodeScanner() {
+        val options = ScanOptions()
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+        options.setPrompt(getString(R.string.add_dialog_qr_scan_prompt))
+        options.setCameraId(0)
+        options.setBeepEnabled(false)
+        options.setBarcodeImageEnabled(false)
+        options.setOrientationLocked(false)
+        barcodeLauncher.launch(options)
+    }
+
+    private fun extractTopicFromScanResult(scannedText: String): String {
+        val trimmed = scannedText.trim()
+        // If the QR code contains a URL, extract the topic (last path segment)
+        return if (trimmed.contains("/")) {
+            trimmed.trimEnd('/').substringAfterLast("/")
+        } else {
+            trimmed
+        }
     }
 
     companion object {

@@ -143,6 +143,9 @@ dependencies {
     implementation 'io.noties.markwon:ext-tables:4.6.2'
     implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
 
+    // QR code scanning (works without Google Play Services)
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
     // Used by Markdown library, R8 complains if these are not here
     implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.30"
     implementation "com.caverock:androidsvg:1.4"
