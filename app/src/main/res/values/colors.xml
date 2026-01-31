@@ -17,11 +17,11 @@
     <color name="md_theme_errorContainer">#93000A</color>
     <color name="md_theme_onErrorContainer">#FFDAD6</color>
     <color name="md_theme_background">#212529</color>
-    <color name="md_theme_onBackground">#E4E6EB</color>
+    <color name="md_theme_onBackground">#FFFFFF</color>
     <color name="md_theme_surface">#212529</color>
-    <color name="md_theme_onSurface">#E4E6EB</color>
+    <color name="md_theme_onSurface">#FFFFFF</color>
     <color name="md_theme_surfaceVariant">#43474C</color>
-    <color name="md_theme_onSurfaceVariant">#C4C6CB</color>
+    <color name="md_theme_onSurfaceVariant">#E0E0E0</color>
     <color name="md_theme_outline">#8A9099</color>
     <color name="md_theme_outlineVariant">#43474C</color>
     <color name="md_theme_scrim">#000000</color>
@@ -64,11 +64,11 @@
     <color name="md_theme_errorContainer_mediumContrast">#FF5449</color>
     <color name="md_theme_onErrorContainer_mediumContrast">#000000</color>
     <color name="md_theme_background_mediumContrast">#212529</color>
-    <color name="md_theme_onBackground_mediumContrast">#E4E6EB</color>
+    <color name="md_theme_onBackground_mediumContrast">#FFFFFF</color>
     <color name="md_theme_surface_mediumContrast">#212529</color>
     <color name="md_theme_onSurface_mediumContrast">#FFFFFF</color>
     <color name="md_theme_surfaceVariant_mediumContrast">#43474C</color>
-    <color name="md_theme_onSurfaceVariant_mediumContrast">#D8DADF</color>
+    <color name="md_theme_onSurfaceVariant_mediumContrast">#FFFFFF</color>
     <color name="md_theme_outline_mediumContrast">#A8AEB6</color>
     <color name="md_theme_outlineVariant_mediumContrast">#868C94</color>
     <color name="md_theme_scrim_mediumContrast">#000000</color>
@@ -111,7 +111,7 @@
     <color name="md_theme_errorContainer_highContrast">#FFAEA4</color>
     <color name="md_theme_onErrorContainer_highContrast">#220001</color>
     <color name="md_theme_background_highContrast">#212529</color>
-    <color name="md_theme_onBackground_highContrast">#E4E6EB</color>
+    <color name="md_theme_onBackground_highContrast">#FFFFFF</color>
     <color name="md_theme_surface_highContrast">#212529</color>
     <color name="md_theme_onSurface_highContrast">#FFFFFF</color>
     <color name="md_theme_surfaceVariant_highContrast">#43474C</color>
