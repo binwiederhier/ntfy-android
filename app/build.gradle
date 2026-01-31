@@ -9,7 +9,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace "io.heckel.ntfy"
+    namespace = "io.heckel.ntfy"
     compileSdkVersion 36
 
     defaultConfig {
@@ -28,23 +28,23 @@ android {
         }
 
         buildFeatures {
-            buildConfig true
+            buildConfig = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
-            debuggable false
+            minifyEnabled = false
+            shrinkResources = false
+            debuggable = false
             // DEV/TEST ONLY: Uncomment this to test the release build with a debug key.
             //                This is required to test against the production Firebase config.
             // signingConfig signingConfigs.debug
         }
         debug {
-            minifyEnabled false
-            shrinkResources false
-            debuggable true
+            minifyEnabled = false
+            shrinkResources = false
+            debuggable = true
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
         }
