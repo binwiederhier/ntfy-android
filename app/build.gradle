@@ -5,17 +5,16 @@ plugins {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace = "io.heckel.ntfy"
-    compileSdkVersion 36
+    compileSdk = 36
 
     defaultConfig {
-        applicationId "io.heckel.ntfy"
-        minSdkVersion 26
-        targetSdkVersion 36
+        applicationId = "io.heckel.ntfy"
+        minSdk = 26
+        targetSdk = 36
 
         versionCode 58
         versionName "1.22.2"
