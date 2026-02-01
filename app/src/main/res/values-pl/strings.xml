@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Minimalny priorytet</string>
-    <string name="channel_notifications_low_name">Niski priorytet</string>
-    <string name="channel_notifications_default_name">Domyślny priorytet</string>
-    <string name="channel_notifications_max_name">Maksymalny priorytet</string>
+    <string name="common_priority_min_name">Minimalny priorytet</string>
+    <string name="common_priority_low_name">Niski priorytet</string>
+    <string name="common_priority_default_name">Domyślny priorytet</string>
+    <string name="common_priority_max_name">Maksymalny priorytet</string>
     <string name="channel_subscriber_notification_title">Oczekiwanie na przychodzące powiadomienia</string>
     <string name="channel_subscriber_notification_instant_text">Subskrybujesz tematy z natychmiastowym dostarczaniem</string>
-    <string name="channel_notifications_high_name">Wysoki priorytet</string>
+    <string name="common_priority_high_name">Wysoki priorytet</string>
     <string name="channel_subscriber_service_name">Usługa subskrypcji</string>
     <string name="add_dialog_login_username_hint">Nazwa użytkownika</string>
     <string name="detail_action_mode_delete_dialog_message">Usunąć wybrane powiadomienie(a) trwale\?</string>
     <string name="detail_action_mode_delete_dialog_cancel">Anuluj</string>
-    <string name="notification_dialog_save">Zapisz</string>
     <string name="settings_title">Ustawienia</string>
     <string name="settings_notifications_muted_until_title">Wycisz powiadomienia</string>
     <string name="settings_notifications_muted_until_forever">Powiadomienia wyciszone do wznowienia</string>
@@ -20,7 +19,7 @@
     <string name="settings_general_dark_mode_title">Tryb ciemny</string>
     <string name="settings_backup_restore_restore_failed">Przywracanie nie powiodło się: %1$s</string>
     <string name="settings_advanced_clear_logs_deleted_toast">Logi usunięte</string>
-    <string name="user_dialog_base_url_hint">Adres URL usługi</string>
+    <string name="common_service_url">Adres URL usługi</string>
     <string name="detail_settings_appearance_display_name_title">Nazwa wyświetlana</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (domyślny)</string>
     <string name="user_dialog_title_edit">Edytuj użytkownika</string>
@@ -29,7 +28,7 @@
     <string name="user_dialog_username_hint">Nazwa użytkownika</string>
     <string name="notification_dialog_muted_until_toast_message">Powiadomienia wyciszone przez %1$s</string>
     <string name="detail_item_menu_download">Pobierz plik</string>
-    <string name="detail_action_mode_menu_copy">Kopiuj</string>
+    <string name="common_button_copy">Kopiuj</string>
     <string name="detail_menu_clear">Wyczyść powiadomienia</string>
     <string name="detail_item_menu_delete">Usuń plik</string>
     <string name="detail_item_menu_cancel">Anuluj pobieranie</string>
@@ -176,7 +175,7 @@
     <string name="user_dialog_password_hint_add">Hasło</string>
     <string name="user_dialog_password_hint_edit">Hasło (niezmienione, jeśli pozostawiono puste)</string>
     <string name="user_dialog_button_delete">Usuń użytkownika</string>
-    <string name="user_dialog_button_save">Zapisz</string>
+    <string name="common_button_save">Zapisz</string>
     <string name="main_menu_notifications_disabled_until">Powiadomienia wyciszone przez %1$s</string>
     <string name="main_action_mode_delete_dialog_cancel">Anuluj</string>
     <string name="main_menu_docs_title">Przeczytaj dokumentację</string>
@@ -219,7 +218,7 @@
     <string name="share_content_title">Podgląd wiadomości</string>
     <string name="add_dialog_base_urls_dropdown_choose">Wybierz adres URL usługi</string>
     <string name="detail_how_to_intro">Aby wysłać powiadomienia do tego tematu, wyślij PUT lub POST-Request na adres URL tematu.</string>
-    <string name="detail_how_to_example">Przykład (za pomocą curl):<br></br><tt>$ curl -d \"Cześć\" %1$s</tt></string>
+    <string name="detail_how_to_example">Przykład (za pomocą curl):<br/><tt>$ curl -d \"Cześć\" %1$s</tt></string>
     <string name="detail_how_to_link">Szczegółowe instrukcje są dostępne w ntfy.sh, oraz w dokumentacji.</string>
     <string name="detail_clear_dialog_message">Usunąć wszystkie powiadomienia z tego tematu\?</string>
     <string name="detail_item_tags">Tagi: %1$s</string>
@@ -339,4 +338,16 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">Ntfy będzie działać jako dystrybutor UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">Ntfy nie będzie dystrybutorem UnifiedPush</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Używa domyślnych ustawień (dźwięki, nadpisanie trybu nie przeszkadzać, itp.)</string>
+    <string name="common_button_next">Następny</string>
+    <string name="common_button_add">Dodaj</string>
+    <string name="common_button_delete">Usuń</string>
+    <string name="common_service_url_placeholder">na przykład https://ntfy.example.com</string>
+    <string name="common_certificate_subject">Temat</string>
+    <string name="common_certificate_issuer">Wystawca</string>
+    <string name="common_certificate_fingerprint">odcisk SHA-256</string>
+    <string name="common_certificate_valid_from">Ważny od</string>
+    <string name="common_certificate_valid_until">Ważny do</string>
+    <string name="common_certificate_added_toast">Dodano certyfikat</string>
+    <string name="common_certificate_deleted_toast">Usunięto certyfikat</string>
+    <string name="main_menu_connection_error">Błąd połączenia</string>
 </resources>

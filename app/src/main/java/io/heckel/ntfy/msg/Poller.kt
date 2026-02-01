@@ -1,0 +1,77 @@
+package io.heckel.ntfy.msg
+
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.Log
+
+/**
+ * Polls the server for notifications and updates the repository.
+ * Groups notifications by sequenceId and only keeps the latest for each sequence.
+ * Deletes sequences where the latest notification is marked as deleted.
+ */
+class Poller(
+    private val api: ApiService,
+    private val repository: Repository
+) {
+    /**
+     * Polls for notifications and updates the repository.
+     * Returns the list of new notifications that were added.
+     *
+     * @param subscription The subscription to poll
+     */
+    suspend fun poll(subscription: Subscription): List<Notification> {
+        val notifications = api.poll(subscription)
+        return processNotifications(subscription.id, notifications)
+    }
+
+    /**
+     * Processes a list of notifications: groups by sequenceId, deletes deleted sequences,
+     * and adds only non-deleted latest notifications.
+     * Returns the list of notifications that were added.
+     */
+    private suspend fun processNotifications(
+        subscriptionId: Long,
+        notifications: List<Notification>
+    ): List<Notification> {
+        // Group by sequenceId and only keep the latest notification for each sequence
+        val latestBySequenceId = notifications
+            .groupBy { it.sequenceId.ifEmpty { it.id } }
+            .mapValues { (_, notifs) -> notifs.maxByOrNull { it.timestamp } }
+            .values
+            .filterNotNull()
+
+        // Handle delete and read events
+        latestBySequenceId
+            .filter { it.event == ApiService.EVENT_MESSAGE_CLEAR || it.event == ApiService.EVENT_MESSAGE_DELETE }
+            .forEach { notification ->
+                val sequenceId = notification.sequenceId.ifEmpty { notification.id }
+                when (notification.event) {
+                    ApiService.EVENT_MESSAGE_DELETE -> {
+                        Log.d(TAG, "Deleting notifications with sequenceId $sequenceId")
+                        repository.markAsDeletedBySequenceId(subscriptionId, sequenceId)
+                    }
+                    ApiService.EVENT_MESSAGE_CLEAR -> {
+                        Log.d(TAG, "Marking notifications as read with sequenceId $sequenceId")
+                        repository.markAsReadBySequenceId(subscriptionId, sequenceId)
+                    }
+                }
+            }
+
+        // Add only regular message notifications
+        val notificationsToAdd = latestBySequenceId
+            .filter { it.event == ApiService.EVENT_MESSAGE }
+        val addedNotifications = mutableListOf<Notification>()
+        notificationsToAdd.forEach { notification ->
+            if (repository.addNotification(notification)) {
+                addedNotifications.add(notification)
+            }
+        }
+
+        return addedNotifications
+    }
+
+    companion object {
+        private const val TAG = "NtfyPoller"
+    }
+}

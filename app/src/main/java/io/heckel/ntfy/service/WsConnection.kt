@@ -2,10 +2,14 @@ package io.heckel.ntfy.service
 
 import android.app.AlarmManager
 import android.os.Build
-import io.heckel.ntfy.db.*
-import io.heckel.ntfy.msg.ApiService
-import io.heckel.ntfy.msg.ApiService.Companion.requestBuilder
+import io.heckel.ntfy.db.ConnectionState
+import io.heckel.ntfy.db.CustomHeader
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.NotificationParser
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
@@ -13,11 +17,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.net.ProtocolException
+import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.random.Random
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
@@ -32,18 +35,15 @@ import kotlin.random.Random
 class WsConnection(
     private val connectionId: ConnectionId,
     private val repository: Repository,
+    private val httpClient: OkHttpClient,
     private val user: User?,
+    private val customHeaders: List<CustomHeader>,
     private val sinceId: String?,
-    private val stateChangeListener: (Collection<Long>, ConnectionState) -> Unit,
+    private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
-    private val client = OkHttpClient.Builder()
-        .readTimeout(0, TimeUnit.MILLISECONDS)
-        .pingInterval(1, TimeUnit.MINUTES) // The server pings us too, so this doesn't matter much
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .build()
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
@@ -55,7 +55,6 @@ class WsConnection(
     private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
-    private val subscriptionIds = topicsToSubscriptionIds.values
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
 
@@ -77,9 +76,9 @@ class WsConnection(
         val sinceId = since.get()
         val sinceVal = sinceId ?: "all"
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
-        val request = requestBuilder(urlWithSince, user, repository).build()
+        val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
-        webSocket = client.newWebSocket(request, Listener(nextListenerId))
+        webSocket = httpClient.newWebSocket(request, Listener(nextListenerId))
     }
 
     @Synchronized
@@ -141,14 +140,14 @@ class WsConnection(
                 if (errorCount > 0) {
                     errorCount = 0
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTED)
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTED, null, 0L)
             }
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             synchronize("onMessage") {
                 Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Received message: $text")
-                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, notificationId = Random.nextInt())
+                val notificationWithTopic = parser.parseWithTopic(text, subscriptionId = 0, baseUrl = baseUrl)
                 if (notificationWithTopic == null) {
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Irrelevant or unknown message. Discarding.")
                     return@synchronize
@@ -181,10 +180,22 @@ class WsConnection(
                     Log.d(TAG, "$shortUrl (gid=$globalId, lid=$id): Connection marked as closed. Not retrying.")
                     return@synchronize
                 }
-                stateChangeListener(subscriptionIds, ConnectionState.CONNECTING)
                 state = State.Disconnected
                 errorCount++
-                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount) ?: RETRY_SECONDS.last()
+                val retrySeconds = RETRY_SECONDS.getOrNull(errorCount-1) ?: RETRY_SECONDS.last()
+                val nextRetryTime = System.currentTimeMillis() + (retrySeconds * 1000L)
+                
+                // Special cases:
+                // - Ignore broken connections in the UI, we don't want to show warning icons
+                // - Handle authentication errors
+                // - Handle servers that do not support WebSockets
+                val error = when {
+                    isConnectionBrokenException(t) -> null
+                    isProtocolException(t) && response != null -> WebSocketNotSupportedException(response.code, response.message, t)
+                    isResponseCode(response, 401, 403) && response != null -> NotAuthorizedException(response.code, response.message, t)
+                    else -> t
+                }
+                connectionDetailsListener(baseUrl, ConnectionState.CONNECTING, error, nextRetryTime)
                 scheduleReconnect(retrySeconds)
             }
         }

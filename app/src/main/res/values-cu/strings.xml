@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Низкое преимѹ́щество</string>
-    <string name="channel_notifications_min_name">Мин преимѹ́щество</string>
+    <string name="common_priority_low_name">Низкое преимѹ́щество</string>
+    <string name="common_priority_min_name">Мин преимѹ́щество</string>
     <string name="channel_subscriber_service_name">Слꙋ́жба подписки</string>
-    <string name="channel_notifications_default_name">Ѻбыденное преимѹ́щество</string>
-    <string name="channel_notifications_high_name">Высо́кое преимѹ́щество</string>
-    <string name="channel_notifications_max_name">Макс преимѹ́щество</string>
+    <string name="common_priority_default_name">Ѻбыденное преимѹ́щество</string>
+    <string name="common_priority_high_name">Высо́кое преимѹ́щество</string>
+    <string name="common_priority_max_name">Макс преимѹ́щество</string>
 </resources>

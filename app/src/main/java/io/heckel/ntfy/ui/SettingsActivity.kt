@@ -32,6 +32,7 @@ import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.backup.Backuper
+import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.AccountManager
@@ -39,8 +40,6 @@ import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
@@ -704,7 +703,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 override fun putString(key: String?, value: String?) {
                     val proto = value ?: repository.getConnectionProtocol()
                     repository.setConnectionProtocol(proto)
-                    restartService()
+                    serviceManager.refresh() // Refresh to switch connections between WS and JSON stream
                 }
                 override fun getString(key: String?, defValue: String?): String {
                     return repository.getConnectionProtocol()
@@ -767,10 +766,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
         }
 
-        private fun restartService() {
-            serviceManager.restart() // Service will auto-restart
-        }
-
         private fun copyLogsToClipboard(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
                 val context = context ?: return@launch
@@ -803,16 +798,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     }
                 }
                 val gson = Gson()
-                val request = Request.Builder()
-                    .url(EXPORT_LOGS_UPLOAD_URL)
+                val request = HttpUtil.requestBuilder(EXPORT_LOGS_UPLOAD_URL)
                     .put(log.toRequestBody())
                     .build()
-                val client = OkHttpClient.Builder()
-                    .callTimeout(1, TimeUnit.MINUTES) // Total timeout for entire request
-                    .connectTimeout(15, TimeUnit.SECONDS)
-                    .readTimeout(15, TimeUnit.SECONDS)
-                    .writeTimeout(15, TimeUnit.SECONDS)
-                    .build()
+                val client = HttpUtil.longCallClient(context, extractBaseUrl(EXPORT_LOGS_UPLOAD_URL))
                 try {
                     client.newCall(request).execute().use { response ->
                         if (!response.isSuccessful) {
@@ -875,7 +864,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
 
         fun updateExactAlarmsPref() {
-            val exactAlarmsPrefId = context?.getString(R.string.settings_advanced_exact_alarms_key) ?: return
+            val context = context ?: return
+            val exactAlarmsPrefId = context.getString(R.string.settings_advanced_exact_alarms_key)
             val exactAlarmsPref: Preference? = findPreference(exactAlarmsPrefId)
             val canScheduleExactAlarms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 (activity?.getSystemService(ALARM_SERVICE) as AlarmManager).canScheduleExactAlarms()
@@ -889,6 +879,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
                 true
             }
+            // Android doesn't show "ntfy" in the "Alarms & reminders" list if battery optimizations are disabled.
+            //
+            // In fact, if the user has granted the battery optimization exemption (see battery banner in MainActivity),
+            // the alarm manager's canScheduleExactAlarms() method will return true.
+            //
+            // This is undocumented behavior. See https://github.com/binwiederhier/ntfy/issues/1456#issuecomment-3707174262
+            exactAlarmsPref?.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && !isIgnoringBatteryOptimizations(context)
         }
 
         @Keep
@@ -988,31 +986,20 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             reload()
         }
 
-        data class CustomHeaderWithMetadata(
-            val baseUrl: String,
-            val headers: List<io.heckel.ntfy.db.CustomHeader>
-        )
-
         fun reload() {
             preferenceScreen.removeAll()
             lifecycleScope.launch(Dispatchers.IO) {
                 val headersByBaseUrl = repository.getCustomHeaders()
                     .groupBy { it.baseUrl }
-                    .map { entry ->
-                        CustomHeaderWithMetadata(entry.key, entry.value)
-                    }
-                    .sortedBy { it.baseUrl }
-
+                    .toSortedMap()
                 activity?.runOnUiThread {
                     addCustomHeaderPreferences(headersByBaseUrl)
                 }
             }
         }
 
-        private fun addCustomHeaderPreferences(headersByBaseUrl: List<CustomHeaderWithMetadata>) {
-            headersByBaseUrl.forEach { serverHeaders ->
-                val baseUrl = serverHeaders.baseUrl
-                val headers = serverHeaders.headers
+        private fun addCustomHeaderPreferences(headersByBaseUrl: Map<String, List<CustomHeader>>) {
+            headersByBaseUrl.forEach { (baseUrl, headers) ->
 
                 val preferenceCategory = PreferenceCategory(preferenceScreen.context)
                 preferenceCategory.title = shortUrl(baseUrl)
@@ -1077,7 +1064,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onUpdateUser(dialog: DialogFragment, user: User) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateUser(user)
-            serviceManager.restart() // Editing does not change the user ID
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::userSettingsFragment.isInitialized) {
                     userSettingsFragment.reload()
@@ -1089,7 +1076,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onDeleteUser(dialog: DialogFragment, baseUrl: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.deleteUser(baseUrl)
-            serviceManager.restart()
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::userSettingsFragment.isInitialized) {
                     userSettingsFragment.reload()
@@ -1101,7 +1088,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onAddCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.addCustomHeader(header)
-            serviceManager.restart() // Restart to apply new headers
+            serviceManager.refresh() // Refresh to apply new headers
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()
@@ -1113,7 +1100,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onUpdateCustomHeader(dialog: DialogFragment, oldHeader: io.heckel.ntfy.db.CustomHeader, newHeader: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.updateCustomHeader(oldHeader, newHeader)
-            serviceManager.restart() // Restart to apply header changes
+            serviceManager.refresh() // Refresh to apply header changes
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()
@@ -1125,7 +1112,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     override fun onDeleteCustomHeader(dialog: DialogFragment, header: io.heckel.ntfy.db.CustomHeader) {
         lifecycleScope.launch(Dispatchers.IO) {
             repository.deleteCustomHeader(header)
-            serviceManager.restart()
+            serviceManager.refresh()
             runOnUiThread {
                 if (this@SettingsActivity::customHeaderSettingsFragment.isInitialized) {
                     customHeaderSettingsFragment.reload()

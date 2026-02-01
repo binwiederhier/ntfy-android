@@ -4,8 +4,8 @@ import android.content.Context
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.up.Distributor
+import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.decodeBytesMessage
 import io.heckel.ntfy.util.safeLet
 
@@ -25,13 +25,16 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     fun dispatch(subscription: Subscription, notification: Notification) {
         Log.d(TAG, "Dispatching $notification for subscription $subscription")
 
+        val cancel = shouldCancel(notification)
         val muted = getMuted(subscription)
         val notify = shouldNotify(subscription, notification, muted)
-        val broadcast = shouldBroadcast(subscription)
-        val distribute = shouldDistribute(subscription)
+        val broadcast = shouldBroadcast(subscription, notification)
+        val distribute = shouldDistribute(subscription, notification)
         val downloadAttachment = shouldDownloadAttachment(notification)
         val downloadIcon = shouldDownloadIcon(notification)
-        if (notify) {
+        if (cancel) {
+            notifier.cancel(notification.notificationId)
+        } else if (notify) {
             notifier.display(subscription, notification)
         }
         if (broadcast) {
@@ -52,7 +55,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
     }
 
     private fun shouldDownloadAttachment(notification: Notification): Boolean {
-        if (notification.attachment == null) {
+        if (notification.attachment == null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
         }
         val attachment = notification.attachment
@@ -72,11 +75,15 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         }
     }
     private fun shouldDownloadIcon(notification: Notification): Boolean {
-        return notification.icon != null
+        return notification.icon?.hasValidUrl() == true && notification.event == ApiService.EVENT_MESSAGE
+    }
+
+    private fun shouldCancel(notification: Notification): Boolean {
+        return notification.event == ApiService.EVENT_MESSAGE_CLEAR || notification.event == ApiService.EVENT_MESSAGE_DELETE
     }
 
     private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
-        if (subscription.upAppId != null) {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
         }
         val priority = if (notification.priority > 0) notification.priority else 3
@@ -88,15 +95,15 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         return !detailsVisible && !muted
     }
 
-    private fun shouldBroadcast(subscription: Subscription): Boolean {
-        if (subscription.upAppId != null) { // Never broadcast for UnifiedPush subscriptions
+    private fun shouldBroadcast(subscription: Subscription, notification: Notification): Boolean {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) { // Never broadcast for UnifiedPush subscriptions
             return false
         }
         return repository.getBroadcastEnabled()
     }
 
-    private fun shouldDistribute(subscription: Subscription): Boolean {
-        return subscription.upAppId != null // Only distribute for UnifiedPush subscriptions
+    private fun shouldDistribute(subscription: Subscription, notification: Notification): Boolean {
+        return subscription.upAppId != null && notification.event == ApiService.EVENT_MESSAGE // Only distribute for UnifiedPush subscriptions
     }
 
     private fun getMuted(subscription: Subscription): Boolean {

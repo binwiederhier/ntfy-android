@@ -1,13 +1,32 @@
 package io.heckel.ntfy.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.Index
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
+import androidx.room.Update
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.service.NotAuthorizedException
+import io.heckel.ntfy.service.WebSocketNotSupportedException
+import io.heckel.ntfy.service.hasCause
 import kotlinx.coroutines.flow.Flow
 import java.lang.reflect.Type
+import java.net.ConnectException
 
 @Entity(indices = [Index(value = ["baseUrl", "topic"], unique = true), Index(value = ["upConnectorToken"], unique = true)])
 data class Subscription(
@@ -28,7 +47,7 @@ data class Subscription(
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
-    @Ignore val state: ConnectionState = ConnectionState.NOT_APPLICABLE
+    @Ignore val connectionDetails: ConnectionDetails = ConnectionDetails()
 ) {
     constructor(
         id: Long,
@@ -64,12 +83,42 @@ data class Subscription(
                 totalCount = 0,
                 newCount = 0,
                 lastActive = 0,
-                state = ConnectionState.NOT_APPLICABLE
+                connectionDetails = ConnectionDetails()
             )
 }
 
 enum class ConnectionState {
     NOT_APPLICABLE, CONNECTING, CONNECTED
+}
+
+/**
+ * Represents connection details for a specific baseUrl, including state and error info.
+ * This is not persisted to the database, but kept in memory.
+ */
+data class ConnectionDetails(
+    val state: ConnectionState = ConnectionState.NOT_APPLICABLE,
+    val error: Throwable? = null,
+    val nextRetryTime: Long = 0L
+) {
+    fun getStackTraceString(): String {
+        return error?.stackTraceToString() ?: ""
+    }
+    
+    fun hasError(): Boolean {
+        return error != null
+    }
+    
+    fun isConnectionRefused(): Boolean {
+        return error?.hasCause<ConnectException>() ?: false
+    }
+    
+    fun isWebSocketNotSupported(): Boolean {
+        return error?.hasCause<WebSocketNotSupportedException>() ?: false
+    }
+
+    fun isNotAuthorized(): Boolean {
+        return error?.hasCause<NotAuthorizedException>() ?: false
+    }
 }
 
 data class SubscriptionWithMetadata(
@@ -96,7 +145,8 @@ data class SubscriptionWithMetadata(
 data class Notification(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "subscriptionId") val subscriptionId: Long,
-    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp
+    @ColumnInfo(name = "timestamp") val timestamp: Long, // Unix timestamp in seconds
+    @ColumnInfo(name = "sequenceId") val sequenceId: String, // Sequence ID for updating notifications
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "message") val message: String,
     @ColumnInfo(name = "contentType") val contentType: String, // "" or "text/markdown" (empty assume text/plain)
@@ -109,7 +159,30 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
-)
+    @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
+) {
+    constructor(
+        id: String,
+        subscriptionId: Long,
+        timestamp: Long,
+        sequenceId: String,
+        title: String,
+        message: String,
+        contentType: String,
+        encoding: String,
+        notificationId: Int,
+        priority: Int,
+        tags: String,
+        click: String,
+        icon: Icon?,
+        actions: List<Action>?,
+        attachment: Attachment?,
+        deleted: Boolean
+    ) : this(
+        id, subscriptionId, timestamp, sequenceId, title, message, contentType, encoding,
+        notificationId, priority, tags, click, icon, actions, attachment, deleted, event = ApiService.EVENT_MESSAGE
+    )
+}
 
 fun Notification.isMarkdown(): Boolean {
     return contentType == "text/markdown"
@@ -137,11 +210,13 @@ const val ATTACHMENT_PROGRESS_DONE = 100
 
 @Entity
 data class Icon(
-    @ColumnInfo(name = "url") val url: String, // URL (mandatory, see ntfy server)
+    @ColumnInfo(name = "url") val url: String?, // URL (nullable to handle corrupt data from backup restore)
     @ColumnInfo(name = "contentUri") val contentUri: String?, // After it's downloaded, the content:// location
 ) {
-    @Ignore constructor(url:String) :
+    @Ignore constructor(url: String) :
             this(url, null)
+
+    fun hasValidUrl(): Boolean = !url.isNullOrEmpty()
 }
 
 @Entity
@@ -188,6 +263,26 @@ data class User(
     override fun toString(): String = username
 }
 
+@Entity(tableName = "TrustedCertificate")
+data class TrustedCertificate(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "pem") val pem: String
+)
+
+@Entity(tableName = "ClientCertificate")
+data class ClientCertificate(
+    @PrimaryKey @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "p12Base64") val p12Base64: String,
+    @ColumnInfo(name = "password") val password: String
+)
+
+@Entity(primaryKeys = ["baseUrl", "name"])
+data class CustomHeader(
+    @ColumnInfo(name = "baseUrl") val baseUrl: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "value") val value: String
+)
+
 @Entity(tableName = "Log")
 data class LogEntry(
     @PrimaryKey(autoGenerate = true) val id: Long, // Internal ID, only used in Repository and activities
@@ -201,13 +296,27 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
-@androidx.room.Database(entities = [Subscription::class, Notification::class, User::class, LogEntry::class], version = 14)
+@androidx.room.Database(
+    version = 18,
+    entities = [
+        Subscription::class,
+        Notification::class,
+        User::class,
+        LogEntry::class,
+        CustomHeader::class,
+        TrustedCertificate::class,
+        ClientCertificate::class
+   ]
+)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
     abstract fun subscriptionDao(): SubscriptionDao
     abstract fun notificationDao(): NotificationDao
     abstract fun userDao(): UserDao
+    abstract fun customHeaderDao(): CustomHeaderDao
     abstract fun logDao(): LogDao
+    abstract fun trustedCertificateDao(): TrustedCertificateDao
+    abstract fun clientCertificateDao(): ClientCertificateDao
 
     companion object {
         @Volatile
@@ -230,6 +339,10 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_11_12)
                     .addMigrations(MIGRATION_12_13)
                     .addMigrations(MIGRATION_13_14)
+                    .addMigrations(MIGRATION_14_15)
+                    .addMigrations(MIGRATION_15_16)
+                    .addMigrations(MIGRATION_16_17)
+                    .addMigrations(MIGRATION_17_18)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -341,6 +454,35 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN contentType TEXT NOT NULL DEFAULT ('')")
             }
         }
+
+        private val MIGRATION_14_15 = object : Migration(14, 15) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE CustomHeader (baseUrl TEXT NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, PRIMARY KEY(baseUrl, name))")
+            }
+        }
+
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE TrustedCertificate (baseUrl TEXT NOT NULL, pem TEXT NOT NULL, PRIMARY KEY(baseUrl))")
+                db.execSQL("CREATE TABLE ClientCertificate (baseUrl TEXT NOT NULL, p12Base64 TEXT NOT NULL, password TEXT NOT NULL, PRIMARY KEY(baseUrl))")
+            }
+        }
+
+        // Fix corrupt icon data where icon_url is NULL but icon_contentUri is not NULL
+        // This caused IllegalStateException in CursorWindow.nativeGetString when Room tried to
+        // construct an Icon object with a null URL (Icon.url is non-nullable in Kotlin)
+        private val MIGRATION_16_17 = object : Migration(16, 17) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("UPDATE Notification SET icon_contentUri = NULL WHERE icon_url IS NULL AND icon_contentUri IS NOT NULL")
+            }
+        }
+
+        private val MIGRATION_17_18 = object : Migration(17, 18) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN sequenceId TEXT NOT NULL DEFAULT ''")
+                db.execSQL("UPDATE Notification SET sequenceId = id WHERE sequenceId = ''")
+            }
+        }
     }
 }
 
@@ -432,8 +574,18 @@ interface NotificationDao {
     @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
-    @Query("SELECT id FROM notification WHERE subscriptionId = :subscriptionId") // Includes deleted
-    fun listIds(subscriptionId: Long): List<String>
+    @Query("""
+        SELECT * FROM notification
+        WHERE subscriptionId = :subscriptionId
+        AND deleted != 1
+        AND (
+            title LIKE '%' || :query || '%' COLLATE NOCASE
+            OR message LIKE '%' || :query || '%' COLLATE NOCASE
+            OR tags LIKE '%' || :query || '%' COLLATE NOCASE
+        )
+        ORDER BY timestamp DESC
+    """)
+    fun listFlowFiltered(subscriptionId: Long, query: String): Flow<List<Notification>>
 
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
@@ -454,10 +606,16 @@ interface NotificationDao {
     fun get(notificationId: String): Notification?
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
-    fun clearAllNotificationIds(subscriptionId: Long)
+    fun markAllAsRead(subscriptionId: Long)
+
+    @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE id = :notificationId")
     fun markAsDeleted(notificationId: String)
+
+    @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String)
 
     @Query("UPDATE notification SET deleted = 1 WHERE subscriptionId = :subscriptionId")
     fun markAllAsDeleted(subscriptionId: Long)
@@ -509,4 +667,52 @@ interface LogDao {
 
     @Query("DELETE FROM log")
     fun deleteAll()
+}
+
+@Dao
+interface TrustedCertificateDao {
+    @Query("SELECT * FROM TrustedCertificate")
+    suspend fun list(): List<TrustedCertificate>
+
+    @Query("SELECT * FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): TrustedCertificate?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: TrustedCertificate)
+
+    @Query("DELETE FROM TrustedCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
+}
+
+@Dao
+interface ClientCertificateDao {
+    @Query("SELECT * FROM ClientCertificate")
+    suspend fun list(): List<ClientCertificate>
+
+    @Query("SELECT * FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun get(baseUrl: String): ClientCertificate?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(cert: ClientCertificate)
+
+    @Query("DELETE FROM ClientCertificate WHERE baseUrl = :baseUrl")
+    suspend fun delete(baseUrl: String)
+}
+
+@Dao
+interface CustomHeaderDao {
+    @Query("SELECT * FROM CustomHeader ORDER BY baseUrl, name")
+    suspend fun list(): List<CustomHeader>
+
+    @Query("SELECT * FROM CustomHeader WHERE baseUrl = :baseUrl ORDER BY name")
+    suspend fun get(baseUrl: String): List<CustomHeader>
+
+    @Insert
+    suspend fun insert(header: CustomHeader)
+
+    @Update
+    suspend fun update(header: CustomHeader)
+
+    @Query("DELETE FROM CustomHeader WHERE baseUrl = :baseUrl AND name = :name")
+    suspend fun delete(baseUrl: String, name: String)
 }

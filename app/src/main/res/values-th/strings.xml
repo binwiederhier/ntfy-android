@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">ช่องทางการแจ้งเตือน</string>
-    <string name="channel_notifications_low_name">ลำดับความสำคัญต่ำ</string>
-    <string name="channel_notifications_default_name">ลำดับความสำคัญเริ่มต้น</string>
-    <string name="channel_notifications_high_name">ลำดับความสำคัญสูง</string>
-    <string name="channel_notifications_max_name">ลำดับความสำคัญสูงสุด</string>
+    <string name="common_priority_min_name">ช่องทางการแจ้งเตือน</string>
+    <string name="common_priority_low_name">ลำดับความสำคัญต่ำ</string>
+    <string name="common_priority_default_name">ลำดับความสำคัญเริ่มต้น</string>
+    <string name="common_priority_high_name">ลำดับความสำคัญสูง</string>
+    <string name="common_priority_max_name">ลำดับความสำคัญสูงสุด</string>
     <string name="channel_notifications_group_default_name">ค่าเริ่มต้น</string>
     <string name="channel_subscriber_service_name">บริการสมัครสมาชิก</string>
     <string name="channel_subscriber_notification_title">การฟังการแจ้งเตือนที่เข้ามา</string>

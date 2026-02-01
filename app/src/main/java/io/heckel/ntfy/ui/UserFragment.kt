@@ -17,6 +17,10 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.validUrl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserFragment : DialogFragment() {
     private var user: User? = null
@@ -109,7 +113,7 @@ class UserFragment : DialogFragment() {
             baseUrlViewLayout.visibility = View.GONE
             usernameView.setText(user!!.username)
             passwordView.hint = getString(R.string.user_dialog_password_hint_edit)
-            saveMenuItem.setTitle(R.string.user_dialog_button_save)
+            saveMenuItem.setTitle(R.string.common_button_save)
             deleteMenuItem.isVisible = true
         }
 
@@ -185,24 +189,28 @@ class UserFragment : DialogFragment() {
         baseUrlViewLayout.error = null
         
         if (user == null) {
-            // Check if Authorization header already exists in custom headers
-            val hasAuthorizationHeader = if (this::repository.isInitialized && validUrl(baseUrl)) {
-                repository.getCustomHeadersForServer(baseUrl)
-                    .any { it.name.equals("Authorization", ignoreCase = true) }
-            } else {
-                false
+            CoroutineScope(Dispatchers.Main).launch {
+                val hasAuthorizationHeader = hasAuthorizationHeader(baseUrl)
+                if (hasAuthorizationHeader) {
+                    baseUrlViewLayout.error = getString(R.string.user_dialog_base_url_error_authorization_header_exists)
+                }
+                saveMenuItem.isEnabled = validUrl(baseUrl)
+                        && !baseUrlsInUse.contains(baseUrl)
+                        && !hasAuthorizationHeader
+                        && username.isNotEmpty() && password.isNotEmpty()
             }
-            
-            if (hasAuthorizationHeader) {
-                baseUrlViewLayout.error = getString(R.string.user_dialog_base_url_error_authorization_header_exists)
-            }
-            
-            saveMenuItem.isEnabled = validUrl(baseUrl)
-                    && !baseUrlsInUse.contains(baseUrl)
-                    && !hasAuthorizationHeader
-                    && username.isNotEmpty() && password.isNotEmpty()
         } else {
             saveMenuItem.isEnabled = username.isNotEmpty() // Unchanged if left blank
+        }
+    }
+
+    private suspend fun hasAuthorizationHeader(baseUrl: String): Boolean {
+        if (!this::repository.isInitialized || !validUrl(baseUrl)) {
+            return false
+        }
+        return withContext(Dispatchers.IO) {
+            repository.getCustomHeaders(baseUrl)
+                .any { it.name.equals("Authorization", ignoreCase = true) }
         }
     }
 

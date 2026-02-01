@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Nízka priorita</string>
-    <string name="channel_notifications_default_name">Predvolená priorita</string>
-    <string name="channel_notifications_high_name">Vysoká priorita</string>
-    <string name="channel_notifications_max_name">Maximálna priorita</string>
+    <string name="common_priority_low_name">Nízka priorita</string>
+    <string name="common_priority_default_name">Predvolená priorita</string>
+    <string name="common_priority_high_name">Vysoká priorita</string>
+    <string name="common_priority_max_name">Maximálna priorita</string>
     <string name="channel_subscriber_service_name">Služba odberu</string>
     <string name="channel_subscriber_notification_title">Počúvanie prichádzajúcich oznámení</string>
     <string name="channel_subscriber_notification_instant_text">Prihlásený na okamžité doručovanie tém</string>
@@ -110,7 +110,6 @@
     <string name="notification_dialog_cancel">Zrušiť</string>
     <string name="notification_dialog_muted_forever_toast_message">Oznámenia stlmené</string>
     <string name="notification_dialog_muted_until_toast_message">Oznámenia stlmené do %1$s</string>
-    <string name="notification_dialog_save">Uložiť</string>
     <string name="notification_dialog_enabled_toast_message">Oznámenia boli obnovené</string>
     <string name="notification_dialog_1h">1 hodina</string>
     <string name="notification_dialog_2h">2 hodiny</string>
@@ -241,7 +240,7 @@
     <string name="detail_settings_appearance_icon_remove_summary">Ikona zobrazená v oznámeniach pre túto tému</string>
     <string name="detail_settings_appearance_icon_error_saving">Ikonu sa nepodarilo uložiť: %1$s</string>
     <string name="user_dialog_button_cancel">Zrušiť</string>
-    <string name="user_dialog_button_save">Uložiť</string>
+    <string name="common_button_save">Uložiť</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predvolené)</string>
     <string name="detail_settings_about_header">O programe</string>
     <string name="detail_settings_global_setting_title">Použiť globálne nastavenie</string>
@@ -250,13 +249,13 @@
     <string name="user_dialog_title_add">Pridať používateľa</string>
     <string name="user_dialog_button_add">Pridať používateľa</string>
     <string name="user_dialog_description_edit">Môžete upraviť používateľské meno/heslo vybraného používateľa alebo ho vymazať.</string>
-    <string name="user_dialog_base_url_hint">URL Adresa služby</string>
+    <string name="common_service_url">URL Adresa služby</string>
     <string name="user_dialog_username_hint">Používateľské meno</string>
     <string name="user_dialog_password_hint_add">Heslo</string>
     <string name="user_dialog_password_hint_edit">Heslo (nezmenené, ak zostane prázdne)</string>
     <string name="user_dialog_button_delete">Odstrániť používateľa</string>
     <string name="detail_settings_appearance_display_name_title">Zobrazený názov</string>
-    <string name="channel_notifications_min_name">Minimálna priorita</string>
+    <string name="common_priority_min_name">Minimálna priorita</string>
     <string name="channel_subscriber_notification_instant_text_four">Prihlásený na odber štyroch tém pre okamžité doručovanie</string>
     <string name="channel_subscriber_notification_noinstant_text">Prihlásený na odber tém</string>
     <string name="channel_subscriber_notification_instant_text_five">Prihlásený na odber piatich tém pre okamžité doručovanie</string>
@@ -303,7 +302,7 @@
     <string name="detail_item_cannot_save">Nie je možné uložiť prílohu: %1$s</string>
     <string name="detail_item_download_info_not_downloaded_expires_x">nestiahnuté, vyprší %1$s</string>
     <string name="detail_menu_copy_url">Kopírovať adresu témy</string>
-    <string name="detail_action_mode_menu_copy">Kopírovať</string>
+    <string name="common_button_copy">Kopírovať</string>
     <string name="settings_notifications_priority_default">predvolená</string>
     <string name="notification_dialog_show_all">Zobraziť všetky oznámenia</string>
     <string name="notification_popup_file_download_successful">%1$s

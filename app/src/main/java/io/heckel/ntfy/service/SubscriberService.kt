@@ -1,6 +1,12 @@
 package io.heckel.ntfy.service
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.ForegroundServiceStartNotAllowedException
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,6 +26,7 @@ import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +35,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.ConcurrentHashMap
-import androidx.core.content.edit
 
 /**
  * The subscriber service manages the foreground service for instant delivery.
@@ -41,7 +47,6 @@ import androidx.core.content.edit
  * - Incoming notifications are immediately forwarded and broadcasted
  *
  * "Trying to keep the service running" cliff notes:
- * - Manages the service SHOULD-BE state in a SharedPref, so that we know whether or not to restart the service
  * - The foreground service is STICKY, so it is restarted by Android if it's killed
  * - On destroy (onDestroy), we send a broadcast to AutoRestartReceiver (see AndroidManifest.xml) which will schedule
  *   a one-off AutoRestartWorker to restart the service (this is weird, but necessary because services started from
@@ -71,6 +76,14 @@ class SubscriberService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
+
+        // Safety check: ensure we're in foreground state. This handles edge cases where
+        // onCreate() may not have been called or completed before onStartCommand(). See #1520.
+        if (serviceNotification == null) {
+            Log.d(TAG, "onStartCommand: Notification not set, initializing foreground state")
+            initializeForegroundState()
+        }
+
         if (intent != null) {
             Log.d(TAG, "using an intent with action ${intent.action}")
             when (intent.action) {
@@ -90,6 +103,15 @@ class SubscriberService : Service() {
         Log.init(this) // Init logs in all entry points
         Log.d(TAG, "Subscriber service has been created")
 
+        initializeForegroundState()
+    }
+
+    /**
+     * Initializes the foreground state by creating the notification channel and notification,
+     * then calling startForeground(). This is called from onCreate() and as a safety fallback
+     * from onStartCommand() if onCreate() didn't complete properly.
+     */
+    private fun initializeForegroundState() {
         val title = getString(R.string.channel_subscriber_notification_title)
         val text = if (BuildConfig.FIREBASE_AVAILABLE) {
             getString(R.string.channel_subscriber_notification_instant_text)
@@ -99,11 +121,12 @@ class SubscriberService : Service() {
         notificationManager = createNotificationChannel()
         serviceNotification = createNotification(title, text)
 
+        val notification = serviceNotification ?: return
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification!!, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                startForeground(NOTIFICATION_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
             } else {
-                startForeground(NOTIFICATION_SERVICE_ID, serviceNotification)
+                startForeground(NOTIFICATION_SERVICE_ID, notification)
             }
         } catch (e: Exception) {
             // On Android 12+, starting a foreground service from the background is restricted.
@@ -113,9 +136,10 @@ class SubscriberService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is ForegroundServiceStartNotAllowedException) {
                 Log.w(TAG, "Cannot start foreground service from background, stopping: ${e.message}")
                 stopSelf()
-                return
             } else {
-                throw e
+                Log.w(TAG, "Failed to start foreground: ${e.message}")
+                // Don't rethrow: let the service continue and hope for the best,
+                // or Android will kill it. Either way, we don't crash the app (see #1520).
             }
         }
     }
@@ -134,7 +158,6 @@ class SubscriberService : Service() {
         }
         Log.d(TAG, "Starting the foreground service task")
         isServiceStarted = true
-        saveServiceState(this, ServiceState.STARTED)
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         }
@@ -164,7 +187,6 @@ class SubscriberService : Service() {
         }
 
         isServiceStarted = false
-        saveServiceState(this, ServiceState.STOPPED)
     }
 
     private fun refreshConnections() {
@@ -186,13 +208,36 @@ class SubscriberService : Service() {
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
     private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
-        // Group INSTANT subscriptions by base URL, there is only one connection per base URL
-        val instantSubscriptions = repository.getSubscriptions()
-            .filter { s -> s.instant }
+        // Group instant subscriptions by base URL, there is only one connection per base URL
+        val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
+        val connectionProtocol = repository.getConnectionProtocol()
         val desiredConnectionIds = instantSubscriptions // Set<ConnectionId>
-            .groupBy { s -> ConnectionId(s.baseUrl, emptyMap()) }
-            .map { entry -> entry.key.copy(topicsToSubscriptionIds = entry.value.associate { s -> s.topic to s.id }) }
+            .groupBy { s -> s.baseUrl }
+            .map { (baseUrl, subs) ->
+                // Create a unique connection ID for each base URL. Each change in the connection ID will
+                // trigger a new connection, and close existing connections. We want to make sure that when the
+                // connection protocol (JSON/WS), the user or the custom headers are updated, that we kill existing
+                // connections and start new ones.
+                val credentialsHash = repository.getUser(baseUrl)?.let { "${it.username}:${it.password}".hashCode() } ?: 0
+                val headersHash = repository.getCustomHeaders(baseUrl)
+                    .sortedBy { "${it.name}:${it.value}" }
+                    .joinToString(",") { "${it.name}:${it.value}" }
+                    .hashCode()
+                val trustedCertsHash = repository.getTrustedCertificate(baseUrl)?.hashCode() ?: 0
+                val clientCertHash = repository.getClientCertificate(baseUrl)?.hashCode() ?: 0
+                val connectionForceReconnectVersion = repository.getConnectionForceReconnectVersion(baseUrl)
+                ConnectionId(
+                    baseUrl = baseUrl,
+                    topicsToSubscriptionIds = subs.associate { s -> s.topic to s.id },
+                    connectionProtocol = connectionProtocol,
+                    credentialsHash = credentialsHash,
+                    headersHash = headersHash,
+                    trustedCertsHash = trustedCertsHash,
+                    clientCertHash = clientCertHash,
+                    connectionForceReconnectVersion = connectionForceReconnectVersion
+                )
+            }
             .toSet()
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
@@ -221,11 +266,13 @@ class SubscriberService : Service() {
             val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
-            val connection = if (repository.getConnectionProtocol() == Repository.CONNECTION_PROTOCOL_WS) {
+            val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
+            val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-                WsConnection(connectionId, repository, user, since, ::onStateChanged, ::onNotificationReceived, alarmManager)
+                val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onStateChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -238,7 +285,7 @@ class SubscriberService : Service() {
         }
 
         // Update foreground service notification popup
-        if (connections.size > 0) {
+        if (connections.isNotEmpty()) {
             val title = getString(R.string.channel_subscriber_notification_title)
             val text = if (BuildConfig.FIREBASE_AVAILABLE) {
                 when (instantSubscriptions.size) {
@@ -266,8 +313,8 @@ class SubscriberService : Service() {
         }
     }
 
-    private fun onStateChanged(subscriptionIds: Collection<Long>, state: ConnectionState) {
-        repository.updateState(subscriptionIds, state)
+    private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
+        repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
@@ -278,15 +325,33 @@ class SubscriberService : Service() {
         val url = topicUrl(subscription.baseUrl, subscription.topic)
         Log.d(TAG, "[$url] Received notification: $notification")
         GlobalScope.launch(Dispatchers.IO) {
-            if (repository.addNotification(notification)) {
-                Log.d(TAG, "[$url] Dispatching notification $notification")
-                dispatcher.dispatch(subscription, notification)
-            }
-            wakeLock?.let {
-                if (it.isHeld) {
-                    it.release()
+            // This logic is (partially) duplicated in
+            // - Android: SubscriberService::onNotificationReceived()
+            // - Android: FirebaseService::onMessageReceived()
+            // - Web app: hooks.js:handleNotification()
+            // - Web app: sw.js:handleMessage(), sw.js:handleMessageClear(), ...
+
+            when (notification.event) {
+                ApiService.EVENT_MESSAGE_CLEAR -> {
+                    if (notification.sequenceId.isNotEmpty()) {
+                        repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
+                    }
+                    dispatcher.dispatch(subscription, notification)
+                }
+                ApiService.EVENT_MESSAGE_DELETE -> {
+                    if (notification.sequenceId.isNotEmpty()) {
+                        repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
+                    }
+                    dispatcher.dispatch(subscription, notification)
+                }
+                ApiService.EVENT_MESSAGE -> {
+                    val added = repository.addNotification(notification)
+                    if (added) {
+                        dispatcher.dispatch(subscription, notification)
+                    }
                 }
             }
+            wakeLock?.let { if (it.isHeld) { it.release() } }
         }
     }
 
@@ -327,7 +392,8 @@ class SubscriberService : Service() {
         val restartServiceIntent = Intent(applicationContext, SubscriberService::class.java).also {
             it.setPackage(packageName)
         }
-        val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+        val restartServicePendingIntent: PendingIntent =
+            PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
         applicationContext.getSystemService(ALARM_SERVICE)
         val alarmService: AlarmManager = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
@@ -357,11 +423,6 @@ class SubscriberService : Service() {
         STOP
     }
 
-    enum class ServiceState {
-        STARTED,
-        STOPPED,
-    }
-
     companion object {
         const val TAG = "NtfySubscriberService"
         const val SERVICE_START_WORKER_VERSION = BuildConfig.VERSION_CODE
@@ -371,21 +432,6 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
-        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10*60*1000L /*10 minutes*/
-        private const val SHARED_PREFS_ID = "SubscriberService"
-        private const val SHARED_PREFS_SERVICE_STATE = "ServiceState"
-
-        fun saveServiceState(context: Context, state: ServiceState) {
-            val sharedPrefs = context.getSharedPreferences(SHARED_PREFS_ID, MODE_PRIVATE)
-            sharedPrefs.edit {
-                putString(SHARED_PREFS_SERVICE_STATE, state.name)
-            }
-        }
-
-        fun readServiceState(context: Context): ServiceState {
-            val sharedPrefs = context.getSharedPreferences(SHARED_PREFS_ID, MODE_PRIVATE)
-            val value = sharedPrefs.getString(SHARED_PREFS_SERVICE_STATE, ServiceState.STOPPED.name)
-            return ServiceState.valueOf(value!!)
-        }
+        private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
     }
 }

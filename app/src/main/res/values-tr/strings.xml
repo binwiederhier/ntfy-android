@@ -2,8 +2,8 @@
 <resources>
     <string name="main_item_status_text_one">%1$d bildirim</string>
     <string name="detail_how_to_intro">Bu konuya bildirim göndermek için konu URL\'sine PUT veya POST göndermeniz yeterlidir.</string>
-    <string name="channel_notifications_low_name">Düşük öncelik</string>
-    <string name="channel_notifications_default_name">Öntanımlı öncelik</string>
+    <string name="common_priority_low_name">Düşük öncelik</string>
+    <string name="common_priority_default_name">Öntanımlı öncelik</string>
     <string name="channel_subscriber_service_name">Abonelik Hizmeti</string>
     <string name="channel_subscriber_notification_title">Gelen bildirimler için dinleniyor</string>
     <string name="channel_subscriber_notification_instant_text">Anında teslimat konularına abone olundu</string>
@@ -13,7 +13,7 @@
     <string name="channel_subscriber_notification_instant_text_more">%1$d anında teslimat konusuna abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text">Konulara abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Bir konuya abone olundu</string>
-    <string name="channel_notifications_min_name">En düşük öncelik</string>
+    <string name="common_priority_min_name">En düşük öncelik</string>
     <string name="channel_subscriber_notification_instant_text_four">Dört anında teslimat konusuna abone olundu</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Dört konuya abone olundu</string>
     <string name="refresh_message_no_results">Her şey güncel</string>
@@ -99,7 +99,6 @@
     <string name="share_topic_title">Paylaş</string>
     <string name="share_suggested_topics">Önerilen konular</string>
     <string name="share_successful">Mesaj yayınlandı</string>
-    <string name="notification_dialog_save">Kaydet</string>
     <string name="notification_dialog_enabled_toast_message">Bildirimler devam ettirildi</string>
     <string name="notification_dialog_muted_forever_toast_message">Bildirimler sessize alındı</string>
     <string name="notification_dialog_muted_until_toast_message">Bildirimler şu zamana kadar sessize alındı: %1$s</string>
@@ -171,7 +170,7 @@
     <string name="settings_advanced_connection_protocol_title">Bağlantı protokolü</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Sunucuya bağlanmak için HTTP üzerinden bir JSON akışı kullanın. Bu yöntem iyi test edilmiştir, ancak daha fazla pil tüketebilir.</string>
     <string name="settings_advanced_connection_protocol_summary_ws">Sunucuya bağlanmak için WebSockets kullanın. Bu tavsiye edilen yöntemdir, ancak vekilinizde ek yapılandırma gerektirebilir.</string>
-    <string name="channel_notifications_max_name">En yüksek öncelik</string>
+    <string name="common_priority_max_name">En yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_two">İki konuya abone olundu</string>
     <string name="main_add_button_description">Abonelik ekle</string>
     <string name="detail_clear_dialog_message">Bu konudaki tüm bildirimler silinsin mi\?</string>
@@ -183,15 +182,15 @@
     <string name="user_dialog_title_edit">Kullanıcıyı düzenle</string>
     <string name="user_dialog_description_add">Buraya bir kullanıcı ekleyebilirsiniz. Verilen sunucu için tüm konular bu kullanıcıyı kullanacaktır.</string>
     <string name="user_dialog_description_edit">Seçilen kullanıcı için kullanıcı adını/parolayı düzenleyebilir veya onu silebilirsiniz.</string>
-    <string name="user_dialog_base_url_hint">Hizmet URL\'si</string>
+    <string name="common_service_url">Hizmet URL\'si</string>
     <string name="user_dialog_username_hint">Kullanıcı adı</string>
     <string name="user_dialog_password_hint_add">Parola</string>
     <string name="user_dialog_password_hint_edit">Parola (boş bırakılırsa değiştirilmez)</string>
     <string name="user_dialog_button_add">Kullanıcı ekle</string>
     <string name="user_dialog_button_cancel">İptal</string>
     <string name="user_dialog_button_delete">Kullanıcı sil</string>
-    <string name="user_dialog_button_save">Kaydet</string>
-    <string name="channel_notifications_high_name">Yüksek öncelik</string>
+    <string name="common_button_save">Kaydet</string>
+    <string name="common_priority_high_name">Yüksek öncelik</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Üç konuya abone olundu</string>
     <string name="refresh_message_result">%1$d bildirim alındı</string>
     <string name="main_action_mode_delete_dialog_cancel">İptal</string>
@@ -222,7 +221,7 @@
     <string name="settings_notifications_auto_delete_three_months">3 ay sonra</string>
     <string name="detail_menu_test">Test bildirimi gönder</string>
     <string name="detail_menu_unsubscribe">Abonelikten çık</string>
-    <string name="detail_action_mode_menu_copy">Kopyala</string>
+    <string name="common_button_copy">Kopyala</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Kalıcı olarak sil</string>
     <string name="share_title">Paylaş</string>
     <string name="share_content_image_text">Sizinle bir resim paylaşıldı</string>
@@ -347,4 +346,28 @@
     <string name="settings_general_dynamic_colors_title">Değişken renkler</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Değişken sistem renkleri kullanılıyor</string>
     <string name="settings_general_dynamic_colors_summary_disabled">ntfy tema renkleri kullanılıyor</string>
+    <string name="publish_dialog_title">%1$s\'a yayınla</string>
+    <string name="publish_dialog_title_hint">Başlık</string>
+    <string name="publish_dialog_title_placeholder">Örneğin, \'Kapıda birisi var\'</string>
+    <string name="publish_dialog_message_hint">Mesaj</string>
+    <string name="publish_dialog_tags_hint">Etiketler</string>
+    <string name="publish_dialog_tags_placeholder">Orneğin, \'İkaz, Tehlike\'</string>
+    <string name="publish_dialog_priority_hint">Öncelik</string>
+    <string name="publish_dialog_button_publish">Yayınla</string>
+    <string name="publish_dialog_error_sending">Mesaj: %1$s yayınlanamadı</string>
+    <string name="publish_dialog_error_server">Mesaj: %1$s yayınlanamadı (kod %2$d)</string>
+    <string name="publish_dialog_message_published">Mesaj yayınlandı</string>
+    <string name="publish_dialog_uploading">Yüklenme: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Yüklenme iptal edildi</string>
+    <string name="publish_dialog_chip_title">Başlık</string>
+    <string name="publish_dialog_chip_tags">Etiketler</string>
+    <string name="publish_dialog_chip_priority">Öncelik</string>
+    <string name="publish_dialog_chip_click_url">Tıklama URL\'i</string>
+    <string name="publish_dialog_chip_email">E-posta adresi</string>
+    <string name="publish_dialog_chip_delay">Erteleme</string>
+    <string name="publish_dialog_chip_markdown">\"Markdown\"</string>
+    <string name="publish_dialog_chip_attach_url">URL\'le ekle</string>
+    <string name="publish_dialog_chip_attach_file">Yerli dosya ekle</string>
+    <string name="publish_dialog_chip_phone_call">Telefon görüşmesi</string>
+    <string name="publish_dialog_click_url_hint">Tıklama URL\'i</string>
 </resources>

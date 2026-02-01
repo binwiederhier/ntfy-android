@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Lage prioriteit</string>
-    <string name="channel_notifications_max_name">Maximum prioriteit</string>
+    <string name="common_priority_low_name">Lage prioriteit</string>
+    <string name="common_priority_max_name">Maximum prioriteit</string>
     <string name="channel_subscriber_notification_instant_text">Geabonneerd op onderwerpen voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_one">Geabonneerd op één onderwerp voor directe levering</string>
     <string name="channel_subscriber_notification_instant_text_four">Geabonneerd op vier onderwerpen voor directe levering</string>
@@ -27,8 +27,8 @@
     <string name="user_dialog_title_edit">Bewerk gebruiker</string>
     <string name="user_dialog_password_hint_edit">Wachtwoord(ongewijzigd indien leeg gelaten)</string>
     <string name="user_dialog_username_hint">Gebruikersnaam</string>
-    <string name="user_dialog_base_url_hint">Server URL</string>
-    <string name="user_dialog_button_save">Opslaan</string>
+    <string name="common_service_url">Server URL</string>
+    <string name="common_button_save">Opslaan</string>
     <string name="detail_delete_dialog_permanently_delete">Permanent verwijderen</string>
     <string name="detail_delete_dialog_cancel">Annuleren</string>
     <string name="detail_clear_dialog_cancel">Annuleren</string>
@@ -36,9 +36,9 @@
     <string name="add_dialog_login_password_hint">Wachtwoord</string>
     <string name="add_dialog_button_login">Inloggen</string>
     <string name="add_dialog_use_another_server">Gebruik een andere server</string>
-    <string name="channel_notifications_min_name">Meldingen (min. prioriteit)</string>
-    <string name="channel_notifications_default_name">Standaard prioriteit</string>
-    <string name="channel_notifications_high_name">Hoge prioriteit</string>
+    <string name="common_priority_min_name">Meldingen (min. prioriteit)</string>
+    <string name="common_priority_default_name">Standaard prioriteit</string>
+    <string name="common_priority_high_name">Hoge prioriteit</string>
     <string name="channel_subscriber_service_name">Abonnementenservice</string>
     <string name="main_how_to_intro">Klik op de + om een onderwerp aan te maken of erop te abonneren. Nadien ontvang je meldingen op je toestel bij het verzenden van berichten via PUT or POST.</string>
     <string name="channel_subscriber_notification_instant_text_two">Geabonneerd op twee onderwerpen voor directe levering</string>
@@ -90,7 +90,7 @@
     <string name="detail_menu_test">Testmelding verzenden</string>
     <string name="detail_menu_clear">Alle meldingen wissen</string>
     <string name="detail_menu_settings">Abonnementsinstellingen</string>
-    <string name="detail_action_mode_menu_copy">Kopiëren</string>
+    <string name="common_button_copy">Kopiëren</string>
     <string name="detail_action_mode_menu_delete">Verwijderen</string>
     <string name="detail_action_mode_delete_dialog_message">De geselecteerde melding(en) definitief verwijderen\?</string>
     <string name="share_menu_send">Delen</string>
@@ -214,7 +214,6 @@
     <string name="detail_instant_delivery_enabled">Directe levering aan</string>
     <string name="detail_item_tags">Tags: %1$s</string>
     <string name="detail_item_snack_deleted">Notificatie verwijderd</string>
-    <string name="notification_dialog_save">Opslaan</string>
     <string name="notification_popup_action_cancel">Annuleren</string>
     <string name="notification_popup_file">%1$s
 \nBestand: %2$s</string>

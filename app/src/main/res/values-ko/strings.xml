@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="detail_how_to_link">자세한 설명은 ntfy.sh와 docs 페이지에서 찾으실 수 있습니다.</string>
-    <string name="channel_notifications_high_name">우선순위 높음</string>
+    <string name="common_priority_high_name">우선순위 높음</string>
     <string name="main_menu_notifications_disabled_forever">알림 음소거됨</string>
     <string name="channel_subscriber_notification_instant_text_three">즉시 전달 주제 3개 구독중</string>
     <string name="add_dialog_use_another_server">다른 서버 사용</string>
     <string name="main_menu_notifications_enabled">알림 켜짐</string>
-    <string name="channel_notifications_default_name">우선순위 기본</string>
-    <string name="channel_notifications_max_name">우선순위 최상</string>
+    <string name="common_priority_default_name">우선순위 기본</string>
+    <string name="common_priority_max_name">우선순위 최상</string>
     <string name="channel_subscriber_service_name">구독 서비스</string>
     <string name="channel_subscriber_notification_title">알림 수신중</string>
     <string name="channel_subscriber_notification_instant_text">즉시 전달 주제를 구독함</string>
@@ -166,9 +166,9 @@
     <string name="settings_advanced_connection_protocol_title">연결 프로토콜</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
     <string name="detail_settings_appearance_header">표시 설정</string>
-    <string name="channel_notifications_low_name">우선순위 낮음</string>
-    <string name="user_dialog_button_save">저장</string>
-    <string name="channel_notifications_min_name">우선순위 최하</string>
+    <string name="common_priority_low_name">우선순위 낮음</string>
+    <string name="common_button_save">저장</string>
+    <string name="common_priority_min_name">우선순위 최하</string>
     <string name="channel_subscriber_notification_instant_text_two">즉시 전달 주제 2개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_five">즉시 전달 주제 5개 구독중</string>
     <string name="channel_subscriber_notification_instant_text_four">즉시 전달 주제 4개 구독중</string>
@@ -230,7 +230,7 @@
     <string name="detail_item_saved_successfully">\"Downloads\" 폴더에 \"%1$s\"로 저장됨</string>
     <string name="detail_item_cannot_open_url">URL을 열 수 없습니다: %1$s</string>
     <string name="detail_item_download_info_downloading_x_percent">%1$d%% 다운로드됨</string>
-    <string name="detail_action_mode_menu_copy">복사</string>
+    <string name="common_button_copy">복사</string>
     <string name="detail_action_mode_menu_delete">삭제</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">영구 삭제</string>
     <string name="share_topic_title">공유하기</string>
@@ -255,7 +255,6 @@
     <string name="notification_dialog_2h">2시간 후</string>
     <string name="notification_dialog_8h">8시간 후</string>
     <string name="notification_dialog_forever">해제시</string>
-    <string name="notification_dialog_save">저장</string>
     <string name="notification_dialog_enabled_toast_message">알림 음소거 해제됨</string>
     <string name="notification_dialog_tomorrow">내일</string>
     <string name="settings_general_users_prefs_user_used_by_many">주제 %1$s에서 사용됨</string>
@@ -317,7 +316,7 @@
     <string name="detail_settings_appearance_display_name_title">표시 이름</string>
     <string name="detail_settings_about_topic_url_title">주제 URL</string>
     <string name="user_dialog_title_edit">사용자 편집</string>
-    <string name="user_dialog_base_url_hint">서비스 URL</string>
+    <string name="common_service_url">서비스 URL</string>
     <string name="user_dialog_password_hint_edit">비밀번호 (변경시에만 입력)</string>
     <string name="user_dialog_title_add">사용자 추가</string>
     <string name="user_dialog_description_edit">선택한 사용자의 아이디나 비밀번호를 변경하거나 삭제할 수 있습니다.</string>

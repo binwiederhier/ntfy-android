@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/client_certificate_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/client_certificate_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSurface"
+            android:paddingStart="0dp"
+            android:paddingEnd="12dp"
+            app:navigationIcon="@drawable/ic_close_white_24dp"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:title="@string/client_certificate_dialog_title_add"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:menu="@menu/menu_client_certificate_dialog" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="?dialogPreferredPadding"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
+
+            <!-- Page 1: Password and Base URL input -->
+            <LinearLayout
+                android:id="@+id/client_certificate_page1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/client_certificate_description_page1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/client_certificate_dialog_description_page1"
+                    android:textSize="14sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/client_certificate_base_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/common_service_url"
+                    app:placeholderText="@string/common_service_url_placeholder">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/client_certificate_base_url_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textUri" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/client_certificate_password_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:hint="@string/client_certificate_dialog_password_hint"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/client_certificate_password_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/client_certificate_error_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="16dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/client_certificate_error_image"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="1dp"
+                        app:srcCompat="@drawable/ic_error_red_24dp"
+                        android:importantForAccessibility="no" />
+
+                    <TextView
+                        android:id="@+id/client_certificate_error_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/DangerText"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Page 2: Certificate details -->
+            <LinearLayout
+                android:id="@+id/client_certificate_page2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/client_certificate_description_page2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/client_certificate_dialog_description_page2"
+                    android:textSize="14sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="8dp" />
+
+                <!-- Base URL -->
+                <TextView
+                    android:id="@+id/client_certificate_base_url_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/common_service_url"
+                    android:textSize="12sp"
+                    android:textColor="?android:textColorSecondary"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/client_certificate_base_url_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textIsSelectable="true" />
+
+                <!-- Subject -->
+                <TextView
+                    android:id="@+id/client_certificate_subject_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/common_certificate_subject"
+                    android:textSize="12sp"
+                    android:textColor="?android:textColorSecondary"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:layout_marginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/client_certificate_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textIsSelectable="true" />
+
+                <!-- Issuer -->
+                <TextView
+                    android:id="@+id/client_certificate_issuer_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/common_certificate_issuer"
+                    android:textSize="12sp"
+                    android:textColor="?android:textColorSecondary"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:layout_marginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/client_certificate_issuer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textIsSelectable="true" />
+
+                <!-- Fingerprint -->
+                <TextView
+                    android:id="@+id/client_certificate_fingerprint_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/common_certificate_fingerprint"
+                    android:textSize="12sp"
+                    android:textColor="?android:textColorSecondary"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:layout_marginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/client_certificate_fingerprint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:textIsSelectable="true" />
+
+                <!-- Valid From / Valid Until -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false" android:orientation="horizontal"
+                    android:layout_marginTop="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/common_certificate_valid_from"
+                            android:textSize="12sp"
+                            android:textColor="?android:textColorSecondary"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp" />
+
+                        <TextView
+                            android:id="@+id/client_certificate_valid_from"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/common_certificate_valid_until"
+                            android:textSize="12sp"
+                            android:textColor="?android:textColorSecondary"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp" />
+
+                        <TextView
+                            android:id="@+id/client_certificate_valid_until"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:paddingStart="4dp"
+                            android:paddingEnd="4dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

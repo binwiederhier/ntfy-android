@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">குறைந்த முன்னுரிமை</string>
-    <string name="channel_notifications_high_name">அதிக முன்னுரிமை</string>
-    <string name="channel_notifications_max_name">அதிகபட்ச முன்னுரிமை</string>
+    <string name="common_priority_low_name">குறைந்த முன்னுரிமை</string>
+    <string name="common_priority_high_name">அதிக முன்னுரிமை</string>
+    <string name="common_priority_max_name">அதிகபட்ச முன்னுரிமை</string>
     <string name="detail_action_mode_menu_delete">நீக்கு</string>
     <string name="detail_action_mode_delete_dialog_cancel">ரத்துசெய்</string>
     <string name="share_title">பகிர்</string>
     <string name="share_menu_send">பகிர்</string>
     <string name="detail_item_download_info_deleted">நீக்கப்பட்டது</string>
     <string name="channel_subscriber_service_name">சந்தா சேவை</string>
-    <string name="channel_notifications_min_name">குறை முன்னுரிமை</string>
-    <string name="detail_action_mode_menu_copy">பிரதி</string>
-    <string name="channel_notifications_default_name">இயல்புநிலை முன்னுரிமை</string>
+    <string name="common_priority_min_name">குறை முன்னுரிமை</string>
+    <string name="common_button_copy">பிரதி</string>
+    <string name="common_priority_default_name">இயல்புநிலை முன்னுரிமை</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">நிரந்தரமாக நீக்கு</string>
-    <string name="notification_dialog_save">சேமிக்க</string>
     <string name="notification_dialog_cancel">ரத்து செய்</string>
     <string name="detail_clear_dialog_cancel">ரத்து செய்</string>
     <string name="detail_item_menu_cancel">பதிவிறக்கத்தை ரத்து செய்</string>
@@ -29,7 +28,7 @@
     <string name="share_content_image_text">ஒரு படம் உங்களுடன் பகிரப்பட்டது</string>
     <string name="notification_dialog_30min">30 நிமிடங்கள்</string>
     <string name="settings_advanced_header">மேம்பட்ட</string>
-    <string name="user_dialog_button_save">சேமி</string>
+    <string name="common_button_save">சேமி</string>
     <string name="channel_notifications_group_default_name">இயல்புநிலை</string>
     <string name="channel_subscriber_notification_instant_text_one">ஒரு உடனடி விநியோக தலைப்புக்கு குழுசேர்ந்தது</string>
     <string name="channel_subscriber_notification_instant_text_three">மூன்று உடனடி விநியோக தலைப்புகளுக்கு குழுசேர்ந்தது</string>
@@ -96,7 +95,7 @@
     <string name="detail_settings_about_topic_url_title">தலைப்பு முகவரி</string>
     <string name="user_dialog_description_add">நீங்கள் இங்கே ஒரு பயனரைச் சேர்க்கலாம். கொடுக்கப்பட்ட சேவையகத்திற்கான அனைத்து தலைப்புகளும் இந்த பயனரைப் பயன்படுத்தும்.</string>
     <string name="user_dialog_description_edit">தேர்ந்தெடுக்கப்பட்ட பயனருக்கான பயனர்பெயர்/கடவுச்சொல்லை நீங்கள் திருத்தலாம் அல்லது நீக்கலாம்.</string>
-    <string name="user_dialog_base_url_hint">பணி முகவரி</string>
+    <string name="common_service_url">பணி முகவரி</string>
     <string name="user_dialog_username_hint">பயனர்பெயர்</string>
     <string name="main_item_status_text_not_one">%1$d அறிவிப்புகள்</string>
     <string name="main_item_status_reconnecting">மீண்டும் இணைத்தல்…</string>

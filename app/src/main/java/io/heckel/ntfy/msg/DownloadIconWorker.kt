@@ -3,27 +3,24 @@ package io.heckel.ntfy.msg
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.*
+import io.heckel.ntfy.db.Icon
+import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.extractBaseUrl
 import io.heckel.ntfy.util.sha256
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import java.io.File
 import java.util.Date
-import java.util.concurrent.TimeUnit
+import kotlin.coroutines.cancellation.CancellationException
 
-class DownloadIconWorker(private val context: Context, params: WorkerParameters) : Worker(context, params) {
-    private val client = OkHttpClient.Builder()
-        .callTimeout(1, TimeUnit.MINUTES) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
+class DownloadIconWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     private val notifier = NotificationService(context)
     private lateinit var repository: Repository
     private lateinit var subscription: Subscription
@@ -31,7 +28,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
     private lateinit var icon: Icon
     private var uri: Uri? = null
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         if (context.applicationContext !is Application) return Result.failure()
         val notificationId = inputData.getString(INPUT_DATA_ID) ?: return Result.failure()
         val app = context.applicationContext as Application
@@ -39,6 +36,10 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         notification = repository.getNotification(notificationId) ?: return Result.failure()
         subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
         icon = notification.icon ?: return Result.failure()
+        if (!icon.hasValidUrl()) {
+            Log.w(TAG, "Icon has no valid URL, skipping download")
+            return Result.failure()
+        }
         try {
             val iconFile = createIconFile(icon)
             val yesterdayTimestamp = Date().time - MAX_CACHE_MILLIS
@@ -47,27 +48,27 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
             } else {
                 Log.d(TAG, "Loading icon from cache: $iconFile")
                 val iconUri = createIconUri(iconFile)
-                this.uri = iconUri // Required for cleanup in onStopped()
+                this.uri = iconUri
                 save(icon.copy(contentUri = iconUri.toString()))
             }
+        } catch (e: CancellationException) {
+            Log.d(TAG, "Icon download was canceled")
+            maybeDeleteFile()
+            throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
             failed(e)
         }
         return Result.success()
     }
 
-    override fun onStopped() {
-        Log.d(TAG, "Icon download was canceled")
-        maybeDeleteFile()
-    }
-
-    private fun downloadIcon(iconFile: File) {
-        Log.d(TAG, "Downloading icon from ${icon.url}")
+    private suspend fun downloadIcon(iconFile: File) {
+        val iconUrl = icon.url!! // Validated in doWork()
+        Log.d(TAG, "Downloading icon from $iconUrl")
         try {
-            val request = Request.Builder()
-                .url(icon.url)
-                .addHeader("User-Agent", ApiService.USER_AGENT)
-                .build()
+            val user = repository.getUser(extractBaseUrl(iconUrl))
+            val customHeaders = repository.getCustomHeaders(extractBaseUrl(iconUrl))
+            val request = HttpUtil.requestBuilder(iconUrl, user, customHeaders).build()
+            val client = HttpUtil.defaultClient(context, extractBaseUrl(iconUrl))
             client.newCall(request).execute().use { response ->
                 Log.d(TAG, "Headers received: $response, Content-Length: ${response.headers["Content-Length"]}")
                 if (!response.isSuccessful) {
@@ -146,7 +147,7 @@ class DownloadIconWorker(private val context: Context, params: WorkerParameters)
         if (!iconDir.exists() && !iconDir.mkdirs()) {
             throw Exception("Cannot create cache directory for icons: $iconDir")
         }
-        val hash = icon.url.sha256()
+        val hash = icon.url!!.sha256() // URL validated in doWork()
         return File(iconDir, hash)
     }
 

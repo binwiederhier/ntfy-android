@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="channel_subscriber_notification_instant_text">Abonnerer på emner med øjeblikkelig levering</string>
-    <string name="channel_notifications_max_name">Maks. prioritet</string>
+    <string name="common_priority_max_name">Maks. prioritet</string>
     <string name="channel_subscriber_notification_instant_text_two">Abonnerer på to emner om øjeblikkelig levering</string>
     <string name="channel_notifications_group_default_name">standard</string>
     <string name="channel_subscriber_notification_instant_text_six">Abonnerer på seks emner med øjeblikkelig levering</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonnerer på tre emner med øjeblikkelig levering</string>
     <string name="channel_subscriber_service_name">Abonnementsservice</string>
     <string name="channel_subscriber_notification_instant_text_five">Abonnerer på fem emner med øjeblikkelig levering</string>
-    <string name="channel_notifications_default_name">Standardprioritet</string>
-    <string name="channel_notifications_min_name">Minimum prioritet</string>
+    <string name="common_priority_default_name">Standardprioritet</string>
+    <string name="common_priority_min_name">Minimum prioritet</string>
     <string name="channel_subscriber_notification_instant_text_more">Abonnerer på %1$d emner med øjeblikkelig levering</string>
-    <string name="channel_notifications_low_name">Lav prioritet</string>
+    <string name="common_priority_low_name">Lav prioritet</string>
     <string name="channel_subscriber_notification_noinstant_text">Abonnerer på emner</string>
     <string name="channel_subscriber_notification_title">Lytter efter indgående notifikationer</string>
     <string name="channel_subscriber_notification_instant_text_one">Abonnerer på et emne med øjeblikkelig levering</string>
     <string name="channel_subscriber_notification_instant_text_four">Abonnerer på fire emner med øjeblikkelig levering</string>
-    <string name="channel_notifications_high_name">Høj prioritet</string>
+    <string name="common_priority_high_name">Høj prioritet</string>
     <string name="channel_subscriber_notification_noinstant_text_one">Abonnerer på et emne</string>
     <string name="channel_subscriber_notification_noinstant_text_two">Abonnerer på to emner</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Abonnerer på tre emner</string>

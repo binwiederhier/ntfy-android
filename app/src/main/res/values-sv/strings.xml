@@ -87,11 +87,11 @@
     <string name="detail_instant_delivery_enabled">Omedelbar leverans på</string>
     <string name="detail_instant_delivery_disabled">Omedelbar leverans av</string>
     <string name="detail_deep_link_subscribed_toast_message">Prenumererar på ämne %1$s</string>
-    <string name="channel_notifications_min_name">Lägsta prioritet</string>
-    <string name="channel_notifications_low_name">Låg prioritet</string>
-    <string name="channel_notifications_high_name">Hög prioritet</string>
-    <string name="channel_notifications_default_name">Standard prioritet</string>
-    <string name="channel_notifications_max_name">Högsta prioritet</string>
+    <string name="common_priority_min_name">Lägsta prioritet</string>
+    <string name="common_priority_low_name">Låg prioritet</string>
+    <string name="common_priority_high_name">Hög prioritet</string>
+    <string name="common_priority_default_name">Standard prioritet</string>
+    <string name="common_priority_max_name">Högsta prioritet</string>
     <string name="channel_subscriber_notification_instant_text_more">Prenumererar på %1$d ämnen med omedelbar leverans</string>
     <string name="main_menu_report_bug_title">Rapportera ett fel</string>
     <string name="main_action_mode_delete_dialog_message">Avregistrera mig från de valda ämnena och radera alla meddelanden permanent\?</string>
@@ -104,7 +104,7 @@
     <string name="detail_item_cannot_open_url">Kan inte öppna URL: %1$s</string>
     <string name="detail_menu_clear">Rensa alla notifikationer</string>
     <string name="detail_menu_test">Skicka testnotifikation</string>
-    <string name="detail_action_mode_menu_copy">Kopiera</string>
+    <string name="common_button_copy">Kopiera</string>
     <string name="detail_action_mode_menu_delete">Ta bort</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Ta bort permanent</string>
     <string name="detail_action_mode_delete_dialog_cancel">Avbryt</string>
@@ -125,7 +125,7 @@
     <string name="detail_item_cannot_open_apk">Appar kan inte installeras längre. Ladda ned dem via webbläsaren istället. See Problem #531 för detaljer.</string>
     <string name="add_dialog_topic_name_hint">Ämnesnamn, t. ex. phils_alerts</string>
     <string name="detail_item_cannot_open">Kan inte öppna bifogat dokument: %1$s</string>
-    <string name="user_dialog_button_save">Spara</string>
+    <string name="common_button_save">Spara</string>
     <string name="detail_item_tags">Taggar: %1$s</string>
     <string name="detail_item_saved_successfully">Sparad som \"%1$s\" inuti \"Downloads\" mappen</string>
     <string name="detail_item_cannot_download">Kan inte öppna eller ladda ned bifogat dokument. Länken har uphört och ingen lokal fil hittades.</string>
@@ -189,7 +189,6 @@
     <string name="notification_dialog_enabled_toast_message">Notifikationer aktiverat</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifikationer inaktiverat</string>
     <string name="notification_dialog_muted_until_toast_message">Notifikationer inaktiverat till %1$s</string>
-    <string name="notification_dialog_save">Spara</string>
     <string name="notification_popup_action_browse">Bläddra</string>
     <string name="notification_dialog_forever">Tills återaktiverad</string>
     <string name="notification_popup_action_open">Öppna</string>
@@ -322,7 +321,7 @@
     <string name="detail_settings_about_topic_url_title">Ämnes-URL</string>
     <string name="user_dialog_title_add">Lägg till användare</string>
     <string name="user_dialog_description_add">Du kan lägga till en användare här. Alla ämnen för den givna servern kommer att använda den här användaren.</string>
-    <string name="user_dialog_base_url_hint">Service-URL</string>
+    <string name="common_service_url">Service-URL</string>
     <string name="user_dialog_username_hint">Användarnamn</string>
     <string name="share_successful">Meddelande publicerat</string>
     <string name="notification_dialog_cancel">Avbryt</string>

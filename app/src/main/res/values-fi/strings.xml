@@ -14,7 +14,7 @@
     <string name="settings_advanced_export_logs_entry_copy_original">Kopioi leikkelepöydälle</string>
     <string name="settings_advanced_broadcast_summary_disabled">Sovellukset eivät voi vastaanottaa ilmoituksia ja lähetyksiä</string>
     <string name="detail_menu_clear">Poista kaikki ilmoitukset</string>
-    <string name="channel_notifications_max_name">Maksimi tärkeys</string>
+    <string name="common_priority_max_name">Maksimi tärkeys</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Aiheita/isäntänimiä ei ole muokattu. Ehkä sinulla ei ole topikkeja\?</string>
     <string name="add_dialog_login_new_user">Uusi käyttäjä</string>
     <string name="user_dialog_description_add">Kaikki tietyn palvelimen topikit käyttävät tätä käyttäjää.</string>
@@ -72,7 +72,7 @@
     <string name="settings_advanced_export_logs_entry_upload_original">Tallenna ja kopioi linkki</string>
     <string name="main_banner_battery_button_fix_now">Korjaa nyt</string>
     <string name="detail_item_download_info_not_downloaded">Ei ladattu</string>
-    <string name="user_dialog_button_save">Tallenna</string>
+    <string name="common_button_save">Tallenna</string>
     <string name="detail_delete_dialog_cancel">Peruuta</string>
     <string name="notification_popup_action_download">Lataa</string>
     <string name="detail_item_cannot_download">Liitettä ei voi avata tai ladata. Linkki vanhentui, eikä paikallista tiedostoa löytynyt.</string>
@@ -105,7 +105,7 @@
     <string name="settings_general_dark_mode_title">Tumma tila</string>
     <string name="detail_item_download_failed">Ei voida ladata tiedostoa: %1$s</string>
     <string name="settings_about_version_title">Versio</string>
-    <string name="channel_notifications_default_name">Oletus tärkeys</string>
+    <string name="common_priority_default_name">Oletus tärkeys</string>
     <string name="detail_item_download_info_download_failed">Lataus epäonnistunut</string>
     <string name="settings_notifications_min_priority_high">Korkea prioriteetti ja sen ylittävät</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Tärkeimmät ilmoitukset hälyttävät vain kerran</string>
@@ -127,7 +127,7 @@
     <string name="detail_settings_global_setting_suffix">Käytetään globaalia asetusta</string>
     <string name="detail_clear_dialog_permanently_delete">Poista pysyvästi</string>
     <string name="main_banner_battery_button_remind_later">Kysy myöhemmin</string>
-    <string name="channel_notifications_min_name">Pieni tärkeys</string>
+    <string name="common_priority_min_name">Pieni tärkeys</string>
     <string name="notification_popup_action_open">Auki</string>
     <string name="detail_item_menu_open">Avaa tiedosto</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Tärkeimmät ilmoitukset hälyttävät jatkuvasti, kunnes ne hylätään</string>
@@ -148,8 +148,7 @@
     <string name="settings_general_dark_mode_summary_dark">Tumma tila päällä. Oletko vampyyri \?</string>
     <string name="settings_general_users_prefs_user_add_summary">Lisää uusi käyttäjä uudelle palvelimelle</string>
     <string name="settings_general_dark_mode_entry_system">Käytä oletusasetusta</string>
-    <string name="notification_dialog_save">Tallenna</string>
-    <string name="user_dialog_base_url_hint">Palvelun URL</string>
+    <string name="common_service_url">Palvelun URL</string>
     <string name="detail_item_download_info_download_failed_expires_x">Lataus epäonnistunut, linkki vanhentunut %1$s</string>
     <string name="settings_notifications_priority_max">max</string>
     <string name="user_dialog_password_hint_add">Salasana</string>
@@ -168,7 +167,7 @@
     <string name="notification_dialog_tomorrow">Huomiseen saakka</string>
     <string name="detail_settings_notifications_open_channels_title">Määritä ilmoitusasetukset</string>
     <string name="add_dialog_topic_name_hint">Topikin nimi, esimerkiksi pentin_hälytykset</string>
-    <string name="channel_notifications_low_name">Matala tärkeys</string>
+    <string name="common_priority_low_name">Matala tärkeys</string>
     <string name="settings_notifications_auto_download_title">Lataa liitteet</string>
     <string name="user_dialog_button_delete">Poista käyttäjä</string>
     <string name="add_dialog_error_connection_failed">Yhteys epäonnistui: %1$s</string>
@@ -184,7 +183,7 @@
     <string name="settings_advanced_connection_protocol_entry_ws">WebSocketit</string>
     <string name="common_copied_to_clipboard">Kopioitu leikepöydälle</string>
     <string name="channel_subscriber_notification_noinstant_text">Tilattu topikkiin</string>
-    <string name="detail_action_mode_menu_copy">Kopioi</string>
+    <string name="common_button_copy">Kopioi</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream yli HTTP</string>
     <string name="user_dialog_title_add">Lisää käyttäjä</string>
     <string name="detail_item_download_info_deleted">Poistettu</string>
@@ -321,7 +320,7 @@
     <string name="detail_settings_appearance_icon_error_saving">Ei voida tallentaa kuvaketta %1$s</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_off">Oletusasetusten käyttäminen (äänet, Älä häiritse -tilan ohitus jne.)</string>
     <string name="detail_item_menu_cancel">Peruuta lataus</string>
-    <string name="channel_notifications_high_name">Korkea tärkeys</string>
+    <string name="common_priority_high_name">Korkea tärkeys</string>
     <string name="settings_advanced_record_logs_title">Nauhoitetut logit</string>
     <string name="settings_notifications_insistent_max_priority_title">Pidä hälytykset korkeimmalla tasolla</string>
     <string name="settings_notifications_min_priority_max">Vain maksimi ja ylittävät</string>

@@ -35,8 +35,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
             val distributor = Distributor(context)
             distributor.sendUnregistered(subscription.upAppId, subscription.upConnectorToken)
         }
-        repository.removeAllNotifications(subscriptionId)
-        repository.removeSubscription(subscriptionId)
+        repository.removeSubscription(subscription)
         // Sync deletion to remote account if logged in
         AccountManager.getInstance(context).deleteSubscriptionFromRemote(subscription.baseUrl, subscription.topic)
         if (subscription.icon != null) {

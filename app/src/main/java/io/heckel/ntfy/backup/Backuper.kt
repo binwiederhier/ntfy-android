@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.Uri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import java.io.InputStreamReader
@@ -50,6 +52,8 @@ class Backuper(val context: Context) {
         applySubscriptions(backupFile.subscriptions)
         applyNotifications(backupFile.notifications)
         applyUsers(backupFile.users)
+        applyTrustedCertificates(backupFile.trustedCertificates)
+        applyClientCertificates(backupFile.clientCertificates)
     }
 
     private fun applySettings(settings: Settings?) {
@@ -172,7 +176,7 @@ class Backuper(val context: Context) {
                 } else {
                     null
                 }
-                val icon = if (n.icon != null) {
+                val icon = if (n.icon != null && !n.icon.url.isNullOrEmpty()) {
                     io.heckel.ntfy.db.Icon(
                         url = n.icon.url,
                         contentUri = n.icon.contentUri,
@@ -184,6 +188,7 @@ class Backuper(val context: Context) {
                     id = n.id,
                     subscriptionId = n.subscriptionId,
                     timestamp = n.timestamp,
+                    sequenceId = n.sequenceId ?: n.id,
                     title = n.title,
                     message = n.message,
                     contentType = n.contentType,
@@ -220,6 +225,33 @@ class Backuper(val context: Context) {
         }
     }
 
+    private suspend fun applyTrustedCertificates(certificates: List<TrustedCertificateBackup>?) {
+        if (certificates == null) {
+            return
+        }
+        certificates.forEach { c ->
+            try {
+                CertUtil.parsePemCertificate(c.pem) // Validate the certificate
+                repository.addTrustedCertificate(c.baseUrl, c.pem)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to restore trusted certificate for ${c.baseUrl}: ${e.message}. Ignoring.", e)
+            }
+        }
+    }
+
+    private suspend fun applyClientCertificates(certificates: List<ClientCertificateBackup>?) {
+        if (certificates == null) {
+            return
+        }
+        certificates.forEach { c ->
+            try {
+                repository.addClientCertificate(c.baseUrl, c.p12Base64, c.password)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to restore client certificate for ${c.baseUrl}: ${e.message}. Ignoring.", e)
+            }
+        }
+    }
+
     private suspend fun createBackupFile(withSettings: Boolean, withSubscriptions: Boolean, withUsers: Boolean): BackupFile {
         return BackupFile(
             magic = FILE_MAGIC,
@@ -227,7 +259,9 @@ class Backuper(val context: Context) {
             settings = if (withSettings) createSettings() else null,
             subscriptions = if (withSubscriptions) createSubscriptionList() else null,
             notifications = if (withSubscriptions) createNotificationList() else null,
-            users = if (withUsers) createUserList() else null
+            users = if (withUsers) createUserList() else null,
+            trustedCertificates = if (withSettings) createTrustedCertificateList() else null,
+            clientCertificates = if (withSettings) createClientCertificateList() else null
         )
     }
 
@@ -270,25 +304,21 @@ class Backuper(val context: Context) {
 
     private suspend fun createNotificationList(): List<Notification> {
         return repository.getNotifications().map { n ->
-            val actions = if (n.actions != null) {
-                n.actions.map { a ->
-                    Action(
-                        id = a.id,
-                        action = a.action,
-                        label = a.label,
-                        clear = a.clear,
-                        url = a.url,
-                        method = a.method,
-                        headers = a.headers,
-                        body = a.body,
-                        intent = a.intent,
-                        extras = a.extras,
-                        progress = a.progress,
-                        error = a.error
-                    )
-                }
-            } else {
-                null
+            val actions = n.actions?.map { a ->
+                Action(
+                    id = a.id,
+                    action = a.action,
+                    label = a.label,
+                    clear = a.clear,
+                    url = a.url,
+                    method = a.method,
+                    headers = a.headers,
+                    body = a.body,
+                    intent = a.intent,
+                    extras = a.extras,
+                    progress = a.progress,
+                    error = a.error
+                )
             }
             val attachment = if (n.attachment != null) {
                 Attachment(
@@ -303,7 +333,7 @@ class Backuper(val context: Context) {
             } else {
                 null
             }
-            val icon = if (n.icon != null) {
+            val icon = if (n.icon != null && n.icon.hasValidUrl()) {
                 Icon(
                     url = n.icon.url,
                     contentUri = n.icon.contentUri,
@@ -315,6 +345,7 @@ class Backuper(val context: Context) {
                 id = n.id,
                 subscriptionId = n.subscriptionId,
                 timestamp = n.timestamp,
+                sequenceId = n.sequenceId,
                 title = n.title,
                 message = n.message,
                 contentType = n.contentType,
@@ -340,6 +371,25 @@ class Backuper(val context: Context) {
         }
     }
 
+    private suspend fun createTrustedCertificateList(): List<TrustedCertificateBackup> {
+        return repository.getTrustedCertificates().map { trustedCert ->
+            TrustedCertificateBackup(
+                baseUrl = trustedCert.baseUrl,
+                pem = trustedCert.pem
+            )
+        }
+    }
+
+    private suspend fun createClientCertificateList(): List<ClientCertificateBackup> {
+        return repository.getClientCertificates().map { clientCert ->
+            ClientCertificateBackup(
+                baseUrl = clientCert.baseUrl,
+                p12Base64 = clientCert.p12Base64,
+                password = clientCert.password
+            )
+        }
+    }
+
     companion object {
         private const val FILE_MAGIC = "ntfy2586"
         private const val FILE_VERSION = 1
@@ -353,7 +403,9 @@ data class BackupFile(
     val settings: Settings?,
     val subscriptions: List<Subscription>?,
     val notifications: List<Notification>?,
-    val users: List<User>?
+    val users: List<User>?,
+    val trustedCertificates: List<TrustedCertificateBackup>? = null,
+    val clientCertificates: List<ClientCertificateBackup>? = null
 )
 
 data class Settings(
@@ -391,6 +443,7 @@ data class Notification(
     val id: String,
     val subscriptionId: Long,
     val timestamp: Long,
+    @SerializedName("sequence_id") val sequenceId: String?, // Sequence ID for updating notifications
     val title: String,
     val message: String,
     val contentType: String, // "" or "text/markdown" (empty assumes "text/plain")
@@ -430,13 +483,24 @@ data class Attachment(
 )
 
 data class Icon(
-    val url: String, // URL (mandatory, see ntfy server)
+    val url: String?, // URL (nullable to handle corrupt backup files)
     val contentUri: String?, // After it's downloaded, the content:// location
 )
 
 data class User(
     val baseUrl: String,
     val username: String,
+    val password: String
+)
+
+data class TrustedCertificateBackup(
+    val baseUrl: String,
+    val pem: String
+)
+
+data class ClientCertificateBackup(
+    val baseUrl: String,
+    val p12Base64: String,
     val password: String
 )
 

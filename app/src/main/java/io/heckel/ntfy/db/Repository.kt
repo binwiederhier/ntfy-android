@@ -12,8 +12,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
@@ -23,9 +22,13 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
+    private val trustedCertificateDao = database.trustedCertificateDao()
+    private val clientCertificateDao = database.clientCertificateDao()
+    private val customHeaderDao = database.customHeaderDao()
 
-    private val connectionStates = ConcurrentHashMap<Long, ConnectionState>()
-    private val connectionStatesLiveData = MutableLiveData(connectionStates)
+    private val connectionDetails = ConcurrentHashMap<String, ConnectionDetails>()
+    private val connectionDetailsLiveData = MutableLiveData<Map<String, ConnectionDetails>>(connectionDetails)
+    private val connectionForceReconnectVersions = ConcurrentHashMap<String, Long>() // Base URL -> Number of times "Retry" was pressed
 
     // TODO Move these into an ApplicationState singleton
     val detailViewSubscriptionId = AtomicLong(0L) // Omg, what a hack ...
@@ -39,7 +42,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return subscriptionDao
             .listFlow()
             .asLiveData()
-            .combineWith(connectionStatesLiveData) { subscriptionsWithMetadata, _ ->
+            .combineWith(connectionDetailsLiveData) { subscriptionsWithMetadata, _ ->
                 toSubscriptionList(subscriptionsWithMetadata.orEmpty())
             }
     }
@@ -91,8 +94,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun removeSubscription(subscriptionId: Long) {
-        subscriptionDao.remove(subscriptionId)
+    suspend fun removeSubscription(subscription: Subscription) {
+        notificationDao.removeAll(subscription.id)
+        subscriptionDao.remove(subscription.id)
+        updateConnectionDetails(subscription.baseUrl, ConnectionState.NOT_APPLICABLE)
     }
 
     suspend fun getNotifications(): List<Notification> {
@@ -115,25 +120,24 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.listFlow(subscriptionId).asLiveData()
     }
 
-    fun clearAllNotificationIds(subscriptionId: Long) {
-        return notificationDao.clearAllNotificationIds(subscriptionId)
+    fun getNotificationsFilteredLiveData(subscriptionId: Long, query: String): LiveData<List<Notification>> {
+        return notificationDao.listFlowFiltered(subscriptionId, query).asLiveData()
     }
 
     fun getNotification(notificationId: String): Notification? {
         return notificationDao.get(notificationId)
     }
 
-    fun onlyNewNotifications(subscriptionId: Long, notifications: List<Notification>): List<Notification> {
-        val existingIds = notificationDao.listIds(subscriptionId)
-        return notifications.filterNot { existingIds.contains(it.id) }
-    }
-
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun addNotification(notification: Notification): Boolean {
         val maybeExistingNotification = notificationDao.get(notification.id)
-        if (maybeExistingNotification != null) {
+        if (maybeExistingNotification != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
+        }
+        // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
+        if (notification.sequenceId.isNotEmpty()) {
+            notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
         }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
@@ -152,8 +156,20 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         notificationDao.markAsDeleted(notificationId)
     }
 
+    fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsDeletedBySequenceId(subscriptionId, sequenceId)
+    }
+
     fun markAllAsDeleted(subscriptionId: Long) {
         notificationDao.markAllAsDeleted(subscriptionId)
+    }
+
+    fun markAllAsRead(subscriptionId: Long) {
+        notificationDao.markAllAsRead(subscriptionId)
+    }
+
+    fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String) {
+        notificationDao.markAsReadBySequenceId(subscriptionId, sequenceId)
     }
 
     fun markAsDeletedIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {
@@ -162,10 +178,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun removeNotificationsIfOlderThan(subscriptionId: Long, olderThanTimestamp: Long) {
         notificationDao.removeIfOlderThan(subscriptionId, olderThanTimestamp)
-    }
-
-    fun removeAllNotifications(subscriptionId: Long) {
-        notificationDao.removeAll(subscriptionId)
     }
 
     suspend fun getUsers(): List<User> {
@@ -190,6 +202,42 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     suspend fun deleteUser(baseUrl: String) {
         userDao.delete(baseUrl)
+    }
+
+    // Trusted certificates
+
+    suspend fun getTrustedCertificates(): List<TrustedCertificate> {
+        return trustedCertificateDao.list()
+    }
+
+    suspend fun getTrustedCertificate(baseUrl: String): TrustedCertificate? {
+        return trustedCertificateDao.get(baseUrl)
+    }
+
+    suspend fun addTrustedCertificate(baseUrl: String, pem: String) {
+        trustedCertificateDao.insert(TrustedCertificate(baseUrl, pem))
+    }
+
+    suspend fun removeTrustedCertificate(baseUrl: String) {
+        trustedCertificateDao.delete(baseUrl)
+    }
+
+    // Client certificates
+
+    suspend fun getClientCertificates(): List<ClientCertificate> {
+        return clientCertificateDao.list()
+    }
+
+    suspend fun getClientCertificate(baseUrl: String): ClientCertificate? {
+        return clientCertificateDao.get(baseUrl)
+    }
+
+    suspend fun addClientCertificate(baseUrl: String, p12Base64: String, password: String) {
+        clientCertificateDao.insert(ClientCertificate(baseUrl, p12Base64, password))
+    }
+
+    suspend fun removeClientCertificate(baseUrl: String) {
+        clientCertificateDao.delete(baseUrl)
     }
 
     fun getPollWorkerVersion(): Int {
@@ -408,60 +456,25 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
-    fun getCustomHeaders(): List<CustomHeader> {
-        val json = sharedPrefs.getString(SHARED_PREFS_CUSTOM_HEADERS, null)
-        return if (json != null) {
-            try {
-                val type = object : TypeToken<List<CustomHeader>>() {}.type
-                Gson().fromJson(json, type) ?: emptyList()
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to parse custom headers", e)
-                emptyList()
-            }
-        } else {
-            emptyList()
-        }
+    suspend fun getCustomHeaders(): List<CustomHeader> {
+        return customHeaderDao.list()
     }
 
-    fun getCustomHeadersForServer(baseUrl: String): List<CustomHeader> {
-        return getCustomHeaders().filter { it.baseUrl == baseUrl }
+    suspend fun getCustomHeaders(baseUrl: String): List<CustomHeader> {
+        return customHeaderDao.get(baseUrl)
     }
 
-    fun addCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.add(header)
-        setCustomHeaders(currentHeaders)
+    suspend fun addCustomHeader(header: CustomHeader) {
+        customHeaderDao.insert(header)
     }
 
-    fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        val index = currentHeaders.indexOfFirst {
-            it.baseUrl == oldHeader.baseUrl && it.name == oldHeader.name
-        }
-        if (index >= 0) {
-            currentHeaders[index] = newHeader
-            setCustomHeaders(currentHeaders)
-        }
+    suspend fun updateCustomHeader(oldHeader: CustomHeader, newHeader: CustomHeader) {
+        customHeaderDao.delete(oldHeader.baseUrl, oldHeader.name)
+        customHeaderDao.insert(newHeader)
     }
 
-    fun deleteCustomHeader(header: CustomHeader) {
-        val currentHeaders = getCustomHeaders().toMutableList()
-        currentHeaders.removeAll {
-            it.baseUrl == header.baseUrl && it.name == header.name
-        }
-        setCustomHeaders(currentHeaders)
-    }
-
-    private fun setCustomHeaders(headers: List<CustomHeader>) {
-        if (headers.isEmpty()) {
-            sharedPrefs.edit {
-                remove(SHARED_PREFS_CUSTOM_HEADERS)
-            }
-        } else {
-            sharedPrefs.edit {
-                putString(SHARED_PREFS_CUSTOM_HEADERS, Gson().toJson(headers))
-            }
-        }
+    suspend fun deleteCustomHeader(header: CustomHeader) {
+        customHeaderDao.delete(header.baseUrl, header.name)
     }
 
     fun isGlobalMuted(): Boolean {
@@ -505,7 +518,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     private fun toSubscriptionList(list: List<SubscriptionWithMetadata>): List<Subscription> {
         return list.map { s ->
-            val connectionState = connectionStates.getOrElse(s.id) { ConnectionState.NOT_APPLICABLE }
             Subscription(
                 id = s.id,
                 baseUrl = s.baseUrl,
@@ -524,7 +536,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
-                state = connectionState
+                connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
             )
         }
     }
@@ -551,30 +563,39 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
-            state = getState(s.id)
+            connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
         )
     }
 
-    fun updateState(subscriptionIds: Collection<Long>, newState: ConnectionState) {
-        var changed = false
-        subscriptionIds.forEach { subscriptionId ->
-            val state = connectionStates.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
-            if (state !== newState) {
-                changed = true
-                if (newState == ConnectionState.NOT_APPLICABLE) {
-                    connectionStates.remove(subscriptionId)
-                } else {
-                    connectionStates[subscriptionId] = newState
-                }
+    fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: Throwable? = null, nextRetryTime: Long = 0L) {
+        val details = ConnectionDetails(state, error, nextRetryTime)
+        val current = connectionDetails[baseUrl]
+        if (current != details) {
+            if (state == ConnectionState.NOT_APPLICABLE && error == null) {
+                connectionDetails.remove(baseUrl)
+            } else {
+                connectionDetails[baseUrl] = details
             }
-        }
-        if (changed) {
-            connectionStatesLiveData.postValue(connectionStates)
+            connectionDetailsLiveData.postValue(connectionDetails.toMap())
+            Log.d(TAG, "Connection details updated for $baseUrl: state=$state, error=${error?.message}, nextRetry=$nextRetryTime")
         }
     }
 
-    private fun getState(subscriptionId: Long): ConnectionState {
-        return connectionStatesLiveData.value!!.getOrElse(subscriptionId) { ConnectionState.NOT_APPLICABLE }
+    fun getConnectionDetailsLiveData(): LiveData<Map<String, ConnectionDetails>> {
+        return connectionDetailsLiveData
+    }
+
+    fun getConnectionDetails(): Map<String, ConnectionDetails> {
+        return connectionDetails.toMap()
+    }
+
+    fun getConnectionForceReconnectVersion(baseUrl: String): Long {
+        return connectionForceReconnectVersions[baseUrl] ?: 0L
+    }
+
+    fun incrementConnectionForceReconnectVersion(baseUrl: String) {
+        connectionForceReconnectVersions.compute(baseUrl) { _, current -> (current ?: 0L) + 1 }
+        Log.d(TAG, "Connection force reconnect version incremented for $baseUrl: ${connectionForceReconnectVersions[baseUrl]}")
     }
 
     companion object {
@@ -601,7 +622,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
-        const val SHARED_PREFS_CUSTOM_HEADERS = "CustomHeaders"
 
         private const val LAST_TOPICS_COUNT = 3
 
@@ -660,12 +680,6 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 }
-
-data class CustomHeader(
-    val baseUrl: String,
-    val name: String,
-    val value: String
-)
 
 /* https://stackoverflow.com/a/57079290/1440785 */
 fun <T, K, R> LiveData<T>.combineWith(

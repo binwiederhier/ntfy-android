@@ -19,13 +19,18 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.ApiService
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
 import androidx.core.view.isGone
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLHandshakeException
+import javax.net.ssl.SSLPeerUnverifiedException
 
-class AddFragment : DialogFragment() {
+class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertificateListener {
     private lateinit var repository: Repository
     private lateinit var api: ApiService
     private lateinit var subscribeListener: SubscribeListener
@@ -240,9 +245,69 @@ class AddFragment : DialogFragment() {
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Connection to topic failed: ${e.message}", e)
-                showErrorAndReenableSubscribeView(e.message)
+                
+                // If this is an SSL certificate error, show the trust cert dialog
+                // Never show the dialog for the app base URL
+                if (isSSLException(e) && baseUrl != appBaseUrl) {
+                    Log.d(TAG, "SSL certificate error detected, attempting to fetch certificate for user review")
+                    handleSSLException(baseUrl)
+                } else {
+                    showErrorAndReenableSubscribeView(e.message)
+                }
             }
         }
+    }
+    
+    private fun isSSLException(e: Exception): Boolean {
+        var cause: Throwable? = e
+        while (cause != null) {
+            if (cause is SSLHandshakeException || cause is SSLPeerUnverifiedException || cause is CertificateException) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+    
+    private fun handleSSLException(baseUrl: String) {
+        // Try to fetch the server's certificate
+        val activity = activity ?: return
+        val certUtil = CertUtil.getInstance(requireContext())
+        val certificate = certUtil.fetchServerCertificate(baseUrl)
+        activity.runOnUiThread {
+            if (certificate != null) {
+                showCertificateTrustDialog(baseUrl, certificate)
+            } else {
+                // Could not fetch certificate, show generic SSL error
+                showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
+            }
+        }
+    }
+    
+    private fun showCertificateTrustDialog(baseUrl: String, certificate: X509Certificate) {
+        subscribeProgress.visibility = View.GONE
+        enableSubscribeView(true)
+        
+        TrustedCertificateFragment
+            .newInstanceUnknown(certificate, baseUrl)
+            .show(childFragmentManager, TrustedCertificateFragment.TAG)
+    }
+    
+    // TrustedCertificateFragment.TrustedCertificateListener implementation
+    override fun onCertificateTrusted(certificate: X509Certificate) {
+        val baseUrl = getBaseUrl()
+        val topic = subscribeTopicText.text.toString()
+        Log.d(TAG, "Certificate trusted for $baseUrl, retrying connection")
+        checkReadAndMaybeShowLogin(baseUrl, topic)
+    }
+    
+    override fun onCertificateRejected() {
+        Log.d(TAG, "Certificate rejected by user")
+        showErrorAndReenableSubscribeView(getString(R.string.add_dialog_error_ssl_untrusted))
+    }
+    
+    override fun onCertificateDeleted() {
+        // Not used in AddFragment - this is only for the settings screen
     }
 
     private fun showErrorAndReenableSubscribeView(message: String?) {
@@ -362,8 +427,8 @@ class AddFragment : DialogFragment() {
         Log.d(TAG, "Closing dialog and calling onSubscribe handler")
         val activity = activity?: return // We may have pressed "Cancel"
         activity.runOnUiThread {
-            val topic = subscribeTopicText.text.toString()
             val baseUrl = getBaseUrl()
+            val topic = subscribeTopicText.text.toString()
             val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
             subscribeListener.onSubscribe(topic, baseUrl, instant)
             dialog?.dismiss()

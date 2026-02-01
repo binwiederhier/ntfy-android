@@ -1,0 +1,10 @@
+Features:
+* Support for updating and deleting notifications (#303, #1536, ntfy-android#151, thanks to @wunter8 for the initial implementation)
+* Support for self-signed certs and client certs for mTLS (#215, #530, ntfy-android#149, thanks to @cyb3rko for reviewing)
+* Connection error dialog to help diagnose connection issues
+
+Maintenance + bug fixes:
+* Use server-specific user for attachment downloads (#1529, thanks to @ManInDark for reporting and testing)
+* Fix crash in sharing dialog (thanks to @rogeliodh)
+* Fix crash when exiting multi-delete in detail view
+* Fix potential crashes with icon downloader and backuper

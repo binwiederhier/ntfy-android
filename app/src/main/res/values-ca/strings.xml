@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_min_name">Prioritat mínima</string>
-    <string name="channel_notifications_low_name">Prioritat baixa</string>
-    <string name="channel_notifications_default_name">Prioritat per defecte</string>
-    <string name="channel_notifications_high_name">Prioritat alta</string>
-    <string name="channel_notifications_max_name">Prioritat màxima</string>
+    <string name="common_priority_min_name">Prioritat mínima</string>
+    <string name="common_priority_low_name">Prioritat baixa</string>
+    <string name="common_priority_default_name">Prioritat per defecte</string>
+    <string name="common_priority_high_name">Prioritat alta</string>
+    <string name="common_priority_max_name">Prioritat màxima</string>
     <string name="channel_subscriber_service_name">Servei Subscripció</string>
     <string name="main_item_status_reconnecting">reconnectant…</string>
     <string name="channel_subscriber_notification_title">Escoltant notificacions entrants</string>
@@ -55,7 +55,6 @@
     <string name="detail_instant_delivery_disabled">Entrega instantània desactivada</string>
     <string name="detail_item_menu_copy_contents">Copiar la notificació</string>
     <string name="detail_menu_test">Enviar notificació de prova</string>
-    <string name="notification_dialog_save">Guardar</string>
     <string name="main_banner_battery_button_remind_later">Preguntar més endavant</string>
     <string name="main_banner_battery_button_dismiss">Descartar</string>
     <string name="main_banner_battery_button_fix_now">Arreglar ara</string>
@@ -155,7 +154,7 @@
     <string name="detail_menu_enable_instant">Activar entrega instantània</string>
     <string name="detail_item_cannot_open_apk">Les aplicacions ja no poden ser instal·lades. Descarrega-les a través del navegador. Pots trobar més detalls a #531.</string>
     <string name="detail_menu_unsubscribe">Eliminar subscripció</string>
-    <string name="detail_action_mode_menu_copy">Copiar</string>
+    <string name="common_button_copy">Copiar</string>
     <string name="detail_action_mode_delete_dialog_message">Eliminar definitivament la notificació\?</string>
     <string name="share_content_title">Vista prèvia del missatge</string>
     <string name="share_content_text_hint">Afegeix contingut per compartir aquí</string>
@@ -230,7 +229,7 @@
     <string name="detail_settings_about_topic_url_title">URL del tema</string>
     <string name="user_dialog_title_add">Afegir usuari</string>
     <string name="user_dialog_description_edit">Pots editar el nom d\'usuari o la contrasenya de l\'usuari seleccionat, o eliminar-lo.</string>
-    <string name="user_dialog_base_url_hint">URL de servei</string>
+    <string name="common_service_url">URL de servei</string>
     <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
     <string name="settings_notifications_auto_delete_one_month">Al cap d\'un mes</string>
     <string name="settings_general_users_prefs_title">Usuaris</string>
@@ -338,5 +337,5 @@
     <string name="settings_about_header">Quant a</string>
     <string name="settings_advanced_export_logs_entry_upload_original">Carregar i copiar enllaç</string>
     <string name="user_dialog_button_delete">Eliminar usuari</string>
-    <string name="user_dialog_button_save">Guardar</string>
+    <string name="common_button_save">Guardar</string>
 </resources>

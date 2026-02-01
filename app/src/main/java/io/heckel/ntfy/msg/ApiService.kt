@@ -1,43 +1,33 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.os.Build
 import com.google.gson.Gson
-import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
+import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.util.*
-import okhttp3.*
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import io.heckel.ntfy.service.NotAuthorizedException
+import io.heckel.ntfy.util.ALL_PRIORITIES
+import io.heckel.ntfy.util.HttpUtil
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.PRIORITY_DEFAULT
+import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.util.topicUrlAuth
+import io.heckel.ntfy.util.topicUrlJson
+import io.heckel.ntfy.util.topicUrlJsonPoll
+import okhttp3.Call
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okio.BufferedSource
 import java.io.IOException
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets.UTF_8
-import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
-class ApiService(context: Context) {
+class ApiService(private val context: Context) {
     private val repository = Repository.getInstance(context)
     private val gson = Gson()
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val publishClient = OkHttpClient.Builder()
-        .callTimeout(5, TimeUnit.MINUTES) // Total timeout for entire request
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
-    private val subscriberClient = OkHttpClient.Builder()
-        .readTimeout(77, TimeUnit.SECONDS) // Assuming that keepalive messages are more frequent than this
-        .build()
     private val parser = NotificationParser()
 
-    fun publish(
+    suspend fun publish(
         baseUrl: String,
         topic: String,
         user: User? = null,
@@ -95,11 +85,12 @@ class ApiService(context: Context) {
         } else {
             url
         }
-        val request = requestBuilder(urlWithQuery, user, repository)
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = HttpUtil.requestBuilder(urlWithQuery, user, customHeaders)
             .put(body ?: message.toRequestBody())
             .build()
         Log.d(TAG, "Publishing to $request")
-        val httpCall = publishClient.newCall(request)
+        val httpCall = HttpUtil.longCallClient(context, baseUrl).newCall(request)
         onCancelAvailable?.invoke { httpCall.cancel() } // Notify caller that HTTP request can now be canceled
         httpCall.execute().use { response ->
             if (response.code == 401 || response.code == 403) {
@@ -123,20 +114,25 @@ class ApiService(context: Context) {
         }
     }
 
-    fun poll(subscriptionId: Long, baseUrl: String, topic: String, user: User?, since: String? = null): List<Notification> {
-        val sinceVal = since ?: "all"
+    suspend fun poll(subscription: Subscription): List<Notification> {
+        val subscriptionId = subscription.id
+        val baseUrl = subscription.baseUrl
+        val topic = subscription.topic
+        val sinceVal = subscription.lastNotificationId ?: "all"
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
-        val request = requestBuilder(url, user, repository).build()
-        client.newCall(request).execute().use { response ->
+        val user = repository.getUser(baseUrl)
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw Exception("Unexpected response ${response.code} when polling topic $url")
             }
             val body = response.body.string().trim()
             if (body.isEmpty()) return emptyList()
             val notifications = body.lines().mapNotNull { line ->
-                parser.parse(line, subscriptionId = subscriptionId, notificationId = 0) // No notification when we poll
+                parser.parse(line, subscriptionId = subscriptionId, baseUrl = baseUrl)
             }
 
             Log.d(TAG, "Notifications: $notifications")
@@ -144,55 +140,41 @@ class ApiService(context: Context) {
         }
     }
 
-    fun subscribe(
+    suspend fun subscribe(
         baseUrl: String,
         topics: String,
         since: String?,
-        user: User?,
-        notify: (topic: String, Notification) -> Unit,
-        fail: (Exception) -> Unit
-    ): Call {
+        user: User?
+    ): Pair<Call, BufferedSource> {
         val sinceVal = since ?: "all"
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
-        val request = requestBuilder(url, user, repository).build()
-        val call = subscriberClient.newCall(request)
-        call.enqueue(object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (!response.isSuccessful) {
-                        throw Exception("Unexpected response ${response.code} when subscribing to topic $url")
-                    }
-                    val source = response.body.source()
-                    while (!source.exhausted()) {
-                        val line = source.readUtf8Line() ?: throw Exception("Unexpected response for $url: line is null")
-                        val notification = parser.parseWithTopic(line, notificationId = Random.nextInt(), subscriptionId = 0) // subscriptionId to be set downstream
-                        if (notification != null) {
-                            notify(notification.topic, notification.notification)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Connection to $url failed (1): ${e.message}", e)
-                    fail(e)
-                }
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        val call = HttpUtil.subscriberClient(context, baseUrl).newCall(request)
+        val response = call.execute()
+        if (!response.isSuccessful) {
+            val code = response.code
+            val message = response.message
+            response.close()
+            if (code == 401 || code == 403) {
+                throw NotAuthorizedException(code, message)
             }
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e(TAG, "Connection to $url failed (2): ${e.message}", e)
-                fail(e)
-            }
-        })
-        return call
+            throw IOException("Unexpected response $code when subscribing")
+        }
+        return Pair(call, response.body.source())
     }
 
-    fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
+    suspend fun checkAuth(baseUrl: String, topic: String, user: User?): Boolean {
         if (user == null) {
             Log.d(TAG, "Checking anonymous read against ${topicUrl(baseUrl, topic)}")
         } else {
             Log.d(TAG, "Checking read access for user ${user.username} against ${topicUrl(baseUrl, topic)}")
         }
         val url = topicUrlAuth(baseUrl, topic)
-        val request = requestBuilder(url, user, repository).build()
-        client.newCall(request).execute().use { response ->
+        val customHeaders = repository.getCustomHeaders(baseUrl)
+        val request = HttpUtil.requestBuilder(url, user, customHeaders).build()
+        HttpUtil.defaultClient(context, baseUrl).newCall(request).execute().use { response ->
             if (response.isSuccessful) {
                 return true
             } else if (user == null && response.code == 404) {
@@ -215,36 +197,14 @@ class ApiService(context: Context) {
     )
 
     companion object {
-        val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
         private const val TAG = "NtfyApiService"
 
         // These constants have corresponding values in the server codebase!
         const val CONTROL_TOPIC = "~control"
         const val EVENT_MESSAGE = "message"
+        const val EVENT_MESSAGE_DELETE = "message_delete"
+        const val EVENT_MESSAGE_CLEAR = "message_clear"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
-
-        fun requestBuilder(url: String, user: User?, repository: Repository? = null): Request.Builder {
-            val builder = Request.Builder()
-                .url(url)
-                .addHeader("User-Agent", USER_AGENT)
-            if (user != null) {
-                builder.addHeader("Authorization", Credentials.basic(user.username, user.password, UTF_8))
-            }
-            if (repository != null) {
-                val baseUrl = extractBaseUrl(url)
-                repository.getCustomHeadersForServer(baseUrl).forEach { header ->
-                    builder.addHeader(header.name, header.value)
-                }
-            }
-            return builder
-        }
-
-        private fun extractBaseUrl(url: String): String {
-            val httpUrl = url.toHttpUrlOrNull() ?: return ""
-            val schemeAndHost = "${httpUrl.scheme}://${httpUrl.host}"
-            val maybePort = if (httpUrl.port != 80 && httpUrl.port != 443) ":${httpUrl.port}" else ""
-            return schemeAndHost + maybePort
-        }
     }
 }

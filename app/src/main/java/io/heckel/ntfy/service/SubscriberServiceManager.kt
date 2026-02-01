@@ -26,12 +26,6 @@ class SubscriberServiceManager(private val context: Context) {
         workManager.enqueueUniqueWork(WORK_NAME_ONCE, ExistingWorkPolicy.KEEP, startServiceRequest) // Unique avoids races!
     }
 
-    fun restart() {
-        Intent(context, SubscriberService::class.java).also { intent ->
-            context.stopService(intent) // Service will auto-restart
-        }
-    }
-
     /**
      * Starts or stops the foreground service by figuring out how many instant delivery subscriptions
      * exist. If there's > 0, then we need a foreground service.
@@ -52,7 +46,14 @@ class SubscriberServiceManager(private val context: Context) {
                     Log.d(TAG, "ServiceStartWorker: Starting foreground service (work ID: ${id})")
                     Intent(context, SubscriberService::class.java).also {
                         it.action = SubscriberService.Action.START.name
-                        ContextCompat.startForegroundService(context, it)
+                        try {
+                            ContextCompat.startForegroundService(context, it)
+                        } catch (e: Exception) {
+                            // ForegroundServiceDidNotStartInTimeException or other exceptions can occur
+                            // due to race conditions or system constraints. We log and continue;
+                            // the service will be retried on the next refresh() call.
+                            Log.w(TAG, "ServiceStartWorker: Failed to start foreground service: ${e.message}")
+                        }
                     }
                 } else {
                     // No instant subscriptions, stop the service using stopService()

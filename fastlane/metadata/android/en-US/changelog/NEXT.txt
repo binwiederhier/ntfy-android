@@ -1,12 +1,2 @@
 Features:
-* Allow publishing messages through the message bar and publish dialog (#98, ntfy-android#144)
-* Define custom HTTP headers to support authenticated proxies, tunnels and SSO (#116, #1018, ntfy-android#132, ntfy-android#146, thanks to @CrazyWolf13)
-* Implement UnifiedPush "raise to foreground" requirement (ntfy-android#98, ntfy-android#148, thanks to @p1gp1g)
-* Language selector to allow overriding the system language (#1508, ntfy-android#145, thanks to @hudsonm62 for reporting)
-* Highlight phone numbers and email addresses in notifications (#957, ntfy-android#71, thanks to @brennenputh)
-* Support for port and display name in ntfy:// links (ntfy-android#130, thanks to @godovski)
-
-Maintenance + bug fixes:
-* Add support for (technically incorrect) 'image/jpg' MIME type (ntfy-android#142, thanks to @Murilobeluco)
-* Unify "copy to clipboard" notifications, use Android 13 style (ntfy-android#61, thanks to @thgoebel)
-* Fix crash in user add dialog (onAddUser)
+* Search within a topic (#141, ntfy-android#153, thanks to @Copephobia and @StoyanYonkov for reporting, and to @Fearup for sponsoring)

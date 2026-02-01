@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Priorità bassa</string>
+    <string name="common_priority_low_name">Priorità bassa</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Iscritto a tre argomenti</string>
-    <string name="channel_notifications_high_name">Priorità alta</string>
-    <string name="channel_notifications_max_name">Priorità massima</string>
+    <string name="common_priority_high_name">Priorità alta</string>
+    <string name="common_priority_max_name">Priorità massima</string>
     <string name="channel_subscriber_service_name">Servizio di iscrizione</string>
     <string name="channel_subscriber_notification_instant_text">Iscritto ad argomenti a consegna istantanea</string>
     <string name="channel_subscriber_notification_instant_text_two">Iscritto a due argomenti a consegna istantanea</string>
@@ -166,17 +166,17 @@
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">Stream JSON over HTTP</string>
     <string name="user_dialog_description_add">Puoi aggiungere un utente qui. Tutti gli argomenti per il server specificato utilizzeranno questo utente.</string>
     <string name="user_dialog_description_edit">Puoi modificare nome utente/password per l\'utente selezionato, oppure eliminarlo.</string>
-    <string name="user_dialog_base_url_hint">URL del servizio</string>
+    <string name="common_service_url">URL del servizio</string>
     <string name="user_dialog_username_hint">Nome utente</string>
     <string name="user_dialog_password_hint_add">Password</string>
     <string name="user_dialog_password_hint_edit">Password (non modificata se il campo viene lasciato vuoto)</string>
     <string name="user_dialog_button_add">Aggiungi utente</string>
     <string name="user_dialog_button_cancel">Annulla</string>
     <string name="user_dialog_button_delete">Elimina utente</string>
-    <string name="user_dialog_button_save">Salva</string>
+    <string name="common_button_save">Salva</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Iscritto a %1$d argomenti</string>
-    <string name="channel_notifications_default_name">Priorità predefinita</string>
-    <string name="channel_notifications_min_name">Priorità minima</string>
+    <string name="common_priority_default_name">Priorità predefinita</string>
+    <string name="common_priority_min_name">Priorità minima</string>
     <string name="channel_subscriber_notification_instant_text_one">Iscritto ad un argomento a consegna istantanea</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Iscritto a quattro argomenti</string>
     <string name="main_menu_docs_title">Leggi la documentazione</string>
@@ -208,7 +208,7 @@
     <string name="detail_item_saved_successfully">Salvato con nome \"%1$s\" nella cartella \"Downloads\"</string>
     <string name="detail_item_cannot_save">Impossibile salvare l\'allegato: %1$s</string>
     <string name="detail_menu_settings">Impostazioni iscrizione</string>
-    <string name="detail_action_mode_menu_copy">Copia</string>
+    <string name="common_button_copy">Copia</string>
     <string name="settings_notifications_auto_delete_summary_never">Non eliminare mai automaticamente le notifiche</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Elimina automaticamente le notiche dopo un giorno</string>
     <string name="settings_notifications_auto_delete_summary_three_days">Elimina automaticamente le notiche dopo 3 giorni</string>
@@ -241,7 +241,6 @@
     <string name="share_content_file_text">Un file è stato condiviso con te</string>
     <string name="share_suggested_topics">Argomenti suggeriti</string>
     <string name="notification_dialog_title">Disattivare le notifiche</string>
-    <string name="notification_dialog_save">Salva</string>
     <string name="notification_dialog_enabled_toast_message">Notifiche ripristinate</string>
     <string name="notification_dialog_muted_forever_toast_message">Notifiche disattivate</string>
     <string name="notification_dialog_muted_until_toast_message">Notifiche disattivate fino a %1$s</string>

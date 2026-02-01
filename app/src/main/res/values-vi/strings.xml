@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="channel_notifications_low_name">Mức ưu tiên thấp</string>
+    <string name="common_priority_low_name">Mức ưu tiên thấp</string>
     <string name="add_dialog_login_password_hint">Mật khẩu</string>
     <string name="add_dialog_login_username_hint">Tên tài khoản</string>
     <string name="add_dialog_login_description">Chủ đề cần đăng nhập để truy cập. Vui lòng nhập tên tài khoản và mật khẩu.</string>
     <string name="user_dialog_button_add">Thêm tài khoản</string>
     <string name="add_dialog_login_error_not_authorized">Đăng nhập thất bại. Tài khoản %1$s không được cấp quyền.</string>
     <string name="user_dialog_description_edit">Bạn có thể chỉnh sửa tên tài khoản hoặc mật khẩu của người dùng này, hoặc xóa người dùng này khỏi hệ thống.</string>
-    <string name="user_dialog_button_save">Lưu</string>
+    <string name="common_button_save">Lưu</string>
     <string name="user_dialog_password_hint_add">Mật khẩu</string>
     <string name="add_dialog_topic_name_hint">Tên chủ đề, ví dụ: phils_alerts</string>
     <string name="user_dialog_button_delete">Xóa tài khoản</string>
@@ -16,12 +16,12 @@
     <string name="user_dialog_password_hint_edit">Mật khẩu (không đổi nếu để trống)</string>
     <string name="add_dialog_title">Theo dõi chủ đề</string>
     <string name="user_dialog_username_hint">Tên tài khoản</string>
-    <string name="channel_notifications_min_name">Mức ưu tiên thấp nhất</string>
-    <string name="channel_notifications_max_name">Mức ưu tiên cao nhất</string>
+    <string name="common_priority_min_name">Mức ưu tiên thấp nhất</string>
+    <string name="common_priority_max_name">Mức ưu tiên cao nhất</string>
     <string name="channel_notifications_group_default_name">Mặc định</string>
     <string name="channel_subscriber_service_name">Dịch vụ thông báo</string>
-    <string name="channel_notifications_default_name">Mặc định</string>
-    <string name="channel_notifications_high_name">Mức ưu tiên cao</string>
+    <string name="common_priority_default_name">Mặc định</string>
+    <string name="common_priority_high_name">Mức ưu tiên cao</string>
     <string name="channel_subscriber_notification_title">Chờ thông báo</string>
     <string name="refresh_message_result">Đã nhận %1$d thông báo</string>
     <string name="main_action_mode_delete_dialog_permanently_delete">Xóa vĩnh viễn</string>
@@ -51,7 +51,6 @@
     <string name="main_item_status_text_not_one">%1$d thông báo</string>
     <string name="main_action_bar_title">Chủ đề đăng kí</string>
     <string name="main_menu_notifications_disabled_until">Thông báo bị tắt cho đến %1$s</string>
-    <string name="notification_dialog_save">Lưu</string>
     <string name="add_dialog_login_new_user">Thêm người dùng</string>
     <string name="detail_delete_dialog_cancel">Hủy</string>
     <string name="detail_clear_dialog_cancel">Hủy</string>
@@ -153,7 +152,7 @@
     <string name="detail_menu_clear">Xóa tất cả thông báo</string>
     <string name="detail_menu_settings">Cài đặt đăng kí</string>
     <string name="detail_menu_unsubscribe">Hủy đăng kí</string>
-    <string name="detail_action_mode_menu_copy">Sao chép</string>
+    <string name="common_button_copy">Sao chép</string>
     <string name="detail_action_mode_menu_delete">Xóa</string>
     <string name="detail_action_mode_delete_dialog_message">Xóa vĩnh viễn thông báo đã chọn?</string>
     <string name="detail_action_mode_delete_dialog_permanently_delete">Xóa vĩnh viễn</string>
@@ -332,7 +331,7 @@
     <string name="user_dialog_title_add">Thêm tài khoản</string>
     <string name="user_dialog_title_edit">Chỉnh sửa tài khoản</string>
     <string name="user_dialog_description_add">Thêm tài khoản cho server này. Tất cả chủ đề của server sẽ dùng tài khoản này.</string>
-    <string name="user_dialog_base_url_hint">URL dịch vụ</string>
+    <string name="common_service_url">URL dịch vụ</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>

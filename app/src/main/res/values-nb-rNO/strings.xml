@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_dialog_login_new_user">Ny bruker</string>
-    <string name="channel_notifications_low_name">Lav prioritet</string>
-    <string name="channel_notifications_default_name">Standard prioritet</string>
+    <string name="common_priority_low_name">Lav prioritet</string>
+    <string name="common_priority_default_name">Standard prioritet</string>
     <string name="channel_subscriber_service_name">Abonnementstjeneste</string>
     <string name="channel_subscriber_notification_title">Lytter etter innkommende varsler</string>
     <string name="channel_subscriber_notification_instant_text">Abonnert på emner med umiddelbar levering</string>
@@ -15,7 +15,7 @@
     <string name="channel_subscriber_notification_noinstant_text_three">Abonnert på tre emner</string>
     <string name="channel_subscriber_notification_noinstant_text_four">Abonnert på fire emner</string>
     <string name="refresh_message_result">%1$d varsling(er) mottatt</string>
-    <string name="channel_notifications_max_name">Maks prioritet</string>
+    <string name="common_priority_max_name">Maks prioritet</string>
     <string name="refresh_message_error_one">Kunne ikke oppdatere abonnement: %1$s</string>
     <string name="main_menu_notifications_enabled">Varsler påslått</string>
     <string name="main_menu_notifications_disabled_forever">Varsler dempet</string>
@@ -104,7 +104,6 @@
     <string name="share_content_file_text">En fil ble delt med deg</string>
     <string name="share_topic_title">Del til</string>
     <string name="notification_dialog_cancel">Avbryt</string>
-    <string name="notification_dialog_save">Lagre</string>
     <string name="notification_dialog_show_all">Vis alle merknader</string>
     <string name="notification_dialog_30min">30 minutter</string>
     <string name="notification_dialog_2h">2 timer</string>
@@ -197,7 +196,7 @@
     <string name="settings_about_header">Om</string>
     <string name="user_dialog_title_add">Legg til bruker</string>
     <string name="user_dialog_title_edit">Rediger bruker</string>
-    <string name="user_dialog_base_url_hint">Tjeneste-URL</string>
+    <string name="common_service_url">Tjeneste-URL</string>
     <string name="user_dialog_description_edit">Du kan redigere brukernavn/passord for valgt bruker, eller slette den helt.</string>
     <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON-strøm over HTTP</string>
     <string name="settings_advanced_connection_protocol_entry_ws">Vev-sockets</string>
@@ -207,12 +206,12 @@
     <string name="user_dialog_button_add">Legg til bruker</string>
     <string name="user_dialog_button_cancel">Avbryt</string>
     <string name="user_dialog_button_delete">Slett bruker</string>
-    <string name="user_dialog_button_save">Lagre</string>
+    <string name="common_button_save">Lagre</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonnert på tre emner med umiddelbar levering</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Abonnert på %1$d emner</string>
     <string name="main_menu_settings_title">Innstillinger</string>
-    <string name="channel_notifications_min_name">Minste prioritet</string>
-    <string name="channel_notifications_high_name">Høy prioritet</string>
+    <string name="common_priority_min_name">Minste prioritet</string>
+    <string name="common_priority_high_name">Høy prioritet</string>
     <string name="channel_subscriber_notification_instant_text_two">Abonnert på to emner med umiddelbar levering</string>
     <string name="refresh_message_error">Kunne ikke oppdatere %1$d abonnement(er)
 \n
@@ -237,7 +236,7 @@
     <string name="detail_item_download_info_not_downloaded_expires_x">ikke nedlastet, utløper %1$s</string>
     <string name="detail_menu_notifications_disabled_until">Varsler avslått til %1$s</string>
     <string name="detail_item_cannot_save">Kan ikke lagre vedlegg: %1$s</string>
-    <string name="detail_action_mode_menu_copy">Kopier</string>
+    <string name="common_button_copy">Kopier</string>
     <string name="notification_popup_action_cancel">Avbryt</string>
     <string name="notification_popup_file">%1$s
 \nFil: %2$s</string>
