@@ -1,16 +1,11 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
-import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.db.Session
+import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import java.util.concurrent.TimeUnit
 
 /**
  * Service for ntfy account API endpoints.
@@ -19,25 +14,17 @@ import java.util.concurrent.TimeUnit
  */
 class AccountApiService(private val context: Context) {
     private val gson = Gson()
-    private val session = Session.getInstance(context)
-    private val client = OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS)
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS)
-        .writeTimeout(15, TimeUnit.SECONDS)
-        .build()
 
     /**
      * Login with username/password to get a bearer token.
      * POST /v1/account/token
      */
-    fun login(baseUrl: String, username: String, password: String): String {
+    suspend fun login(baseUrl: String, username: String, password: String): String {
         val url = accountTokenUrl(baseUrl)
         Log.d(TAG, "Logging in to $url as $username")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .post("".toRequestBody())
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", basicAuth(username, password))
             .build()
         client.newCall(request).execute().use { response ->
@@ -60,13 +47,12 @@ class AccountApiService(private val context: Context) {
      * Logout and invalidate the current token.
      * DELETE /v1/account/token
      */
-    fun logout(baseUrl: String, token: String) {
+    suspend fun logout(baseUrl: String, token: String) {
         val url = accountTokenUrl(baseUrl)
         Log.d(TAG, "Logging out from $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .delete()
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .build()
         try {
@@ -84,13 +70,12 @@ class AccountApiService(private val context: Context) {
      * Extend the current token's expiration.
      * PATCH /v1/account/token
      */
-    fun extendToken(baseUrl: String, token: String) {
+    suspend fun extendToken(baseUrl: String, token: String) {
         val url = accountTokenUrl(baseUrl)
         Log.d(TAG, "Extending token at $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .patch("".toRequestBody())
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .build()
         client.newCall(request).execute().use { response ->
@@ -107,13 +92,12 @@ class AccountApiService(private val context: Context) {
      * Get account information including subscriptions.
      * GET /v1/account
      */
-    fun getAccount(baseUrl: String, token: String): AccountResponse {
+    suspend fun getAccount(baseUrl: String, token: String): AccountResponse {
         val url = accountUrl(baseUrl)
         Log.d(TAG, "Fetching account from $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .get()
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .build()
         client.newCall(request).execute().use { response ->
@@ -132,14 +116,13 @@ class AccountApiService(private val context: Context) {
      * Add a subscription to the user's account.
      * POST /v1/account/subscription
      */
-    fun addSubscription(baseUrl: String, token: String, subscriptionBaseUrl: String, topic: String): RemoteSubscription {
+    suspend fun addSubscription(baseUrl: String, token: String, subscriptionBaseUrl: String, topic: String): RemoteSubscription {
         val url = accountSubscriptionUrl(baseUrl)
         val payload = gson.toJson(AddSubscriptionRequest(subscriptionBaseUrl, topic))
         Log.d(TAG, "Adding subscription $topic at $subscriptionBaseUrl to $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .post(payload.toRequestBody())
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .addHeader("Content-Type", "application/json")
             .build()
@@ -159,7 +142,7 @@ class AccountApiService(private val context: Context) {
      * Update a subscription in the user's account.
      * PATCH /v1/account/subscription
      */
-    fun updateSubscription(
+    suspend fun updateSubscription(
         baseUrl: String,
         token: String,
         subscriptionBaseUrl: String,
@@ -169,10 +152,9 @@ class AccountApiService(private val context: Context) {
         val url = accountSubscriptionUrl(baseUrl)
         val payload = gson.toJson(UpdateSubscriptionRequest(subscriptionBaseUrl, topic, displayName))
         Log.d(TAG, "Updating subscription $topic at $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .patch(payload.toRequestBody())
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .addHeader("Content-Type", "application/json")
             .build()
@@ -192,13 +174,12 @@ class AccountApiService(private val context: Context) {
      * Delete a subscription from the user's account.
      * DELETE /v1/account/subscription
      */
-    fun deleteSubscription(baseUrl: String, token: String, subscriptionBaseUrl: String, topic: String) {
+    suspend fun deleteSubscription(baseUrl: String, token: String, subscriptionBaseUrl: String, topic: String) {
         val url = accountSubscriptionUrl(baseUrl)
         Log.d(TAG, "Deleting subscription $topic from $url")
-        val request = Request.Builder()
-            .url(url)
+        val client = HttpUtil.defaultClient(context, baseUrl)
+        val request = HttpUtil.requestBuilder(url)
             .delete()
-            .addHeader("User-Agent", USER_AGENT)
             .addHeader("Authorization", bearerAuth(token))
             .addHeader("X-BaseURL", subscriptionBaseUrl)
             .addHeader("X-Topic", topic)
@@ -250,7 +231,6 @@ class AccountApiService(private val context: Context) {
 
     companion object {
         private const val TAG = "NtfyAccountApiService"
-        val USER_AGENT = "ntfy/${BuildConfig.VERSION_NAME} (${BuildConfig.FLAVOR}; Android ${Build.VERSION.RELEASE}; SDK ${Build.VERSION.SDK_INT})"
     }
 }
 
@@ -315,4 +295,3 @@ data class TokenInfo(
     val last_origin: String?,
     val expires: Long?
 )
-

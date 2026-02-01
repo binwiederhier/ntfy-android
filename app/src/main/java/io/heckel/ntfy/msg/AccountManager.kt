@@ -143,7 +143,7 @@ class AccountManager(private val context: Context) {
                     val subscriptionId = "${local.baseUrl}/${local.topic}"
                     if (local.upAppId == null && !remoteIds.contains(subscriptionId)) {
                         Log.d(TAG, "Removing local subscription not in remote: ${local.topic}")
-                        repository.removeSubscription(local.id)
+                        repository.removeSubscription(local)
                     }
                 }
 
