@@ -79,10 +79,12 @@ android {
 }
 
 // Disables GoogleServices tasks for F-Droid variant
-android.applicationVariants.all { variant ->
-    def shouldProcessGoogleServices = variant.flavorName == "play"
-    def googleTask = tasks.named("process${variant.name.capitalize()}GoogleServices").get()
-    googleTask.enabled = shouldProcessGoogleServices
+afterEvaluate {
+    tasks.configureEach { task ->
+        if (task.name.endsWith("GoogleServices") && !task.name.contains("Play")) {
+            task.enabled = false
+        }
+    }
 }
 
 dependencies {
