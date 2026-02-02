@@ -261,7 +261,7 @@
     <string name="settings_advanced_clear_logs_deleted_toast">Journaux supprimés</string>
     <string name="settings_notifications_min_priority_summary_x_or_higher">Affiche les notifications si la priorité est %1$d (%2$s) ou supérieure</string>
     <string name="settings_notifications_auto_delete_never">Jamais</string>
-    <string name="settings_general_default_base_url_message">Entrez l\'URL racine de votre serveur pour l\'utiliser par défaut lors de l\'abonnement à de nouveaux sujets et/ou lors du partage.</string>
+    <string name="default_server_dialog_description">Entrez l\'URL racine de votre serveur pour l\'utiliser par défaut lors de l\'abonnement à de nouveaux sujets et/ou lors du partage.</string>
     <string name="settings_notifications_min_priority_summary_max">Affiche les notifications si la priorité est 5 (max)</string>
     <string name="settings_notifications_priority_min">min</string>
     <string name="settings_general_users_prefs_title">Utilisateurs</string>

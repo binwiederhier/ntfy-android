@@ -65,7 +65,7 @@
     <string name="main_how_to_intro">Докоснете бутона с +, за да създадете тема или да се абонирате. След това ще получавате известия на устройството си, след като изпратите съобщения чрез метода PUT или POST.</string>
     <string name="detail_how_to_intro">За да изпратите известия в тази тема направете заявка чрез методите PUT или POST към адреса й.</string>
     <string name="detail_no_notifications_text">Липсват известия в темата</string>
-    <string name="settings_general_default_base_url_message">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
+    <string name="default_server_dialog_description">За да използвате по подразбиране собствен сървър при абониране за нови теми и/или споделяне на теми, въведете адрес на сървъра.</string>
     <string name="notification_dialog_muted_until_toast_message">Известията са заглушени до %1$s</string>
     <string name="settings_advanced_export_logs_summary">Дневниците се копират в междинната памет или се изпращат към nopaste.net (собственост на автора на ntfy). Имената на хостовете и темите могат да бъдат цензурирани, но съдържанието на известията никога.</string>
     <string name="main_menu_report_bug_title">Доклад за дефект</string>

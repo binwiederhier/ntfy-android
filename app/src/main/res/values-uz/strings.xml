@@ -185,7 +185,7 @@
     <string name="settings_general_header">Umumiy</string>
     <string name="settings_appearance_header">Tashqi ko\'rinish</string>
     <string name="settings_general_default_base_url_title">Standart server</string>
-    <string name="settings_general_default_base_url_message">Yangi mavzularga obuna bo‘lish va/yoki mavzularga ulashishda o‘z serveringizdan standart foydalanish uchun serveringizning asosiy URL manzilini kiriting.</string>
+    <string name="default_server_dialog_description">Yangi mavzularga obuna bo‘lish va/yoki mavzularga ulashishda o‘z serveringizdan standart foydalanish uchun serveringizning asosiy URL manzilini kiriting.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (standart)</string>
     <string name="settings_general_users_title">Foydalanuvchilarni boshqarish</string>
     <string name="settings_general_users_summary">Himoyalangan mavzular uchun foydalanuvchilarni qo‘shish/o‘chirish</string>

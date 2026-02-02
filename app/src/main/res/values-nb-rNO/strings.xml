@@ -161,7 +161,7 @@
     <string name="settings_general_dark_mode_entry_dark">Mørk drakt</string>
     <string name="settings_backup_restore_header">Sikkerhetskopiering og gjenoppretting</string>
     <string name="settings_notifications_auto_delete_summary_one_day">Slett merknader automatisk etter én dag</string>
-    <string name="settings_general_default_base_url_message">Skriv inn serverens rot-URL for å bruke din egen server som standard når du abonnerer på nye emner og/eller deler til emner.</string>
+    <string name="default_server_dialog_description">Skriv inn serverens rot-URL for å bruke din egen server som standard når du abonnerer på nye emner og/eller deler til emner.</string>
     <string name="settings_backup_restore_restore_title">Gjenopprett fra fil</string>
     <string name="settings_advanced_header">Avansert</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopier til utklippstavlen (sensurert)</string>

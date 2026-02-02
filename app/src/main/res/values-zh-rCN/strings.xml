@@ -251,7 +251,7 @@
     <string name="settings_backup_restore_backup_failed">备份失败：%1$s</string>
     <string name="settings_advanced_export_logs_copied_logs">日志已复制到剪贴板</string>
     <string name="settings_advanced_export_logs_entry_upload_scrubbed">上传并复制链接 (屏蔽敏感信息)</string>
-    <string name="settings_general_default_base_url_message">请输入你的服务器的 URL 以使用你自己的服务器作为订阅主题和发送消息的默认选项。</string>
+    <string name="default_server_dialog_description">请输入你的服务器的 URL 以使用你自己的服务器作为订阅主题和发送消息的默认选项。</string>
     <string name="settings_general_users_prefs_user_not_used">未在任何主题使用</string>
     <string name="settings_general_dark_mode_entry_light">亮色模式</string>
     <string name="settings_general_users_prefs_user_used_by_one">在主题 %1$s 使用</string>

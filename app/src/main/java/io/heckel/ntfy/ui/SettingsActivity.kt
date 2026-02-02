@@ -51,7 +51,8 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener {
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener,
+    DefaultServerFragment.DefaultServerDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
     private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
@@ -483,31 +484,22 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
-            val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
-            defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
-            defaultBaseUrl?.extras?.putString("message", getString(R.string.settings_general_default_base_url_message))
-            defaultBaseUrl?.extras?.putString("hint", getString(R.string.app_base_url))
-            defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String, value: String?) {
-                    val baseUrl = value ?: return
-                    repository.setDefaultBaseUrl(baseUrl)
+            val defaultBaseUrl: Preference? = findPreference(defaultBaseUrlPrefId)
+            defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            defaultBaseUrl?.onPreferenceClickListener = OnPreferenceClickListener {
+                activity?.let { activity ->
+                    DefaultServerFragment
+                        .newInstance(repository.getDefaultBaseUrl())
+                        .show(activity.supportFragmentManager, DefaultServerFragment.TAG)
                 }
-                override fun getString(key: String, defValue: String?): String? {
-                    return repository.getDefaultBaseUrl()
-                }
+                true
             }
-            defaultBaseUrl?.setOnBindEditTextListener { editText ->
-                editText.addTextChangedListener(AfterChangedTextWatcher {
-                    val okayButton: Button = editText.rootView.findViewById(android.R.id.button1)
-                    val value = editText.text.toString()
-                    okayButton.isEnabled = value.isEmpty() || validUrl(value)
-                })
-            }
-            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
-                if (TextUtils.isEmpty(pref.text)) {
+            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<Preference> { _ ->
+                val currentUrl = repository.getDefaultBaseUrl()
+                if (currentUrl.isNullOrEmpty()) {
                     getString(R.string.settings_general_default_base_url_default_summary, appBaseUrl)
                 } else {
-                    pref.text
+                    currentUrl
                 }
             }
 
@@ -734,6 +726,21 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
             autoDownload?.value = autoDownloadSelectionCopy.toString()
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
+        }
+
+        fun refreshDefaultServerSummary() {
+            val appBaseUrl = getString(R.string.app_base_url)
+            val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
+            val defaultBaseUrl: Preference? = findPreference(defaultBaseUrlPrefId)
+            // Re-set the summary provider to trigger a refresh
+            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<Preference> { _ ->
+                val currentUrl = repository.getDefaultBaseUrl()
+                if (currentUrl.isNullOrEmpty()) {
+                    getString(R.string.settings_general_default_base_url_default_summary, appBaseUrl)
+                } else {
+                    currentUrl
+                }
+            }
         }
 
         private fun copyLogsToClipboard(scrub: Boolean) {
@@ -1088,6 +1095,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     customHeaderSettingsFragment.reload()
                 }
             }
+        }
+    }
+
+    override fun onDefaultServerUpdated(dialog: DialogFragment, url: String) {
+        repository.setDefaultBaseUrl(url)
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.refreshDefaultServerSummary()
         }
     }
 

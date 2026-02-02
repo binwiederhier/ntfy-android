@@ -252,7 +252,7 @@
     <string name="settings_notifications_priority_min">min</string>
     <string name="settings_notifications_priority_low">laag</string>
     <string name="settings_notifications_auto_download_100k">Als kleiner dan 100 kB</string>
-    <string name="settings_general_default_base_url_message">Voer de root URL in van je eigen server om deze standaard te gebruiken bij abonneren op nieuwe onderwerpen en/of delen in onderwerpen.</string>
+    <string name="default_server_dialog_description">Voer de root URL in van je eigen server om deze standaard te gebruiken bij abonneren op nieuwe onderwerpen en/of delen in onderwerpen.</string>
     <string name="detail_settings_appearance_icon_error_saving">Kan icoon: %1$s niet bewaren</string>
     <string name="settings_general_users_prefs_user_used_by_many">Gebruikt in onderwerpen %1$s</string>
     <string name="settings_general_users_prefs_user_not_used">In geen enkel onderwerp in gebruik</string>

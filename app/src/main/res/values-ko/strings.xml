@@ -268,7 +268,7 @@
     <string name="settings_general_users_prefs_user_not_used">어떤 주제에서도 사용되지 않음</string>
     <string name="settings_general_users_prefs_user_add_title">새 사용자 추가</string>
     <string name="settings_backup_restore_backup_entry_everything_no_users">사용자 제외 모두</string>
-    <string name="settings_general_default_base_url_message">새 주제를 구독하거나 공유할 때 사용할 서버의 루트 URL을 입력하십시오.</string>
+    <string name="default_server_dialog_description">새 주제를 구독하거나 공유할 때 사용할 서버의 루트 URL을 입력하십시오.</string>
     <string name="settings_general_users_title">사용자 관리</string>
     <string name="settings_general_users_prefs_user_add">사용자 추가</string>
     <string name="settings_general_users_prefs_user_add_summary">새 서버를 위한 사용자 추가</string>

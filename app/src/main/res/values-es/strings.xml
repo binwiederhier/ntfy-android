@@ -249,7 +249,7 @@
     <string name="detail_menu_notifications_disabled_forever">Notificaciones silenciadas</string>
     <string name="notification_dialog_2h">2 horas</string>
     <string name="settings_general_dark_mode_summary_dark">Modo oscuro activado. ¿Eres un vampiro\?</string>
-    <string name="settings_general_default_base_url_message">Introduzca la URL base de su servidor para utilizarlo como predeterminado cuando se suscriba a nuevos tópicos y/o se comparta a ellos.</string>
+    <string name="default_server_dialog_description">Introduzca la URL base de su servidor para utilizarlo como predeterminado cuando se suscriba a nuevos tópicos y/o se comparta a ellos.</string>
     <string name="share_suggested_topics">Tópicos sugeridos</string>
     <string name="detail_action_mode_delete_dialog_cancel">Cancelar</string>
     <string name="share_title">Compartir</string>
