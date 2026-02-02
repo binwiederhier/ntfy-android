@@ -35,6 +35,7 @@ import io.heckel.ntfy.backup.Backuper
 import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +52,7 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener {
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener, AccountFragment.AccountDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
     private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
@@ -173,6 +174,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Important note: We do not use the default shared prefs to store settings. Every
             // preferenceDataStore is overridden to use the repository. This is convenient, because
             // everybody has access to the repository.
+
+            // Account
+            setupAccountPreference()
 
             // Notifications muted until (global)
             val mutedUntilPrefId = context?.getString(R.string.settings_notifications_muted_until_key) ?: return
@@ -736,6 +740,32 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
         }
 
+        private fun setupAccountPreference() {
+            val accountPrefId = context?.getString(R.string.settings_account_key) ?: return
+            val accountPref: Preference? = findPreference(accountPrefId)
+            accountPref?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store
+            accountPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                activity?.let { activity ->
+                    AccountFragment
+                        .newInstance()
+                        .show(activity.supportFragmentManager, AccountFragment.TAG)
+                }
+                true
+            }
+            updateAccountPreference()
+        }
+
+        fun updateAccountPreference() {
+            val accountPrefId = context?.getString(R.string.settings_account_key) ?: return
+            val accountPref: Preference? = findPreference(accountPrefId)
+            val accountManager = AccountManager.getInstance(requireContext())
+            if (accountManager.isLoggedIn()) {
+                accountPref?.summary = getString(R.string.settings_account_summary_logged_in, accountManager.getUsername())
+            } else {
+                accountPref?.summary = getString(R.string.settings_account_summary_not_logged_in)
+            }
+        }
+
         private fun copyLogsToClipboard(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
                 val context = context ?: return@launch
@@ -1094,6 +1124,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     private fun setAutoDownload() {
         if (!this::settingsFragment.isInitialized) return
         settingsFragment.setAutoDownload()
+    }
+
+    override fun onAccountChanged() {
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.updateAccountPreference()
+        }
     }
 
     companion object {
