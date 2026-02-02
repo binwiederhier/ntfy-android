@@ -1,7 +1,7 @@
-Bug fixes + maintenance:
-* Fix crash when URL scheme is missing in default server (#1582, ntfy-android#158, thanks to @hard-zero1 for reporting)
-
 Features:
 * Search within a topic (#141, ntfy-android#153, thanks to @Copephobia and @StoyanYonkov for reporting and sponsoring)
 * Add "reconnecting to N topics ..." to foreground notification (#1101, thanks to @milosivanovic for reporting)
 * Default server dialog with full-screen UI and stricter URL validation (ntfy-android#158)
+
+Bug fixes + maintenance:
+* Fix crash when URL scheme is missing in default server (#1582, ntfy-android#158, thanks to @hard-zero1 for reporting)
