@@ -106,6 +106,29 @@ fun validUrl(url: String): Boolean {
     return "^https?://\\S+".toRegex().matches(url)
 }
 
+/**
+ * Validates that a URL is a valid base URL for ntfy servers.
+ * Only allows URLs that:
+ * - Start with http:// or https://
+ * - Do NOT have any path fragment (e.g., "https://ntfy.example.com" is allowed,
+ *   but "https://ntfy.example.com/subpath" is not)
+ */
+fun validBaseUrl(url: String): Boolean {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return false
+    }
+    val httpUrl = url.toHttpUrlOrNull() ?: return false
+    val hasPath = httpUrl.pathSegments.any { it.isNotEmpty() } // No path (pathSegments will be [""] for "https://example.com/")
+    return !hasPath
+}
+
+/**
+ * Normalizes a base URL by removing the trailing slash if present.
+ */
+fun normalizeBaseUrl(url: String): String {
+    return url.trimEnd('/')
+}
+
 fun formatDateShort(timestampSecs: Long): String {
     val date = Date(timestampSecs*1000)
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)

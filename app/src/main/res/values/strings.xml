@@ -7,6 +7,7 @@
     <string name="common_button_save">Save</string>
     <string name="common_button_delete">Delete</string>
     <string name="common_button_copy">Copy</string>
+    <string name="common_button_reset_to_default">Reset to default</string>
     <string name="common_copied_to_clipboard">Copied to clipboard</string>
     <string name="common_service_url">Service URL</string>
     <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
@@ -502,6 +503,11 @@
     <string name="user_dialog_button_add">Add user</string>
     <string name="user_dialog_button_cancel">Cancel</string>
     <string name="user_dialog_button_delete">Delete user</string>
+
+    <!-- Default server dialog (DefaultServerFragment) -->
+    <string name="default_server_dialog_title">Default server</string>
+    <string name="default_server_dialog_description">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
+    <string name="default_server_dialog_url_error_invalid">Enter a valid service URL, e.g. https://ntfy.example.com</string>
 
     <!-- Custom headers dialog (CustomHeaderFragment) -->
     <string name="custom_headers_dialog_title_add">Add custom header</string>

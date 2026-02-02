@@ -35,7 +35,7 @@
                 app:summary="@string/settings_notifications_channel_prefs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_general_header">
-        <EditTextPreference
+        <Preference
                 app:key="@string/settings_general_default_base_url_key"
                 app:title="@string/settings_general_default_base_url_title" />
         <Preference
