@@ -224,7 +224,7 @@
     <string name="share_content_text_hint">在此添加內容以進行分享</string>
     <string name="share_suggested_topics">建議的主題</string>
     <string name="share_content_file_error">無法圖取檔案資訊：%1$s</string>
-    <string name="settings_general_default_base_url_message">輸入你的伺服器的 root URL，以便在訂閱新主題和/或分享到主題時，默認使用你自己的伺服器。</string>
+    <string name="default_server_dialog_description">輸入你的伺服器的 root URL，以便在訂閱新主題和/或分享到主題時，默認使用你自己的伺服器。</string>
     <string name="detail_item_cannot_save">無法儲存附件：%1$s</string>
     <string name="detail_item_download_failed">無法下載附件：%1$s</string>
     <string name="detail_item_cannot_open_apk">無法再安裝應用程式。請改為使用瀏覽器下載。詳見問題#531。</string>

@@ -235,7 +235,7 @@
     <string name="settings_general_header">Üldised seadistused</string>
     <string name="settings_appearance_header">Välimus</string>
     <string name="settings_general_default_base_url_title">Vaikimisi server</string>
-    <string name="settings_general_default_base_url_message">Kui soovid uute teemade tellimiseks ja/või neisse jagamiseks vaikimisi kasutada oma serverit, siis sisesta teenuse juurkausta veebiaadress.</string>
+    <string name="default_server_dialog_description">Kui soovid uute teemade tellimiseks ja/või neisse jagamiseks vaikimisi kasutada oma serverit, siis sisesta teenuse juurkausta veebiaadress.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (vaikimisi)</string>
     <string name="main_banner_websocket_reconnect_button_remind_later">Küsi hiljem</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">Loobu</string>

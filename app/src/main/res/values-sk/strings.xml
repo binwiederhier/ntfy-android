@@ -168,7 +168,7 @@
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Oznámenia s maximálnou prioritou upozornia len raz</string>
     <string name="settings_general_header">Všeobecné</string>
     <string name="settings_appearance_header">Vzhľad</string>
-    <string name="settings_general_default_base_url_message">Zadajte koreňovú URL adresu vášho servera, aby ste použili svoj vlastný server ako predvolený pri prihlásení na odber nových tém alebo zdieľaní tém.</string>
+    <string name="default_server_dialog_description">Zadajte koreňovú URL adresu vášho servera, aby ste použili svoj vlastný server ako predvolený pri prihlásení na odber nových tém alebo zdieľaní tém.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (predvolené)</string>
     <string name="settings_general_users_title">Správa používateľov</string>
     <string name="settings_general_users_summary">Pridávanie/odstraňovanie používateľov pre chránené témy</string>

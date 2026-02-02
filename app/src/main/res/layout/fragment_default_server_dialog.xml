@@ -24,7 +24,7 @@
             android:paddingEnd="12dp"
             app:navigationIcon="@drawable/ic_close_white_24dp"
             app:navigationIconTint="?attr/colorOnSurface"
-            app:title="@string/default_server_dialog_title"
+            app:title="@string/settings_general_default_base_url_title"
             app:titleTextColor="?attr/colorOnSurface"
             app:menu="@menu/menu_default_server_dialog" />
 

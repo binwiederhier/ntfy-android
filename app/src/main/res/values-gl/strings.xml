@@ -259,7 +259,7 @@
     <string name="settings_notifications_auto_delete_one_month">Após un mes</string>
     <string name="settings_notifications_auto_delete_three_months">Após 3 meses</string>
     <string name="settings_notifications_insistent_max_priority_title">Manter as alertas da prioridade máis alta</string>
-    <string name="settings_general_default_base_url_message">Escribe o enderezo URL raíz do teu servidor para usar o servidor propio por defecto cando te subscribas a novos temas e/ou compartas os temas.</string>
+    <string name="default_server_dialog_description">Escribe o enderezo URL raíz do teu servidor para usar o servidor propio por defecto cando te subscribas a novos temas e/ou compartas os temas.</string>
     <string name="settings_general_users_prefs_user_used_by_many">Usado polos temas %1$s</string>
     <string name="settings_advanced_broadcast_summary_enabled">As app poden recibir notificacións entrantes como difusións</string>
     <string name="settings_advanced_broadcast_summary_disabled">As app non poden recibir notificacións entrantes como difusións</string>

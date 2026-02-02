@@ -276,7 +276,7 @@
     <string name="settings_notifications_auto_delete_summary_three_months">Apagar notificações automaticamente após 3 meses</string>
     <string name="settings_notifications_auto_delete_summary_one_month">Apagar notificações automaticamente após um mês</string>
     <string name="user_dialog_password_hint_add">Senha</string>
-    <string name="settings_general_default_base_url_message">Digite a URL raiz do seu servidor para usar seu próprio servidor como padrão ao inscrever-se em novos tópicos e/ou compartilhar aos tópicos.</string>
+    <string name="default_server_dialog_description">Digite a URL raiz do seu servidor para usar seu próprio servidor como padrão ao inscrever-se em novos tópicos e/ou compartilhar aos tópicos.</string>
     <string name="settings_general_users_prefs_user_not_used">Não usado por nenhum tópico</string>
     <string name="settings_backup_restore_restore_successful">Restauração bem-sucedida</string>
     <string name="settings_general_dark_mode_summary_system">Usando o padrão do sistema</string>

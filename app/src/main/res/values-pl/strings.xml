@@ -300,7 +300,7 @@
     <string name="settings_advanced_export_logs_copied_logs">Logi skopiowane do schowka</string>
     <string name="settings_advanced_export_logs_uploading">Przesyłanie logów …</string>
     <string name="settings_advanced_export_logs_copied_url">Logi przesłane i URL skopiowane</string>
-    <string name="settings_general_default_base_url_message">Wpisz tutaj główny adres URL swojego serwera, aby używać go jako domyślnego podczas subskrybowania nowych tematów i/lub udostępniania.</string>
+    <string name="default_server_dialog_description">Wpisz tutaj główny adres URL swojego serwera, aby używać go jako domyślnego podczas subskrybowania nowych tematów i/lub udostępniania.</string>
     <string name="user_dialog_title_add">Dodaj użytkownika</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Żadne tematy/nazwy hostów nie zostały zredagowane. Może nie masz żadnych subskrypcji\?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>

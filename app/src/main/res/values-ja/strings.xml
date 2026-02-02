@@ -223,7 +223,7 @@
 \nパスワードはスクラブされましたが、ここには列挙されていません。</string>
     <string name="add_dialog_use_another_server">他のサーバーを使用</string>
     <string name="settings_general_users_title">ユーザー管理</string>
-    <string name="settings_general_default_base_url_message">新しいトピックを購読または共有する時にデフォルトで自分のサーバーを使用する場合、サーバーのルートURLを入力してください。</string>
+    <string name="default_server_dialog_description">新しいトピックを購読または共有する時にデフォルトで自分のサーバーを使用する場合、サーバーのルートURLを入力してください。</string>
     <string name="add_dialog_use_another_server_description">他のサーバーのトピックを購読するには下欄にURLを入力してください。</string>
     <string name="settings_general_users_summary">保護トピックのユーザーを追加/削除する</string>
     <string name="settings_general_users_prefs_title">ユーザー</string>

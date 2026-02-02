@@ -249,7 +249,7 @@
     <string name="notification_dialog_8h">8 ore</string>
     <string name="settings_backup_restore_backup_entry_everything_no_users">Tutto, eccetto utenti</string>
     <string name="settings_advanced_header">Avanzate</string>
-    <string name="settings_general_default_base_url_message">Inserisci l\'URL radice del tuo server per utilizzare il tuo server come predefinito quando ti iscrivi a nuovi argomenti e/o condividi argomenti.</string>
+    <string name="default_server_dialog_description">Inserisci l\'URL radice del tuo server per utilizzare il tuo server come predefinito quando ti iscrivi a nuovi argomenti e/o condividi argomenti.</string>
     <string name="settings_general_users_prefs_user_used_by_many">Utilizzato dagli argomenti %1$s</string>
     <string name="settings_general_users_prefs_user_add">Aggiungi utente</string>
     <string name="settings_general_dark_mode_entry_dark">Modalità scura</string>

@@ -156,7 +156,7 @@
     <string name="settings_general_header">Umum</string>
     <string name="settings_appearance_header">Tampilan</string>
     <string name="settings_general_default_base_url_title">Server bawaan</string>
-    <string name="settings_general_default_base_url_message">Masukkan URL akar server Anda untuk menggunakan server Anda sendiri untuk bawaan ketika berlangganan ke topik baru dan/atau membagikan ke topik.</string>
+    <string name="default_server_dialog_description">Masukkan URL akar server Anda untuk menggunakan server Anda sendiri untuk bawaan ketika berlangganan ke topik baru dan/atau membagikan ke topik.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (bawaan)</string>
     <string name="settings_general_users_title">Kelola pengguna</string>
     <string name="settings_general_users_summary">Tambahkan/hapus pengguna untuk topik yang dilindungi</string>

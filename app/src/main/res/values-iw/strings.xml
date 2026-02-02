@@ -311,7 +311,7 @@
     <string name="detail_settings_notifications_instant_summary_off">התראות נמסרות דרך Firebase. המסירה עלולה להתעכב אך צריכת הסוללה תפחת.</string>
     <string name="detail_instant_delivery_enabled">מסירה מיידית פעילה</string>
     <string name="detail_instant_delivery_disabled">מסירה מיידית כבויה</string>
-    <string name="settings_general_default_base_url_message">נא למלא את כתובת היסוד של השרת שלך כדי להשתמש בשרת משלך כברירת מחדל להרשמה לנושאים חדשים ו/או לשיתוף לנושאים.</string>
+    <string name="default_server_dialog_description">נא למלא את כתובת היסוד של השרת שלך כדי להשתמש בשרת משלך כברירת מחדל להרשמה לנושאים חדשים ו/או לשיתוף לנושאים.</string>
     <string name="detail_menu_enable_instant">הפעלת מסירה מיידית</string>
     <string name="detail_menu_disable_instant">כיבוי מסירה מיידית</string>
     <string name="settings_advanced_record_logs_summary_enabled">מתבצע תיעוד (עד 10,000 רשומות) למכשיר…</string>

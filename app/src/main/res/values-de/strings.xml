@@ -163,7 +163,7 @@
     <string name="settings_general_header">Allgemein</string>
     <string name="settings_appearance_header">Darstellung</string>
     <string name="settings_general_default_base_url_title">Standard-Server</string>
-    <string name="settings_general_default_base_url_message">Gib hier die Basis-URL Deines Servers ein, um diesen als Standard beim Abonnieren neuer Themen und/oder beim Teilen zu verwenden.</string>
+    <string name="default_server_dialog_description">Gib hier die Basis-URL Deines Servers ein, um diesen als Standard beim Abonnieren neuer Themen und/oder beim Teilen zu verwenden.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (Standard)</string>
     <string name="settings_general_users_title">Benutzer verwalten</string>
     <string name="settings_general_users_summary">Benutzer für geschützte Themen hinzufügen/löschen</string>

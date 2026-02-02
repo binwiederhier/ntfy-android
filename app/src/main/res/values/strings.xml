@@ -370,7 +370,6 @@
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Appearance</string>
     <string name="settings_general_default_base_url_title">Default server</string>
-    <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_general_users_title">Manage users</string>
     <string name="settings_general_users_summary">Add/remove users for protected topics</string>
@@ -505,7 +504,6 @@
     <string name="user_dialog_button_delete">Delete user</string>
 
     <!-- Default server dialog (DefaultServerFragment) -->
-    <string name="default_server_dialog_title">Default server</string>
     <string name="default_server_dialog_description">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
     <string name="default_server_dialog_url_error_invalid">Enter a valid service URL, e.g. https://ntfy.example.com</string>
 

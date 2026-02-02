@@ -240,7 +240,7 @@
     <string name="settings_general_header">Tổng quan</string>
     <string name="settings_appearance_header">Giao diện</string>
     <string name="settings_general_default_base_url_title">Server mặc định</string>
-    <string name="settings_general_default_base_url_message">Nhập URL server để dùng làm mặc định khi đăng ký/chia sẻ chủ đề mới.</string>
+    <string name="default_server_dialog_description">Nhập URL server để dùng làm mặc định khi đăng ký/chia sẻ chủ đề mới.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (mặc định)</string>
     <string name="settings_general_users_title">Quản lí tài khoản</string>
     <string name="settings_general_users_summary">Thêm/xóa tài khoản cho các topic được bảo vệ</string>

@@ -171,7 +171,7 @@
     <string name="settings_general_header">Obecné</string>
     <string name="settings_appearance_header">Vzhled</string>
     <string name="settings_general_default_base_url_title">Výchozí server</string>
-    <string name="settings_general_default_base_url_message">Zadejte kořenovou adresu URL svého serveru, jako výchozí při přihlašování k odběru nových témat nebo sdílení témat.</string>
+    <string name="default_server_dialog_description">Zadejte kořenovou adresu URL svého serveru, jako výchozí při přihlašování k odběru nových témat nebo sdílení témat.</string>
     <string name="settings_general_users_prefs_user_add">Přidat uživatele</string>
     <string name="settings_general_users_prefs_user_add_summary">Vytvořit nového uživatele pro nový server</string>
     <string name="settings_general_dark_mode_title">Tmavý režim</string>

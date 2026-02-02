@@ -227,7 +227,7 @@
     <string name="settings_notifications_auto_delete_three_days">Efter 3 dagar</string>
     <string name="settings_general_users_summary">Lägg till/ta bort användare för privata ämnen</string>
     <string name="settings_general_users_prefs_title">Användare</string>
-    <string name="settings_general_default_base_url_message">Ange din servers rot-URL för att använda din egen server som standard när du prenumererar på nya ämnen och/eller delar ämnen.</string>
+    <string name="default_server_dialog_description">Ange din servers rot-URL för att använda din egen server som standard när du prenumererar på nya ämnen och/eller delar ämnen.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (standard)</string>
     <string name="settings_general_users_title">Hantera användare</string>
     <string name="settings_general_users_prefs_user_used_by_one">Används i ämne %1$s</string>

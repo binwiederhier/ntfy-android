@@ -181,7 +181,7 @@
     <string name="settings_general_header">Geral</string>
     <string name="settings_appearance_header">Aparência</string>
     <string name="settings_general_default_base_url_title">Servidor padrão</string>
-    <string name="settings_general_default_base_url_message">Insira o URL raíz do servidor para utilizar seu próprio como padrão ao subscrever novos tópicos e/ou partilhar em tópicos.</string>
+    <string name="default_server_dialog_description">Insira o URL raíz do servidor para utilizar seu próprio como padrão ao subscrever novos tópicos e/ou partilhar em tópicos.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (padrão)</string>
     <string name="settings_general_users_title">Gerir utilizadores</string>
     <string name="settings_general_users_summary">Adicionar/remover utilizadores em tópicos protegidos</string>

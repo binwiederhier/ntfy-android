@@ -276,7 +276,7 @@
     <string name="settings_general_users_prefs_user_used_by_many">%1$s தலைப்புகளால் பயன்படுத்தப்படுகிறது</string>
     <string name="settings_general_users_prefs_user_add">பயனர்களைச் சேர்க்கவும்</string>
     <string name="settings_general_default_base_url_title">இயல்புநிலை சேவையகம்</string>
-    <string name="settings_general_default_base_url_message">புதிய தலைப்புகளுக்கு குழுசேரும்போது மற்றும்/அல்லது தலைப்புகளுக்கு பகிர்வதற்கு உங்கள் சொந்த சேவையகத்தை இயல்புநிலையாகப் பயன்படுத்த உங்கள் சேவையகத்தின் ரூட் முகவரி ஐ உள்ளிடவும்.</string>
+    <string name="default_server_dialog_description">புதிய தலைப்புகளுக்கு குழுசேரும்போது மற்றும்/அல்லது தலைப்புகளுக்கு பகிர்வதற்கு உங்கள் சொந்த சேவையகத்தை இயல்புநிலையாகப் பயன்படுத்த உங்கள் சேவையகத்தின் ரூட் முகவரி ஐ உள்ளிடவும்.</string>
     <string name="settings_general_users_prefs_user_add_summary">புதிய சேவையகத்திற்கு புதிய பயனரை உருவாக்கவும்</string>
     <string name="settings_general_dark_mode_summary_system">கணினி இயல்புநிலையைப் பயன்படுத்துதல்</string>
     <string name="settings_general_dark_mode_entry_system">கணினி இயல்புநிலையைப் பயன்படுத்தவும்</string>
