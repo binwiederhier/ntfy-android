@@ -469,4 +469,8 @@
     <string name="detail_no_search_results">搜索没有返回结果</string>
     <string name="detail_menu_search">搜索通知</string>
     <string name="detail_menu_search_hint">在通知中搜索</string>
+    <string name="common_button_reset_to_default">重置为默认</string>
+    <string name="channel_subscriber_notification_reconnecting_one">正重新连接到 1 个主题…</string>
+    <string name="channel_subscriber_notification_reconnecting_other">正重新连接到 %1$d 个主题…</string>
+    <string name="default_server_dialog_url_error_invalid">输入有效的服务 URL，如 https://ntfy.example.com</string>
 </resources>
