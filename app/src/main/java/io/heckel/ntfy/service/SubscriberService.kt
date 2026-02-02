@@ -16,9 +16,11 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Observer
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
+import io.heckel.ntfy.db.ConnectionDetails
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -71,8 +73,13 @@ class SubscriberService : Service() {
     private val api by lazy { ApiService(this) }
     private val connections = ConcurrentHashMap<ConnectionId, Connection>()
     private var notificationManager: NotificationManager? = null
+    private var notificationText: String? = null
     private var serviceNotification: Notification? = null
     private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
+
+    private val connectionDetailsObserver = Observer<Map<String, ConnectionDetails>> { details ->
+        updateNotificationFromConnectionDetails(details)
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
@@ -112,14 +119,13 @@ class SubscriberService : Service() {
      * from onStartCommand() if onCreate() didn't complete properly.
      */
     private fun initializeForegroundState() {
-        val title = getString(R.string.channel_subscriber_notification_title)
         val text = if (BuildConfig.FIREBASE_AVAILABLE) {
             getString(R.string.channel_subscriber_notification_instant_text)
         } else {
             getString(R.string.channel_subscriber_notification_noinstant_text)
         }
         notificationManager = createNotificationChannel()
-        serviceNotification = createNotification(title, text)
+        serviceNotification = createNotification(text)
 
         val notification = serviceNotification ?: return
         try {
@@ -161,11 +167,15 @@ class SubscriberService : Service() {
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         }
+        repository.getConnectionDetailsLiveData().observeForever(connectionDetailsObserver)
         refreshConnections()
     }
 
     private fun stopService() {
         Log.d(TAG, "Stopping the foreground service")
+
+        // Remove connection details observer
+        repository.getConnectionDetailsLiveData().removeObserver(connectionDetailsObserver)
 
         // Cancelling all remaining jobs and open HTTP calls
         connections.values.forEach { connection -> connection.close() }
@@ -286,7 +296,6 @@ class SubscriberService : Service() {
 
         // Update foreground service notification popup
         if (connections.isNotEmpty()) {
-            val title = getString(R.string.channel_subscriber_notification_title)
             val text = if (BuildConfig.FIREBASE_AVAILABLE) {
                 when (instantSubscriptions.size) {
                     1 -> getString(R.string.channel_subscriber_notification_instant_text_one)
@@ -308,13 +317,46 @@ class SubscriberService : Service() {
                     else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
                 }
             }
-            serviceNotification = createNotification(title, text)
+            notificationText = text
+            val textWithStatus = buildNotificationText(text)
+            serviceNotification = createNotification(textWithStatus)
             notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
+        }
+    }
+
+    private fun buildNotificationText(baseText: String, details: Map<String, ConnectionDetails>? = null): String {
+        val errorCount = countTopicsWithConnectionErrors(details)
+        return if (errorCount > 0) {
+            val suffix = if (errorCount == 1) {
+                getString(R.string.channel_subscriber_notification_reconnecting_one)
+            } else {
+                getString(R.string.channel_subscriber_notification_reconnecting_other, errorCount)
+            }
+            "$baseText, $suffix"
+        } else {
+            baseText
         }
     }
 
     private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
         repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
+    }
+
+    private fun countTopicsWithConnectionErrors(details: Map<String, ConnectionDetails>? = null): Int {
+        val detailsMap = details ?: repository.getConnectionDetails()
+        val errorBaseUrls = detailsMap
+            .filter { it.value.hasError() }
+            .keys
+        return connections.keys
+            .filter { it.baseUrl in errorBaseUrls }
+            .sumOf { it.topicsToSubscriptionIds.size }
+    }
+
+    private fun updateNotificationFromConnectionDetails(details: Map<String, ConnectionDetails>) {
+        val baseText = notificationText ?: return
+        val text = buildNotificationText(baseText, details)
+        serviceNotification = createNotification(text)
+        notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
@@ -366,7 +408,8 @@ class SubscriberService : Service() {
         return notificationManager
     }
 
-    private fun createNotification(title: String, text: String): Notification {
+    private fun createNotification(text: String): Notification {
+        val title = getString(R.string.channel_subscriber_notification_title)
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }

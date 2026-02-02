@@ -45,6 +45,8 @@
     <string name="channel_subscriber_notification_noinstant_text_five">Subscribed to five topics</string>
     <string name="channel_subscriber_notification_noinstant_text_six">Subscribed to six topics</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Subscribed to %1$d topics</string>
+    <string name="channel_subscriber_notification_reconnecting_one">reconnecting to 1 topic …</string>
+    <string name="channel_subscriber_notification_reconnecting_other">reconnecting to %1$d topics …</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>

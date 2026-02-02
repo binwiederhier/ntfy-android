@@ -145,7 +145,7 @@
     <string name="add_dialog_login_error_not_authorized">Login gefaald. Gebruiker %1$s is niet geauthoriseerd.</string>
     <string name="detail_no_notifications_text">Je hebt nog geen notificaties voor dit onderwerp ontvangen.</string>
     <string name="detail_how_to_intro">Om een notificatie naar dit onderwerp te sturen, verstuur een simpele PUT of POST naar de URL van dit onderwerp.</string>
-    <string name="detail_how_to_example">Voorbeeld (door gebruik van curl): <br/><tt> curl -d \"Hallo\"%1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[ Voorbeeld (door gebruik van curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Gedetaileerde instructies zijn ter beschikking op ntfy.sh en in de documentatie.</string>
     <string name="detail_delete_dialog_message">Afmelden voor dit onderwerp en alle notificaties verwijderen\?</string>
     <string name="detail_test_title">Test: Je kan een titel aanmaken als je wil.</string>
@@ -342,4 +342,26 @@
     <string name="main_banner_websocket_reconnect_button_dismiss">Afwijzen</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Nu toekennen</string>
     <string name="main_banner_websocket_reconnect_text">Om ervoor te zorgen dat WebSockets op de achtergrond opnieuw verbinding maken, moet u de machtiging Alarm &amp; Herinneringen aan ntfy verlenen</string>
+    <string name="common_button_next">Volgende</string>
+    <string name="common_button_add">Toevoegen</string>
+    <string name="common_button_delete">Verwijderen</string>
+    <string name="common_service_url_placeholder">bijvoorbeeld https://ntfy.example.com</string>
+    <string name="common_certificate_valid_until">Geldig tot</string>
+    <string name="common_certificate_added_toast">Certificaat toegevoegd</string>
+    <string name="common_certificate_deleted_toast">Certificaat verwijderd</string>
+    <string name="main_menu_connection_error">Verbindingsfout</string>
+    <string name="add_dialog_error_ssl_untrusted">Servercertificaat niet vertrouwd</string>
+    <string name="detail_no_search_results">Je zoekopdracht gaf geen resultaten</string>
+    <string name="detail_menu_search">Zoek door notificaties</string>
+    <string name="detail_menu_search_hint">Zoek in notificaties</string>
+    <string name="publish_dialog_title_hint">Titel</string>
+    <string name="publish_dialog_title_placeholder">bijv. Er staat iemand aan de deur</string>
+    <string name="publish_dialog_message_hint">Bericht</string>
+    <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="publish_dialog_tags_placeholder">bijv. warning, skull</string>
+    <string name="publish_dialog_priority_hint">Prioriteit</string>
+    <string name="publish_dialog_button_publish">Publiceren</string>
+    <string name="publish_dialog_error_sending">Fout bij publiceren: %1$s</string>
+    <string name="publish_dialog_error_server">Kon bericht niet publiceren: %1$s (code %2$d)</string>
+    <string name="publish_dialog_message_published">Bericht gepubliceerd</string>
 </resources>
