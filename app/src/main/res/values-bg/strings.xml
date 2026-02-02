@@ -469,4 +469,8 @@
     <string name="detail_no_search_results">Търсенето не върна резултати</string>
     <string name="detail_menu_search">Търсене на известия</string>
     <string name="detail_menu_search_hint">Търсене в известията</string>
+    <string name="common_button_reset_to_default">Подразбирани настройки</string>
+    <string name="channel_subscriber_notification_reconnecting_one">повторно свързване с тема…</string>
+    <string name="channel_subscriber_notification_reconnecting_other">повторно свързване с %1$d теми…</string>
+    <string name="default_server_dialog_url_error_invalid">Въведете адрес на услуга, напр. https://ntfy.example.com</string>
 </resources>
