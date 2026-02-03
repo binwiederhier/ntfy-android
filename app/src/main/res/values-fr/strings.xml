@@ -466,4 +466,7 @@
     <string name="connection_error_dialog_retrying">Nouvelle tentative…</string>
     <string name="main_menu_connection_error">Erreur de connexion</string>
     <string name="connection_error_dialog_title">Erreur de connexion</string>
+    <string name="detail_no_search_results">Aucun résultat trouvé</string>
+    <string name="detail_menu_search">Recherche de notifications</string>
+    <string name="detail_menu_search_hint">Rechercher dans les notifications</string>
 </resources>
