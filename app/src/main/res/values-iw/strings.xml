@@ -3,7 +3,7 @@
     <string name="channel_subscriber_notification_noinstant_text_more">מנוי ל־%1$d נושאים</string>
     <string name="refresh_message_result">%1$d התראות התקבלו</string>
     <string name="refresh_message_no_results">הכול עדכני</string>
-    <string name="refresh_message_error_one">הרענון של המינוי הבא נכשל: %1$s</string>
+    <string name="refresh_message_error_one">הריענון של המינוי הבא נכשל: %1$s</string>
     <string name="main_action_bar_title">מינוי לנושאים</string>
     <string name="main_menu_notifications_enabled">התראות פעילות</string>
     <string name="main_menu_notifications_disabled_until">ההתראות מושתקות עד %1$s</string>
@@ -31,9 +31,7 @@
     <string name="common_priority_default_name">עדיפות ברירת מחדל</string>
     <string name="common_priority_high_name">עדיפות גבוהה</string>
     <string name="common_priority_max_name">עדיפות מרבית</string>
-    <string name="refresh_message_error">הרענון של %1$d מהרישומים נכשל
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">הריענון של %1$d מהרישומים נכשל \n \n%2$s</string>
     <string name="main_menu_notifications_disabled_forever">התראות מושתקות</string>
     <string name="main_action_mode_delete_dialog_message">לבטל מינוי מהנושאים שנבחרו ולמחוק את כל ההתראות לצמיתות?</string>
     <string name="main_item_status_reconnecting">התחברות מחדש…</string>
@@ -402,4 +400,28 @@
     <string name="settings_general_message_bar_title">הצגת סרגל הודעות</string>
     <string name="settings_general_dynamic_colors_summary_enabled">להשתמש בצבעי המערכת הדינמיים</string>
     <string name="settings_general_dynamic_colors_summary_disabled">להשתמש בצבעי ערכת העיצוב של ntfy</string>
+    <string name="default_server_dialog_url_error_invalid">נא למלא כתובת שירות תקפה, למשל: https://ntfy.example.com</string>
+    <string name="common_button_next">הבא</string>
+    <string name="common_button_reset_to_default">איפוס לברירת מחדל</string>
+    <string name="common_service_url_placeholder">למשל: https://ntfy.example.com</string>
+    <string name="common_certificate_subject">נושא</string>
+    <string name="common_certificate_issuer">מנפיק</string>
+    <string name="common_certificate_fingerprint">טביעת אצבע SHA-256</string>
+    <string name="common_certificate_valid_from">תקף מ־</string>
+    <string name="common_certificate_valid_until">תקף עד</string>
+    <string name="common_certificate_added_toast">נוסף אישור</string>
+    <string name="common_certificate_deleted_toast">אישור נמחק</string>
+    <string name="channel_subscriber_notification_reconnecting_one">חיבור מחדש לנושא אחד…</string>
+    <string name="channel_subscriber_notification_reconnecting_other">חיבור מחדש ל־%1$d נושאים…</string>
+    <string name="main_menu_connection_error">שגיאת חיבור</string>
+    <string name="add_dialog_error_ssl_untrusted">אישור השרת לא אמין</string>
+    <string name="detail_no_search_results">החיפוש שלך לא הניב תוצאות</string>
+    <string name="detail_menu_search">חיפוש בהתראות</string>
+    <string name="detail_menu_search_hint">חיפוש בהתראות</string>
+    <string name="publish_dialog_attach_url_hint">כתובת צרופה</string>
+    <string name="publish_dialog_attach_filename_hint">שם קובץ צרופה</string>
+    <string name="client_certificate_dialog_error_invalid_url">כתובת שירות שגויה</string>
+    <string name="client_certificate_dialog_error_invalid_p12_password">סיסמה שגויה או קובץ PKCS#12 פגום</string>
+    <string name="client_certificate_dialog_error_wrong_password">סיסמה שגויה או קובץ PKCS#12 שגוי</string>
+    <string name="client_certificate_dialog_password_hint">סיסמה</string>
 </resources>
