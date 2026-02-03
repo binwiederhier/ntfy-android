@@ -466,4 +466,11 @@
     <string name="trusted_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat gepinnt werden soll. Das Zertifikat wird nur für diese URL als vertrauenswürdig eingestuft.</string>
     <string name="client_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat verwendet werden soll, sowie das Passwort für die PKCS#12-Datei.</string>
     <string name="client_certificate_dialog_description_page2">Überprüfe die Zertifikatsdetails und speichere, um dieses Client-Zertifikat hinzuzufügen. Dieses Zertifikat wird zur Authentifizierung beim Server verwendet.</string>
+    <string name="common_button_reset_to_default">Auf Standardeinstellungen zurücksetzen</string>
+    <string name="channel_subscriber_notification_reconnecting_one">Wiederverbindung mit 1 Thema …</string>
+    <string name="channel_subscriber_notification_reconnecting_other">Wiederverbindung mit %1$d Themen …</string>
+    <string name="detail_no_search_results">Deine Suche lieferte keine Ergebnisse</string>
+    <string name="detail_menu_search_hint">In Benachrichtigungen suchen</string>
+    <string name="default_server_dialog_url_error_invalid">Eine gültige Service-URL eingeben, z. B. https://ntfy.example.com</string>
+    <string name="detail_menu_search">Benachrichtigungen suchen</string>
 </resources>

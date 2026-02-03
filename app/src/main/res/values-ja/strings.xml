@@ -469,4 +469,8 @@
     <string name="detail_no_search_results">検索結果該当なし</string>
     <string name="detail_menu_search">通知を検索</string>
     <string name="detail_menu_search_hint">通知内容を検索します</string>
+    <string name="common_button_reset_to_default">既定にリセット</string>
+    <string name="channel_subscriber_notification_reconnecting_one">1件のトピックに再接続中…</string>
+    <string name="channel_subscriber_notification_reconnecting_other">%1$d 件のトピックに再接続中…</string>
+    <string name="default_server_dialog_url_error_invalid">有効なサービスURLを入力してください、例: https://ntfy.example.com</string>
 </resources>
