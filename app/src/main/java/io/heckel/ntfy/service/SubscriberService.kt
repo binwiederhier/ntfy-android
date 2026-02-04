@@ -252,9 +252,21 @@ class SubscriberService : Service() {
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
         val match = activeConnectionIds == desiredConnectionIds
+
+        // Build since map from existing in-memory connections first
         val sinceByBaseUrl = connections
-            .map { e -> e.key.baseUrl to e.value.since() } // Use since=<id>, avoid retrieving old messages (see comment below)
+            .map { e -> e.key.baseUrl to e.value.since() }
             .toMap()
+            .toMutableMap()
+
+        // For base URLs without an existing connection, use the lastNotificationId from subscriptions.
+        // This ensures we don't miss notifications after a service restart.
+        instantSubscriptions.groupBy { it.baseUrl }.forEach { (baseUrl, subs) ->
+            if (!sinceByBaseUrl.containsKey(baseUrl)) {
+                val lastNotificationId = subs.mapNotNull { it.lastNotificationId }.firstOrNull()
+                sinceByBaseUrl[baseUrl] = lastNotificationId
+            }
+        }
 
         Log.d(TAG, "Refreshing subscriptions")
         Log.d(TAG, "- Desired connections: $desiredConnectionIds")
