@@ -5,3 +5,5 @@ Features:
 
 Bug fixes + maintenance:
 * Fix crash when URL scheme is missing in default server (#1582, ntfy-android#158, thanks to @hard-zero1 for reporting)
+* Fix notification timestamp to use original send time instead of receive time (#1112, thanks to @voruti for reporting)
+* Fix notifications being missed after service restart (#1591, thanks to @Epifeny for reporting)

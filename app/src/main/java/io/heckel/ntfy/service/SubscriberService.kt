@@ -31,7 +31,6 @@ import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -206,7 +205,7 @@ class SubscriberService : Service() {
                 return@launch
             }
             try {
-                reallyRefreshConnections(this)
+                reallyRefreshConnections()
             } finally {
                 refreshMutex.unlock()
             }
@@ -217,7 +216,7 @@ class SubscriberService : Service() {
      * Start/stop connections based on the desired state
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
-    private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
+    private suspend fun reallyRefreshConnections() {
         // Group instant subscriptions by base URL, there is only one connection per base URL
         val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
@@ -252,9 +251,6 @@ class SubscriberService : Service() {
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
         val match = activeConnectionIds == desiredConnectionIds
-        val sinceByBaseUrl = connections
-            .map { e -> e.key.baseUrl to e.value.since() } // Use since=<id>, avoid retrieving old messages (see comment below)
-            .toMap()
 
         Log.d(TAG, "Refreshing subscriptions")
         Log.d(TAG, "- Desired connections: $desiredConnectionIds")
@@ -270,19 +266,15 @@ class SubscriberService : Service() {
 
         // Open new connections
         newConnectionIds.forEach { connectionId ->
-            // IMPORTANT: Do NOT request old messages for new connections; we call poll() in MainActivity to
-            // retrieve old messages. This is important, so we don't download attachments from old messages.
-
-            val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -378,12 +370,14 @@ class SubscriberService : Service() {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE_DELETE -> {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE -> {

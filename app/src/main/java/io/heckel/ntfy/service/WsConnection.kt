@@ -8,19 +8,23 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.net.ProtocolException
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
@@ -38,12 +42,12 @@ class WsConnection(
     private val httpClient: OkHttpClient,
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
-    private val sinceId: String?,
     private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
@@ -52,7 +56,6 @@ class WsConnection(
     private val globalId = GLOBAL_ID.incrementAndGet()
     private val listenerId = AtomicLong(0)
 
-    private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
@@ -73,9 +76,8 @@ class WsConnection(
         }
         state = State.Connecting
         val nextListenerId = listenerId.incrementAndGet()
-        val sinceId = since.get()
-        val sinceVal = sinceId ?: "all"
-        val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
+        val since = repository.getLastNotificationId(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
+        val urlWithSince = topicUrlWs(baseUrl, topicsStr, since)
         val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = httpClient.newWebSocket(request, Listener(nextListenerId))
@@ -84,6 +86,7 @@ class WsConnection(
     @Synchronized
     override fun close() {
         closed = true
+        scope.cancel()
         if (webSocket == null) {
             Log.d(TAG,"$shortUrl (gid=$globalId): Not closing existing connection, because there is no active web socket")
             return
@@ -92,11 +95,6 @@ class WsConnection(
         state = State.Disconnected
         webSocket!!.close(WS_CLOSE_NORMAL, "")
         webSocket = null
-    }
-
-    @Synchronized
-    override fun since(): String? {
-        return since.get()
     }
 
     @Synchronized
@@ -109,13 +107,16 @@ class WsConnection(
         Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
         val reconnectTime = Calendar.getInstance()
         reconnectTime.add(Calendar.SECOND, seconds)
+        // The AlarmManager callback runs on the main thread, but start() accesses the database,
+        // so we dispatch to a background thread using the connection's own scope.
+        val startOnBackgroundThread = { scope.launch { start() } }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (alarmManager.canScheduleExactAlarms()) {
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
                     reconnectTime.timeInMillis,
                     RECONNECT_TAG,
-                    { start() },
+                    { startOnBackgroundThread() },
                     null
                 )
             } else {
@@ -126,7 +127,7 @@ class WsConnection(
                 AlarmManager.RTC_WAKEUP,
                 reconnectTime.timeInMillis,
                 RECONNECT_TAG,
-                { start() },
+                { startOnBackgroundThread() },
                 null
             )
         }
@@ -158,7 +159,6 @@ class WsConnection(
                 val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
                 val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
                 notificationListener(subscription, notificationWithSubscriptionId)
-                since.set(notification.id)
             }
         }
 

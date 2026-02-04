@@ -11,7 +11,8 @@ import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -19,11 +20,9 @@ import okhttp3.Call
 
 class JsonConnection(
     private val connectionId: ConnectionId,
-    private val scope: CoroutineScope,
     private val repository: Repository,
     private val api: ApiService,
     private val user: User?,
-    private val sinceId: String?,
     private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
@@ -33,19 +32,19 @@ class JsonConnection(
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val url = topicUrl(baseUrl, topicsStr)
     private val parser = NotificationParser()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private var since: String? = sinceId
     private var errorCount = 0
     private lateinit var call: Call
-    private lateinit var job: Job
 
     override fun start() {
-        job = scope.launch(Dispatchers.IO) {
+        scope.launch {
             Log.d(TAG, "[$url] Starting connection for subscriptions: $topicsToSubscriptionIds")
 
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
-                
+                val since = repository.getLastNotificationId(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
+
                 try {
                     val (newCall, source) = api.subscribe(baseUrl, topicsStr, since, user)
                     call = newCall
@@ -59,7 +58,6 @@ class JsonConnection(
                         val line = source.readUtf8Line() ?: break
                         val notificationWithTopic = parser.parseWithTopic(line, subscriptionId = 0, baseUrl = baseUrl)
                         if (notificationWithTopic != null) {
-                            since = notificationWithTopic.notification.id
                             val topic = notificationWithTopic.topic
                             val subscriptionId = topicsToSubscriptionIds[topic] ?: continue
                             val subscription = repository.getSubscription(subscriptionId) ?: continue
@@ -84,17 +82,13 @@ class JsonConnection(
                     delay(retrySeconds * 1000L)
                 }
             }
-            Log.d(TAG, "[$url] Connection job SHUT DOWN")
+            Log.d(TAG, "[$url] Connection fully SHUT DOWN")
         }
-    }
-
-    override fun since(): String? {
-        return since
     }
 
     override fun close() {
         Log.d(TAG, "[$url] Cancelling connection")
-        if (this::job.isInitialized) job.cancel()
+        scope.cancel()
         if (this::call.isInitialized) call.cancel()
     }
 

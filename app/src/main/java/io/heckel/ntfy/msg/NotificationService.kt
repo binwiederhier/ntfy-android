@@ -90,6 +90,8 @@ class NotificationService(val context: Context) {
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(Colors.notificationIcon(context))
             .setContentTitle(title)
+            .setWhen(notification.timestamp * 1000) // Set timestamp (convert seconds to millis)
+            .setShowWhen(true)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
         setStyleAndText(builder, subscription, notification) // Preview picture or big text style
