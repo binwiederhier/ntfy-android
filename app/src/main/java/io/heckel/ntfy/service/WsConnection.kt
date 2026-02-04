@@ -8,6 +8,7 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.db.User
+import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationParser
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
@@ -17,10 +18,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import java.net.ProtocolException
 import java.util.Calendar
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Connect to ntfy server via WebSockets. This connection represents a single connection to a server, with
@@ -38,7 +37,6 @@ class WsConnection(
     private val httpClient: OkHttpClient,
     private val user: User?,
     private val customHeaders: List<CustomHeader>,
-    private val sinceId: String?,
     private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val alarmManager: AlarmManager
@@ -52,7 +50,6 @@ class WsConnection(
     private val globalId = GLOBAL_ID.incrementAndGet()
     private val listenerId = AtomicLong(0)
 
-    private val since = AtomicReference<String?>(sinceId)
     private val baseUrl = connectionId.baseUrl
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
@@ -73,9 +70,8 @@ class WsConnection(
         }
         state = State.Connecting
         val nextListenerId = listenerId.incrementAndGet()
-        val sinceId = since.get()
-        val sinceVal = sinceId ?: "all"
-        val urlWithSince = topicUrlWs(baseUrl, topicsStr, sinceVal)
+        val since = repository.getLastNotificationIdForSubscriptions(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
+        val urlWithSince = topicUrlWs(baseUrl, topicsStr, since)
         val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
         webSocket = httpClient.newWebSocket(request, Listener(nextListenerId))
@@ -92,11 +88,6 @@ class WsConnection(
         state = State.Disconnected
         webSocket!!.close(WS_CLOSE_NORMAL, "")
         webSocket = null
-    }
-
-    @Synchronized
-    override fun since(): String? {
-        return since.get()
     }
 
     @Synchronized
@@ -158,7 +149,6 @@ class WsConnection(
                 val subscription = repository.getSubscription(subscriptionId) ?: return@synchronize
                 val notificationWithSubscriptionId = notification.copy(subscriptionId = subscription.id)
                 notificationListener(subscription, notificationWithSubscriptionId)
-                since.set(notification.id)
             }
         }
 

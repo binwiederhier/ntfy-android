@@ -160,6 +160,19 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         notificationDao.markAsDeletedBySequenceId(subscriptionId, sequenceId)
     }
 
+    fun updateLastNotificationId(subscriptionId: Long, notificationId: String) {
+        subscriptionDao.updateLastNotificationId(subscriptionId, notificationId)
+    }
+
+    /**
+     * Returns the first non-null lastNotificationId from the given subscriptions to be used
+     * in the "since" parameter.
+     */
+    fun getLastNotificationIdForSubscriptions(subscriptionIds: Collection<Long>): String? {
+        return subscriptionIds
+            .firstNotNullOfOrNull { subscriptionId -> getSubscription(subscriptionId)?.lastNotificationId }
+    }
+
     fun markAllAsDeleted(subscriptionId: Long) {
         notificationDao.markAllAsDeleted(subscriptionId)
     }

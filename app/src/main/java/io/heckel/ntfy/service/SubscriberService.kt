@@ -253,21 +253,6 @@ class SubscriberService : Service() {
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
         val match = activeConnectionIds == desiredConnectionIds
 
-        // Build since map from existing in-memory connections first
-        val sinceByBaseUrl = connections
-            .map { e -> e.key.baseUrl to e.value.since() }
-            .toMap()
-            .toMutableMap()
-
-        // For base URLs without an existing connection, use the lastNotificationId from subscriptions.
-        // This ensures we don't miss notifications after a service restart.
-        instantSubscriptions.groupBy { it.baseUrl }.forEach { (baseUrl, subs) ->
-            if (!sinceByBaseUrl.containsKey(baseUrl)) {
-                val lastNotificationId = subs.mapNotNull { it.lastNotificationId }.firstOrNull()
-                sinceByBaseUrl[baseUrl] = lastNotificationId
-            }
-        }
-
         Log.d(TAG, "Refreshing subscriptions")
         Log.d(TAG, "- Desired connections: $desiredConnectionIds")
         Log.d(TAG, "- Active connections: $activeConnectionIds")
@@ -282,19 +267,15 @@ class SubscriberService : Service() {
 
         // Open new connections
         newConnectionIds.forEach { connectionId ->
-            // IMPORTANT: Do NOT request old messages for new connections; we call poll() in MainActivity to
-            // retrieve old messages. This is important, so we don't download attachments from old messages.
-
-            val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, scope, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -390,12 +371,14 @@ class SubscriberService : Service() {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE_DELETE -> {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE -> {

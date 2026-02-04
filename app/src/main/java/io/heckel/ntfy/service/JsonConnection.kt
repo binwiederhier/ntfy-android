@@ -23,7 +23,6 @@ class JsonConnection(
     private val repository: Repository,
     private val api: ApiService,
     private val user: User?,
-    private val sinceId: String?,
     private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
     private val serviceActive: () -> Boolean
@@ -34,7 +33,6 @@ class JsonConnection(
     private val url = topicUrl(baseUrl, topicsStr)
     private val parser = NotificationParser()
 
-    private var since: String? = sinceId
     private var errorCount = 0
     private lateinit var call: Call
     private lateinit var job: Job
@@ -45,7 +43,8 @@ class JsonConnection(
 
             while (isActive && serviceActive()) {
                 Log.d(TAG, "[$url] (Re-)starting connection for subscriptions: $topicsToSubscriptionIds")
-                
+                val since = repository.getLastNotificationIdForSubscriptions(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
+
                 try {
                     val (newCall, source) = api.subscribe(baseUrl, topicsStr, since, user)
                     call = newCall
@@ -59,7 +58,6 @@ class JsonConnection(
                         val line = source.readUtf8Line() ?: break
                         val notificationWithTopic = parser.parseWithTopic(line, subscriptionId = 0, baseUrl = baseUrl)
                         if (notificationWithTopic != null) {
-                            since = notificationWithTopic.notification.id
                             val topic = notificationWithTopic.topic
                             val subscriptionId = topicsToSubscriptionIds[topic] ?: continue
                             val subscription = repository.getSubscription(subscriptionId) ?: continue
@@ -86,10 +84,6 @@ class JsonConnection(
             }
             Log.d(TAG, "[$url] Connection job SHUT DOWN")
         }
-    }
-
-    override fun since(): String? {
-        return since
     }
 
     override fun close() {
