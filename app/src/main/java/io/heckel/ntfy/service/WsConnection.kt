@@ -14,6 +14,11 @@ import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrlWs
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -42,6 +47,7 @@ class WsConnection(
     private val alarmManager: AlarmManager
 ) : Connection {
     private val parser = NotificationParser()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var errorCount = 0
     private var webSocket: WebSocket? = null
     private var state: State? = null
@@ -70,7 +76,7 @@ class WsConnection(
         }
         state = State.Connecting
         val nextListenerId = listenerId.incrementAndGet()
-        val since = repository.getLastNotificationIdForSubscriptions(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
+        val since = repository.getLastNotificationId(topicsToSubscriptionIds.values) ?: ApiService.SINCE_NONE
         val urlWithSince = topicUrlWs(baseUrl, topicsStr, since)
         val request = HttpUtil.requestBuilder(urlWithSince, user, customHeaders).build()
         Log.d(TAG, "$shortUrl (gid=$globalId): Opening $urlWithSince with listener ID $nextListenerId ...")
@@ -80,6 +86,7 @@ class WsConnection(
     @Synchronized
     override fun close() {
         closed = true
+        scope.cancel()
         if (webSocket == null) {
             Log.d(TAG,"$shortUrl (gid=$globalId): Not closing existing connection, because there is no active web socket")
             return
@@ -100,13 +107,16 @@ class WsConnection(
         Log.d(TAG,"$shortUrl (gid=$globalId): Scheduling a restart in $seconds seconds (via alarm manager)")
         val reconnectTime = Calendar.getInstance()
         reconnectTime.add(Calendar.SECOND, seconds)
+        // The AlarmManager callback runs on the main thread, but start() accesses the database,
+        // so we dispatch to a background thread using the connection's own scope.
+        val startOnBackgroundThread = { scope.launch { start() } }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (alarmManager.canScheduleExactAlarms()) {
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
                     reconnectTime.timeInMillis,
                     RECONNECT_TAG,
-                    { start() },
+                    { startOnBackgroundThread() },
                     null
                 )
             } else {
@@ -117,7 +127,7 @@ class WsConnection(
                 AlarmManager.RTC_WAKEUP,
                 reconnectTime.timeInMillis,
                 RECONNECT_TAG,
-                { start() },
+                { startOnBackgroundThread() },
                 null
             )
         }

@@ -31,7 +31,6 @@ import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -206,7 +205,7 @@ class SubscriberService : Service() {
                 return@launch
             }
             try {
-                reallyRefreshConnections(this)
+                reallyRefreshConnections()
             } finally {
                 refreshMutex.unlock()
             }
@@ -217,7 +216,7 @@ class SubscriberService : Service() {
      * Start/stop connections based on the desired state
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
-    private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
+    private suspend fun reallyRefreshConnections() {
         // Group instant subscriptions by base URL, there is only one connection per base URL
         val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
@@ -275,7 +274,7 @@ class SubscriberService : Service() {
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
                 WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()

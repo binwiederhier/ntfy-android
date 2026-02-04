@@ -562,6 +562,17 @@ interface SubscriptionDao {
     @Query("UPDATE subscription SET lastNotificationId = :lastNotificationId WHERE id = :subscriptionId")
     fun updateLastNotificationId(subscriptionId: Long, lastNotificationId: String)
 
+    @Query("""
+        SELECT s.lastNotificationId
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id = n.subscriptionId AND n.deleted != 1
+        WHERE s.id IN (:subscriptionIds) AND s.lastNotificationId IS NOT NULL
+        GROUP BY s.id
+        ORDER BY MAX(n.timestamp) DESC
+        LIMIT 1
+    """)
+    fun getLastNotificationId(subscriptionIds: Collection<Long>): String?
+
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
 }

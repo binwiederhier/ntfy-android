@@ -165,12 +165,12 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     /**
-     * Returns the first non-null lastNotificationId from the given subscriptions to be used
-     * in the "since" parameter.
+     * Returns the lastNotificationId to use as "since" parameter for subscribing.
+     * Selects the lastNotificationId from the subscription with the most recent notification.
+     * Returns null if no subscriptions have a lastNotificationId.
      */
-    fun getLastNotificationIdForSubscriptions(subscriptionIds: Collection<Long>): String? {
-        return subscriptionIds
-            .firstNotNullOfOrNull { subscriptionId -> getSubscription(subscriptionId)?.lastNotificationId }
+    fun getLastNotificationId(subscriptionIds: Collection<Long>): String? {
+        return subscriptionDao.getLastNotificationId(subscriptionIds)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {
