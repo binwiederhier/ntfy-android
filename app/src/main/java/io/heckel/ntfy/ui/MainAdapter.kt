@@ -119,7 +119,7 @@ class MainAdapter(
             nameView.text = displayName(appBaseUrl, subscription)
             statusView.text = statusMessage
             dateView.text = dateText
-            dateView.visibility = if (isUnifiedPush) View.GONE else View.VISIBLE
+            dateView.visibility = View.VISIBLE
             val showConnectionError = subscription.instant && subscription.connectionDetails.hasError()
             connectionErrorImageView.visibility = if (showConnectionError) View.VISIBLE else View.GONE
             notificationDisabledUntilImageView.visibility = if (showMutedUntilIcon) View.VISIBLE else View.GONE

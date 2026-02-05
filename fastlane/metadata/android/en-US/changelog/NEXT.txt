@@ -2,6 +2,7 @@ Features:
 * Search within a topic (#141, ntfy-android#153, thanks to @Copephobia and @StoyanYonkov for reporting and sponsoring)
 * Add "reconnecting to N topics ..." to foreground notification (#1101, thanks to @milosivanovic for reporting)
 * Default server dialog with full-screen UI and stricter URL validation (ntfy-android#158)
+* Show last notification time for UnifiedPush subscriptions (#1230, #1454, thanks to @Tealk and @user4andre for reporting)
 
 Bug fixes + maintenance:
 * Fix crash when URL scheme is missing in default server (#1582, ntfy-android#158, thanks to @hard-zero1 for reporting)
