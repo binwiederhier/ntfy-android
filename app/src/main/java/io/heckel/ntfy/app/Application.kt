@@ -4,8 +4,13 @@ import android.app.Application
 import com.google.android.material.color.DynamicColors
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 class Application : Application() {
+    val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     val repository by lazy {
         val repository = Repository.getInstance(applicationContext)
         if (repository.getRecordLogs()) {

@@ -5,6 +5,7 @@ Features:
 * Show last notification time for UnifiedPush subscriptions (#1230, #1454, thanks to @Tealk and @user4andre for reporting)
 
 Bug fixes + maintenance:
+* Fix clear=true on action buttons not marking notification as read (#1029, thanks to @ElFishi for reporting)
 * Fix crash when URL scheme is missing in default server (#1582, ntfy-android#158, thanks to @hard-zero1 for reporting)
 * Fix notification timestamp to use original send time instead of receive time (#1112, thanks to @voruti for reporting)
 * Fix notifications being missed after service restart (#1591, thanks to @Epifeny for reporting)

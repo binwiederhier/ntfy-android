@@ -60,6 +60,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         broadcaster.sendUserAction(action)
         if (action.clear == true) {
             notifier.cancel(notification)
+            repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
         }
     }
 
@@ -98,6 +99,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         repository.updateNotification(notification)
         if (clear) {
             notifier.cancel(notification)
+            repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
         } else {
             notifier.update(subscription, notification)
         }

@@ -21,6 +21,7 @@ import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.*
 import java.util.*
 import androidx.core.net.toUri
+import kotlinx.coroutines.launch
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -135,8 +136,8 @@ class NotificationService(val context: Context) {
     private fun setStyleAndText(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
         val contentUri = notification.attachment?.contentUri
         val isSupportedImage = supportedImage(notification.attachment?.type)
-        val subscriptionIcon = if (subscription.icon != null) subscription.icon.readBitmapFromUriOrNull(context) else null
-        val notificationIcon = if (notification.icon != null) notification.icon.contentUri?.readBitmapFromUriOrNull(context) else null
+        val subscriptionIcon = subscription.icon?.readBitmapFromUriOrNull(context)
+        val notificationIcon = notification.icon?.contentUri?.readBitmapFromUriOrNull(context)
         val largeIcon = notificationIcon ?: subscriptionIcon
         if (contentUri != null && isSupportedImage) {
             try {
@@ -299,6 +300,8 @@ class NotificationService(val context: Context) {
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 putExtra(VIEW_ACTION_EXTRA_URL, url)
                 putExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, notification.notificationId)
+                putExtra(VIEW_ACTION_EXTRA_SUBSCRIPTION_ID, notification.subscriptionId)
+                putExtra(VIEW_ACTION_EXTRA_SEQUENCE_ID, notification.sequenceId)
             }
             val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
             builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
@@ -469,6 +472,8 @@ class NotificationService(val context: Context) {
             Log.d(TAG, "Created $this")
             val url = intent.getStringExtra(VIEW_ACTION_EXTRA_URL)
             val notificationId = intent.getIntExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, 0)
+            val subscriptionId = intent.getLongExtra(VIEW_ACTION_EXTRA_SUBSCRIPTION_ID, 0)
+            val sequenceId = intent.getStringExtra(VIEW_ACTION_EXTRA_SEQUENCE_ID) ?: ""
             if (url == null) {
                 finish()
                 return
@@ -491,6 +496,16 @@ class NotificationService(val context: Context) {
             // Cancel notification
             val notifier = NotificationService(this)
             notifier.cancel(notificationId)
+
+            // Mark notification as read; We can't use lifecycleScope here, because we
+            // call finish() right after, so we do this awkward ioScope thing.
+            if (subscriptionId != 0L && sequenceId.isNotEmpty()) {
+                val app = applicationContext as io.heckel.ntfy.app.Application
+                app.ioScope.launch {
+                    val repository = Repository.getInstance(app)
+                    repository.markAsReadBySequenceId(subscriptionId, sequenceId)
+                }
+            }
 
             // Close this activity
             finish()
@@ -529,5 +544,7 @@ class NotificationService(val context: Context) {
 
         private const val VIEW_ACTION_EXTRA_URL = "url"
         private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"
+        private const val VIEW_ACTION_EXTRA_SUBSCRIPTION_ID = "subscriptionId"
+        private const val VIEW_ACTION_EXTRA_SEQUENCE_ID = "sequenceId"
     }
 }
