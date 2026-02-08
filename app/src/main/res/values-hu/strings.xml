@@ -131,4 +131,12 @@
     <string name="settings_notifications_header">Értesítések</string>
     <string name="settings_notifications_muted_until_title">Értesítések némítása</string>
     <string name="main_unified_push_toast">Ez a feliratkozás %1$s által van kezelve UnifiedPush-al</string>
+    <string name="common_button_next">Következő</string>
+    <string name="common_button_add">Hozzáadás</string>
+    <string name="common_button_delete">Törlés</string>
+    <string name="common_button_reset_to_default">Visszaállítás az alapértelmezettre</string>
+    <string name="common_service_url_placeholder">Például: https://ntfy.example.com</string>
+    <string name="common_certificate_issuer">Kibocsátó</string>
+    <string name="common_certificate_valid_from">Érvényes ettől</string>
+    <string name="common_certificate_valid_until">Érvényes eddig</string>
 </resources>
