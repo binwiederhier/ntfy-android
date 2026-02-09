@@ -13,9 +13,11 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_BROADCAST
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_COPY
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_HTTP
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.copyToClipboard
 import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.Locale
@@ -45,6 +47,7 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
                 // ACTION_VIEW is not handled here. It's handled in the NotificationService and DetailAdapter.
                 ACTION_BROADCAST -> performBroadcastAction(action)
                 ACTION_HTTP -> performHttpAction(action)
+                ACTION_COPY -> performCopyAction(action)
             }
         } catch (e: Exception) {
             Log.w(TAG, "Error executing action: ${e.message}", e)
@@ -54,6 +57,15 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
             ))
         }
         return Result.success()
+    }
+
+    private fun performCopyAction(action: Action) {
+        val value = action.value ?: return
+        copyToClipboard(context, action.label, value)
+        if (action.clear == true) {
+            notifier.cancel(notification)
+            repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
+        }
     }
 
     private fun performBroadcastAction(action: Action) {

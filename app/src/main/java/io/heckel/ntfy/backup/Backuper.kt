@@ -156,6 +156,7 @@ class Backuper(val context: Context) {
                             body = a.body,
                             intent = a.intent,
                             extras = a.extras,
+                            value = a.value,
                             progress = a.progress,
                             error = a.error
                         )
@@ -316,6 +317,7 @@ class Backuper(val context: Context) {
                     body = a.body,
                     intent = a.intent,
                     extras = a.extras,
+                    value = a.value,
                     progress = a.progress,
                     error = a.error
                 )
@@ -459,7 +461,7 @@ data class Notification(
 
 data class Action(
     val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
-    val action: String, // "view", "http" or "broadcast"
+    val action: String, // "view", "http", "broadcast", or "copy"
     val label: String,
     val clear: Boolean?, // clear notification after successful execution
     val url: String?, // used in "view" and "http" actions
@@ -468,6 +470,7 @@ data class Action(
     val body: String?, // used in "http" action
     val intent: String?, // used in "broadcast" action
     val extras: Map<String,String>?, // used in "broadcast" action
+    val value: String? = null, // used in "copy" action
     val progress: Int?, // used to indicate progress in popup
     val error: String? // used to indicate errors in popup
 )

@@ -222,7 +222,7 @@ data class Icon(
 @Entity
 data class Action(
     @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
-    @ColumnInfo(name = "action") val action: String, // "view", "http" or "broadcast"
+    @ColumnInfo(name = "action") val action: String, // "view", "http", "broadcast", or "copy"
     @ColumnInfo(name = "label") val label: String,
     @ColumnInfo(name = "clear") val clear: Boolean?, // clear notification after successful execution
     @ColumnInfo(name = "url") val url: String?, // used in "view" and "http" actions
@@ -231,6 +231,7 @@ data class Action(
     @ColumnInfo(name = "body") val body: String?, // used in "http" action
     @ColumnInfo(name = "intent") val intent: String?, // used in "broadcast" action
     @ColumnInfo(name = "extras") val extras: Map<String,String>?, // used in "broadcast" action
+    @ColumnInfo(name = "value") val value: String?, // used in "copy" action
     @ColumnInfo(name = "progress") val progress: Int?, // used to indicate progress in popup
     @ColumnInfo(name = "error") val error: String?, // used to indicate errors in popup
 )

@@ -267,7 +267,7 @@ class NotificationService(val context: Context) {
                     addViewUserActionWithoutClear(builder, action)
                 }
             } else {
-                addHttpOrBroadcastUserAction(builder, notification, action)
+                addHttpBroadcastOrCopyUserAction(builder, notification, action)
             }
         }
     }
@@ -310,7 +310,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun addHttpOrBroadcastUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+    private fun addHttpBroadcastOrCopyUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
         val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
             putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_USER_ACTION)
             putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
@@ -323,7 +323,7 @@ class NotificationService(val context: Context) {
 
     /**
      * Receives the broadcast from
-     * - the "http" and "broadcast" action button (the "view" action is handled differently)
+     * - the "http", "broadcast", and "copy" action button (the "view" action is handled differently)
      * - the "download"/"cancel" action button
      *
      * Then queues a Worker via WorkManager to execute the action in the background
@@ -523,6 +523,7 @@ class NotificationService(val context: Context) {
         const val ACTION_VIEW = "view"
         const val ACTION_HTTP = "http"
         const val ACTION_BROADCAST = "broadcast"
+        const val ACTION_COPY = "copy"
 
         const val BROADCAST_EXTRA_TYPE = "type"
         const val BROADCAST_EXTRA_NOTIFICATION_ID = "notificationId"

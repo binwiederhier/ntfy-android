@@ -3,6 +3,7 @@ Features:
 * Add "reconnecting to N topics ..." to foreground notification (#1101, thanks to @milosivanovic for reporting)
 * Default server dialog with full-screen UI and stricter URL validation (ntfy-android#158)
 * Show last notification time for UnifiedPush subscriptions (#1230, #1454, thanks to @Tealk and @user4andre for reporting)
+* Support "copy" action button to copy a value to the clipboard (#1364, thanks to @SudoWatson for reporting)
 
 Bug fixes + maintenance:
 * Fix clear=true on action buttons not marking notification as read (#1029, thanks to @ElFishi for reporting)

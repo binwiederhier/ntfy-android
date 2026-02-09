@@ -37,7 +37,7 @@ data class MessageAttachment(
 data class MessageAction(
     val id: String,
     val action: String,
-    val label: String, // "view", "broadcast" or "http"
+    val label: String, // "view", "broadcast", "http", or "copy"
     val clear: Boolean?, // clear notification after successful execution
     val url: String?, // used in "view" and "http" actions
     val method: String?, // used in "http" action, default is POST (!)
@@ -45,6 +45,7 @@ data class MessageAction(
     val body: String?, // used in "http" action
     val intent: String?, // used in "broadcast" action
     val extras: Map<String,String>?, // used in "broadcast" action
+    val value: String?, // used in "copy" action
 )
 
 const val MESSAGE_ENCODING_BASE64 = "base64"

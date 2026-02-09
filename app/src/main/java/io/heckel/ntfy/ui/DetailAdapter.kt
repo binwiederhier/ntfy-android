@@ -32,6 +32,7 @@ import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_COPY
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import io.heckel.ntfy.util.*
 import io.noties.markwon.Markwon
@@ -515,6 +516,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private fun runAction(context: Context, notification: Notification, action: Action): Boolean {
             when (action.action) {
                 ACTION_VIEW -> runViewAction(context, action)
+                ACTION_COPY -> runCopyAction(context, action)
                 else -> runOtherUserAction(context, notification, action)
             }
             return true
@@ -534,6 +536,11 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                     .makeText(context, context.getString(R.string.detail_item_cannot_open_url, message), Toast.LENGTH_LONG)
                     .show()
             }
+        }
+
+        private fun runCopyAction(context: Context, action: Action) {
+            val value = action.value ?: return
+            copyToClipboard(context, action.label, value)
         }
 
         private fun runOtherUserAction(context: Context, notification: Notification, action: Action) {
