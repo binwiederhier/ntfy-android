@@ -17,8 +17,8 @@ android {
         minSdkVersion 26
         targetSdkVersion 36
 
-        versionCode 58
-        versionName "1.22.2"
+        versionCode 59
+        versionName "1.23.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -91,7 +91,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation "androidx.core:core-ktx:1.17.0"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
-    implementation "androidx.activity:activity-ktx:1.12.3"
+    implementation "androidx.activity:activity-ktx:1.12.4"
     implementation "androidx.fragment:fragment-ktx:1.8.9"
     implementation "androidx.work:work-runtime-ktx:2.11.1"
     implementation 'androidx.preference:preference-ktx:1.2.1'
@@ -144,6 +144,6 @@ dependencies {
     implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
 
     // Used by Markdown library, R8 complains if these are not here
-    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.30"
+    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.31"
     implementation "com.caverock:androidsvg:1.4"
 }
