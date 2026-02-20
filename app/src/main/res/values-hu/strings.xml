@@ -139,4 +139,5 @@
     <string name="common_certificate_issuer">Kibocsátó</string>
     <string name="common_certificate_valid_from">Érvényes ettől</string>
     <string name="common_certificate_valid_until">Érvényes eddig</string>
+    <string name="common_service_url">Szolgáltatás URL-je</string>
 </resources>
