@@ -253,7 +253,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     Repository.MUTED_UNTIL_SHOW_ALL -> getString(R.string.settings_notifications_muted_until_show_all)
                     Repository.MUTED_UNTIL_FOREVER -> getString(R.string.settings_notifications_muted_until_forever)
                     else -> {
-                        val formattedDate = formatDateShort(mutedUntilValue)
+                        val formattedDate = formatDateShort(requireContext(), mutedUntilValue)
                         getString(R.string.settings_notifications_muted_until_x, formattedDate)
                     }
                 }

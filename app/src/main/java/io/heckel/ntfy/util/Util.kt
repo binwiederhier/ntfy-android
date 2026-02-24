@@ -47,8 +47,11 @@ import java.io.IOException
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.text.StringCharacterIterator
 import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import androidx.core.net.toUri
@@ -130,8 +133,41 @@ fun normalizeBaseUrl(url: String): String {
 }
 
 fun formatDateShort(timestampSecs: Long): String {
-    val date = Date(timestampSecs*1000)
-    return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+    return formatDateTime(Date(timestampSecs * 1000), Repository.DATETIME_FORMAT_LOCALE)
+}
+
+fun formatDateShort(context: Context, timestampSecs: Long): String {
+    val repository = Repository.getInstance(context)
+    return formatDateTime(Date(timestampSecs * 1000), repository.getDateTimeFormat())
+}
+
+fun formatDate(context: Context, timestampSecs: Long): String {
+    val repository = Repository.getInstance(context)
+    val date = Date(timestampSecs * 1000)
+    return if (repository.getDateTimeFormat() == Repository.DATETIME_FORMAT_ISO8601) {
+        SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
+    } else {
+        DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+    }
+}
+
+fun formatTime(context: Context, timestampSecs: Long): String {
+    val repository = Repository.getInstance(context)
+    val date = Date(timestampSecs * 1000)
+    return if (repository.getDateTimeFormat() == Repository.DATETIME_FORMAT_ISO8601) {
+        SimpleDateFormat("HH:mm", Locale.US).format(date)
+    } else {
+        DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+    }
+}
+
+private fun formatDateTime(date: Date, dateTimeFormat: String): String {
+    return if (dateTimeFormat == Repository.DATETIME_FORMAT_ISO8601) {
+        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
+            .format(date)
+    } else {
+        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)
+    }
 }
 
 fun toPriority(priority: Int?): Int {

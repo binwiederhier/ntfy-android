@@ -209,7 +209,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     Repository.MUTED_UNTIL_SHOW_ALL -> getString(R.string.settings_notifications_muted_until_show_all)
                     Repository.MUTED_UNTIL_FOREVER -> getString(R.string.settings_notifications_muted_until_forever)
                     else -> {
-                        val formattedDate = formatDateShort(mutedUntilValue)
+                        val formattedDate = formatDateShort(requireContext(), mutedUntilValue)
                         getString(R.string.settings_notifications_muted_until_x, formattedDate)
                     }
                 }
@@ -348,6 +348,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     AppCompatDelegate.MODE_NIGHT_NO -> getString(R.string.settings_general_dark_mode_summary_light)
                     AppCompatDelegate.MODE_NIGHT_YES -> getString(R.string.settings_general_dark_mode_summary_dark)
                     else -> getString(R.string.settings_general_dark_mode_summary_system)
+                }
+            }
+
+            val dateTimeFormatPrefId = context?.getString(R.string.settings_general_datetime_format_key) ?: return
+            val dateTimeFormat: ListPreference? = findPreference(dateTimeFormatPrefId)
+            dateTimeFormat?.value = repository.getDateTimeFormat()
+            dateTimeFormat?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val dateTimeFormatValue = value ?: repository.getDateTimeFormat()
+                    repository.setDateTimeFormat(dateTimeFormatValue)
+                }
+
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getDateTimeFormat()
+                }
+            }
+            dateTimeFormat?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value) {
+                    Repository.DATETIME_FORMAT_ISO8601 -> getString(R.string.settings_general_datetime_format_summary_iso8601)
+                    else -> getString(R.string.settings_general_datetime_format_summary_locale)
                 }
             }
 
