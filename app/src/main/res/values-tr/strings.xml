@@ -141,13 +141,13 @@
     <string name="settings_general_users_prefs_user_add">Kullanıcı ekle</string>
     <string name="settings_general_users_prefs_user_add_title">Yeni kullanıcı ekle</string>
     <string name="settings_general_users_prefs_user_add_summary">Yeni bir sunucu için yeni bir kullanıcı oluşturun</string>
-    <string name="settings_general_dark_mode_title">Koyu mod</string>
+    <string name="settings_general_dark_mode_title">Karanlık kip</string>
     <string name="settings_general_dark_mode_summary_system">Sistem öntanımlı değeri kullanılıyor</string>
-    <string name="settings_general_dark_mode_summary_light">Açık mod etkinleştirildi</string>
-    <string name="settings_general_dark_mode_summary_dark">Koyu mod etkinleştirildi. Vampir misiniz\?</string>
+    <string name="settings_general_dark_mode_summary_light">Aydınlık kip etkinleştirildi</string>
+    <string name="settings_general_dark_mode_summary_dark">Karanlık kip etkinleştirildi. Vampir misiniz?</string>
     <string name="settings_general_dark_mode_entry_system">Sistem öntanımlı değerini kullan</string>
-    <string name="settings_general_dark_mode_entry_light">Açık mod</string>
-    <string name="settings_general_dark_mode_entry_dark">Koyu mod</string>
+    <string name="settings_general_dark_mode_entry_light">Aydınlık kip</string>
+    <string name="settings_general_dark_mode_entry_dark">Karanlık kip</string>
     <string name="settings_backup_restore_header">Yedekle &amp; Geri Yükle</string>
     <string name="settings_backup_restore_backup_entry_everything">Her şey</string>
     <string name="settings_backup_restore_restore_successful">Başarıyla geri yüklendi</string>
@@ -399,4 +399,27 @@
     <string name="publish_dialog_attach_filename_placeholder">örnek: lilies.jpg</string>
     <string name="publish_dialog_phone_call_hint">Telefon araması</string>
     <string name="publish_dialog_phone_call_placeholder">örnek: +1234567890</string>
+    <string name="publish_dialog_docs_text">Yayınlanan özelliklerin tüm örnekleri ve ayrıntılı açıklamaları için lütfen <a href="https://docs.ntfy.sh/publish/">belgelere</a> bakın.</string>
+    <string name="message_bar_hint">Buraya mesaj yazın</string>
+    <string name="message_bar_publish_button_description">Mesajı yayınla</string>
+    <string name="message_bar_expand_button_description">Daha fazla seçenek</string>
+    <string name="detail_fab_publish_description">Bildirim yayınla</string>
+    <string name="connection_error_dialog_title">Bağlantı hatası</string>
+    <string name="connection_error_dialog_message">%1$s\'ye bağlanırken bir sorun oluştu. Uygulama arka planda yeniden bağlanmayı denemeye devam edecek.</string>
+    <string name="connection_error_dialog_connection_refused">Bağlantı reddedildi. Sunucu kapalı veya adres yanlış olabilir.</string>
+    <string name="connection_error_dialog_retry_now">Tekrar dene</string>
+    <string name="connection_error_dialog_retrying">Tekrar deneniyor…</string>
+    <string name="settings_general_language_title">Dil</string>
+    <string name="settings_general_language_summary_system">Sistem varsayılanını kullan</string>
+    <string name="settings_general_language_system_default">Sistem varsayılanı</string>
+    <string name="settings_general_message_bar_title">Mesaj çubuğunu göster</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Başlık ekle</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Sunucu için bir başlık ekleyin</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Her HTTP isteğine başlıklar eklenir. Her NTFY sunucusunun kendine ait özel başlık kümesi olabilir.</string>
+    <string name="settings_advanced_custom_headers_title">Özel başlıklar</string>
+    <string name="settings_advanced_custom_headers_summary">Örneğin, NTFY sunucunuz kimlik doğrulamalı bir proxy veya tünelin arkasındaysa, her istekle birlikte gönderilecek özel HTTP başlıkları tanımlayın.</string>
+    <string name="settings_general_message_bar_summary_disabled">Konu görünümünün alt kısmında yayınla düğmesini göster</string>
+    <string name="settings_general_message_bar_summary_enabled">Konu görünümünün altında mesaj çubuğunu göster</string>
+    <string name="settings_advanced_certificates_title">Sertifikaları yönet</string>
+    <string name="settings_advanced_certificates_trusted_header">Güvenilir sertifikalar</string>
 </resources>
