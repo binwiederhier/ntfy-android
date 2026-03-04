@@ -47,6 +47,14 @@
     <string name="channel_subscriber_notification_noinstant_text_six">Subscribed to six topics</string>
     <string name="channel_subscriber_notification_noinstant_text_more">Subscribed to %1$d topics</string>
 
+    <!-- Connection alert notification -->
+    <string name="connection_alert_title">Connection lost</string>
+    <string name="connection_alert_text_one">Unable to connect to %1$s for more than %2$d minutes</string>
+    <string name="connection_alert_text_multiple">Unable to connect to %1$d servers for more than %2$d minutes</string>
+    <string name="connection_alert_action_dismiss">Dismiss</string>
+    <string name="connection_alert_action_snooze">Snooze 1h</string>
+    <string name="connection_alert_action_never">Never show</string>
+
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
     <string name="refresh_message_no_results">Everything is up to date</string>

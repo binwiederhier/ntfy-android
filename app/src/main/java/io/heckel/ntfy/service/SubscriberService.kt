@@ -24,6 +24,8 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationDispatcher
+import io.heckel.ntfy.msg.NotificationService
+import io.heckel.ntfy.util.PRIORITY_HIGH
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.HttpUtil
@@ -275,7 +277,6 @@ class SubscriberService : Service() {
             val connection = connections.remove(connectionId)
             connection?.close()
         }
-
         // Update foreground service notification popup
         if (connections.isNotEmpty()) {
             val title = getString(R.string.channel_subscriber_notification_title)
@@ -307,6 +308,88 @@ class SubscriberService : Service() {
 
     private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
         repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
+        if (state == ConnectionState.CONNECTED) {
+            maybeAutoDismissConnectionAlert()
+        } else if (throwable != null) {
+            maybeShowConnectionAlert()
+        }
+    }
+
+    private fun maybeShowConnectionAlert() {
+        val now = System.currentTimeMillis()
+
+        // Check snooze / never-show-again
+        val snoozeUntil = repository.getConnectionAlertSnoozeUntil()
+        if (snoozeUntil == Repository.CONNECTION_ALERT_NEVER_SHOW) return
+        if (snoozeUntil > now) return
+
+        // Check if any connection has been in error for 15+ minutes
+        val allDetails = repository.getConnectionDetails()
+        val disconnectedUrls = allDetails.filter { (_, details) ->
+            details.hasError() && details.firstErrorTime > 0L &&
+                (now - details.firstErrorTime) >= CONNECTION_ALERT_THRESHOLD_MILLIS
+        }.keys
+
+        if (disconnectedUrls.isNotEmpty()) {
+            showConnectionAlertNotification(disconnectedUrls)
+        }
+    }
+
+    private fun maybeAutoDismissConnectionAlert() {
+        val allDetails = repository.getConnectionDetails()
+        val anyStillDisconnected = allDetails.any { (_, details) ->
+            details.hasError() && details.firstErrorTime > 0L
+        }
+        if (!anyStillDisconnected) {
+            notificationManager?.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+        }
+    }
+
+    private fun showConnectionAlertNotification(disconnectedUrls: Set<String>) {
+        val text = if (disconnectedUrls.size == 1) {
+            getString(R.string.connection_alert_text_one, disconnectedUrls.first(), CONNECTION_ALERT_THRESHOLD_MINUTES)
+        } else {
+            getString(R.string.connection_alert_text_multiple, disconnectedUrls.size, CONNECTION_ALERT_THRESHOLD_MINUTES)
+        }
+
+        val dismissIntent = Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply {
+            action = CONNECTION_ALERT_ACTION_DISMISS
+        }
+        val dismissPendingIntent = PendingIntent.getBroadcast(this, 0, dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val snoozeIntent = Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply {
+            action = CONNECTION_ALERT_ACTION_SNOOZE
+        }
+        val snoozePendingIntent = PendingIntent.getBroadcast(this, 1, snoozeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val neverIntent = Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply {
+            action = CONNECTION_ALERT_ACTION_NEVER
+        }
+        val neverPendingIntent = PendingIntent.getBroadcast(this, 2, neverIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val contentIntent = PendingIntent.getActivity(this, 0,
+            Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
+
+        val channelId = NotificationService(this).toChannelId(NotificationService.DEFAULT_GROUP, PRIORITY_HIGH)
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(Colors.notificationIcon(this))
+            .setContentTitle(getString(R.string.connection_alert_title))
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(contentIntent)
+            .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_dismiss), dismissPendingIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze), snoozePendingIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_never), neverPendingIntent).build())
+            .build()
+
+        Log.d(TAG, "Showing connection alert notification")
+        notificationManager?.notify(NOTIFICATION_CONNECTION_ALERT_ID, notification)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
@@ -412,6 +495,30 @@ class SubscriberService : Service() {
         }
     }
 
+    class ConnectionAlertBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "ConnectionAlertBroadcastReceiver: action=${intent.action}")
+            val repository = Repository.getInstance(context)
+            val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+            when (intent.action) {
+                CONNECTION_ALERT_ACTION_DISMISS -> {
+                    notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+                }
+                CONNECTION_ALERT_ACTION_SNOOZE -> {
+                    repository.setConnectionAlertSnoozeUntil(
+                        System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_DURATION_MILLIS
+                    )
+                    notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+                }
+                CONNECTION_ALERT_ACTION_NEVER -> {
+                    repository.setConnectionAlertSnoozeUntil(Repository.CONNECTION_ALERT_NEVER_SHOW)
+                    notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+                }
+            }
+        }
+    }
+
     enum class Action {
         START,
         STOP
@@ -427,5 +534,13 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
         private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
+
+        private const val NOTIFICATION_CONNECTION_ALERT_ID = 2587
+        private const val CONNECTION_ALERT_THRESHOLD_MINUTES = 15
+        private const val CONNECTION_ALERT_THRESHOLD_MILLIS = CONNECTION_ALERT_THRESHOLD_MINUTES * 60 * 1000L
+        private const val CONNECTION_ALERT_SNOOZE_DURATION_MILLIS = 60 * 60 * 1000L /*1 hour*/
+        private const val CONNECTION_ALERT_ACTION_DISMISS = "io.heckel.ntfy.CONNECTION_ALERT_DISMISS"
+        private const val CONNECTION_ALERT_ACTION_SNOOZE = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE"
+        private const val CONNECTION_ALERT_ACTION_NEVER = "io.heckel.ntfy.CONNECTION_ALERT_NEVER"
     }
 }
