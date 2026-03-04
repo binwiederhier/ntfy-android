@@ -420,7 +420,7 @@ class NotificationService(val context: Context) {
         notificationManager.deleteNotificationChannelGroup(id)
     }
 
-    private fun toChannelId(groupId: String, priority: Int): String {
+    fun toChannelId(groupId: String, priority: Int): String {
         return when (priority) {
             PRIORITY_MIN -> groupId + GROUP_SUFFIX_PRIORITY_MIN
             PRIORITY_LOW -> groupId + GROUP_SUFFIX_PRIORITY_LOW
@@ -535,7 +535,7 @@ class NotificationService(val context: Context) {
 
         private const val TAG = "NtfyNotifService"
 
-        private const val DEFAULT_GROUP = "ntfy"
+        const val DEFAULT_GROUP = "ntfy"
         private const val SUBSCRIPTION_GROUP_PREFIX = "ntfy-subscription-"
         private const val GROUP_SUFFIX_PRIORITY_MIN = "-min"
         private const val GROUP_SUFFIX_PRIORITY_LOW = "-low"
