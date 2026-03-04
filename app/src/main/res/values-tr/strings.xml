@@ -382,8 +382,6 @@
     <string name="common_certificate_valid_until">Kadar geçerli</string>
     <string name="common_certificate_added_toast">Sertifika eklendi</string>
     <string name="common_certificate_deleted_toast">Sertifika silindi</string>
-    <string name="channel_subscriber_notification_reconnecting_one">1 konuya tekrar bağlanılıyor…</string>
-    <string name="channel_subscriber_notification_reconnecting_other">%1$d konulara tekrar bağlanılıyor…</string>
     <string name="main_menu_connection_error">Bağlantı hatası</string>
     <string name="add_dialog_error_ssl_untrusted">Güvenilmeyen sunucu sertifikası</string>
     <string name="detail_no_search_results">Aramanız bir sonuç vermedi</string>

@@ -470,7 +470,5 @@
     <string name="detail_menu_search">搜尋通知</string>
     <string name="detail_menu_search_hint">通知中的搜尋</string>
     <string name="common_button_reset_to_default">重設為預設值</string>
-    <string name="channel_subscriber_notification_reconnecting_one">正在重新連線至 1 個主題…</string>
-    <string name="channel_subscriber_notification_reconnecting_other">正在重新連線至 %1$d 個主題…</string>
     <string name="default_server_dialog_url_error_invalid">請輸入有效的服務 URL，例如：https://ntfy.example.com</string>
 </resources>

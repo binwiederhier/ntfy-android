@@ -411,8 +411,6 @@
     <string name="common_certificate_valid_until">תקף עד</string>
     <string name="common_certificate_added_toast">נוסף אישור</string>
     <string name="common_certificate_deleted_toast">אישור נמחק</string>
-    <string name="channel_subscriber_notification_reconnecting_one">חיבור מחדש לנושא אחד…</string>
-    <string name="channel_subscriber_notification_reconnecting_other">חיבור מחדש ל־%1$d נושאים…</string>
     <string name="main_menu_connection_error">שגיאת חיבור</string>
     <string name="add_dialog_error_ssl_untrusted">אישור השרת לא אמין</string>
     <string name="detail_no_search_results">החיפוש שלך לא הניב תוצאות</string>
