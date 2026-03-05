@@ -440,6 +440,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getConnectionAlertSnoozeUntil(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL, CONNECTION_ALERT_SNOOZE_UNTIL_DEFAULT)
+    }
+
+    fun setConnectionAlertSnoozeUntil(timeMillis: Long) {
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL, timeMillis)
+        }
+    }
+
     fun getDefaultBaseUrl(): String? {
         return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
             sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
@@ -571,8 +581,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: Throwable? = null, nextRetryTime: Long = 0L) {
-        val details = ConnectionDetails(state, error, nextRetryTime)
         val current = connectionDetails[baseUrl]
+        val firstErrorTime = when {
+            error == null -> 0L
+            state == ConnectionState.CONNECTED -> 0L
+            current?.firstErrorTime != null && current.firstErrorTime > 0L -> current.firstErrorTime
+            else -> System.currentTimeMillis()
+        }
+        val details = ConnectionDetails(state, error, nextRetryTime, firstErrorTime)
         if (current != details) {
             if (state == ConnectionState.NOT_APPLICABLE && error == null) {
                 connectionDetails.remove(baseUrl)
@@ -623,6 +639,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
+        const val SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL = "ConnectionAlertSnoozeUntil"
+        const val CONNECTION_ALERT_SNOOZE_UNTIL_DEFAULT = 0L
+        const val CONNECTION_ALERT_NEVER_SHOW = Long.MAX_VALUE
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
         private const val LAST_TOPICS_COUNT = 3
