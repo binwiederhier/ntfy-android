@@ -50,8 +50,15 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_detail_item, parent, false)
+        val layout = activity.intent.getIntExtra(MainActivity.EXTRA_SUBSCRIPTION_LAYOUT, 0)
+
+        val layoutMap = mapOf(
+            1 to R.layout.fragment_detail_item_layout_1,
+        )
+
+        val layoutId = layoutMap[layout] ?: R.layout.fragment_detail_item
+
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
         return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick)
     }
 
@@ -120,7 +127,16 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 messageView.autoLinkMask = 0
                 markwon.setMarkdown(messageView, message.toString())
             } else {
-                messageView.autoLinkMask = Linkify.WEB_URLS or Linkify.EMAIL_ADDRESSES or Linkify.PHONE_NUMBERS
+                val linkHandler = activity.intent.getStringExtra(MainActivity.EXTRA_SUBSCRIPTION_LINK_HANDLER)
+
+                val autoLinkMask = listOf(
+                    Linkify.WEB_URLS to "web",
+                    Linkify.EMAIL_ADDRESSES to "email",
+                    Linkify.PHONE_NUMBERS to "phone"
+                ).filter { linkHandler?.contains(it.second) == true }
+                    .fold(0) { acc, pair -> acc or pair.first }
+
+                messageView.autoLinkMask = autoLinkMask
                 messageView.text = message
             }
             messageView.movementMethod = BetterLinkMovementMethod.getInstance()

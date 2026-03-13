@@ -549,7 +549,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
-                connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
+                connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails(),
+                layout = s.layout,
+                linkHandler = s.linkHandler,
+                notificationButtons = s.notificationButtons
             )
         }
     }
@@ -576,7 +579,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
-            connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails()
+            connectionDetails = connectionDetails[s.baseUrl] ?: ConnectionDetails(),
+            layout = s.layout,
+            linkHandler = s.linkHandler,
+            notificationButtons = s.notificationButtons
         )
     }
 
@@ -682,6 +688,12 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
         const val WEBSOCKET_RECONNECT_REMIND_TIME_ALWAYS = 1L
         const val WEBSOCKET_RECONNECT_REMIND_TIME_NEVER = Long.MAX_VALUE
+
+        const val LAYOUT_DEFAULT = 0
+
+        const val LINK_HANDLER_DEFAULT = "web"
+
+        const val NOTIFICATION_BUTTONS_DEFAULT = "open|browse"
 
         private const val TAG = "NtfyRepository"
         private var instance: Repository? = null

@@ -304,11 +304,13 @@
     <string name="channel_subscriber_notification_noinstant_text_six">Sechs Themen abonniert</string>
     <string name="detail_settings_notifications_instant_summary_off">Benachrichtigungen werden über Firebase zugestellt. Die Zustellung kann verzögert werden, aber der Akkuverbrauch ist niedriger.</string>
     <string name="detail_settings_appearance_header">Darstellung</string>
+    <string name="detail_settings_appearance_notification_header">Darstellung Benachrichtigungen</string>
     <string name="detail_settings_appearance_icon_set_title">Abo-Icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Ein Icon zur Darstellung in Benachrichtigungen auswählen</string>
     <string name="detail_settings_appearance_icon_remove_title">Abo-Icon (entfernen durch Antippen)</string>
     <string name="detail_settings_appearance_icon_error_saving">Kann Icon nicht speichern: %1$s</string>
     <string name="detail_settings_global_setting_title">Globale Einstellung verwenden</string>
+    <string name="detail_settings_appearance_layout_title">Layout-Vorlage</string>
     <string name="detail_settings_global_setting_suffix">verwendet globale Einstellung</string>
     <string name="channel_subscriber_notification_instant_text_six">Sechs Sofortnachrichten-Themen abonniert</string>
     <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
@@ -471,4 +473,22 @@
     <string name="detail_menu_search_hint">In Benachrichtigungen suchen</string>
     <string name="default_server_dialog_url_error_invalid">Eine gültige Service-URL eingeben, z. B. https://ntfy.example.com</string>
     <string name="detail_menu_search">Benachrichtigungen suchen</string>
+    <string name="detail_settings_appearance_layout_summary">Wähle zwischen verschiedenen Layouts</string>
+    <string name="detail_settings_appearance_link_handler_title">Link-Interpreter</string>
+    <string name="detail_settings_appearance_link_handler_summary">Wähle aus, wie die im Text enthaltenen Links interpretiert werden sollen.</string>
+    <string-array name="detail_settings_appearance_link_handler_entries">
+        <item>Links</item>
+        <item>Telefonnummern</item>
+        <item>E-Mail Adressen</item>
+    </string-array>
+    <string-array name="detail_settings_appearance_layout_entries">
+        <item>Standard</item>
+        <item>Layout 1</item>
+    </string-array>
+    <string name="detail_settings_appearance_notification_buttons_title">Schaltflächen</string>
+    <string name="detail_settings_appearance_notification_buttons_summary">Wähle aus, welche Schaltflächen in der Benachrichtigung angezeigt werden sollen.</string>
+    <string-array name="detail_settings_appearance_notification_buttons_entries">
+        <item>Öffnen</item>
+        <item>Durchsuchen</item>
+    </string-array>
 </resources>

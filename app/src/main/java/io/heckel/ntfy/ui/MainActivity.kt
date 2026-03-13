@@ -678,7 +678,10 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             displayName = null,
             totalCount = 0,
             newCount = 0,
-            lastActive = Date().time/1000
+            lastActive = Date().time/1000,
+            layout = Repository.LAYOUT_DEFAULT,
+            linkHandler = Repository.LINK_HANDLER_DEFAULT,
+            notificationButtons = Repository.NOTIFICATION_BUTTONS_DEFAULT
         )
         viewModel.add(subscription)
 
@@ -767,6 +770,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
         intent.putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
         intent.putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        intent.putExtra(EXTRA_SUBSCRIPTION_LAYOUT, subscription.layout)
+        intent.putExtra(EXTRA_SUBSCRIPTION_LINK_HANDLER, subscription.linkHandler)
         startActivity(intent)
     }
 
@@ -867,6 +872,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         const val EXTRA_SUBSCRIPTION_DISPLAY_NAME = "subscriptionDisplayName"
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
+        const val EXTRA_SUBSCRIPTION_LAYOUT = "subscriptionLayout"
+        const val EXTRA_SUBSCRIPTION_LINK_HANDLER = "subscriptionLinkHandler"
         const val ANIMATION_DURATION = 80L
         const val ONE_DAY_MILLIS = 86400000L
 

@@ -53,6 +53,30 @@
     <string name="detail_settings_appearance_display_name_key" translatable="false">SubscriptionDisplayName</string>
     <string name="detail_settings_about_header_key" translatable="false">SubscriptionAbout</string>
     <string name="detail_settings_about_topic_url_key" translatable="false">SubscriptionTopicURL</string>
+    <string name="detail_settings_appearance_layout_key" translatable="false">SubscriptionLayout</string>
+    <string-array name="detail_settings_appearance_layout_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string name="detail_settings_appearance_link_handler_key" translatable="false">SubscriptionLinkHandler</string>
+    <string-array name="detail_settings_appearance_link_handler_values">
+        <item>web</item>
+        <item>phone</item>
+        <item>mail</item>
+    </string-array>
+    <string-array name="detail_settings_appearance_link_handler_default_values">
+        <item>web</item>
+    </string-array>
+    <string name="detail_settings_appearance_notification_header_key" translatable="false">SubscriptionAppearanceNotification</string>
+    <string name="detail_settings_appearance_notification_buttons_key" translatable="false">SubscriptionNotificationButtons</string>
+    <string-array name="detail_settings_appearance_notification_buttons_values">
+        <item>open</item>
+        <item>browse</item>
+    </string-array>
+    <string-array name="detail_settings_appearance_notification_buttons_default_values">
+        <item>open</item>
+        <item>browse</item>
+    </string-array>
 
     <!-- Main settings -->
     <string-array name="settings_notifications_muted_until_entries">

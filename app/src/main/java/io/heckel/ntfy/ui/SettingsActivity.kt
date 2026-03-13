@@ -10,9 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import android.text.TextUtils
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,7 +40,6 @@ import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Main settings

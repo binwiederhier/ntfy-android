@@ -92,7 +92,10 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     displayName = null,
                     totalCount = 0,
                     newCount = 0,
-                    lastActive = Date().time/1000
+                    lastActive = Date().time/1000,
+                    layout = Repository.LAYOUT_DEFAULT,
+                    linkHandler = Repository.LINK_HANDLER_DEFAULT,
+                    notificationButtons = Repository.NOTIFICATION_BUTTONS_DEFAULT
                 )
                 Log.d(TAG, "Adding subscription with for app $appId (connectorToken $connectorToken): $subscription")
                 try {

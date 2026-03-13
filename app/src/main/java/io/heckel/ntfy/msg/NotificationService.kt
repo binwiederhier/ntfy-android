@@ -100,8 +100,14 @@ class NotificationService(val context: Context) {
         maybeSetDeleteIntent(builder, insistent)
         maybeSetSound(builder, insistent, update)
         maybeSetProgress(builder, notification)
-        maybeAddOpenAction(builder, notification)
-        maybeAddBrowseAction(builder, notification)
+
+        if(subscription.notificationButtons.contains("open")){
+            maybeAddOpenAction(builder, notification)
+        }
+        if(subscription.notificationButtons.contains("browse")){
+            maybeAddBrowseAction(builder, notification)
+        }
+
         maybeAddDownloadAction(builder, notification)
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)

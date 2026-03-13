@@ -13,10 +13,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.*
+import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.MultiSelectListPreference
+import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
+import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceDataStore
+import androidx.preference.SwitchPreferenceCompat
 import com.google.android.material.appbar.AppBarLayout
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -25,12 +32,25 @@ import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
-import io.heckel.ntfy.util.*
-import kotlinx.coroutines.*
+import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.PRIORITY_MAX
+import io.heckel.ntfy.util.PRIORITY_MIN
+import io.heckel.ntfy.util.copyToClipboard
+import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.fileStat
+import io.heckel.ntfy.util.formatDateShort
+import io.heckel.ntfy.util.isDarkThemeOn
+import io.heckel.ntfy.util.readBitmapFromUri
+import io.heckel.ntfy.util.supportedImage
+import io.heckel.ntfy.util.toPriorityString
+import io.heckel.ntfy.util.topicShortUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-import java.util.*
-import androidx.core.net.toUri
+import java.util.Calendar
 
 /**
  * Subscription settings
@@ -144,6 +164,9 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadIconRemovePref()
                 loadDedicatedChannelsPrefs()
                 loadOpenChannelsPrefs()
+                loadLayoutPref()
+                loadLinkHandlerPref()
+                loadNotificationButtonsPref()
             } else {
                 val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
@@ -434,6 +457,91 @@ class DetailSettingsActivity : AppCompatActivity() {
                 val context = context ?: return@OnPreferenceClickListener false
                 copyToClipboard(context, "topic url", topicUrl)
                 true
+            }
+        }
+
+        private fun loadLayoutPref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_layout_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.value = subscription.layout.toString()
+
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val layoutValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(layout = layoutValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.layout.toString()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> {
+                val layoutEntries = resources.getStringArray(R.array.detail_settings_appearance_layout_entries)
+                layoutEntries[subscription.layout]
+            }
+        }
+
+        private fun loadLinkHandlerPref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_link_handler_key) ?: return
+            val pref: MultiSelectListPreference? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.values = subscription.linkHandler.split("|").toSet()
+
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putStringSet(key: String?, values: Set<String>?) {
+                    val valueString = values?.joinToString("|") ?: return
+                    val cleanedValueString = if (valueString.startsWith("|")) valueString.substring(1) else valueString
+
+                    save(subscription.copy(linkHandler = cleanedValueString))
+                }
+                override fun getStringSet(key: String?, defValues: Set<String>?): Set<String> {
+                    val savedValue = subscription.linkHandler
+                    val cleanedValue = if (savedValue.startsWith("|")) savedValue.substring(1) else savedValue
+
+                    return cleanedValue.split("|").toSet()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<MultiSelectListPreference> { preference ->
+                // Holen der Werte aus den Arrays
+                val entries = preference.context.resources.getStringArray(R.array.detail_settings_appearance_link_handler_entries)
+                val values = preference.context.resources.getStringArray(R.array.detail_settings_appearance_link_handler_values)
+
+                // linkHandler-Werte aufsplitten und mit den entsprechenden Einträgen verbinden
+                subscription.linkHandler.split("|").mapNotNull { value ->
+                    values.indexOf(value).takeIf { it != -1 }?.let { entries[it] }
+                }.joinToString(", ") ?: ""
+            }
+        }
+
+        private fun loadNotificationButtonsPref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_notification_buttons_key) ?: return
+            val pref: MultiSelectListPreference? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.values = subscription.notificationButtons.split("|").toSet()
+
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putStringSet(key: String?, values: Set<String>?) {
+                    val valueString = values?.joinToString("|") ?: return
+                    val cleanedValueString = if (valueString.startsWith("|")) valueString.substring(1) else valueString
+
+                    save(subscription.copy(notificationButtons = cleanedValueString))
+                }
+                override fun getStringSet(key: String?, defValues: Set<String>?): Set<String> {
+                    val savedValue = subscription.notificationButtons
+                    val cleanedValue = if (savedValue.startsWith("|")) savedValue.substring(1) else savedValue
+
+                    return cleanedValue.split("|").toSet()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<MultiSelectListPreference> { preference ->
+                // Holen der Werte aus den Arrays
+                val entries = preference.context.resources.getStringArray(R.array.detail_settings_appearance_notification_buttons_entries)
+                val values = preference.context.resources.getStringArray(R.array.detail_settings_appearance_notification_buttons_values)
+
+                // linkHandler-Werte aufsplitten und mit den entsprechenden Einträgen verbinden
+                subscription.notificationButtons.split("|").mapNotNull { value ->
+                    values.indexOf(value).takeIf { it != -1 }?.let { entries[it] }
+                }.joinToString(", ") ?: ""
             }
         }
 

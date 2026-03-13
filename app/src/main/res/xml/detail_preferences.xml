@@ -64,7 +64,41 @@
                 app:dialogLayout="@layout/preference_dialog_edittext_edited"
                 app:dialogMessage="@string/detail_settings_appearance_display_name_message"
                 app:isPreferenceVisible="false"/>
+        <ListPreference
+                app:key="@string/detail_settings_appearance_layout_key"
+                app:title="@string/detail_settings_appearance_layout_title"
+                app:summary="@string/detail_settings_appearance_layout_summary"
+                app:defaultValue="0"
+                app:entries="@array/detail_settings_appearance_layout_entries"
+                app:entryValues="@array/detail_settings_appearance_layout_values"
+                app:isPreferenceVisible="false"/>
+
+        <MultiSelectListPreference
+                app:key="@string/detail_settings_appearance_link_handler_key"
+                app:title="@string/detail_settings_appearance_link_handler_title"
+                app:summary="@string/detail_settings_appearance_link_handler_summary"
+                app:defaultValue="@array/detail_settings_appearance_link_handler_default_values"
+                app:entries="@array/detail_settings_appearance_link_handler_entries"
+                app:entryValues="@array/detail_settings_appearance_link_handler_values"
+                app:dialogTitle="@string/detail_settings_appearance_link_handler_summary"
+                app:singleLine="false"
+                app:isPreferenceVisible="false"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        app:key="@string/detail_settings_appearance_notification_header_key"
+        app:title="@string/detail_settings_appearance_notification_header">
+        <MultiSelectListPreference
+            app:key="@string/detail_settings_appearance_notification_buttons_key"
+            app:title="@string/detail_settings_appearance_notification_buttons_title"
+            app:summary="@string/detail_settings_appearance_notification_buttons_summary"
+            app:defaultValue="@array/detail_settings_appearance_notification_buttons_default_values"
+            app:entries="@array/detail_settings_appearance_notification_buttons_entries"
+            app:entryValues="@array/detail_settings_appearance_notification_buttons_values"
+            app:dialogTitle="@string/detail_settings_appearance_notification_buttons_summary"
+            app:singleLine="false"
+            app:isPreferenceVisible="false"/>
+    </PreferenceCategory>
+
     <PreferenceCategory
         app:key="@string/detail_settings_about_header_key"
         app:title="@string/detail_settings_about_header">

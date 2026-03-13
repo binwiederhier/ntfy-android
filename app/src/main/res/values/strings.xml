@@ -483,6 +483,7 @@
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Keep alerting</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alert only once</string>
     <string name="detail_settings_appearance_header">Appearance</string>
+    <string name="detail_settings_appearance_notification_header">Appearance Notification</string>
     <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
     <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>
     <string name="detail_settings_appearance_icon_remove_title">Subscription icon (tap to remove)</string>
@@ -491,6 +492,26 @@
     <string name="detail_settings_appearance_display_name_title">Display name</string>
     <string name="detail_settings_appearance_display_name_message">Set a custom display name for this subscription. Leave blank for default (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (default)</string>
+    <string name="detail_settings_appearance_layout_title">Layout template</string>
+    <string name="detail_settings_appearance_layout_summary">Choose between different layouts</string>
+    <string name="detail_settings_appearance_link_handler_title">Link interpreter</string>
+    <string name="detail_settings_appearance_link_handler_summary">Choose how the links contained in the text should be interpreted</string>
+    <string-array name="detail_settings_appearance_link_handler_entries">
+        <item>link</item>
+        <item>phone number</item>
+        <item>e-mail address</item>
+    </string-array>
+    <string-array name="detail_settings_appearance_layout_entries">
+        <item>Default</item>
+        <item>Layout 1</item>
+    </string-array>
+    <string name="detail_settings_appearance_notification_buttons_title">Buttons</string>
+    <string name="detail_settings_appearance_notification_buttons_summary">Choose which buttons should be shown in the notification</string>
+    <string-array name="detail_settings_appearance_notification_buttons_entries">
+        <item>Open</item>
+        <item>Browse</item>
+    </string-array>
+
     <string name="detail_settings_global_setting_title">Use global setting</string>
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
