@@ -31,6 +31,9 @@ class ShareActivity : AppCompatActivity() {
     // File to share
     private var fileUri: Uri? = null
 
+    // Topic pre-selected via sharing shortcut (may be null)
+    private var shortcutTopicUrl: String? = null
+
     // Context-dependent things
     private lateinit var appBaseUrl: String
     private var defaultBaseUrl: String? = null
@@ -59,6 +62,11 @@ class ShareActivity : AppCompatActivity() {
 
         Log.init(this) // Init logs in all entry points
         Log.d(TAG, "Create $this with intent $intent")
+
+        // If launched from a sharing shortcut, extract the pre-selected topic
+        intent?.getStringExtra(Intent.EXTRA_SHORTCUT_ID)?.let { shortcutId ->
+            shortcutTopicUrl = ShareTargetHelper.topicUrlFromShortcutId(shortcutId)
+        }
 
         // Action bar
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
@@ -183,6 +191,21 @@ class ShareActivity : AppCompatActivity() {
                     baseUrls.count() == 1
                 }
                 baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
+
+                // Override defaults if launched from a sharing shortcut
+                shortcutTopicUrl?.let { url ->
+                    try {
+                        val (baseUrl, topic) = splitTopicUrl(url)
+                        val defaultUrl = defaultBaseUrl ?: appBaseUrl
+                        topicText.text = topic
+                        useAnotherServerCheckbox.isChecked = baseUrl != defaultUrl
+                        if (baseUrl != defaultUrl) baseUrlText.setText(baseUrl)
+                        baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
+                        validateInput()
+                    } catch (_: Exception) {
+                        // Ignore malformed shortcut IDs
+                    }
+                }
             }
         }
 
