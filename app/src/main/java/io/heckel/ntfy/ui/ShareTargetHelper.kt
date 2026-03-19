@@ -7,10 +7,12 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Subscription
-import io.heckel.ntfy.util.readBitmapFromUriOrNull
 import io.heckel.ntfy.util.topicUrl
 
 object ShareTargetHelper {
+
+    const val EXTRA_TOPIC_URL = "EXTRA_TOPIC_URL"
+
     private const val CATEGORY_SHARE_TARGET = "io.heckel.ntfy.SHARE_TARGET"
     private const val SHORTCUT_ID_PREFIX = "share_"
 
@@ -58,13 +60,18 @@ object ShareTargetHelper {
         val url = topicUrl(sub.baseUrl, sub.topic)
         val icon = sub.icon?.let { IconCompat.createWithAdaptiveBitmapContentUri(it) }
             ?: IconCompat.createWithResource(context, R.mipmap.ic_launcher)
+        val intent = Intent(context, ShareActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            // When ShareActivity is started using the shortcut from the launcher, its intent
+            // doesn't include the SHORTCUT_ID extra. That's why we pass the topic URL here.
+            putExtra(EXTRA_TOPIC_URL, url)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         return ShortcutInfoCompat.Builder(context, SHORTCUT_ID_PREFIX + url)
             .setShortLabel(label)
             .setIcon(icon)
             .setCategories(setOf(CATEGORY_SHARE_TARGET))
-            .setIntent(Intent(context, ShareActivity::class.java).apply {
-                action = Intent.ACTION_VIEW
-            })
+            .setIntent(intent)
             .setLongLived(true)
             .build()
     }
