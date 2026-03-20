@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -318,6 +320,9 @@ class SubscriberService : Service() {
     private fun maybeShowConnectionAlert() {
         val now = System.currentTimeMillis()
 
+        // Don't show alert if the device has no network connectivity (e.g. airplane mode)
+        if (!isNetworkAvailable()) return
+
         // Check snooze / never-show-again
         val snoozeUntil = repository.getConnectionAlertSnoozeUntil()
         if (snoozeUntil == Repository.CONNECTION_ALERT_NEVER_SHOW) return
@@ -333,6 +338,13 @@ class SubscriberService : Service() {
         if (disconnectedUrls.isNotEmpty()) {
             showConnectionAlertNotification(disconnectedUrls)
         }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     private fun maybeAutoDismissConnectionAlert() {
