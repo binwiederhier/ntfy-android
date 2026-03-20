@@ -414,6 +414,10 @@
     <string name="settings_backup_restore_restore_summary">Import config, notifications and users</string>
     <string name="settings_backup_restore_restore_successful">Restore successful</string>
     <string name="settings_backup_restore_restore_failed">Restore failed: %1$s</string>
+    <string name="settings_sharing_header">Sharing</string>
+    <string name="settings_sharing_auto_send_title">Auto-publish when sharing</string>
+    <string name="settings_sharing_auto_send_summary_enabled">Items directly shared to a topic are published automatically</string>
+    <string name="settings_sharing_auto_send_summary_disabled">Items directly shared to a topic require manual publish</string>
     <string name="settings_advanced_header">Advanced</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>

@@ -205,6 +205,8 @@ class ShareActivity : AppCompatActivity() {
                 }
                 baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
 
+                handleIncomingIntent()
+
                 // Override defaults if launched from a sharing shortcut
                 shortcutTopicUrl?.let { url ->
                     try {
@@ -215,14 +217,18 @@ class ShareActivity : AppCompatActivity() {
                         if (baseUrl != defaultUrl) baseUrlText.setText(baseUrl)
                         baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
                         validateInput()
+                        if (repository.isSharingAutoSendEnabled() && (contentText.text.isNotEmpty() || fileUri != null) && topicText.text.isNotEmpty()) {
+                            onShareClick()
+                        }
                     } catch (_: Exception) {
                         // Ignore malformed shortcut IDs
                     }
                 }
             }
         }
+    }
 
-        // Incoming intent
+    private fun handleIncomingIntent() {
         val intent = intent ?: return
         val type = intent.type ?: return
         if (intent.action != Intent.ACTION_SEND) return

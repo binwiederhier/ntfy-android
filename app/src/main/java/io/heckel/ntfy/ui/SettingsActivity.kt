@@ -715,6 +715,32 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Update "Exact alarms" preference to match system setting
             updateExactAlarmsPref()
 
+            // Sharing: auto-send (Android 10+ only)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val sharingHeaderPrefId = context?.getString(R.string.settings_sharing_header_key) ?: return
+                val sharingHeader: PreferenceCategory? = findPreference(sharingHeaderPrefId)
+                sharingHeader?.isVisible = true
+
+                val sharingAutoSendPrefId = context?.getString(R.string.settings_sharing_auto_send_key) ?: return
+                val sharingAutoSend: SwitchPreferenceCompat? = findPreference(sharingAutoSendPrefId)
+                sharingAutoSend?.isChecked = repository.isSharingAutoSendEnabled()
+                sharingAutoSend?.preferenceDataStore = object : PreferenceDataStore() {
+                    override fun putBoolean(key: String?, value: Boolean) {
+                        repository.setSharingAutoSendEnabled(value)
+                    }
+                    override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                        return repository.isSharingAutoSendEnabled()
+                    }
+                }
+                sharingAutoSend?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                    if (pref.isChecked) {
+                        getString(R.string.settings_sharing_auto_send_summary_enabled)
+                    } else {
+                        getString(R.string.settings_sharing_auto_send_summary_disabled)
+                    }
+                }
+            }
+
             // Version
             val versionPrefId = context?.getString(R.string.settings_about_version_key) ?: return
             val versionPref: Preference? = findPreference(versionPrefId)
