@@ -325,8 +325,18 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val howToLink: View = findViewById(R.id.detail_how_to_link)
         viewModel.listFiltered(subscriptionId).observe(this) {
             it?.let { notifications ->
+                // Sort ascending if preference is set (DB returns descending by default)
+                val sortedNotifications = if (repository.getMessageSortAscending()) {
+                    notifications.sortedBy { n -> n.timestamp }
+                } else {
+                    notifications.sortedByDescending { n -> n.timestamp }
+                }
                 // Show list view
-                adapter.submitList(notifications.toMutableList())
+                adapter.submitList(sortedNotifications.toMutableList()) {
+                    if (repository.getMessageSortAscending() && sortedNotifications.isNotEmpty()) {
+                        mainList.scrollToPosition(sortedNotifications.size - 1)
+                    }
+                }
                 if (notifications.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
@@ -375,10 +385,10 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(mainList)
 
-        // Scroll up when new notification is added
+        // Scroll to top when new notification is added (descending order only; ascending is handled in submitList callback)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
+                if (!repository.getMessageSortAscending() && positionStart == 0) {
                     Log.d(TAG, "$itemCount item(s) inserted at 0, scrolling to the top")
                     mainList.scrollToPosition(positionStart)
                 }

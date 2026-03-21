@@ -481,6 +481,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Message sort order
+            val messageSortAscendingPrefId = context?.getString(R.string.settings_general_message_sort_ascending_key) ?: return
+            val messageSortAscending: SwitchPreferenceCompat? = findPreference(messageSortAscendingPrefId)
+            messageSortAscending?.isChecked = repository.getMessageSortAscending()
+            messageSortAscending?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setMessageSortAscending(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getMessageSortAscending()
+                }
+            }
+            messageSortAscending?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_general_message_sort_ascending_summary_enabled)
+                } else {
+                    getString(R.string.settings_general_message_sort_ascending_summary_disabled)
+                }
+            }
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
