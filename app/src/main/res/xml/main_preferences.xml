@@ -63,6 +63,15 @@
                 app:title="@string/settings_general_message_bar_title"
                 app:defaultValue="true"/>
     </PreferenceCategory>
+    <PreferenceCategory
+            app:key="@string/settings_sharing_header_key"
+            app:title="@string/settings_sharing_header"
+            app:isPreferenceVisible="false">
+        <SwitchPreferenceCompat
+                app:key="@string/settings_sharing_auto_send_key"
+                app:title="@string/settings_sharing_auto_send_title"
+                app:defaultValue="false"/>
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference
                 app:key="@string/settings_backup_restore_backup_key"

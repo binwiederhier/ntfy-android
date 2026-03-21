@@ -400,6 +400,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun isSharingAutoSendEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_SHARING_AUTO_SEND, false) // Disabled by default
+    }
+
+    fun setSharingAutoSendEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_SHARING_AUTO_SEND, enabled)
+        }
+    }
+
     fun getMessageBarEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, true) // Enabled by default
     }
@@ -642,6 +652,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL = "ConnectionAlertSnoozeUntil"
         const val CONNECTION_ALERT_SNOOZE_UNTIL_DEFAULT = 0L
         const val CONNECTION_ALERT_NEVER_SHOW = Long.MAX_VALUE
+        const val SHARED_PREFS_SHARING_AUTO_SEND = "SharingAutoSend"
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
         private const val LAST_TOPICS_COUNT = 3

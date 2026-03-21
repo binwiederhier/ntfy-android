@@ -1,5 +1,6 @@
 package io.heckel.ntfy.ui
 
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.*
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.core.view.size
 import androidx.core.view.get
+import io.heckel.ntfy.db.Subscription
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_BASE_URL
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_DISPLAY_NAME
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_ID
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_INSTANT
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_MUTED_UNTIL
+import io.heckel.ntfy.ui.MainActivity.Companion.EXTRA_SUBSCRIPTION_TOPIC
+import io.heckel.ntfy.ui.ShareTargetHelper.EXTRA_TOPIC_URL
 
 class ShareActivity : AppCompatActivity() {
     private val repository by lazy { (application as Application).repository }
@@ -59,6 +69,17 @@ class ShareActivity : AppCompatActivity() {
 
         Log.init(this) // Init logs in all entry points
         Log.d(TAG, "Create $this with intent $intent")
+
+        // If launched from a sharing shortcut, extract the pre-selected topic
+        val shortcutTopicUrl = intent?.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID)
+            ?.let { ShareTargetHelper.topicUrlFromShortcutId(it) }
+            ?: intent?.getStringExtra(EXTRA_TOPIC_URL)
+
+        // If this activity was opened from the launcher shortcut, reroute to DetailActivity instead.
+        if (intent.action == Intent.ACTION_VIEW) {
+            openDetailActivityAndFinish(shortcutTopicUrl)
+            return
+        }
 
         // Action bar
         val toolbarLayout = findViewById<View>(R.id.app_bar_drawer)
@@ -183,10 +204,31 @@ class ShareActivity : AppCompatActivity() {
                     baseUrls.count() == 1
                 }
                 baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
+
+                handleIncomingIntent()
+
+                // Override defaults if launched from a sharing shortcut
+                shortcutTopicUrl?.let { url ->
+                    try {
+                        val (baseUrl, topic) = splitTopicUrl(url)
+                        val defaultUrl = defaultBaseUrl ?: appBaseUrl
+                        topicText.text = topic
+                        useAnotherServerCheckbox.isChecked = baseUrl != defaultUrl
+                        if (baseUrl != defaultUrl) baseUrlText.setText(baseUrl)
+                        baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
+                        validateInput()
+                        if (repository.isSharingAutoSendEnabled() && (contentText.text.isNotEmpty() || fileUri != null) && topicText.text.isNotEmpty()) {
+                            onShareClick()
+                        }
+                    } catch (_: Exception) {
+                        // Ignore malformed shortcut IDs
+                    }
+                }
             }
         }
+    }
 
-        // Incoming intent
+    private fun handleIncomingIntent() {
         val intent = intent ?: return
         val type = intent.type ?: return
         if (intent.action != Intent.ACTION_SEND) return
@@ -198,6 +240,46 @@ class ShareActivity : AppCompatActivity() {
             handleSendFile(intent)
         }
     }
+
+    private fun openDetailActivityAndFinish(shortcutTopicUrl: String?) {
+        if (shortcutTopicUrl == null) {
+            finish()
+            return
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val (baseUrl, topic) = splitTopicUrl(shortcutTopicUrl)
+                val subscription = repository.getSubscription(baseUrl, topic)
+                startDetailActivityAndFinish(subscription)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to get subscription to start DetailActivity", e)
+                withContext(Dispatchers.Main) { finish() }
+            }
+        }
+    }
+
+    private suspend fun startDetailActivityAndFinish(subscription: Subscription?) =
+        withContext(Dispatchers.Main) {
+            if (subscription != null) {
+                TaskStackBuilder.create(this@ShareActivity)
+                    .addNextIntentWithParentStack(createDetailActivityIntent(subscription))
+                    .startActivities()
+            }
+            finish()
+        }
+
+    private fun createDetailActivityIntent(subscription: Subscription): Intent =
+        Intent(this, DetailActivity::class.java).apply {
+            putExtra(EXTRA_SUBSCRIPTION_ID, subscription.id)
+            putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
+            putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
+            putExtra(
+                EXTRA_SUBSCRIPTION_DISPLAY_NAME,
+                subscription.displayName ?: subscription.topic
+            )
+            putExtra(EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
+            putExtra(EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+        }
 
     private fun handleSendText(intent: Intent) {
         val text = intent.getStringExtra(Intent.EXTRA_TEXT) ?: "(no text)"
