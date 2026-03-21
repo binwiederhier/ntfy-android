@@ -62,6 +62,10 @@
                 app:key="@string/settings_general_message_bar_key"
                 app:title="@string/settings_general_message_bar_title"
                 app:defaultValue="true"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_general_message_sort_ascending_key"
+                app:title="@string/settings_general_message_sort_ascending_title"
+                app:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_backup_restore_header">
         <ListPreference
