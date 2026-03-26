@@ -36,6 +36,7 @@ import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.service.SubscriberServiceManager
+import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -530,6 +531,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     repository.setUnifiedPushEnabled(value)
+                    context?.let {
+                        if (value) {
+                            Distributor(it).enableComponents()
+                        } else {
+                            Distributor(it).disableComponents()
+                        }
+                    }
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return repository.getUnifiedPushEnabled()

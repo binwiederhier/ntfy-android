@@ -46,6 +46,9 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
             Log.w(TAG, "Refusing registration because 'EnableUP' is disabled")
             // Action required: tell the app to not try again before an action as be done manuall by the user
             distributor.sendRegistrationFailed(appId, connectorToken, FailedReason.ACTION_REQUIRED)
+            // Disable UnifiedPush components to avoid further errors.
+            // UP has been disabled with a previous version that didn't disable the components
+            Distributor(context).disableComponents()
             return
         }
         if (appId.isBlank()) {
