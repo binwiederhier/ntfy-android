@@ -22,6 +22,8 @@ def signingConfigPresent = { prefix ->
 
 def selectedSigningConfigName = null
 def signingProfile = envOrProperty("NTFY_SIGNING_PROFILE")
+def versionNameOverride = envOrProperty("NTFY_VERSION_NAME")
+def selectedVersionName = (versionNameOverride != null && !versionNameOverride.toString().trim().isEmpty()) ? versionNameOverride.toString().trim() : "1.24.0"
 if (signingProfile == "dev" && signingConfigPresent("NTFY_DEV_SIGNING")) {
     selectedSigningConfigName = "dev"
 } else if (signingProfile == "release" && signingConfigPresent("NTFY_RELEASE_SIGNING")) {
@@ -57,7 +59,7 @@ android {
         targetSdkVersion 36
 
         versionCode 60
-        versionName "1.24.0"
+        versionName selectedVersionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

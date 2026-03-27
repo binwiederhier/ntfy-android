@@ -138,6 +138,16 @@ jobs:
           printf '%s' "$ANDROID_RELEASE_KEYSTORE_BASE64" | base64 --decode > .signing/release.keystore
           printf '%s' "$ANDROID_GOOGLE_SERVICES_JSON" > app/google-services.json
 
+      - name: Set release version from tag
+        shell: bash
+        run: |
+          version_name="${GITHUB_REF_NAME#v}"
+          if [ -z "$version_name" ]; then
+            echo "::error::Tag name must contain a version after an optional leading 'v'"
+            exit 1
+          fi
+          echo "NTFY_VERSION_NAME=$version_name" >> "$GITHUB_ENV"
+
       - name: Build signed release artifacts
         env:
           NTFY_SIGNING_PROFILE: release
