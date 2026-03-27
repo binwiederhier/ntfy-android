@@ -7,6 +7,28 @@ If you're downloading the APKs from GitHub, they are signed with a certificate w
 ## Build
 For up-to-date building instructions, please see the [official docs](https://docs.ntfy.sh/develop/#android-app).
 
+### GitHub Actions
+This repository can be built in GitHub Actions via [`.github/workflows/android.yml`](.github/workflows/android.yml).
+
+Pushes to `main` and `dev` build signed branch artifacts with the dev signing key. Tag pushes build signed release artifacts with the release signing key, upload them as workflow artifacts, and publish them to the GitHub release for that tag.
+
+The workflow expects these GitHub Actions secrets:
+
+* `ANDROID_GOOGLE_SERVICES_JSON` - contents of `app/google-services.json` for the Play flavor
+* `ANDROID_DEV_KEYSTORE_BASE64`
+* `ANDROID_DEV_STORE_PASSWORD`
+* `ANDROID_DEV_KEY_ALIAS`
+* `ANDROID_DEV_KEY_PASSWORD`
+* `ANDROID_RELEASE_KEYSTORE_BASE64`
+* `ANDROID_RELEASE_STORE_PASSWORD`
+* `ANDROID_RELEASE_KEY_ALIAS`
+* `ANDROID_RELEASE_KEY_PASSWORD`
+
+Signing can also be driven locally via environment variables or Gradle properties:
+
+* `NTFY_SIGNING_PROFILE=dev` with `NTFY_DEV_SIGNING_STORE_FILE`, `NTFY_DEV_SIGNING_STORE_PASSWORD`, `NTFY_DEV_SIGNING_KEY_ALIAS`, `NTFY_DEV_SIGNING_KEY_PASSWORD`
+* `NTFY_SIGNING_PROFILE=release` with `NTFY_RELEASE_SIGNING_STORE_FILE`, `NTFY_RELEASE_SIGNING_STORE_PASSWORD`, `NTFY_RELEASE_SIGNING_KEY_ALIAS`, `NTFY_RELEASE_SIGNING_KEY_PASSWORD`
+
 ## Translations
 We're using [Weblate](https://hosted.weblate.org/projects/ntfy/) to translate the ntfy Android app. We'd love your participation.
 

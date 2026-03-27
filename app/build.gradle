@@ -8,9 +8,48 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
+def envOrProperty = { name ->
+    def value = project.findProperty(name)
+    return value != null ? value : System.getenv(name)
+}
+
+def signingConfigPresent = { prefix ->
+    ["STORE_FILE", "STORE_PASSWORD", "KEY_ALIAS", "KEY_PASSWORD"].every { suffix ->
+        def value = envOrProperty("${prefix}_${suffix}")
+        value != null && !value.toString().trim().isEmpty()
+    }
+}
+
+def selectedSigningConfigName = null
+def signingProfile = envOrProperty("NTFY_SIGNING_PROFILE")
+if (signingProfile == "dev" && signingConfigPresent("NTFY_DEV_SIGNING")) {
+    selectedSigningConfigName = "dev"
+} else if (signingProfile == "release" && signingConfigPresent("NTFY_RELEASE_SIGNING")) {
+    selectedSigningConfigName = "release"
+}
+
 android {
     namespace "io.heckel.ntfy"
     compileSdkVersion 36
+
+    signingConfigs {
+        if (signingConfigPresent("NTFY_DEV_SIGNING")) {
+            dev {
+                storeFile rootProject.file(envOrProperty("NTFY_DEV_SIGNING_STORE_FILE"))
+                storePassword envOrProperty("NTFY_DEV_SIGNING_STORE_PASSWORD")
+                keyAlias envOrProperty("NTFY_DEV_SIGNING_KEY_ALIAS")
+                keyPassword envOrProperty("NTFY_DEV_SIGNING_KEY_PASSWORD")
+            }
+        }
+        if (signingConfigPresent("NTFY_RELEASE_SIGNING")) {
+            release {
+                storeFile rootProject.file(envOrProperty("NTFY_RELEASE_SIGNING_STORE_FILE"))
+                storePassword envOrProperty("NTFY_RELEASE_SIGNING_STORE_PASSWORD")
+                keyAlias envOrProperty("NTFY_RELEASE_SIGNING_KEY_ALIAS")
+                keyPassword envOrProperty("NTFY_RELEASE_SIGNING_KEY_PASSWORD")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "io.heckel.ntfy"
@@ -37,6 +76,9 @@ android {
             minifyEnabled false
             shrinkResources false
             debuggable false
+            if (selectedSigningConfigName != null) {
+                signingConfig signingConfigs.getByName(selectedSigningConfigName)
+            }
             // DEV/TEST ONLY: Uncomment this to test the release build with a debug key.
             //                This is required to test against the production Firebase config.
             // signingConfig signingConfigs.debug
