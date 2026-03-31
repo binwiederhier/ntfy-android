@@ -141,8 +141,8 @@
     <string name="settings_notifications_auto_download_summary_smaller_than_x">Descargar automáticamente archivos adjuntos de hasta %1$s</string>
     <string name="settings_notifications_auto_download_never">Nunca descargar nada automáticamente</string>
     <string name="settings_notifications_auto_download_always">Siempre descargar todo automáticamente</string>
-    <string name="settings_notifications_auto_download_100k">Si es más pequeño que 100 KB</string>
-    <string name="settings_notifications_auto_download_500k">Si es más pequeño que 500 KB</string>
+    <string name="settings_notifications_auto_download_100k">Si es inferior a 100 kB</string>
+    <string name="settings_notifications_auto_download_500k">Si es inferior a 500 kB</string>
     <string name="settings_notifications_auto_download_5m">Si es más pequeño que 5 MB</string>
     <string name="settings_notifications_auto_delete_title">Eliminar notificaciones</string>
     <string name="settings_notifications_auto_delete_summary_never">Nunca eliminar automáticamente las notificaciones</string>
@@ -346,7 +346,7 @@
     <string name="settings_advanced_exact_alarms_false">ntfy no puede programar alarmas exactas. Las alarmas exactas son requeridas para reconectar WebSockets en segundo plano. Haga clic para conceder el permiso.</string>
     <string name="publish_dialog_title">Publicar a %1$s</string>
     <string name="publish_dialog_title_hint">Título</string>
-    <string name="publish_dialog_title_placeholder">p.e. Alguien está en la puerta</string>
+    <string name="publish_dialog_title_placeholder">ej. Alguien está en la puerta</string>
     <string name="publish_dialog_message_hint">Mensaje</string>
     <string name="publish_dialog_tags_hint">Etiquetas</string>
     <string name="publish_dialog_priority_hint">Prioridad</string>
@@ -407,7 +407,7 @@
     <string name="settings_advanced_certificates_summary">Añadir certificados a la lista de confiados y administrar certificados de cliente para mTLS</string>
     <string name="settings_advanced_certificates_trusted_header">Certificados confiados</string>
     <string name="common_service_url_placeholder">ej. https://ntfy.example.com</string>
-    <string name="common_certificate_subject">Subject</string>
+    <string name="common_certificate_subject">Asunto</string>
     <string name="main_menu_connection_error">Error de conexión</string>
     <string name="common_button_reset_to_default">Restaurar valores por defecto</string>
     <string name="connection_alert_title">Conexión perdida</string>
@@ -419,7 +419,7 @@
     <string name="detail_no_search_results">Su búsqueda no tuvo ningún resultado</string>
     <string name="detail_menu_search">Buscar notificaciones</string>
     <string name="detail_menu_search_hint">Buscar en notificaciones</string>
-    <string name="publish_dialog_tags_placeholder">ej. alerta, calavera</string>
+    <string name="publish_dialog_tags_placeholder">ej. alerta, peligro</string>
     <string name="publish_dialog_chip_email">Email</string>
     <string name="publish_dialog_chip_markdown">Markdown</string>
     <string name="publish_dialog_email_hint">Email</string>
