@@ -52,8 +52,9 @@
     <string name="connection_alert_title">Connection lost</string>
     <string name="connection_alert_text_one">Unable to connect to %1$s for more than %2$d minutes. Check your network connection.</string>
     <string name="connection_alert_text_multiple">Unable to connect to %1$d servers for more than %2$d minutes. Check your network connection.</string>
+    <!-- %1$d is the snooze duration in hours, currently set to 8 -->
     <string name="connection_alert_action_snooze">Snooze %1$dh</string>
-    <string name="connection_alert_action_disable">Disable alerts</string>
+    <string name="connection_alert_action_never">Never show</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
@@ -115,7 +116,7 @@
     <string name="main_banner_websocket_reconnect_button_remind_later">Ask later</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">Dismiss</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Grant now</string>
-    <string name="main_banner_no_network_text">No network</string>
+    <string name="main_banner_no_network_text">You\'re offline</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -371,19 +372,19 @@
     <string name="settings_notifications_auto_delete_one_week">After one week</string>
     <string name="settings_notifications_auto_delete_one_month">After one month</string>
     <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
-    <string name="settings_notifications_connection_alert_title">Alert when connection is lost</string>
-    <string name="settings_notifications_connection_alert_summary_never">Never alert when connection is lost</string>
-    <string name="settings_notifications_connection_alert_summary_five_minutes">Alert after 5 minutes without connection</string>
-    <string name="settings_notifications_connection_alert_summary_fifteen_minutes">Alert after 15 minutes without connection</string>
-    <string name="settings_notifications_connection_alert_summary_one_hour">Alert after 1 hour without connection</string>
-    <string name="settings_notifications_connection_alert_summary_three_hours">Alert after 3 hours without connection</string>
-    <string name="settings_notifications_connection_alert_summary_twelve_hours">Alert after 12 hours without connection</string>
-    <string name="settings_notifications_connection_alert_never">Never</string>
-    <string name="settings_notifications_connection_alert_five_minutes">After 5 minutes</string>
-    <string name="settings_notifications_connection_alert_fifteen_minutes">After 15 minutes</string>
-    <string name="settings_notifications_connection_alert_one_hour">After 1 hour</string>
-    <string name="settings_notifications_connection_alert_three_hours">After 3 hours</string>
-    <string name="settings_notifications_connection_alert_twelve_hours">After 12 hours</string>
+    <string name="settings_advanced_connection_alert_title">Connection lost alert</string>
+    <string name="settings_advanced_connection_alert_summary_never">Never alert when connection is lost</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Alert after 5 minutes without connection</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Alert after 15 minutes without connection</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Alert after 1 hour without connection</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Alert after 3 hours without connection</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Alert after 12 hours without connection</string>
+    <string name="settings_advanced_connection_alert_never">Never</string>
+    <string name="settings_advanced_connection_alert_five_minutes">After 5 minutes</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">After 15 minutes</string>
+    <string name="settings_advanced_connection_alert_one_hour">After 1 hour</string>
+    <string name="settings_advanced_connection_alert_three_hours">After 3 hours</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">After 12 hours</string>
     <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>

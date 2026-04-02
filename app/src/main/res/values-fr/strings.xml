@@ -474,5 +474,6 @@
     <string name="connection_alert_title">Connexion perdue</string>
     <string name="connection_alert_text_one">Impossible de se connecter à %1$s depuis plus de %2$d minutes</string>
     <string name="connection_alert_text_multiple">Impossible de se connecter à %1$d serveurs depuis plus de %2$d minutes</string>
-
+    <string name="connection_alert_action_snooze">Sourdine %1$dh</string>
+    <string name="connection_alert_action_never">Ne jamais montrer</string>
 </resources>

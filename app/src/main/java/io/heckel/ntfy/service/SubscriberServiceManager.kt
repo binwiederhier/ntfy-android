@@ -3,8 +3,7 @@ package io.heckel.ntfy.service
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
+import io.heckel.ntfy.util.isNetworkAvailable
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
@@ -82,12 +81,6 @@ class SubscriberServiceManager(private val context: Context) {
         const val WORK_NAME_ONCE = "ServiceStartWorkerOnce"
         private const val NOTIFICATION_CONNECTION_ALERT_ID = 2587 // Same as SubscriberService
 
-        private fun isNetworkAvailable(context: Context): Boolean {
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val network = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        }
 
         fun refresh(context: Context) {
             val manager = SubscriberServiceManager(context)

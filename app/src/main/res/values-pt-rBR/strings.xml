@@ -356,8 +356,7 @@
     <string name="connection_alert_title">Notificação de alerta de conexão</string>
     <string name="connection_alert_text_one">Não foi possível conectar à %1$s por mais de %2$d minutos</string>
     <string name="connection_alert_text_multiple">Não foi possível conectar aos servidores %1$d por mais de %2$d minutos</string>
-    <string name="connection_alert_action_dismiss">Dispensar</string>
-    <string name="connection_alert_action_snooze">Adiar 1h</string>
+    <string name="connection_alert_action_snooze">Adiar %1$dh</string>
     <string name="connection_alert_action_never">Nunca mostrar</string>
     <string name="main_menu_connection_error">Erro de conexão</string>
     <string name="add_dialog_error_ssl_untrusted">Certificado do servidor não confiável</string>

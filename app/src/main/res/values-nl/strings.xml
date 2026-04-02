@@ -378,7 +378,8 @@
     <string name="connection_alert_title">Verbinding verbroken</string>
     <string name="connection_alert_text_one">Kan geen verbinding maken met %1$s voor meer dan %2$d minuten</string>
     <string name="connection_alert_text_multiple">Kan geen verbinding maken met %1$d servers voor meer dan %2$d minuten</string>
-
+    <string name="connection_alert_action_snooze">Sluimer voor %1$d uur</string>
+    <string name="connection_alert_action_never">Nooit laten zien</string>
     <string name="publish_dialog_title">Publieer naar %1$s</string>
     <string name="publish_dialog_uploading">Uploaden: %1$s (%2$s / %3$s)</string>
     <string name="publish_dialog_upload_cancelled">Upload geannuleerd</string>

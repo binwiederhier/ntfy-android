@@ -474,5 +474,6 @@
     <string name="connection_alert_title">Връзката е загубена</string>
     <string name="connection_alert_text_one">От най-малко %2$d минути няма връзка с %1$s</string>
     <string name="connection_alert_text_multiple">От най-малко %2$d минути няма връзка със сървърите на %1$d</string>
-
+    <string name="connection_alert_action_snooze">Отлагане с %1$dч</string>
+    <string name="connection_alert_action_never">Да не се показва повече</string>
 </resources>

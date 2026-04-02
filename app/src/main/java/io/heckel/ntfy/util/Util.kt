@@ -10,6 +10,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -52,6 +53,13 @@ import java.util.Date
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import androidx.core.net.toUri
+
+// We check for any active network, not specifically for internet connectivity,
+// because the ntfy server may be on a LAN without internet access.
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return connectivityManager.activeNetwork != null
+}
 
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush

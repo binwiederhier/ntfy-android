@@ -413,7 +413,8 @@
     <string name="connection_alert_title">Conexión perdida</string>
     <string name="connection_alert_text_one">No se pudo conectar a %1$s por más de %2$d minutos</string>
     <string name="connection_alert_text_multiple">No se pudo conectar a %1$d servidores por más de %2$d minutos</string>
-
+    <string name="connection_alert_action_snooze">Suspender %1$dh</string>
+    <string name="connection_alert_action_never">Nunca mostrar</string>
     <string name="detail_no_search_results">Su búsqueda no tuvo ningún resultado</string>
     <string name="detail_menu_search">Buscar notificaciones</string>
     <string name="detail_menu_search_hint">Buscar en notificaciones</string>

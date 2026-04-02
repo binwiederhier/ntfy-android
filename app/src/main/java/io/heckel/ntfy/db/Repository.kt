@@ -447,6 +447,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     fun setConnectionAlertSeconds(seconds: Long) {
         sharedPrefs.edit {
             putLong(SHARED_PREFS_CONNECTION_ALERT_SECONDS, seconds)
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL, 0L)
         }
     }
 

@@ -11,8 +11,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
+import io.heckel.ntfy.util.isNetworkAvailable
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -359,10 +358,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 runOnUiThread { showHideNoNetworkBanner() }
             }
         }
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback!!)
+        connectivityManager.registerDefaultNetworkCallback(networkCallback!!)
 
         // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
         val howToLink = findViewById<TextView>(R.id.main_how_to_link)
@@ -449,16 +445,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
 
     private fun showHideNoNetworkBanner() {
-        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        val hasNetwork = if (network != null) {
-            val capabilities = connectivityManager.getNetworkCapabilities(network)
-            capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-        } else {
-            false
-        }
         val banner = findViewById<View>(R.id.main_banner_no_network)
-        banner.visibility = if (hasNetwork) View.GONE else View.VISIBLE
+        banner.visibility = if (isNetworkAvailable(this)) View.GONE else View.VISIBLE
     }
 
     override fun onDestroy() {
