@@ -327,6 +327,32 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Connection alert
+            val connectionAlertPrefId = context?.getString(R.string.settings_notifications_connection_alert_key) ?: return
+            val connectionAlert: ListPreference? = findPreference(connectionAlertPrefId)
+            connectionAlert?.value = repository.getConnectionAlertSeconds().toString()
+            connectionAlert?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val seconds = value?.toLongOrNull() ?:return
+                    repository.setConnectionAlertSeconds(seconds)
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getConnectionAlertSeconds().toString()
+                }
+            }
+            connectionAlert?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
+                    Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_notifications_connection_alert_summary_never)
+                    30L -> "Alert after 30 seconds (testing)"
+                    Repository.CONNECTION_ALERT_FIVE_MINUTES -> getString(R.string.settings_notifications_connection_alert_summary_five_minutes)
+                    Repository.CONNECTION_ALERT_FIFTEEN_MINUTES -> getString(R.string.settings_notifications_connection_alert_summary_fifteen_minutes)
+                    Repository.CONNECTION_ALERT_ONE_HOUR -> getString(R.string.settings_notifications_connection_alert_summary_one_hour)
+                    Repository.CONNECTION_ALERT_THREE_HOURS -> getString(R.string.settings_notifications_connection_alert_summary_three_hours)
+                    Repository.CONNECTION_ALERT_TWELVE_HOURS -> getString(R.string.settings_notifications_connection_alert_summary_twelve_hours)
+                    else -> getString(R.string.settings_notifications_connection_alert_summary_never) // Must match default const
+                }
+            }
+
             // Dark mode
             val darkModePrefId = context?.getString(R.string.settings_general_dark_mode_key) ?: return
             val darkMode: ListPreference? = findPreference(darkModePrefId)

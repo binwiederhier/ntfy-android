@@ -440,8 +440,18 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getConnectionAlertSeconds(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SECONDS, CONNECTION_ALERT_DEFAULT)
+    }
+
+    fun setConnectionAlertSeconds(seconds: Long) {
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SECONDS, seconds)
+        }
+    }
+
     fun getConnectionAlertSnoozeUntil(): Long {
-        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL, CONNECTION_ALERT_SNOOZE_UNTIL_DEFAULT)
+        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL, 0L)
     }
 
     fun setConnectionAlertSnoozeUntil(timeMillis: Long) {
@@ -608,6 +618,11 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return connectionDetails.toMap()
     }
 
+    fun clearConnectionDetails() {
+        connectionDetails.clear()
+        connectionDetailsLiveData.postValue(emptyMap())
+    }
+
     fun getConnectionForceReconnectVersion(baseUrl: String): Long {
         return connectionForceReconnectVersions[baseUrl] ?: 0L
     }
@@ -639,9 +654,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime"
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
+        const val SHARED_PREFS_CONNECTION_ALERT_SECONDS = "ConnectionAlertSeconds"
         const val SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL = "ConnectionAlertSnoozeUntil"
-        const val CONNECTION_ALERT_SNOOZE_UNTIL_DEFAULT = 0L
-        const val CONNECTION_ALERT_NEVER_SHOW = Long.MAX_VALUE
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
         private const val LAST_TOPICS_COUNT = 3
@@ -670,6 +684,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
         const val INSISTENT_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
         const val INSISTENT_MAX_PRIORITY_ENABLED = 1 // 0 = Disabled (but not needed in code)
+
+        const val CONNECTION_ALERT_NEVER = 0L
+        const val CONNECTION_ALERT_FIVE_MINUTES = 5 * 60L
+        const val CONNECTION_ALERT_FIFTEEN_MINUTES = 15 * 60L
+        const val CONNECTION_ALERT_ONE_HOUR = 60 * 60L
+        const val CONNECTION_ALERT_THREE_HOURS = 3 * 60 * 60L
+        const val CONNECTION_ALERT_TWELVE_HOURS = 12 * 60 * 60L
+        const val CONNECTION_ALERT_DEFAULT = CONNECTION_ALERT_NEVER
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

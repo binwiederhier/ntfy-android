@@ -6,8 +6,13 @@ import android.animation.AnimatorListenerAdapter
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -95,6 +100,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     private lateinit var fab: FloatingActionButton
 
     // Other stuff
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -342,6 +348,22 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             }
         }
 
+        // Network state banner
+        showHideNoNetworkBanner()
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                runOnUiThread { showHideNoNetworkBanner() }
+            }
+            override fun onLost(network: Network) {
+                runOnUiThread { showHideNoNetworkBanner() }
+            }
+        }
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback!!)
+
         // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
         val howToLink = findViewById<TextView>(R.id.main_how_to_link)
         howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
@@ -377,6 +399,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         super.onResume()
         showHideNotificationMenuItems()
         showHideConnectionErrorMenuItem(repository.getConnectionDetails())
+        showHideNoNetworkBanner()
         redrawList()
     }
 
@@ -423,6 +446,30 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         } else {
             wsReconnectBanner.visibility = View.GONE
         }
+    }
+
+    private fun showHideNoNetworkBanner() {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val hasNetwork = if (network != null) {
+            val capabilities = connectivityManager.getNetworkCapabilities(network)
+            capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        } else {
+            false
+        }
+        val banner = findViewById<View>(R.id.main_banner_no_network)
+        banner.visibility = if (hasNetwork) View.GONE else View.VISIBLE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            networkCallback?.let { connectivityManager.unregisterNetworkCallback(it) }
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to unregister network callback: ${e.message}")
+        }
+        networkCallback = null
     }
 
     private fun schedulePeriodicPollWorker() {

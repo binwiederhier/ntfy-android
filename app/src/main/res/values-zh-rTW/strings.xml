@@ -474,7 +474,5 @@
     <string name="connection_alert_title">連線已中斷</string>
     <string name="connection_alert_text_one">超過 %2$d 分鐘無法連線至 %1$s</string>
     <string name="connection_alert_text_multiple">超過 %2$d 分鐘無法連線至 %1$d 個伺服器</string>
-    <string name="connection_alert_action_dismiss">關閉</string>
-    <string name="connection_alert_action_snooze">延後 1 小時</string>
-    <string name="connection_alert_action_never">永不顯示</string>
+
 </resources>

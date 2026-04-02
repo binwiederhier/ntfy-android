@@ -29,6 +29,12 @@
                 app:key="@string/settings_notifications_insistent_max_priority_key"
                 app:title="@string/settings_notifications_insistent_max_priority_title"
                 app:defaultValue="false"/>
+        <ListPreference
+                app:key="@string/settings_notifications_connection_alert_key"
+                app:title="@string/settings_notifications_connection_alert_title"
+                app:entries="@array/settings_notifications_connection_alert_entries"
+                app:entryValues="@array/settings_notifications_connection_alert_values"
+                app:defaultValue="0"/>
         <Preference
                 app:key="@string/settings_notifications_channel_prefs_key"
                 app:title="@string/settings_notifications_channel_prefs_title"

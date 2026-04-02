@@ -1,7 +1,10 @@
 package io.heckel.ntfy.service
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
@@ -40,8 +43,9 @@ class SubscriberServiceManager(private val context: Context) {
             withContext(Dispatchers.IO) {
                 val app = context.applicationContext as Application
                 val subscriptionIdsWithInstantStatus = app.repository.getSubscriptionIdsWithInstantStatus()
+                val hasNetwork = isNetworkAvailable(context)
                 val instantSubscriptions = subscriptionIdsWithInstantStatus.toList().filter { (_, instant) -> instant }.size
-                if (instantSubscriptions > 0) {
+                if (instantSubscriptions > 0 && hasNetwork) {
                     // We have instant subscriptions, start the service
                     Log.d(TAG, "ServiceStartWorker: Starting foreground service (work ID: ${id})")
                     Intent(context, SubscriberService::class.java).also {
@@ -56,9 +60,14 @@ class SubscriberServiceManager(private val context: Context) {
                         }
                     }
                 } else {
-                    // No instant subscriptions, stop the service using stopService()
+                    // No instant subscriptions (or no network), stop the service using stopService()
                     // This avoids ForegroundServiceDidNotStartInTimeException, see #1520
                     Log.d(TAG, "ServiceStartWorker: Stopping service (work ID: ${id})")
+                    if (!hasNetwork) {
+                        app.repository.clearConnectionDetails()
+                        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+                    }
                     Intent(context, SubscriberService::class.java).also {
                         context.stopService(it)
                     }
@@ -71,6 +80,14 @@ class SubscriberServiceManager(private val context: Context) {
     companion object {
         const val TAG = "NtfySubscriberMgr"
         const val WORK_NAME_ONCE = "ServiceStartWorkerOnce"
+        private const val NOTIFICATION_CONNECTION_ALERT_ID = 2587 // Same as SubscriberService
+
+        private fun isNetworkAvailable(context: Context): Boolean {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val network = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        }
 
         fun refresh(context: Context) {
             val manager = SubscriberServiceManager(context)
