@@ -345,4 +345,26 @@
     <string name="settings_advanced_exact_alarms_title">Alarmes exactos</string>
     <string name="settings_advanced_exact_alarms_true">O ntfy pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para revogar a permissão.</string>
     <string name="settings_advanced_exact_alarms_false">O ntfy não pode agendar alarmes exatos. Alarmes exatos são necessários para reconectar os WebSockets em segundo plano. Clique para conceder a permissão.</string>
+    <string name="common_button_next">Próximo</string>
+    <string name="common_button_add">Adicionar</string>
+    <string name="common_button_delete">Apagar</string>
+    <string name="common_button_reset_to_default">Restaurar valores padrão</string>
+    <string name="common_service_url_placeholder">ex. https://ntfy.example.com</string>
+    <string name="common_certificate_subject">Assunto</string>
+    <string name="common_certificate_issuer">Emissor</string>
+    <string name="common_certificate_fingerprint">Impressão digital SHA-256</string>
+    <string name="common_certificate_valid_from">Válido desde</string>
+    <string name="common_certificate_valid_until">Válido até</string>
+    <string name="common_certificate_added_toast">Certificado adicionado</string>
+    <string name="common_certificate_deleted_toast">Certificado apagado</string>
+    <string name="connection_alert_title">Conexão perdida</string>
+    <string name="publish_dialog_title_placeholder">ex. Alguém está à porta</string>
+    <string name="publish_dialog_message_hint">Mensagem</string>
+    <string name="publish_dialog_tags_hint">Etiquetas</string>
+    <string name="publish_dialog_tags_placeholder">ex. aviso, perigo</string>
+    <string name="publish_dialog_priority_hint">Prioridade</string>
+    <string name="publish_dialog_button_publish">Publicar</string>
+    <string name="publish_dialog_error_sending">Não foi possível publicar a mensagem: %1$s</string>
+    <string name="publish_dialog_error_server">Não foi possível publicar a mensagem: %1$s (código %2$d)</string>
+    <string name="publish_dialog_message_published">Mensagem publicada</string>
 </resources>
