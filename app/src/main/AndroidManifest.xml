@@ -132,7 +132,7 @@
                 android:enabled="true"
                 android:exported="false"/>
 
-        <!-- Broadcast receiver for connection alert notification actions (snooze, disable) -->
+        <!-- Broadcast receiver for connection alert notification actions (swipe-dismiss, snooze, never) -->
         <receiver
                 android:name=".service.SubscriberService$ConnectionAlertBroadcastReceiver"
                 android:enabled="true"

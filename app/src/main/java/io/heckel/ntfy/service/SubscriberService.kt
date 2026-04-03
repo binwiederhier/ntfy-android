@@ -322,9 +322,8 @@ class SubscriberService : Service() {
         // Don't show alert if the device has no network connectivity (e.g. airplane mode)
         if (!isNetworkAvailable(this)) return
 
-        val now = System.currentTimeMillis()
-
         // Check snooze
+        val now = System.currentTimeMillis()
         val snoozeUntil = repository.getConnectionAlertSnoozeUntilTime()
         if (snoozeUntil > now) return
 
@@ -361,15 +360,13 @@ class SubscriberService : Service() {
 
         val contentIntent = PendingIntent.getActivity(this, 0,
             Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-
         val snoozeIntent = PendingIntent.getBroadcast(this, 0,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val disableIntent = PendingIntent.getBroadcast(this, 1,
+        val disableIntent = PendingIntent.getBroadcast(this, 0,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_NEVER },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
-        val deleteIntent = PendingIntent.getBroadcast(this, 2,
+        val deleteIntent = PendingIntent.getBroadcast(this, 0,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_DISMISS },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
@@ -380,7 +377,6 @@ class SubscriberService : Service() {
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .setContentIntent(contentIntent)
-            .setAutoCancel(true)
             .setOnlyAlertOnce(true)
             .setDeleteIntent(deleteIntent)
             .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_HOURS), snoozeIntent).build())
