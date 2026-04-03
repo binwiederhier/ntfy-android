@@ -54,13 +54,6 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 import androidx.core.net.toUri
 
-// We check for any active network, not specifically for internet connectivity,
-// because the ntfy server may be on a LAN without internet access.
-fun isNetworkAvailable(context: Context): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    return connectivityManager.activeNetwork != null
-}
-
 fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
 fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
@@ -553,4 +546,11 @@ fun deriveNotificationId(baseUrl: String, topic: String, sequenceId: String): In
     val composite = "$baseUrl/$topic/$sequenceId"
     val hash = composite.hashCode()
     return if (hash == 0 || hash == Int.MIN_VALUE) 1 else abs(hash)
+}
+
+// We check for any active network, not specifically for internet connectivity,
+// because the ntfy server may be on a LAN without internet access.
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return connectivityManager.activeNetwork != null
 }

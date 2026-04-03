@@ -3,11 +3,11 @@ package io.heckel.ntfy.service
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import io.heckel.ntfy.util.isNetworkAvailable
 import androidx.core.content.ContextCompat
 import androidx.work.*
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -65,7 +65,7 @@ class SubscriberServiceManager(private val context: Context) {
                     if (!hasNetwork) {
                         app.repository.clearConnectionDetails()
                         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+                        notificationManager.cancel(SubscriberService.NOTIFICATION_CONNECTION_ALERT_ID)
                     }
                     Intent(context, SubscriberService::class.java).also {
                         context.stopService(it)
@@ -79,8 +79,6 @@ class SubscriberServiceManager(private val context: Context) {
     companion object {
         const val TAG = "NtfySubscriberMgr"
         const val WORK_NAME_ONCE = "ServiceStartWorkerOnce"
-        private const val NOTIFICATION_CONNECTION_ALERT_ID = 2587 // Same as SubscriberService
-
 
         fun refresh(context: Context) {
             val manager = SubscriberServiceManager(context)

@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
-import io.heckel.ntfy.util.isNetworkAvailable
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -67,6 +66,7 @@ import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
+import io.heckel.ntfy.util.isNetworkAvailable
 import io.heckel.ntfy.util.maybeSplitTopicUrl
 import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.shortUrl

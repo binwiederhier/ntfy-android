@@ -10,9 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import android.text.TextUtils
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,7 +40,6 @@ import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Main settings
@@ -344,11 +341,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 when (pref.value.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
                     Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_advanced_connection_alert_summary_never)
                     30L -> "Alert after 30 seconds (testing)"
-                    Repository.CONNECTION_ALERT_FIVE_MINUTES -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
-                    Repository.CONNECTION_ALERT_FIFTEEN_MINUTES -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)
-                    Repository.CONNECTION_ALERT_ONE_HOUR -> getString(R.string.settings_advanced_connection_alert_summary_one_hour)
-                    Repository.CONNECTION_ALERT_THREE_HOURS -> getString(R.string.settings_advanced_connection_alert_summary_three_hours)
-                    Repository.CONNECTION_ALERT_TWELVE_HOURS -> getString(R.string.settings_advanced_connection_alert_summary_twelve_hours)
+                    Repository.CONNECTION_ALERT_FIVE_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
+                    Repository.CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)
+                    Repository.CONNECTION_ALERT_ONE_HOUR_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_one_hour)
+                    Repository.CONNECTION_ALERT_THREE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_three_hours)
+                    Repository.CONNECTION_ALERT_TWELVE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_twelve_hours)
                     else -> getString(R.string.settings_advanced_connection_alert_summary_never) // Must match default const
                 }
             }

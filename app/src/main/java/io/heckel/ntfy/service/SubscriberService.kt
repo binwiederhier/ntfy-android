@@ -11,7 +11,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
-import io.heckel.ntfy.util.isNetworkAvailable
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -29,6 +28,7 @@ import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.isNetworkAvailable
 import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicUrl
 import kotlinx.coroutines.Dispatchers
@@ -325,7 +325,7 @@ class SubscriberService : Service() {
         val now = System.currentTimeMillis()
 
         // Check snooze
-        val snoozeUntil = repository.getConnectionAlertSnoozeUntil()
+        val snoozeUntil = repository.getConnectionAlertSnoozeUntilTime()
         if (snoozeUntil > now) return
 
         // Check if any connection has been in error for longer than the threshold
@@ -504,10 +504,10 @@ class SubscriberService : Service() {
             val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             when (intent.action) {
                 CONNECTION_ALERT_ACTION_DISMISS -> {
-                    repository.setConnectionAlertSnoozeUntil(System.currentTimeMillis() + CONNECTION_ALERT_DISMISS_SNOOZE_MILLIS)
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_DISMISS_MILLIS)
                 }
                 CONNECTION_ALERT_ACTION_SNOOZE -> {
-                    repository.setConnectionAlertSnoozeUntil(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_DURATION_MILLIS)
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_MILLIS)
                 }
                 CONNECTION_ALERT_ACTION_NEVER -> {
                     repository.setConnectionAlertSeconds(Repository.CONNECTION_ALERT_NEVER)
@@ -528,6 +528,9 @@ class SubscriberService : Service() {
         const val SERVICE_START_WORKER_VERSION = BuildConfig.VERSION_CODE
         const val SERVICE_START_WORKER_WORK_NAME_PERIODIC = "NtfyAutoRestartWorkerPeriodic" // Do not change!
 
+        private const val ONE_HOUR_SECONDS = 60 * 60L
+        private const val ONE_HOUR_MILLIS = ONE_HOUR_SECONDS * 1000L
+
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
         private const val NOTIFICATION_CONNECTION_ALERT_CHANNEL_ID = "ntfy-connection-alert"
@@ -535,10 +538,10 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_SERVICE_ID = 2586
         private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
 
-        private const val NOTIFICATION_CONNECTION_ALERT_ID = 2587
+        const val NOTIFICATION_CONNECTION_ALERT_ID = 2587
         private const val CONNECTION_ALERT_SNOOZE_HOURS = 8
-        private const val CONNECTION_ALERT_SNOOZE_DURATION_MILLIS = CONNECTION_ALERT_SNOOZE_HOURS * 60 * 60 * 1000L
-        private const val CONNECTION_ALERT_DISMISS_SNOOZE_MILLIS = 1 * 60 * 60 * 1000L /*1 hour*/
+        private const val CONNECTION_ALERT_SNOOZE_MILLIS = CONNECTION_ALERT_SNOOZE_HOURS * ONE_HOUR_MILLIS
+        private const val CONNECTION_ALERT_DISMISS_MILLIS = ONE_HOUR_MILLIS
         private const val CONNECTION_ALERT_ACTION_DISMISS = "io.heckel.ntfy.CONNECTION_ALERT_DISMISS"
         private const val CONNECTION_ALERT_ACTION_SNOOZE = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE"
         private const val CONNECTION_ALERT_ACTION_NEVER = "io.heckel.ntfy.CONNECTION_ALERT_NEVER"
