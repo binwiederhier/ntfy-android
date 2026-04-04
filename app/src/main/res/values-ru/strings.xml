@@ -132,9 +132,7 @@
     <string name="settings_backup_restore_restore_title">Восстановить из файла</string>
     <string name="settings_general_users_prefs_user_add_title">Добавить нового пользователя</string>
     <string name="main_menu_notifications_disabled_until">Уведомления отключены до %1$s</string>
-    <string name="refresh_message_error">Не получилось обновить %1$d подписок
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">Не получилось обновить %1$d подписок\n\n%2$s</string>
     <string name="refresh_message_error_one">Не получилось обновить подписку: %1$s</string>
     <string name="main_action_bar_title">Темы подписок</string>
     <string name="main_how_to_intro">Нажмите \"+\", чтобы создать или подписаться на тему. Вы будете получать уведомления на вашем устройстве при отправке сообщений через PUT или POST-запросы.</string>
@@ -466,4 +464,29 @@
     <string name="client_certificate_dialog_error_wrong_password">Неверный пароль или недопустимый файл PKCS#12</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Неверный пароль или поврежденный файл PKCS#12</string>
     <string name="client_certificate_dialog_error_invalid_url">Недопустимый URL сервиса</string>
+    <string name="common_button_reset_to_default">Сбросить по умолчанию</string>
+    <string name="connection_alert_action_never">Не показывать</string>
+    <string name="connection_alert_title">Соединение разорвано</string>
+    <string name="connection_alert_action_snooze">Отложить на %1$dч</string>
+    <string name="connection_alert_text_one">Невозможно подключиться к %1$s более %2$d мин. Проверьте подключение к сети.</string>
+    <string name="connection_alert_text_multiple">Невозможно подключиться к %1$d серверам более %2$d мин. Проверьте подключение к сети.</string>
+    <string name="channel_connection_alert_name">Уведомления о подключении</string>
+    <string name="main_banner_no_network_text">Вы не в сети</string>
+    <string name="detail_no_search_results">Ничего не найдено</string>
+    <string name="detail_menu_search_hint">Искать в уведомлениях</string>
+    <string name="settings_advanced_connection_alert_title">Оповещение при отключении</string>
+    <string name="settings_advanced_connection_alert_summary_never">Никогда не уведомлять о недоступности сервера</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Уведомлять, если сервер недоступен более 5 минут</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Уведомлять, если сервер недоступен более 15 минут</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Уведомлять, если сервер недоступен более 1 часа</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Уведомлять, если сервер недоступен более 3 часов</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Уведомлять, если сервер недоступен более 12 часов</string>
+    <string name="settings_advanced_connection_alert_never">Никогда</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Через 5 минут</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Через 15 минут</string>
+    <string name="settings_advanced_connection_alert_one_hour">Через 1 час</string>
+    <string name="settings_advanced_connection_alert_three_hours">Через 3 часа</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Через 12 часов</string>
+    <string name="default_server_dialog_url_error_invalid">Укажите верный URL, например https://ntfy.example.com</string>
+    <string name="detail_menu_search">Поиск уведомлений</string>
 </resources>
