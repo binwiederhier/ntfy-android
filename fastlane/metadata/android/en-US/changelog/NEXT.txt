@@ -4,3 +4,4 @@ Features:
 
 Bug fixes + maintenance:
 * Undo automatic phone number linking for numbers in message body (ntfy-android#170, thanks to @acortelyou for the contribution)
+* Fix subscription icons disappearing after a few days due to Android clearing cache (#1322, thanks to @mcanning for reporting)

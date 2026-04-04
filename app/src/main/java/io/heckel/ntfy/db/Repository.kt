@@ -92,6 +92,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         subscriptionDao.update(subscription)
     }
 
+    fun updateSubscriptionIcon(subscriptionId: Long, icon: String?) {
+        subscriptionDao.updateSubscriptionIcon(subscriptionId, icon)
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun removeSubscription(subscription: Subscription) {

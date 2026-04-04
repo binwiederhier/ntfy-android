@@ -61,6 +61,7 @@ import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.SUBSCRIPTION_ICONS
 import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.formatDateShort
@@ -76,8 +77,10 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import androidx.core.content.FileProvider
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
@@ -380,6 +383,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
         // Permissions
         maybeRequestNotificationPermission()
+
+        // FIXME 2026-05-04: Remove this migration after 1 month
+        migrateSubscriptionIconsFromCache()
     }
 
     private fun maybeRequestNotificationPermission() {
@@ -892,6 +898,38 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             return
         }
         adapter.notifyItemRangeChanged(0, adapter.currentList.size)
+    }
+
+    // FIXME 2026-05-04: Remove this migration after 1 month
+    private fun migrateSubscriptionIconsFromCache() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(5_000) // 5 seconds
+            try {
+                val oldDir = File(cacheDir, SUBSCRIPTION_ICONS)
+                if (!oldDir.exists() || !oldDir.isDirectory) return@launch
+                val newDir = File(filesDir, SUBSCRIPTION_ICONS)
+                if (!newDir.exists()) newDir.mkdirs()
+                oldDir.listFiles()?.forEach { oldFile ->
+                    val newFile = File(newDir, oldFile.name)
+                    if (newFile.exists()) {
+                        oldFile.delete()
+                        return@forEach
+                    }
+                    if (oldFile.renameTo(newFile)) {
+                        val subscriptionId = oldFile.name.toLongOrNull() ?: return@forEach
+                        val newUri = FileProvider.getUriForFile(
+                            this@MainActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            newFile
+                        )
+                        repository.updateSubscriptionIcon(subscriptionId, newUri.toString())
+                    }
+                }
+                oldDir.delete()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to migrate subscription icons", e)
+            }
+        }
     }
 
     companion object {
