@@ -142,7 +142,7 @@
     <string name="common_priority_default_name">默认优先级</string>
     <string name="common_priority_high_name">高优先级</string>
     <string name="common_priority_max_name">最高优先级</string>
-    <string name="channel_subscriber_service_name">订阅服务</string>
+    <string name="channel_subscriber_service_name">后台服务</string>
     <string name="channel_subscriber_notification_title">正在监听通知</string>
     <string name="channel_subscriber_notification_noinstant_text">已订阅主题</string>
     <string name="channel_subscriber_notification_noinstant_text_one">已订阅 1 个主题</string>
@@ -472,8 +472,23 @@
     <string name="common_button_reset_to_default">重置为默认</string>
     <string name="default_server_dialog_url_error_invalid">输入有效的服务 URL，如 https://ntfy.example.com</string>
     <string name="connection_alert_title">连接丢失</string>
-    <string name="connection_alert_text_one">已无法连接到 %1$s 超过 %2$d 分钟</string>
-    <string name="connection_alert_text_multiple">已无法连接到 %1$d 台服务器超过 %2$d 分钟</string>
+    <string name="connection_alert_text_one">已无法连接到 %1$s 超过 %2$d 分钟。检查网络连接。</string>
+    <string name="connection_alert_text_multiple">已无法连接到 %1$d 台服务器超过 %2$d 分钟。检查网络连接。</string>
     <string name="connection_alert_action_snooze">延后 %1$d 小时</string>
     <string name="connection_alert_action_never">永不显示</string>
+    <string name="channel_connection_alert_name">连接警报</string>
+    <string name="main_banner_no_network_text">未联网</string>
+    <string name="settings_advanced_connection_alert_title">连接断开时示警</string>
+    <string name="settings_advanced_connection_alert_summary_never">无法连接到 ntfy 服务器时永远不通知</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">如果无法连接到 ntfy 服务器超过 5 分钟就发出通知</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">如果无法连接到 ntfy 服务器超过 15 分钟就发出通知</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">如果无法连接到 ntfy 服务器超过 1 小时就发出通知</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">如果无法连接到 ntfy 服务器超过 3 小时就发出通知</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">如果无法连接到 ntfy 服务器超过 12 小时就发出通知</string>
+    <string name="settings_advanced_connection_alert_never">永不</string>
+    <string name="settings_advanced_connection_alert_five_minutes">5 分钟后</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">15 分钟后</string>
+    <string name="settings_advanced_connection_alert_one_hour">1 小时后</string>
+    <string name="settings_advanced_connection_alert_three_hours">3 小时后</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">12 小时后</string>
 </resources>
