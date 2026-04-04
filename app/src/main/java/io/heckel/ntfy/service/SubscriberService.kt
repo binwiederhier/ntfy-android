@@ -360,10 +360,13 @@ class SubscriberService : Service() {
 
         val contentIntent = PendingIntent.getActivity(this, 0,
             Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-        val snoozeIntent = PendingIntent.getBroadcast(this, 0,
-            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE },
+        val snoozeShortIntent = PendingIntent.getBroadcast(this, 0,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_SHORT },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val disableIntent = PendingIntent.getBroadcast(this, 0,
+        val snoozeIntent = PendingIntent.getBroadcast(this, 0,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_LONG },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val neverAlertIntent = PendingIntent.getBroadcast(this, 0,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_NEVER },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val deleteIntent = PendingIntent.getBroadcast(this, 0,
@@ -379,8 +382,9 @@ class SubscriberService : Service() {
             .setContentIntent(contentIntent)
             .setOnlyAlertOnce(true)
             .setDeleteIntent(deleteIntent)
-            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_HOURS), snoozeIntent).build())
-            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_never), disableIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_SHORT_HOURS), snoozeShortIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_LONG_HOURS), snoozeIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_never), neverAlertIntent).build())
             .build()
 
         Log.d(TAG, "Showing connection alert notification")
@@ -499,11 +503,11 @@ class SubscriberService : Service() {
             val repository = Repository.getInstance(context)
             val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             when (intent.action) {
-                CONNECTION_ALERT_ACTION_DISMISS -> {
-                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_DISMISS_MILLIS)
+                CONNECTION_ALERT_ACTION_DISMISS, CONNECTION_ALERT_ACTION_SNOOZE_SHORT -> {
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_SHORT_MILLIS)
                 }
-                CONNECTION_ALERT_ACTION_SNOOZE -> {
-                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_MILLIS)
+                CONNECTION_ALERT_ACTION_SNOOZE_LONG -> {
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_LONG_MILLIS)
                 }
                 CONNECTION_ALERT_ACTION_NEVER -> {
                     repository.setConnectionAlertSeconds(Repository.CONNECTION_ALERT_NEVER)
@@ -535,11 +539,13 @@ class SubscriberService : Service() {
         private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
 
         const val NOTIFICATION_CONNECTION_ALERT_ID = 2587
-        private const val CONNECTION_ALERT_SNOOZE_HOURS = 8
-        private const val CONNECTION_ALERT_SNOOZE_MILLIS = CONNECTION_ALERT_SNOOZE_HOURS * ONE_HOUR_MILLIS
-        private const val CONNECTION_ALERT_DISMISS_MILLIS = ONE_HOUR_MILLIS
+        private const val CONNECTION_ALERT_SNOOZE_SHORT_HOURS = 1
+        private const val CONNECTION_ALERT_SNOOZE_SHORT_MILLIS = CONNECTION_ALERT_SNOOZE_SHORT_HOURS * ONE_HOUR_MILLIS
+        private const val CONNECTION_ALERT_SNOOZE_LONG_HOURS = 8
+        private const val CONNECTION_ALERT_SNOOZE_LONG_MILLIS = CONNECTION_ALERT_SNOOZE_LONG_HOURS * ONE_HOUR_MILLIS
         private const val CONNECTION_ALERT_ACTION_DISMISS = "io.heckel.ntfy.CONNECTION_ALERT_DISMISS"
-        private const val CONNECTION_ALERT_ACTION_SNOOZE = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE"
+        private const val CONNECTION_ALERT_ACTION_SNOOZE_SHORT = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_SHORT"
+        private const val CONNECTION_ALERT_ACTION_SNOOZE_LONG = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_LONG"
         private const val CONNECTION_ALERT_ACTION_NEVER = "io.heckel.ntfy.CONNECTION_ALERT_NEVER"
     }
 }

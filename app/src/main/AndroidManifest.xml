@@ -139,7 +139,8 @@
                 android:exported="false">
             <intent-filter>
                 <action android:name="io.heckel.ntfy.CONNECTION_ALERT_DISMISS"/>
-                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE"/>
+                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_SHORT"/>
+                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_LONG"/>
                 <action android:name="io.heckel.ntfy.CONNECTION_ALERT_NEVER"/>
             </intent-filter>
         </receiver>

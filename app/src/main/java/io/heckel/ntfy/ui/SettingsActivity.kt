@@ -340,7 +340,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             connectionAlert?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
                 when (pref.value.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
                     Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_advanced_connection_alert_summary_never)
-                    30L -> "Alert after 30 seconds (testing)"
                     Repository.CONNECTION_ALERT_FIVE_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
                     Repository.CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)
                     Repository.CONNECTION_ALERT_ONE_HOUR_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_one_hour)
