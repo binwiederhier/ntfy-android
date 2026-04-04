@@ -4,7 +4,7 @@
     <string name="common_priority_default_name">Standard-Priorität</string>
     <string name="common_priority_high_name">Hohe Priorität</string>
     <string name="common_priority_max_name">Höchste Priorität</string>
-    <string name="channel_subscriber_service_name">Abo Service</string>
+    <string name="channel_subscriber_service_name">Hintergrunddienst</string>
     <string name="common_priority_min_name">Niedrigste Priorität</string>
     <string name="channel_subscriber_notification_title">Warte auf eingehende Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Ein Sofortnachrichten-Thema abonniert</string>
@@ -472,8 +472,23 @@
     <string name="default_server_dialog_url_error_invalid">Eine gültige Service-URL eingeben, z. B. https://ntfy.example.com</string>
     <string name="detail_menu_search">Benachrichtigungen suchen</string>
     <string name="connection_alert_title">Verbindung verloren</string>
-    <string name="connection_alert_text_one">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$s hergestellt werden</string>
-    <string name="connection_alert_text_multiple">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$d Servern hergestellt werden</string>
+    <string name="connection_alert_text_one">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$s hergestellt werden. Prüfe deine Netzwerkverbindung.</string>
+    <string name="connection_alert_text_multiple">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$d Servern hergestellt werden. Prüfe deine Netzwerkverbindung.</string>
     <string name="connection_alert_action_snooze">%1$d Std. schlummern</string>
     <string name="connection_alert_action_never">Niemals zeigen</string>
+    <string name="channel_connection_alert_name">Verbindungswarnungen</string>
+    <string name="main_banner_no_network_text">Du bist offline</string>
+    <string name="settings_advanced_connection_alert_title">Warnung, wenn die Verbindung getrennt wird</string>
+    <string name="settings_advanced_connection_alert_summary_never">Niemals benachrichtigen, wenn der ntfy-Server nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Benachrichtigen, wenn der ntfy-Server länger als 5 Minuten nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Benachrichtigen, wenn der ntfy-Server länger als 15 Minuten nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Benachrichtige, wenn der ntfy-Server länger als 1 Stunde nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Benachrichtigen, wenn der ntfy-Server länger als 3 Stunden nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Benachrichtigen, wenn der ntfy-Server länger als 12 Stunden nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_never">Niemals</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Nach 5 Minuten</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Nach 15 Minuten</string>
+    <string name="settings_advanced_connection_alert_one_hour">Nach 1 Stunde</string>
+    <string name="settings_advanced_connection_alert_three_hours">Nach 3 Stunden</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Nach 12 Stunden</string>
 </resources>
