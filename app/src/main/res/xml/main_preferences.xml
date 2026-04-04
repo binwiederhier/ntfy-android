@@ -78,6 +78,12 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
         <ListPreference
+                app:key="@string/settings_advanced_connection_alert_key"
+                app:title="@string/settings_advanced_connection_alert_title"
+                app:entries="@array/settings_advanced_connection_alert_entries"
+                app:entryValues="@array/settings_advanced_connection_alert_values"
+                app:defaultValue="0"/>
+        <ListPreference
                 app:key="@string/settings_advanced_connection_protocol_key"
                 app:title="@string/settings_advanced_connection_protocol_title"
                 app:entries="@array/settings_advanced_connection_protocol_entries"

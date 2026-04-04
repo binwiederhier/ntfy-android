@@ -347,10 +347,10 @@
     <string name="settings_general_dynamic_colors_title">Couleurs dynamiques</string>
     <string name="settings_general_dynamic_colors_summary_disabled">Utiliser les couleurs de thème ntfy</string>
     <string name="settings_general_dynamic_colors_summary_enabled">Utiliser les couleurs dynamiques du système</string>
-    <string name="publish_dialog_title_placeholder">e.g. Quelqu\'un est à la porte</string>
+    <string name="publish_dialog_title_placeholder">par ex. Quelqu\'un est à la porte</string>
     <string name="publish_dialog_message_hint">Message</string>
     <string name="publish_dialog_tags_hint">Étiquettes</string>
-    <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
+    <string name="publish_dialog_tags_placeholder">par ex. attention, crâne</string>
     <string name="publish_dialog_priority_hint">Priorité</string>
     <string name="publish_dialog_button_publish">Publier</string>
     <string name="publish_dialog_error_sending">Impossible de publier le message : %1$s</string>
@@ -390,7 +390,7 @@
     <string name="settings_general_message_bar_title">Afficher la barre de message</string>
     <string name="settings_general_message_bar_summary_enabled">Barre de message affichée en bas du sujet</string>
     <string name="settings_general_message_bar_summary_disabled">Bouton Publier affiché en bas du sujet</string>
-    <string name="settings_advanced_custom_headers_title">En-têtes HTTP personnalisés</string>
+    <string name="settings_advanced_custom_headers_title">En-têtes personnalisés</string>
     <string name="settings_advanced_custom_headers_summary">Définissez des en-têtes HTTP personnalisés qui seront envoyés avec chaque demande, par exemple, si votre serveur ntfy se trouve derrière un proxy ou un tunnel authentifié.</string>
     <string name="settings_advanced_custom_headers_prefs_header_add">Ajouter un en-tête</string>
     <string name="settings_advanced_custom_headers_prefs_header_add_title">Ajouter un en-tête pour un serveur</string>
@@ -471,4 +471,9 @@
     <string name="detail_menu_search_hint">Rechercher dans les notifications</string>
     <string name="common_button_reset_to_default">Réinitialiser par défaut</string>
     <string name="default_server_dialog_url_error_invalid">Entrez une URL de service valide, par ex. https://ntfy.example.com</string>
+    <string name="connection_alert_title">Connexion perdue</string>
+    <string name="connection_alert_text_one">Impossible de se connecter à %1$s depuis plus de %2$d minutes</string>
+    <string name="connection_alert_text_multiple">Impossible de se connecter à %1$d serveurs depuis plus de %2$d minutes</string>
+    <string name="connection_alert_action_snooze">Sourdine %1$dh</string>
+    <string name="connection_alert_action_never">Ne jamais montrer</string>
 </resources>

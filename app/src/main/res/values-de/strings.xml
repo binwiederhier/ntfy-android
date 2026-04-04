@@ -471,4 +471,9 @@
     <string name="detail_menu_search_hint">In Benachrichtigungen suchen</string>
     <string name="default_server_dialog_url_error_invalid">Eine gültige Service-URL eingeben, z. B. https://ntfy.example.com</string>
     <string name="detail_menu_search">Benachrichtigungen suchen</string>
+    <string name="connection_alert_title">Verbindung verloren</string>
+    <string name="connection_alert_text_one">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$s hergestellt werden</string>
+    <string name="connection_alert_text_multiple">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$d Servern hergestellt werden</string>
+    <string name="connection_alert_action_snooze">%1$d Std. schlummern</string>
+    <string name="connection_alert_action_never">Niemals zeigen</string>
 </resources>

@@ -471,4 +471,9 @@
     <string name="detail_menu_search_hint">在通知中搜索</string>
     <string name="common_button_reset_to_default">重置为默认</string>
     <string name="default_server_dialog_url_error_invalid">输入有效的服务 URL，如 https://ntfy.example.com</string>
+    <string name="connection_alert_title">连接丢失</string>
+    <string name="connection_alert_text_one">已无法连接到 %1$s 超过 %2$d 分钟</string>
+    <string name="connection_alert_text_multiple">已无法连接到 %1$d 台服务器超过 %2$d 分钟</string>
+    <string name="connection_alert_action_snooze">延后 %1$d 小时</string>
+    <string name="connection_alert_action_never">永不显示</string>
 </resources>
