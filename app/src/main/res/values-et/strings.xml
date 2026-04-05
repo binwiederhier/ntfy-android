@@ -40,7 +40,7 @@
     <string name="channel_subscriber_notification_title">Kuulame saabuvaid teavitusi</string>
     <string name="main_item_status_reconnecting">loome uuesti ühendust …</string>
     <string name="main_banner_battery_button_fix_now">Tee korda</string>
-    <string name="channel_subscriber_service_name">Tellimuste teenus</string>
+    <string name="channel_subscriber_service_name">Taustateenus</string>
     <string name="main_banner_battery_button_remind_later">Küsi hiljem</string>
     <string name="main_banner_battery_button_dismiss">Katkesta</string>
     <string name="refresh_message_error_one">Tellimuse andmete uuendamine ei õnnestunud: %1$s</string>
@@ -462,8 +462,23 @@
     <string name="common_button_reset_to_default">Taasta algväärtused</string>
     <string name="default_server_dialog_url_error_invalid">Sisesta korrektne teenuse võrguaadress, nt https://ntfy.toredomeen.com</string>
     <string name="connection_alert_title">Ühendus on katkenud</string>
-    <string name="connection_alert_text_one">Ühendus %1$s teenusega toimib vaid %2$d minuti(t)</string>
-    <string name="connection_alert_text_multiple">Ühendus %1$d serveriga toimib vaid %2$d minuti(t)</string>
+    <string name="connection_alert_text_one">Ühendus %1$s teenusega toimib vaid %2$d minuti(t). Palun kontrolli seadme võrguühenduse toimimist.</string>
+    <string name="connection_alert_text_multiple">Ühendus %1$d serveriga toimib vaid %2$d minuti(t). Palun kontrolli seadme võrguühenduse toimimist.</string>
     <string name="connection_alert_action_snooze">Tukasta %1$dt</string>
     <string name="connection_alert_action_never">Ära näita iialgi</string>
+    <string name="channel_connection_alert_name">Ühenduse hoiatused</string>
+    <string name="main_banner_no_network_text">Sa pole võrgus :(</string>
+    <string name="settings_advanced_connection_alert_title">Hoiata ühenduse katkemisel</string>
+    <string name="settings_advanced_connection_alert_summary_never">Ära iialgi hoiata, kui ntfy server pole leitav</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Hoiata, kui ntfy server pole leitav enam, kui 5 minuti jooksul</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Hoiata, kui ntfy server pole leitav enam, kui 15 minuti jooksul</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Hoiata, kui ntfy server pole leitav enam, kui 1 tunni jooksul</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Hoiata, kui ntfy server pole leitav enam, kui 3 tunni jooksul</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Hoiata, kui ntfy server pole leitav enam, kui 12 tunni jooksul</string>
+    <string name="settings_advanced_connection_alert_never">Mitte kunagi</string>
+    <string name="settings_advanced_connection_alert_five_minutes">5 minuti möödumisel</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">15 minuti möödumisel</string>
+    <string name="settings_advanced_connection_alert_one_hour">1 tunni möödumisel</string>
+    <string name="settings_advanced_connection_alert_three_hours">3 tunni möödumisel</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">12 tunni möödumisel</string>
 </resources>
