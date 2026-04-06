@@ -16,7 +16,7 @@
     <string name="main_item_status_reconnecting">reconectando …</string>
     <string name="common_priority_high_name">Prioridade alta</string>
     <string name="common_priority_max_name">Prioridade máxima</string>
-    <string name="channel_subscriber_service_name">Serviço de Inscrição</string>
+    <string name="channel_subscriber_service_name">Inscrição em background</string>
     <string name="channel_subscriber_notification_title">Aguardando recepção de notificações</string>
     <string name="channel_subscriber_notification_instant_text">Inscrito em tópicos de entrega instantânea</string>
     <string name="channel_subscriber_notification_instant_text_one">Inscrito em um tópico de entrega instantânea</string>
@@ -354,8 +354,8 @@
     <string name="common_certificate_added_toast">Certificado adicionado</string>
     <string name="common_certificate_deleted_toast">Certificado removido</string>
     <string name="connection_alert_title">Notificação de alerta de conexão</string>
-    <string name="connection_alert_text_one">Não foi possível conectar à %1$s por mais de %2$d minutos</string>
-    <string name="connection_alert_text_multiple">Não foi possível conectar aos servidores %1$d por mais de %2$d minutos</string>
+    <string name="connection_alert_text_one">Não foi possível conectar à %1$s por mais de %2$d minutos. Verifique sua conexão de rede.</string>
+    <string name="connection_alert_text_multiple">Não foi possível conectar aos servidores %1$d por mais de %2$d minutos. Verifique sua conexão de rede.</string>
     <string name="connection_alert_action_snooze">Adiar %1$dh</string>
     <string name="connection_alert_action_never">Nunca mostrar</string>
     <string name="main_menu_connection_error">Erro de conexão</string>
@@ -472,4 +472,19 @@
     <string name="trusted_certificate_dialog_not_yet_valid_warning">Alerta: Este certificado ainda não é válido.</string>
     <string name="trusted_certificate_dialog_error_invalid_url">URL inválida</string>
     <string name="trusted_certificate_dialog_error_parse">Não foi possível carregar certificado: %1$s</string>
+    <string name="channel_connection_alert_name">Alertas de conexão</string>
+    <string name="main_banner_no_network_text">Você está offline</string>
+    <string name="settings_advanced_connection_alert_title">Alertar quando desconectado</string>
+    <string name="settings_advanced_connection_alert_summary_never">Nunca notificar quando o servidor ntfy não puder ser atingido</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Notificar se o servidor ntfy não puder ser atingido por mais que 5 minutos</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Notificar se o servidor ntfy não puder ser atingido por mais que 15 minutos</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Notificar se o servidor ntfy não puder ser atingido por mais que 1 hora</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Notificar se o servidor ntfy não puder ser atingido por mais que 3 horas</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Notificar se o servidor ntfy não puder ser atingido por mais que 12 horas</string>
+    <string name="settings_advanced_connection_alert_never">Nunca</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Depois de 5 minutos</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Depois de 15 minutos</string>
+    <string name="settings_advanced_connection_alert_one_hour">Depois de 1 hora</string>
+    <string name="settings_advanced_connection_alert_three_hours">Depois de 3 horas</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Depois de 12 horas</string>
 </resources>
