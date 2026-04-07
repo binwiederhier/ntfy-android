@@ -41,6 +41,7 @@ class SubscriberServiceManager(private val context: Context) {
             }
             withContext(Dispatchers.IO) {
                 val app = context.applicationContext as Application
+                val workManager = WorkManager.getInstance(context)
                 val subscriptionIdsWithInstantStatus = app.repository.getSubscriptionIdsWithInstantStatus()
                 val hasNetwork = isNetworkAvailable(context)
                 val instantSubscriptions = subscriptionIdsWithInstantStatus.toList().filter { (_, instant) -> instant }.size
@@ -51,6 +52,9 @@ class SubscriberServiceManager(private val context: Context) {
                         it.action = SubscriberService.Action.START.name
                         try {
                             ContextCompat.startForegroundService(context, it)
+                            // Service started successfully: cancel any pending "wait for network"
+                            // worker that may have been scheduled during an earlier network outage.
+                            workManager.cancelUniqueWork(WORK_NAME_ON_NETWORK_AVAILABLE)
                         } catch (e: Exception) {
                             // ForegroundServiceDidNotStartInTimeException or other exceptions can occur
                             // due to race conditions or system constraints. We log and continue;
@@ -66,6 +70,23 @@ class SubscriberServiceManager(private val context: Context) {
                         app.repository.clearConnectionDetails()
                         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         notificationManager.cancel(SubscriberService.NOTIFICATION_CONNECTION_ALERT_ID)
+                        // Schedule a one-time, network-constrained worker that restarts the service
+                        // as soon as network comes back. This works even if the process has been
+                        // killed by the OS while the service was stopped, because WorkManager /
+                        // JobScheduler is tied to the platform's connectivity monitor. Without this,
+                        // recovery when offline->online happens after process death would only occur
+                        // via the periodic NtfyAutoRestartWorkerPeriodic worker (up to ~30 minutes).
+                        // Doze mode may still defer the job until the next maintenance window, but
+                        // users with instant delivery are prompted to disable battery optimization.
+                        if (instantSubscriptions > 0) {
+                            val networkConstraints = Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                            val onNetworkRequest = OneTimeWorkRequest.Builder(ServiceStartWorker::class.java)
+                                .setConstraints(networkConstraints)
+                                .build()
+                            workManager.enqueueUniqueWork(WORK_NAME_ON_NETWORK_AVAILABLE, ExistingWorkPolicy.REPLACE, onNetworkRequest)
+                        }
                     }
                     Intent(context, SubscriberService::class.java).also {
                         context.stopService(it)
@@ -79,6 +100,7 @@ class SubscriberServiceManager(private val context: Context) {
     companion object {
         const val TAG = "NtfySubscriberMgr"
         const val WORK_NAME_ONCE = "ServiceStartWorkerOnce"
+        const val WORK_NAME_ON_NETWORK_AVAILABLE = "ServiceStartWorkerOnNetworkAvailable"
 
         fun refresh(context: Context) {
             val manager = SubscriberServiceManager(context)

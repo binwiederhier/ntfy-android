@@ -461,7 +461,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
             networkCallback?.let { connectivityManager.unregisterNetworkCallback(it) }
         } catch (e: Exception) {
-            Log.d(TAG, "Failed to unregister network callback: ${e.message}")
+            Log.w(TAG, "Failed to unregister network callback: ${e.message}", e)
         }
         networkCallback = null
     }

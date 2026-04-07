@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
@@ -358,18 +359,18 @@ class SubscriberService : Service() {
             getString(R.string.connection_alert_text_multiple, disconnectedUrls.size, thresholdMinutes)
         }
 
-        val contentIntent = PendingIntent.getActivity(this, 0,
+        val contentIntent = PendingIntent.getActivity(this, REQUEST_CODE_CONTENT,
             Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
-        val snoozeShortIntent = PendingIntent.getBroadcast(this, 0,
+        val snoozeShortIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_SHORT,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_SHORT },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val snoozeIntent = PendingIntent.getBroadcast(this, 0,
+        val snoozeIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_LONG,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_LONG },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val neverAlertIntent = PendingIntent.getBroadcast(this, 0,
+        val neverAlertIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_NEVER,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_NEVER },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val deleteIntent = PendingIntent.getBroadcast(this, 0,
+        val deleteIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_DISMISS,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_DISMISS },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
@@ -505,9 +506,11 @@ class SubscriberService : Service() {
             when (intent.action) {
                 CONNECTION_ALERT_ACTION_DISMISS, CONNECTION_ALERT_ACTION_SNOOZE_SHORT -> {
                     repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_SHORT_MILLIS)
+                    Toast.makeText(context, context.getString(R.string.connection_alert_snoozed_toast, CONNECTION_ALERT_SNOOZE_SHORT_HOURS), Toast.LENGTH_LONG).show()
                 }
                 CONNECTION_ALERT_ACTION_SNOOZE_LONG -> {
                     repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_LONG_MILLIS)
+                    Toast.makeText(context, context.getString(R.string.connection_alert_snoozed_toast, CONNECTION_ALERT_SNOOZE_LONG_HOURS), Toast.LENGTH_LONG).show()
                 }
                 CONNECTION_ALERT_ACTION_NEVER -> {
                     repository.setConnectionAlertSeconds(Repository.CONNECTION_ALERT_NEVER)
@@ -547,5 +550,13 @@ class SubscriberService : Service() {
         private const val CONNECTION_ALERT_ACTION_SNOOZE_SHORT = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_SHORT"
         private const val CONNECTION_ALERT_ACTION_SNOOZE_LONG = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_LONG"
         private const val CONNECTION_ALERT_ACTION_NEVER = "io.heckel.ntfy.CONNECTION_ALERT_NEVER"
+
+        // Unique request codes for connection alert PendingIntents. These must be distinct so
+        // that each PendingIntent is treated as a separate entry by the system.
+        private const val REQUEST_CODE_CONTENT = 0
+        private const val REQUEST_CODE_SNOOZE_SHORT = 1
+        private const val REQUEST_CODE_SNOOZE_LONG = 2
+        private const val REQUEST_CODE_NEVER = 3
+        private const val REQUEST_CODE_DISMISS = 4
     }
 }

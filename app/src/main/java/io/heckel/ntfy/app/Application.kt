@@ -33,8 +33,17 @@ class Application : Application() {
 
     private fun registerNetworkCallback() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        // If there's already a default network at registration time, registerDefaultNetworkCallback
+        // will synchronously deliver an initial onAvailable for it. That's not a real transition, so
+        // skip the first onAvailable in that case to avoid a spurious reconnect on every cold start.
+        var skipInitialAvailable = connectivityManager.activeNetwork != null
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
+                if (skipInitialAvailable) {
+                    skipInitialAvailable = false
+                    Log.d(TAG, "Skipping initial onAvailable for pre-existing default network ($network)")
+                    return
+                }
                 // Force reconnect of all WebSocket/JSON connections so they're rebound to the new
                 // default network. This catches Wi-Fi <-> cellular handoffs and similar transitions
                 // where the underlying socket is bound to a network that's no longer the default.
@@ -50,6 +59,8 @@ class Application : Application() {
                 }
             }
             override fun onLost(network: Network) {
+                // Once we've observed a loss, any subsequent onAvailable is a real transition.
+                skipInitialAvailable = false
                 Log.i(TAG, "Default network lost ($network); refreshing subscriber service")
                 SubscriberServiceManager.refresh(this@Application)
             }

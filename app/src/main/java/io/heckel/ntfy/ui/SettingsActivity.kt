@@ -331,7 +331,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             connectionAlert?.value = repository.getConnectionAlertSeconds().toString()
             connectionAlert?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putString(key: String?, value: String?) {
-                    val seconds = value?.toLongOrNull() ?:return
+                    val seconds = value?.toLongOrNull() ?: return
                     repository.setConnectionAlertSeconds(seconds)
                 }
                 override fun getString(key: String?, defValue: String?): String {
@@ -339,7 +339,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
             connectionAlert?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
-                when (pref.value.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
+                when (pref.value?.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
                     Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_advanced_connection_alert_summary_never)
                     Repository.CONNECTION_ALERT_FIVE_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
                     Repository.CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)

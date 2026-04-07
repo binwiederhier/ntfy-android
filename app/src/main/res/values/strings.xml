@@ -55,6 +55,8 @@
     <!-- %1$d is the snooze duration in hours, currently set to 8 -->
     <string name="connection_alert_action_snooze">Snooze %1$dh</string>
     <string name="connection_alert_action_never">Never show</string>
+    <!-- %1$d is the snooze duration in hours -->
+    <string name="connection_alert_snoozed_toast">Connection lost alert snoozed for %1$dh</string>
 
     <!-- Common refresh toasts -->
     <string name="refresh_message_result">%1$d notification(s) received</string>
