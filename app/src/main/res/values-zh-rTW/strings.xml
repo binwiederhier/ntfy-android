@@ -51,7 +51,7 @@
     <string name="common_priority_low_name">較低優先</string>
     <string name="common_priority_high_name">較高優先</string>
     <string name="common_priority_max_name">最高優先</string>
-    <string name="channel_subscriber_service_name">訂閱服務</string>
+    <string name="channel_subscriber_service_name">背景服務</string>
     <string name="channel_subscriber_notification_instant_text_three">已訂閱 3 個即時推送主題</string>
     <string name="main_menu_docs_title">閱讀技術文件</string>
     <string name="main_banner_websocket_text">建議使用 WebSocket 來接收通知。這個連接方式能有效改善電池續航，但可能需要<a href="https://ntfy.sh/docs/config/#nginxapache2caddy">在伺服器端進行額外設定</a>。你可以在設定頁面更改不同的連接方式。</string>
@@ -472,8 +472,8 @@
     <string name="common_button_reset_to_default">重設為預設值</string>
     <string name="default_server_dialog_url_error_invalid">請輸入有效的服務 URL，例如：https://ntfy.example.com</string>
     <string name="connection_alert_title">連線已中斷</string>
-    <string name="connection_alert_text_one">超過 %2$d 分鐘無法連線至 %1$s</string>
-    <string name="connection_alert_text_multiple">超過 %2$d 分鐘無法連線至 %1$d 個伺服器</string>
+    <string name="connection_alert_text_one">超過 %2$d 分鐘無法連線至 %1$s。請檢查你的網路連線。</string>
+    <string name="connection_alert_text_multiple">超過 %2$d 分鐘無法連線至 %1$d 個伺服器。請檢查你的網路連線。</string>
     <string name="connection_alert_action_snooze">延後 %1$d 小時</string>
     <string name="connection_alert_action_never">永不顯示</string>
 </resources>
