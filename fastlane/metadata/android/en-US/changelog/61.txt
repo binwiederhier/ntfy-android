@@ -1,6 +1,7 @@
 Features:
 * Add configurable "Alert when connection is lost" setting (#1665, #1662, #1652, #1655, thanks to @tintamarre, @sjozs, @TheRealOne78, and @DAE51D for reporting)
 * Suppress connection alerts and stop foreground service when there is no network (ntfy-android#165, thanks to @tintamarre for the contribution)
+* Improve battery life by increasing WebSocket client ping interval from 1 min to 5 min, and reconnect instantly on Wi-Fi/cellular/VPN transitions (ntfy-android#113, thanks to @ftilde for the investigation)
 
 Bug fixes + maintenance:
 * Undo automatic phone number linking for numbers in message body (ntfy-android#170, thanks to @acortelyou for the contribution)
