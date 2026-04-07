@@ -1,1 +1,1 @@
-ntfy - notifique o seu telemóvel via PUT/POST
+ntfy - PUT/POST no telemóvel
