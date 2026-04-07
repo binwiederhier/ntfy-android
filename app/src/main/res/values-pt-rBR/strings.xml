@@ -368,7 +368,7 @@
     <string name="publish_dialog_title_placeholder">ex. Tem alguém na porta</string>
     <string name="publish_dialog_message_hint">Mensagem</string>
     <string name="publish_dialog_tags_hint">Tags</string>
-    <string name="publish_dialog_tags_placeholder">ex. Alerta, skull</string>
+    <string name="publish_dialog_tags_placeholder">ex. alerta, perigo</string>
     <string name="publish_dialog_priority_hint">Prioridade</string>
     <string name="publish_dialog_button_publish">Publicar</string>
     <string name="publish_dialog_error_sending">Não foi possível publicar a mensagem: %1$s</string>
