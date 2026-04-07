@@ -40,6 +40,7 @@ class Application : Application() {
                 // where the underlying socket is bound to a network that's no longer the default.
                 // Without this, broken connections would only be detected via the (potentially
                 // long) ping/pong timeout.
+                Log.i(TAG, "Default network available ($network); forcing reconnect of all connections")
                 ioScope.launch {
                     repository.getSubscriptions()
                         .map { it.baseUrl }
@@ -49,8 +50,13 @@ class Application : Application() {
                 }
             }
             override fun onLost(network: Network) {
+                Log.i(TAG, "Default network lost ($network); refreshing subscriber service")
                 SubscriberServiceManager.refresh(this@Application)
             }
         })
+    }
+
+    companion object {
+        private const val TAG = "NtfyApplication"
     }
 }
