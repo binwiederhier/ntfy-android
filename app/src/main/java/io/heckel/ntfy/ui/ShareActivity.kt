@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.view.*
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -305,6 +306,8 @@ class ShareActivity : AppCompatActivity() {
                 } else {
                     Pair("", null)
                 }
+                val isLink = filename.isEmpty() && body == null && message.isNotEmpty() && Patterns.WEB_URL.matcher(message).matches()
+                val click = if (isLink) message else ""
                 api.publish(
                     baseUrl = baseUrl,
                     topic = topic,
@@ -312,6 +315,7 @@ class ShareActivity : AppCompatActivity() {
                     message = message,
                     body = body, // May be null
                     filename = filename, // May be empty
+                    click = click, // May be empty
                 )
                 runOnUiThread {
                     repository.addLastShareTopic(topicUrl(baseUrl, topic))
