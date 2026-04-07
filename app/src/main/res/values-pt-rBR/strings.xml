@@ -487,4 +487,5 @@
     <string name="settings_advanced_connection_alert_one_hour">Depois de 1 hora</string>
     <string name="settings_advanced_connection_alert_three_hours">Depois de 3 horas</string>
     <string name="settings_advanced_connection_alert_twelve_hours">Depois de 12 horas</string>
+    <string name="connection_alert_snoozed_toast">Alerta de conexão perdida adiado por %1$dh</string>
 </resources>
