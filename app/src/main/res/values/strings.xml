@@ -28,7 +28,8 @@
 
     <!-- Notification channels -->
     <string name="channel_notifications_group_default_name">Default</string>
-    <string name="channel_subscriber_service_name">Subscription Service</string>
+    <string name="channel_subscriber_service_name">Background service</string>
+    <string name="channel_connection_alert_name">Connection alerts</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
     <string name="channel_subscriber_notification_instant_text">Subscribed to instant delivery topics</string>
     <string name="channel_subscriber_notification_instant_text_one">Subscribed to one instant delivery topic</string>
@@ -49,10 +50,10 @@
 
     <!-- Connection alert notification -->
     <string name="connection_alert_title">Connection lost</string>
-    <string name="connection_alert_text_one">Unable to connect to %1$s for more than %2$d minutes</string>
-    <string name="connection_alert_text_multiple">Unable to connect to %1$d servers for more than %2$d minutes</string>
-    <string name="connection_alert_action_dismiss">Dismiss</string>
-    <string name="connection_alert_action_snooze">Snooze 1h</string>
+    <string name="connection_alert_text_one">Unable to connect to %1$s for more than %2$d minutes. Check your network connection.</string>
+    <string name="connection_alert_text_multiple">Unable to connect to %1$d servers for more than %2$d minutes. Check your network connection.</string>
+    <!-- %1$d is the snooze duration in hours, currently set to 8 -->
+    <string name="connection_alert_action_snooze">Snooze %1$dh</string>
     <string name="connection_alert_action_never">Never show</string>
 
     <!-- Common refresh toasts -->
@@ -115,6 +116,7 @@
     <string name="main_banner_websocket_reconnect_button_remind_later">Ask later</string>
     <string name="main_banner_websocket_reconnect_button_dismiss">Dismiss</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Grant now</string>
+    <string name="main_banner_no_network_text">You\'re offline</string>
 
     <!-- Add dialog -->
     <string name="add_dialog_title">Subscribe to topic</string>
@@ -415,6 +417,19 @@
     <string name="settings_backup_restore_restore_successful">Restore successful</string>
     <string name="settings_backup_restore_restore_failed">Restore failed: %1$s</string>
     <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_connection_alert_title">Alert when disconnected</string>
+    <string name="settings_advanced_connection_alert_summary_never">Never notify when the ntfy server cannot be reached</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Notify if the ntfy server cannot be reached for more than 5 minutes</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Notify if the ntfy server cannot be reached for more than 15 minutes</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Notify if the ntfy server cannot be reached for more than 1 hour</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Notify if the ntfy server cannot be reached for more than 3 hours</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Notify if the ntfy server cannot be reached for more than 12 hours</string>
+    <string name="settings_advanced_connection_alert_never">Never</string>
+    <string name="settings_advanced_connection_alert_five_minutes">After 5 minutes</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">After 15 minutes</string>
+    <string name="settings_advanced_connection_alert_one_hour">After 1 hour</string>
+    <string name="settings_advanced_connection_alert_three_hours">After 3 hours</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">After 12 hours</string>
     <string name="settings_advanced_broadcast_title">Broadcast messages</string>
     <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
     <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>

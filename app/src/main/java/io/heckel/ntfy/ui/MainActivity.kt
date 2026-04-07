@@ -6,8 +6,11 @@ import android.animation.AnimatorListenerAdapter
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -58,11 +61,13 @@ import io.heckel.ntfy.msg.Poller
 import io.heckel.ntfy.service.SubscriberService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.SUBSCRIPTION_ICONS
 import io.heckel.ntfy.util.dangerButton
 import io.heckel.ntfy.util.displayName
 import io.heckel.ntfy.util.formatDateShort
 import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.isIgnoringBatteryOptimizations
+import io.heckel.ntfy.util.isNetworkAvailable
 import io.heckel.ntfy.util.maybeSplitTopicUrl
 import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.shortUrl
@@ -72,8 +77,10 @@ import io.heckel.ntfy.work.PollWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import androidx.core.content.FileProvider
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
@@ -95,6 +102,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     private lateinit var fab: FloatingActionButton
 
     // Other stuff
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var workManager: WorkManager? = null // Context-dependent
     private var dispatcher: NotificationDispatcher? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -342,6 +350,19 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             }
         }
 
+        // Network state banner
+        showHideNoNetworkBanner()
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                runOnUiThread { showHideNoNetworkBanner() }
+            }
+            override fun onLost(network: Network) {
+                runOnUiThread { showHideNoNetworkBanner() }
+            }
+        }
+        connectivityManager.registerDefaultNetworkCallback(networkCallback!!)
+
         // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
         val howToLink = findViewById<TextView>(R.id.main_how_to_link)
         howToLink.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE
@@ -362,6 +383,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
         // Permissions
         maybeRequestNotificationPermission()
+
+        // FIXME 2026-05-04: Remove this migration after 1 month
+        migrateSubscriptionIconsFromCache()
     }
 
     private fun maybeRequestNotificationPermission() {
@@ -377,6 +401,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         super.onResume()
         showHideNotificationMenuItems()
         showHideConnectionErrorMenuItem(repository.getConnectionDetails())
+        showHideNoNetworkBanner()
         redrawList()
     }
 
@@ -423,6 +448,22 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         } else {
             wsReconnectBanner.visibility = View.GONE
         }
+    }
+
+    private fun showHideNoNetworkBanner() {
+        val banner = findViewById<View>(R.id.main_banner_no_network)
+        banner.visibility = if (isNetworkAvailable(this)) View.GONE else View.VISIBLE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            networkCallback?.let { connectivityManager.unregisterNetworkCallback(it) }
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to unregister network callback: ${e.message}")
+        }
+        networkCallback = null
     }
 
     private fun schedulePeriodicPollWorker() {
@@ -857,6 +898,38 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             return
         }
         adapter.notifyItemRangeChanged(0, adapter.currentList.size)
+    }
+
+    // FIXME 2026-05-04: Remove this migration after 1 month
+    private fun migrateSubscriptionIconsFromCache() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(5_000) // 5 seconds
+            try {
+                val oldDir = File(cacheDir, SUBSCRIPTION_ICONS)
+                if (!oldDir.exists() || !oldDir.isDirectory) return@launch
+                val newDir = File(filesDir, SUBSCRIPTION_ICONS)
+                if (!newDir.exists()) newDir.mkdirs()
+                oldDir.listFiles()?.forEach { oldFile ->
+                    val newFile = File(newDir, oldFile.name)
+                    if (newFile.exists()) {
+                        oldFile.delete()
+                        return@forEach
+                    }
+                    if (oldFile.renameTo(newFile)) {
+                        val subscriptionId = oldFile.name.toLongOrNull() ?: return@forEach
+                        val newUri = FileProvider.getUriForFile(
+                            this@MainActivity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            newFile
+                        )
+                        repository.updateSubscriptionIcon(subscriptionId, newUri.toString())
+                    }
+                }
+                oldDir.delete()
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to migrate subscription icons", e)
+            }
+        }
     }
 
     companion object {
