@@ -6,7 +6,7 @@
     <string name="common_priority_low_name">Prioridad baja</string>
     <string name="common_priority_default_name">Prioridad predeterminada</string>
     <string name="common_priority_max_name">Prioridad máxima</string>
-    <string name="channel_subscriber_service_name">Servicio de Suscripciones</string>
+    <string name="channel_subscriber_service_name">Servicio en segundo plano</string>
     <string name="channel_subscriber_notification_title">Escuchando por notificaciones entrantes</string>
     <string name="channel_subscriber_notification_instant_text_one">Suscrito a un tópico de entrega instantánea</string>
     <string name="channel_subscriber_notification_instant_text_two">Suscrito a dos tópicos de entrega instantánea</string>
@@ -360,8 +360,8 @@
     <string name="publish_dialog_chip_tags">Etiquetas</string>
     <string name="publish_dialog_chip_priority">Prioridad</string>
     <string name="publish_dialog_chip_click_url">Pulsar URL</string>
-    <string name="publish_dialog_chip_delay">Retardo</string>
-    <string name="publish_dialog_chip_attach_url">Adjuntar con URL</string>
+    <string name="publish_dialog_chip_delay">Retardar</string>
+    <string name="publish_dialog_chip_attach_url">Adjuntar por URL</string>
     <string name="publish_dialog_chip_attach_file">Adjuntar fichero local</string>
     <string name="publish_dialog_chip_phone_call">Llamada de teléfono</string>
     <string name="publish_dialog_click_url_hint">Pulsar URL</string>
@@ -411,8 +411,8 @@
     <string name="main_menu_connection_error">Error de conexión</string>
     <string name="common_button_reset_to_default">Restaurar valores por defecto</string>
     <string name="connection_alert_title">Conexión perdida</string>
-    <string name="connection_alert_text_one">No se pudo conectar a %1$s por más de %2$d minutos</string>
-    <string name="connection_alert_text_multiple">No se pudo conectar a %1$d servidores por más de %2$d minutos</string>
+    <string name="connection_alert_text_one">No se pudo conectar a %1$s por más de %2$d minutos. Verifique la conexión de red.</string>
+    <string name="connection_alert_text_multiple">No se pudo conectar a %1$d servidores por más de %2$d minutos. Verifique la conexión de red.</string>
     <string name="connection_alert_action_snooze">Suspender %1$dh</string>
     <string name="connection_alert_action_never">Nunca mostrar</string>
     <string name="detail_no_search_results">Su búsqueda no tuvo ningún resultado</string>
@@ -476,4 +476,19 @@
     <string name="client_certificate_dialog_error_wrong_password">Contraseña incorrecta o archivo PKCS#12 no válido</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Contraseña no válida o archivo PKCS#12 dañado</string>
     <string name="client_certificate_dialog_error_invalid_url">URL del servicio no válida</string>
+    <string name="channel_connection_alert_name">Alertas de conexión</string>
+    <string name="main_banner_no_network_text">App desconectada</string>
+    <string name="settings_advanced_connection_alert_title">Alertar cuando desconectada</string>
+    <string name="settings_advanced_connection_alert_summary_never">Nunca notificar cuando no se pueda alcanzar el servidor ntfy</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Notificar si no se puede alcanzar el servidor ntfy por más de 5 minutos</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Notificar si no se puede alcanzar el servidor ntfy por más de 15 minutos</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Notificar si no se puede alcanzar el servidor ntfy por más de 1 hora</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Notificar si no se puede alcanzar el servidor ntfy por más de 3 horas</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Notificar si no se puede alcanzar el servidor ntfy por más de 12 horas</string>
+    <string name="settings_advanced_connection_alert_never">Nunca</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Después de 5 minutos</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Después de 15 minutos</string>
+    <string name="settings_advanced_connection_alert_one_hour">Después de 1 hora</string>
+    <string name="settings_advanced_connection_alert_three_hours">Después de 3 horas</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Después de 12 horas</string>
 </resources>
