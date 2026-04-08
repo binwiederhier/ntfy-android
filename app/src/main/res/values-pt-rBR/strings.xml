@@ -345,7 +345,7 @@
     <string name="common_button_add">Adicionar</string>
     <string name="common_button_delete">Apagar</string>
     <string name="common_button_reset_to_default">Restaurar Padrões</string>
-    <string name="common_service_url_placeholder">ex. https://ntfy.example.com</string>
+    <string name="common_service_url_placeholder">ex. https://ntfy.exemplo.com.br</string>
     <string name="common_certificate_subject">Dono</string>
     <string name="common_certificate_issuer">Emissor</string>
     <string name="common_certificate_fingerprint">Assinatura SHA-256</string>
