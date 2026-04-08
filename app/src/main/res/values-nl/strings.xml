@@ -376,8 +376,8 @@
     <string name="client_certificate_dialog_error_wrong_password">Onjuist wachtwoord of onjuist PKCS#12 bestand</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Onjuist wachtwoord of beschadigd PKCS#12 bestand</string>
     <string name="connection_alert_title">Verbinding verbroken</string>
-    <string name="connection_alert_text_one">Kan geen verbinding maken met %1$s voor meer dan %2$d minuten</string>
-    <string name="connection_alert_text_multiple">Kan geen verbinding maken met %1$d servers voor meer dan %2$d minuten</string>
+    <string name="connection_alert_text_one">"Kan  %2$d minuten geen verbinding maken met %1$s. Controleer uw netwerkverbinding."</string>
+    <string name="connection_alert_text_multiple">Kan meer dan %2$d minuten geen verbinding maken met %1$d servers. Controleer uw netwerkverbinding.</string>
     <string name="connection_alert_action_snooze">Sluimer voor %1$d uur</string>
     <string name="connection_alert_action_never">Nooit laten zien</string>
     <string name="publish_dialog_title">Publieer naar %1$s</string>
@@ -424,4 +424,24 @@
     <string name="settings_general_dynamic_colors_summary_disabled">Ntfy thema kleuren worden gebruikt</string>
     <string name="settings_general_message_bar_title">Toon berichtenbalk</string>
     <string name="settings_general_message_bar_summary_enabled">Berichtenbalk getoond onderaan onderwerpweergave</string>
+    <string name="channel_connection_alert_name">Verbindingsmeldingen</string>
+    <string name="connection_alert_snoozed_toast">Melding verbinding verbroken gesluimerd voor %1$d uur</string>
+    <string name="main_banner_no_network_text">U bent offline</string>
+    <string name="detail_fab_publish_description">Publiceer notificatie</string>
+    <string name="settings_advanced_connection_alert_title">Melding wanneer verbinding verbroken</string>
+    <string name="settings_advanced_connection_alert_summary_never">Nooit melden wanneer de ntfy server niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Melding wanneer de ntfy server langer dan 5 minuten niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Melding wanneer de ntfy server langer dan 15 minuten niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Melding wanneer de ntfy server langer dan een uur niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Melding wanneer de ntfy server langer dan 3 uur niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Melding wanneer de ntfy server langer dan 12 uur niet bereikt kan worden</string>
+    <string name="settings_advanced_connection_alert_never">Nooit</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Na 5 minuten</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Na 15 minuten</string>
+    <string name="settings_advanced_connection_alert_one_hour">Na 1 uur</string>
+    <string name="settings_advanced_connection_alert_three_hours">Na 3 uur</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Na 12 uur</string>
+    <string name="settings_advanced_custom_headers_title">Aangepaste headers</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Header toevoegen</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Header toevoegen voor server</string>
 </resources>
