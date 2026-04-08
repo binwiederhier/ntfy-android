@@ -491,4 +491,5 @@
     <string name="client_certificate_dialog_error_wrong_password">Senha incorreta ou ficheiro PKCS#12 inválido</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Senha inválida ou ficheiro PKCS#12 corrompido</string>
     <string name="client_certificate_dialog_error_invalid_url">URL de serviço inválido</string>
+    <string name="connection_alert_snoozed_toast">Alerta de conexão perdida adiado por %1$dh</string>
 </resources>
