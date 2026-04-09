@@ -44,9 +44,9 @@ class WsConnection(
     private val customHeaders: List<CustomHeader>,
     private val connectionDetailsListener: (String, ConnectionState, Throwable?, Long) -> Unit,
     private val notificationListener: (Subscription, Notification) -> Unit,
-    private val alarmManager: AlarmManager
-) : Connection {
-    private val parser = NotificationParser()
+    private val alarmManager: AlarmManager,
+    private val networkActive: () -> Boolean
+    ) : Connection {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var errorCount = 0
     private var webSocket: WebSocket? = null
@@ -60,6 +60,7 @@ class WsConnection(
     private val topicsToSubscriptionIds = connectionId.topicsToSubscriptionIds
     private val topicsStr = topicsToSubscriptionIds.keys.joinToString(separator = ",")
     private val shortUrl = topicShortUrl(baseUrl, topicsStr)
+    private val parser = NotificationParser()
 
     init {
         Log.d(TAG, "$shortUrl (gid=$globalId): New connection with global ID $globalId")
@@ -73,6 +74,10 @@ class WsConnection(
         }
         if (webSocket != null) {
             webSocket!!.close(WS_CLOSE_NORMAL, "")
+        }
+        if (!networkActive()) {
+            Log.d(TAG, "$shortUrl (gid=$globalId): Not starting connection, because network is not active")
+            return
         }
         state = State.Connecting
         val nextListenerId = listenerId.incrementAndGet()
@@ -101,6 +106,10 @@ class WsConnection(
     fun scheduleReconnect(seconds: Int) {
         if (closed || state == State.Connecting || state == State.Connected) {
             Log.d(TAG,"$shortUrl (gid=$globalId): Not rescheduling connection, because connection is marked closed/connecting/connected")
+            return
+        }
+        if (!networkActive()) {
+            Log.d(TAG, "$shortUrl (gid=$globalId): Not rescheduling connection, because network is not active")
             return
         }
         state = State.Scheduled

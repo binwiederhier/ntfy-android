@@ -148,7 +148,9 @@ class SubscriberService : Service() {
     override fun onDestroy() {
         Log.d(TAG, "Subscriber service has been destroyed")
         stopService()
-        sendBroadcast(Intent(this, AutoRestartReceiver::class.java)) // Restart it if necessary!
+        if (isServiceStarted) {
+            sendBroadcast(Intent(this, AutoRestartReceiver::class.java)) // Restart it if necessary!
+        }
         super.onDestroy()
     }
 
@@ -264,7 +266,7 @@ class SubscriberService : Service() {
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager, { isNetworkAvailable(this) })
             } else {
                 JsonConnection(connectionId, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
