@@ -147,10 +147,10 @@ class SubscriberService : Service() {
 
     override fun onDestroy() {
         Log.d(TAG, "Subscriber service has been destroyed")
-        stopService()
         if (isServiceStarted) {
             sendBroadcast(Intent(this, AutoRestartReceiver::class.java)) // Restart it if necessary!
         }
+        stopService()
         super.onDestroy()
     }
 

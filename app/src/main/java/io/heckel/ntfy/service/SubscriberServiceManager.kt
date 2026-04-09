@@ -68,7 +68,12 @@ class SubscriberServiceManager(private val context: Context) {
                         notificationManager.cancel(SubscriberService.NOTIFICATION_CONNECTION_ALERT_ID)
                     }
                     Intent(context, SubscriberService::class.java).also {
-                        context.stopService(it)
+                        it.action = SubscriberService.Action.STOP.name
+                        try {
+                            ContextCompat.startForegroundService(context, it)
+                        } catch (e: Exception) {
+                            Log.w(TAG, "ServiceStartWorker: Failed to stop foreground service cleanly: ${e.message}")
+                        }
                     }
                 }
             }
