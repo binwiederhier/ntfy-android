@@ -33,11 +33,12 @@ class Application : Application() {
 
     private fun registerNetworkCallback() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        // If there's already a default network at registration time, registerDefaultNetworkCallback
-        // will synchronously deliver an initial onAvailable for it. That's not a real transition, so
-        // skip the first onAvailable in that case to avoid a spurious reconnect on every cold start.
-        var skipInitialAvailable = connectivityManager.activeNetwork != null
         connectivityManager.registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+            // If there's already a default network at registration time, registerDefaultNetworkCallback
+            // will deliver an initial onAvailable for it. That's not a real transition, so skip the
+            // first onAvailable in that case to avoid a spurious reconnect on every cold start.
+            private var skipInitialAvailable = connectivityManager.activeNetwork != null
+
             override fun onAvailable(network: Network) {
                 if (skipInitialAvailable) {
                     skipInitialAvailable = false
