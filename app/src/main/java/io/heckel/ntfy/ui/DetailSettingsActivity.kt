@@ -140,8 +140,6 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMinPriorityPref()
                 loadAutoDeletePref()
                 loadInsistentMaxPriorityPref()
-                loadIconSetPref()
-                loadIconRemovePref()
                 loadDedicatedChannelsPrefs()
                 loadOpenChannelsPrefs()
             } else {
@@ -151,6 +149,8 @@ class DetailSettingsActivity : AppCompatActivity() {
             }
             loadDisplayNamePref()
             loadTopicUrlPref()
+            loadIconSetPref()
+            loadIconRemovePref()
         }
 
         private fun loadInstantPref() {
