@@ -397,6 +397,11 @@
     <string name="settings_general_dark_mode_entry_system">Use system default</string>
     <string name="settings_general_dark_mode_entry_light">Light mode</string>
     <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_general_datetime_format_title">Date/time format</string>
+    <string name="settings_general_datetime_format_summary_locale">Using locale default date/time format</string>
+    <string name="settings_general_datetime_format_summary_iso8601">Using ISO 8601 date/time format</string>
+    <string name="settings_general_datetime_format_entry_locale">Locale default</string>
+    <string name="settings_general_datetime_format_entry_iso8601">ISO 8601</string>
     <string name="settings_general_language_title">Language</string>
     <string name="settings_general_language_summary_system">Using system default</string>
     <string name="settings_general_language_system_default">System default</string>

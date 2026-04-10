@@ -364,6 +364,22 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return sharedPrefs.getString(SHARED_PREFS_CONNECTION_PROTOCOL, null) ?: CONNECTION_PROTOCOL_JSONHTTP
     }
 
+    fun setDateTimeFormat(dateTimeFormat: String) {
+        if (dateTimeFormat == DATETIME_FORMAT_LOCALE) {
+            sharedPrefs.edit {
+                remove(SHARED_PREFS_DATETIME_FORMAT)
+            }
+        } else {
+            sharedPrefs.edit {
+                putString(SHARED_PREFS_DATETIME_FORMAT, dateTimeFormat)
+            }
+        }
+    }
+
+    fun getDateTimeFormat(): String {
+        return sharedPrefs.getString(SHARED_PREFS_DATETIME_FORMAT, DATETIME_FORMAT_LOCALE) ?: DATETIME_FORMAT_LOCALE
+    }
+
     fun getBroadcastEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_BROADCAST_ENABLED, true) // Enabled by default
     }
@@ -647,6 +663,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_AUTO_DOWNLOAD_MAX_SIZE = "AutoDownload"
         const val SHARED_PREFS_AUTO_DELETE_SECONDS = "AutoDelete"
         const val SHARED_PREFS_CONNECTION_PROTOCOL = "ConnectionProtocol"
+        const val SHARED_PREFS_DATETIME_FORMAT = "DateTimeFormat"
         const val SHARED_PREFS_DARK_MODE = "DarkMode"
         const val SHARED_PREFS_DYNAMIC_COLORS = "DynamicColors"
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
@@ -702,6 +719,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"
+
+        const val DATETIME_FORMAT_LOCALE = "locale"
+        const val DATETIME_FORMAT_ISO8601 = "iso8601"
 
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_ALWAYS = 1L
         const val BATTERY_OPTIMIZATIONS_REMIND_TIME_NEVER = Long.MAX_VALUE
