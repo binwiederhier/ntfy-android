@@ -481,4 +481,5 @@
     <string name="settings_advanced_connection_alert_one_hour">1 tunni möödumisel</string>
     <string name="settings_advanced_connection_alert_three_hours">3 tunni möödumisel</string>
     <string name="settings_advanced_connection_alert_twelve_hours">12 tunni möödumisel</string>
+    <string name="connection_alert_snoozed_toast">Ühendus kaotas hoiatuse, mis oli edasi lükatud %1$d-ks tunniks</string>
 </resources>

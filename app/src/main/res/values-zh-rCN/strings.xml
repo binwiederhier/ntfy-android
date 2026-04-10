@@ -491,4 +491,5 @@
     <string name="settings_advanced_connection_alert_one_hour">1 小时后</string>
     <string name="settings_advanced_connection_alert_three_hours">3 小时后</string>
     <string name="settings_advanced_connection_alert_twelve_hours">12 小时后</string>
+    <string name="connection_alert_snoozed_toast">连接丢失警报推迟了 %1$d 小时</string>
 </resources>
