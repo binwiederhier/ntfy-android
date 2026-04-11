@@ -89,11 +89,11 @@ android.applicationVariants.all { variant ->
 dependencies {
     // AndroidX, The Basics
     implementation "androidx.appcompat:appcompat:1.7.1"
-    implementation "androidx.core:core-ktx:1.17.0"
+    implementation "androidx.core:core-ktx:1.18.0"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
-    implementation "androidx.activity:activity-ktx:1.12.4"
+    implementation "androidx.activity:activity-ktx:1.13.0"
     implementation "androidx.fragment:fragment-ktx:1.8.9"
-    implementation "androidx.work:work-runtime-ktx:2.11.1"
+    implementation "androidx.work:work-runtime-ktx:2.11.2"
     implementation 'androidx.preference:preference-ktx:1.2.1'
 
     // JSON serialization

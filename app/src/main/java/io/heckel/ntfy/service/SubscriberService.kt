@@ -364,7 +364,7 @@ class SubscriberService : Service() {
         val snoozeShortIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_SHORT,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_SHORT },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val snoozeIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_LONG,
+        val snoozeLongIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_LONG,
             Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_LONG },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val neverAlertIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_NEVER,
@@ -384,7 +384,7 @@ class SubscriberService : Service() {
             .setOnlyAlertOnce(true)
             .setDeleteIntent(deleteIntent)
             .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_SHORT_HOURS), snoozeShortIntent).build())
-            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_LONG_HOURS), snoozeIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_LONG_HOURS), snoozeLongIntent).build())
             .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_never), neverAlertIntent).build())
             .build()
 
