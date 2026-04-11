@@ -491,4 +491,5 @@
     <string name="settings_advanced_connection_alert_one_hour">Nach 1 Stunde</string>
     <string name="settings_advanced_connection_alert_three_hours">Nach 3 Stunden</string>
     <string name="settings_advanced_connection_alert_twelve_hours">Nach 12 Stunden</string>
+    <string name="connection_alert_snoozed_toast">Meldung über Verbindungsverlust ausgesetzt für %1$d Std</string>
 </resources>
