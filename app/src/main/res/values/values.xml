@@ -47,6 +47,7 @@
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
     <string name="detail_settings_notifications_insistent_max_priority_key" translatable="false">SubscriptionInsistentMaxPriority</string>
+    <string name="settings_advanced_connection_alert_key" translatable="false">ConnectionAlert</string>
     <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
     <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
     <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
@@ -166,6 +167,22 @@
         <item>-1</item> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
         <item>1</item>
         <item>0</item>
+    </string-array>
+    <string-array name="settings_advanced_connection_alert_entries">
+        <item>@string/settings_advanced_connection_alert_never</item>
+        <item>@string/settings_advanced_connection_alert_five_minutes</item>
+        <item>@string/settings_advanced_connection_alert_fifteen_minutes</item>
+        <item>@string/settings_advanced_connection_alert_one_hour</item>
+        <item>@string/settings_advanced_connection_alert_three_hours</item>
+        <item>@string/settings_advanced_connection_alert_twelve_hours</item>
+    </string-array>
+    <string-array name="settings_advanced_connection_alert_values">
+        <item>0</item>
+        <item>300</item>
+        <item>900</item>
+        <item>3600</item>
+        <item>10800</item>
+        <item>43200</item>
     </string-array>
     <string-array name="settings_advanced_connection_protocol_entries">
         <item>@string/settings_advanced_connection_protocol_entry_jsonhttp</item>

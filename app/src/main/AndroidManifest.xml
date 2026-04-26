@@ -3,6 +3,7 @@
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> <!-- To check network availability before showing connection alerts -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> <!-- For instant delivery foregrounds service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/> <!-- For instant delivery foregrounds service on SDK >= 34 -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- To keep foreground service awake; soon not needed anymore -->
@@ -131,14 +132,15 @@
                 android:enabled="true"
                 android:exported="false"/>
 
-        <!-- Broadcast receiver for connection alert notification actions (dismiss, snooze, never show again) -->
+        <!-- Broadcast receiver for connection alert notification actions (swipe-dismiss, snooze, never) -->
         <receiver
                 android:name=".service.SubscriberService$ConnectionAlertBroadcastReceiver"
                 android:enabled="true"
                 android:exported="false">
             <intent-filter>
                 <action android:name="io.heckel.ntfy.CONNECTION_ALERT_DISMISS"/>
-                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE"/>
+                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_SHORT"/>
+                <action android:name="io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_LONG"/>
                 <action android:name="io.heckel.ntfy.CONNECTION_ALERT_NEVER"/>
             </intent-filter>
         </receiver>

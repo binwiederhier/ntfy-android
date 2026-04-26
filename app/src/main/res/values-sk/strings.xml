@@ -350,8 +350,6 @@
     <string name="common_certificate_valid_until">Platný do</string>
     <string name="common_certificate_added_toast">Certifikát pridaný</string>
     <string name="common_certificate_deleted_toast">Certifikát odstránený</string>
-    <string name="channel_subscriber_notification_reconnecting_one">opätovné pripojenie k 1 téme …</string>
-    <string name="channel_subscriber_notification_reconnecting_other">opätovné pripájanie k %1$d témam …</string>
     <string name="main_menu_connection_error">Chyba pripojenia</string>
     <string name="main_banner_websocket_reconnect_text">Aby sa WebSockety mohli znovu pripojiť na pozadí, udeľte aplikácii ntfy povolenie Budíky a pripomienky</string>
     <string name="main_banner_websocket_reconnect_button_remind_later">Opýtaj sa neskôr</string>

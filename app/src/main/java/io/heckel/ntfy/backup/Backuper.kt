@@ -90,6 +90,9 @@ class Backuper(val context: Context) {
         if (settings.mutedUntil != null) {
             repository.setGlobalMutedUntil(settings.mutedUntil)
         }
+        if (settings.connectionAlertSeconds != null) {
+            repository.setConnectionAlertSeconds(settings.connectionAlertSeconds)
+        }
         if (settings.lastSharedTopics != null) {
             settings.lastSharedTopics.forEach { repository.addLastShareTopic(it) }
         }
@@ -278,6 +281,7 @@ class Backuper(val context: Context) {
             recordLogs = repository.getRecordLogs(),
             defaultBaseUrl = repository.getDefaultBaseUrl() ?: "",
             mutedUntil = repository.getGlobalMutedUntil(),
+            connectionAlertSeconds = repository.getConnectionAlertSeconds(),
             lastSharedTopics = repository.getLastShareTopics()
         )
     }
@@ -421,6 +425,7 @@ data class Settings(
     val recordLogs: Boolean?,
     val defaultBaseUrl: String?,
     val mutedUntil: Long?,
+    val connectionAlertSeconds: Long?,
     val lastSharedTopics: List<String>?,
 )
 

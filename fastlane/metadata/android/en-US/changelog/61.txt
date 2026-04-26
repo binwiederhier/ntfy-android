@@ -1,0 +1,10 @@
+Features:
+* Add configurable "Alert when connection is lost" setting (#1665, #1662, #1652, #1655, thanks to @tintamarre, @sjozs, @TheRealOne78, and @DAE51D for reporting)
+* Suppress connection alerts and stop foreground service when there is no network (ntfy-android#165, thanks to @tintamarre for the contribution)
+* Restart the foreground service immediately when network returns, even if the app process was killed while offline
+* Improve battery life by increasing WebSocket client ping interval from 1 min to 3 min, and reconnect instantly on Wi-Fi/cellular/VPN transitions (ntfy-android#113, thanks to @ftilde for the investigation)
+* Disable UnifiedPush components when UnifiedPush is disabled in settings (ntfy-android#168, thanks to @p1gp1g for the contribution)
+
+Bug fixes + maintenance:
+* Undo automatic phone number linking for numbers in message body (ntfy-android#170, thanks to @acortelyou for the contribution)
+* Fix subscription icons disappearing after a few days due to Android clearing cache (#1322, thanks to @mcanning for reporting)

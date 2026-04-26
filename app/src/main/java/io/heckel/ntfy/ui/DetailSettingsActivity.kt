@@ -486,7 +486,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         }
 
         private fun createUri(): Uri? {
-            val dir = File(requireContext().cacheDir, SUBSCRIPTION_ICONS)
+            val dir = File(requireContext().filesDir, SUBSCRIPTION_ICONS)
             if (!dir.exists() && !dir.mkdirs()) {
                 return null
             }
@@ -526,7 +526,6 @@ class DetailSettingsActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "NtfyDetailSettingsActiv"
-        private const val SUBSCRIPTION_ICONS = "subscriptionIcons"
         private const val SUBSCRIPTION_ICON_MAX_SIZE_BYTES = 4194304
         private const val SUBSCRIPTION_ICON_MAX_WIDTH = 2048
         private const val SUBSCRIPTION_ICON_MAX_HEIGHT = 2048

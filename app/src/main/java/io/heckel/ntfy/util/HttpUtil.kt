@@ -46,12 +46,26 @@ object HttpUtil {
 
     /**
      * Client for WebSocket connections.
-     * No read timeout, 1 minute ping interval, 10s connect timeout.
+     * No read timeout, 3 minute ping interval, 10s connect timeout.
+     *
+     * Dead connections are normally caught by one of two faster mechanisms:
+     *   1. Device-side network changes (Wi-Fi <-> cellular, network drop/return) are
+     *      detected instantly by Application.registerNetworkCallback's onAvailable
+     *      handler, which bumps connectionForceReconnectVersion to force a reconnect.
+     *   2. Server-side failures (crash, restart, server's own pong timeout) surface as
+     *      TCP FIN/RST and are detected instantly via OkHttp's onClosed/onFailure.
+     *
+     * The 3-minute client ping is only a fallback for the rare case where neither of
+     * the above fires: silent server hangs, NAT eviction, asymmetric routing breaks, etc.
+     * We use a long interval so the modem can fully power down between pings, which is
+     * the dominant battery factor for the foreground service.
+     *
+     * See discussion in https://github.com/binwiederhier/ntfy-android/pull/113
      */
     suspend fun wsClient(context: Context, baseUrl: String): OkHttpClient {
         return emptyClientBuilder(context, baseUrl)
             .readTimeout(0, TimeUnit.MILLISECONDS)
-            .pingInterval(1, TimeUnit.MINUTES) // Technically not necessary, the server also pings us
+            .pingInterval(3, TimeUnit.MINUTES)
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
     }

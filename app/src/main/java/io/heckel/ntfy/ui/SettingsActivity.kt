@@ -10,9 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import android.text.TextUtils
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,13 +34,13 @@ import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.service.SubscriberServiceManager
+import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Main settings
@@ -327,6 +325,31 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Connection alert
+            val connectionAlertPrefId = context?.getString(R.string.settings_advanced_connection_alert_key) ?: return
+            val connectionAlert: ListPreference? = findPreference(connectionAlertPrefId)
+            connectionAlert?.value = repository.getConnectionAlertSeconds().toString()
+            connectionAlert?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val seconds = value?.toLongOrNull() ?: return
+                    repository.setConnectionAlertSeconds(seconds)
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getConnectionAlertSeconds().toString()
+                }
+            }
+            connectionAlert?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value?.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
+                    Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_advanced_connection_alert_summary_never)
+                    Repository.CONNECTION_ALERT_FIVE_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
+                    Repository.CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)
+                    Repository.CONNECTION_ALERT_ONE_HOUR_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_one_hour)
+                    Repository.CONNECTION_ALERT_THREE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_three_hours)
+                    Repository.CONNECTION_ALERT_TWELVE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_twelve_hours)
+                    else -> getString(R.string.settings_advanced_connection_alert_summary_never) // Must match default const
+                }
+            }
+
             // Dark mode
             val darkModePrefId = context?.getString(R.string.settings_general_dark_mode_key) ?: return
             val darkMode: ListPreference? = findPreference(darkModePrefId)
@@ -530,6 +553,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     repository.setUnifiedPushEnabled(value)
+                    context?.let {
+                        if (value) {
+                            Distributor(it).enableComponents()
+                        } else {
+                            Distributor(it).disableComponents()
+                        }
+                    }
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return repository.getUnifiedPushEnabled()

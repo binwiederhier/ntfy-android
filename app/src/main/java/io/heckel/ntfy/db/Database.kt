@@ -575,6 +575,9 @@ interface SubscriptionDao {
     """)
     fun getLastNotificationId(subscriptionIds: Collection<Long>): String?
 
+    @Query("UPDATE subscription SET icon = :icon WHERE id = :subscriptionId")
+    fun updateSubscriptionIcon(subscriptionId: Long, icon: String?)
+
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)
 }

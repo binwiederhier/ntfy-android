@@ -1,1 +1,1 @@
-ntfy - PUT/POST ao seu disp.
+ntfy - PUT/POST ao dispositivo

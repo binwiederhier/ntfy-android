@@ -82,7 +82,7 @@
     <string name="add_dialog_base_urls_dropdown_choose">Escribe URL do servizo</string>
     <string name="add_dialog_base_urls_dropdown_clear">Limpar URL do servizo</string>
     <string name="detail_no_notifications_text">Aínda non recibiches notificacións deste tema.</string>
-    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando curl):<br/><tt>$ curl -d \"Ola\" %1$s</tt> ]]></string>
     <string name="detail_how_to_link">Tes instruccións polo miúdo en ntfy.sh, e na documentación.</string>
     <string name="detail_clear_dialog_message">Eliminar todas as notificacións neste tema\?</string>
     <string name="detail_clear_dialog_permanently_delete">Eliminar permanentemente</string>
@@ -367,7 +367,7 @@
     <string name="publish_dialog_chip_email">Correo</string>
     <string name="publish_dialog_chip_delay">Adiar</string>
     <string name="publish_dialog_chip_markdown">Markdown</string>
-    <string name="publish_dialog_chip_attach_url">Anexar con URL</string>
+    <string name="publish_dialog_chip_attach_url">Anexar por URL</string>
     <string name="publish_dialog_chip_attach_file">Anexar ficheiro local</string>
     <string name="publish_dialog_chip_phone_call">Chamada de teléfono</string>
     <string name="publish_dialog_click_url_hint">Preme no URL</string>

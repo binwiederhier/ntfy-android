@@ -139,4 +139,10 @@
     <string name="common_certificate_issuer">Kibocsátó</string>
     <string name="common_certificate_valid_from">Érvényes ettől</string>
     <string name="common_certificate_valid_until">Érvényes eddig</string>
+    <string name="common_service_url">Szolgáltatás URL-je</string>
+    <string name="common_certificate_subject">Gyakori tanúsítvány karakterláncok</string>
+    <string name="common_certificate_fingerprint">SHA-256 ujjlenyomat</string>
+    <string name="common_certificate_added_toast">Tanúsítvány hozzáadva</string>
+    <string name="common_certificate_deleted_toast">Tanúsítvány törölve</string>
+    <string name="main_menu_connection_error">Csatlakozási hiba</string>
 </resources>

@@ -1,7 +1,9 @@
 package io.heckel.ntfy.up
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import io.heckel.ntfy.util.Log
 
 /**
@@ -43,6 +45,36 @@ class Distributor(val context: Context) {
         broadcastIntent.putExtra(EXTRA_TOKEN, connectorToken)
         broadcastIntent.putExtra(EXTRA_FAILED_REASON, reason)
         context.sendBroadcast(broadcastIntent)
+    }
+
+    fun disableComponents() {
+        context.packageManager.run {
+            disable(ComponentName(context.packageName, LinkActivity::class.java.canonicalName!!))
+            disable(ComponentName(context.packageName, BroadcastReceiver::class.java.canonicalName!!))
+        }
+    }
+
+    fun enableComponents() {
+        context.packageManager.run {
+            enable(ComponentName(context.packageName, LinkActivity::class.java.canonicalName!!))
+            enable(ComponentName(context.packageName, BroadcastReceiver::class.java.canonicalName!!))
+        }
+    }
+
+    private fun PackageManager.disable(component: ComponentName) {
+        setComponentEnabledSetting(
+            component,
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP
+        )
+    }
+
+    private fun PackageManager.enable(component: ComponentName) {
+        setComponentEnabledSetting(
+            component,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 
     companion object {

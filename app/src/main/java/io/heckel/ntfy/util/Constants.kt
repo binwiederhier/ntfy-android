@@ -1,6 +1,7 @@
 package io.heckel.ntfy.util
 
 const val ANDROID_APP_MIME_TYPE = "application/vnd.android.package-archive"
+const val SUBSCRIPTION_ICONS = "subscriptionIcons"
 
 const val PRIORITY_MIN = 1
 const val PRIORITY_LOW = 2

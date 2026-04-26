@@ -232,6 +232,28 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <FrameLayout
+            android:id="@+id/main_banner_no_network"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceVariant"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_banner_websocket_reconnect">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/main_banner_no_network_text"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:drawableStart="@drawable/ic_wifi_off_gray_24dp"
+                android:drawablePadding="4dp" />
+        </FrameLayout>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/main_subscriptions_list_container"
                 android:layout_width="match_parent"
@@ -239,7 +261,7 @@
                 android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/main_banner_websocket_reconnect">
+                app:layout_constraintTop_toBottomOf="@id/main_banner_no_network">
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/main_subscriptions_list"
                     android:layout_width="match_parent"
