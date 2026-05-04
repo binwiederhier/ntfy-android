@@ -17,11 +17,23 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Build F-Droid debug APK
-        run: ./gradlew assembleFdroidDebug
+      - name: Build F-Droid release APK (unsigned)
+        run: ./gradlew assembleFdroidRelease
+
+      - name: Sign APK
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/ntfy-release.keystore
+          $ANDROID_SDK_ROOT/build-tools/$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)/apksigner sign \
+            --ks /tmp/ntfy-release.keystore \
+            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
+            --out app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk \
+            app/build/outputs/apk/fdroid/release/app-fdroid-release.apk
+          rm /tmp/ntfy-release.keystore
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ntfy-fdroid-debug
-          path: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
+          name: ntfy-fdroid-release
+          path: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
           retention-days: 7
