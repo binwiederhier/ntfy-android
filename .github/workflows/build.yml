@@ -32,6 +32,8 @@ jobs:
             --out app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk \
             app/build/outputs/apk/fdroid/release/app-fdroid-release-unsigned.apk
           rm /tmp/ntfy-release.keystore
+          zip app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.zip \
+            app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
 
       - uses: actions/upload-artifact@v4
         with:
@@ -53,4 +55,4 @@ jobs:
             Branch: ${{ github.ref_name }}
             Commit: ${{ github.sha }}
             ${{ github.event.head_commit.message }}
-          attachments: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
+          attachments: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.zip
