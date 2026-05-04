@@ -37,3 +37,19 @@ jobs:
           name: ntfy-fdroid-release
           path: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
           retention-days: 7
+
+      - name: Send APK via email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.NOTIFY_EMAIL }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "ntfy Android build — ${{ github.ref_name }}@${{ github.sha && github.sha || '' }}"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: ${{ secrets.NOTIFY_FROM }}
+          body: |
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            ${{ github.event.head_commit.message }}
+          attachments: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
