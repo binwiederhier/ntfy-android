@@ -29,7 +29,7 @@ jobs:
             --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
             --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
             --out app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk \
-            app/build/outputs/apk/fdroid/release/app-fdroid-release.apk
+            app/build/outputs/apk/fdroid/release/app-fdroid-release-unsigned.apk
           rm /tmp/ntfy-release.keystore
 
       - uses: actions/upload-artifact@v4
