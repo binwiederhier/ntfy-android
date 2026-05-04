@@ -22,6 +22,7 @@ data class Message(
     @SerializedName("content_type") val contentType: String?,
     val encoding: String?,
     val attachment: MessageAttachment?,
+    val persist: Boolean?,
 )
 
 @Keep
