@@ -36,8 +36,6 @@ jobs:
             --out app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk \
             app/build/outputs/apk/fdroid/release/app-fdroid-release-unsigned.apk
           rm /tmp/ntfy-release.keystore
-          zip -P ntfy app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.zip \
-            app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
 
       - uses: actions/upload-artifact@v4
         with:
@@ -58,33 +56,9 @@ jobs:
           to: ${{ secrets.NOTIFY_EMAIL }}
           from: ${{ secrets.NOTIFY_FROM }}
           body: |
-            ✅ Build succeeded
-
             Branch:  ${{ github.ref_name }}
             Commit:  ${{ github.sha }}
             Message: ${{ github.event.head_commit.message }}
 
-            APK is attached (zip password: ntfy).
-          attachments: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.zip
-
-      - name: Send failure email
-        if: failure()
-        continue-on-error: true
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 587
-          username: ${{ secrets.NOTIFY_EMAIL }}
-          password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          subject: "[EugeneShtoka/ntfy-android] Build failed: ${{ github.ref_name }} (${{ steps.sha.outputs.short }})"
-          to: ${{ secrets.NOTIFY_EMAIL }}
-          from: ${{ secrets.NOTIFY_FROM }}
-          body: |
-            ❌ Build failed
-
-            Branch:  ${{ github.ref_name }}
-            Commit:  ${{ github.sha }}
-            Message: ${{ github.event.head_commit.message }}
-
-            Check the run for details:
+            Download APK:
             https://github.com/EugeneShtoka/ntfy-android/actions/runs/${{ github.run_id }}
