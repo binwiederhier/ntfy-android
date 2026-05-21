@@ -91,13 +91,15 @@ class Log(private val logsDao: LogDao) {
             }
     }
 
-    private fun scrub(line: String?): String? {
-        var newLine = line ?: return null
+private fun scrub(line: String?): String? {
+    var newLine = line ?: return null
+    synchronized(scrubTerms) {
         scrubTerms.forEach { (scrubTerm, replaceTerm) ->
             newLine = newLine.replace(scrubTerm, replaceTerm.replaceTerm)
         }
-        return newLine
     }
+    return newLine
+}
 
     private fun formatEntries(entries: List<LogEntry>): String {
         return entries.joinToString(separator = "\n") { e ->
