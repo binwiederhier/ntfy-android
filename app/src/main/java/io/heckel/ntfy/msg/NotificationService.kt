@@ -87,6 +87,34 @@ class NotificationService(val context: Context) {
         val channelId = toChannelId(groupId, notification.priority)
         val insistent = notification.priority == PRIORITY_MAX &&
                 (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
+
+        // Check for promoted live notification first
+        if (PromotedNotificationBuilder.shouldShowLiveNotification(
+                notification, context, repository.getLiveNotificationsEnabled()
+            )) {
+            val liveBuilder = PromotedNotificationBuilder.buildLiveNotification(subscription, notification, context, channelId)
+            if (liveBuilder != null) {
+                setStyleAndText(liveBuilder, subscription, notification)
+                setClickAction(liveBuilder, subscription, notification)
+                maybeSetDeleteIntent(liveBuilder, insistent)
+                maybeSetSound(liveBuilder, insistent, update)
+                maybeAddOpenAction(liveBuilder, notification)
+                maybeAddBrowseAction(liveBuilder, notification)
+                maybeAddDownloadAction(liveBuilder, notification)
+                maybeAddCancelAction(liveBuilder, notification)
+                maybeAddUserActions(liveBuilder, notification)
+
+                maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
+                maybeCreateNotificationChannel(groupId, notification.priority)
+                maybePlayInsistentSound(groupId, insistent)
+
+                Log.d(TAG, "Displaying promoted live notification $notification")
+                notificationManager.notify(notification.notificationId, liveBuilder.build())
+                return
+            }
+        }
+
+        // Regular notification path
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(Colors.notificationIcon(context))

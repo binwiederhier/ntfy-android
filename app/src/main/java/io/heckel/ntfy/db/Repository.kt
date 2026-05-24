@@ -404,6 +404,16 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getLiveNotificationsEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_LIVE_NOTIFICATIONS_ENABLED, true) // Enabled by default
+    }
+
+    fun setLiveNotificationsEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_LIVE_NOTIFICATIONS_ENABLED, enabled)
+        }
+    }
+
     fun getMessageBarEnabled(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_MESSAGE_BAR_ENABLED, true) // Enabled by default
     }
@@ -652,8 +662,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
-        const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
+		const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_MESSAGE_BAR_ENABLED = "MessageBarEnabled"
+        const val SHARED_PREFS_LIVE_NOTIFICATIONS_ENABLED = "LiveNotificationsEnabled"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime" // Timestamp as millis
         const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner), timestamp as millis
         const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime" // Timestamp as millis

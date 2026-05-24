@@ -29,6 +29,11 @@
                 app:key="@string/settings_notifications_insistent_max_priority_key"
                 app:title="@string/settings_notifications_insistent_max_priority_title"
                 app:defaultValue="false"/>
+        <SwitchPreferenceCompat
+                app:key="@string/settings_notifications_live_notifications_key"
+                app:title="@string/settings_notifications_live_notifications_title"
+                app:summary="@string/settings_notifications_live_notifications_summary"
+                app:defaultValue="true"/>
         <Preference
                 app:key="@string/settings_notifications_channel_prefs_key"
                 app:title="@string/settings_notifications_channel_prefs_title"

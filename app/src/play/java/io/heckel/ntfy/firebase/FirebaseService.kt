@@ -163,6 +163,8 @@ class FirebaseService : FirebaseMessagingService() {
         val attachmentUrl = data["attachment_url"]
         val sequenceId = data["sequence_id"]
         val truncated = (data["truncated"] ?: "") == "1"
+		val percentage = data["percentage"]?.toIntOrNull() ?: -1
+        val end = data["end"]?.toLongOrNull() ?: 0
         if (id == null || topic == null || message == null || timestamp == null) {
             Log.d(TAG, "Discarding unexpected message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
             return
@@ -208,6 +210,8 @@ class FirebaseService : FirebaseMessagingService() {
                 attachment = attachment,
                 notificationId = deriveNotificationId(baseUrl, topic, actualSequenceId),
                 deleted = false,
+                percentage = percentage,
+                end = end,
                 event = ApiService.EVENT_MESSAGE
             )
 
