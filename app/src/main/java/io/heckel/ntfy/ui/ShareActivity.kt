@@ -217,7 +217,7 @@ class ShareActivity : AppCompatActivity() {
                         if (baseUrl != defaultUrl) baseUrlText.setText(baseUrl)
                         baseUrlLayout.visibility = if (useAnotherServerCheckbox.isChecked) View.VISIBLE else View.GONE
                         validateInput()
-                        if (repository.isSharingAutoSendEnabled() && (contentText.text.isNotEmpty() || fileUri != null) && topicText.text.isNotEmpty()) {
+                        if ((contentText.text.isNotEmpty() || fileUri != null) && topicText.text.isNotEmpty()) {
                             onShareClick()
                         }
                     } catch (_: Exception) {
