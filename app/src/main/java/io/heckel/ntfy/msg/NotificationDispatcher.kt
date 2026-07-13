@@ -33,7 +33,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         val downloadAttachment = shouldDownloadAttachment(notification)
         val downloadIcon = shouldDownloadIcon(notification)
         if (cancel) {
-            notifier.cancel(notification.notificationId)
+            notifier.cancel(subscription.id, notification.notificationId)
         } else if (notify) {
             notifier.display(subscription, notification)
         }
