@@ -73,7 +73,8 @@ class NotificationParser {
             attachment = attachment,
             notificationId = deriveNotificationId(baseUrl, topic, sequenceId),
             deleted = false,
-            event = message.event
+            event = message.event,
+            persist = message.persist ?: true,
         )
         return NotificationWithTopic(topic, notification)
     }

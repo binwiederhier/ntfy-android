@@ -139,12 +139,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         if (maybeExistingNotification != null || notification.event != ApiService.EVENT_MESSAGE) {
             return false
         }
-        // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
-        if (notification.sequenceId.isNotEmpty()) {
-            notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
-        }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
-        notificationDao.add(notification)
+        if (notification.persist) {
+            // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
+            if (notification.sequenceId.isNotEmpty()) {
+                notificationDao.markAsDeletedBySequenceId(notification.subscriptionId, notification.sequenceId)
+            }
+            notificationDao.add(notification)
+        }
         return true
     }
 

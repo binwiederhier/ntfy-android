@@ -1,0 +1,44 @@
+name: Rebase on upstream main
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # daily at 6am UTC
+  workflow_dispatch:      # allow manual trigger
+
+jobs:
+  rebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: x-persist-header
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/binwiederhier/ntfy-android.git
+
+      - name: Fetch upstream main
+        run: git fetch upstream main
+
+      - name: Check for new upstream commits
+        id: check
+        run: |
+          UPSTREAM=$(git rev-parse upstream/main)
+          BASE=$(git merge-base HEAD upstream/main)
+          if [ "$UPSTREAM" = "$BASE" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Rebase on upstream main
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.email "action@github.com"
+          git config user.name "GitHub Actions"
+          git rebase upstream/main
+
+      - name: Push rebased branch
+        if: steps.check.outputs.changed == 'true'
+        run: git push origin x-persist-header --force

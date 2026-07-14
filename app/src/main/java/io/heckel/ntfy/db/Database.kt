@@ -161,6 +161,7 @@ data class Notification(
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
     @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
+    @Ignore val persist: Boolean = true, // If false, notification should not be saved to local history
 ) {
     constructor(
         id: String,

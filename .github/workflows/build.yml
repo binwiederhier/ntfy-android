@@ -1,0 +1,64 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: sha
+        run: echo "short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build F-Droid release APK (unsigned)
+        run: ./gradlew assembleFdroidRelease
+
+      - name: Sign APK
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > /tmp/ntfy-release.keystore
+          $ANDROID_SDK_ROOT/build-tools/$(ls $ANDROID_SDK_ROOT/build-tools | sort -V | tail -1)/apksigner sign \
+            --ks /tmp/ntfy-release.keystore \
+            --ks-key-alias "${{ secrets.KEY_ALIAS }}" \
+            --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+            --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
+            --out app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk \
+            app/build/outputs/apk/fdroid/release/app-fdroid-release-unsigned.apk
+          rm /tmp/ntfy-release.keystore
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ntfy-fdroid-release
+          path: app/build/outputs/apk/fdroid/release/app-fdroid-release-signed.apk
+          retention-days: 7
+
+      - name: Send success email
+        if: success()
+        continue-on-error: true
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.NOTIFY_EMAIL }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          subject: "[EugeneShtoka/ntfy-android] Build succeeded: ${{ github.ref_name }} (${{ steps.sha.outputs.short }})"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: ${{ secrets.NOTIFY_FROM }}
+          body: |
+            Branch:  ${{ github.ref_name }}
+            Commit:  ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message }}
+
+            Download APK:
+            https://github.com/EugeneShtoka/ntfy-android/actions/runs/${{ github.run_id }}
