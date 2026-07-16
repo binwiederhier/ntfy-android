@@ -235,6 +235,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 showHideBatteryBanner(subscriptions)
                 showHideWebSocketBanner(subscriptions)
                 showHideWebSocketReconnectBanner()
+
+                // Update share targets in the system share sheet
+                ShareTargetHelper.update(this@MainActivity, subscriptions)
             }
         }
 
