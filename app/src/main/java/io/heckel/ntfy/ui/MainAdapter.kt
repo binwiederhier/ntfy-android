@@ -17,9 +17,9 @@ import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.util.displayName
+import io.heckel.ntfy.util.formatDate
+import io.heckel.ntfy.util.formatTime
 import io.heckel.ntfy.util.readBitmapFromUriOrNull
-import java.text.DateFormat
-import java.util.*
 
 class MainAdapter(
     private val repository: Repository,
@@ -95,14 +95,13 @@ class MainAdapter(
             if (subscription.instant && subscription.connectionDetails.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
-            val date = Date(subscription.lastActive * 1000)
-            val dateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+            val dateStr = formatDate(context, subscription.lastActive)
             val moreThanOneDay = System.currentTimeMillis()/1000 - subscription.lastActive > 24 * 60 * 60
-            val sameDay = dateStr == DateFormat.getDateInstance(DateFormat.SHORT).format(Date()) // Omg this is horrible
+            val sameDay = dateStr == formatDate(context, System.currentTimeMillis() / 1000)
             val dateText = if (subscription.lastActive == 0L) {
                 ""
             } else if (sameDay) {
-                DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+                formatTime(context, subscription.lastActive)
             } else if (!moreThanOneDay) {
                 context.getString(R.string.main_item_date_yesterday)
             } else {

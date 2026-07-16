@@ -593,7 +593,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             notificationsDisabledForeverItem?.isVisible = mutedUntilSeconds == 1L
             notificationsDisabledUntilItem?.isVisible = mutedUntilSeconds > 1L
             if (mutedUntilSeconds > 1L) {
-                val formattedDate = formatDateShort(mutedUntilSeconds)
+                    val formattedDate = formatDateShort(this@MainActivity, mutedUntilSeconds)
                 notificationsDisabledUntilItem?.title = getString(R.string.main_menu_notifications_disabled_until, formattedDate)
             }
         }
@@ -686,7 +686,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
                 0L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
                 1L -> Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()
                 else -> {
-                    val formattedDate = formatDateShort(mutedUntilTimestamp)
+            val formattedDate = formatDateShort(this, mutedUntilTimestamp)
                     Toast.makeText(this@MainActivity, getString(R.string.notification_dialog_muted_until_toast_message, formattedDate), Toast.LENGTH_LONG).show()
                 }
             }
