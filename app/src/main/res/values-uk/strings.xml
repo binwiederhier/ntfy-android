@@ -137,7 +137,7 @@
     <string name="detail_clear_dialog_message">Видалити всі сповіщення в цій темі\?</string>
     <string name="detail_item_cannot_save">Неможливо зберегти вкладення: %1$s</string>
     <string name="detail_item_download_failed">Не вдалося завантажити вкладений файл: %1$s</string>
-    <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Привіт\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_example"><![CDATA[" Приклад (із використанням curl):<br><tt>$ curl -d \"Привіт\" %1$s</tt> "]]></string>
     <string name="detail_item_download_info_not_downloaded_expires_x">не завантажено, закінчується %1$s</string>
     <string name="detail_test_message_error_too_large">Не вдається надіслати повідомлення: вкладення завелике.</string>
     <string name="detail_instant_delivery_enabled">Миттєва доставка включена</string>
@@ -339,7 +339,7 @@
     <string name="settings_advanced_unifiedpush_summary_enabled">ntfy буде виступати в якості дистриб\'ютора UnifiedPush</string>
     <string name="settings_advanced_unifiedpush_summary_disabled">ntfy не буде виступати в ролі дистриб\'ютора UnifiedPush</string>
     <string name="main_banner_websocket_reconnect_button_remind_later">Запитати пізніше</string>
-    <string name="main_banner_websocket_reconnect_button_dismiss">Закрити</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Відхилити</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Надати зараз</string>
     <string name="publish_dialog_title">Опублікувати до %1$s</string>
     <string name="publish_dialog_title_hint">Назва</string>
@@ -492,4 +492,6 @@
     <string name="trusted_certificate_dialog_description_view">Цей сертифікат використовується для підключень до URL-адреси сервісу, зазначеної нижче. Ви вручну додали цей виняток.</string>
     <string name="trusted_certificate_dialog_description_page1">Введіть URL-адресу сервісу, до якого слід закріпити цей сертифікат. Сертифікат буде довіреним лише для цієї URL-адреси.</string>
     <string name="client_certificate_dialog_description_page2">Перегляньте деталі сертифіката та збережіть зміни, щоб додати цей клієнтський сертифікат. Цей сертифікат буде використовуватися для автентифікації на сервері.</string>
+    <string name="channel_subscriber_notification_no_network_title">Очікую мережеве з’єднання</string>
+    <string name="channel_subscriber_notification_no_network_text">Сповіщення будуть отримуватися коли з’явиться Wi-Fi або мобільний інтернет</string>
 </resources>
