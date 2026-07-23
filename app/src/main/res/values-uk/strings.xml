@@ -63,12 +63,12 @@
     <string name="main_no_subscriptions_text">Схоже, у вас ще немає жодної підписки.</string>
     <string name="main_how_to_link">Детальні інструкції доступні на ntfy.sh і в документах.</string>
     <string name="main_unified_push_toast">Цією підпискою керує %1$s через UnifiedPush</string>
-    <string name="main_banner_battery_text">Щоб уникнути проблем із доставляння сповіщень, оптимізацію акумулятора слід вимкнути.</string>
-    <string name="main_banner_battery_button_remind_later">Запитайте пізніше</string>
+    <string name="main_banner_battery_text">Щоб уникнути проблем із доставкою сповіщень, оптимізацію акумулятора краще вимкнути.</string>
+    <string name="main_banner_battery_button_remind_later">Запитати пізніше</string>
     <string name="main_banner_battery_button_dismiss">Відхилити</string>
-    <string name="main_banner_battery_button_fix_now">Виправ зараз</string>
+    <string name="main_banner_battery_button_fix_now">Виправити</string>
     <string name="add_dialog_title">Підписатися на тему</string>
-    <string name="add_dialog_description_below">Теми можуть не бути захищені паролем, тому виберіть назву, яку важко вгадати. Після підписки ви можете PUT/POST сповіщення.</string>
+    <string name="add_dialog_description_below">Теми можуть бути незахищені паролем, тому виберіть назву, яку важко відгадати. Після підписки ви зможете надсилати сповіщення через виклики HTTP PUT/POST.</string>
     <string name="add_dialog_topic_name_hint">Назва теми, наприклад phils_alerts</string>
     <string name="add_dialog_use_another_server">Використовувати інший сервер</string>
     <string name="add_dialog_instant_delivery">Миттєва доставка в режимі дрімання</string>
@@ -143,8 +143,8 @@
     <string name="detail_instant_delivery_enabled">Миттєва доставка включена</string>
     <string name="detail_item_tags">Теги: %1$s</string>
     <string name="detail_item_download_info_not_downloaded_expired">не завантажено, термін дії посилання закінчився</string>
-    <string name="detail_no_notifications_text">Ви ще не отримали сповіщень щодо цієї теми.</string>
-    <string name="detail_how_to_intro">Щоб надіслати сповіщення до цієї теми, просто PUT або POST за URL-адресою теми.</string>
+    <string name="detail_no_notifications_text">Ви ще не отримували сповіщень в цю тему.</string>
+    <string name="detail_how_to_intro">Щоб надіслати сповіщення до цієї теми, здійсніть виклик HTTP PUT або POST на URL-адресу теми.</string>
     <string name="detail_deep_link_subscribed_toast_message">Підписався на тему %1$s</string>
     <string name="detail_item_cannot_open">Неможливо відкрити вкладення: %1$s</string>
     <string name="detail_item_download_info_deleted_expires_x">видалено, посилання діє %1$s</string>
@@ -209,7 +209,7 @@
     <string name="detail_settings_about_topic_url_title">URL теми</string>
     <string name="user_dialog_username_hint">Ім\'я користувача</string>
     <string name="detail_settings_about_header">Про</string>
-    <string name="user_dialog_description_edit">Ви можете змінити ім\'я користувача/пароль для вибраного користувача або видалити його.</string>
+    <string name="user_dialog_description_edit">Ви можете змінити ім’я вибраного користувача чи пароль, або видалити його.</string>
     <string name="user_dialog_button_add">Додати користувача</string>
     <string name="user_dialog_description_add">Ви можете додати користувача тут. Усі теми для даного сервера використовуватимуть цього користувача.</string>
     <string name="user_dialog_button_delete">Видалити користувача</string>
@@ -251,7 +251,7 @@
     <string name="share_content_image_text">З вами поділилися зображенням</string>
     <string name="share_content_image_error">Не вдається прочитати зображення: %1$s</string>
     <string name="share_suggested_topics">Пропоновані теми</string>
-    <string name="share_successful">Повідомлення опубліковано</string>
+    <string name="share_successful">Сповіщення опубліковане</string>
     <string name="notification_dialog_title">Вимкнути сповіщення</string>
     <string name="notification_dialog_cancel">Скасувати</string>
     <string name="notification_dialog_enabled_toast_message">Сповіщення відновлено</string>
@@ -319,7 +319,7 @@
     <string name="detail_settings_appearance_icon_error_saving">Не вдалося зберегти значок: %1$s</string>
     <string name="detail_settings_global_setting_title">Використовуйте глобальні налаштування</string>
     <string name="user_dialog_title_edit">Редагувати користувача</string>
-    <string name="main_banner_websocket_button_remind_later">Запитайте пізніше</string>
+    <string name="main_banner_websocket_button_remind_later">Запитати пізніше</string>
     <string name="main_banner_websocket_button_dismiss">Відхилити</string>
     <string name="main_banner_websocket_button_enable_now">Увімкнути зараз</string>
     <string name="settings_advanced_connection_protocol_summary_jsonhttp">Використовуйте потік JSON через HTTP для підключення до сервера. Цей метод перевірено в боях, але може споживати більше заряду батареї.</string>
@@ -343,7 +343,7 @@
     <string name="main_banner_websocket_reconnect_button_enable_now">Надати зараз</string>
     <string name="publish_dialog_title">Опублікувати до %1$s</string>
     <string name="publish_dialog_title_hint">Назва</string>
-    <string name="publish_dialog_title_placeholder">наприклад, Хтось стоїть біля дверей</string>
+    <string name="publish_dialog_title_placeholder">наприклад, «Хтось стоїть біля дверей»</string>
     <string name="publish_dialog_message_hint">Повідомлення</string>
     <string name="publish_dialog_tags_hint">Теги</string>
     <string name="publish_dialog_tags_placeholder">напр., попередження, череп</string>
@@ -351,7 +351,7 @@
     <string name="publish_dialog_button_publish">Опублікувати</string>
     <string name="publish_dialog_error_sending">Не вдається опублікувати повідомлення: %1$s</string>
     <string name="publish_dialog_error_server">Не вдається опублікувати повідомлення: %1$s (код %2$d)</string>
-    <string name="publish_dialog_message_published">Повідомлення опубліковано</string>
+    <string name="publish_dialog_message_published">Сповіщення опубліковане</string>
     <string name="publish_dialog_uploading">Завантаження: %1$s (%2$s / %3$s)</string>
     <string name="publish_dialog_upload_cancelled">Завантаження скасовано</string>
     <string name="publish_dialog_chip_title">Назва</string>
