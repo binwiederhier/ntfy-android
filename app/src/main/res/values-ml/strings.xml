@@ -1,3 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="common_button_next">അടുത്തത്</string>
+    <string name="common_button_add">ചേർക്കുക</string>
+    <string name="common_button_delete">ഇല്ലാതാക്കുക</string>
+    <string name="common_button_copy">പകർത്തുക</string>
+    <string name="common_button_reset_to_default">സ്ഥിരസ്ഥിതിയിലേക്ക് പുനഃസജ്ജമാക്കുക</string>
+    <string name="common_copied_to_clipboard">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>
+    <string name="common_service_url_placeholder">ഉദാ. https://ntfy.example.com</string>
+    <string name="common_priority_min_name">ഏറ്റവും കുറഞ്ഞ മുൻഗണന</string>
+    <string name="common_priority_low_name">കുറഞ്ഞ മുൻഗണന</string>
+    <string name="common_priority_high_name">ഉയർന്ന മുൻഗണന</string>
 </resources>
