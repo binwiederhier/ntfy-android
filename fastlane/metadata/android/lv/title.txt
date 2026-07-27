@@ -1,1 +1,1 @@
-ntfy - PUT/POST savā tālrunī
+ntfy: PUT/POST uz savu tālruni

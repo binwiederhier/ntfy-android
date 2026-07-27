@@ -1,1 +1,1 @@
-Sūtīt paziņojumus uz tālr. no jebkura skripta, izmantojot PUT/POST pieprasījumus
+Paziņojumu sūtīšana uz tālruni no jebkura skripta ar PUT/POST pieprasījumiem
