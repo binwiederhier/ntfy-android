@@ -346,4 +346,7 @@
     <string name="common_button_next">Următorul</string>
     <string name="common_button_add">Adaugă</string>
     <string name="common_button_delete">Şterge</string>
+    <string name="common_button_reset_to_default">Resetați la valorile implicite</string>
+    <string name="common_service_url_placeholder">ex: https://ntfy.example.com</string>
+    <string name="channel_connection_alert_name">Alerte de conexiune</string>
 </resources>
