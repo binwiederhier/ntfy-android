@@ -78,4 +78,5 @@
     <string name="connection_alert_snoozed_toast">การแจ้งเตือนการเชื่อมต่อขาดหายถูกเลื่อนออกไปเป็นเวลา %1$dh</string>
     <string name="refresh_message_result">ได้รับการแจ้งเตือน %1$d ครั้ง</string>
     <string name="main_menu_connection_error">การเชื่อมต่อผิดพลาด</string>
+    <string name="channel_subscriber_notification_no_network_title">กำลังรอการเชื่อมต่อเครือข่าย</string>
 </resources>
