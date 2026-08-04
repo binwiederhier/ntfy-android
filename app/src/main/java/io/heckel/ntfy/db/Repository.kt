@@ -394,6 +394,26 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getFullScreenAlarmsEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_FULLSCREEN_ALARMS_ENABLED, false) // Disabled by default, like "keep alerting for highest priority"
+    }
+
+    fun setFullScreenAlarmsEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_FULLSCREEN_ALARMS_ENABLED, enabled)
+        }
+    }
+
+    fun getFullScreenIntentDowngradeOccurred(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_FULLSCREEN_INTENT_DOWNGRADE_OCCURRED, false)
+    }
+
+    fun setFullScreenIntentDowngradeOccurred(occurred: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_FULLSCREEN_INTENT_DOWNGRADE_OCCURRED, occurred)
+        }
+    }
+
     fun getRecordLogs(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, false) // Disabled by default
     }
@@ -656,6 +676,8 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
+        const val SHARED_PREFS_FULLSCREEN_ALARMS_ENABLED = "FullScreenAlarmsEnabled"
+        const val SHARED_PREFS_FULLSCREEN_INTENT_DOWNGRADE_OCCURRED = "FullScreenIntentDowngradeOccurred"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_MESSAGE_BAR_ENABLED = "MessageBarEnabled"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime" // Timestamp as millis

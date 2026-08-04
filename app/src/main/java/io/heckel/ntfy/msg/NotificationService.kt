@@ -9,12 +9,14 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.db.Notification
+import io.heckel.ntfy.ui.AlarmActivity
 import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.DetailActivity
 import io.heckel.ntfy.ui.MainActivity
@@ -59,6 +61,7 @@ class NotificationService(val context: Context) {
     fun createDefaultNotificationChannels() {
         maybeCreateNotificationGroup(DEFAULT_GROUP, context.getString(R.string.channel_notifications_group_default_name))
         ALL_PRIORITIES.forEach { priority -> maybeCreateNotificationChannel(DEFAULT_GROUP, priority) }
+        maybeCreateAlarmChannel()
     }
 
     fun createSubscriptionNotificationChannels(subscription: Subscription) {
@@ -85,7 +88,9 @@ class NotificationService(val context: Context) {
         val title = formatTitle(appBaseUrl, subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
         val channelId = toChannelId(groupId, notification.priority)
-        val insistent = notification.priority == PRIORITY_MAX &&
+        val alarmConfig = parseAlarmConfig(notification.tags)
+        val alarm = alarmConfig != null && repository.getFullScreenAlarmsEnabled()
+        val insistent = !alarm && notification.priority == PRIORITY_MAX && // The alarm supersedes the insistent sound
                 (repository.getInsistentMaxPriorityEnabled() || subscription.insistent == Repository.INSISTENT_MAX_PRIORITY_ENABLED)
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_notification)
@@ -111,6 +116,152 @@ class NotificationService(val context: Context) {
         maybePlayInsistentSound(groupId, insistent)
 
         notificationManager.notify(notification.notificationId, builder.build())
+
+        if (alarm && !update) {
+            displayAlarm(subscription, notification, alarmConfig!!)
+        }
+    }
+
+    /**
+     * Posts the dedicated full-screen alarm notification (in addition to the regular topic
+     * notification above) and starts the alarm session (looping sound, vibration, ring timeout).
+     *
+     * Sound/vibration are played by the app itself via AlarmSessionManager, because the alarm
+     * channel is silent and Android may only show a heads-up (instead of launching AlarmActivity)
+     * when the screen is on and unlocked. On Android 14+ the full-screen intent is only attached
+     * if the user granted the permission; otherwise the notification still rings normally.
+     */
+    fun displayAlarm(subscription: Subscription, notification: Notification, config: AlarmConfig) {
+        maybeCreateNotificationGroup(DEFAULT_GROUP, context.getString(R.string.channel_notifications_group_default_name))
+        maybeCreateAlarmChannel()
+        AlarmSessionManager.getInstance(context).start(notification, config)
+
+        val builder = NotificationCompat.Builder(context, ALARM_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(Colors.notificationIcon(context))
+            .setContentTitle(formatTitle(appBaseUrl, subscription, notification))
+            .setContentText(maybeMarkdown(formatMessage(notification), notification))
+            .setWhen(notification.timestamp * 1000)
+            .setShowWhen(true)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setOngoing(true) // Not swipeable; dismissed via buttons, timeout, or the alarm screen
+            .setAutoCancel(false)
+
+        val alarmScreenIntent = Intent(context, AlarmActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            putExtra(AlarmActivity.EXTRA_NOTIFICATION_ID, notification.id)
+            putExtra(AlarmActivity.EXTRA_SUBSCRIPTION_ID, notification.subscriptionId)
+        }
+        val alarmScreenPendingIntent = PendingIntent.getActivity(
+            context, notification.notificationId, alarmScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        builder.setContentIntent(alarmScreenPendingIntent)
+        val canUseFullScreenIntent = Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE ||
+                notificationManager.canUseFullScreenIntent()
+        if (canUseFullScreenIntent) {
+            builder.setFullScreenIntent(alarmScreenPendingIntent, true)
+        } else {
+            Log.w(TAG, "USE_FULL_SCREEN_INTENT not granted; posting alarm as regular notification")
+            repository.setFullScreenIntentDowngradeOccurred(true)
+        }
+
+        addAlarmActions(builder, notification, config)
+        notificationManager.notify(notification.notificationId, builder.build())
+    }
+
+    /**
+     * Adds the backend-defined action buttons to the alarm notification (max 3, Android limit).
+     * Reserved "broadcast" actions with the ALARM_DISMISS/ALARM_SNOOZE intents become local
+     * dismiss/snooze buttons; other actions execute via their normal machinery and also silence
+     * the alarm. A built-in Dismiss button is prepended if the backend did not define one, so the
+     * (non-swipeable) alarm notification can always be stopped from the shade.
+     */
+    private fun addAlarmActions(builder: NotificationCompat.Builder, notification: Notification, config: AlarmConfig) {
+        val actions = notification.actions ?: emptyList()
+        val hasDismiss = actions.any { it.action.lowercase(Locale.getDefault()) == ACTION_BROADCAST && it.intent == AlarmBroadcastReceiver.ACTION_ALARM_DISMISS }
+        if (!hasDismiss) {
+            addAlarmDismissAction(builder, notification, label = context.getString(R.string.notification_popup_action_alarm_dismiss), clear = false)
+        }
+        actions.take(if (hasDismiss) 3 else 2).forEach { action ->
+            when {
+                action.action.lowercase(Locale.getDefault()) == ACTION_BROADCAST && action.intent == AlarmBroadcastReceiver.ACTION_ALARM_DISMISS -> {
+                    val clear = action.clear == true || action.extras?.get("clear") == "true"
+                    addAlarmDismissAction(builder, notification, action.label, clear)
+                }
+                action.action.lowercase(Locale.getDefault()) == ACTION_BROADCAST && action.intent == AlarmBroadcastReceiver.ACTION_ALARM_SNOOZE -> {
+                    addAlarmSnoozeAction(builder, notification, config, action)
+                }
+                action.action.lowercase(Locale.getDefault()) == ACTION_VIEW -> {
+                    addAlarmViewAction(builder, notification, action)
+                }
+                else -> {
+                    addAlarmUserAction(builder, notification, action)
+                }
+            }
+        }
+    }
+
+    private fun addAlarmDismissAction(builder: NotificationCompat.Builder, notification: Notification, label: String, clear: Boolean) {
+        val intent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
+            action = AlarmBroadcastReceiver.ACTION_ALARM_DISMISS
+            putExtra(AlarmBroadcastReceiver.EXTRA_ANDROID_NOTIFICATION_ID, notification.notificationId)
+            putExtra(AlarmBroadcastReceiver.EXTRA_SUBSCRIPTION_ID, notification.subscriptionId)
+            putExtra(AlarmBroadcastReceiver.EXTRA_SEQUENCE_ID, notification.sequenceId)
+            putExtra(AlarmBroadcastReceiver.EXTRA_CLEAR, clear)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, notification.notificationId + AlarmSessionManager.REQUEST_CODE_OFFSET_DISMISS, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        builder.addAction(NotificationCompat.Action.Builder(0, label, pendingIntent).build())
+    }
+
+    private fun addAlarmSnoozeAction(builder: NotificationCompat.Builder, notification: Notification, config: AlarmConfig, action: Action) {
+        val minutes = action.extras?.get("minutes")?.toIntOrNull() ?: config.snoozeMinutes
+        val intent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
+            this.action = AlarmBroadcastReceiver.ACTION_ALARM_SNOOZE
+            putExtra(AlarmBroadcastReceiver.EXTRA_NOTIFICATION_ID, notification.id)
+            putExtra(AlarmBroadcastReceiver.EXTRA_ANDROID_NOTIFICATION_ID, notification.notificationId)
+            putExtra(AlarmBroadcastReceiver.EXTRA_SNOOZE_MINUTES, minutes)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, notification.notificationId + AlarmSessionManager.REQUEST_CODE_OFFSET_SNOOZE, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+    }
+
+    /**
+     * "view" actions cannot go through AlarmBroadcastReceiver (starting an activity from a
+     * receiver is a notification trampoline, forbidden since API 31), so they launch the small
+     * AlarmViewActionActivity, which silences the alarm and then opens the URL.
+     */
+    private fun addAlarmViewAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+        val url = action.url ?: return
+        val intent = Intent(context, AlarmViewActionActivity::class.java).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra(VIEW_ACTION_EXTRA_URL, url)
+            putExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, notification.notificationId)
+            putExtra(VIEW_ACTION_EXTRA_SUBSCRIPTION_ID, notification.subscriptionId)
+            putExtra(VIEW_ACTION_EXTRA_SEQUENCE_ID, notification.sequenceId)
+            putExtra(VIEW_ACTION_EXTRA_CLEAR, action.clear == true)
+        }
+        val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
+        builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+    }
+
+    private fun addAlarmUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+        val intent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
+            this.action = AlarmBroadcastReceiver.ACTION_ALARM_USER_ACTION
+            putExtra(AlarmBroadcastReceiver.EXTRA_NOTIFICATION_ID, notification.id)
+            putExtra(AlarmBroadcastReceiver.EXTRA_ANDROID_NOTIFICATION_ID, notification.notificationId)
+            putExtra(AlarmBroadcastReceiver.EXTRA_ACTION_ID, action.id)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        builder.addAction(NotificationCompat.Action.Builder(0, formatActionLabel(action), pendingIntent).build())
     }
 
     private fun maybeSetDeleteIntent(builder: NotificationCompat.Builder, insistent: Boolean) {
@@ -412,6 +563,22 @@ class NotificationService(val context: Context) {
         notificationManager.deleteNotificationChannel(toChannelId(group, priority))
     }
 
+    /**
+     * Channel for full-screen alarm notifications. Deliberately silent and without vibration:
+     * the app plays the (backend-configured) sound and vibration itself via AlarmSessionManager,
+     * so the channel must not double up.
+     */
+    private fun maybeCreateAlarmChannel() {
+        val channel = NotificationChannel(ALARM_CHANNEL_ID, context.getString(R.string.channel_alarm_name), NotificationManager.IMPORTANCE_HIGH)
+        channel.setSound(null, null)
+        channel.enableVibration(false)
+        channel.enableLights(true)
+        channel.setBypassDnd(true)
+        channel.lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+        channel.group = DEFAULT_GROUP
+        notificationManager.createNotificationChannel(channel)
+    }
+
     private fun maybeCreateNotificationGroup(id: String, name: String) {
         notificationManager.createNotificationChannelGroup(NotificationChannelGroup(id, name))
     }
@@ -519,6 +686,60 @@ class NotificationService(val context: Context) {
         return message
     }
 
+    /**
+     * Activity behind "view" action buttons on the full-screen alarm notification. Like
+     * ViewActionWithClearActivity, but it also silences the alarm first; starting an activity
+     * from a BroadcastReceiver would be a forbidden notification trampoline (API 31+), which is
+     * why "view" cannot go through AlarmBroadcastReceiver like the other action types.
+     */
+    class AlarmViewActionActivity : Activity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            Log.d(TAG, "Created $this")
+            val url = intent.getStringExtra(VIEW_ACTION_EXTRA_URL)
+            val notificationId = intent.getIntExtra(VIEW_ACTION_EXTRA_NOTIFICATION_ID, 0)
+            val subscriptionId = intent.getLongExtra(VIEW_ACTION_EXTRA_SUBSCRIPTION_ID, 0)
+            val sequenceId = intent.getStringExtra(VIEW_ACTION_EXTRA_SEQUENCE_ID) ?: ""
+            val clear = intent.getBooleanExtra(VIEW_ACTION_EXTRA_CLEAR, false)
+
+            // Silence the alarm and remove the alarm notification
+            AlarmSessionManager.getInstance(this).stop(cancelNotification = true)
+            if (notificationId != 0) {
+                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(notificationId)
+            }
+
+            if (url == null) {
+                finish()
+                return
+            }
+            try {
+                val viewIntent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(viewIntent)
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to start activity from URL $url", e)
+                val message = if (e is ActivityNotFoundException) url else e.message
+                Toast
+                    .makeText(this, getString(R.string.detail_item_cannot_open_url, message), Toast.LENGTH_LONG)
+                    .show()
+            }
+
+            // Clear the message notification and mark it read (clear=true semantics)
+            if (clear && subscriptionId != 0L) {
+                NotificationService(this).cancel(notificationId)
+                if (sequenceId.isNotEmpty()) {
+                    val app = applicationContext as io.heckel.ntfy.app.Application
+                    app.ioScope.launch {
+                        Repository.getInstance(app).markAsReadBySequenceId(subscriptionId, sequenceId)
+                    }
+                }
+            }
+            finish()
+        }
+    }
+
     companion object {
         const val ACTION_VIEW = "view"
         const val ACTION_HTTP = "http"
@@ -547,5 +768,8 @@ class NotificationService(val context: Context) {
         private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"
         private const val VIEW_ACTION_EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         private const val VIEW_ACTION_EXTRA_SEQUENCE_ID = "sequenceId"
+        private const val VIEW_ACTION_EXTRA_CLEAR = "clear"
+
+        const val ALARM_CHANNEL_ID = "ntfy-alarm"
     }
 }
