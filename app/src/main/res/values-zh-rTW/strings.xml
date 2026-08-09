@@ -204,7 +204,7 @@
     <string name="detail_item_saved_successfully">儲存為「Downloads」資料夾中的「%1$s」</string>
     <string name="detail_test_message_error_unauthorized_user">無法傳送訊息：使用者 %1$s 未獲授權。</string>
     <string name="detail_how_to_intro">若要向此主題傳送通知，只要 PUT 或 POST 到主題 URL 即可。</string>
-    <string name="detail_how_to_example"><![CDATA[ 例如（使用 curl): <br/><tt>$ curl -d "Hi" %1$s</tt>]]></string>
+    <string name="detail_how_to_example"><![CDATA[" 例如（使用 curl): <br><tt>$ curl -d \"Hi\" %1$s</tt> "]]></string>
     <string name="detail_test_message_error">無法傳送訊息：%1$s</string>
     <string name="detail_item_tags">標籤：%1$s</string>
     <string name="detail_instant_delivery_enabled">開啟即時傳送</string>
@@ -484,4 +484,6 @@
     <string name="settings_advanced_connection_alert_one_hour">1 小時後</string>
     <string name="settings_advanced_connection_alert_three_hours">3 小時後</string>
     <string name="settings_advanced_connection_alert_twelve_hours">12 小時後</string>
+    <string name="channel_subscriber_notification_no_network_title">等待網路連線</string>
+    <string name="channel_subscriber_notification_no_network_text">當 Wi-Fi 或行動數據可用時通知將會恢復</string>
 </resources>
