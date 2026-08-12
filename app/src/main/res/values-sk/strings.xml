@@ -48,7 +48,7 @@
     <string name="add_dialog_base_urls_dropdown_clear">Vymazanie URL adresy služby</string>
     <string name="detail_no_notifications_text">K tejto téme ste zatiaľ nedostali žiadne upozornenia.</string>
     <string name="detail_how_to_intro">Ak chcete posielať oznámenia do tejto témy, jednoducho zadajte adresu PUT alebo POST na URL adresu témy.</string>
-    <string name="detail_how_to_example"><![CDATA[ Napríklad(použitím curl):<br/><tt>$ curl -d \"Ahoj\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_example"><![CDATA[" Napríklad(použitím curl):<br><tt>$ curl -d \"Ahoj\" %1$s</tt> "]]></string>
     <string name="detail_clear_dialog_cancel">Zrušiť</string>
     <string name="detail_delete_dialog_message">Odhlásiť sa z tejto témy a vymazať všetky prijaté oznámenia\?</string>
     <string name="detail_delete_dialog_permanently_delete">Vymazať natrvalo</string>
@@ -429,4 +429,7 @@
     <string name="custom_headers_dialog_title_edit">Upraviť vlastnú hlavičku</string>
     <string name="custom_headers_dialog_name_hint">Názov hlavičky (napr. CF-Access-Client-Id)</string>
     <string name="custom_headers_dialog_value_hint">Hodnota hlavičky (napr. 9f3c2e4a1b2d4e)</string>
+    <string name="channel_connection_alert_name">Upozornenia pripojenia</string>
+    <string name="connection_alert_title">Strata pripojenia</string>
+    <string name="connection_alert_text_one">Nebolo možné pripojiť sa ku %1$s počas viac ako %2$d minút. Skontrolujte Vaše sieťové pripojenie.</string>
 </resources>
