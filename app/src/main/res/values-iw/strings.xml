@@ -422,4 +422,7 @@
     <string name="client_certificate_dialog_error_invalid_p12_password">סיסמה שגויה או קובץ PKCS#12 פגום</string>
     <string name="client_certificate_dialog_error_wrong_password">סיסמה שגויה או קובץ PKCS#12 שגוי</string>
     <string name="client_certificate_dialog_password_hint">סיסמה</string>
+    <string name="channel_subscriber_notification_no_network_title">בהמתנה לרשת</string>
+    <string name="channel_subscriber_notification_no_network_text">ההתראות תחזורנה כאשר הרשת האלחוטית או תקשורת הנתונים הסלולרית תהיינה זמינות</string>
+    <string name="channel_connection_alert_name">התראות חיבור</string>
 </resources>
