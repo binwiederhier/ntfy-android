@@ -56,7 +56,7 @@
     <string name="add_dialog_login_error_not_authorized">Login falhou. Usuário %1$s não autorizado.</string>
     <string name="add_dialog_login_new_user">Novo usuário</string>
     <string name="detail_no_notifications_text">Você ainda não recebeu nenhuma notificação desse tópico.</string>
-    <string name="detail_how_to_example"><![CDATA[ Exemplo (usando o curl):<br/><tt>$ curl -d \"Olá\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_example"><![CDATA[" Exemplo (usando o curl):<br><tt>$ curl -d \"Olá\" %1$s</tt> "]]></string>
     <string name="detail_clear_dialog_message">Apagar todas as notificações deste tópico?</string>
     <string name="detail_clear_dialog_permanently_delete">Apagar permanentemente</string>
     <string name="detail_delete_dialog_message">Desinscrever deste tópico e apagar todas as notificações recebidas?</string>
