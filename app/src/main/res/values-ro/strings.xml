@@ -11,7 +11,7 @@
     <string name="detail_settings_appearance_icon_set_summary">Setează o pictogramă care să fie afișată în notificări</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonat la trei topice cu livrare instantanee</string>
     <string name="detail_settings_about_topic_url_title">URL-ul topicului</string>
-    <string name="channel_subscriber_service_name">Serviciul abonărilor</string>
+    <string name="channel_subscriber_service_name">Servici de fundal</string>
     <string name="user_dialog_password_hint_edit">Parolă (neschimbată dacă este lăsată necompletată)</string>
     <string name="channel_subscriber_notification_instant_text_two">Abonat la două topice cu livrare instantanee</string>
     <string name="channel_subscriber_notification_instant_text">Abonat pentru primirea topicelor cu livrare instantanee</string>
@@ -349,4 +349,15 @@
     <string name="common_button_reset_to_default">Resetați la valorile implicite</string>
     <string name="common_service_url_placeholder">ex: https://ntfy.example.com</string>
     <string name="channel_connection_alert_name">Alerte de conexiune</string>
+    <string name="common_certificate_subject">Subiect</string>
+    <string name="common_certificate_issuer">Distribuitor</string>
+    <string name="common_certificate_fingerprint">Amprenta SHA-256</string>
+    <string name="common_certificate_valid_from">Valid de la</string>
+    <string name="common_certificate_valid_until">Valid până</string>
+    <string name="common_certificate_added_toast">Certificat adăugat</string>
+    <string name="common_certificate_deleted_toast">Certificat șters</string>
+    <string name="channel_subscriber_notification_no_network_title">Se așteaptă conexiunea la internet</string>
+    <string name="channel_subscriber_notification_no_network_text">Notificările vor reveni când WiFi-ul sau datele mobile vor fi disponibile</string>
+    <string name="connection_alert_title">Conexiune pierdută</string>
+    <string name="connection_alert_text_one">Nu se poate conecta la %1$s pentru mai mult de %2$d minute. Verifică-ți conexiunea la internet.</string>
 </resources>
