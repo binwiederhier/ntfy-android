@@ -314,7 +314,7 @@
     <string name="channel_subscriber_notification_instant_text_six">Přihlášeno k odběru šesti témat okamžitého doručení</string>
     <string name="detail_settings_notifications_instant_summary_off">Oznámení jsou doručena pomocí služby Firebase. Doručování může být zpožděné, ale spotřebovává méně baterie.</string>
     <string name="detail_settings_notifications_instant_title">Okamžité doručení</string>
-    <string name="detail_settings_appearance_display_name_title">Zobrazit název</string>
+    <string name="detail_settings_appearance_display_name_title">Zobrazovaný název</string>
     <string name="detail_settings_appearance_display_name_message">Nastavit vlastní zobrazovaný název pro tento odběr. Pro výchozí hodnotu (%1$s) ponechte prázdné.</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (výchozí)</string>
     <string name="detail_settings_about_header">O aplikaci</string>
