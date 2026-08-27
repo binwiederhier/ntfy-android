@@ -33,4 +33,18 @@
     <string name="settings_about_version_title">Weergawe</string>
     <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
     <string name="settings_advanced_export_logs_entry_copy_scrubbed">Kopieer na knipbord (gesensuur)</string>
+    <string name="common_button_next">Volgende</string>
+    <string name="common_button_add">Voeg by</string>
+    <string name="common_certificate_subject">Onderwerp</string>
+    <string name="common_certificate_valid_until">Geldig tot</string>
+    <string name="common_button_copy">Kopieër</string>
+    <string name="common_button_delete">Verwyder</string>
+    <string name="common_button_reset_to_default">Na verstek terugstel</string>
+    <string name="common_copied_to_clipboard">Na die knipbord gekopieer</string>
+    <string name="common_service_url">Diens-URL</string>
+    <string name="common_service_url_placeholder">bv. https://ntfy.example.com</string>
+    <string name="common_certificate_valid_from">Geldig van</string>
+    <string name="common_certificate_added_toast">Sertifikaat bygevoeg</string>
+    <string name="common_certificate_deleted_toast">Sertifikaat Verwyder</string>
+    <string name="channel_connection_alert_name">Verbindingswaarskuwings</string>
 </resources>
