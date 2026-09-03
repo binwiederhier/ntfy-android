@@ -360,4 +360,7 @@
     <string name="channel_subscriber_notification_no_network_text">Notificările vor reveni când WiFi-ul sau datele mobile vor fi disponibile</string>
     <string name="connection_alert_title">Conexiune pierdută</string>
     <string name="connection_alert_text_one">Nu se poate conecta la %1$s pentru mai mult de %2$d minute. Verifică-ți conexiunea la internet.</string>
+    <string name="connection_alert_text_multiple">Nu se poate conecta la %1$d servere pentru mai mult de %2$d minute. Verifică-ți conexiunea la internet.</string>
+    <string name="connection_alert_action_snooze">Amâna pentru %1$d ore</string>
+    <string name="connection_alert_action_never">Nu afișa niciodată</string>
 </resources>
