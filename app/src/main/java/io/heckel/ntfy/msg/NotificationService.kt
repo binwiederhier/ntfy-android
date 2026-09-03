@@ -36,10 +36,8 @@ class NotificationService(val context: Context) {
 
     fun update(subscription: Subscription, notification: Notification) {
         val active = notificationManager.activeNotifications.find { it.id == notification.notificationId } != null
-        if (active) {
             Log.d(TAG, "Updating notification $notification")
             displayInternal(subscription, notification, update = true)
-        }
     }
 
     fun cancel(notification: Notification) {
@@ -82,6 +80,9 @@ class NotificationService(val context: Context) {
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
+        if (update) {
+            return;
+        }
         val title = formatTitle(appBaseUrl, subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
         val channelId = toChannelId(groupId, notification.priority)
@@ -95,21 +96,26 @@ class NotificationService(val context: Context) {
             .setShowWhen(true)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-        setStyleAndText(builder, subscription, notification) // Preview picture or big text style
+//        setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
         maybeSetDeleteIntent(builder, insistent)
         maybeSetSound(builder, insistent, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
-        maybeAddDownloadAction(builder, notification)
-        maybeAddCancelAction(builder, notification)
+//        maybeAddDownloadAction(builder, notification)
+//        maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
 
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
         maybePlayInsistentSound(groupId, insistent)
 
+//        val hasAttach = if (notification.attachment != null) true else false
+//        val attachReady = if ((hasAttach) && (notification.attachment?.progress == ATTACHMENT_PROGRESS_DONE)) true else false
+//        if (hasAttach and !attachReady) {
+//            return
+//        }
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
@@ -130,6 +136,7 @@ class NotificationService(val context: Context) {
             builder.setSound(defaultSoundUri)
         } else {
             builder.setSound(null)
+            builder.setVibrate(null);
         }
     }
 

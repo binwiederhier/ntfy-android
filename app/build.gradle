@@ -18,7 +18,7 @@ android {
         targetSdkVersion 36
 
         versionCode 63
-        versionName "1.25.2"
+        versionName "1.25.2.jws"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

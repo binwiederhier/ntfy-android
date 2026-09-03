@@ -26,6 +26,7 @@ import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.Response
 import java.io.File
+import java.lang.Thread.sleep
 import kotlin.coroutines.cancellation.CancellationException
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -52,7 +53,7 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
             maybeDeleteFile()
             throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
-            failed(e)
+                failed(e)
         }
         return Result.success()
     }
