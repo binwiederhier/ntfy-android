@@ -123,10 +123,10 @@ class NotificationService(val context: Context) {
         setClickAction(builder, subscription, notification)
         maybeSetDeleteIntent(builder, insistent)
         maybeSetSound(builder, insistent, update)
-        maybeSetProgress(builder, notification)
-        maybeAddOpenAction(builder, notification)
-        maybeAddBrowseAction(builder, notification)
         if (repository.getAddAttachmentEnabled()) {
+            maybeSetProgress(builder, notification)
+            maybeAddOpenAction(builder, notification)
+            maybeAddBrowseAction(builder, notification)
             setStyleAndText(builder, subscription, notification) // Preview picture or big text style
             maybeAddDownloadAction(builder, notification)
             maybeAddCancelAction(builder, notification)
