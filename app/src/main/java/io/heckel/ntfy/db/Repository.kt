@@ -394,6 +394,36 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getAddAttachmentEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_ADD_ATTACHMENT_ENABLED, true) // Enabled by default
+    }
+
+    fun setAddAttachmentEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_ADD_ATTACHMENT_ENABLED, enabled)
+        }
+    }
+
+    fun getDownloadProgressEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_DOWNLOAD_PROGRESS_ENABLED, true) // Enabled by default
+    }
+
+    fun setDownloadProgressEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_DOWNLOAD_PROGRESS_ENABLED, enabled)
+        }
+    }
+
+    fun getWaitForAttachmentEnabled(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_WAIT_FOR_ATTACHMENT_ENABLED, false) // Disabled by default
+    }
+
+    fun setWaitForAttachmentEnabled(enabled: Boolean) {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_WAIT_FOR_ATTACHMENT_ENABLED, enabled)
+        }
+    }
+
     fun getRecordLogs(): Boolean {
         return sharedPrefs.getBoolean(SHARED_PREFS_RECORD_LOGS_ENABLED, false) // Disabled by default
     }
@@ -656,6 +686,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_BROADCAST_ENABLED = "BroadcastEnabled"
         const val SHARED_PREFS_UNIFIEDPUSH_ENABLED = "UnifiedPushEnabled"
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
+        const val SHARED_PREFS_ADD_ATTACHMENT_ENABLED = "AddAttachment"
+        const val SHARED_PREFS_DOWNLOAD_PROGRESS_ENABLED = "DownloadProgress"
+        const val SHARED_PREFS_WAIT_FOR_ATTACHMENT_ENABLED = "WaitForAttachment"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_MESSAGE_BAR_ENABLED = "MessageBarEnabled"
         const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime" // Timestamp as millis

@@ -26,8 +26,7 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         Log.d(TAG, "Dispatching $notification for subscription $subscription")
 
         val cancel = shouldCancel(notification)
-        val muted = getMuted(subscription)
-        val notify = shouldNotify(subscription, notification, muted)
+        val notify = notifier.shouldNotify(subscription, notification)
         val broadcast = shouldBroadcast(subscription, notification)
         val distribute = shouldDistribute(subscription, notification)
         val downloadAttachment = shouldDownloadAttachment(notification)
@@ -35,9 +34,13 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         if (cancel) {
             notifier.cancel(notification.notificationId)
         } else if (notify) {
-            notifier.display(subscription, notification)
+            val wait = downloadAttachment && repository.getWaitForAttachmentEnabled()
+            if (!wait) {
+                notifier.display(subscription, notification)
+            }
         }
         if (broadcast) {
+            val muted = getMuted(subscription)
             broadcaster.sendMessage(subscription, notification, muted)
         }
         if (distribute) {
@@ -80,19 +83,6 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
 
     private fun shouldCancel(notification: Notification): Boolean {
         return notification.event == ApiService.EVENT_MESSAGE_CLEAR || notification.event == ApiService.EVENT_MESSAGE_DELETE
-    }
-
-    private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
-        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) {
-            return false
-        }
-        val priority = if (notification.priority > 0) notification.priority else 3
-        val minPriority = if (subscription.minPriority > 0) subscription.minPriority else repository.getMinPriority()
-        if (priority < minPriority) {
-            return false
-        }
-        val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId
-        return !detailsVisible && !muted
     }
 
     private fun shouldBroadcast(subscription: Subscription, notification: Notification): Boolean {

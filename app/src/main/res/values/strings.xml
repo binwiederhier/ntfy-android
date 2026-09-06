@@ -379,6 +379,15 @@
     <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
+    <string name="settings_notifications_add_attachment_title">Add attachment</string>
+    <string name="settings_notifications_add_attachment_summary_enabled">Attachments are added to the notification (e.g. as image preview)</string>
+    <string name="settings_notifications_add_attachment_summary_disabled">Attachments are not added to the notification</string>
+    <string name="settings_notifications_download_progress_title">Show download progress</string>
+    <string name="settings_notifications_download_progress_summary_enabled">Notification is updated with the attachment download progress</string>
+    <string name="settings_notifications_download_progress_summary_disabled">Notification is not updated with download progress</string>
+    <string name="settings_notifications_wait_for_attachment_title">Wait for attachment</string>
+    <string name="settings_notifications_wait_for_attachment_summary_enabled">Notification is only shown once the attachment is downloaded</string>
+    <string name="settings_notifications_wait_for_attachment_summary_disabled">Notification is shown immediately, even if attachment is still downloading</string>
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Appearance</string>
     <string name="settings_general_default_base_url_title">Default server</string>

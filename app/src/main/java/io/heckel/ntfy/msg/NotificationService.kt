@@ -36,8 +36,21 @@ class NotificationService(val context: Context) {
 
     fun update(subscription: Subscription, notification: Notification) {
         val active = notificationManager.activeNotifications.find { it.id == notification.notificationId } != null
+        if (active) {
+            val progress = notification.attachment?.progress
+            if (progress != null && progress in 0..99 && !repository.getDownloadProgressEnabled()) {
+                return // Progress update, but disabled
+            }
             Log.d(TAG, "Updating notification $notification")
             displayInternal(subscription, notification, update = true)
+        } else {
+            val progress = notification.attachment?.progress
+            val finished = progress == ATTACHMENT_PROGRESS_DONE || progress == ATTACHMENT_PROGRESS_FAILED
+            if (finished && repository.getWaitForAttachmentEnabled() && shouldNotify(subscription, notification)) {
+                Log.d(TAG, "Displaying deferred notification $notification")
+                displayInternal(subscription, notification)
+            }
+        }
     }
 
     fun cancel(notification: Notification) {
@@ -52,6 +65,20 @@ class NotificationService(val context: Context) {
             Log.d(TAG, "Cancelling notification $notificationId")
             notificationManager.cancel(notificationId)
         }
+    }
+
+    fun shouldNotify(subscription: Subscription, notification: Notification): Boolean {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) {
+            return false
+        }
+        val priority = if (notification.priority > 0) notification.priority else 3
+        val minPriority = if (subscription.minPriority > 0) subscription.minPriority else repository.getMinPriority()
+        if (priority < minPriority) {
+            return false
+        }
+        val muted = repository.isGlobalMuted() || subscription.mutedUntil == 1L || (subscription.mutedUntil > 1L && subscription.mutedUntil > System.currentTimeMillis()/1000)
+        val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId
+        return !detailsVisible && !muted
     }
 
     fun createDefaultNotificationChannels() {
@@ -80,9 +107,6 @@ class NotificationService(val context: Context) {
     }
 
     private fun displayInternal(subscription: Subscription, notification: Notification, update: Boolean = false) {
-        if (update) {
-            return;
-        }
         val title = formatTitle(appBaseUrl, subscription, notification)
         val groupId = if (subscription.dedicatedChannels) subscriptionGroupId(subscription) else DEFAULT_GROUP
         val channelId = toChannelId(groupId, notification.priority)
@@ -96,26 +120,21 @@ class NotificationService(val context: Context) {
             .setShowWhen(true)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
-//        setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
         maybeSetDeleteIntent(builder, insistent)
         maybeSetSound(builder, insistent, update)
         maybeSetProgress(builder, notification)
         maybeAddOpenAction(builder, notification)
         maybeAddBrowseAction(builder, notification)
-//        maybeAddDownloadAction(builder, notification)
-//        maybeAddCancelAction(builder, notification)
+        if (repository.getAddAttachmentEnabled()) {
+            setStyleAndText(builder, subscription, notification) // Preview picture or big text style
+            maybeAddDownloadAction(builder, notification)
+            maybeAddCancelAction(builder, notification)
+        }
         maybeAddUserActions(builder, notification)
-
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
         maybePlayInsistentSound(groupId, insistent)
-
-//        val hasAttach = if (notification.attachment != null) true else false
-//        val attachReady = if ((hasAttach) && (notification.attachment?.progress == ATTACHMENT_PROGRESS_DONE)) true else false
-//        if (hasAttach and !attachReady) {
-//            return
-//        }
         notificationManager.notify(notification.notificationId, builder.build())
     }
 
@@ -178,8 +197,12 @@ class NotificationService(val context: Context) {
         } else {
             attachment.name
         }
-        if (attachment.progress in 0..99) {
-            return context.getString(R.string.notification_popup_file_downloading, attachmentInfos, attachment.progress, message)
+        if (attachment.progress != null && attachment.progress in 0..99) {
+            if (repository.getDownloadProgressEnabled()) {
+                return context.getString(R.string.notification_popup_file_downloading, attachmentInfos, attachment.progress, message)
+            } else {
+                return message // Just show the message while downloading
+            }
         }
         if (attachment.progress == ATTACHMENT_PROGRESS_DONE) {
             return context.getString(R.string.notification_popup_file_download_successful, message, attachmentInfos)
@@ -206,8 +229,8 @@ class NotificationService(val context: Context) {
 
     private fun maybeSetProgress(builder: NotificationCompat.Builder, notification: Notification) {
         val progress = notification.attachment?.progress
-        if (progress in 0..99) {
-            builder.setProgress(100, progress!!, false)
+        if (progress != null && progress in 0..99 && repository.getDownloadProgressEnabled()) {
+            builder.setProgress(100, progress, false)
         } else {
             builder.setProgress(0, 0, false) // Remove progress bar
         }

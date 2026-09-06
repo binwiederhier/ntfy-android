@@ -18,6 +18,9 @@
     <string name="settings_notifications_channel_prefs_key" translatable="false">ChannelPrefs</string>
     <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_notifications_add_attachment_key" translatable="false">AddAttachment</string>
+    <string name="settings_notifications_download_progress_key" translatable="false">DownloadProgress</string>
+    <string name="settings_notifications_wait_for_attachment_key" translatable="false">WaitForAttachment</string>
     <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
