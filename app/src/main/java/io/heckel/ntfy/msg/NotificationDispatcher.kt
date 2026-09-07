@@ -34,7 +34,8 @@ class NotificationDispatcher(val context: Context, val repository: Repository) {
         if (cancel) {
             notifier.cancel(notification.notificationId)
         } else if (notify) {
-            val wait = downloadAttachment && repository.getWaitForAttachmentEnabled()
+            val waitForAttachment = if (subscription.waitForAttachment == Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL) repository.getWaitForAttachmentEnabled() else subscription.waitForAttachment == Repository.WAIT_FOR_ATTACHMENT_ON
+            val wait = downloadAttachment && waitForAttachment
             if (!wait) {
                 notifier.display(subscription, notification)
             }

@@ -38,7 +38,8 @@ class NotificationService(val context: Context) {
         val active = notificationManager.activeNotifications.find { it.id == notification.notificationId } != null
         if (active) {
             val progress = notification.attachment?.progress
-            if (progress != null && progress in 0..99 && !repository.getDownloadProgressEnabled()) {
+            val downloadProgress = if (subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_USE_GLOBAL) repository.getDownloadProgressEnabled() else subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_ON
+            if (progress != null && progress in 0..99 && !downloadProgress) {
                 return // Progress update, but disabled
             }
             Log.d(TAG, "Updating notification $notification")
@@ -46,7 +47,8 @@ class NotificationService(val context: Context) {
         } else {
             val progress = notification.attachment?.progress
             val finished = progress == ATTACHMENT_PROGRESS_DONE || progress == ATTACHMENT_PROGRESS_FAILED
-            if (finished && repository.getWaitForAttachmentEnabled() && shouldNotify(subscription, notification)) {
+            val waitForAttachment = if (subscription.waitForAttachment == Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL) repository.getWaitForAttachmentEnabled() else subscription.waitForAttachment == Repository.WAIT_FOR_ATTACHMENT_ON
+            if (finished && waitForAttachment && shouldNotify(subscription, notification)) {
                 Log.d(TAG, "Displaying deferred notification $notification")
                 displayInternal(subscription, notification)
             }
@@ -123,8 +125,9 @@ class NotificationService(val context: Context) {
         setClickAction(builder, subscription, notification)
         maybeSetDeleteIntent(builder, insistent)
         maybeSetSound(builder, insistent, update)
-        if (repository.getAddAttachmentEnabled()) {
-            maybeSetProgress(builder, notification)
+        val addAttachment = if (subscription.addAttachment == Repository.ADD_ATTACHMENT_USE_GLOBAL) repository.getAddAttachmentEnabled() else subscription.addAttachment == Repository.ADD_ATTACHMENT_ON
+        if (addAttachment) {
+            maybeSetProgress(builder, subscription, notification)
             maybeAddOpenAction(builder, notification)
             maybeAddBrowseAction(builder, notification)
             setStyleAndText(builder, subscription, notification) // Preview picture or big text style
@@ -175,13 +178,13 @@ class NotificationService(val context: Context) {
                         .bigPicture(attachmentBitmap)
                         .bigLargeIcon(largeIcon)) // May be null
             } catch (_: Exception) {
-                val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
+                val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(subscription, notification), notification)
                 builder
                     .setContentText(message)
                     .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             }
         } else {
-            val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(notification), notification)
+            val message = maybeAppendActionErrors(formatMessageMaybeWithAttachmentInfos(subscription, notification), notification)
             builder
                 .setContentText(message)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(message))
@@ -189,7 +192,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun formatMessageMaybeWithAttachmentInfos(notification: Notification): CharSequence {
+    private fun formatMessageMaybeWithAttachmentInfos(subscription: Subscription, notification: Notification): CharSequence {
         val message = maybeMarkdown(formatMessage(notification), notification)
         val attachment = notification.attachment ?: return message
         val attachmentInfos = if (attachment.size != null) {
@@ -198,7 +201,8 @@ class NotificationService(val context: Context) {
             attachment.name
         }
         if (attachment.progress != null && attachment.progress in 0..99) {
-            if (repository.getDownloadProgressEnabled()) {
+            val downloadProgress = if (subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_USE_GLOBAL) repository.getDownloadProgressEnabled() else subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_ON
+            if (downloadProgress) {
                 return context.getString(R.string.notification_popup_file_downloading, attachmentInfos, attachment.progress, message)
             } else {
                 return message // Just show the message while downloading
@@ -227,9 +231,10 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun maybeSetProgress(builder: NotificationCompat.Builder, notification: Notification) {
+    private fun maybeSetProgress(builder: NotificationCompat.Builder, subscription: Subscription, notification: Notification) {
         val progress = notification.attachment?.progress
-        if (progress != null && progress in 0..99 && repository.getDownloadProgressEnabled()) {
+        val downloadProgress = if (subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_USE_GLOBAL) repository.getDownloadProgressEnabled() else subscription.downloadProgress == Repository.DOWNLOAD_PROGRESS_ON
+        if (progress != null && progress in 0..99 && downloadProgress) {
             builder.setProgress(100, progress, false)
         } else {
             builder.setProgress(0, 0, false) // Remove progress bar

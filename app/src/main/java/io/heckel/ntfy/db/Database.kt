@@ -44,6 +44,9 @@ data class Subscription(
     @ColumnInfo(name = "upConnectorToken") val upConnectorToken: String?, // UnifiedPush connector token
     @ColumnInfo(name = "displayName") val displayName: String?,
     @ColumnInfo(name = "dedicatedChannels") val dedicatedChannels: Boolean,
+    @ColumnInfo(name = "addAttachment") val addAttachment: Int,
+    @ColumnInfo(name = "downloadProgress") val downloadProgress: Int,
+    @ColumnInfo(name = "waitForAttachment") val waitForAttachment: Int,
     @Ignore val totalCount: Int = 0, // Total notifications
     @Ignore val newCount: Int = 0, // New notifications
     @Ignore val lastActive: Long = 0, // Unix timestamp
@@ -63,7 +66,10 @@ data class Subscription(
         upAppId: String,
         upConnectorToken: String,
         displayName: String?,
-        dedicatedChannels: Boolean
+        dedicatedChannels: Boolean,
+        addAttachment: Int,
+        downloadProgress: Int,
+        waitForAttachment: Int
     ) :
             this(
                 id,
@@ -80,6 +86,9 @@ data class Subscription(
                 upConnectorToken,
                 displayName,
                 dedicatedChannels,
+                addAttachment,
+                downloadProgress,
+                waitForAttachment,
                 totalCount = 0,
                 newCount = 0,
                 lastActive = 0,
@@ -137,6 +146,9 @@ data class SubscriptionWithMetadata(
     val upConnectorToken: String?,
     val displayName: String?,
     val dedicatedChannels: Boolean,
+    val addAttachment: Int,
+    val downloadProgress: Int,
+    val waitForAttachment: Int,
     val totalCount: Int,
     val newCount: Int,
     val lastActive: Long
@@ -299,7 +311,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(
-    version = 18,
+    version = 19,
     entities = [
         Subscription::class,
         Notification::class,
@@ -345,6 +357,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_15_16)
                     .addMigrations(MIGRATION_16_17)
                     .addMigrations(MIGRATION_17_18)
+                    .addMigrations(MIGRATION_18_19)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -485,6 +498,14 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("UPDATE Notification SET sequenceId = id WHERE sequenceId = ''")
             }
         }
+
+        private val MIGRATION_18_19 = object : Migration(18, 19) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN addAttachment INTEGER NOT NULL DEFAULT (-1)")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN downloadProgress INTEGER NOT NULL DEFAULT (-1)")
+                db.execSQL("ALTER TABLE Subscription ADD COLUMN waitForAttachment INTEGER NOT NULL DEFAULT (-1)")
+            }
+        }
     }
 }
 
@@ -492,7 +513,7 @@ abstract class Database : RoomDatabase() {
 interface SubscriptionDao {
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels, s.addAttachment, s.downloadProgress, s.waitForAttachment,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -505,7 +526,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels, s.addAttachment, s.downloadProgress, s.waitForAttachment,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -518,7 +539,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels, s.addAttachment, s.downloadProgress, s.waitForAttachment,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -531,7 +552,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels, s.addAttachment, s.downloadProgress, s.waitForAttachment,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive
@@ -544,7 +565,7 @@ interface SubscriptionDao {
 
     @Query("""
         SELECT 
-          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels,
+          s.id, s.baseUrl, s.topic, s.instant, s.mutedUntil, s.minPriority, s.autoDelete, s.insistent, s.lastNotificationId, s.icon, s.upAppId, s.upConnectorToken, s.displayName, s.dedicatedChannels, s.addAttachment, s.downloadProgress, s.waitForAttachment,
           COUNT(n.id) totalCount, 
           COUNT(CASE n.notificationId WHEN 0 THEN NULL ELSE n.id END) newCount, 
           IFNULL(MAX(n.timestamp),0) AS lastActive

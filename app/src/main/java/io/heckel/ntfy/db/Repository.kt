@@ -591,6 +591,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
                 displayName = s.displayName,
+                addAttachment = s.addAttachment,
+                downloadProgress = s.downloadProgress,
+                waitForAttachment = s.waitForAttachment,
                 totalCount = s.totalCount,
                 newCount = s.newCount,
                 lastActive = s.lastActive,
@@ -618,6 +621,9 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
             upAppId = s.upAppId,
             upConnectorToken = s.upConnectorToken,
             displayName = s.displayName,
+            addAttachment = s.addAttachment,
+            downloadProgress = s.downloadProgress,
+            waitForAttachment = s.waitForAttachment,
             totalCount = s.totalCount,
             newCount = s.newCount,
             lastActive = s.lastActive,
@@ -704,6 +710,18 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
         const val MIN_PRIORITY_USE_GLOBAL = 0
         const val MIN_PRIORITY_ANY = 1
+
+        const val ADD_ATTACHMENT_USE_GLOBAL = -1
+        const val ADD_ATTACHMENT_OFF = 0
+        const val ADD_ATTACHMENT_ON = 1
+
+        const val DOWNLOAD_PROGRESS_USE_GLOBAL = -1
+        const val DOWNLOAD_PROGRESS_OFF = 0
+        const val DOWNLOAD_PROGRESS_ON = 1
+
+        const val WAIT_FOR_ATTACHMENT_USE_GLOBAL = -1
+        const val WAIT_FOR_ATTACHMENT_OFF = 0
+        const val WAIT_FOR_ATTACHMENT_ON = 1
 
         const val MUTED_UNTIL_SHOW_ALL = 0L
         const val MUTED_UNTIL_FOREVER = 1L
