@@ -77,6 +77,10 @@ class FirebaseService : FirebaseMessagingService() {
     private fun handlePollRequest(remoteMessage: RemoteMessage) {
         val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
         val topic = remoteMessage.data["topic"] ?: return
+        schedulePoll(baseUrl, topic)
+    }
+
+    private fun schedulePoll(baseUrl: String, topic: String) {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -89,7 +93,7 @@ class FirebaseService : FirebaseMessagingService() {
             ))
             .setConstraints(constraints)
             .build()
-        Log.d(TAG, "Poll request for ${topicShortUrl(baseUrl, topic)} received, scheduling unique poll worker with name $workName")
+        Log.d(TAG, "Scheduling unique poll worker for ${topicShortUrl(baseUrl, topic)} with name $workName")
 
         workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.REPLACE, workRequest)
     }
@@ -172,10 +176,19 @@ class FirebaseService : FirebaseMessagingService() {
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url) // Everything from Firebase comes from main service URL!
 
-            // Check if notification was truncated and discard if it will (or likely already did) arrive via instant delivery
+            // Check if notification was truncated (Firebase messages are capped at ~4KB). If so, discard
+            // this copy and fetch the full message instead: via the already-open instant-delivery connection,
+            // or, if that's not enabled, by scheduling a one-off poll against the plain HTTP API (which is not
+            // subject to Firebase's size limit). Never keep the truncated copy, since addNotification() would
+            // then permanently block the untruncated version from being stored under the same ID.
             val subscription = repository.getSubscription(baseUrl, topic) ?: return@launch
-            if (truncated && subscription.instant) {
-                Log.d(TAG, "Discarding truncated message that did/will arrive via instant delivery: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+            if (truncated) {
+                if (subscription.instant) {
+                    Log.d(TAG, "Discarding truncated message that did/will arrive via instant delivery: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                } else {
+                    Log.d(TAG, "Discarding truncated message and scheduling poll to fetch full message: from=${remoteMessage.from}, fcmprio=${remoteMessage.priority}, fcmprio_orig=${remoteMessage.originalPriority}, data=${data}")
+                    schedulePoll(baseUrl, topic)
+                }
                 return@launch
             }
 
