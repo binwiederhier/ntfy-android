@@ -41,7 +41,7 @@
     <string name="main_item_date_yesterday">gestern</string>
     <string name="main_add_button_description">Abo hinzufügen</string>
     <string name="main_no_subscriptions_text">Du hast bisher keine Themen abonniert.</string>
-    <string name="main_how_to_link">Ausführlichere Informationen findest Du auf der ntfy.sh Website und in der Dokumentation.</string>
+    <string name="main_how_to_link">Ausführlichere Informationen findest du auf der ntfy.sh Website und in der Dokumentation.</string>
     <string name="main_unified_push_toast">Dieses Abo wird von %1$s per UnifiedPush verwaltet</string>
     <string name="main_banner_battery_text">Batterieoptimierungen sollten für die App deaktiviert sein, um Zustellungsprobleme bei Benachrichtigungen zu vermeiden.</string>
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
@@ -314,7 +314,7 @@
     <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
     <string name="detail_settings_appearance_icon_remove_summary">Icon, das in Benachrichtigungen zu diesem Thema angezeigt wird</string>
     <string name="detail_settings_notifications_instant_summary_on">Benachrichtigungen werden sofort zugestellt. Benötigt einen Vordergrund-Dienst und verbraucht mehr Akku.</string>
-    <string name="main_banner_websocket_text">Der Umstieg auf WebSockets ist die empfohlene Verbindungsweise zu Deinem Server und benötigt möglicherweise weniger Akkuleistung. Es könnte aber eine <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">zusätzliche Konfiguration im Proxy</a> nötig sein. Die Verbindungmethode kann in den Einstellungen gewählt werden.</string>
+    <string name="main_banner_websocket_text">Der Umstieg auf WebSockets ist die empfohlene Verbindungsweise zu deinem Server und benötigt möglicherweise weniger Akkuleistung. Es könnte aber eine <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">zusätzliche Konfiguration im Proxy</a> nötig sein. Die Verbindungmethode kann in den Einstellungen gewählt werden.</string>
     <string name="main_banner_websocket_button_enable_now">Jetzt aktivieren</string>
     <string name="add_dialog_base_urls_dropdown_choose">Service-URL wählen</string>
     <string name="add_dialog_base_urls_dropdown_clear">Service-URL löschen</string>
