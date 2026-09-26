@@ -47,6 +47,13 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     private val markwon: Markwon = MarkwonFactory.createForMessage(activity)
     val selected = mutableSetOf<String>() // Notification IDs
+    var largeImagePreviews = false
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyItemRangeChanged(0, itemCount)
+            }
+        }
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
@@ -57,7 +64,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
 
     /* Gets current topic and uses it to bind view. */
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), largeImagePreviews)
     }
 
     fun get(position: Int): Notification {
@@ -108,10 +115,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val actionsWrapperView: ConstraintLayout = itemView.findViewById(R.id.detail_item_actions_wrapper)
         private val actionsFlow: Flow = itemView.findViewById(R.id.detail_item_actions_flow)
 
-        fun bind(notification: Notification) {
+        fun bind(notification: Notification, largeImagePreviews: Boolean) {
             this.notification = notification
 
             val context = itemView.context
+            val maxImageHeightDp = if (largeImagePreviews) IMAGE_PREVIEW_MAX_HEIGHT_LARGE_DP else IMAGE_PREVIEW_MAX_HEIGHT_DP
+            attachmentImageView.maxHeight = (maxImageHeightDp * context.resources.displayMetrics.density).toInt()
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
@@ -570,6 +579,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     companion object {
         const val TAG = "NtfyDetailAdapter"
         const val REQUEST_CODE_WRITE_STORAGE_PERMISSION_FOR_DOWNLOAD = 9876
+        const val IMAGE_PREVIEW_MAX_HEIGHT_DP = 150 // Must match android:maxHeight in fragment_detail_item.xml
+        const val IMAGE_PREVIEW_MAX_HEIGHT_LARGE_DP = 450
         const val IMAGE_PREVIEW_MAX_BYTES = 5 * 1024 * 1024 // Too large images crash the app with "Canvas: trying to draw too large(233280000bytes) bitmap."
     }
 }

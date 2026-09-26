@@ -64,6 +64,10 @@
                 app:dialogLayout="@layout/preference_dialog_edittext_edited"
                 app:dialogMessage="@string/detail_settings_appearance_display_name_message"
                 app:isPreferenceVisible="false"/>
+        <SwitchPreferenceCompat
+                app:key="@string/detail_settings_appearance_large_image_previews_key"
+                app:title="@string/detail_settings_appearance_large_image_previews_title"
+                app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory
         app:key="@string/detail_settings_about_header_key"

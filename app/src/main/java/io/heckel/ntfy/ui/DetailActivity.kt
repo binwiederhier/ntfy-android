@@ -223,6 +223,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     topic = topic,
                     instant = instant,
                     dedicatedChannels = false,
+                    largeImagePreviews = false,
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,
@@ -537,6 +538,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             val subscription = repository.getSubscription(subscriptionId) ?: return@launch
             subscriptionMutedUntil = subscription.mutedUntil
             subscriptionDisplayName = displayName(appBaseUrl, subscription)
+            runOnUiThread { adapter.largeImagePreviews = subscription.largeImagePreviews }
 
             showHideMenuItems()
             updateTitle(subscriptionDisplayName)
