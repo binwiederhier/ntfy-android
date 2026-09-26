@@ -67,6 +67,7 @@
         <SwitchPreferenceCompat
                 app:key="@string/detail_settings_appearance_large_image_previews_key"
                 app:title="@string/detail_settings_appearance_large_image_previews_title"
+                app:defaultValue="false"
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory

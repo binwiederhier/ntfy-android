@@ -318,6 +318,9 @@
     <string name="main_banner_websocket_text">WebSockets е препоръчителния начин за свързване с услугата и може да подобри използването на батерията, но могат да се наложат <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">допълнителни настройки на сървъра за прокси</a>. Промяната може да бъде направена в настройките.</string>
     <string name="main_banner_websocket_button_enable_now">Включване</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (по подразбиране)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">По-големи прегледи на изображения</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Прикачените изображения се показват до три пъти по-високи</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Прикачените изображения се показват като малки прегледи</string>
     <string name="detail_settings_appearance_display_name_title">Наименование</string>
     <string name="detail_settings_appearance_display_name_message">Задайте име на абонамента. За да върнете името по подразбиране (%1$s) оставете празно.</string>
     <string name="detail_settings_about_header">Относно</string>

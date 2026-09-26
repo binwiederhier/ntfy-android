@@ -325,6 +325,9 @@
     <string name="detail_settings_appearance_display_name_title">Tên hiển thị</string>
     <string name="detail_settings_appearance_display_name_message">Đặt tên hiển thị cho subscription này. Để trống để sử dụng tên mặc định (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (mặc định)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Xem trước hình ảnh lớn hơn</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Hình ảnh đính kèm được hiển thị cao gấp tối đa ba lần</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Hình ảnh đính kèm được hiển thị dưới dạng xem trước nhỏ</string>
     <string name="detail_settings_global_setting_title">Sử dụng cài đặt chung</string>
     <string name="detail_settings_global_setting_suffix">đang sử dụng cài đặt chung</string>
     <string name="detail_settings_about_topic_url_title">URL chủ đề</string>

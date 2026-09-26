@@ -317,6 +317,9 @@
     <string name="detail_settings_global_setting_suffix">использует глобальное значение</string>
     <string name="detail_settings_appearance_display_name_message">Выставить произвольный псевдоним для этой подписки. Оставьте пустым чтобы использовать значение по умолчанию (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (по умолчанию)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Увеличенный предпросмотр изображений</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Прикреплённые изображения показываются до трёх раз выше</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Прикреплённые изображения показываются в виде маленьких превью</string>
     <string name="detail_settings_notifications_instant_title">Мгновенная доставка</string>
     <string name="detail_settings_notifications_dedicated_channels_title">Пользовательские настройки уведомлений</string>
     <string name="detail_settings_notifications_open_channels_title">Настройки уведомлений</string>

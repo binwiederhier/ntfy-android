@@ -313,6 +313,9 @@
     <string name="detail_settings_appearance_display_name_title">Nome visualizzato</string>
     <string name="main_banner_websocket_text">E\' consigliato il passaggio a WebSockets per connettersi al server e potrebbe migliorare la durata della batteria, ma potrebbe richiedere <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">un\'ulteriore configurazione del proxy</a>. Questa opzione può essere selezionata nelle Impostazioni.</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predefinito)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Anteprime delle immagini più grandi</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Le immagini allegate vengono mostrate fino a tre volte più alte</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Le immagini allegate vengono mostrate come piccole anteprime</string>
     <string name="detail_settings_appearance_display_name_message">Impostare un nome di visualizzazione personalizzato per questa iscrizione. Lasciare vuoto per il nome predefinito (%1$s).</string>
     <string name="detail_settings_about_header">Informazioni</string>
     <string name="detail_settings_about_topic_url_title">URL argomento</string>
