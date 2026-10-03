@@ -259,6 +259,9 @@
     <string name="detail_item_snack_undo">Kumoa</string>
     <string name="settings_backup_restore_backup_successful">Varmuuskopio luotu</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (oletus)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Suuremmat kuvien esikatselut</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Liitekuvat näytetään enintään kolme kertaa korkeampina</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Liitekuvat näytetään pieninä esikatseluina</string>
     <string name="channel_subscriber_notification_noinstant_text_three">Tilattu kolmeen topikkiin</string>
     <string name="channel_subscriber_notification_noinstant_text_five">Tilattu viiteen topikkiin</string>
     <string name="main_action_mode_menu_unsubscribe">Lopeta tilaus</string>

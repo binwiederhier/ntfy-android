@@ -84,6 +84,7 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     topic = topic,
                     instant = true, // No Firebase, always instant!
                     dedicatedChannels = false,
+                    largeImagePreviews = false,
                     mutedUntil = 0,
                     minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,

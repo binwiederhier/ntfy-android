@@ -306,6 +306,9 @@
     <string name="detail_settings_appearance_icon_remove_summary">이 주제의 알림에 표시될 아이콘</string>
     <string name="detail_settings_appearance_display_name_message">이 구독을 표시할 이름을 지정합니다. 빈 값을 지정하면 기본 이름(%1$s)이 사용됩니다.</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (기본)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">더 큰 이미지 미리보기</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">첨부 이미지를 최대 세 배 높이로 표시합니다</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">첨부 이미지를 작은 미리보기로 표시합니다</string>
     <string name="detail_settings_about_header">정보</string>
     <string name="detail_settings_appearance_icon_set_summary">알림에 표시될 아이콘을 지정합니다</string>
     <string name="detail_settings_appearance_icon_error_saving">아이콘을 저장할 수 없습니다: %1$s</string>
