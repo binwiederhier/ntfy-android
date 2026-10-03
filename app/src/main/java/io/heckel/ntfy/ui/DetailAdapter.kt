@@ -121,6 +121,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val context = itemView.context
             val maxImageHeightDp = if (largeImagePreviews) IMAGE_PREVIEW_MAX_HEIGHT_LARGE_DP else IMAGE_PREVIEW_MAX_HEIGHT_DP
             attachmentImageView.maxHeight = (maxImageHeightDp * context.resources.displayMetrics.density).toInt()
+            // Large previews show the whole image (scaled to fit) instead of cropping it
+            attachmentImageView.scaleType = if (largeImagePreviews) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER_CROP
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
