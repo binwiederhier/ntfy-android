@@ -314,4 +314,6 @@
     <string name="settings_general_default_base_url_default_summary">%1$s (পূর্বনির্ধারিত)</string>
     <string name="settings_general_users_title">ব্যবহারকারী ম্যানেজ করুন</string>
     <string name="settings_general_users_summary">সুরক্ষিত টপিকের জন্য ব্যবহারকারী যোগ/অপসারণ করুন</string>
+    <string name="settings_general_users_prefs_title">ব্যবহারকারীরা</string>
+    <string name="settings_general_users_prefs_user_not_used">কোনো টপিকে ব্যবহার করা হয়নি</string>
 </resources>
