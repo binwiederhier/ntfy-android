@@ -105,6 +105,7 @@ class NotificationService(val context: Context) {
         maybeAddDownloadAction(builder, notification)
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
+        maybeAddDetectedCopyActions(builder, notification)
 
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
@@ -269,6 +270,16 @@ class NotificationService(val context: Context) {
             } else {
                 addHttpBroadcastOrCopyUserAction(builder, notification, action)
             }
+        }
+    }
+
+    /**
+     * Add "copy" action buttons for a code, link, or email address found in the notification (see CopyActionDetector).
+     * They are handled like the publisher's own "copy" actions, but only fill the slots those left free.
+     */
+    private fun maybeAddDetectedCopyActions(builder: NotificationCompat.Builder, notification: Notification) {
+        CopyActionDetector.detect(context, notification).forEach { action ->
+            addHttpBroadcastOrCopyUserAction(builder, notification, action)
         }
     }
 

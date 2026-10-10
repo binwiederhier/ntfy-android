@@ -1,0 +1,5 @@
+Features:
+* Add "Copy code", "Copy link" and "Copy email" buttons to notifications that contain a 5-6 digit code, a link or an email address
+
+Bug fixes + maintenance:
+* Fix "copy" action buttons in the notification popup failing on Android 12 and below

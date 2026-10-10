@@ -28,6 +28,7 @@ import com.google.android.material.button.MaterialButton
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.msg.CopyActionDetector
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
@@ -236,11 +237,12 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun maybeRenderActions(context: Context, notification: Notification) {
-            if (!notification.actions.isNullOrEmpty()) {
+            val actions = notification.actions.orEmpty() + CopyActionDetector.detect(context, notification)
+            if (actions.isNotEmpty()) {
                 actionsWrapperView.visibility = View.VISIBLE
-                val actionsCount = Math.min(notification.actions.size, 3) // per documentation, only 3 actions are available
+                val actionsCount = Math.min(actions.size, 3) // per documentation, only 3 actions are available
                 for (i in 0 until actionsCount) {
-                    val action = notification.actions[i]
+                    val action = actions[i]
                     val label = formatActionLabel(action)
                     val actionButton = createCardButton(context, label) { runAction(context, notification, action) }
                     addButtonToCard(actionButton)

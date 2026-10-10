@@ -322,6 +322,9 @@
     <string name="notification_popup_action_browse">Browse</string>
     <string name="notification_popup_action_download">Download</string>
     <string name="notification_popup_action_cancel">Cancel</string>
+    <string name="notification_popup_action_copy_code">Copy code</string>
+    <string name="notification_popup_action_copy_link">Copy link</string>
+    <string name="notification_popup_action_copy_email">Copy email</string>
     <string name="notification_popup_file">%1$s\nFile: %2$s</string>
     <string name="notification_popup_file_downloading">Downloading %1$s, %2$d%%\n%3$s</string>
     <string name="notification_popup_file_download_successful">%1$s\nFile: %2$s, downloaded</string>
