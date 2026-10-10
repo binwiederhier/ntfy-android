@@ -1,26 +1,43 @@
 package io.heckel.ntfy.msg
 
+import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Notification
-import io.heckel.ntfy.msg.CopyActionDetector.Kind
+import io.heckel.ntfy.msg.ContextualActionDetector.Kind
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_COPY
+import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class CopyActionDetectorTest {
+class ContextualActionDetectorTest {
     @Test
-    fun findsCodeLinkAndEmailInOrderOfPriority() {
+    fun findsValuesInOrderOfPriority() {
         val text = "Write to help@example.com or open https://example.com/login, then enter 482913"
         assertEquals(
             listOf(Kind.CODE to "482913", Kind.LINK to "https://example.com/login", Kind.EMAIL to "help@example.com"),
-            CopyActionDetector.findValues(text)
+            ContextualActionDetector.findValues(text)
+        )
+    }
+
+    @Test
+    fun findsAllValuesOfAKindInOrderOfAppearance() {
+        val text = "See https://a.example.com and https://b.example.com, then https://a.example.com again. Codes: 111111, 222222"
+        assertEquals(
+            listOf(
+                Kind.CODE to "111111",
+                Kind.CODE to "222222",
+                Kind.LINK to "https://a.example.com",
+                Kind.LINK to "https://b.example.com"
+            ),
+            ContextualActionDetector.findValues(text)
         )
     }
 
     @Test
     fun findsNothing() {
-        assertEquals(emptyList<Pair<Kind, String>>(), CopyActionDetector.findValues("Backup finished in 42 seconds"))
-        assertEquals(emptyList<Pair<Kind, String>>(), CopyActionDetector.findValues(""))
+        assertEquals(emptyList<Pair<Kind, String>>(), ContextualActionDetector.findValues("Backup finished in 42 seconds"))
+        assertEquals(emptyList<Pair<Kind, String>>(), ContextualActionDetector.findValues(""))
     }
 
     @Test
@@ -31,7 +48,6 @@ class CopyActionDetectorTest {
         assertEquals("482913", code("Doğrulama kodunuz: 482913'tür"))
         assertEquals("482913", code("Code: **482913**"))
         assertEquals("482913", code("Code:\n482913"))
-        assertEquals("111111", code("Codes: 111111, 222222"))
     }
 
     @Test
@@ -63,7 +79,6 @@ class CopyActionDetectorTest {
         assertEquals("HTTPS://EXAMPLE.COM", link("HTTPS://EXAMPLE.COM"))
         assertEquals("www.example.com", link("Visit www.example.com!"))
         assertEquals("http://[::1]:8080/topic", link("Server at http://[::1]:8080/topic"))
-        assertEquals("https://first.example.com", link("https://first.example.com and https://second.example.com"))
         assertEquals("https://example.com/giriş", link("https://example.com/giriş adresine gidin"))
     }
 
@@ -93,41 +108,61 @@ class CopyActionDetectorTest {
     }
 
     @Test
-    fun findsValuesInTitleAndMessage() {
-        val notification = notification(title = "Your code is 482913", message = "Questions? Write to help@example.com")
-        assertEquals(listOf(Kind.CODE to "482913", Kind.EMAIL to "help@example.com"), CopyActionDetector.findValues(notification))
+    fun opensLinksAndCopiesCodesAndEmails() {
+        val actions = ContextualActionDetector.detect(notification(
+            title = "Your code is 482913",
+            message = "Open https://example.com/login or write to help@example.com"
+        ))
+        assertEquals(
+            listOf(
+                contextualAction("contextual_0", ACTION_COPY, label = "482913", url = null, value = "482913"),
+                contextualAction("contextual_1", ACTION_VIEW, label = "example.com/login", url = "https://example.com/login", value = null),
+                contextualAction("contextual_2", ACTION_COPY, label = "help@example.com", url = null, value = "help@example.com")
+            ),
+            actions
+        )
+        assertEquals(listOf(R.drawable.ic_content_copy_teal_24dp, R.drawable.ic_open_in_new_teal_24dp, R.drawable.ic_content_copy_teal_24dp), actions.map { ContextualActionDetector.icon(it) })
     }
 
     @Test
-    fun fillsOnlyFreeActionSlots() {
-        val message = "Code 482913, see https://example.com or write to help@example.com"
+    fun offersAtMostThreeValuesInOrderOfPriority() {
+        val links = "https://a.example.com https://b.example.com https://c.example.com https://d.example.com"
         assertEquals(
-            listOf(Kind.CODE to "482913", Kind.LINK to "https://example.com", Kind.EMAIL to "help@example.com"),
-            CopyActionDetector.findValues(notification(message = message))
+            listOf("a.example.com", "b.example.com", "c.example.com"),
+            ContextualActionDetector.detect(notification(message = "Links: $links, mail help@example.com")).map { it.label }
         )
         assertEquals(
-            listOf(Kind.CODE to "482913", Kind.LINK to "https://example.com"),
-            CopyActionDetector.findValues(notification(message = message, actions = listOf(viewAction())))
-        )
-        assertEquals(
-            listOf(Kind.CODE to "482913"),
-            CopyActionDetector.findValues(notification(message = message, actions = listOf(viewAction(), viewAction())))
-        )
-        assertEquals(
-            emptyList<Pair<Kind, String>>(),
-            CopyActionDetector.findValues(notification(message = message, actions = listOf(viewAction(), viewAction(), viewAction())))
+            listOf("482913", "a.example.com", "b.example.com"),
+            ContextualActionDetector.detect(notification(message = "Links: $links, code 482913")).map { it.label }
         )
     }
 
     @Test
-    fun skipsValuesThePublisherAlreadyCopies() {
-        val notification = notification(message = "Code 482913, see https://example.com", actions = listOf(copyAction("482913")))
-        assertEquals(listOf(Kind.LINK to "https://example.com"), CopyActionDetector.findValues(notification))
+    fun shortensLabelsButNotValues() {
+        val link = "https://www.example.com/reset-password?token=abcdef123456"
+        val email = "first.last.with.a.long.name@example.com"
+        val actions = ContextualActionDetector.detect(notification(message = "$link $email www.example.com/"))
+        assertEquals(listOf("example.com/reset-passw…", "example.com", "first.last.with.a.long.…"), actions.map { it.label })
+        assertEquals(listOf(link, "http://www.example.com/", null), actions.map { it.url })
+        assertEquals(listOf(null, null, email), actions.map { it.value })
     }
 
-    private fun code(text: String) = CopyActionDetector.findValues(text).toMap()[Kind.CODE]
-    private fun link(text: String) = CopyActionDetector.findValues(text).toMap()[Kind.LINK]
-    private fun email(text: String) = CopyActionDetector.findValues(text).toMap()[Kind.EMAIL]
+    @Test
+    fun skipsValuesThePublisherAlreadyOpensOrCopies() {
+        val publisherActions = listOf(
+            publisherAction(ACTION_COPY, url = null, value = "482913"),
+            publisherAction(ACTION_VIEW, url = "https://example.com/login", value = null)
+        )
+        val actions = ContextualActionDetector.detect(notification(
+            message = "Code 482913, open https://example.com/login or https://example.com/help",
+            actions = publisherActions
+        ))
+        assertEquals(listOf("https://example.com/help"), actions.map { it.url })
+    }
+
+    private fun code(text: String) = ContextualActionDetector.findValues(text).firstOrNull { it.first == Kind.CODE }?.second
+    private fun link(text: String) = ContextualActionDetector.findValues(text).firstOrNull { it.first == Kind.LINK }?.second
+    private fun email(text: String) = ContextualActionDetector.findValues(text).firstOrNull { it.first == Kind.EMAIL }?.second
 
     private fun notification(title: String = "", message: String, actions: List<Action>? = null): Notification {
         return Notification(
@@ -150,14 +185,13 @@ class CopyActionDetectorTest {
         )
     }
 
-    private fun viewAction() = action(NotificationService.ACTION_VIEW, url = "https://ntfy.sh", value = null)
-    private fun copyAction(value: String) = action(NotificationService.ACTION_COPY, url = null, value = value)
+    private fun publisherAction(action: String, url: String?, value: String?) = contextualAction("action1", action, "Label", url, value)
 
-    private fun action(action: String, url: String?, value: String?): Action {
+    private fun contextualAction(id: String, action: String, label: String, url: String?, value: String?): Action {
         return Action(
-            id = "action1",
+            id = id,
             action = action,
-            label = "Label",
+            label = label,
             clear = false,
             url = url,
             method = null,
