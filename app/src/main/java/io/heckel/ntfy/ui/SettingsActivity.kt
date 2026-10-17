@@ -29,6 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
+import io.heckel.ntfy.account.AccountManager
 import io.heckel.ntfy.backup.Backuper
 import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
@@ -50,7 +51,7 @@ import java.util.*
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
     UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener,
-    DefaultServerFragment.DefaultServerDialogListener {
+    DefaultServerFragment.DefaultServerDialogListener, AccountFragment.AccountDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
     private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
@@ -504,6 +505,19 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // ntfy account, hidden in release builds until it also syncs subscriptions
+            val accountPrefId = context?.getString(R.string.settings_general_account_key) ?: return
+            val account: Preference? = findPreference(accountPrefId)
+            account?.isVisible = BuildConfig.DEBUG
+            account?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            account?.onPreferenceClickListener = OnPreferenceClickListener {
+                activity?.let { activity ->
+                    AccountFragment().show(activity.supportFragmentManager, AccountFragment.TAG)
+                }
+                true
+            }
+            refreshAccountSummary()
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
@@ -764,6 +778,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val autoDownload: ListPreference? = findPreference(autoDownloadPrefId)
             autoDownload?.value = autoDownloadSelectionCopy.toString()
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
+        }
+
+        fun refreshAccountSummary() {
+            val accountPrefId = context?.getString(R.string.settings_general_account_key) ?: return
+            val account: Preference? = findPreference(accountPrefId)
+            val accountManager = AccountManager.getInstance(requireContext())
+            account?.summary = if (accountManager.loggedIn()) {
+                getString(R.string.settings_general_account_summary_logged_in, accountManager.username())
+            } else {
+                getString(R.string.settings_general_account_summary_logged_out)
+            }
         }
 
         fun refreshDefaultServerSummary() {
@@ -1150,6 +1175,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         repository.setDefaultBaseUrl(url)
         if (this::settingsFragment.isInitialized) {
             settingsFragment.refreshDefaultServerSummary()
+        }
+    }
+
+    override fun onAccountChanged() {
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.refreshAccountSummary()
         }
     }
 
