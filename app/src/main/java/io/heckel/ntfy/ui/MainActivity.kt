@@ -49,6 +49,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
+import io.heckel.ntfy.account.AccountManager
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -74,6 +75,7 @@ import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.work.DeleteWorker
 import io.heckel.ntfy.work.PollWorker
+import io.heckel.ntfy.work.AccountSyncWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -380,6 +382,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         schedulePeriodicPollWorker()
         schedulePeriodicServiceRestartWorker()
         schedulePeriodicDeleteWorker()
+        AccountSyncWorker.schedulePeriodic(this)
+        AccountSyncWorker.syncSoon(this)
 
         // Permissions
         maybeRequestNotificationPermission()
@@ -722,6 +726,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             lastActive = Date().time/1000
         )
         viewModel.add(subscription)
+        AccountSyncWorker.syncSoon(this)
 
         // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
         if (baseUrl == appBaseUrl) {
@@ -765,6 +770,11 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
     private fun refreshAllSubscriptions() {
         lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                AccountManager.getInstance(this@MainActivity).sync() // No-op when logged out
+            } catch (e: Exception) {
+                Log.w(TAG, "Unable to sync with account: ${e.message}", e)
+            }
             Log.d(TAG, "Polling for new notifications")
             var errors = 0
             var errorMessage = "" // First error

@@ -505,10 +505,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
-            // ntfy account, hidden in release builds until it also syncs subscriptions
+            // ntfy account
             val accountPrefId = context?.getString(R.string.settings_general_account_key) ?: return
             val account: Preference? = findPreference(accountPrefId)
-            account?.isVisible = BuildConfig.DEBUG
             account?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
             account?.onPreferenceClickListener = OnPreferenceClickListener {
                 activity?.let { activity ->
@@ -786,6 +785,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             val accountManager = AccountManager.getInstance(requireContext())
             account?.summary = if (accountManager.loggedIn()) {
                 getString(R.string.settings_general_account_summary_logged_in, accountManager.username())
+            } else if (accountManager.expired()) {
+                getString(R.string.settings_general_account_summary_expired)
             } else {
                 getString(R.string.settings_general_account_summary_logged_out)
             }
