@@ -95,19 +95,7 @@ class MainAdapter(
             if (subscription.instant && subscription.connectionDetails.state == ConnectionState.CONNECTING) {
                 statusMessage += ", " + context.getString(R.string.main_item_status_reconnecting)
             }
-            val date = Date(subscription.lastActive * 1000)
-            val dateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(date)
-            val moreThanOneDay = System.currentTimeMillis()/1000 - subscription.lastActive > 24 * 60 * 60
-            val sameDay = dateStr == DateFormat.getDateInstance(DateFormat.SHORT).format(Date()) // Omg this is horrible
-            val dateText = if (subscription.lastActive == 0L) {
-                ""
-            } else if (sameDay) {
-                DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
-            } else if (!moreThanOneDay) {
-                context.getString(R.string.main_item_date_yesterday)
-            } else {
-                dateStr
-            }
+            val dateText = formatLastActive(context, subscription.lastActive)
             val globalMutedUntil = repository.getGlobalMutedUntil()
             val showMutedForeverIcon = (subscription.mutedUntil == 1L || globalMutedUntil == 1L) && !isUnifiedPush
             val showMutedUntilIcon = !showMutedForeverIcon && (subscription.mutedUntil > 1L || globalMutedUntil > 1L) && !isUnifiedPush
@@ -155,5 +143,22 @@ class MainAdapter(
 
     companion object {
         const val TAG = "NtfyMainAdapter"
+
+        // Time if today, "yesterday", otherwise the short date; empty if never active
+        fun formatLastActive(context: Context, lastActive: Long): String {
+            val date = Date(lastActive * 1000)
+            val dateStr = DateFormat.getDateInstance(DateFormat.SHORT).format(date)
+            val moreThanOneDay = System.currentTimeMillis()/1000 - lastActive > 24 * 60 * 60
+            val sameDay = dateStr == DateFormat.getDateInstance(DateFormat.SHORT).format(Date()) // Omg this is horrible
+            return if (lastActive == 0L) {
+                ""
+            } else if (sameDay) {
+                DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+            } else if (!moreThanOneDay) {
+                context.getString(R.string.main_item_date_yesterday)
+            } else {
+                dateStr
+            }
+        }
     }
 }

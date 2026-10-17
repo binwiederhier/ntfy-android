@@ -603,6 +603,15 @@ interface NotificationDao {
     """)
     fun listFlowFiltered(subscriptionId: Long, query: String): Flow<List<Notification>>
 
+    // UnifiedPush subscriptions are excluded, since their messages are for other apps and never shown in the UI
+    @Query("""
+        SELECT * FROM notification
+        WHERE deleted != 1
+        AND subscriptionId IN (SELECT id FROM Subscription WHERE upAppId IS NULL)
+        ORDER BY timestamp DESC
+    """)
+    fun listAllFlow(): Flow<List<Notification>>
+
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
     fun listDeletedWithAttachments(): List<Notification>
 
@@ -623,6 +632,9 @@ interface NotificationDao {
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId")
     fun markAllAsRead(subscriptionId: Long)
+
+    @Query("UPDATE notification SET notificationId = 0")
+    fun markAllAsRead()
 
     @Query("UPDATE notification SET notificationId = 0 WHERE subscriptionId = :subscriptionId AND sequenceId = :sequenceId")
     fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String)

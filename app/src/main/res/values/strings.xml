@@ -103,6 +103,11 @@
     </string>
     <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
 
+    <!-- All notifications activity -->
+    <string name="all_notifications_title">All notifications</string>
+    <string name="all_notifications_no_notifications_text">You haven\'t received any notifications yet.</string>
+    <string name="all_notifications_item_date_and_topic" translatable="false">%1$s · %2$s</string>
+
     <!-- Main activity: Battery banner -->
     <string name="main_banner_battery_text">Battery optimization should be off for the app to avoid notification delivery issues.</string>
     <string name="main_banner_battery_button_remind_later">Ask later</string>
