@@ -1,0 +1,2 @@
+Bug fixes + maintenance:
+* Fix copying multiple selected messages including their timestamps (#1926, thanks to @podtor for reporting)
