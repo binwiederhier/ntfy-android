@@ -381,6 +381,9 @@
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Appearance</string>
+    <string name="settings_general_account_title">ntfy account</string>
+    <string name="settings_general_account_summary_logged_out">Log in to sync your topics with other devices</string>
+    <string name="settings_general_account_summary_logged_in">Logged in as %1$s</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_general_users_title">Manage users</string>
@@ -514,6 +517,18 @@
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">Topic URL</string>
+
+    <!-- Account login/logout dialog (AccountFragment) -->
+    <string name="account_dialog_title">ntfy account</string>
+    <string name="account_dialog_login_description">Log in with your ntfy account to sync your topics with the web app and your other devices.</string>
+    <string name="account_dialog_server_hint">Server</string>
+    <string name="account_dialog_username_hint">Username</string>
+    <string name="account_dialog_password_hint">Password</string>
+    <string name="account_dialog_login_button">Log in</string>
+    <string name="account_dialog_login_error">Login failed: %1$s</string>
+    <string name="account_dialog_login_error_unauthorized">Login failed: wrong username or password</string>
+    <string name="account_dialog_logout_button">Log out</string>
+    <string name="account_dialog_logout_confirm_message">Log out of your ntfy account? Your topics stay on this phone, but they will no longer sync.</string>
 
     <!-- User add/edit dialog (UserFragment) -->
     <string name="user_dialog_title_add">Add user</string>
