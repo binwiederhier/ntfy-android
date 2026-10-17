@@ -974,9 +974,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         lifecycleScope.launch(Dispatchers.IO) {
             val content = adapter.selected.joinToString("\n\n") { notificationId ->
                 val notification = repository.getNotification(notificationId)
-                notification?.let {
-                    decodeMessage(it) + "\n" + Date(it.timestamp * 1000).toString()
-                }.orEmpty()
+                notification?.let { decodeMessage(it) }.orEmpty() // Message only, no timestamp, see ntfy#1926
             }
             runOnUiThread {
                 copyToClipboard(this@DetailActivity, "notifications", content)
