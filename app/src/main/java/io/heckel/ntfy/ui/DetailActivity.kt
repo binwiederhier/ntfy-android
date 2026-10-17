@@ -37,7 +37,6 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.firebase.FirebaseMessenger
-import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.Poller
@@ -52,6 +51,7 @@ import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.work.AccountSyncWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -238,8 +238,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     lastActive = Date().time/1000
                 )
                 repository.addSubscription(subscription)
-                // Sync to remote account if logged in
-                AccountManager.getInstance(this@DetailActivity).addSubscriptionToRemote(subscription)
+                AccountSyncWorker.syncSoon(this@DetailActivity)
 
                 // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
                 if (baseUrl == appBaseUrl) {
@@ -919,8 +918,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 GlobalScope.launch(Dispatchers.IO) {
                     val subscription = repository.getSubscription(subscriptionId) ?: return@launch
                     repository.removeSubscription(subscription)
-                    // Sync deletion to remote account if logged in
-                    AccountManager.getInstance(this@DetailActivity).deleteSubscriptionFromRemote(subscriptionBaseUrl, subscriptionTopic)
+                    AccountSyncWorker.syncSoon(this@DetailActivity)
                     if (subscriptionBaseUrl == appBaseUrl) {
                         messenger.unsubscribe(subscriptionTopic)
                     }

@@ -19,6 +19,7 @@
     <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
     <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
+    <string name="settings_general_account_key" translatable="false">Account</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
@@ -37,7 +38,6 @@
     <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
     <string name="settings_advanced_exact_alarms_key" translatable="false">ExactAlarms</string>
     <string name="settings_about_version_key" translatable="false">Version</string>
-    <string name="settings_account_key" translatable="false">Account</string>
 
     <!-- Detail settings constants -->
     <string name="detail_settings_notifications_header_key" translatable="false">SubscriptionNotifications</string>

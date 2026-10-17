@@ -381,6 +381,10 @@
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Appearance</string>
+    <string name="settings_general_account_title">ntfy account</string>
+    <string name="settings_general_account_summary_logged_out">Log in to sync your topics with other devices</string>
+    <string name="settings_general_account_summary_logged_in">Logged in as %1$s</string>
+    <string name="settings_general_account_summary_expired">Logged out, log in again to keep syncing</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_general_users_title">Manage users</string>
@@ -486,26 +490,6 @@
     <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
     <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>
     <string name="settings_advanced_certificates_error_invalid_p12">Invalid PKCS#12 file</string>
-    <string name="settings_account_header">Account</string>
-    <string name="settings_account_title">ntfy account</string>
-    <string name="settings_account_summary_not_logged_in">Sign in to sync topics across devices</string>
-    <string name="settings_account_summary_logged_in">Logged in as %1$s</string>
-    <string name="settings_account_login_title">Sign in</string>
-    <string name="settings_account_login_description">Sign in to your ntfy account to sync your topic subscriptions across devices.</string>
-    <string name="settings_account_login_server_hint">Server URL</string>
-    <string name="settings_account_login_username_hint">Username</string>
-    <string name="settings_account_login_password_hint">Password</string>
-    <string name="settings_account_login_button">Sign in</string>
-    <string name="settings_account_login_progress">Signing in…</string>
-    <string name="settings_account_login_success">Signed in successfully</string>
-    <string name="settings_account_login_failed">Sign in failed: %1$s</string>
-    <string name="settings_account_logout_title">Sign out</string>
-    <string name="settings_account_logout_button">Sign out</string>
-    <string name="settings_account_logout_confirmation">Are you sure you want to sign out? Your subscriptions will remain on this device but will no longer sync with the server.</string>
-    <string name="settings_account_logout_success">Signed out successfully</string>
-    <string name="settings_account_sync_button">Sync now</string>
-    <string name="settings_account_sync_success">Sync completed</string>
-    <string name="settings_account_sync_failed">Sync failed: %1$s</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version_title">Version</string>
     <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
@@ -534,6 +518,26 @@
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
     <string name="detail_settings_about_topic_url_title">Topic URL</string>
+
+    <!-- Account login/logout dialog (AccountFragment) -->
+    <string name="account_dialog_title">ntfy account</string>
+    <string name="account_dialog_login_description">Log in with your ntfy account to sync your topics with the web app and your other devices.</string>
+    <string name="account_dialog_server_hint">Server</string>
+    <string name="account_dialog_username_hint">Username</string>
+    <string name="account_dialog_password_hint">Password</string>
+    <string name="account_dialog_login_button">Log in</string>
+    <string name="account_dialog_login_error">Login failed: %1$s</string>
+    <string name="account_dialog_login_error_unauthorized">Login failed: wrong username or password</string>
+    <string name="account_dialog_expired">You were logged out, because the server no longer accepts this phone\'s login (e.g. the password changed or the token was revoked). Log in again to keep syncing.</string>
+    <string name="account_dialog_sync_button">Sync now</string>
+    <string name="account_dialog_sync_done">Topics synced</string>
+    <string name="account_dialog_sync_error">Sync failed: %1$s</string>
+    <string name="account_dialog_first_sync_title">This phone and your account have different topics</string>
+    <string name="account_dialog_first_sync_merge">Keep all topics from both</string>
+    <string name="account_dialog_first_sync_use_account">Use the account\'s topics (removes %1$d from this phone)</string>
+    <string name="account_dialog_first_sync_use_phone">Use this phone\'s topics (removes %1$d from the account)</string>
+    <string name="account_dialog_logout_button">Log out</string>
+    <string name="account_dialog_logout_confirm_message">Log out of your ntfy account? Your topics stay on this phone, but they will no longer sync.</string>
 
     <!-- User add/edit dialog (UserFragment) -->
     <string name="user_dialog_title_add">Add user</string>

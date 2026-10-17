@@ -1,11 +1,5 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
                   app:title="@string/settings_title">
-    <PreferenceCategory app:title="@string/settings_account_header">
-        <Preference
-                app:key="@string/settings_account_key"
-                app:title="@string/settings_account_title"
-                app:summary="@string/settings_account_summary_not_logged_in"/>
-    </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_notifications_header">
         <ListPreference
                 app:key="@string/settings_notifications_muted_until_key"
@@ -41,6 +35,9 @@
                 app:summary="@string/settings_notifications_channel_prefs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_general_header">
+        <Preference
+                app:key="@string/settings_general_account_key"
+                app:title="@string/settings_general_account_title"/>
         <Preference
                 app:key="@string/settings_general_default_base_url_key"
                 app:title="@string/settings_general_default_base_url_title" />

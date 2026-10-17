@@ -49,6 +49,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
+import io.heckel.ntfy.account.AccountManager
 import io.heckel.ntfy.app.Application
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -72,10 +73,9 @@ import io.heckel.ntfy.util.maybeSplitTopicUrl
 import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicShortUrl
-import io.heckel.ntfy.msg.AccountManager
-import io.heckel.ntfy.work.AccountSyncWorker
 import io.heckel.ntfy.work.DeleteWorker
 import io.heckel.ntfy.work.PollWorker
+import io.heckel.ntfy.work.AccountSyncWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -382,7 +382,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         schedulePeriodicPollWorker()
         schedulePeriodicServiceRestartWorker()
         schedulePeriodicDeleteWorker()
-        schedulePeriodicAccountSyncWorker()
+        AccountSyncWorker.schedulePeriodic(this)
+        AccountSyncWorker.syncSoon(this)
 
         // Permissions
         maybeRequestNotificationPermission()
@@ -525,28 +526,6 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             .build()
         Log.d(TAG, "ServiceStartWorker: Scheduling period work every $SERVICE_START_WORKER_INTERVAL_MINUTES minutes")
         workManager?.enqueueUniquePeriodicWork(SubscriberService.SERVICE_START_WORKER_WORK_NAME_PERIODIC, workPolicy, work)
-    }
-
-    private fun schedulePeriodicAccountSyncWorker() {
-        val workerVersion = repository.getAccountSyncWorkerVersion()
-        val workPolicy = if (workerVersion == AccountSyncWorker.VERSION) {
-            Log.d(TAG, "AccountSyncWorker version matches: choosing KEEP as existing work policy")
-            ExistingPeriodicWorkPolicy.KEEP
-        } else {
-            Log.d(TAG, "AccountSyncWorker version DOES NOT MATCH: choosing REPLACE as existing work policy")
-            repository.setAccountSyncWorkerVersion(AccountSyncWorker.VERSION)
-            ExistingPeriodicWorkPolicy.REPLACE
-        }
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val work = PeriodicWorkRequestBuilder<AccountSyncWorker>(ACCOUNT_SYNC_WORKER_INTERVAL_MINUTES, TimeUnit.MINUTES)
-            .setConstraints(constraints)
-            .addTag(AccountSyncWorker.TAG)
-            .addTag(AccountSyncWorker.WORK_NAME_PERIODIC)
-            .build()
-        Log.d(TAG, "AccountSyncWorker: Scheduling period work every $ACCOUNT_SYNC_WORKER_INTERVAL_MINUTES minutes")
-        workManager?.enqueueUniquePeriodicWork(AccountSyncWorker.WORK_NAME_PERIODIC, workPolicy, work)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -746,7 +725,8 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             newCount = 0,
             lastActive = Date().time/1000
         )
-        viewModel.add(this, subscription)
+        viewModel.add(subscription)
+        AccountSyncWorker.syncSoon(this)
 
         // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
         if (baseUrl == appBaseUrl) {
@@ -790,13 +770,11 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
     private fun refreshAllSubscriptions() {
         lifecycleScope.launch(Dispatchers.IO) {
-            // Sync account subscriptions if logged in
             try {
-                AccountManager.getInstance(this@MainActivity).syncFromRemote()
+                AccountManager.getInstance(this@MainActivity).sync() // No-op when logged out
             } catch (e: Exception) {
-                Log.w(TAG, "Account sync failed during refresh", e)
+                Log.w(TAG, "Unable to sync with account: ${e.message}", e)
             }
-
             Log.d(TAG, "Polling for new notifications")
             var errors = 0
             var errorMessage = "" // First error
@@ -982,6 +960,5 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         const val POLL_WORKER_INTERVAL_MINUTES = 60L
         const val DELETE_WORKER_INTERVAL_MINUTES = 8 * 60L
         const val SERVICE_START_WORKER_INTERVAL_MINUTES = 3 * 60L
-        const val ACCOUNT_SYNC_WORKER_INTERVAL_MINUTES = 15L
     }
 }

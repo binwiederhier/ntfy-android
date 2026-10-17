@@ -29,11 +29,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
+import io.heckel.ntfy.account.AccountManager
 import io.heckel.ntfy.backup.Backuper
 import io.heckel.ntfy.db.CustomHeader
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
-import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.*
@@ -173,9 +173,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Important note: We do not use the default shared prefs to store settings. Every
             // preferenceDataStore is overridden to use the repository. This is convenient, because
             // everybody has access to the repository.
-
-            // Account
-            setupAccountPreference()
 
             // Notifications muted until (global)
             val mutedUntilPrefId = context?.getString(R.string.settings_notifications_muted_until_key) ?: return
@@ -508,6 +505,18 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // ntfy account
+            val accountPrefId = context?.getString(R.string.settings_general_account_key) ?: return
+            val account: Preference? = findPreference(accountPrefId)
+            account?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            account?.onPreferenceClickListener = OnPreferenceClickListener {
+                activity?.let { activity ->
+                    AccountFragment().show(activity.supportFragmentManager, AccountFragment.TAG)
+                }
+                true
+            }
+            refreshAccountSummary()
+
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
@@ -770,29 +779,16 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             repository.setAutoDownloadMaxSize(autoDownloadSelectionCopy)
         }
 
-        private fun setupAccountPreference() {
-            val accountPrefId = context?.getString(R.string.settings_account_key) ?: return
-            val accountPref: Preference? = findPreference(accountPrefId)
-            accountPref?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store
-            accountPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                activity?.let { activity ->
-                    AccountFragment
-                        .newInstance()
-                        .show(activity.supportFragmentManager, AccountFragment.TAG)
-                }
-                true
-            }
-            updateAccountPreference()
-        }
-
-        fun updateAccountPreference() {
-            val accountPrefId = context?.getString(R.string.settings_account_key) ?: return
-            val accountPref: Preference? = findPreference(accountPrefId)
+        fun refreshAccountSummary() {
+            val accountPrefId = context?.getString(R.string.settings_general_account_key) ?: return
+            val account: Preference? = findPreference(accountPrefId)
             val accountManager = AccountManager.getInstance(requireContext())
-            if (accountManager.isLoggedIn()) {
-                accountPref?.summary = getString(R.string.settings_account_summary_logged_in, accountManager.getUsername())
+            account?.summary = if (accountManager.loggedIn()) {
+                getString(R.string.settings_general_account_summary_logged_in, accountManager.username())
+            } else if (accountManager.expired()) {
+                getString(R.string.settings_general_account_summary_expired)
             } else {
-                accountPref?.summary = getString(R.string.settings_account_summary_not_logged_in)
+                getString(R.string.settings_general_account_summary_logged_out)
             }
         }
 
@@ -1183,15 +1179,15 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
+    override fun onAccountChanged() {
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.refreshAccountSummary()
+        }
+    }
+
     private fun setAutoDownload() {
         if (!this::settingsFragment.isInitialized) return
         settingsFragment.setAutoDownload()
-    }
-
-    override fun onAccountChanged() {
-        if (this::settingsFragment.isInitialized) {
-            settingsFragment.updateAccountPreference()
-        }
     }
 
     companion object {

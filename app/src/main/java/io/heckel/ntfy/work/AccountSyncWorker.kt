@@ -1,61 +1,80 @@
 package io.heckel.ntfy.work
 
 import android.content.Context
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import io.heckel.ntfy.BuildConfig
-import io.heckel.ntfy.msg.AccountManager
+import io.heckel.ntfy.account.AccountManager
 import io.heckel.ntfy.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 /**
- * Background worker for periodic account synchronization.
- * Extends the auth token and syncs subscriptions from the server.
+ * Syncs subscriptions with the ntfy account (see AccountManager.sync), periodically and shortly
+ * after topics are added, removed or renamed on this phone. Does nothing when logged out.
  */
 class AccountSyncWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(ctx, params) {
-    // IMPORTANT:
-    //   Every time the worker is changed, the periodic work has to be REPLACEd.
-    //   This is facilitated in the MainActivity using the VERSION below.
-
     init {
         Log.init(ctx) // Init in all entrypoints
     }
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
-            val accountManager = AccountManager.getInstance(applicationContext)
-
-            if (!accountManager.isLoggedIn()) {
-                Log.d(TAG, "Not logged in, skipping account sync")
-                return@withContext Result.success()
-            }
-
-            Log.d(TAG, "Running account sync worker")
-
-            // Extend token to keep session alive
             try {
-                accountManager.extendToken()
+                val result = AccountManager.getInstance(applicationContext).sync()
+                Log.d(TAG, "Account sync finished: $result")
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to extend token: ${e.message}", e)
+                Log.w(TAG, "Account sync failed, retrying with the next run", e)
             }
-
-            // Sync subscriptions from remote
-            try {
-                accountManager.syncFromRemote()
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to sync subscriptions: ${e.message}", e)
-            }
-
-            Log.d(TAG, "Account sync worker completed")
-            return@withContext Result.success()
+            Result.success()
         }
     }
 
     companion object {
-        const val VERSION = BuildConfig.VERSION_CODE
         const val TAG = "NtfyAccountSyncWorker"
-        const val WORK_NAME_PERIODIC = "NtfyAccountSyncWorkerPeriodic" // Do not change
+        private const val WORK_NAME_PERIODIC = "NtfyAccountSyncWorkerPeriodic" // Do not change
+        private const val WORK_NAME_ONCE = "NtfyAccountSyncWorkerOnce" // Do not change
+        private const val PERIODIC_INTERVAL_MINUTES = 60L
+        private const val ONCE_DELAY_SECONDS = 3L // Groups quick changes (e.g. deleting several topics) into one sync
+
+        private val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        fun schedulePeriodic(context: Context) {
+            if (!AccountManager.getInstance(context).loggedIn()) return
+            val work = PeriodicWorkRequestBuilder<AccountSyncWorker>(PERIODIC_INTERVAL_MINUTES, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(WORK_NAME_PERIODIC, ExistingPeriodicWorkPolicy.UPDATE, work)
+        }
+
+        /**
+         * Syncs soon, after a local change. Appends to a running sync, so changes made while it
+         * runs aren't missed.
+         */
+        fun syncSoon(context: Context) {
+            if (!AccountManager.getInstance(context).loggedIn()) return
+            val work = OneTimeWorkRequestBuilder<AccountSyncWorker>()
+                .setConstraints(constraints)
+                .setInitialDelay(ONCE_DELAY_SECONDS, TimeUnit.SECONDS)
+                .addTag(TAG)
+                .build()
+            WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME_ONCE, ExistingWorkPolicy.APPEND_OR_REPLACE, work)
+        }
+
+        fun cancel(context: Context) {
+            val workManager = WorkManager.getInstance(context)
+            workManager.cancelUniqueWork(WORK_NAME_PERIODIC)
+            workManager.cancelUniqueWork(WORK_NAME_ONCE)
+        }
     }
 }
-
