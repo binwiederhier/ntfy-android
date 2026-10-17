@@ -13,6 +13,8 @@ import android.graphics.drawable.RippleDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -518,7 +520,9 @@ fun copyToClipboard(context: Context, label: String, message: String) {
     // https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
         val copied = context.getString(R.string.common_copied_to_clipboard)
-        Toast.makeText(context, copied, Toast.LENGTH_LONG).show()
+        Handler(Looper.getMainLooper()).post { // Copy action buttons call this from UserActionWorker, and toasts need a looper
+            Toast.makeText(context, copied, Toast.LENGTH_LONG).show()
+        }
     }
 }
 

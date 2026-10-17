@@ -39,7 +39,9 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
         repository = app.repository
         notification = repository.getNotification(notificationId) ?: return Result.failure()
         subscription = repository.getSubscription(notification.subscriptionId) ?: return Result.failure()
-        action = notification.actions?.first { it.id == actionId } ?: return Result.failure()
+        action = notification.actions?.firstOrNull { it.id == actionId }
+            ?: ContextualActionDetector.detect(notification).firstOrNull { it.id == actionId } // Not stored, see ContextualActionDetector
+            ?: return Result.failure()
 
         Log.d(TAG, "Executing action $action for notification $notification")
         try {

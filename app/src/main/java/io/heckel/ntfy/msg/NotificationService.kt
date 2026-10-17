@@ -105,6 +105,7 @@ class NotificationService(val context: Context) {
         maybeAddDownloadAction(builder, notification)
         maybeAddCancelAction(builder, notification)
         maybeAddUserActions(builder, notification)
+        maybeAddContextualActions(builder, notification)
 
         maybeCreateNotificationGroup(groupId, subscriptionGroupName(subscription))
         maybeCreateNotificationChannel(groupId, notification.priority)
@@ -273,17 +274,42 @@ class NotificationService(val context: Context) {
     }
 
     /**
+     * Add the codes, links, and email addresses found in the notification as contextual actions (see
+     * ContextualActionDetector). Links are opened like "view" actions, and codes and emails are copied like "copy" actions.
+     */
+    private fun maybeAddContextualActions(builder: NotificationCompat.Builder, notification: Notification) {
+        ContextualActionDetector.detect(notification).forEach { action ->
+            if (action.action == ACTION_VIEW) {
+                addViewUserActionWithoutClear(builder, action, contextual = true)
+            } else {
+                addHttpBroadcastOrCopyUserAction(builder, notification, action, contextual = true)
+            }
+        }
+    }
+
+    /**
+     * Contextual actions are shown as chips below the message instead of as buttons (Android 10+). They
+     * need an icon, because Android 10 cannot show a contextual action without one.
+     */
+    private fun buildAction(action: Action, label: String, pendingIntent: PendingIntent, contextual: Boolean): NotificationCompat.Action {
+        val icon = if (contextual) ContextualActionDetector.icon(action) else 0
+        return NotificationCompat.Action.Builder(icon, label, pendingIntent)
+            .setContextual(contextual)
+            .build()
+    }
+
+    /**
      * Open the URL and do NOT cancel the notification (clear=false). This uses a normal Intent with the given URL.
      * The other case is much more interesting.
      */
-    private fun addViewUserActionWithoutClear(builder: NotificationCompat.Builder, action: Action) {
+    private fun addViewUserActionWithoutClear(builder: NotificationCompat.Builder, action: Action, contextual: Boolean = false) {
         try {
             val url = action.url ?: return
             val intent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             }
             val pendingIntent = PendingIntent.getActivity(context, Random().nextInt(), intent, PendingIntent.FLAG_IMMUTABLE)
-            builder.addAction(NotificationCompat.Action.Builder(0, action.label, pendingIntent).build())
+            builder.addAction(buildAction(action, action.label, pendingIntent, contextual))
         } catch (e: Exception) {
             Log.w(TAG, "Unable to add open user action", e)
         }
@@ -310,7 +336,7 @@ class NotificationService(val context: Context) {
         }
     }
 
-    private fun addHttpBroadcastOrCopyUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action) {
+    private fun addHttpBroadcastOrCopyUserAction(builder: NotificationCompat.Builder, notification: Notification, action: Action, contextual: Boolean = false) {
         val intent = Intent(context, UserActionBroadcastReceiver::class.java).apply {
             putExtra(BROADCAST_EXTRA_TYPE, BROADCAST_TYPE_USER_ACTION)
             putExtra(BROADCAST_EXTRA_NOTIFICATION_ID, notification.id)
@@ -318,7 +344,7 @@ class NotificationService(val context: Context) {
         }
         val pendingIntent = PendingIntent.getBroadcast(context, Random().nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val label = formatActionLabel(action)
-        builder.addAction(NotificationCompat.Action.Builder(0, label, pendingIntent).build())
+        builder.addAction(buildAction(action, label, pendingIntent, contextual))
     }
 
     /**

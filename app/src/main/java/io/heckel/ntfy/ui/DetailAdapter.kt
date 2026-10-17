@@ -25,9 +25,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.stfalcon.imageviewer.StfalconImageViewer
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
+import io.heckel.ntfy.msg.ContextualActionDetector
 import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.DownloadManager
 import io.heckel.ntfy.msg.DownloadType
@@ -107,6 +110,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val attachmentInfoView: TextView = itemView.findViewById(R.id.detail_item_attachment_file_info)
         private val actionsWrapperView: ConstraintLayout = itemView.findViewById(R.id.detail_item_actions_wrapper)
         private val actionsFlow: Flow = itemView.findViewById(R.id.detail_item_actions_flow)
+        private val contextualActionsView: ChipGroup = itemView.findViewById(R.id.detail_item_contextual_actions)
 
         fun bind(notification: Notification) {
             this.notification = notification
@@ -164,6 +168,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             maybeRenderAttachment(context, notification, attachmentFileStat)
             maybeRenderIcon(context, notification, iconFileStat)
             maybeRenderActions(context, notification)
+            maybeRenderContextualActions(context, notification)
         }
 
         private fun maybeMarkdown(message: String, notification: Notification): CharSequence {
@@ -247,6 +252,19 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 }
             } else {
                 actionsWrapperView.visibility = View.GONE
+            }
+        }
+
+        private fun maybeRenderContextualActions(context: Context, notification: Notification) {
+            val actions = ContextualActionDetector.detect(notification)
+            contextualActionsView.removeAllViews()
+            contextualActionsView.visibility = if (actions.isNotEmpty()) View.VISIBLE else View.GONE
+            actions.forEach { action ->
+                val chip = LayoutInflater.from(context).inflate(R.layout.chip_contextual_action, contextualActionsView, false) as Chip
+                chip.text = action.label
+                chip.setChipIconResource(ContextualActionDetector.icon(action))
+                chip.setOnClickListener { runAction(context, notification, action) }
+                contextualActionsView.addView(chip)
             }
         }
 

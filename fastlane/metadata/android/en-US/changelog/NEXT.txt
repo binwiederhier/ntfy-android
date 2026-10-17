@@ -1,0 +1,5 @@
+Features:
+* Show codes, links, and email addresses found in a notification as chips below the message: tapping a link opens it, tapping a code or an email address copies it
+
+Bug fixes + maintenance:
+* Fix "copy" action buttons in the notification popup failing on Android 12 and below
