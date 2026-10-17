@@ -128,6 +128,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         return notificationDao.listFlowFiltered(subscriptionId, query).asLiveData()
     }
 
+    fun getAllNotificationsLiveData(): LiveData<List<Notification>> {
+        return notificationDao.listAllFlow().asLiveData()
+    }
+
     fun getNotification(notificationId: String): Notification? {
         return notificationDao.get(notificationId)
     }
@@ -183,6 +187,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAllAsRead(subscriptionId: Long) {
         notificationDao.markAllAsRead(subscriptionId)
+    }
+
+    fun markAllAsRead() {
+        notificationDao.markAllAsRead()
     }
 
     fun markAsReadBySequenceId(subscriptionId: Long, sequenceId: String) {

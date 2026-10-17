@@ -1,0 +1,2 @@
+Features:
+* Add an "All notifications" view that lists the notifications of all topics in one place (#260, thanks to @SMAW for reporting)

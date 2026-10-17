@@ -43,7 +43,14 @@ import kotlinx.coroutines.launch
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
 import androidx.core.net.toUri
 
-class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
+class DetailAdapter(
+    private val activity: Activity,
+    private val lifecycleScope: CoroutineScope,
+    private val repository: Repository,
+    private val onClick: (Notification) -> Unit,
+    private val onLongClick: (Notification) -> Unit,
+    private val topicLabel: ((Notification) -> String?)? = null // Shown next to the date when listing notifications of several topics
+) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     private val markwon: Markwon = MarkwonFactory.createForMessage(activity)
     val selected = mutableSetOf<String>() // Notification IDs
@@ -52,7 +59,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick, topicLabel)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -87,7 +94,8 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         itemView: View,
         private val selected: Set<String>,
         val onClick: (Notification) -> Unit,
-        val onLongClick: (Notification) -> Unit
+        val onLongClick: (Notification) -> Unit,
+        private val topicLabel: ((Notification) -> String?)?
     ) :
         RecyclerView.ViewHolder(itemView) {
         private var notification: Notification? = null
@@ -115,7 +123,9 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
-            dateView.text = formatDateShort(notification.timestamp)
+            val date = formatDateShort(notification.timestamp)
+            val topic = topicLabel?.invoke(notification)
+            dateView.text = if (topic != null) context.getString(R.string.all_notifications_item_date_and_topic, date, topic) else date
             if (notification.isMarkdown()) {
                 messageView.autoLinkMask = 0
                 markwon.setMarkdown(messageView, message.toString())

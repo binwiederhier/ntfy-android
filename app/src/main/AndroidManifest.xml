@@ -73,6 +73,12 @@
         </activity>
 
         <!-- Detail settings activity -->
+        <!-- All notifications activity -->
+        <activity
+                android:name=".ui.AllNotificationsActivity"
+                android:parentActivityName=".ui.MainActivity">
+        </activity>
+
         <activity
                 android:name=".ui.DetailSettingsActivity"
                 android:parentActivityName=".ui.DetailActivity">

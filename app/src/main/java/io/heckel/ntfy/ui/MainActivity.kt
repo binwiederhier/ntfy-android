@@ -37,6 +37,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updatePadding
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Constraints
@@ -99,6 +100,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var adapter: MainAdapter
+    private lateinit var allNotificationsAdapter: AllNotificationsHeaderAdapter
     private lateinit var fab: FloatingActionButton
 
     // Other stuff
@@ -194,16 +196,22 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         val onSubscriptionLongClick = { s: Subscription -> onSubscriptionItemLongClick(s) }
 
         mainList = findViewById(R.id.main_subscriptions_list)
+        val countDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_circle, theme)!!.apply {
+            setTint(Colors.primary(this@MainActivity))
+        }
         adapter = MainAdapter(
             repository,
             onSubscriptionClick,
             onSubscriptionLongClick,
-            ResourcesCompat.getDrawable(resources, R.drawable.ic_circle, theme)!!.apply {
-                setTint(Colors.primary(this@MainActivity))
-            },
+            countDrawable,
             Colors.onPrimary(this)
         )
-        mainList.adapter = adapter
+        allNotificationsAdapter = AllNotificationsHeaderAdapter(
+            { onAllNotificationsItemClick() },
+            countDrawable,
+            Colors.onPrimary(this)
+        )
+        mainList.adapter = ConcatAdapter(allNotificationsAdapter, adapter)
         
         // Apply window insets to ensure content is not covered by navigation bar
         mainList.clipToPadding = false
@@ -217,6 +225,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             it?.let { subscriptions ->
                 // Update main list
                 adapter.submitList(subscriptions as MutableList<Subscription>)
+                allNotificationsAdapter.update(subscriptions)
                 if (it.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntries.visibility = View.VISIBLE
@@ -755,6 +764,13 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         } else {
             startDetailView(subscription)
         }
+    }
+
+    private fun onAllNotificationsItemClick() {
+        if (actionMode != null) {
+            return // Selecting topics; the row is not selectable
+        }
+        startActivity(Intent(this, AllNotificationsActivity::class.java))
     }
 
     private fun onSubscriptionItemLongClick(subscription: Subscription) {
