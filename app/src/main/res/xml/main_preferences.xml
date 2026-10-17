@@ -37,8 +37,7 @@
     <PreferenceCategory app:title="@string/settings_general_header">
         <Preference
                 app:key="@string/settings_general_account_key"
-                app:title="@string/settings_general_account_title"
-                app:isPreferenceVisible="false"/>
+                app:title="@string/settings_general_account_title"/>
         <Preference
                 app:key="@string/settings_general_default_base_url_key"
                 app:title="@string/settings_general_default_base_url_title" />

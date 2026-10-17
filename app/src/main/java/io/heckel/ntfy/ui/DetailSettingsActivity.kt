@@ -26,6 +26,7 @@ import io.heckel.ntfy.msg.DownloadAttachmentWorker
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.*
+import io.heckel.ntfy.work.AccountSyncWorker
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
@@ -398,6 +399,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                     val displayName = if (value != "") value else null
                     val newSubscription = subscription.copy(displayName = displayName)
                     save(newSubscription)
+                    AccountSyncWorker.syncSoon(requireContext())
                     // Update activity title
                     activity?.runOnUiThread {
                         activity?.title = displayName(appBaseUrl, newSubscription)

@@ -384,6 +384,7 @@
     <string name="settings_general_account_title">ntfy account</string>
     <string name="settings_general_account_summary_logged_out">Log in to sync your topics with other devices</string>
     <string name="settings_general_account_summary_logged_in">Logged in as %1$s</string>
+    <string name="settings_general_account_summary_expired">Logged out, log in again to keep syncing</string>
     <string name="settings_general_default_base_url_title">Default server</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
     <string name="settings_general_users_title">Manage users</string>
@@ -527,6 +528,14 @@
     <string name="account_dialog_login_button">Log in</string>
     <string name="account_dialog_login_error">Login failed: %1$s</string>
     <string name="account_dialog_login_error_unauthorized">Login failed: wrong username or password</string>
+    <string name="account_dialog_expired">You were logged out, because the server no longer accepts this phone\'s login (e.g. the password changed or the token was revoked). Log in again to keep syncing.</string>
+    <string name="account_dialog_sync_button">Sync now</string>
+    <string name="account_dialog_sync_done">Topics synced</string>
+    <string name="account_dialog_sync_error">Sync failed: %1$s</string>
+    <string name="account_dialog_first_sync_title">This phone and your account have different topics</string>
+    <string name="account_dialog_first_sync_merge">Keep all topics from both</string>
+    <string name="account_dialog_first_sync_use_account">Use the account\'s topics (removes %1$d from this phone)</string>
+    <string name="account_dialog_first_sync_use_phone">Use this phone\'s topics (removes %1$d from the account)</string>
     <string name="account_dialog_logout_button">Log out</string>
     <string name="account_dialog_logout_confirm_message">Log out of your ntfy account? Your topics stay on this phone, but they will no longer sync.</string>
 

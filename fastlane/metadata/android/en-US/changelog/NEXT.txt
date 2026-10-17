@@ -1,2 +1,5 @@
+Features:
+* Log in to your ntfy account to sync topics with the web app and other devices (#159, thanks to @alexzeitgeist for reporting)
+
 Bug fixes + maintenance:
 * Fix copying multiple selected messages including their timestamps (#1926, thanks to @podtor for reporting)

@@ -14,6 +14,7 @@ import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.work.AccountSyncWorker
 import java.io.InputStreamReader
 
 class Backuper(val context: Context) {
@@ -50,6 +51,7 @@ class Backuper(val context: Context) {
         }
         applySettings(backupFile.settings)
         applySubscriptions(backupFile.subscriptions)
+        AccountSyncWorker.syncSoon(context) // Restored topics are new to the account
         applyNotifications(backupFile.notifications)
         applyUsers(backupFile.users)
         applyTrustedCertificates(backupFile.trustedCertificates)

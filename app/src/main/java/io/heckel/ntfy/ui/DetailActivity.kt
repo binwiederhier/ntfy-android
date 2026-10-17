@@ -51,6 +51,7 @@ import io.heckel.ntfy.util.isDarkThemeOn
 import io.heckel.ntfy.util.randomSubscriptionId
 import io.heckel.ntfy.util.topicShortUrl
 import io.heckel.ntfy.util.topicUrl
+import io.heckel.ntfy.work.AccountSyncWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -237,6 +238,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     lastActive = Date().time/1000
                 )
                 repository.addSubscription(subscription)
+                AccountSyncWorker.syncSoon(this@DetailActivity)
 
                 // Subscribe to Firebase topic if ntfy.sh (even if instant, just to be sure!)
                 if (baseUrl == appBaseUrl) {
@@ -916,6 +918,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 GlobalScope.launch(Dispatchers.IO) {
                     val subscription = repository.getSubscription(subscriptionId) ?: return@launch
                     repository.removeSubscription(subscription)
+                    AccountSyncWorker.syncSoon(this@DetailActivity)
                     if (subscriptionBaseUrl == appBaseUrl) {
                         messenger.unsubscribe(subscriptionTopic)
                     }
