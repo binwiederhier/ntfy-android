@@ -17,8 +17,8 @@ android {
         minSdkVersion 26
         targetSdkVersion 36
 
-        versionCode 58
-        versionName "1.22.2"
+        versionCode 63
+        versionName "1.25.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -89,11 +89,11 @@ android.applicationVariants.all { variant ->
 dependencies {
     // AndroidX, The Basics
     implementation "androidx.appcompat:appcompat:1.7.1"
-    implementation "androidx.core:core-ktx:1.17.0"
+    implementation "androidx.core:core-ktx:1.18.0"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
-    implementation "androidx.activity:activity-ktx:1.12.2"
+    implementation "androidx.activity:activity-ktx:1.13.0"
     implementation "androidx.fragment:fragment-ktx:1.8.9"
-    implementation "androidx.work:work-runtime-ktx:2.11.0"
+    implementation "androidx.work:work-runtime-ktx:2.11.2"
     implementation 'androidx.preference:preference-ktx:1.2.1'
 
     // JSON serialization
@@ -144,6 +144,6 @@ dependencies {
     implementation 'io.noties.markwon:ext-strikethrough:4.6.2'
 
     // Used by Markdown library, R8 complains if these are not here
-    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.30"
+    implementation "pl.droidsonroids.gif:android-gif-drawable:1.2.31"
     implementation "com.caverock:androidsvg:1.4"
 }

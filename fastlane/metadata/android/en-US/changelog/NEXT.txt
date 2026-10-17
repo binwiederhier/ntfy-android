@@ -1,3 +1,2 @@
-Features:
-* Search within a topic (#141, ntfy-android#153, thanks to @Copephobia and @StoyanYonkov for reporting and sponsoring)
-* Add "reconnecting to N topics ..." to foreground notification (#1101, thanks to @milosivanovic for reporting)
+Bug fixes + maintenance:
+* Fix copying multiple selected messages including their timestamps (#1926, thanks to @podtor for reporting)

@@ -96,9 +96,10 @@ class FirebaseService : FirebaseMessagingService() {
 
     private fun handleMessageDelete(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
+        val id = data["id"] ?: return
         val topic = data["topic"] ?: return
         val sequenceId = data["sequence_id"] ?: return
-        Log.d(TAG, "Received message_delete: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
+        Log.d(TAG, "Received message_delete: from=${remoteMessage.from}, id=$id, topic=$topic, sequenceId=$sequenceId")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url)
@@ -106,6 +107,9 @@ class FirebaseService : FirebaseMessagingService() {
 
             // Mark all notifications with this sequenceId as deleted
             repository.markAsDeletedBySequenceId(subscription.id, sequenceId)
+
+            // Update lastNotificationId to track message stream position
+            repository.updateLastNotificationId(subscription.id, id)
 
             // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
             val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)
@@ -116,9 +120,10 @@ class FirebaseService : FirebaseMessagingService() {
 
     private fun handleMessageClear(remoteMessage: RemoteMessage) {
         val data = remoteMessage.data
+        val id = data["id"] ?: return
         val topic = data["topic"] ?: return
         val sequenceId = data["sequence_id"] ?: return
-        Log.d(TAG, "Received message_clear: from=${remoteMessage.from}, topic=$topic, sequenceId=$sequenceId")
+        Log.d(TAG, "Received message_clear: from=${remoteMessage.from}, id=$id, topic=$topic, sequenceId=$sequenceId")
 
         CoroutineScope(job).launch {
             val baseUrl = getString(R.string.app_base_url)
@@ -126,6 +131,9 @@ class FirebaseService : FirebaseMessagingService() {
 
             // Mark all notifications with this sequenceId as read
             repository.markAsReadBySequenceId(subscription.id, sequenceId)
+
+            // Update lastNotificationId to track message stream position
+            repository.updateLastNotificationId(subscription.id, id)
 
             // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
             val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)

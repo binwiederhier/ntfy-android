@@ -218,7 +218,7 @@
     <string name="share_content_title">Podgląd wiadomości</string>
     <string name="add_dialog_base_urls_dropdown_choose">Wybierz adres URL usługi</string>
     <string name="detail_how_to_intro">Aby wysłać powiadomienia do tego tematu, wyślij PUT lub POST-Request na adres URL tematu.</string>
-    <string name="detail_how_to_example">Przykład (za pomocą curl):<br/><tt>$ curl -d \"Cześć\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[Przykład (za pomocą curl):<br/><tt>$ curl -d \"Cześć\" %1$s</tt>]]></string>
     <string name="detail_how_to_link">Szczegółowe instrukcje są dostępne w ntfy.sh, oraz w dokumentacji.</string>
     <string name="detail_clear_dialog_message">Usunąć wszystkie powiadomienia z tego tematu\?</string>
     <string name="detail_item_tags">Tagi: %1$s</string>
@@ -300,7 +300,7 @@
     <string name="settings_advanced_export_logs_copied_logs">Logi skopiowane do schowka</string>
     <string name="settings_advanced_export_logs_uploading">Przesyłanie logów …</string>
     <string name="settings_advanced_export_logs_copied_url">Logi przesłane i URL skopiowane</string>
-    <string name="settings_general_default_base_url_message">Wpisz tutaj główny adres URL swojego serwera, aby używać go jako domyślnego podczas subskrybowania nowych tematów i/lub udostępniania.</string>
+    <string name="default_server_dialog_description">Wpisz tutaj główny adres URL swojego serwera, aby używać go jako domyślnego podczas subskrybowania nowych tematów i/lub udostępniania.</string>
     <string name="user_dialog_title_add">Dodaj użytkownika</string>
     <string name="settings_advanced_export_logs_scrub_dialog_empty">Żadne tematy/nazwy hostów nie zostały zredagowane. Może nie masz żadnych subskrypcji\?</string>
     <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
@@ -350,4 +350,5 @@
     <string name="common_certificate_added_toast">Dodano certyfikat</string>
     <string name="common_certificate_deleted_toast">Usunięto certyfikat</string>
     <string name="main_menu_connection_error">Błąd połączenia</string>
+    <string name="common_button_reset_to_default">Przywróć ustawienia domyślne</string>
 </resources>

@@ -118,7 +118,7 @@ class ApiService(private val context: Context) {
         val subscriptionId = subscription.id
         val baseUrl = subscription.baseUrl
         val topic = subscription.topic
-        val sinceVal = subscription.lastNotificationId ?: "all"
+        val sinceVal = subscription.lastNotificationId ?: SINCE_ALL
         val url = topicUrlJsonPoll(baseUrl, topic, sinceVal)
         Log.d(TAG, "Polling topic $url")
 
@@ -146,7 +146,7 @@ class ApiService(private val context: Context) {
         since: String?,
         user: User?
     ): Pair<Call, BufferedSource> {
-        val sinceVal = since ?: "all"
+        val sinceVal = since ?: SINCE_ALL
         val url = topicUrlJson(baseUrl, topics, sinceVal)
         Log.d(TAG, "Opening subscription connection to $url")
         val customHeaders = repository.getCustomHeaders(baseUrl)
@@ -206,5 +206,9 @@ class ApiService(private val context: Context) {
         const val EVENT_MESSAGE_CLEAR = "message_clear"
         const val EVENT_KEEPALIVE = "keepalive"
         const val EVENT_POLL_REQUEST = "poll_request"
+
+        // Valid values for the "since" parameter
+        const val SINCE_ALL = "all"   // Retrieve all cached messages
+        const val SINCE_NONE = "none" // Don't retrieve any old messages
     }
 }

@@ -15,12 +15,11 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.os.SystemClock
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.Observer
 import io.heckel.ntfy.BuildConfig
 import io.heckel.ntfy.R
 import io.heckel.ntfy.app.Application
-import io.heckel.ntfy.db.ConnectionDetails
 import io.heckel.ntfy.db.ConnectionState
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
@@ -30,8 +29,9 @@ import io.heckel.ntfy.ui.Colors
 import io.heckel.ntfy.ui.MainActivity
 import io.heckel.ntfy.util.HttpUtil
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.isNetworkAvailable
+import io.heckel.ntfy.util.shortUrl
 import io.heckel.ntfy.util.topicUrl
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -73,13 +73,8 @@ class SubscriberService : Service() {
     private val api by lazy { ApiService(this) }
     private val connections = ConcurrentHashMap<ConnectionId, Connection>()
     private var notificationManager: NotificationManager? = null
-    private var notificationText: String? = null
     private var serviceNotification: Notification? = null
     private val refreshMutex = Mutex() // Ensure refreshConnections() is only run one at a time
-
-    private val connectionDetailsObserver = Observer<Map<String, ConnectionDetails>> { details ->
-        updateNotificationFromConnectionDetails(details)
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand executed with startId: $startId")
@@ -119,13 +114,14 @@ class SubscriberService : Service() {
      * from onStartCommand() if onCreate() didn't complete properly.
      */
     private fun initializeForegroundState() {
+        val title = getString(R.string.channel_subscriber_notification_title)
         val text = if (BuildConfig.FIREBASE_AVAILABLE) {
             getString(R.string.channel_subscriber_notification_instant_text)
         } else {
             getString(R.string.channel_subscriber_notification_noinstant_text)
         }
         notificationManager = createNotificationChannel()
-        serviceNotification = createNotification(text)
+        serviceNotification = createNotification(title, text)
 
         val notification = serviceNotification ?: return
         try {
@@ -167,15 +163,11 @@ class SubscriberService : Service() {
         wakeLock = (getSystemService(POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
         }
-        repository.getConnectionDetailsLiveData().observeForever(connectionDetailsObserver)
         refreshConnections()
     }
 
     private fun stopService() {
         Log.d(TAG, "Stopping the foreground service")
-
-        // Remove connection details observer
-        repository.getConnectionDetailsLiveData().removeObserver(connectionDetailsObserver)
 
         // Cancelling all remaining jobs and open HTTP calls
         connections.values.forEach { connection -> connection.close() }
@@ -206,7 +198,7 @@ class SubscriberService : Service() {
                 return@launch
             }
             try {
-                reallyRefreshConnections(this)
+                reallyRefreshConnections()
             } finally {
                 refreshMutex.unlock()
             }
@@ -217,7 +209,24 @@ class SubscriberService : Service() {
      * Start/stop connections based on the desired state
      * It is guaranteed that only one of function is run at a time (see mutex above).
      */
-    private suspend fun reallyRefreshConnections(scope: CoroutineScope) {
+    private suspend fun reallyRefreshConnections() {
+        // If the device has no network (airplane mode, offline, etc.), do NOT open connections.
+        // Instead close any open connections and update the foreground notification, keeping the
+        // foreground service ALIVE (see #1709). Stopping it here would force a fresh background
+        // foreground-service start when network returns, which Android 12+ forbids for apps without a
+        // battery-optimization exemption. On network return, Application's callback calls refresh()
+        // again and we reconnect via the normal path below.
+        if (!isNetworkAvailable(this)) {
+            Log.d(TAG, "No network available, closing all connections and waiting for network")
+            connections.values.forEach { connection -> connection.close() }
+            connections.clear()
+            val title = getString(R.string.channel_subscriber_notification_no_network_title)
+            val text = getString(R.string.channel_subscriber_notification_no_network_text)
+            serviceNotification = createNotification(title, text)
+            notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
+            return
+        }
+
         // Group instant subscriptions by base URL, there is only one connection per base URL
         val instantSubscriptions = repository.getSubscriptions().filter { s -> s.instant }
         val activeConnectionIds = connections.keys().toList().toSet()
@@ -252,9 +261,6 @@ class SubscriberService : Service() {
         val newConnectionIds = desiredConnectionIds.subtract(activeConnectionIds)
         val obsoleteConnectionIds = activeConnectionIds.subtract(desiredConnectionIds)
         val match = activeConnectionIds == desiredConnectionIds
-        val sinceByBaseUrl = connections
-            .map { e -> e.key.baseUrl to e.value.since() } // Use since=<id>, avoid retrieving old messages (see comment below)
-            .toMap()
 
         Log.d(TAG, "Refreshing subscriptions")
         Log.d(TAG, "- Desired connections: $desiredConnectionIds")
@@ -270,19 +276,15 @@ class SubscriberService : Service() {
 
         // Open new connections
         newConnectionIds.forEach { connectionId ->
-            // IMPORTANT: Do NOT request old messages for new connections; we call poll() in MainActivity to
-            // retrieve old messages. This is important, so we don't download attachments from old messages.
-
-            val since = sinceByBaseUrl[connectionId.baseUrl] ?: "none"
             val serviceActive = { isServiceStarted }
             val user = repository.getUser(connectionId.baseUrl)
             val customHeaders = repository.getCustomHeaders(connectionId.baseUrl)
             val connection = if (connectionId.connectionProtocol == Repository.CONNECTION_PROTOCOL_WS) {
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
                 val httpClient = HttpUtil.wsClient(this, connectionId.baseUrl)
-                WsConnection(connectionId, repository, httpClient, user, customHeaders, since, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
+                WsConnection(connectionId, repository, httpClient, user, customHeaders, ::onConnectionDetailsChanged, ::onNotificationReceived, alarmManager)
             } else {
-                JsonConnection(connectionId, scope, repository, api, user, since, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
+                JsonConnection(connectionId, repository, api, user, ::onConnectionDetailsChanged, ::onNotificationReceived, serviceActive)
             }
             connections[connectionId] = connection
             connection.start()
@@ -293,9 +295,9 @@ class SubscriberService : Service() {
             val connection = connections.remove(connectionId)
             connection?.close()
         }
-
         // Update foreground service notification popup
         if (connections.isNotEmpty()) {
+            val title = getString(R.string.channel_subscriber_notification_title)
             val text = if (BuildConfig.FIREBASE_AVAILABLE) {
                 when (instantSubscriptions.size) {
                     1 -> getString(R.string.channel_subscriber_notification_instant_text_one)
@@ -317,46 +319,104 @@ class SubscriberService : Service() {
                     else -> getString(R.string.channel_subscriber_notification_noinstant_text_more, instantSubscriptions.size)
                 }
             }
-            notificationText = text
-            val textWithStatus = buildNotificationText(text)
-            serviceNotification = createNotification(textWithStatus)
+            serviceNotification = createNotification(title, text)
             notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
-        }
-    }
-
-    private fun buildNotificationText(baseText: String, details: Map<String, ConnectionDetails>? = null): String {
-        val errorCount = countTopicsWithConnectionErrors(details)
-        return if (errorCount > 0) {
-            val suffix = if (errorCount == 1) {
-                getString(R.string.channel_subscriber_notification_reconnecting_one)
-            } else {
-                getString(R.string.channel_subscriber_notification_reconnecting_other, errorCount)
-            }
-            "$baseText, $suffix"
-        } else {
-            baseText
         }
     }
 
     private fun onConnectionDetailsChanged(baseUrl: String, state: ConnectionState, throwable: Throwable?, nextRetryTime: Long) {
         repository.updateConnectionDetails(baseUrl, state, throwable, nextRetryTime)
+        if (state == ConnectionState.CONNECTED) {
+            maybeAutoDismissConnectionAlert()
+        } else if (throwable != null) {
+            maybeShowConnectionAlert()
+        }
     }
 
-    private fun countTopicsWithConnectionErrors(details: Map<String, ConnectionDetails>? = null): Int {
-        val detailsMap = details ?: repository.getConnectionDetails()
-        val errorBaseUrls = detailsMap
-            .filter { it.value.hasError() }
-            .keys
-        return connections.keys
-            .filter { it.baseUrl in errorBaseUrls }
-            .sumOf { it.topicsToSubscriptionIds.size }
+    private fun maybeShowConnectionAlert() {
+        val thresholdSeconds = repository.getConnectionAlertSeconds()
+        if (thresholdSeconds <= 0L) return
+
+        // Don't show alert if the device has no network connectivity (e.g. airplane mode)
+        if (!isNetworkAvailable(this)) return
+
+        // Check snooze
+        val now = System.currentTimeMillis()
+        val snoozeUntil = repository.getConnectionAlertSnoozeUntilTime()
+        if (snoozeUntil > now) return
+
+        // Check if any connection has been in error for longer than the threshold
+        val thresholdMillis = thresholdSeconds * 1000L
+        val allDetails = repository.getConnectionDetails()
+        val disconnectedUrls = allDetails.filter { (_, details) ->
+            details.disconnectedSince > 0L &&
+                (now - details.disconnectedSince) >= thresholdMillis
+        }.keys
+
+        if (disconnectedUrls.isNotEmpty()) {
+            // Only post the alert if it isn't already showing. maybeShowConnectionAlert() runs on
+            // every connection retry (~every 2-3 min while a server is down), and re-posting the
+            // same notification re-triggers it: some OEMs (e.g. ColorOS) wake the screen / re-alert
+            // on each notify() despite FLAG_ONLY_ALERT_ONCE. We refresh it only after it's been
+            // cleared (recovery, snooze, or dismiss), so an ongoing outage alerts exactly once.
+            val alreadyShowing = notificationManager?.activeNotifications?.any {
+                it.id == NOTIFICATION_CONNECTION_ALERT_ID
+            } == true
+            if (!alreadyShowing) {
+                val thresholdMinutes = (thresholdSeconds / 60).toInt()
+                showConnectionAlertNotification(disconnectedUrls, thresholdMinutes)
+            }
+        }
     }
 
-    private fun updateNotificationFromConnectionDetails(details: Map<String, ConnectionDetails>) {
-        val baseText = notificationText ?: return
-        val text = buildNotificationText(baseText, details)
-        serviceNotification = createNotification(text)
-        notificationManager?.notify(NOTIFICATION_SERVICE_ID, serviceNotification)
+    private fun maybeAutoDismissConnectionAlert() {
+        val allDetails = repository.getConnectionDetails()
+        val anyStillDisconnected = allDetails.any { (_, details) ->
+            details.disconnectedSince > 0L
+        }
+        if (!anyStillDisconnected) {
+            notificationManager?.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+        }
+    }
+
+    private fun showConnectionAlertNotification(disconnectedUrls: Set<String>, thresholdMinutes: Int) {
+        val text = if (disconnectedUrls.size == 1) {
+            getString(R.string.connection_alert_text_one, shortUrl(disconnectedUrls.first()), thresholdMinutes)
+        } else {
+            getString(R.string.connection_alert_text_multiple, disconnectedUrls.size, thresholdMinutes)
+        }
+
+        val contentIntent = PendingIntent.getActivity(this, REQUEST_CODE_CONTENT,
+            Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
+        val snoozeShortIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_SHORT,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_SHORT },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val snoozeLongIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_SNOOZE_LONG,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_SNOOZE_LONG },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val neverAlertIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_NEVER,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_NEVER },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val deleteIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_DISMISS,
+            Intent(this, ConnectionAlertBroadcastReceiver::class.java).apply { action = CONNECTION_ALERT_ACTION_DISMISS },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CONNECTION_ALERT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(Colors.notificationIcon(this))
+            .setContentTitle(getString(R.string.connection_alert_title))
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(contentIntent)
+            .setOnlyAlertOnce(true)
+            .setDeleteIntent(deleteIntent)
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_SHORT_HOURS), snoozeShortIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_snooze, CONNECTION_ALERT_SNOOZE_LONG_HOURS), snoozeLongIntent).build())
+            .addAction(NotificationCompat.Action.Builder(0, getString(R.string.connection_alert_action_never), neverAlertIntent).build())
+            .build()
+
+        Log.d(TAG, "Showing connection alert notification")
+        notificationManager?.notify(NOTIFICATION_CONNECTION_ALERT_ID, notification)
     }
 
     private fun onNotificationReceived(subscription: Subscription, notification: io.heckel.ntfy.db.Notification) {
@@ -378,12 +438,14 @@ class SubscriberService : Service() {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE_DELETE -> {
                     if (notification.sequenceId.isNotEmpty()) {
                         repository.markAsDeletedBySequenceId(subscription.id, notification.sequenceId)
                     }
+                    repository.updateLastNotificationId(subscription.id, notification.id)
                     dispatcher.dispatch(subscription, notification)
                 }
                 ApiService.EVENT_MESSAGE -> {
@@ -405,11 +467,13 @@ class SubscriberService : Service() {
             it
         }
         notificationManager.createNotificationChannel(channel)
+        val connectionAlertChannelName = getString(R.string.channel_connection_alert_name)
+        val connectionAlertChannel = NotificationChannel(NOTIFICATION_CONNECTION_ALERT_CHANNEL_ID, connectionAlertChannelName, NotificationManager.IMPORTANCE_DEFAULT)
+        notificationManager.createNotificationChannel(connectionAlertChannel)
         return notificationManager
     }
 
-    private fun createNotification(text: String): Notification {
-        val title = getString(R.string.channel_subscriber_notification_title)
+    private fun createNotification(title: String, text: String): Notification {
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
@@ -461,6 +525,29 @@ class SubscriberService : Service() {
         }
     }
 
+    class ConnectionAlertBroadcastReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "ConnectionAlertBroadcastReceiver: action=${intent.action}")
+            val repository = Repository.getInstance(context)
+            val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            when (intent.action) {
+                CONNECTION_ALERT_ACTION_DISMISS, CONNECTION_ALERT_ACTION_SNOOZE_SHORT -> {
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_SHORT_MILLIS)
+                    Toast.makeText(context, context.getString(R.string.connection_alert_snoozed_toast, CONNECTION_ALERT_SNOOZE_SHORT_HOURS), Toast.LENGTH_LONG).show()
+                }
+                CONNECTION_ALERT_ACTION_SNOOZE_LONG -> {
+                    repository.setConnectionAlertSnoozeUntilTime(System.currentTimeMillis() + CONNECTION_ALERT_SNOOZE_LONG_MILLIS)
+                    Toast.makeText(context, context.getString(R.string.connection_alert_snoozed_toast, CONNECTION_ALERT_SNOOZE_LONG_HOURS), Toast.LENGTH_LONG).show()
+                }
+                CONNECTION_ALERT_ACTION_NEVER -> {
+                    repository.setConnectionAlertSeconds(Repository.CONNECTION_ALERT_NEVER)
+                }
+                else -> return
+            }
+            notificationManager.cancel(NOTIFICATION_CONNECTION_ALERT_ID)
+        }
+    }
+
     enum class Action {
         START,
         STOP
@@ -471,10 +558,32 @@ class SubscriberService : Service() {
         const val SERVICE_START_WORKER_VERSION = BuildConfig.VERSION_CODE
         const val SERVICE_START_WORKER_WORK_NAME_PERIODIC = "NtfyAutoRestartWorkerPeriodic" // Do not change!
 
+        private const val ONE_HOUR_SECONDS = 60 * 60L
+        private const val ONE_HOUR_MILLIS = ONE_HOUR_SECONDS * 1000L
+
         private const val WAKE_LOCK_TAG = "SubscriberService:lock"
         private const val NOTIFICATION_CHANNEL_ID = "ntfy-subscriber"
+        private const val NOTIFICATION_CONNECTION_ALERT_CHANNEL_ID = "ntfy-connection-alert"
         private const val NOTIFICATION_GROUP_ID = "io.heckel.ntfy.NOTIFICATION_GROUP_SERVICE"
         private const val NOTIFICATION_SERVICE_ID = 2586
         private const val NOTIFICATION_RECEIVED_WAKELOCK_TIMEOUT_MILLIS = 10 * 60 * 1000L /*10 minutes*/
+
+        const val NOTIFICATION_CONNECTION_ALERT_ID = 2587
+        private const val CONNECTION_ALERT_SNOOZE_SHORT_HOURS = 1
+        private const val CONNECTION_ALERT_SNOOZE_SHORT_MILLIS = CONNECTION_ALERT_SNOOZE_SHORT_HOURS * ONE_HOUR_MILLIS
+        private const val CONNECTION_ALERT_SNOOZE_LONG_HOURS = 8
+        private const val CONNECTION_ALERT_SNOOZE_LONG_MILLIS = CONNECTION_ALERT_SNOOZE_LONG_HOURS * ONE_HOUR_MILLIS
+        private const val CONNECTION_ALERT_ACTION_DISMISS = "io.heckel.ntfy.CONNECTION_ALERT_DISMISS"
+        private const val CONNECTION_ALERT_ACTION_SNOOZE_SHORT = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_SHORT"
+        private const val CONNECTION_ALERT_ACTION_SNOOZE_LONG = "io.heckel.ntfy.CONNECTION_ALERT_SNOOZE_LONG"
+        private const val CONNECTION_ALERT_ACTION_NEVER = "io.heckel.ntfy.CONNECTION_ALERT_NEVER"
+
+        // Unique request codes for connection alert PendingIntents. These must be distinct so
+        // that each PendingIntent is treated as a separate entry by the system.
+        private const val REQUEST_CODE_CONTENT = 0
+        private const val REQUEST_CODE_SNOOZE_SHORT = 1
+        private const val REQUEST_CODE_SNOOZE_LONG = 2
+        private const val REQUEST_CODE_NEVER = 3
+        private const val REQUEST_CODE_DISMISS = 4
     }
 }

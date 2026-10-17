@@ -4,7 +4,7 @@
     <string name="common_priority_default_name">Стандартный приоритет</string>
     <string name="common_priority_high_name">Высокий приоритет</string>
     <string name="common_priority_max_name">Максимальный приоритет</string>
-    <string name="channel_subscriber_service_name">Сервис подписки</string>
+    <string name="channel_subscriber_service_name">Фоновый сервис</string>
     <string name="common_priority_min_name">Минимальный приоритет</string>
     <string name="common_priority_low_name">Низкий приоритет</string>
     <string name="main_menu_notifications_disabled_forever">Уведомления без звука</string>
@@ -17,7 +17,7 @@
     <string name="detail_delete_dialog_message">Отписаться от этой темы и удалить все полученные уведомления\?</string>
     <string name="detail_delete_dialog_permanently_delete">Удалить навсегда</string>
     <string name="detail_delete_dialog_cancel">Отмена</string>
-    <string name="detail_test_title">Тест: Вы можете установить заголовок, если хотите.</string>
+    <string name="detail_test_title">Тест: вы можете установить заголовок, если хотите.</string>
     <string name="detail_how_to_example"><![CDATA[ Пример (используя curl):<br/><tt>$ curl -d \"Привет\" %1$s</tt> ]]></string>
     <string name="detail_clear_dialog_message">Удалить все уведомления в этой теме\?</string>
     <string name="detail_clear_dialog_permanently_delete">Удалить навсегда</string>
@@ -30,7 +30,7 @@
     <string name="detail_menu_enable_instant">Включить моментальную доставку</string>
     <string name="detail_menu_disable_instant">Выключить моментальную доставку</string>
     <string name="detail_menu_test">Отправить тестовое уведомление</string>
-    <string name="detail_menu_copy_url">Скопировать URL-адрес темы</string>
+    <string name="detail_menu_copy_url">Скопировать адрес темы</string>
     <string name="detail_menu_clear">Очистить все уведомления</string>
     <string name="detail_menu_settings">Настройки подписок</string>
     <string name="detail_menu_unsubscribe">Отписаться</string>
@@ -132,9 +132,7 @@
     <string name="settings_backup_restore_restore_title">Восстановить из файла</string>
     <string name="settings_general_users_prefs_user_add_title">Добавить нового пользователя</string>
     <string name="main_menu_notifications_disabled_until">Уведомления отключены до %1$s</string>
-    <string name="refresh_message_error">Не получилось обновить %1$d подписок
-\n
-\n%2$s</string>
+    <string name="refresh_message_error">Не получилось обновить %1$d подписок\n\n%2$s</string>
     <string name="refresh_message_error_one">Не получилось обновить подписку: %1$s</string>
     <string name="main_action_bar_title">Темы подписок</string>
     <string name="main_how_to_intro">Нажмите \"+\", чтобы создать или подписаться на тему. Вы будете получать уведомления на вашем устройстве при отправке сообщений через PUT или POST-запросы.</string>
@@ -232,7 +230,7 @@
     <string name="settings_advanced_export_logs_entry_copy_original">Скопировать в буфер обмена</string>
     <string name="user_dialog_username_hint">Имя пользователя</string>
     <string name="common_button_save">Сохранить</string>
-    <string name="settings_general_default_base_url_message">Введите базовый URL вашего сервера, чтобы использовать его по умолчанию при подписке на новые темы и/или публикацию в темы.</string>
+    <string name="default_server_dialog_description">Введите базовый URL вашего сервера, чтобы использовать его по умолчанию при подписке на новые темы и/или публикацию в темы.</string>
     <string name="settings_general_users_title">Управление пользователями</string>
     <string name="settings_general_users_summary">Добавить/удалить пользователей из защищённых тем</string>
     <string name="settings_general_users_prefs_title">Пользователи</string>
@@ -331,16 +329,16 @@
     <string name="detail_settings_appearance_icon_remove_summary">Иконка используемая в уведомлениях от этой темы</string>
     <string name="detail_settings_global_setting_title">Использовать глобальное значение</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Продолжать уведомлять</string>
-    <string name="main_banner_websocket_text">Мы рекомендуем использовать WebSockets для подключения к Вашему серверу; это продлит время работы от батареи, но может потребовать <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">дополнительной настройки прокси-сервера</a>. Эта опция может быть включена или выключена в Настройках.</string>
+    <string name="main_banner_websocket_text">Мы рекомендуем использовать WebSockets для подключения к вашему серверу; это продлит время работы от батареи, но может потребовать <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">дополнительной настройки прокси-сервера</a>. Эта опция может быть включена или выключена в Настройках.</string>
     <string name="detail_settings_appearance_icon_remove_title">Иконка подписки (коснитесь, чтобы удалить)</string>
     <string name="add_dialog_base_urls_dropdown_choose">Выберите URL-адрес сервера</string>
     <string name="detail_settings_notifications_open_channels_summary">Игнорирование режима \"не беспокоить\", звуки и прочее.</string>
     <string name="detail_settings_notifications_dedicated_channels_summary_on">Используются пользовательские настройки для этой подписки</string>
     <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Уведомлять только один раз</string>
     <string name="settings_notifications_insistent_max_priority_title">Продолжать уведомлять при наивысшем приоритете</string>
-    <string name="main_banner_websocket_reconnect_text">Чтобы WebSockets работал в фоновом режиме, проставьте ntfy права «Будильники и напоминания»</string>
-    <string name="main_banner_websocket_reconnect_button_remind_later">Спросить потом</string>
-    <string name="main_banner_websocket_reconnect_button_dismiss">Закрыть</string>
+    <string name="main_banner_websocket_reconnect_text">Чтобы обеспечить повторное подключение WebSockets в фоновом режиме, предоставьте ntfy разрешение \"Будильник и напоминания\"</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Спросить позже</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Отмена</string>
     <string name="main_banner_websocket_reconnect_button_enable_now">Предоставить сейчас</string>
     <string name="settings_advanced_exact_alarms_title">Точные оповещения</string>
     <string name="settings_advanced_exact_alarms_true">ntfy может выставлять точные оповещения. Точные оповещения необходимы для переподключения WebSockets в фоновом режиме. Нажмите, чтобы отозвать разрешение.</string>
@@ -466,4 +464,30 @@
     <string name="client_certificate_dialog_error_wrong_password">Неверный пароль или недопустимый файл PKCS#12</string>
     <string name="client_certificate_dialog_error_invalid_p12_password">Неверный пароль или поврежденный файл PKCS#12</string>
     <string name="client_certificate_dialog_error_invalid_url">Недопустимый URL сервиса</string>
+    <string name="common_button_reset_to_default">Сбросить по умолчанию</string>
+    <string name="connection_alert_action_never">Не показывать</string>
+    <string name="connection_alert_title">Соединение разорвано</string>
+    <string name="connection_alert_action_snooze">Отложить на %1$dч</string>
+    <string name="connection_alert_text_one">Невозможно подключиться к %1$s более %2$d мин. Проверьте подключение к сети.</string>
+    <string name="connection_alert_text_multiple">Невозможно подключиться к %1$d серверам более %2$d мин. Проверьте подключение к сети.</string>
+    <string name="channel_connection_alert_name">Уведомления о подключении</string>
+    <string name="main_banner_no_network_text">Вы не в сети</string>
+    <string name="detail_no_search_results">Ничего не найдено</string>
+    <string name="detail_menu_search_hint">Искать в уведомлениях</string>
+    <string name="settings_advanced_connection_alert_title">Оповещение при отключении</string>
+    <string name="settings_advanced_connection_alert_summary_never">Никогда не уведомлять о недоступности сервера</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Уведомлять, если сервер недоступен более 5 минут</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Уведомлять, если сервер недоступен более 15 минут</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Уведомлять, если сервер недоступен более 1 часа</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Уведомлять, если сервер недоступен более 3 часов</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Уведомлять, если сервер недоступен более 12 часов</string>
+    <string name="settings_advanced_connection_alert_never">Никогда</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Через 5 минут</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Через 15 минут</string>
+    <string name="settings_advanced_connection_alert_one_hour">Через 1 час</string>
+    <string name="settings_advanced_connection_alert_three_hours">Через 3 часа</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Через 12 часов</string>
+    <string name="default_server_dialog_url_error_invalid">Укажите верный URL, например https://ntfy.example.com</string>
+    <string name="detail_menu_search">Поиск уведомлений</string>
+    <string name="connection_alert_snoozed_toast">Предупреждение об отсутствии соединения отложено на %1$dч</string>
 </resources>

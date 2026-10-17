@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_button_next">తరువాత</string>
+    <string name="common_button_add">జోడించు</string>
+    <string name="common_button_save">సేవ్ చేయి</string>
+    <string name="common_button_delete">తీసివేయు</string>
+    <string name="common_button_copy">కాపీ చేయి</string>
+    <string name="common_button_reset_to_default">డిఫాల్ట్</string>
+    <string name="common_copied_to_clipboard">కాపీ చేయబడినది</string>
+    <string name="common_service_url">సర్వీస్ యుఆర్ఎల్</string>
+</resources>

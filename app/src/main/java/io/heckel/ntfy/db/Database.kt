@@ -98,7 +98,8 @@ enum class ConnectionState {
 data class ConnectionDetails(
     val state: ConnectionState = ConnectionState.NOT_APPLICABLE,
     val error: Throwable? = null,
-    val nextRetryTime: Long = 0L
+    val nextRetryTime: Long = 0L,
+    val disconnectedSince: Long = 0L // ms timestamp we last left CONNECTED (0 = connected); drives the connection-lost alert
 ) {
     fun getStackTraceString(): String {
         return error?.stackTraceToString() ?: ""
@@ -222,7 +223,7 @@ data class Icon(
 @Entity
 data class Action(
     @ColumnInfo(name = "id") val id: String, // Synthetic ID to identify result, and easily pass via Broadcast and WorkManager
-    @ColumnInfo(name = "action") val action: String, // "view", "http" or "broadcast"
+    @ColumnInfo(name = "action") val action: String, // "view", "http", "broadcast", or "copy"
     @ColumnInfo(name = "label") val label: String,
     @ColumnInfo(name = "clear") val clear: Boolean?, // clear notification after successful execution
     @ColumnInfo(name = "url") val url: String?, // used in "view" and "http" actions
@@ -231,6 +232,7 @@ data class Action(
     @ColumnInfo(name = "body") val body: String?, // used in "http" action
     @ColumnInfo(name = "intent") val intent: String?, // used in "broadcast" action
     @ColumnInfo(name = "extras") val extras: Map<String,String>?, // used in "broadcast" action
+    @ColumnInfo(name = "value") val value: String?, // used in "copy" action
     @ColumnInfo(name = "progress") val progress: Int?, // used to indicate progress in popup
     @ColumnInfo(name = "error") val error: String?, // used to indicate errors in popup
 )
@@ -561,6 +563,20 @@ interface SubscriptionDao {
 
     @Query("UPDATE subscription SET lastNotificationId = :lastNotificationId WHERE id = :subscriptionId")
     fun updateLastNotificationId(subscriptionId: Long, lastNotificationId: String)
+
+    @Query("""
+        SELECT s.lastNotificationId
+        FROM Subscription AS s
+        LEFT JOIN Notification AS n ON s.id = n.subscriptionId AND n.deleted != 1
+        WHERE s.id IN (:subscriptionIds) AND s.lastNotificationId IS NOT NULL
+        GROUP BY s.id
+        ORDER BY MAX(n.timestamp) DESC
+        LIMIT 1
+    """)
+    fun getLastNotificationId(subscriptionIds: Collection<Long>): String?
+
+    @Query("UPDATE subscription SET icon = :icon WHERE id = :subscriptionId")
+    fun updateSubscriptionIcon(subscriptionId: Long, icon: String?)
 
     @Query("DELETE FROM subscription WHERE id = :subscriptionId")
     fun remove(subscriptionId: Long)

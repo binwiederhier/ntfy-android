@@ -1,0 +1,17 @@
+Küldjön értesítéseket telefonjára bármely Bash vagy PowerShell szkriptből, vagy saját alkalmazásából PUT/POST kérésekkel, pl. Linuxon a curl vagy az Invoke-WebRequest segítségével.
+
+Az ntfy egy Android kliens az https://ntfy.sh számára, egy ingyenes és nyílt forráskódú HTTP-alapú pub-sub szolgáltatás. Feliratkozhat témákra ebben az alkalmazásban, majd egyszerű HTTP API-n keresztül üzeneteket tehet közzé.
+
+Felhasználási lehetőségek:
+* Értesítse magát, amikor egy hosszú folyamat befejeződött.
+* Pingelje meg telefonját, amikor a biztonsági mentés sikertelen volt.
+* Értesítse, amikor valaki bejelentkezik a szerverére.
+
+Példa:
+
+$ curl -d "A biztonsági mentés befejeződött" ntfy.sh/mytopic
+
+További példákat és használati utasításokat itt talál:
+* Weboldal: https://ntfy.sh
+* GitHub (szerver): https://github.com/binwiederhier/ntfy
+* GitHub (Android alkalmazás): https://github.com/binwiederhier/ntfy-android

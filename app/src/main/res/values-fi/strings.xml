@@ -223,7 +223,7 @@
     <string name="settings_notifications_muted_until_x">Ilmoitukset mykistetty, %1$s saakka</string>
     <string name="main_banner_battery_text">Akun optimoinnin tulee olla pois päältä ilmoitusten toimitusongelmien välttämiseksi.</string>
     <string name="settings_advanced_unifiedpush_title">Ota käyttöön UnifiedPush</string>
-    <string name="settings_general_default_base_url_message">Anna palvelimesi juurikansio URL, jotta voit käyttää omaa palvelintasi oletuksena uusien topikkien tilaamisessa ja/tai aiheiden jakamisessa.</string>
+    <string name="default_server_dialog_description">Anna palvelimesi juurikansio URL, jotta voit käyttää omaa palvelintasi oletuksena uusien topikkien tilaamisessa ja/tai aiheiden jakamisessa.</string>
     <string name="user_dialog_password_hint_edit">Salasana (ei voi muuttaa, jos jätetään tyhjäksi)</string>
     <string name="settings_advanced_record_logs_summary_disabled">Ota logaus käyttöön, jotta voit jakaa lokit myöhemmin diagnosoidaksesi ongelmia.</string>
     <string name="main_action_mode_delete_dialog_message">Lopetetaanko valittujen aiheiden tilaus ja poistetaanko kaikki ilmoitukset pysyvästi \?</string>

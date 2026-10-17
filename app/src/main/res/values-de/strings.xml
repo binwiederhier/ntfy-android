@@ -4,7 +4,7 @@
     <string name="common_priority_default_name">Standard-Priorität</string>
     <string name="common_priority_high_name">Hohe Priorität</string>
     <string name="common_priority_max_name">Höchste Priorität</string>
-    <string name="channel_subscriber_service_name">Abo Service</string>
+    <string name="channel_subscriber_service_name">Hintergrunddienst</string>
     <string name="common_priority_min_name">Niedrigste Priorität</string>
     <string name="channel_subscriber_notification_title">Warte auf eingehende Benachrichtigungen</string>
     <string name="channel_subscriber_notification_instant_text_one">Ein Sofortnachrichten-Thema abonniert</string>
@@ -41,7 +41,7 @@
     <string name="main_item_date_yesterday">gestern</string>
     <string name="main_add_button_description">Abo hinzufügen</string>
     <string name="main_no_subscriptions_text">Du hast bisher keine Themen abonniert.</string>
-    <string name="main_how_to_link">Ausführlichere Informationen findest Du auf der ntfy.sh Website und in der Dokumentation.</string>
+    <string name="main_how_to_link">Ausführlichere Informationen findest du auf der ntfy.sh Website und in der Dokumentation.</string>
     <string name="main_unified_push_toast">Dieses Abo wird von %1$s per UnifiedPush verwaltet</string>
     <string name="main_banner_battery_text">Batterieoptimierungen sollten für die App deaktiviert sein, um Zustellungsprobleme bei Benachrichtigungen zu vermeiden.</string>
     <string name="main_banner_battery_button_fix_now">Jetzt beheben</string>
@@ -63,7 +63,7 @@
     <string name="add_dialog_login_new_user">Neuer Benutzer</string>
     <string name="detail_no_notifications_text">Du hast für dieses Thema noch keine Benachrichtigungen erhalten.</string>
     <string name="detail_how_to_intro">Um Benachrichtigungen an dieses Thema zu senden, sende einen PUT- oder POST-Request an die Themen-URL.</string>
-    <string name="detail_how_to_example"><![CDATA[ Beispiel (mit curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_example"><![CDATA[" . Beispiel (mit curl):<br><tt>$ curl -d \"Hi\" %1$s</tt> . "]]></string>
     <string name="detail_clear_dialog_message">Alle Benachrichtigungen in diesem Thema löschen\?</string>
     <string name="detail_delete_dialog_message">Das Abo dieses Themas beenden und alle empfangenen Benachrichtigungen löschen\?</string>
     <string name="detail_delete_dialog_permanently_delete">Endgültig löschen</string>
@@ -163,7 +163,7 @@
     <string name="settings_general_header">Allgemein</string>
     <string name="settings_appearance_header">Darstellung</string>
     <string name="settings_general_default_base_url_title">Standard-Server</string>
-    <string name="settings_general_default_base_url_message">Gib hier die Basis-URL Deines Servers ein, um diesen als Standard beim Abonnieren neuer Themen und/oder beim Teilen zu verwenden.</string>
+    <string name="default_server_dialog_description">Gib hier die Basis-URL Deines Servers ein, um diesen als Standard beim Abonnieren neuer Themen und/oder beim Teilen zu verwenden.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (Standard)</string>
     <string name="settings_general_users_title">Benutzer verwalten</string>
     <string name="settings_general_users_summary">Benutzer für geschützte Themen hinzufügen/löschen</string>
@@ -314,7 +314,7 @@
     <string name="detail_settings_notifications_instant_title">Sofortnachrichten</string>
     <string name="detail_settings_appearance_icon_remove_summary">Icon, das in Benachrichtigungen zu diesem Thema angezeigt wird</string>
     <string name="detail_settings_notifications_instant_summary_on">Benachrichtigungen werden sofort zugestellt. Benötigt einen Vordergrund-Dienst und verbraucht mehr Akku.</string>
-    <string name="main_banner_websocket_text">Der Umstieg auf WebSockets ist die empfohlene Verbindungsweise zu Deinem Server und benötigt möglicherweise weniger Akkuleistung. Es könnte aber eine <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">zusätzliche Konfiguration im Proxy</a> nötig sein. Die Verbindungmethode kann in den Einstellungen gewählt werden.</string>
+    <string name="main_banner_websocket_text">Der Umstieg auf WebSockets ist die empfohlene Verbindungsweise zu deinem Server und benötigt möglicherweise weniger Akkuleistung. Es könnte aber eine <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">zusätzliche Konfiguration im Proxy</a> nötig sein. Die Verbindungmethode kann in den Einstellungen gewählt werden.</string>
     <string name="main_banner_websocket_button_enable_now">Jetzt aktivieren</string>
     <string name="add_dialog_base_urls_dropdown_choose">Service-URL wählen</string>
     <string name="add_dialog_base_urls_dropdown_clear">Service-URL löschen</string>
@@ -466,4 +466,32 @@
     <string name="trusted_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat gepinnt werden soll. Das Zertifikat wird nur für diese URL als vertrauenswürdig eingestuft.</string>
     <string name="client_certificate_dialog_description_page1">Gib die Service-URL ein, für die dieses Zertifikat verwendet werden soll, sowie das Passwort für die PKCS#12-Datei.</string>
     <string name="client_certificate_dialog_description_page2">Überprüfe die Zertifikatsdetails und speichere, um dieses Client-Zertifikat hinzuzufügen. Dieses Zertifikat wird zur Authentifizierung beim Server verwendet.</string>
+    <string name="common_button_reset_to_default">Auf Standardeinstellungen zurücksetzen</string>
+    <string name="detail_no_search_results">Deine Suche lieferte keine Ergebnisse</string>
+    <string name="detail_menu_search_hint">In Benachrichtigungen suchen</string>
+    <string name="default_server_dialog_url_error_invalid">Eine gültige Service-URL eingeben, z. B. https://ntfy.example.com</string>
+    <string name="detail_menu_search">Benachrichtigungen suchen</string>
+    <string name="connection_alert_title">Verbindung verloren</string>
+    <string name="connection_alert_text_one">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$s hergestellt werden. Prüfe deine Netzwerkverbindung.</string>
+    <string name="connection_alert_text_multiple">Es konnte länger als %2$d Minuten lang keine Verbindung zu %1$d Servern hergestellt werden. Prüfe deine Netzwerkverbindung.</string>
+    <string name="connection_alert_action_snooze">%1$d Std. schlummern</string>
+    <string name="connection_alert_action_never">Niemals zeigen</string>
+    <string name="channel_connection_alert_name">Verbindungswarnungen</string>
+    <string name="main_banner_no_network_text">Du bist offline</string>
+    <string name="settings_advanced_connection_alert_title">Warnung, wenn die Verbindung getrennt wird</string>
+    <string name="settings_advanced_connection_alert_summary_never">Niemals benachrichtigen, wenn der ntfy-Server nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">Benachrichtigen, wenn der ntfy-Server länger als 5 Minuten nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">Benachrichtigen, wenn der ntfy-Server länger als 15 Minuten nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">Benachrichtige, wenn der ntfy-Server länger als 1 Stunde nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">Benachrichtigen, wenn der ntfy-Server länger als 3 Stunden nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">Benachrichtigen, wenn der ntfy-Server länger als 12 Stunden nicht erreichbar ist</string>
+    <string name="settings_advanced_connection_alert_never">Niemals</string>
+    <string name="settings_advanced_connection_alert_five_minutes">Nach 5 Minuten</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">Nach 15 Minuten</string>
+    <string name="settings_advanced_connection_alert_one_hour">Nach 1 Stunde</string>
+    <string name="settings_advanced_connection_alert_three_hours">Nach 3 Stunden</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">Nach 12 Stunden</string>
+    <string name="connection_alert_snoozed_toast">Meldung über Verbindungsverlust ausgesetzt für %1$d Std</string>
+    <string name="channel_subscriber_notification_no_network_title">Warte auf Netzwerk</string>
+    <string name="channel_subscriber_notification_no_network_text">Mitteilungen folgen bei aktiver Internetverbindung</string>
 </resources>

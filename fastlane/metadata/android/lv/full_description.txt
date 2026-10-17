@@ -1,0 +1,17 @@
+Paziņojumu nosūtīšana uz savu tālruni no jebkura Bash vai PowerShell skripta vai no savas lietotnes ar PUT/POST pieprasījumiem, piemēram, ar curl Linux operētājsistēmā vai Invoke-WebRequest.
+
+ntfy — https://ntfy.sh ir bezmaksas atvērtā pirmkoda uz HTTP-balstīta izdevēja-abonenta (pub-sub) pakalpojums. Šajā lietotnē var abonēt tēmas un pēc tam izdot ziņojumus ar vienkāršu HTTP API.
+
+Pielietojums:
+* paziņojuma nosūtīšana sev, kad tiek pabeigta laikietilpīga darbība;
+* paziņojums tālrunī, kad rezerves kopijas izveide nav izdevusies;
+* brīdinājumu saņemšana, kad kāds pieslēdzas serverim
+
+Piemērs:
+
+$ curl -d "Rezerves kopija izveidota" ntfy.sh/mytopic
+
+Šeit ir atrodami vairāk piemēru un izmantošanas norādes:
+* tīmekļvietne: https://ntfy.sh
+* GitHub (serveris): https://github.com/binwiederhier/ntfy
+* GitHub (Android lietotne): https://github.com/binwiederhier/ntfy-android

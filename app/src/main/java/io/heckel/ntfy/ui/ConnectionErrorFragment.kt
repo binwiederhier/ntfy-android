@@ -193,7 +193,7 @@ class ConnectionErrorFragment : DialogFragment() {
     private fun updateErrorDisplay() {
         val baseUrl = selectedBaseUrl ?: return
         descriptionTextView.text = getString(R.string.connection_error_dialog_message, baseUrl)
-        
+
         val details = connectionDetails[baseUrl]
         if (details != null && details.hasError()) {
             errorTextView.text = when {

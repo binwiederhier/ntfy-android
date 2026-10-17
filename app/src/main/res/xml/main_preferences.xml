@@ -41,7 +41,7 @@
                 app:summary="@string/settings_notifications_channel_prefs_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_general_header">
-        <EditTextPreference
+        <Preference
                 app:key="@string/settings_general_default_base_url_key"
                 app:title="@string/settings_general_default_base_url_title" />
         <Preference
@@ -83,6 +83,12 @@
                 app:summary="@string/settings_backup_restore_restore_summary"/>
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/settings_advanced_header">
+        <ListPreference
+                app:key="@string/settings_advanced_connection_alert_key"
+                app:title="@string/settings_advanced_connection_alert_title"
+                app:entries="@array/settings_advanced_connection_alert_entries"
+                app:entryValues="@array/settings_advanced_connection_alert_values"
+                app:defaultValue="0"/>
         <ListPreference
                 app:key="@string/settings_advanced_connection_protocol_key"
                 app:title="@string/settings_advanced_connection_protocol_title"

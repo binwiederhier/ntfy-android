@@ -1,0 +1,13 @@
+Features:
+* Add configurable "Alert when connection is lost" setting, turned off by default (#1665, #1662, #1652, #1655, thanks to @tintamarre, @sjozs, @TheRealOne78, and @DAE51D for reporting)
+* Handle "no network" gracefully: stop retrying when offline or in airplane mode, keep the foreground service alive with a "Waiting for network" notification, and resume automatically when connectivity returns (ntfy-android#165, thanks to @tintamarre, and #1709, thanks to @isaitgirl for reporting)
+* Improve battery life by increasing WebSocket client ping interval from 1 min to 3 min, and reconnect instantly on Wi-Fi/cellular/VPN transitions (ntfy-android#113, thanks to @ftilde for the investigation)
+* Disable UnifiedPush components when UnifiedPush is disabled in settings (ntfy-android#168, thanks to @p1gp1g for the contribution)
+
+Bug fixes + maintenance:
+* Fix the "connection lost" alert briefly disappearing and re-firing when roaming between networks (e.g. Wi-Fi to cellular)
+* Fix the "connection lost" alert repeatedly waking the screen while a server stayed unreachable
+* Fix the "connection lost" alert firing late, erratically, or not at all when a connection kept dropping rather than being refused outright
+* Undo automatic phone number linking for numbers in message body (ntfy-android#170, thanks to @acortelyou for the contribution)
+* Fix subscription icons disappearing after a few days due to Android clearing cache (#1322, thanks to @mcanning for reporting)
+* Fix UnifiedPush failed_reason being sent as an enum instead of a string (ntfy-android#182, thanks to @p1gp1g for the contribution)

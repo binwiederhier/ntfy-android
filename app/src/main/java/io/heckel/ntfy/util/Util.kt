@@ -10,6 +10,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.RippleDrawable
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
@@ -104,6 +105,29 @@ fun validTopic(topic: String): Boolean {
 
 fun validUrl(url: String): Boolean {
     return "^https?://\\S+".toRegex().matches(url)
+}
+
+/**
+ * Validates that a URL is a valid base URL for ntfy servers.
+ * Only allows URLs that:
+ * - Start with http:// or https://
+ * - Do NOT have any path fragment (e.g., "https://ntfy.example.com" is allowed,
+ *   but "https://ntfy.example.com/subpath" is not)
+ */
+fun validBaseUrl(url: String): Boolean {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return false
+    }
+    val httpUrl = url.toHttpUrlOrNull() ?: return false
+    val hasPath = httpUrl.pathSegments.any { it.isNotEmpty() } // No path (pathSegments will be [""] for "https://example.com/")
+    return !hasPath
+}
+
+/**
+ * Normalizes a base URL by removing the trailing slash if present.
+ */
+fun normalizeBaseUrl(url: String): String {
+    return url.trimEnd('/')
 }
 
 fun formatDateShort(timestampSecs: Long): String {
@@ -522,4 +546,11 @@ fun deriveNotificationId(baseUrl: String, topic: String, sequenceId: String): In
     val composite = "$baseUrl/$topic/$sequenceId"
     val hash = composite.hashCode()
     return if (hash == 0 || hash == Int.MIN_VALUE) 1 else abs(hash)
+}
+
+// We check for any active network, not specifically for internet connectivity,
+// because the ntfy server may be on a LAN without internet access.
+fun isNetworkAvailable(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return connectivityManager.activeNetwork != null
 }

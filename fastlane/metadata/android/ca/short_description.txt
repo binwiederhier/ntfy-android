@@ -1,0 +1,1 @@
+Envia notificacions al telèfon des de qualsevol script usant demandes PUT/POST

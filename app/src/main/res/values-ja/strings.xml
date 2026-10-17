@@ -21,7 +21,7 @@
     <string name="common_priority_low_name">優先度 低</string>
     <string name="channel_subscriber_notification_title">通知の受信を待機しています</string>
     <string name="channel_subscriber_notification_instant_text">即時配信トピックを購読しています</string>
-    <string name="channel_subscriber_service_name">購読サービス</string>
+    <string name="channel_subscriber_service_name">バックグラウンドサービス</string>
     <string name="channel_subscriber_notification_instant_text_three">即時配信トピックを３件購読しています</string>
     <string name="main_menu_notifications_disabled_until">通知を%1$sまでミュート</string>
     <string name="main_menu_rate_title">アプリを評価⭐</string>
@@ -223,7 +223,7 @@
 \nパスワードはスクラブされましたが、ここには列挙されていません。</string>
     <string name="add_dialog_use_another_server">他のサーバーを使用</string>
     <string name="settings_general_users_title">ユーザー管理</string>
-    <string name="settings_general_default_base_url_message">新しいトピックを購読または共有する時にデフォルトで自分のサーバーを使用する場合、サーバーのルートURLを入力してください。</string>
+    <string name="default_server_dialog_description">新しいトピックを購読または共有する時にデフォルトで自分のサーバーを使用する場合、サーバーのルートURLを入力してください。</string>
     <string name="add_dialog_use_another_server_description">他のサーバーのトピックを購読するには下欄にURLを入力してください。</string>
     <string name="settings_general_users_summary">保護トピックのユーザーを追加/削除する</string>
     <string name="settings_general_users_prefs_title">ユーザー</string>
@@ -469,4 +469,29 @@
     <string name="detail_no_search_results">検索結果該当なし</string>
     <string name="detail_menu_search">通知を検索</string>
     <string name="detail_menu_search_hint">通知内容を検索します</string>
+    <string name="common_button_reset_to_default">既定にリセット</string>
+    <string name="default_server_dialog_url_error_invalid">有効なサービスURLを入力してください、例: https://ntfy.example.com</string>
+    <string name="connection_alert_title">接続が切断されました</string>
+    <string name="connection_alert_text_one">%2$d 分以上 %1$s に接続できませんでした。ネットワーク接続を確認して下さい。</string>
+    <string name="connection_alert_text_multiple">%1$d 個のサーバーに %2$d 分以上接続できませんでした。ネットワーク接続を確認して下さい。</string>
+    <string name="connection_alert_action_snooze">%1$d時間後に再通知</string>
+    <string name="connection_alert_action_never">再表示しない</string>
+    <string name="channel_connection_alert_name">接続アラート</string>
+    <string name="connection_alert_snoozed_toast">ネットワーク切断アラートを %1$d 時間休止</string>
+    <string name="main_banner_no_network_text">オフライン</string>
+    <string name="settings_advanced_connection_alert_title">切断された時にアラートを出す</string>
+    <string name="settings_advanced_connection_alert_summary_never">ntfyサーバーに接続できなかった時の通知を停止</string>
+    <string name="settings_advanced_connection_alert_summary_five_minutes">5分以上ntfyサーバーに接続できなかったら通知する</string>
+    <string name="settings_advanced_connection_alert_summary_fifteen_minutes">15分以上ntfyサーバーに接続できなかったら通知する</string>
+    <string name="settings_advanced_connection_alert_summary_one_hour">1時間以上ntfyサーバーに接続できなかったら通知する</string>
+    <string name="settings_advanced_connection_alert_summary_three_hours">3時間以上ntfyサーバーに接続できなかったら通知する</string>
+    <string name="settings_advanced_connection_alert_summary_twelve_hours">12時間以上ntfyサーバーに接続できなかったら通知する</string>
+    <string name="settings_advanced_connection_alert_never">通知しない</string>
+    <string name="settings_advanced_connection_alert_five_minutes">5分後</string>
+    <string name="settings_advanced_connection_alert_fifteen_minutes">15分後</string>
+    <string name="settings_advanced_connection_alert_one_hour">1時間後</string>
+    <string name="settings_advanced_connection_alert_three_hours">3時間後</string>
+    <string name="settings_advanced_connection_alert_twelve_hours">12時間後</string>
+    <string name="channel_subscriber_notification_no_network_title">ネットワーク待機中</string>
+    <string name="channel_subscriber_notification_no_network_text">Wi-Fiあるいはモバイル通信が利用可能になれば通知が再開されます</string>
 </resources>

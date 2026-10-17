@@ -10,9 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import android.text.TextUtils
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,13 +35,13 @@ import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.msg.AccountManager
 import io.heckel.ntfy.service.SubscriberServiceManager
+import io.heckel.ntfy.up.Distributor
 import io.heckel.ntfy.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Main settings
@@ -52,7 +50,8 @@ import java.util.concurrent.TimeUnit
  * https://github.com/googlearchive/android-preferences/blob/master/app/src/main/java/com/example/androidx/preference/sample/MainActivity.kt
  */
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener, AccountFragment.AccountDialogListener {
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener,
+    DefaultServerFragment.DefaultServerDialogListener, AccountFragment.AccountDialogListener {
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var userSettingsFragment: UserSettingsFragment
     private lateinit var customHeaderSettingsFragment: CustomHeaderSettingsFragment
@@ -330,6 +329,31 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Connection alert
+            val connectionAlertPrefId = context?.getString(R.string.settings_advanced_connection_alert_key) ?: return
+            val connectionAlert: ListPreference? = findPreference(connectionAlertPrefId)
+            connectionAlert?.value = repository.getConnectionAlertSeconds().toString()
+            connectionAlert?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val seconds = value?.toLongOrNull() ?: return
+                    repository.setConnectionAlertSeconds(seconds)
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return repository.getConnectionAlertSeconds().toString()
+                }
+            }
+            connectionAlert?.summaryProvider = Preference.SummaryProvider<ListPreference> { pref ->
+                when (pref.value?.toLongOrNull() ?: repository.getConnectionAlertSeconds()) {
+                    Repository.CONNECTION_ALERT_NEVER -> getString(R.string.settings_advanced_connection_alert_summary_never)
+                    Repository.CONNECTION_ALERT_FIVE_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_five_minutes)
+                    Repository.CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_fifteen_minutes)
+                    Repository.CONNECTION_ALERT_ONE_HOUR_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_one_hour)
+                    Repository.CONNECTION_ALERT_THREE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_three_hours)
+                    Repository.CONNECTION_ALERT_TWELVE_HOURS_SECONDS -> getString(R.string.settings_advanced_connection_alert_summary_twelve_hours)
+                    else -> getString(R.string.settings_advanced_connection_alert_summary_never) // Must match default const
+                }
+            }
+
             // Dark mode
             val darkModePrefId = context?.getString(R.string.settings_general_dark_mode_key) ?: return
             val darkMode: ListPreference? = findPreference(darkModePrefId)
@@ -487,31 +511,22 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             // Default Base URL
             val appBaseUrl = getString(R.string.app_base_url)
             val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
-            val defaultBaseUrl: EditTextPreference? = findPreference(defaultBaseUrlPrefId)
-            defaultBaseUrl?.text = repository.getDefaultBaseUrl() ?: ""
-            defaultBaseUrl?.extras?.putString("message", getString(R.string.settings_general_default_base_url_message))
-            defaultBaseUrl?.extras?.putString("hint", getString(R.string.app_base_url))
-            defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String, value: String?) {
-                    val baseUrl = value ?: return
-                    repository.setDefaultBaseUrl(baseUrl)
+            val defaultBaseUrl: Preference? = findPreference(defaultBaseUrlPrefId)
+            defaultBaseUrl?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
+            defaultBaseUrl?.onPreferenceClickListener = OnPreferenceClickListener {
+                activity?.let { activity ->
+                    DefaultServerFragment
+                        .newInstance(repository.getDefaultBaseUrl())
+                        .show(activity.supportFragmentManager, DefaultServerFragment.TAG)
                 }
-                override fun getString(key: String, defValue: String?): String? {
-                    return repository.getDefaultBaseUrl()
-                }
+                true
             }
-            defaultBaseUrl?.setOnBindEditTextListener { editText ->
-                editText.addTextChangedListener(AfterChangedTextWatcher {
-                    val okayButton: Button = editText.rootView.findViewById(android.R.id.button1)
-                    val value = editText.text.toString()
-                    okayButton.isEnabled = value.isEmpty() || validUrl(value)
-                })
-            }
-            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { pref ->
-                if (TextUtils.isEmpty(pref.text)) {
+            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<Preference> { _ ->
+                val currentUrl = repository.getDefaultBaseUrl()
+                if (currentUrl.isNullOrEmpty()) {
                     getString(R.string.settings_general_default_base_url_default_summary, appBaseUrl)
                 } else {
-                    pref.text
+                    currentUrl
                 }
             }
 
@@ -542,6 +557,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             unifiedPushEnabled?.preferenceDataStore = object : PreferenceDataStore() {
                 override fun putBoolean(key: String?, value: Boolean) {
                     repository.setUnifiedPushEnabled(value)
+                    context?.let {
+                        if (value) {
+                            Distributor(it).enableComponents()
+                        } else {
+                            Distributor(it).disableComponents()
+                        }
+                    }
                 }
                 override fun getBoolean(key: String?, defValue: Boolean): Boolean {
                     return repository.getUnifiedPushEnabled()
@@ -633,13 +655,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                             BACKUP_EVERYTHING_NO_USERS -> backuper.backup(uri, withUsers = false)
                             BACKUP_SETTINGS_ONLY -> backuper.backup(uri, withUsers = false, withSubscriptions = false)
                         }
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(context, getString(R.string.settings_backup_restore_backup_successful), Toast.LENGTH_LONG).show()
+                        activity?.let { act ->
+                            act.runOnUiThread {
+                                Toast.makeText(act, getString(R.string.settings_backup_restore_backup_successful), Toast.LENGTH_LONG).show()
+                            }
                         }
                     } catch (e: Exception) {
                         Log.w(TAG, "Backup failed", e)
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(context, getString(R.string.settings_backup_restore_backup_failed, e.message), Toast.LENGTH_LONG).show()
+                        activity?.let { act ->
+                            act.runOnUiThread {
+                                Toast.makeText(act, getString(R.string.settings_backup_restore_backup_failed, e.message), Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }
@@ -671,18 +697,22 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     try {
                         val currentDarkMode = repository.getDarkMode()
                         backuper.restore(uri)
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(context, getString(R.string.settings_backup_restore_restore_successful), Toast.LENGTH_LONG).show()
-                            requireActivity().recreate()
-                            val newDarkMode = repository.getDarkMode()
-                            if (newDarkMode != currentDarkMode) {
-                                AppCompatDelegate.setDefaultNightMode(newDarkMode)
+                        activity?.let { act ->
+                            act.runOnUiThread {
+                                Toast.makeText(act, getString(R.string.settings_backup_restore_restore_successful), Toast.LENGTH_LONG).show()
+                                act.recreate()
+                                val newDarkMode = repository.getDarkMode()
+                                if (newDarkMode != currentDarkMode) {
+                                    AppCompatDelegate.setDefaultNightMode(newDarkMode)
+                                }
                             }
                         }
                     } catch (e: Exception) {
                         Log.w(TAG, "Restore failed", e)
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(context, getString(R.string.settings_backup_restore_restore_failed, e.message), Toast.LENGTH_LONG).show()
+                        activity?.let { act ->
+                            act.runOnUiThread {
+                                Toast.makeText(act, getString(R.string.settings_backup_restore_restore_failed, e.message), Toast.LENGTH_LONG).show()
+                            }
                         }
                     }
                 }
@@ -766,20 +796,37 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             }
         }
 
+        fun refreshDefaultServerSummary() {
+            val appBaseUrl = getString(R.string.app_base_url)
+            val defaultBaseUrlPrefId = context?.getString(R.string.settings_general_default_base_url_key) ?: return
+            val defaultBaseUrl: Preference? = findPreference(defaultBaseUrlPrefId)
+            // Re-set the summary provider to trigger a refresh
+            defaultBaseUrl?.summaryProvider = Preference.SummaryProvider<Preference> { _ ->
+                val currentUrl = repository.getDefaultBaseUrl()
+                if (currentUrl.isNullOrEmpty()) {
+                    getString(R.string.settings_general_default_base_url_default_summary, appBaseUrl)
+                } else {
+                    currentUrl
+                }
+            }
+        }
+
         private fun copyLogsToClipboard(scrub: Boolean) {
             lifecycleScope.launch(Dispatchers.IO) {
                 val context = context ?: return@launch
                 val log = Log.getFormatted(context, scrub = scrub)
-                requireActivity().runOnUiThread {
-                    val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("ntfy logs", log)
-                    clipboard.setPrimaryClip(clip)
-                    if (scrub) {
-                        showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_logs))
-                    } else {
-                        Toast
-                            .makeText(context, getString(R.string.settings_advanced_export_logs_copied_logs), Toast.LENGTH_LONG)
-                            .show()
+                activity?.let { act ->
+                    act.runOnUiThread {
+                        val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("ntfy logs", log)
+                        clipboard.setPrimaryClip(clip)
+                        if (scrub) {
+                            showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_logs))
+                        } else {
+                            Toast
+                                .makeText(context, getString(R.string.settings_advanced_export_logs_copied_logs), Toast.LENGTH_LONG)
+                                .show()
+                        }
                     }
                 }
             }
@@ -791,10 +838,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 val context = context ?: return@launch
                 val log = Log.getFormatted(context, scrub = scrub)
                 if (log.length > EXPORT_LOGS_UPLOAD_NOTIFY_SIZE_THRESHOLD) {
-                    requireActivity().runOnUiThread {
-                        Toast
-                            .makeText(context, getString(R.string.settings_advanced_export_logs_uploading), Toast.LENGTH_SHORT)
-                            .show()
+                    activity?.let { act ->
+                        act.runOnUiThread {
+                            Toast
+                                .makeText(context, getString(R.string.settings_advanced_export_logs_uploading), Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
                 val gson = Gson()
@@ -811,25 +860,29 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                         if (body.isEmpty()) throw Exception("Return body is empty")
                         Log.d(TAG, "Logs uploaded successfully: $body")
                         val resp = gson.fromJson(body, NopasteResponse::class.java)
-                        requireActivity().runOnUiThread {
-                            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText("logs URL", resp.url)
-                            clipboard.setPrimaryClip(clip)
-                            if (scrub) {
-                                showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_url))
-                            } else {
-                                Toast
-                                    .makeText(context, getString(R.string.settings_advanced_export_logs_copied_url), Toast.LENGTH_LONG)
-                                    .show()
+                        activity?.let { act ->
+                            act.runOnUiThread {
+                                val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                                val clip = ClipData.newPlainText("logs URL", resp.url)
+                                clipboard.setPrimaryClip(clip)
+                                if (scrub) {
+                                    showScrubDialog(getString(R.string.settings_advanced_export_logs_copied_url))
+                                } else {
+                                    Toast
+                                        .makeText(context, getString(R.string.settings_advanced_export_logs_copied_url), Toast.LENGTH_LONG)
+                                        .show()
+                                }
                             }
                         }
                     }
                 } catch (e: Exception) {
                     Log.w(TAG, "Error uploading logs", e)
-                    requireActivity().runOnUiThread {
-                        Toast
-                            .makeText(context, getString(R.string.settings_advanced_export_logs_error_uploading, e.message), Toast.LENGTH_LONG)
-                            .show()
+                    activity?.let { act ->
+                        act.runOnUiThread {
+                            Toast
+                                .makeText(context, getString(R.string.settings_advanced_export_logs_error_uploading, e.message), Toast.LENGTH_LONG)
+                                .show()
+                        }
                     }
                 }
             }
@@ -855,10 +908,12 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             lifecycleScope.launch(Dispatchers.IO) {
                 Log.deleteAll()
                 val context = context ?: return@launch
-                requireActivity().runOnUiThread {
-                    Toast
-                        .makeText(context, getString(R.string.settings_advanced_clear_logs_deleted_toast), Toast.LENGTH_LONG)
-                        .show()
+                activity?.let { act ->
+                    act.runOnUiThread {
+                        Toast
+                            .makeText(context, getString(R.string.settings_advanced_clear_logs_deleted_toast), Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }
@@ -1118,6 +1173,13 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     customHeaderSettingsFragment.reload()
                 }
             }
+        }
+    }
+
+    override fun onDefaultServerUpdated(dialog: DialogFragment, url: String) {
+        repository.setDefaultBaseUrl(url)
+        if (this::settingsFragment.isInitialized) {
+            settingsFragment.refreshDefaultServerSummary()
         }
     }
 

@@ -11,7 +11,7 @@
     <string name="detail_settings_appearance_icon_set_summary">Setează o pictogramă care să fie afișată în notificări</string>
     <string name="channel_subscriber_notification_instant_text_three">Abonat la trei topice cu livrare instantanee</string>
     <string name="detail_settings_about_topic_url_title">URL-ul topicului</string>
-    <string name="channel_subscriber_service_name">Serviciul abonărilor</string>
+    <string name="channel_subscriber_service_name">Servici de fundal</string>
     <string name="user_dialog_password_hint_edit">Parolă (neschimbată dacă este lăsată necompletată)</string>
     <string name="channel_subscriber_notification_instant_text_two">Abonat la două topice cu livrare instantanee</string>
     <string name="channel_subscriber_notification_instant_text">Abonat pentru primirea topicelor cu livrare instantanee</string>
@@ -61,7 +61,7 @@
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Aparență</string>
     <string name="settings_general_default_base_url_title">Server implicit</string>
-    <string name="settings_general_default_base_url_message">Introduceți URL-ul rădăcinii a serverului dvs. pentru utilizarea implicită atunci când vă abonați la topice noi și/sau când partajați în topice.</string>
+    <string name="default_server_dialog_description">Introduceți URL-ul rădăcinii a serverului dvs. pentru utilizarea implicită atunci când vă abonați la topice noi și/sau când partajați în topice.</string>
     <string name="settings_general_default_base_url_default_summary">%1$s (implicit)</string>
     <string name="settings_general_users_prefs_user_add">Adaugă utilizatori</string>
     <string name="settings_general_users_prefs_user_add_summary">Crează un utilizator nou pentru un server nou</string>
@@ -308,7 +308,7 @@
     <string name="add_dialog_login_error_not_authorized">Logare eșuată. Utilizatorul %1$s nu este autorizat.</string>
     <string name="add_dialog_login_new_user">Utilizator nou</string>
     <string name="detail_no_notifications_text">Nu ai primit încă notificări pentru acest topic.</string>
-    <string name="detail_how_to_example">Exemplu (folosing curl):<br/><tt>$ curl -d \"Salut\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[Exemplu (folosing curl):<br/><tt>$ curl -d \"Salut\" %1$s</tt>]]></string>
     <string name="detail_delete_dialog_cancel">Anulează</string>
     <string name="detail_test_title">Test: Poți specifica un titlu dacă dorești.</string>
     <string name="detail_test_message">Această este o notificare de test de la aplicația ntfy pentru Android. Are nivelul priorității %1$d. Dacă trimiți altă notificare, s-ar putea să arate altfel.</string>
@@ -343,4 +343,26 @@
     <string name="settings_advanced_exact_alarms_title">Alarme exacte</string>
     <string name="settings_advanced_exact_alarms_true">ntfy poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSocket-urile în fundal. Faceți clic pentru a revoca permisiunea.</string>
     <string name="settings_advanced_exact_alarms_false">ntfy nu poate programa alarme exacte. Alarmele exacte sunt necesare pentru a reconecta WebSockets în fundal. Faceți clic pentru a acorda permisiunea.</string>
+    <string name="common_button_next">Următorul</string>
+    <string name="common_button_add">Adaugă</string>
+    <string name="common_button_delete">Şterge</string>
+    <string name="common_button_reset_to_default">Resetați la valorile implicite</string>
+    <string name="common_service_url_placeholder">ex: https://ntfy.example.com</string>
+    <string name="channel_connection_alert_name">Alerte de conexiune</string>
+    <string name="common_certificate_subject">Subiect</string>
+    <string name="common_certificate_issuer">Distribuitor/Emitent</string>
+    <string name="common_certificate_fingerprint">Amprenta SHA-256</string>
+    <string name="common_certificate_valid_from">Valid de la</string>
+    <string name="common_certificate_valid_until">Valid până</string>
+    <string name="common_certificate_added_toast">Certificat adăugat</string>
+    <string name="common_certificate_deleted_toast">Certificat șters</string>
+    <string name="channel_subscriber_notification_no_network_title">Se așteaptă conexiunea la internet</string>
+    <string name="channel_subscriber_notification_no_network_text">Notificările vor reveni când WiFi-ul sau datele mobile vor fi disponibile</string>
+    <string name="connection_alert_title">Conexiune pierdută</string>
+    <string name="connection_alert_text_one">Nu se poate conecta la %1$s pentru mai mult de %2$d minute. Verifică-ți conexiunea la internet.</string>
+    <string name="connection_alert_text_multiple">Nu se poate conecta la %1$d servere pentru mai mult de %2$d minute. Verifică-ți conexiunea la internet.</string>
+    <string name="connection_alert_action_snooze">Amâna pentru %1$d ore</string>
+    <string name="connection_alert_action_never">Nu afișa niciodată</string>
+    <string name="connection_alert_snoozed_toast">Alerta de pierdere a conexiunii amânată pentru %1$d ore</string>
+    <string name="main_menu_connection_error">Eroare de conexiune</string>
 </resources>

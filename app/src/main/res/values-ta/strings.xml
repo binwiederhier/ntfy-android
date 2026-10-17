@@ -51,7 +51,7 @@
     <string name="main_banner_battery_button_dismiss">தள்ளுபடி</string>
     <string name="main_banner_battery_button_fix_now">இப்போது சரிசெய்யவும்</string>
     <string name="add_dialog_base_urls_dropdown_clear">தெளிவான பணி முகவரி</string>
-    <string name="detail_how_to_example">எடுத்துக்காட்டு (சுருட்டைப் பயன்படுத்துதல்): <br></br> <tt> $ சுருட்டை -d \"hi\" %1$s </tt></string>
+    <string name="detail_how_to_example"><![CDATA[எடுத்துக்காட்டு (சுருட்டைப் பயன்படுத்துதல்): <br/> <tt> $ சுருட்டை -d \"hi\" %1$s </tt>]]></string>
     <string name="detail_how_to_link">Ntfy.sh, மற்றும் டாக்சில் விரிவான வழிமுறைகள் கிடைக்கின்றன.</string>
     <string name="detail_instant_delivery_disabled">உடனடி வழங்கல்</string>
     <string name="detail_deep_link_subscribed_toast_message">தலைப்பு %1$s க்கு குழுசேர்ந்தது</string>
@@ -276,7 +276,7 @@
     <string name="settings_general_users_prefs_user_used_by_many">%1$s தலைப்புகளால் பயன்படுத்தப்படுகிறது</string>
     <string name="settings_general_users_prefs_user_add">பயனர்களைச் சேர்க்கவும்</string>
     <string name="settings_general_default_base_url_title">இயல்புநிலை சேவையகம்</string>
-    <string name="settings_general_default_base_url_message">புதிய தலைப்புகளுக்கு குழுசேரும்போது மற்றும்/அல்லது தலைப்புகளுக்கு பகிர்வதற்கு உங்கள் சொந்த சேவையகத்தை இயல்புநிலையாகப் பயன்படுத்த உங்கள் சேவையகத்தின் ரூட் முகவரி ஐ உள்ளிடவும்.</string>
+    <string name="default_server_dialog_description">புதிய தலைப்புகளுக்கு குழுசேரும்போது மற்றும்/அல்லது தலைப்புகளுக்கு பகிர்வதற்கு உங்கள் சொந்த சேவையகத்தை இயல்புநிலையாகப் பயன்படுத்த உங்கள் சேவையகத்தின் ரூட் முகவரி ஐ உள்ளிடவும்.</string>
     <string name="settings_general_users_prefs_user_add_summary">புதிய சேவையகத்திற்கு புதிய பயனரை உருவாக்கவும்</string>
     <string name="settings_general_dark_mode_summary_system">கணினி இயல்புநிலையைப் பயன்படுத்துதல்</string>
     <string name="settings_general_dark_mode_entry_system">கணினி இயல்புநிலையைப் பயன்படுத்தவும்</string>
@@ -328,4 +328,8 @@
     <string name="user_dialog_password_hint_add">கடவுச்சொல்</string>
     <string name="user_dialog_password_hint_edit">கடவுச்சொல் (காலியாக இருந்தால் மாறாமல்)</string>
     <string name="user_dialog_button_add">பயனரைச் சேர்க்கவும்</string>
+    <string name="common_button_next">அடுத்து</string>
+    <string name="common_button_add">சேர்க்க</string>
+    <string name="common_button_reset_to_default">இயல்புநிலைக்கு மீட்டமை</string>
+    <string name="common_service_url_placeholder">https://ntfy.example.com</string>
 </resources>

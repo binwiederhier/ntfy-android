@@ -92,6 +92,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         subscriptionDao.update(subscription)
     }
 
+    fun updateSubscriptionIcon(subscriptionId: Long, icon: String?) {
+        subscriptionDao.updateSubscriptionIcon(subscriptionId, icon)
+    }
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun removeSubscription(subscription: Subscription) {
@@ -158,6 +162,19 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun markAsDeletedBySequenceId(subscriptionId: Long, sequenceId: String) {
         notificationDao.markAsDeletedBySequenceId(subscriptionId, sequenceId)
+    }
+
+    fun updateLastNotificationId(subscriptionId: Long, notificationId: String) {
+        subscriptionDao.updateLastNotificationId(subscriptionId, notificationId)
+    }
+
+    /**
+     * Returns the lastNotificationId to use as "since" parameter for subscribing.
+     * Selects the lastNotificationId from the subscription with the most recent notification.
+     * Returns null if no subscriptions have a lastNotificationId.
+     */
+    fun getLastNotificationId(subscriptionIds: Collection<Long>): String? {
+        return subscriptionDao.getLastNotificationId(subscriptionIds)
     }
 
     fun markAllAsDeleted(subscriptionId: Long) {
@@ -437,6 +454,27 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
     }
 
+    fun getConnectionAlertSeconds(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SECONDS, CONNECTION_ALERT_DEFAULT)
+    }
+
+    fun setConnectionAlertSeconds(seconds: Long) {
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SECONDS, seconds)
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL_TIME, 0L)
+        }
+    }
+
+    fun getConnectionAlertSnoozeUntilTime(): Long {
+        return sharedPrefs.getLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL_TIME, 0L)
+    }
+
+    fun setConnectionAlertSnoozeUntilTime(timeMillis: Long) {
+        sharedPrefs.edit {
+            putLong(SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL_TIME, timeMillis)
+        }
+    }
+
     fun getDefaultBaseUrl(): String? {
         return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
             sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
@@ -568,8 +606,18 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun updateConnectionDetails(baseUrl: String, state: ConnectionState, error: Throwable? = null, nextRetryTime: Long = 0L) {
-        val details = ConnectionDetails(state, error, nextRetryTime)
         val current = connectionDetails[baseUrl]
+        // How long we've been away from a healthy CONNECTED state, for the connection-lost alert.
+        // Must NOT key off `error`: routine drops (EOF / stream reset) are reported with error=null to
+        // suppress the UI warning icon, but they are still disconnections and must keep the clock running.
+        // Cleared only once we're actually CONNECTED (or the subscription goes away).
+        val disconnectedSince = when {
+            state == ConnectionState.CONNECTED -> 0L
+            state == ConnectionState.NOT_APPLICABLE -> 0L
+            current != null && current.disconnectedSince > 0L -> current.disconnectedSince // preserve episode start
+            else -> System.currentTimeMillis() // first tick of a new disconnection episode
+        }
+        val details = ConnectionDetails(state, error, nextRetryTime, disconnectedSince)
         if (current != details) {
             if (state == ConnectionState.NOT_APPLICABLE && error == null) {
                 connectionDetails.remove(baseUrl)
@@ -587,6 +635,11 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     fun getConnectionDetails(): Map<String, ConnectionDetails> {
         return connectionDetails.toMap()
+    }
+
+    fun clearConnectionDetails() {
+        connectionDetails.clear()
+        connectionDetailsLiveData.postValue(emptyMap())
     }
 
     fun getConnectionForceReconnectVersion(baseUrl: String): Long {
@@ -616,11 +669,13 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val SHARED_PREFS_INSISTENT_MAX_PRIORITY_ENABLED = "InsistentMaxPriority"
         const val SHARED_PREFS_RECORD_LOGS_ENABLED = "RecordLogs"
         const val SHARED_PREFS_MESSAGE_BAR_ENABLED = "MessageBarEnabled"
-        const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime"
-        const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner)
-        const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime"
+        const val SHARED_PREFS_BATTERY_OPTIMIZATIONS_REMIND_TIME = "BatteryOptimizationsRemindTime" // Timestamp as millis
+        const val SHARED_PREFS_WEBSOCKET_REMIND_TIME = "JsonStreamRemindTime" // "Use WebSocket" banner (used to be JSON stream deprecation banner), timestamp as millis
+        const val SHARED_PREFS_WEBSOCKET_RECONNECT_REMIND_TIME = "WebSocketReconnectRemindTime" // Timestamp as millis
         const val SHARED_PREFS_UNIFIED_PUSH_BASE_URL = "UnifiedPushBaseURL" // Legacy key required for migration to DefaultBaseURL
         const val SHARED_PREFS_DEFAULT_BASE_URL = "DefaultBaseURL"
+        const val SHARED_PREFS_CONNECTION_ALERT_SECONDS = "ConnectionAlertSeconds"
+        const val SHARED_PREFS_CONNECTION_ALERT_SNOOZE_UNTIL_TIME = "ConnectionAlertSnoozeUntilTime" // Timestamp in millis
         const val SHARED_PREFS_LAST_TOPICS = "LastTopics"
 
         private const val LAST_TOPICS_COUNT = 3
@@ -632,12 +687,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         const val MUTED_UNTIL_FOREVER = 1L
         const val MUTED_UNTIL_TOMORROW = 2L
 
-        private const val ONE_MB = 1024 * 1024L
+        private const val ONE_MB_BYTES = 1024 * 1024L
         const val AUTO_DOWNLOAD_NEVER = 0L // Values must match values.xml
         const val AUTO_DOWNLOAD_ALWAYS = 1L
-        const val AUTO_DOWNLOAD_DEFAULT = ONE_MB
+        const val AUTO_DOWNLOAD_DEFAULT = ONE_MB_BYTES
 
-        private const val ONE_DAY_SECONDS = 24 * 60 * 60L
+        private const val ONE_HOUR_SECONDS = 60 * 60L
+        private const val ONE_DAY_SECONDS = 24 * ONE_HOUR_SECONDS
+
         const val AUTO_DELETE_USE_GLOBAL = -1L // Values must match values.xml
         const val AUTO_DELETE_NEVER = 0L
         const val AUTO_DELETE_ONE_DAY_SECONDS = ONE_DAY_SECONDS
@@ -649,6 +706,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
         const val INSISTENT_MAX_PRIORITY_USE_GLOBAL = -1 // Values must match values.xml
         const val INSISTENT_MAX_PRIORITY_ENABLED = 1 // 0 = Disabled (but not needed in code)
+
+        const val CONNECTION_ALERT_NEVER = 0L
+        const val CONNECTION_ALERT_FIVE_MINUTES_SECONDS = 5 * 60L
+        const val CONNECTION_ALERT_FIFTEEN_MINUTES_SECONDS = 15 * 60L
+        const val CONNECTION_ALERT_ONE_HOUR_SECONDS = ONE_HOUR_SECONDS
+        const val CONNECTION_ALERT_THREE_HOURS_SECONDS = 3 * ONE_HOUR_SECONDS
+        const val CONNECTION_ALERT_TWELVE_HOURS_SECONDS = 12 * ONE_HOUR_SECONDS
+        const val CONNECTION_ALERT_DEFAULT = CONNECTION_ALERT_NEVER
 
         const val CONNECTION_PROTOCOL_JSONHTTP = "jsonhttp"
         const val CONNECTION_PROTOCOL_WS = "ws"

@@ -212,7 +212,7 @@
     <string name="common_copied_to_clipboard">클립보드에 복사됨</string>
     <string name="detail_item_menu_open">파일 열기</string>
     <string name="add_dialog_base_urls_dropdown_choose">서비스 URL 선택</string>
-    <string name="detail_how_to_example">예제 (curl 사용):<br/><tt>$ curl -d \\\"Hi\\\" %1$s</tt></string>
+    <string name="detail_how_to_example"><![CDATA[예제 (curl 사용):<br/><tt>$ curl -d \\\"Hi\\\" %1$s</tt>]]></string>
     <string name="share_content_file_error">파일 정보를 읽을 수 없습니다: %1$s</string>
     <string name="detail_test_title">테스트: 원한다면 제목을 설정할 수 있습니다.</string>
     <string name="detail_instant_delivery_disabled">즉시 전달 꺼짐</string>
@@ -268,7 +268,7 @@
     <string name="settings_general_users_prefs_user_not_used">어떤 주제에서도 사용되지 않음</string>
     <string name="settings_general_users_prefs_user_add_title">새 사용자 추가</string>
     <string name="settings_backup_restore_backup_entry_everything_no_users">사용자 제외 모두</string>
-    <string name="settings_general_default_base_url_message">새 주제를 구독하거나 공유할 때 사용할 서버의 루트 URL을 입력하십시오.</string>
+    <string name="default_server_dialog_description">새 주제를 구독하거나 공유할 때 사용할 서버의 루트 URL을 입력하십시오.</string>
     <string name="settings_general_users_title">사용자 관리</string>
     <string name="settings_general_users_prefs_user_add">사용자 추가</string>
     <string name="settings_general_users_prefs_user_add_summary">새 서버를 위한 사용자 추가</string>

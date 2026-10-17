@@ -7,7 +7,6 @@ import java.net.ProtocolException
 interface Connection {
     fun start()
     fun close()
-    fun since(): String?
 }
 
 /**
