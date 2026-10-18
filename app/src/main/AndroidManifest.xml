@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> <!-- To reschedule the websocket retry -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> <!-- As of Android 13, we need to ask for permission to post notifications -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> <!-- Allows to ignore battery optimization without going to the settings -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/> <!-- For full-screen alarm notifications ("fullscreen" tag); user-grantable on Android 14+ -->
 
     <!-- UnifiedPush "raise to foreground" requirement, see https://unifiedpush.org/developers/spec/android/#service-to-raise-to-the-foreground -->
     <queries>
@@ -97,6 +98,23 @@
                 android:exported="false">
         </activity>
 
+        <!-- Full-screen alarm screen for "fullscreen"-tagged messages; shown over the lockscreen -->
+        <activity
+                android:name=".ui.AlarmActivity"
+                android:exported="false"
+                android:showWhenLocked="true"
+                android:turnScreenOn="true"
+                android:excludeFromRecents="true"
+                android:launchMode="singleInstance"
+                android:taskAffinity="">
+        </activity>
+
+        <!-- Activity for "view" action buttons on the alarm notification (silences the alarm, then opens the URL) -->
+        <activity
+                android:name=".msg.NotificationService$AlarmViewActionActivity"
+                android:exported="false">
+        </activity>
+
         <!-- UnifiedPush link activity to facilitate distributor selection, see https://unifiedpush.org/developers/spec/android/#link-activity -->
         <activity android:name=".up.LinkActivity" android:exported="true">
             <intent-filter>
@@ -177,6 +195,13 @@
         <!-- Broadcast receiver for when the notification is swiped away (currently only to cancel the insistent sound) -->
         <receiver
                 android:name=".msg.NotificationService$DeleteBroadcastReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+
+        <!-- Broadcast receiver for full-screen alarm events (timeout, snooze re-fire, notification action buttons) -->
+        <receiver
+                android:name=".msg.AlarmBroadcastReceiver"
                 android:enabled="true"
                 android:exported="false">
         </receiver>

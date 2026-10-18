@@ -402,7 +402,36 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         showHideNotificationMenuItems()
         showHideConnectionErrorMenuItem(repository.getConnectionDetails())
         showHideNoNetworkBanner()
+        maybeShowFullScreenIntentDialog()
         redrawList()
+    }
+
+    /**
+     * One-time dialog shown after a "fullscreen"-tagged message could not use a full-screen
+     * intent because the permission is not granted (revocable by the user on Android 14+).
+     */
+    private fun maybeShowFullScreenIntentDialog() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return
+        }
+        if (!repository.getFullScreenIntentDowngradeOccurred()) {
+            return
+        }
+        repository.setFullScreenIntentDowngradeOccurred(false) // Show only once per occurrence
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as android.app.NotificationManager
+        if (notificationManager.canUseFullScreenIntent()) {
+            return // Permission was granted in the meantime
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alarm_fullscreen_permission_dialog_title)
+            .setMessage(R.string.alarm_fullscreen_permission_dialog_message)
+            .setPositiveButton(R.string.alarm_fullscreen_permission_dialog_settings) { _, _ ->
+                startActivity(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                    data = "package:${BuildConfig.APPLICATION_ID}".toUri()
+                })
+            }
+            .setNegativeButton(R.string.alarm_fullscreen_permission_dialog_later, null)
+            .show()
     }
 
     private fun showHideBatteryBanner(subscriptions: List<Subscription>) {
