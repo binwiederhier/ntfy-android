@@ -21,6 +21,8 @@ data class Message(
     val message: String?,
     @SerializedName("content_type") val contentType: String?,
     val encoding: String?,
+    @SerializedName("percentage") val percentage: Int?,
+    @SerializedName("end") val end: Long?,
     val attachment: MessageAttachment?,
 )
 
