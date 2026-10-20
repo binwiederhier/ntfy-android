@@ -232,6 +232,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     upAppId = null,
                     upConnectorToken = null,
                     displayName = displayName,
+                    addAttachment = Repository.ADD_ATTACHMENT_USE_GLOBAL,
+                    downloadProgress = Repository.DOWNLOAD_PROGRESS_USE_GLOBAL,
+                    waitForAttachment = Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
@@ -258,12 +261,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             }
 
             // Add extras needed in loadView(); normally these are added in MainActivity
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription.id)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription.baseUrl)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription.topic)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription))
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription.instant)
-            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription.mutedUntil)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_ID, subscription!!.id)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_BASE_URL, subscription!!.baseUrl)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_TOPIC, subscription!!.topic)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_DISPLAY_NAME, displayName(appBaseUrl, subscription!!))
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_INSTANT, subscription!!.instant)
+            intent.putExtra(MainActivity.EXTRA_SUBSCRIPTION_MUTED_UNTIL, subscription!!.mutedUntil)
 
             runOnUiThread {
                 loadView()

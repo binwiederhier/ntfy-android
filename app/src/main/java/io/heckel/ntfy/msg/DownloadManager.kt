@@ -1,11 +1,13 @@
 package io.heckel.ntfy.msg
 
 import android.content.Context
+import androidx.work.BackoffPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import io.heckel.ntfy.util.Log
+import java.util.concurrent.TimeUnit
 
 /**
  * Download attachment in the background via WorkManager
@@ -18,6 +20,7 @@ object DownloadManager {
     private const val DOWNLOAD_WORK_ATTACHMENT_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_FILE_"
     private const val DOWNLOAD_WORK_ICON_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_ICON_"
     private const val DOWNLOAD_WORK_BOTH_NAME_PREFIX = "io.heckel.ntfy.DOWNLOAD_BOTH_"
+    private const val INITIAL_BACKOFF_DELAY_SECONDS = 5L
 
     fun enqueue(context: Context, notificationId: String, userAction: Boolean, type: DownloadType) {
         when (type) {
@@ -36,6 +39,7 @@ object DownloadManager {
                 DownloadAttachmentWorker.INPUT_DATA_ID to notificationId,
                 DownloadAttachmentWorker.INPUT_DATA_USER_ACTION to userAction
             ))
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, INITIAL_BACKOFF_DELAY_SECONDS, TimeUnit.SECONDS)
             .build()
         workManager.enqueueUniqueWork(workName, ExistingWorkPolicy.KEEP, workRequest)
     }
@@ -60,6 +64,7 @@ object DownloadManager {
                 DownloadAttachmentWorker.INPUT_DATA_ID to notificationId,
                 DownloadAttachmentWorker.INPUT_DATA_USER_ACTION to userAction
             ))
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, INITIAL_BACKOFF_DELAY_SECONDS, TimeUnit.SECONDS)
             .build()
         val iconWorkRequest = OneTimeWorkRequest.Builder(DownloadIconWorker::class.java)
             .setInputData(workDataOf(

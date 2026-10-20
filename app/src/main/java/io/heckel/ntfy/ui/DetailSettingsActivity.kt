@@ -140,6 +140,9 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadMinPriorityPref()
                 loadAutoDeletePref()
                 loadInsistentMaxPriorityPref()
+                loadAddAttachmentPref()
+                loadDownloadProgressPref()
+                loadWaitForAttachmentPref()
                 loadIconSetPref()
                 loadIconRemovePref()
                 loadDedicatedChannelsPrefs()
@@ -347,6 +350,87 @@ class DetailSettingsActivity : AppCompatActivity() {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_enabled)
                 } else {
                     getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
+                }
+                maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadAddAttachmentPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_add_attachment_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.value = subscription.addAttachment.toString()
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(addAttachment = intValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.addAttachment.toString()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.ADD_ATTACHMENT_USE_GLOBAL
+                val global = value == Repository.ADD_ATTACHMENT_USE_GLOBAL
+                val enabled = if (global) repository.getAddAttachmentEnabled() else value == Repository.ADD_ATTACHMENT_ON
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_add_attachment_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_add_attachment_summary_disabled)
+                }
+                maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadDownloadProgressPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_download_progress_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.value = subscription.downloadProgress.toString()
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(downloadProgress = intValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.downloadProgress.toString()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.DOWNLOAD_PROGRESS_USE_GLOBAL
+                val global = value == Repository.DOWNLOAD_PROGRESS_USE_GLOBAL
+                val enabled = if (global) repository.getDownloadProgressEnabled() else value == Repository.DOWNLOAD_PROGRESS_ON
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_download_progress_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_download_progress_summary_disabled)
+                }
+                maybeAppendGlobal(summary, global)
+            }
+        }
+
+        private fun loadWaitForAttachmentPref() {
+            val prefId = context?.getString(R.string.detail_settings_notifications_wait_for_attachment_key) ?: return
+            val pref: ListPreference? = findPreference(prefId)
+            pref?.isVisible = true
+            pref?.value = subscription.waitForAttachment.toString()
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putString(key: String?, value: String?) {
+                    val intValue = value?.toIntOrNull() ?:return
+                    save(subscription.copy(waitForAttachment = intValue))
+                }
+                override fun getString(key: String?, defValue: String?): String {
+                    return subscription.waitForAttachment.toString()
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<ListPreference> { preference ->
+                val value = preference.value.toIntOrNull() ?: Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL
+                val global = value == Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL
+                val enabled = if (global) repository.getWaitForAttachmentEnabled() else value == Repository.WAIT_FOR_ATTACHMENT_ON
+                val summary = if (enabled) {
+                    getString(R.string.settings_notifications_wait_for_attachment_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_wait_for_attachment_summary_disabled)
                 }
                 maybeAppendGlobal(summary, global)
             }

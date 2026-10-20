@@ -257,6 +257,66 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Add attachment
+            val addAttachmentPrefId = context?.getString(R.string.settings_notifications_add_attachment_key) ?: return
+            val addAttachment: SwitchPreferenceCompat? = findPreference(addAttachmentPrefId)
+            addAttachment?.isChecked = repository.getAddAttachmentEnabled()
+            addAttachment?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setAddAttachmentEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getAddAttachmentEnabled()
+                }
+            }
+            addAttachment?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_add_attachment_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_add_attachment_summary_disabled)
+                }
+            }
+
+            // Download progress
+            val downloadProgressPrefId = context?.getString(R.string.settings_notifications_download_progress_key) ?: return
+            val downloadProgress: SwitchPreferenceCompat? = findPreference(downloadProgressPrefId)
+            downloadProgress?.isChecked = repository.getDownloadProgressEnabled()
+            downloadProgress?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setDownloadProgressEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getDownloadProgressEnabled()
+                }
+            }
+            downloadProgress?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_download_progress_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_download_progress_summary_disabled)
+                }
+            }
+
+            // Wait for attachment
+            val waitForAttachmentPrefId = context?.getString(R.string.settings_notifications_wait_for_attachment_key) ?: return
+            val waitForAttachment: SwitchPreferenceCompat? = findPreference(waitForAttachmentPrefId)
+            waitForAttachment?.isChecked = repository.getWaitForAttachmentEnabled()
+            waitForAttachment?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setWaitForAttachmentEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getWaitForAttachmentEnabled()
+                }
+            }
+            waitForAttachment?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_wait_for_attachment_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_wait_for_attachment_summary_disabled)
+                }
+            }
+
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)

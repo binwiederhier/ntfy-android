@@ -121,6 +121,9 @@ class Backuper(val context: Context) {
                     upAppId = s.upAppId,
                     upConnectorToken = s.upConnectorToken,
                     displayName = s.displayName,
+                    addAttachment = s.addAttachment ?: Repository.ADD_ATTACHMENT_USE_GLOBAL,
+                    downloadProgress = s.downloadProgress ?: Repository.DOWNLOAD_PROGRESS_USE_GLOBAL,
+                    waitForAttachment = s.waitForAttachment ?: Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL,
                 )
                 repository.addSubscription(subscription)
 
@@ -302,7 +305,10 @@ class Backuper(val context: Context) {
                 icon = s.icon,
                 upAppId = s.upAppId,
                 upConnectorToken = s.upConnectorToken,
-                displayName = s.displayName
+                displayName = s.displayName,
+                addAttachment = s.addAttachment,
+                downloadProgress = s.downloadProgress,
+                waitForAttachment = s.waitForAttachment
             )
         }
     }
@@ -443,7 +449,10 @@ data class Subscription(
     val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?,
-    val displayName: String?
+    val displayName: String?,
+    val addAttachment: Int?,
+    val downloadProgress: Int?,
+    val waitForAttachment: Int?
 )
 
 data class Notification(
