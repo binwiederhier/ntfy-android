@@ -93,8 +93,10 @@ class Log(private val logsDao: LogDao) {
 
     private fun scrub(line: String?): String? {
         var newLine = line ?: return null
-        scrubTerms.forEach { (scrubTerm, replaceTerm) ->
-            newLine = newLine.replace(scrubTerm, replaceTerm.replaceTerm)
+        synchronized(scrubTerms) {
+            scrubTerms.forEach { (scrubTerm, replaceTerm) ->
+                newLine = newLine.replace(scrubTerm, replaceTerm.replaceTerm)
+            }
         }
         return newLine
     }
