@@ -16,6 +16,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.User
 import io.heckel.ntfy.util.AfterChangedTextWatcher
+import io.heckel.ntfy.util.normalizeBaseUrl
 import io.heckel.ntfy.util.validUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +162,7 @@ class UserFragment : DialogFragment() {
 
     private fun saveClicked() {
         if (!this::listener.isInitialized) return
-        val baseUrl = baseUrlView.text?.toString() ?: ""
+        val baseUrl = normalizeBaseUrl(baseUrlView.text?.toString() ?: "")
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
         if (user == null) {
@@ -181,7 +182,7 @@ class UserFragment : DialogFragment() {
     private fun validateInput() {
         if (!this::saveMenuItem.isInitialized) return // As per crash seen in Google Play
 
-        val baseUrl = baseUrlView.text?.toString() ?: ""
+        val baseUrl = normalizeBaseUrl(baseUrlView.text?.toString() ?: "")
         val username = usernameView.text?.toString() ?: ""
         val password = passwordView.text?.toString() ?: ""
         

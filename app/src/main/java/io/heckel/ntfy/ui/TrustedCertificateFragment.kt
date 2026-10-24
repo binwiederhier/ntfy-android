@@ -19,6 +19,7 @@ import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.util.AfterChangedTextWatcher
 import io.heckel.ntfy.util.CertUtil
+import io.heckel.ntfy.util.normalizeBaseUrl
 import io.heckel.ntfy.util.validUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -291,12 +292,12 @@ class TrustedCertificateFragment : DialogFragment() {
     }
 
     private fun validatePage1() {
-        val url = baseUrlText.text?.toString()?.trim() ?: ""
+        val url = normalizeBaseUrl(baseUrlText.text?.toString() ?: "")
         nextMenuItem.isEnabled = validUrl(url)
     }
 
     private fun nextClicked() {
-        val url = baseUrlText.text?.toString()?.trim() ?: ""
+        val url = normalizeBaseUrl(baseUrlText.text?.toString() ?: "")
 
         if (!validUrl(url)) {
             showError(getString(R.string.trusted_certificate_dialog_error_invalid_url))

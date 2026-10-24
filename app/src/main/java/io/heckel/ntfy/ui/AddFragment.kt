@@ -437,7 +437,7 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
 
     private fun getBaseUrl(): String {
         return if (subscribeUseAnotherServerCheckbox.isChecked) {
-            subscribeBaseUrlText.text.toString()
+            normalizeBaseUrl(subscribeBaseUrlText.text.toString())
         } else {
             return defaultBaseUrl ?: appBaseUrl
         }

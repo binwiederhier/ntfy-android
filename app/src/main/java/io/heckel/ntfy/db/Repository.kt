@@ -14,6 +14,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.util.Log
+import io.heckel.ntfy.util.normalizeBaseUrl
 import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
@@ -466,12 +467,14 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     }
 
     fun getDefaultBaseUrl(): String? {
-        return sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
-            sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null) // Fall back to UP URL, removed when default is set!
+        return (sharedPrefs.getString(SHARED_PREFS_DEFAULT_BASE_URL, null) ?:
+            sharedPrefs.getString(SHARED_PREFS_UNIFIED_PUSH_BASE_URL, null)) // Fall back to UP URL, removed when default is set!
+            ?.let { normalizeBaseUrl(it) }
     }
 
     fun setDefaultBaseUrl(baseUrl: String) {
-        if (baseUrl == "") {
+        val normalizedBaseUrl = normalizeBaseUrl(baseUrl)
+        if (normalizedBaseUrl == "") {
             sharedPrefs.edit {
                 remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
                     .remove(SHARED_PREFS_DEFAULT_BASE_URL)
@@ -479,7 +482,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         } else {
             sharedPrefs.edit {
                 remove(SHARED_PREFS_UNIFIED_PUSH_BASE_URL) // Remove legacy key
-                    .putString(SHARED_PREFS_DEFAULT_BASE_URL, baseUrl)
+                    .putString(SHARED_PREFS_DEFAULT_BASE_URL, normalizedBaseUrl)
             }
         }
     }
