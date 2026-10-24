@@ -349,7 +349,7 @@ class ShareActivity : AppCompatActivity() {
             return // sendItem is initialized late in onCreateOptionsMenu
         }
         val enabled = if (useAnotherServerCheckbox.isChecked) {
-            contentText.text.isNotEmpty() && validTopic(topicText.text.toString()) && validUrl(baseUrlText.text.toString())
+            contentText.text.isNotEmpty() && validTopic(topicText.text.toString()) && validUrl(getBaseUrl())
         } else {
             contentText.text.isNotEmpty() && topicText.text.isNotEmpty()
         }
@@ -359,7 +359,7 @@ class ShareActivity : AppCompatActivity() {
 
     private fun getBaseUrl(): String {
         return if (useAnotherServerCheckbox.isChecked) {
-            baseUrlText.text.toString()
+            normalizeBaseUrl(baseUrlText.text.toString())
         } else {
             defaultBaseUrl ?: appBaseUrl
         }

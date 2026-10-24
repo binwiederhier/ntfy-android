@@ -54,8 +54,8 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 import androidx.core.net.toUri
 
-fun topicUrl(baseUrl: String, topic: String) = "${baseUrl}/${topic}"
-fun topicUrlUp(baseUrl: String, topic: String) = "${baseUrl}/${topic}?up=1" // UnifiedPush
+fun topicUrl(baseUrl: String, topic: String) = "${normalizeBaseUrl(baseUrl)}/${topic}"
+fun topicUrlUp(baseUrl: String, topic: String) = "${normalizeBaseUrl(baseUrl)}/${topic}?up=1" // UnifiedPush
 fun topicUrlJson(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/json?since=$since"
 fun topicUrlWs(baseUrl: String, topic: String, since: String) = "${topicUrl(baseUrl, topic)}/ws?since=$since"
 fun topicUrlAuth(baseUrl: String, topic: String) = "${topicUrl(baseUrl, topic)}/auth"
@@ -127,7 +127,7 @@ fun validBaseUrl(url: String): Boolean {
  * Normalizes a base URL by removing the trailing slash if present.
  */
 fun normalizeBaseUrl(url: String): String {
-    return url.trimEnd('/')
+    return url.trim().trimEnd('/')
 }
 
 fun formatDateShort(timestampSecs: Long): String {
