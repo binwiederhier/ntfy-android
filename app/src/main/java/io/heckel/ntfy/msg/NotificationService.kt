@@ -46,6 +46,7 @@ class NotificationService(val context: Context) {
         if (notification.notificationId != 0) {
             Log.d(TAG, "Cancelling notification ${notification.id}: ${decodeMessage(notification)}")
             notificationManager.cancel(notification.notificationId)
+            maybeStopInsistentSound()
         }
     }
 
@@ -53,6 +54,7 @@ class NotificationService(val context: Context) {
         if (notificationId != 0) {
             Log.d(TAG, "Cancelling notification $notificationId")
             notificationManager.cancel(notificationId)
+            maybeStopInsistentSound()
         }
     }
 
@@ -349,9 +351,13 @@ class NotificationService(val context: Context) {
      */
     class DeleteBroadcastReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d(TAG, "Media player: Stopping insistent ring")
-            val mediaPlayer = Repository.getInstance(context).mediaPlayer
-            mediaPlayer.stop()
+            try {
+                Log.d(TAG, "Media player: Stopping insistent ring (on delete)")
+                val mediaPlayer = Repository.getInstance(context).mediaPlayer
+                mediaPlayer.stop()
+            } catch (_: Exception) {
+                // Ignore errors
+            }
         }
     }
 
@@ -450,6 +456,14 @@ class NotificationService(val context: Context) {
             }
         } catch (e: Exception) {
             Log.w(TAG, "Media player: Failed to play insistent alarm", e)
+        }
+    }
+
+    private fun maybeStopInsistentSound() {
+        try {
+            repository.mediaPlayer.stop()
+        } catch (_: Exception) {
+            // Ignore errors
         }
     }
 
