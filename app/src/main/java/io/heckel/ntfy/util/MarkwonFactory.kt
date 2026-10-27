@@ -10,11 +10,14 @@ import io.noties.markwon.core.CorePlugin
 import io.noties.markwon.core.CoreProps
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
+import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.movement.MovementMethodPlugin
 import me.saket.bettermovementmethod.BetterLinkMovementMethod
+import org.commonmark.ext.gfm.tables.TableBlock
 import org.commonmark.ext.gfm.tables.TableCell
+import org.commonmark.ext.gfm.tables.TableRow
 import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.node.*
 import org.commonmark.parser.Parser
@@ -31,6 +34,7 @@ internal object MarkwonFactory {
             .usePlugin(ImagesPlugin.create())
             .usePlugin(LinkifyPlugin.create(Linkify.WEB_URLS))
             .usePlugin(StrikethroughPlugin.create())
+            .usePlugin(TablePlugin.create(context))
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
                     builder
@@ -89,6 +93,16 @@ internal object MarkwonFactory {
                 }
 
                 override fun configureVisitor(builder: MarkwonVisitor.Builder) {
+                    // Notifications can't show tables: one line per row, cells separated by spaces
+                    builder.on(TableBlock::class.java) { visitor: MarkwonVisitor, node: TableBlock? ->
+                        visitor.blockStart(node!!)
+                        visitor.visitChildren(node)
+                        visitor.blockEnd(node)
+                    }
+                    builder.on(TableRow::class.java) { visitor: MarkwonVisitor, node: TableRow? ->
+                        visitor.ensureNewLine()
+                        visitor.visitChildren(node!!)
+                    }
                     builder.on(TableCell::class.java) { visitor: MarkwonVisitor, node: TableCell? ->
                         visitor.visitChildren(node!!)
                         visitor.builder().append(' ')
