@@ -16,6 +16,8 @@ data class Message(
     val tags: List<String>?,
     val click: String?,
     val icon: String?,
+    @SerializedName("small_icon") val smallIcon: String?,
+    val color: String?,
     val actions: List<MessageAction>?,
     val title: String?,
     val message: String?,

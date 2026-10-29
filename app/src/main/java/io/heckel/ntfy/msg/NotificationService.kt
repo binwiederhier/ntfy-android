@@ -12,6 +12,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.toColorInt
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.*
 import io.heckel.ntfy.db.Notification
@@ -22,6 +24,7 @@ import io.heckel.ntfy.util.*
 import java.util.*
 import androidx.core.net.toUri
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class NotificationService(val context: Context) {
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -95,6 +98,8 @@ class NotificationService(val context: Context) {
             .setShowWhen(true)
             .setOnlyAlertOnce(true) // Do not vibrate or play sound if already showing (updates!)
             .setAutoCancel(true) // Cancel when notification is clicked
+        maybeSetSmallIcon(builder, notification)
+        maybeSetColor(builder, notification)
         setStyleAndText(builder, subscription, notification) // Preview picture or big text style
         setClickAction(builder, subscription, notification)
         maybeSetDeleteIntent(builder, insistent)
@@ -111,6 +116,24 @@ class NotificationService(val context: Context) {
         maybePlayInsistentSound(groupId, insistent)
 
         notificationManager.notify(notification.notificationId, builder.build())
+    }
+
+    private fun maybeSetSmallIcon(builder: NotificationCompat.Builder, notification: Notification) {
+        val smallIcon = notification.smallIcon ?: return
+        try {
+            val sizePx = (SMALL_ICON_SIZE_DP * context.resources.displayMetrics.density).roundToInt()
+            val bitmap = MaterialDesignIcons.render(context, smallIcon, sizePx) ?: return // Unknown icon, keep the default icon
+            builder.setSmallIcon(IconCompat.createWithBitmap(bitmap))
+        } catch (e: Exception) {
+            Log.w(TAG, "Unable to set small icon $smallIcon", e)
+        }
+    }
+
+    private fun maybeSetColor(builder: NotificationCompat.Builder, notification: Notification) {
+        val color = notification.color ?: return
+        if (color.matches(COLOR_REGEX)) {
+            builder.setColor(color.toColorInt())
+        }
     }
 
     private fun maybeSetDeleteIntent(builder: NotificationCompat.Builder, insistent: Boolean) {
@@ -547,5 +570,8 @@ class NotificationService(val context: Context) {
         private const val VIEW_ACTION_EXTRA_NOTIFICATION_ID = "notificationId"
         private const val VIEW_ACTION_EXTRA_SUBSCRIPTION_ID = "subscriptionId"
         private const val VIEW_ACTION_EXTRA_SEQUENCE_ID = "sequenceId"
+
+        private const val SMALL_ICON_SIZE_DP = 24
+        private val COLOR_REGEX = "^#[0-9a-fA-F]{6}$".toRegex()
     }
 }
