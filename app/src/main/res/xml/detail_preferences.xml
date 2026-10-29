@@ -35,6 +35,27 @@
                 app:entryValues="@array/detail_settings_notifications_insistent_max_priority_values"
                 app:defaultValue="-1"
                 app:isPreferenceVisible="false"/> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+        <ListPreference
+                app:key="@string/detail_settings_notifications_add_attachment_key"
+                app:title="@string/settings_notifications_add_attachment_title"
+                app:entries="@array/detail_settings_notifications_add_attachment_entries"
+                app:entryValues="@array/detail_settings_notifications_add_attachment_values"
+                app:defaultValue="-1"
+                app:isPreferenceVisible="false"/> <!-- Same as Repository.ADD_ATTACHMENT_USE_GLOBAL -->
+        <ListPreference
+                app:key="@string/detail_settings_notifications_download_progress_key"
+                app:title="@string/settings_notifications_download_progress_title"
+                app:entries="@array/detail_settings_notifications_download_progress_entries"
+                app:entryValues="@array/detail_settings_notifications_download_progress_values"
+                app:defaultValue="-1"
+                app:isPreferenceVisible="false"/> <!-- Same as Repository.DOWNLOAD_PROGRESS_USE_GLOBAL -->
+        <ListPreference
+                app:key="@string/detail_settings_notifications_wait_for_attachment_key"
+                app:title="@string/settings_notifications_wait_for_attachment_title"
+                app:entries="@array/detail_settings_notifications_wait_for_attachment_entries"
+                app:entryValues="@array/detail_settings_notifications_wait_for_attachment_values"
+                app:defaultValue="-1"
+                app:isPreferenceVisible="false"/> <!-- Same as Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL -->
         <SwitchPreferenceCompat
                 app:key="@string/detail_settings_notifications_dedicated_channels_key"
                 app:title="@string/detail_settings_notifications_dedicated_channels_title"

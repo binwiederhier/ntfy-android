@@ -26,6 +26,7 @@ import io.heckel.ntfy.util.ensureSafeNewFile
 import io.heckel.ntfy.util.extractBaseUrl
 import okhttp3.Response
 import java.io.File
+import java.lang.Thread.sleep
 import kotlin.coroutines.cancellation.CancellationException
 
 class DownloadAttachmentWorker(private val context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
@@ -47,86 +48,80 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         attachment = notification.attachment ?: return Result.failure()
         try {
             downloadAttachment(userAction)
+            return Result.success()
         } catch (e: CancellationException) {
             Log.d(TAG, "Attachment download was canceled")
             maybeDeleteFile()
             throw e // We must re-throw this to stop the worker
         } catch (e: Exception) {
-            failed(e)
+            if (runAttemptCount < MAX_RETRIES) {
+                Log.w(TAG, "Attachment download failed (attempt $runAttemptCount), retrying ...", e)
+                return Result.retry()
+            } else {
+                failed(e)
+                return Result.failure()
+            }
         }
-        return Result.success()
     }
 
     private suspend fun downloadAttachment(userAction: Boolean) {
         Log.d(TAG, "Downloading attachment from ${attachment.url}")
 
-        try {
-            val user = repository.getUser(extractBaseUrl(attachment.url))
-            val customHeaders = repository.getCustomHeaders(extractBaseUrl(attachment.url))
-            val request = HttpUtil.requestBuilder(attachment.url, user, customHeaders).build()
-            val client = HttpUtil.longCallClient(context, extractBaseUrl(attachment.url))
-            client.newCall(request).execute().use { response ->
-                Log.d(TAG, "Download: headers received: $response")
-                if (!response.isSuccessful) {
-                    throw Exception("Unexpected response: ${response.code}")
-                }
-                save(updateAttachmentFromResponse(response))
-                if (!userAction && shouldAbortDownload()) {
-                    Log.d(TAG, "Aborting download: Content-Length is larger than auto-download setting")
-                    return
-                }
-                val resolver = applicationContext.contentResolver
-                val uri = createUri(notification)
-                this.uri = uri // Required for cleanup in onStopped()
-
-                Log.d(TAG, "Starting download to content URI: $uri")
-                var bytesCopied: Long = 0
-                val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
-                val downloadLimit = getDownloadLimit(userAction)
-                outFile.use { fileOut ->
-                    val fileIn = response.body.byteStream()
-                    val buffer = ByteArray(BUFFER_SIZE)
-                    var bytes = fileIn.read(buffer)
-                    var lastProgress = 0L
-                    while (bytes >= 0) {
-                        if (System.currentTimeMillis() - lastProgress > NOTIFICATION_UPDATE_INTERVAL_MILLIS) {
-                            if (isStopped) { // Canceled by user
-                                save(attachment.copy(progress = ATTACHMENT_PROGRESS_NONE))
-                                return // File will be deleted in onStopped()
-                            }
-                            val progress = if (attachment.size != null && attachment.size!! > 0) {
-                                (bytesCopied.toFloat()/attachment.size!!.toFloat()*100).toInt()
-                            } else {
-                                ATTACHMENT_PROGRESS_INDETERMINATE
-                            }
-                            save(attachment.copy(progress = progress))
-                            lastProgress = System.currentTimeMillis()
-                        }
-                        if (downloadLimit != null && bytesCopied > downloadLimit) {
-                            throw Exception("Attachment is longer than max download size.")
-                        }
-                        fileOut.write(buffer, 0, bytes)
-                        bytesCopied += bytes
-                        bytes = fileIn.read(buffer)
-                    }
-                }
-                Log.d(TAG, "Attachment download: successful response, proceeding with download")
-                save(attachment.copy(
-                    size = bytesCopied,
-                    contentUri = uri.toString(),
-                    progress = ATTACHMENT_PROGRESS_DONE
-                ))
+        val user = repository.getUser(extractBaseUrl(attachment.url))
+        val customHeaders = repository.getCustomHeaders(extractBaseUrl(attachment.url))
+        val request = HttpUtil.requestBuilder(attachment.url, user, customHeaders).build()
+        val client = HttpUtil.longCallClient(context, extractBaseUrl(attachment.url))
+        client.newCall(request).execute().use { response ->
+            Log.d(TAG, "Download: headers received: $response")
+            if (!response.isSuccessful) {
+                throw Exception("Unexpected response: ${response.code}")
             }
-        } catch (e: Exception) {
-            failed(e)
+            save(updateAttachmentFromResponse(response))
+            if (!userAction && shouldAbortDownload()) {
+                Log.d(TAG, "Aborting download: Content-Length is larger than auto-download setting")
+                return
+            }
+            val resolver = applicationContext.contentResolver
+            val uri = createUri(notification)
+            this.uri = uri // Required for cleanup in onStopped()
 
-            // Toast in a Worker: https://stackoverflow.com/a/56428145/1440785
-            val handler = Handler(Looper.getMainLooper())
-            handler.postDelayed({
-                Toast
-                    .makeText(context, context.getString(R.string.detail_item_download_failed, e.message), Toast.LENGTH_LONG)
-                    .show()
-            }, 200)
+            Log.d(TAG, "Starting download to content URI: $uri")
+            var bytesCopied: Long = 0
+            val outFile = resolver.openOutputStream(uri) ?: throw Exception("Cannot open output stream")
+            val downloadLimit = getDownloadLimit(userAction)
+            outFile.use { fileOut ->
+                val fileIn = response.body.byteStream()
+                val buffer = ByteArray(BUFFER_SIZE)
+                var bytes = fileIn.read(buffer)
+                var lastProgress = 0L
+                while (bytes >= 0) {
+                    if (System.currentTimeMillis() - lastProgress > NOTIFICATION_UPDATE_INTERVAL_MILLIS) {
+                        if (isStopped) { // Canceled by user
+                            save(attachment.copy(progress = ATTACHMENT_PROGRESS_NONE))
+                            return // File will be deleted in onStopped()
+                        }
+                        val progress = if (attachment.size != null && attachment.size!! > 0) {
+                            (bytesCopied.toFloat()/attachment.size!!.toFloat()*100).toInt()
+                        } else {
+                            ATTACHMENT_PROGRESS_INDETERMINATE
+                        }
+                        save(attachment.copy(progress = progress))
+                        lastProgress = System.currentTimeMillis()
+                    }
+                    if (downloadLimit != null && bytesCopied > downloadLimit) {
+                        throw Exception("Attachment is longer than max download size.")
+                    }
+                    fileOut.write(buffer, 0, bytes)
+                    bytesCopied += bytes
+                    bytes = fileIn.read(buffer)
+                }
+            }
+            Log.d(TAG, "Attachment download: successful response, proceeding with download")
+            save(attachment.copy(
+                size = bytesCopied,
+                contentUri = uri.toString(),
+                progress = ATTACHMENT_PROGRESS_DONE
+            ))
         }
     }
 
@@ -213,5 +208,6 @@ class DownloadAttachmentWorker(private val context: Context, params: WorkerParam
         private const val ATTACHMENT_CACHE_DIR = "attachments"
         private const val BUFFER_SIZE = 8 * 1024
         private const val NOTIFICATION_UPDATE_INTERVAL_MILLIS = 800
+        private const val MAX_RETRIES = 11
     }
 }

@@ -18,6 +18,9 @@
     <string name="settings_notifications_channel_prefs_key" translatable="false">ChannelPrefs</string>
     <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
     <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_notifications_add_attachment_key" translatable="false">AddAttachment</string>
+    <string name="settings_notifications_download_progress_key" translatable="false">DownloadProgress</string>
+    <string name="settings_notifications_wait_for_attachment_key" translatable="false">WaitForAttachment</string>
     <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
@@ -45,6 +48,9 @@
     <string name="detail_settings_notifications_dedicated_channels_key" translatable="false">SubscriptionDedicatedChannels</string>
     <string name="detail_settings_notifications_open_channels_key" translatable="false">SubscriptionOpenChannels</string>
     <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
+    <string name="detail_settings_notifications_add_attachment_key" translatable="false">SubscriptionAddAttachment</string>
+    <string name="detail_settings_notifications_download_progress_key" translatable="false">SubscriptionDownloadProgress</string>
+    <string name="detail_settings_notifications_wait_for_attachment_key" translatable="false">SubscriptionWaitForAttachment</string>
     <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
     <string name="detail_settings_notifications_insistent_max_priority_key" translatable="false">SubscriptionInsistentMaxPriority</string>
     <string name="settings_advanced_connection_alert_key" translatable="false">ConnectionAlert</string>
@@ -165,6 +171,36 @@
     </string-array>
     <string-array name="detail_settings_notifications_insistent_max_priority_values">
         <item>-1</item> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_add_attachment_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/settings_notifications_add_attachment_summary_enabled</item>
+        <item>@string/settings_notifications_add_attachment_summary_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_add_attachment_values">
+        <item>-1</item> <!-- Same as Repository.ADD_ATTACHMENT_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_download_progress_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/settings_notifications_download_progress_summary_enabled</item>
+        <item>@string/settings_notifications_download_progress_summary_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_download_progress_values">
+        <item>-1</item> <!-- Same as Repository.DOWNLOAD_PROGRESS_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_wait_for_attachment_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/settings_notifications_wait_for_attachment_summary_enabled</item>
+        <item>@string/settings_notifications_wait_for_attachment_summary_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_wait_for_attachment_values">
+        <item>-1</item> <!-- Same as Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL -->
         <item>1</item>
         <item>0</item>
     </string-array>

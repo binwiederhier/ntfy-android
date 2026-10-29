@@ -93,6 +93,9 @@ class BroadcastReceiver : android.content.BroadcastReceiver() {
                     upAppId = appId,
                     upConnectorToken = connectorToken,
                     displayName = null,
+                    addAttachment = Repository.ADD_ATTACHMENT_USE_GLOBAL,
+                    downloadProgress = Repository.DOWNLOAD_PROGRESS_USE_GLOBAL,
+                    waitForAttachment = Repository.WAIT_FOR_ATTACHMENT_USE_GLOBAL,
                     totalCount = 0,
                     newCount = 0,
                     lastActive = Date().time/1000
