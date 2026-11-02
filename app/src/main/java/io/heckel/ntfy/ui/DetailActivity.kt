@@ -216,7 +216,9 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         lifecycleScope.launch(Dispatchers.IO) {
             var subscription = repository.getSubscription(baseUrl, topic)
             if (subscription == null) {
-                val instant = baseUrl != appBaseUrl
+                // Same rule as the subscribe dialog (AddFragment): without Firebase (F-Droid flavor),
+                // instant delivery is the only way messages arrive, and its toggle is hidden there
+                val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl
                 subscription = Subscription(
                     id = randomSubscriptionId(),
                     baseUrl = baseUrl,
