@@ -2,6 +2,7 @@ package io.heckel.ntfy.msg
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import io.heckel.ntfy.R
 import io.heckel.ntfy.db.Action
 import io.heckel.ntfy.db.Notification
@@ -83,10 +84,25 @@ class BroadcastService(private val ctx: Context) {
                 else -> 0
             }
             val delay = getStringExtra(intent,"delay") ?: ""
+            val fileUriString = getStringExtra(intent, "file_uri")
+            val filenameOverride = getStringExtra(intent, "filename") ?: ""
             GlobalScope.launch(Dispatchers.IO) {
                 val repository = Repository.getInstance(ctx)
                 val user = repository.getUser(baseUrl) // May be null
                 try {
+                    val (body, filename) = if (fileUriString != null) {
+                        val uri = Uri.parse(fileUriString)
+                        if (uri.scheme != "content") {
+                            Log.w(TAG, "file_uri must use the content:// scheme, got '${uri.scheme}'. Aborting.")
+                            return@launch
+                        }
+                        // fileStat() throws on invalid/missing URI; caught below
+                        val stat = fileStat(ctx, uri)
+                        val body = ContentUriRequestBody(ctx.contentResolver, uri, stat.size)
+                        Pair(body, filenameOverride.ifEmpty { stat.filename })
+                    } else {
+                        Pair(null, "") // filename ignored when no file_uri
+                    }
                     Log.d(TAG, "Publishing message $intent")
                     api.publish(
                         baseUrl = baseUrl,
@@ -96,7 +112,9 @@ class BroadcastService(private val ctx: Context) {
                         title = title,
                         priority = priority,
                         tags = splitTags(tags),
-                        delay = delay
+                        delay = delay,
+                        body = body,
+                        filename = filename,
                     )
                 } catch (e: Exception) {
                     Log.w(TAG, "Unable to publish message: ${e.message}", e)
