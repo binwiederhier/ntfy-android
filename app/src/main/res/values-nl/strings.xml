@@ -315,6 +315,9 @@
     <string name="detail_settings_appearance_icon_remove_title">Abonnementen icoon (tap om te verwijderen)</string>
     <string name="detail_settings_global_setting_suffix">Gebruikt globale instelling</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (standaard)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Grotere afbeeldingsvoorbeelden</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Afbeeldingsbijlagen worden tot drie keer zo hoog weergegeven</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Afbeeldingsbijlagen worden als kleine voorbeelden weergegeven</string>
     <string name="detail_settings_appearance_display_name_title">Schermnaam</string>
     <string name="detail_settings_appearance_display_name_message">Zet een schermnaam voor dit abonnement. Laat het veld leeg om de standaard naam te kiezen (%1$s).</string>
     <string name="detail_settings_about_header">Over</string>

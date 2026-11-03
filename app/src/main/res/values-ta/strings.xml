@@ -323,6 +323,9 @@
     <string name="detail_settings_appearance_display_name_title">காட்சி பெயர்</string>
     <string name="detail_settings_appearance_display_name_message">இந்த சந்தாவுக்கு தனிப்பயன் காட்சி பெயரை அமைக்கவும். இயல்புநிலைக்கு (%1$s) காலியாக விடவும்.</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (இயல்புநிலை)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">பெரிய பட முன்னோட்டங்கள்</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">பட இணைப்புகள் மூன்று மடங்கு வரை உயரமாகக் காட்டப்படும்</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">பட இணைப்புகள் சிறிய முன்னோட்டங்களாகக் காட்டப்படும்</string>
     <string name="detail_settings_global_setting_title">உலகளாவிய அமைப்பைப் பயன்படுத்தவும்</string>
     <string name="detail_settings_global_setting_suffix">உலகளாவிய அமைப்பைப் பயன்படுத்துதல்</string>
     <string name="user_dialog_password_hint_add">கடவுச்சொல்</string>

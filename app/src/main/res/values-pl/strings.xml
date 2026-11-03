@@ -22,6 +22,9 @@
     <string name="common_service_url">Adres URL usługi</string>
     <string name="detail_settings_appearance_display_name_title">Nazwa wyświetlana</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (domyślny)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Większe podglądy obrazów</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Załączone obrazy są wyświetlane do trzech razy wyższe</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Załączone obrazy są wyświetlane jako małe podglądy</string>
     <string name="user_dialog_title_edit">Edytuj użytkownika</string>
     <string name="user_dialog_description_add">Tutaj możesz dodać użytkownika. Wszystkie tematy na podanym serwerze będą wtedy korzystać z tego użytkownika.</string>
     <string name="user_dialog_description_edit">Możesz zmienić lub usunąć nazwę użytkownika/hasło dla wybranego użytkownika.</string>

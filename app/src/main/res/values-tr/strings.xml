@@ -318,6 +318,9 @@
     <string name="main_banner_websocket_text">WebSockets\'e geçmek sunucunuza bağlanmak için tavsiye edilen yoldur ve pil ömrünü artırabilir, ancak <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">vekilinizde ek yapılandırma</a> gerektirebilir. Bu, ayarlardan değiştirilebilir.</string>
     <string name="detail_settings_appearance_display_name_title">Görünen ad</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (öntanımlı)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Daha büyük görsel önizlemeleri</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Görsel ekleri üç kata kadar daha uzun gösterilir</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Görsel ekleri küçük önizlemeler olarak gösterilir</string>
     <string name="detail_settings_appearance_display_name_message">Bu abonelik için özel bir görünen ad belirleyin. Öntanımlı değer (%1$s) için boş bırakın.</string>
     <string name="detail_settings_about_header">Hakkında</string>
     <string name="detail_settings_about_topic_url_title">Konu URL\'si</string>

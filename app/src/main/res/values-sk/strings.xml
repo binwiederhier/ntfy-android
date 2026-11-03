@@ -242,6 +242,9 @@
     <string name="user_dialog_button_cancel">Zrušiť</string>
     <string name="common_button_save">Uložiť</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predvolené)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Väčšie náhľady obrázkov</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Obrázkové prílohy sa zobrazujú až trikrát vyššie</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Obrázkové prílohy sa zobrazujú ako malé náhľady</string>
     <string name="detail_settings_about_header">O programe</string>
     <string name="detail_settings_global_setting_title">Použiť globálne nastavenie</string>
     <string name="detail_settings_global_setting_suffix">používajú sa globálne nastavenia</string>

@@ -708,6 +708,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             topic = topic,
             instant = instant,
             dedicatedChannels = false,
+            largeImagePreviews = false,
             mutedUntil = 0,
             minPriority = Repository.MIN_PRIORITY_USE_GLOBAL,
             autoDelete = Repository.AUTO_DELETE_USE_GLOBAL,

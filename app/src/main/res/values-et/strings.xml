@@ -323,6 +323,9 @@
     <string name="detail_settings_appearance_display_name_title">Kuvatav nimi</string>
     <string name="detail_settings_appearance_display_name_message">Määra selle tellimuse jaoks eraldi kuvatav nimi. Vaikimisi nime jaoks jäta tühjaks (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (vaikimisi)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Suuremad pildieelvaated</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Pildimanused kuvatakse kuni kolm korda kõrgemana</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Pildimanused kuvatakse väikeste eelvaadetena</string>
     <string name="detail_settings_appearance_header">Välimus</string>
     <string name="detail_settings_appearance_icon_set_title">Tellimuse ikoon</string>
     <string name="detail_settings_appearance_icon_set_summary">Vali teavitustes kuvatav ikoon</string>

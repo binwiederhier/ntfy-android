@@ -112,6 +112,7 @@ class Backuper(val context: Context) {
                     topic = s.topic,
                     instant = s.instant,
                     dedicatedChannels = s.dedicatedChannels,
+                    largeImagePreviews = s.largeImagePreviews ?: false,
                     mutedUntil = s.mutedUntil,
                     minPriority = s.minPriority ?: Repository.MIN_PRIORITY_USE_GLOBAL,
                     autoDelete = s.autoDelete ?: Repository.AUTO_DELETE_USE_GLOBAL,
@@ -294,6 +295,7 @@ class Backuper(val context: Context) {
                 topic = s.topic,
                 instant = s.instant,
                 dedicatedChannels = s.dedicatedChannels,
+                largeImagePreviews = s.largeImagePreviews,
                 mutedUntil = s.mutedUntil,
                 minPriority = s.minPriority,
                 autoDelete = s.autoDelete,
@@ -443,7 +445,8 @@ data class Subscription(
     val icon: String?,
     val upAppId: String?,
     val upConnectorToken: String?,
-    val displayName: String?
+    val displayName: String?,
+    val largeImagePreviews: Boolean? // Nullable, older backups do not have it
 )
 
 data class Notification(

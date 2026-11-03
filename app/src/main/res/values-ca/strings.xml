@@ -224,6 +224,9 @@
     <string name="detail_settings_appearance_display_name_title">Nom</string>
     <string name="detail_settings_appearance_display_name_message">Tria un nom personalitzat per a aquesta subscripció. Deixa en blanc per usar el predeterminat (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (predeterminat)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">Previsualitzacions d\'imatges més grans</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">Les imatges adjuntes es mostren fins a tres vegades més altes</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">Les imatges adjuntes es mostren com a previsualitzacions petites</string>
     <string name="detail_settings_global_setting_title">Usar configuració global</string>
     <string name="detail_settings_global_setting_suffix">usant configuració global</string>
     <string name="detail_settings_about_topic_url_title">URL del tema</string>

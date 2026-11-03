@@ -315,6 +315,9 @@
     <string name="channel_subscriber_notification_noinstant_text_five">トピックを5件購読しています</string>
     <string name="detail_settings_appearance_display_name_title">表示名</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (デフォルト)</string>
+    <string name="detail_settings_appearance_large_image_previews_title">画像プレビューを大きくする</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_on">添付画像を最大3倍の高さで表示します</string>
+    <string name="detail_settings_appearance_large_image_previews_summary_off">添付画像を小さなプレビューで表示します</string>
     <string name="detail_settings_appearance_display_name_message">この購読のカスタム表示名を設定します。空欄でデフォルト (%1$s) が表示されます。</string>
     <string name="add_dialog_base_urls_dropdown_choose">サービスURLを選択</string>
     <string name="add_dialog_base_urls_dropdown_clear">サービスURLをクリア</string>

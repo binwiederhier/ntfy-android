@@ -144,6 +144,7 @@ class DetailSettingsActivity : AppCompatActivity() {
                 loadIconRemovePref()
                 loadDedicatedChannelsPrefs()
                 loadOpenChannelsPrefs()
+                loadLargeImagePreviewsPref()
             } else {
                 val notificationsHeaderId = context?.getString(R.string.detail_settings_notifications_header_key) ?: return
                 val notificationsHeader: PreferenceCategory? = findPreference(notificationsHeaderId)
@@ -200,6 +201,28 @@ class DetailSettingsActivity : AppCompatActivity() {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summary_on)
                 } else {
                     getString(R.string.detail_settings_notifications_dedicated_channels_summary_off)
+                }
+            }
+        }
+
+        private fun loadLargeImagePreviewsPref() {
+            val prefId = context?.getString(R.string.detail_settings_appearance_large_image_previews_key) ?: return
+            val pref: SwitchPreferenceCompat? = findPreference(prefId)
+            pref?.isVisible = true // Hack: Show all settings at once, because subscription is loaded asynchronously
+            pref?.isChecked = subscription.largeImagePreviews
+            pref?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    save(subscription.copy(largeImagePreviews = value))
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return subscription.largeImagePreviews
+                }
+            }
+            pref?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { preference ->
+                if (preference.isChecked) {
+                    getString(R.string.detail_settings_appearance_large_image_previews_summary_on)
+                } else {
+                    getString(R.string.detail_settings_appearance_large_image_previews_summary_off)
                 }
             }
         }
