@@ -18,7 +18,7 @@ import io.heckel.ntfy.util.validUrl
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
-class Repository(private val sharedPrefs: SharedPreferences, database: Database) {
+class Repository(private val sharedPrefs: SharedPreferences, private val database: Database) {
     private val subscriptionDao = database.subscriptionDao()
     private val notificationDao = database.notificationDao()
     private val userDao = database.userDao()
@@ -134,10 +134,10 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
 
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun addNotification(notification: Notification): Boolean {
+    suspend fun addNotification(notification: Notification): Boolean = database.runInTransaction<Boolean> {
         val maybeExistingNotification = notificationDao.get(notification.id)
         if (maybeExistingNotification != null || notification.event != ApiService.EVENT_MESSAGE) {
-            return false
+            return@runInTransaction false
         }
         // Mark old notifications with the same sequence ID as deleted (this is an update to an existing sequence)
         if (notification.sequenceId.isNotEmpty()) {
@@ -145,7 +145,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         }
         subscriptionDao.updateLastNotificationId(notification.subscriptionId, notification.id)
         notificationDao.add(notification)
-        return true
+        true
     }
 
     fun updateNotification(notification: Notification) {
