@@ -160,6 +160,8 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
+    @ColumnInfo(name = "percentage") val percentage: Int = -1, // 0-100 for live notifications, -1 means unset
+    @ColumnInfo(name = "end") val end: Long = 0, // Unix epoch for live countdown
     @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
 ) {
     constructor(
@@ -178,10 +180,12 @@ data class Notification(
         icon: Icon?,
         actions: List<Action>?,
         attachment: Attachment?,
-        deleted: Boolean
+        deleted: Boolean,
+        percentage: Int = -1,
+        end: Long = 0
     ) : this(
         id, subscriptionId, timestamp, sequenceId, title, message, contentType, encoding,
-        notificationId, priority, tags, click, icon, actions, attachment, deleted, event = ApiService.EVENT_MESSAGE
+        notificationId, priority, tags, click, icon, actions, attachment, deleted, percentage, end, event = ApiService.EVENT_MESSAGE
     )
 }
 
@@ -299,7 +303,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(
-    version = 18,
+    version = 19,
     entities = [
         Subscription::class,
         Notification::class,
@@ -345,6 +349,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_15_16)
                     .addMigrations(MIGRATION_16_17)
                     .addMigrations(MIGRATION_17_18)
+                    .addMigrations(MIGRATION_18_19)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -483,6 +488,24 @@ abstract class Database : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Notification ADD COLUMN sequenceId TEXT NOT NULL DEFAULT ''")
                 db.execSQL("UPDATE Notification SET sequenceId = id WHERE sequenceId = ''")
+            }
+        }
+
+        private val MIGRATION_18_19 = object : Migration(18, 19) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                addColumnIfMissing(db, "ALTER TABLE Notification ADD COLUMN percentage INTEGER NOT NULL DEFAULT -1")
+                addColumnIfMissing(db, "ALTER TABLE Notification ADD COLUMN end INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        private fun addColumnIfMissing(db: SupportSQLiteDatabase, sql: String) {
+            try {
+                db.execSQL(sql)
+            } catch (e: android.database.sqlite.SQLiteException) {
+                val msg = e.message ?: ""
+                if (!msg.contains("duplicate column name", ignoreCase = true)) {
+                    throw e
+                }
             }
         }
     }

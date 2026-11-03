@@ -257,6 +257,23 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 }
             }
 
+            // Live notifications (API 34+)
+            val liveNotificationsPrefId = context?.getString(R.string.settings_notifications_live_notifications_key) ?: return
+            val liveNotifications: SwitchPreferenceCompat? = findPreference(liveNotificationsPrefId)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                liveNotifications?.isVisible = false
+            } else {
+                liveNotifications?.isChecked = repository.getLiveNotificationsEnabled()
+                liveNotifications?.preferenceDataStore = object : PreferenceDataStore() {
+                    override fun putBoolean(key: String?, value: Boolean) {
+                        repository.setLiveNotificationsEnabled(value)
+                    }
+                    override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                        return repository.getLiveNotificationsEnabled()
+                    }
+                }
+            }
+
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
             val channelPrefs: Preference? = findPreference(channelPrefsPrefId)
