@@ -2,6 +2,7 @@ package io.heckel.ntfy.ui
 
 import android.Manifest
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.os.LocaleListCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -153,6 +155,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         super.onResume()
         if (this::settingsFragment.isInitialized) {
             settingsFragment.updateExactAlarmsPref()
+            settingsFragment.updateFullScreenIntentPref()
         }
     }
 
@@ -256,6 +259,29 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     getString(R.string.settings_notifications_insistent_max_priority_summary_disabled)
                 }
             }
+
+            // Full-screen alarms ("fullscreen" tag)
+            val fullScreenAlarmsPrefId = context?.getString(R.string.settings_notifications_fullscreen_alarms_key) ?: return
+            val fullScreenAlarms: SwitchPreferenceCompat? = findPreference(fullScreenAlarmsPrefId)
+            fullScreenAlarms?.isChecked = repository.getFullScreenAlarmsEnabled()
+            fullScreenAlarms?.preferenceDataStore = object : PreferenceDataStore() {
+                override fun putBoolean(key: String?, value: Boolean) {
+                    repository.setFullScreenAlarmsEnabled(value)
+                }
+                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
+                    return repository.getFullScreenAlarmsEnabled()
+                }
+            }
+            fullScreenAlarms?.summaryProvider = Preference.SummaryProvider<SwitchPreferenceCompat> { pref ->
+                if (pref.isChecked) {
+                    getString(R.string.settings_notifications_fullscreen_alarms_summary_enabled)
+                } else {
+                    getString(R.string.settings_notifications_fullscreen_alarms_summary_disabled)
+                }
+            }
+
+            // Full-screen intent permission status (Android 14+ only)
+            updateFullScreenIntentPref()
 
             // Channel settings
             val channelPrefsPrefId = context?.getString(R.string.settings_notifications_channel_prefs_key) ?: return
@@ -885,6 +911,30 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                             .show()
                     }
                 }
+            }
+        }
+
+        fun updateFullScreenIntentPref() {
+            val context = context ?: return
+            val fullScreenPermissionPrefId = context.getString(R.string.settings_notifications_fullscreen_permission_key)
+            val fullScreenPermissionPref: Preference? = findPreference(fullScreenPermissionPrefId)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                fullScreenPermissionPref?.isVisible = false // Not restricted below Android 14
+                return
+            }
+            val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            val canUseFullScreenIntent = notificationManager.canUseFullScreenIntent()
+            fullScreenPermissionPref?.isVisible = true
+            fullScreenPermissionPref?.summary = if (canUseFullScreenIntent) {
+                getString(R.string.settings_notifications_fullscreen_permission_summary_granted)
+            } else {
+                getString(R.string.settings_notifications_fullscreen_permission_summary_not_granted)
+            }
+            fullScreenPermissionPref?.onPreferenceClickListener = OnPreferenceClickListener {
+                startActivity(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                    data = "package:${BuildConfig.APPLICATION_ID}".toUri()
+                })
+                true
             }
         }
 

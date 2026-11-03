@@ -28,6 +28,7 @@
 
     <!-- Notification channels -->
     <string name="channel_notifications_group_default_name">Default</string>
+    <string name="channel_alarm_name">Alarms</string>
     <string name="channel_subscriber_service_name">Background service</string>
     <string name="channel_connection_alert_name">Connection alerts</string>
     <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
@@ -322,6 +323,8 @@
     <string name="notification_popup_action_browse">Browse</string>
     <string name="notification_popup_action_download">Download</string>
     <string name="notification_popup_action_cancel">Cancel</string>
+    <string name="notification_popup_action_alarm_dismiss">Dismiss</string>
+    <string name="alarm_snoozed_toast">Snoozed for %1$d minute(s)</string>
     <string name="notification_popup_file">%1$s\nFile: %2$s</string>
     <string name="notification_popup_file_downloading">Downloading %1$s, %2$d%%\n%3$s</string>
     <string name="notification_popup_file_download_successful">%1$s\nFile: %2$s, downloaded</string>
@@ -379,6 +382,16 @@
     <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
     <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
     <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
+    <string name="settings_notifications_fullscreen_alarms_title">Full-screen alarms</string>
+    <string name="settings_notifications_fullscreen_alarms_summary_enabled">Messages tagged "fullscreen" show an alarm screen and ring until dismissed</string>
+    <string name="settings_notifications_fullscreen_alarms_summary_disabled">Messages tagged "fullscreen" are shown as normal notifications</string>
+    <string name="settings_notifications_fullscreen_permission_title">Full-screen notification permission</string>
+    <string name="settings_notifications_fullscreen_permission_summary_granted">Granted; alarms can appear over the lock screen</string>
+    <string name="settings_notifications_fullscreen_permission_summary_not_granted">Not granted; tap to allow the alarm screen to appear over the lock screen</string>
+    <string name="alarm_fullscreen_permission_dialog_title">Allow full-screen alarms</string>
+    <string name="alarm_fullscreen_permission_dialog_message">A message tried to show a full-screen alarm, but the required permission has not been granted. Without it, alarms still ring, but only appear as regular notifications. You can grant the "full-screen notifications" permission in the system settings.</string>
+    <string name="alarm_fullscreen_permission_dialog_settings">Open settings</string>
+    <string name="alarm_fullscreen_permission_dialog_later">Not now</string>
     <string name="settings_general_header">General</string>
     <string name="settings_appearance_header">Appearance</string>
     <string name="settings_general_default_base_url_title">Default server</string>

@@ -32,6 +32,7 @@ import io.heckel.ntfy.db.Notification
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.db.Subscription
 import io.heckel.ntfy.msg.MESSAGE_ENCODING_BASE64
+import io.heckel.ntfy.msg.visibleTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -186,7 +187,7 @@ fun formatMessage(notification: Notification): String {
     return if (notification.title != "") {
         decodeMessage(notification)
     } else {
-        val emojis = toEmojis(splitTags(notification.tags))
+        val emojis = toEmojis(visibleTags(splitTags(notification.tags)))
         if (emojis.isEmpty()) {
             decodeMessage(notification)
         } else {
@@ -232,7 +233,7 @@ fun formatTitle(appBaseUrl: String?, subscription: Subscription, notification: N
 }
 
 fun formatTitle(notification: Notification): String {
-    val emojis = toEmojis(splitTags(notification.tags))
+    val emojis = toEmojis(visibleTags(splitTags(notification.tags)))
     return if (emojis.isEmpty()) {
         notification.title
     } else {

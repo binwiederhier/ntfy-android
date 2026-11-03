@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/colorBackground"
+        android:padding="24dp">
+
+    <ScrollView
+            android:id="@+id/alarm_content_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/alarm_buttons_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_gravity="center">
+
+            <ImageView
+                    android:id="@+id/alarm_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginBottom="24dp"
+                    android:contentDescription="@string/channel_alarm_name"
+                    android:src="@drawable/ic_notification"
+                    app:tint="?attr/colorPrimary"/>
+
+            <TextView
+                    android:id="@+id/alarm_topic_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:gravity="center"/>
+
+            <TextView
+                    android:id="@+id/alarm_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="14sp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:gravity="center"/>
+
+            <TextView
+                    android:id="@+id/alarm_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:gravity="center"/>
+
+            <TextView
+                    android:id="@+id/alarm_message_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textSize="18sp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:gravity="center"/>
+
+            <!-- Image attachment (e.g. a camera snapshot on a doorbell alarm).
+                 GONE unless the message actually carries a previewable image;
+                 adjustViewBounds + maxHeight keep a tall picture from pushing
+                 the buttons off screen, which on a lockscreen would be fatal. -->
+            <ImageView
+                    android:id="@+id/alarm_attachment_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="320dp"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone"
+                    tools:ignore="ContentDescription"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+            android:id="@+id/alarm_buttons_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

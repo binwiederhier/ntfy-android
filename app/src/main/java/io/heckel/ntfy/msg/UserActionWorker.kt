@@ -69,7 +69,20 @@ class UserActionWorker(private val context: Context, params: WorkerParameters) :
     }
 
     private fun performBroadcastAction(action: Action) {
-        broadcaster.sendUserAction(action)
+        // Reserved alarm verbs are handled locally: they are "broadcast" actions only so that the
+        // (unmodified) ntfy server accepts them, and sendUserAction's implicit broadcast would
+        // never reach the manifest-registered AlarmBroadcastReceiver anyway (Android 8+).
+        when (action.intent) {
+            AlarmBroadcastReceiver.ACTION_ALARM_DISMISS -> {
+                AlarmSessionManager.getInstance(context).stop(cancelNotification = true)
+            }
+            AlarmBroadcastReceiver.ACTION_ALARM_SNOOZE -> {
+                val config = parseAlarmConfig(notification.tags) ?: AlarmConfig()
+                val minutes = action.extras?.get("minutes")?.toIntOrNull() ?: config.snoozeMinutes
+                AlarmSessionManager.getInstance(context).snooze(notification.id, notification.notificationId, minutes)
+            }
+            else -> broadcaster.sendUserAction(action)
+        }
         if (action.clear == true) {
             notifier.cancel(notification)
             repository.markAsReadBySequenceId(subscription.id, notification.sequenceId)

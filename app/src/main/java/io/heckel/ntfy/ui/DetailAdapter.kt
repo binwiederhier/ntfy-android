@@ -34,6 +34,7 @@ import io.heckel.ntfy.msg.DownloadType
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_COPY
 import io.heckel.ntfy.msg.NotificationService.Companion.ACTION_VIEW
+import io.heckel.ntfy.msg.visibleTags
 import io.heckel.ntfy.util.*
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.CoroutineScope
@@ -112,7 +113,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             this.notification = notification
 
             val context = itemView.context
-            val unmatchedTags = unmatchedTags(splitTags(notification.tags))
+            val unmatchedTags = unmatchedTags(visibleTags(splitTags(notification.tags)))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
             dateView.text = formatDateShort(notification.timestamp)
