@@ -114,7 +114,7 @@ class FirebaseService : FirebaseMessagingService() {
             // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
             val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)
             val notifier = NotificationService(this@FirebaseService)
-            notifier.cancel(notificationId)
+            notifier.cancel(subscription.id, notificationId)
         }
     }
 
@@ -138,7 +138,7 @@ class FirebaseService : FirebaseMessagingService() {
             // Cancel the Android notification (scoped by baseUrl/topic/sequenceId)
             val notificationId = deriveNotificationId(baseUrl, topic, sequenceId)
             val notifier = NotificationService(this@FirebaseService)
-            notifier.cancel(notificationId)
+            notifier.cancel(subscription.id, notificationId)
         }
     }
 
