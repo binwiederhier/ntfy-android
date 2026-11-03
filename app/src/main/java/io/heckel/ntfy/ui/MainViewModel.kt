@@ -32,6 +32,7 @@ class SubscriptionsViewModel(private val repository: Repository) : ViewModel() {
             val distributor = Distributor(context)
             distributor.sendUnregistered(subscription.upAppId, subscription.upConnectorToken)
         }
+        ShareTargetHelper.remove(context, subscription)
         repository.removeSubscription(subscription)
         if (subscription.icon != null) {
             val resolver = context.applicationContext.contentResolver
