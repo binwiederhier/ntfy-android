@@ -7,7 +7,7 @@
     <string name="channel_subscriber_notification_title">Oczekiwanie na przychodzące powiadomienia</string>
     <string name="channel_subscriber_notification_instant_text">Subskrybujesz tematy z natychmiastowym dostarczaniem</string>
     <string name="common_priority_high_name">Wysoki priorytet</string>
-    <string name="channel_subscriber_service_name">Usługa subskrypcji</string>
+    <string name="channel_subscriber_service_name">Usługa w tle</string>
     <string name="add_dialog_login_username_hint">Nazwa użytkownika</string>
     <string name="detail_action_mode_delete_dialog_message">Usunąć wybrane powiadomienie(a) trwale\?</string>
     <string name="detail_action_mode_delete_dialog_cancel">Anuluj</string>
@@ -351,4 +351,7 @@
     <string name="common_certificate_deleted_toast">Usunięto certyfikat</string>
     <string name="main_menu_connection_error">Błąd połączenia</string>
     <string name="common_button_reset_to_default">Przywróć ustawienia domyślne</string>
+    <string name="channel_subscriber_notification_no_network_title">Oczekiwanie na sieć</string>
+    <string name="channel_subscriber_notification_no_network_text">Powiadomienia zostaną wznowione, gdy będzie dostępna sieć Wi-Fi lub dane komórkowe</string>
+    <string name="connection_alert_title">Utracono połączenie</string>
 </resources>
