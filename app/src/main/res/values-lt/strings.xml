@@ -1,3 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="common_button_next">Kitas</string>
+    <string name="common_button_add">Pridėti</string>
+    <string name="common_button_save">Išsaugoti</string>
+    <string name="common_button_delete">Ištrinti</string>
+    <string name="common_button_copy">Kopijuoti</string>
+    <string name="common_button_reset_to_default">Atstatyti į numatytus</string>
+    <string name="common_copied_to_clipboard">Nukopijuota į iškarpinę</string>
+    <string name="common_service_url">Serviso URL</string>
+    <string name="common_service_url_placeholder">pvz.: https://ntfy.example.com</string>
+    <string name="common_priority_min_name">Min prioritetas</string>
+    <string name="common_priority_low_name">Žemas prioritetas</string>
+    <string name="common_priority_default_name">Numatytas prioritetas</string>
+    <string name="common_priority_high_name">Aukštas prioritetas</string>
+    <string name="common_priority_max_name">Max prioritetas</string>
+    <string name="common_certificate_subject">Subjektas</string>
+    <string name="common_certificate_issuer">Išdavėjas</string>
+    <string name="common_certificate_fingerprint">SHA-256 atspaudas</string>
+    <string name="common_certificate_valid_from">Galioja nuo</string>
+    <string name="common_certificate_valid_until">Galioja iki</string>
+    <string name="common_certificate_added_toast">Sertifikatas pridėtas</string>
+    <string name="common_certificate_deleted_toast">Sertifikatas ištrintas</string>
+    <string name="channel_notifications_group_default_name">Numatytas</string>
+    <string name="channel_subscriber_service_name">Fone veikiantis servisas</string>
+    <string name="channel_connection_alert_name">Ryšio pranešimai</string>
+    <string name="channel_subscriber_notification_title">Laukiama gaunamų pranešimų</string>
+    <string name="channel_subscriber_notification_no_network_title">Laukiama tinklo</string>
+    <string name="channel_subscriber_notification_no_network_text">Pranešimai bus vėl gaunami, kai bus pasiekiamas „Wi-Fi“ arba mobilieji duomenys</string>
 </resources>
