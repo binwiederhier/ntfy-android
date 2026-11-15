@@ -308,7 +308,7 @@
     <string name="add_dialog_login_error_not_authorized">Logare eșuată. Utilizatorul %1$s nu este autorizat.</string>
     <string name="add_dialog_login_new_user">Utilizator nou</string>
     <string name="detail_no_notifications_text">Nu ai primit încă notificări pentru acest topic.</string>
-    <string name="detail_how_to_example"><![CDATA[Exemplu (folosing curl):<br/><tt>$ curl -d \"Salut\" %1$s</tt>]]></string>
+    <string name="detail_how_to_example"><![CDATA[" Exemplu (folosing curl):<br><tt>$ curl -d \"Salut\" %1$s</tt> "]]></string>
     <string name="detail_delete_dialog_cancel">Anulează</string>
     <string name="detail_test_title">Test: Poți specifica un titlu dacă dorești.</string>
     <string name="detail_test_message">Această este o notificare de test de la aplicația ntfy pentru Android. Are nivelul priorității %1$d. Dacă trimiți altă notificare, s-ar putea să arate altfel.</string>
@@ -350,7 +350,7 @@
     <string name="common_service_url_placeholder">ex: https://ntfy.example.com</string>
     <string name="channel_connection_alert_name">Alerte de conexiune</string>
     <string name="common_certificate_subject">Subiect</string>
-    <string name="common_certificate_issuer">Distribuitor/Emitent</string>
+    <string name="common_certificate_issuer">Emitent</string>
     <string name="common_certificate_fingerprint">Amprenta SHA-256</string>
     <string name="common_certificate_valid_from">Valid de la</string>
     <string name="common_certificate_valid_until">Valid până</string>
@@ -365,4 +365,16 @@
     <string name="connection_alert_action_never">Nu afișa niciodată</string>
     <string name="connection_alert_snoozed_toast">Alerta de pierdere a conexiunii amânată pentru %1$d ore</string>
     <string name="main_menu_connection_error">Eroare de conexiune</string>
+    <string name="main_banner_websocket_reconnect_text">Pentru a asigura reconectarea WebSocket-urilor în fundal, acordați permisiunea de Alarme și Mementouri aplicației ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Oferă perm. acum</string>
+    <string name="main_banner_no_network_text">Ești offline</string>
+    <string name="add_dialog_error_ssl_untrusted">Certificatul serverului nu este de încredere</string>
+    <string name="detail_no_search_results">Căutarea nu a găsit rezultate</string>
+    <string name="detail_menu_search">Notificări de căutare</string>
+    <string name="detail_menu_search_hint">Caută în notificări</string>
+    <string name="publish_dialog_title">Publică la %1$s</string>
+    <string name="publish_dialog_title_hint">Titlu</string>
+    <string name="publish_dialog_title_placeholder">ex. Cineva este la ușă</string>
+    <string name="publish_dialog_message_hint">Mesaj</string>
+    <string name="publish_dialog_tags_hint">Marcaje</string>
 </resources>
