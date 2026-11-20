@@ -95,6 +95,11 @@ class SubscriberService : Service() {
             }
         } else {
             Log.d(TAG, "with a null intent. It has been probably restarted by the system.")
+            // START_STICKY restart after the system (e.g. task removal on some OEMs) killed the
+            // process: restore the foreground state and re-open connections from the database.
+            // Without this, the service would keep running with zero connections until the app
+            // UI or a network change triggers a refresh.
+            startService()
         }
         return START_STICKY // restart if system kills the service
     }
@@ -498,6 +503,7 @@ class SubscriberService : Service() {
     override fun onTaskRemoved(rootIntent: Intent) {
         val restartServiceIntent = Intent(applicationContext, SubscriberService::class.java).also {
             it.setPackage(packageName)
+            it.action = Action.START.name // Without this, onStartCommand() would not refresh connections
         }
         val restartServicePendingIntent: PendingIntent =
             PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
