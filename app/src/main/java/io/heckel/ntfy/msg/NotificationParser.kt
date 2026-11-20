@@ -69,6 +69,8 @@ class NotificationParser {
             tags = joinTags(message.tags),
             click = message.click ?: "",
             icon = icon,
+            smallIcon = message.smallIcon,
+            color = message.color,
             actions = actions,
             attachment = attachment,
             notificationId = deriveNotificationId(baseUrl, topic, sequenceId),

@@ -204,6 +204,8 @@ class FirebaseService : FirebaseMessagingService() {
                 tags = tags ?: "",
                 click = click ?: "",
                 icon = icon,
+                smallIcon = data["small_icon"],
+                color = data["color"],
                 actions = parser.parseActions(actions),
                 attachment = attachment,
                 notificationId = deriveNotificationId(baseUrl, topic, actualSequenceId),

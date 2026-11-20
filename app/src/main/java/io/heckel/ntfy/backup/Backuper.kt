@@ -204,7 +204,9 @@ class Backuper(val context: Context) {
                     icon = icon,
                     actions = actions,
                     attachment = attachment,
-                    deleted = n.deleted
+                    deleted = n.deleted,
+                    smallIcon = n.smallIcon,
+                    color = n.color
                 ))
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to restore notification ${n.id}: ${e.message}. Ignoring.", e)
@@ -362,7 +364,9 @@ class Backuper(val context: Context) {
                 icon = icon,
                 actions = actions,
                 attachment = attachment,
-                deleted = n.deleted
+                deleted = n.deleted,
+                smallIcon = n.smallIcon,
+                color = n.color
             )
         }
     }
@@ -461,7 +465,9 @@ data class Notification(
     val icon: Icon?,
     val actions: List<Action>?,
     val attachment: Attachment?,
-    val deleted: Boolean
+    val deleted: Boolean,
+    @SerializedName("small_icon") val smallIcon: String?,
+    val color: String?
 )
 
 data class Action(

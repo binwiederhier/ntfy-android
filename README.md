@@ -26,3 +26,4 @@ Thank you to these fantastic resources:
 * [Foreground service](https://robertohuertas.com/2019/06/29/android_foreground_services/)
 * [github/gemoji](https://github.com/github/gemoji) (MIT) for as data source for an up-to-date [emoji.json](https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json) file
 * [emoji-java](https://github.com/vdurmont/emoji-java) (MIT) has been stripped and inlined to use the emoji.json file
+* [Material Design Icons](https://pictogrammers.com/library/mdi/) (Apache 2.0), from the [@mdi/font](https://github.com/Templarian/MaterialDesign-Webfont) package, for the small notification icons

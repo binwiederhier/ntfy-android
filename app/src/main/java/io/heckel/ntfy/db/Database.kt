@@ -160,6 +160,8 @@ data class Notification(
     @ColumnInfo(name = "actions") val actions: List<Action>?,
     @Embedded(prefix = "attachment_") val attachment: Attachment?,
     @ColumnInfo(name = "deleted") val deleted: Boolean,
+    @ColumnInfo(name = "smallIcon") val smallIcon: String? = null,
+    @ColumnInfo(name = "color") val color: String? = null,
     @Ignore val event: String = ApiService.EVENT_MESSAGE, // In-memory event type (message, message_delete, message_clear)
 ) {
     constructor(
@@ -178,10 +180,12 @@ data class Notification(
         icon: Icon?,
         actions: List<Action>?,
         attachment: Attachment?,
-        deleted: Boolean
+        deleted: Boolean,
+        smallIcon: String?,
+        color: String?
     ) : this(
         id, subscriptionId, timestamp, sequenceId, title, message, contentType, encoding,
-        notificationId, priority, tags, click, icon, actions, attachment, deleted, event = ApiService.EVENT_MESSAGE
+        notificationId, priority, tags, click, icon, actions, attachment, deleted, smallIcon, color, event = ApiService.EVENT_MESSAGE
     )
 }
 
@@ -299,7 +303,7 @@ data class LogEntry(
 }
 
 @androidx.room.Database(
-    version = 18,
+    version = 19,
     entities = [
         Subscription::class,
         Notification::class,
@@ -345,6 +349,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_15_16)
                     .addMigrations(MIGRATION_16_17)
                     .addMigrations(MIGRATION_17_18)
+                    .addMigrations(MIGRATION_18_19)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -476,6 +481,13 @@ abstract class Database : RoomDatabase() {
         private val MIGRATION_16_17 = object : Migration(16, 17) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("UPDATE Notification SET icon_contentUri = NULL WHERE icon_url IS NULL AND icon_contentUri IS NOT NULL")
+            }
+        }
+
+        private val MIGRATION_18_19 = object : Migration(18, 19) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE Notification ADD COLUMN smallIcon TEXT")
+                db.execSQL("ALTER TABLE Notification ADD COLUMN color TEXT")
             }
         }
 
