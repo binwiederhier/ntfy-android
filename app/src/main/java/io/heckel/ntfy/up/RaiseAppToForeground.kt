@@ -9,6 +9,7 @@ import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import kotlinx.coroutines.Runnable
 import java.util.concurrent.Executors
@@ -56,7 +57,10 @@ import java.util.concurrent.TimeUnit
  *
  * 5. **Maintain binding briefly**: The binding is kept alive for 5 seconds (or extended if more
  *    messages arrive) to give the target app time to start its foreground service. After the
- *    timeout, the binding is released via [unbind].
+ *    timeout, the binding is released via [unbind]. A partial wake lock is held for as long as the
+ *    binding lives: the caller's wake lock is released as soon as [raiseAndSend] returns, and
+ *    without this one the CPU can suspend while the target process cold-starts, delaying the
+ *    message until the screen turns on.
  *    
  * ## Example logs (using UP-Example app, see https://github.com/binwiederhier/ntfy-android/pull/98#issuecomment-3681330111)
  *
@@ -97,7 +101,8 @@ import java.util.concurrent.TimeUnit
  * - [Bound.Binding]: Binding in progress. Messages are queued until connected.
  * - [Bound.Bound]: Connected. Messages are sent immediately.
  *
- * The connection auto-unbinds after 5 seconds of inactivity. Subsequent messages reset this timer.
+ * The connection auto-unbinds after 5 seconds of inactivity. Subsequent messages reset this timer
+ * and the wake lock's timeout with it.
  *
  * @param context The application context for binding services and sending broadcasts.
  * @param app The package name of the target application.
@@ -122,6 +127,9 @@ class RaiseAppToForeground(private val context: Context, private val app: String
     private var bound = Bound.Unbound
     private var scheduledFuture: ScheduledFuture<*>? = null
     private val msgsQueue = mutableListOf<Message>()
+    private val wakeLock = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
+        .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)
+        .apply { setReferenceCounted(false) }
 
     private val foregroundImportance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         listOf(
@@ -203,7 +211,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
             )
         } else {
             context.packageManager.queryIntentServices(
-                Intent(ACTION_REGISTER),
+                intent,
                 PackageManager.GET_RESOLVED_FILTER,
             )
         }).any {
@@ -229,7 +237,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
     }
 
     /**
-     * If the service is already bound, we delay its unbinding
+     * Schedules the unbind in 5 seconds and keeps the CPU awake until then
      */
     private fun delayUnbinding() {
         /**
@@ -239,6 +247,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
         scheduledFuture?.cancel(true)
         /** Call [run] (unbind) in 5 seconds */
         scheduledFuture = unbindExecutor.schedule(this, 5L, TimeUnit.SECONDS)
+        wakeLock.acquire(WAKE_LOCK_TIMEOUT_MILLIS)
     }
 
     private fun bind() {
@@ -249,8 +258,7 @@ class RaiseAppToForeground(private val context: Context, private val app: String
         }
         /** Bind to the target raise to the foreground service */
         context.bindService(intent, this, Context.BIND_AUTO_CREATE)
-        /** Call [run] (unbind) in 5 seconds */
-        scheduledFuture = unbindExecutor.schedule(this, 5L, TimeUnit.SECONDS)
+        delayUnbinding()
         bound = Bound.Binding
     }
 
@@ -263,6 +271,9 @@ class RaiseAppToForeground(private val context: Context, private val app: String
                 bound = Bound.Unbound
                 onUnbound()
                 Log.d(TAG, "Unbound")
+            }
+            if (wakeLock.isHeld) {
+                wakeLock.release()
             }
         }
     }
@@ -304,6 +315,8 @@ class RaiseAppToForeground(private val context: Context, private val app: String
     private companion object {
         private const val TAG = "NtfyUpRaiseFg"
         private const val ACTION = "org.unifiedpush.android.connector.RAISE_TO_FOREGROUND"
+        private const val WAKE_LOCK_TAG = "RaiseAppToForeground:lock"
+        private const val WAKE_LOCK_TIMEOUT_MILLIS = 10 * 1000L /* fallback, released on unbind */
 
         /** Executor to unbind 5 seconds later */
         private val unbindExecutor = Executors.newSingleThreadScheduledExecutor()
