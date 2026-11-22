@@ -28,6 +28,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLHandshakeException
+import javax.net.ssl.SSLPeerUnverifiedException
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.heckel.ntfy.BuildConfig
@@ -40,6 +44,7 @@ import io.heckel.ntfy.firebase.FirebaseMessenger
 import io.heckel.ntfy.msg.ApiService
 import io.heckel.ntfy.msg.NotificationService
 import io.heckel.ntfy.msg.Poller
+import io.heckel.ntfy.util.CertUtil
 import io.heckel.ntfy.service.SubscriberServiceManager
 import io.heckel.ntfy.util.Log
 import io.heckel.ntfy.util.copyToClipboard
@@ -66,13 +71,17 @@ import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
 import com.google.android.material.color.MaterialColors
 
-class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
+class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener, TrustedCertificateFragment.TrustedCertificateListener {
     private val viewModel by viewModels<DetailViewModel> {
         DetailViewModelFactory((application as Application).repository)
     }
     private val repository by lazy { (application as Application).repository }
     private val api by lazy { ApiService(this) }
     private val poller by lazy { Poller(api, repository) }
+
+    // A deep link to a server whose certificate is not trusted yet. Kept while the trust dialog is up, so
+    // the link can be picked up again once the user has answered.
+    private var pendingDeepLink: Uri? = null
     private val messenger = FirebaseMessenger()
     private var notifier: NotificationService? = null // Context-dependent
     private var appBaseUrl: String? = null // Context-dependent
@@ -216,6 +225,13 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         lifecycleScope.launch(Dispatchers.IO) {
             var subscription = repository.getSubscription(baseUrl, topic)
             if (subscription == null) {
+                // A self-signed (or otherwise untrusted) server used to be added anyway and then fail silently,
+                // because only the subscribe dialog asked whether to trust the certificate. Ask here too, the
+                // same way, before anything is stored; a trusted certificate is pinned for the server, so this
+                // is asked once per server.
+                if (baseUrl != appBaseUrl && !checkServerTrust(url, baseUrl, topic)) {
+                    return@launch
+                }
                 val instant = baseUrl != appBaseUrl
                 subscription = Subscription(
                     id = randomSubscriptionId(),
@@ -269,6 +285,66 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 loadView()
             }
         }
+    }
+
+    /**
+     * Returns true if the server can be reached with the certificate it presents (or is unreachable for a
+     * reason that is not the certificate, which is handled as before). Returns false after showing the
+     * trust dialog, or a toast, for a certificate the phone does not trust yet.
+     */
+    private suspend fun checkServerTrust(url: Uri, baseUrl: String, topic: String): Boolean {
+        try {
+            api.checkAuth(baseUrl, topic, repository.getUser(baseUrl)) // Result is irrelevant; only the TLS handshake matters here
+            return true
+        } catch (e: Exception) {
+            if (!isSSLException(e)) {
+                Log.w(TAG, "Connection to topic failed, subscribing anyway: ${e.message}", e)
+                return true
+            }
+            Log.d(TAG, "SSL certificate error on deep link, attempting to fetch certificate for user review")
+            val certificate = CertUtil.getInstance(this).fetchServerCertificate(baseUrl)
+            runOnUiThread {
+                if (certificate != null) {
+                    pendingDeepLink = url
+                    TrustedCertificateFragment
+                        .newInstanceUnknown(certificate, baseUrl)
+                        .show(supportFragmentManager, TrustedCertificateFragment.TAG)
+                } else {
+                    Toast.makeText(this, getString(R.string.add_dialog_error_ssl_untrusted), Toast.LENGTH_LONG).show()
+                    finish()
+                }
+            }
+            return false
+        }
+    }
+
+    private fun isSSLException(e: Exception): Boolean {
+        var cause: Throwable? = e
+        while (cause != null) {
+            if (cause is SSLHandshakeException || cause is SSLPeerUnverifiedException || cause is CertificateException) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+
+    // TrustedCertificateFragment.TrustedCertificateListener, for a deep link to a server trusted just now
+    override fun onCertificateTrusted(certificate: X509Certificate) {
+        val url = pendingDeepLink ?: return
+        pendingDeepLink = null
+        Log.d(TAG, "Certificate trusted, retrying deep link $url")
+        maybeSubscribeAndLoadView(url)
+    }
+
+    override fun onCertificateRejected() {
+        pendingDeepLink = null
+        Toast.makeText(this, getString(R.string.add_dialog_error_ssl_untrusted), Toast.LENGTH_LONG).show()
+        finish()
+    }
+
+    override fun onCertificateDeleted() {
+        // Only used by the settings screen
     }
 
     fun extractBaseUrl(url: Uri, secure: Boolean): String {
