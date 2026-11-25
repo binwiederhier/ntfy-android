@@ -3,6 +3,7 @@ package io.heckel.ntfy.app
 import android.app.Application
 import android.net.ConnectivityManager
 import android.net.Network
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
 import io.heckel.ntfy.db.Repository
 import io.heckel.ntfy.service.SubscriberServiceManager
@@ -28,6 +29,15 @@ class Application : Application() {
         if (repository.getDynamicColorsEnabled()) {
             DynamicColors.applyToActivitiesIfAvailable(this)
         }
+
+        // Apply the persisted dark mode setting before any Activity is created. Activities
+        // can be cold-started from entry points that never run MainActivity, e.g. tapping a
+        // notification opens DetailActivity directly (via TaskStackBuilder's parent stack).
+        // If the mode is only applied in MainActivity, such an activity inflates with the
+        // system-default (light) theme while adapter colors (which read the setting from the
+        // Repository directly) render dark, resulting in a half-light/half-dark UI.
+        AppCompatDelegate.setDefaultNightMode(repository.getDarkMode())
+
         registerNetworkCallback()
     }
 
