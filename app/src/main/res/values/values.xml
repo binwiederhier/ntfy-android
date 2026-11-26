@@ -22,6 +22,7 @@
     <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
     <string name="settings_general_users_key" translatable="false">ManageUsers</string>
     <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
+    <string name="settings_general_datetime_format_key" translatable="false">DateTimeFormat</string>
     <string name="settings_general_language_key" translatable="false">Language</string>
     <string name="settings_general_dynamic_colors_key" translatable="false">DynamicColors</string>
     <string name="settings_general_message_bar_key" translatable="false">MessageBarEnabled</string>
@@ -224,5 +225,13 @@
         <item>-1</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+    <string-array name="settings_general_datetime_format_entries">
+        <item>@string/settings_general_datetime_format_entry_locale</item>
+        <item>@string/settings_general_datetime_format_entry_iso8601</item>
+    </string-array>
+    <string-array name="settings_general_datetime_format_values">
+        <item>locale</item>
+        <item>iso8601</item>
     </string-array>
 </resources>

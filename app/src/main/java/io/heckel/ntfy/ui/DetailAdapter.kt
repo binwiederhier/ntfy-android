@@ -115,7 +115,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             val unmatchedTags = unmatchedTags(splitTags(notification.tags))
             val message = maybeAppendActionErrors(formatMessage(notification), notification)
 
-            dateView.text = formatDateShort(notification.timestamp)
+            dateView.text = formatDateShort(context, notification.timestamp)
             if (notification.isMarkdown()) {
                 messageView.autoLinkMask = 0
                 markwon.setMarkdown(messageView, message.toString())
@@ -353,7 +353,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expires_x, formatDateShort(attachment.expires)))
+                infos.add(context.getString(R.string.detail_item_download_info_not_downloaded_expires_x, formatDateShort(context, attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_not_downloaded))
                 }
@@ -363,7 +363,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_deleted_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_deleted_expires_x, formatDateShort(attachment.expires)))
+                infos.add(context.getString(R.string.detail_item_download_info_deleted_expires_x, formatDateShort(context, attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_deleted))
                 }
@@ -371,7 +371,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
                 if (expired) {
                     infos.add(context.getString(R.string.detail_item_download_info_download_failed_expired))
                 } else if (expires) {
-                    infos.add(context.getString(R.string.detail_item_download_info_download_failed_expires_x, formatDateShort(attachment.expires)))
+                infos.add(context.getString(R.string.detail_item_download_info_download_failed_expires_x, formatDateShort(context, attachment.expires)))
                 } else {
                     infos.add(context.getString(R.string.detail_item_download_info_download_failed))
                 }

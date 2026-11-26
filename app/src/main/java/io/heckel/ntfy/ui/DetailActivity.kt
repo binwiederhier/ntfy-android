@@ -783,7 +783,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     0L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_enabled_toast_message), Toast.LENGTH_LONG).show()
                     1L -> Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_muted_forever_toast_message), Toast.LENGTH_LONG).show()
                     else -> {
-                        val formattedDate = formatDateShort(mutedUntilTimestamp)
+                        val formattedDate = formatDateShort(this@DetailActivity, mutedUntilTimestamp)
                         Toast.makeText(this@DetailActivity, getString(R.string.notification_dialog_muted_until_toast_message, formattedDate), Toast.LENGTH_LONG).show()
                     }
                 }
@@ -843,7 +843,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 notificationsDisabledForeverItem?.isVisible = subscriptionMutedUntil == 1L
                 notificationsDisabledUntilItem?.isVisible = subscriptionMutedUntil > 1L
                 if (subscriptionMutedUntil > 1L) {
-                    val formattedDate = formatDateShort(subscriptionMutedUntil)
+            val formattedDate = formatDateShort(this, subscriptionMutedUntil)
                     notificationsDisabledUntilItem?.title = getString(R.string.detail_menu_notifications_disabled_until, formattedDate)
                 }
             }
